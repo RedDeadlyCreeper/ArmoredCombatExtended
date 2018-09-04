@@ -2,7 +2,7 @@
 ACF_defineGunClass("SBC", {
 	spread = 0.35,
 	name = "Smooth-Bore Cannon",
-	desc = "High velocity guns that tradeoff accuracy for faster shell velocity. Fire slower and are heavier due to more reinforced cannon barrels than their counterparts",
+	desc = "High velocity guns that Fire slower and are heavier due to more reinforced cannon barrels than their counterparts. They fire fin stabilized ammo and as of such are also more accurate than their counterparts.",
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 2.5,
 	sound = "weapons/ACF_Gun/cannon_new.wav",

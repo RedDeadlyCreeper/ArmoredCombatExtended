@@ -43,7 +43,7 @@ ACF_defineGun("60mmRM", { --id
 
 ACF_defineGun("80mmRM", {
 	name = "80mm Rifled Mortar",
-	desc = "The 80mm is a good but hefty support weapon that makes infantry stationary light emplacements cry.",
+	desc = "The 80mm is a good but hefty support weapon that makes infantry and stationary light emplacements cry.",
 	model = "models/mortar/mortar_80mm.mdl",
 	gunclass = "RM",
 	caliber = 8.0,
@@ -73,7 +73,7 @@ ACF_defineGun("120mmRM", {
 	
 ACF_defineGun("150mmRM", {
 	name = "150mm Rifled Mortar",
-	desc = "For those who want to place an accurate round and clear an entire pillbox.",
+	desc = "For those who want to place an accurate round inside a pillbox.",
 	model = "models/mortar/mortar_150mm.mdl",
 	gunclass = "RM",
 	caliber = 15.0,
@@ -104,7 +104,7 @@ ACF_defineGun("200mmRM", {
 
 ACF_defineGun("280mmRM", {
 	name = "280mm Rifled Mortar",
-	desc = "For those that want to accurately remove the bunker entirely. Kinda pointless given its range.",
+	desc = "For those that want to accurately remove the bunker entirely. Kind of pointless given its range.",
 	model = "models/mortar/mortar_280mm.mdl",
 	gunclass = "RM",
 	caliber = 28.0,

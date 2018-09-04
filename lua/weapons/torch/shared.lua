@@ -60,7 +60,7 @@ function SWEP:Think()
 		local userid = self.Owner
 		local trace = {}
 		trace.start = userid:GetShootPos()
-		trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 64	)
+		trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 		trace.filter = userid --Not hitting the owner's feet when aiming down
 		local tr = util.TraceLine( trace )
 		local ent = tr.Entity
@@ -90,7 +90,7 @@ function SWEP:PrimaryAttack()
 	local userid = self.Owner
 	local trace = {}
 	trace.start = userid:GetShootPos()
-	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 64	)
+	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 	trace.filter = userid --Not hitting the owner's feet when aiming down
 	local tr = util.TraceLine( trace )
 		if ( tr.HitWorld ) then return end	
@@ -103,7 +103,7 @@ function SWEP:PrimaryAttack()
 			local PlayerArmour = ent:Armor()
 			local PlayerMaxArmour = 100
 			if ( PlayerHealth >= PlayerMaxHealth ) then return end --if the player is healthy or somehow dead, move right along.
-			PlayerHealth = PlayerHealth + 1 --otherwise add 1 HP
+			PlayerHealth = PlayerHealth + 3 --otherwise add 1 HP
 			ent:SetHealth( PlayerHealth ) --and boost the player's HP to that.
 			
 			self.Weapon:SetNWFloat( "HP", PlayerHealth ) --Output to the HUD bar
@@ -122,8 +122,8 @@ function SWEP:PrimaryAttack()
 			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 			local Valid = ACF_Check ( ent )
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
-				ent.ACF.Health = math.min(ent.ACF.Health + (30/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
-				ent.ACF.Armour = ent.ACF.MaxArmour * (0.5 + ent.ACF.Health/ent.ACF.MaxHealth/2)
+				ent.ACF.Health = math.min(ent.ACF.Health + (90/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
+				ent.ACF.Armour = ent.ACF.MaxArmour * (1 + ent.ACF.Health/ent.ACF.MaxHealth/2)
 				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", true, true )--Welding noise here, gotte figure out how to do a looped sound.
 				TeslaSpark(tr.HitPos , 1 )
 			end
@@ -148,7 +148,7 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 	local userid = self.Owner
 	local trace = {}
 	trace.start = userid:GetShootPos()
-	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 64	)
+	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 	trace.filter = userid
 	local tr = util.TraceLine( trace )
 		if ( tr.HitWorld ) then return end	
@@ -163,10 +163,10 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 			local HitRes = {}
 			if(ent:IsPlayer()) then
-				HitRes = ACF_Damage ( ent , {Kinetic = 0.05,Momentum = 0,Penetration = 0.05} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+				HitRes = ACF_Damage ( ent , {Kinetic = 0.15,Momentum = 0,Penetration = 0.15} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			else
 				if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
-				HitRes = ACF_Damage ( ent , {Kinetic = 5,Momentum = 0,Penetration = 5} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+				HitRes = ACF_Damage ( ent , {Kinetic = 15,Momentum = 0,Penetration = 15} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			end
 			if HitRes.Kill then
 				constraint.RemoveAll( ent )

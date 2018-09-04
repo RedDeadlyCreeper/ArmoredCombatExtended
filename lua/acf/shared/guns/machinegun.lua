@@ -79,7 +79,7 @@ ACF_defineGun("20mmMG", {
 ACF_defineGun("25mmMG", {
 	name = "25mm Machinegun",
 	desc = "The 25mm MG is essentially an autocannon; it fires small 25mm bullets at a fast rate that gives it good AA capability.",
-	model = "models/machinegun/machinegun_30mm.mdl",
+	model = "models/machinegun/machinegun_25mm.mdl",
 	gunclass = "MG",
 	caliber = 2.5,
 	weight = 195,
