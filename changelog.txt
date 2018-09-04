@@ -1,0 +1,14 @@
+*RM1
+-Removed mags from smaller mgs
+-Removed mags from 20 and 30 AC
+-Added 25mm MG
+-added 40mm SGL
+-added 40mm MSL
+-Added 50mm Mortar
+-Added 280mm Mortar
+-Added 240mm HW
+-Added 290mm HW
+-Added SBCs
+-reduced SL reload time
+-tweaked RACs
+-Redid HMGs
