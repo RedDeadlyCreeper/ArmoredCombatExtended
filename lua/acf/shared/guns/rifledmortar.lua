@@ -26,7 +26,7 @@ ACF_defineGun("50mmRM", { --id
 } )
 
 --add a gun to the class
-ACF_defineGun("60mmM", { --id
+ACF_defineGun("60mmRM", { --id
 	name = "60mm Rifled Mortar",
 	desc = "The 60mm rifled mortar is for those that despise infantry but hate missing.",
 	model = "models/mortar/mortar_60mm.mdl",
@@ -41,7 +41,7 @@ ACF_defineGun("60mmM", { --id
 	}
 } )
 
-ACF_defineGun("80mmM", {
+ACF_defineGun("80mmRM", {
 	name = "80mm Rifled Mortar",
 	desc = "The 80mm is a good but hefty support weapon that makes infantry stationary light emplacements cry.",
 	model = "models/mortar/mortar_80mm.mdl",
@@ -56,7 +56,7 @@ ACF_defineGun("80mmM", {
 	}
 } )
 	
-ACF_defineGun("120mmM", {
+ACF_defineGun("120mmRM", {
 	name = "120mm Rifled Mortar",
 	desc = "120mm Support mortar, good for precisely shelling the roofs of emplacements.",
 	model = "models/mortar/mortar_120mm.mdl",
@@ -71,7 +71,7 @@ ACF_defineGun("120mmM", {
 	}
 } )
 	
-ACF_defineGun("150mmM", {
+ACF_defineGun("150mmRM", {
 	name = "150mm Rifled Mortar",
 	desc = "For those who want to place an accurate round and clear an entire pillbox.",
 	model = "models/mortar/mortar_150mm.mdl",
@@ -86,7 +86,7 @@ ACF_defineGun("150mmM", {
 	}
 } )
 
-ACF_defineGun("200mmM", {
+ACF_defineGun("200mmRM", {
 	name = "200mm Rifled Mortar",
 	desc = "For those who want to place an accurate heat round onto the roof of a heavily armored bunker.",
 	model = "models/mortar/mortar_200mm.mdl",
@@ -102,7 +102,7 @@ ACF_defineGun("200mmM", {
 } )
 
 
-ACF_defineGun("280mmM", {
+ACF_defineGun("280mmRM", {
 	name = "280mm Rifled Mortar",
 	desc = "For those that want to accurately remove the bunker entirely. Kinda pointless given its range.",
 	model = "models/mortar/mortar_280mm.mdl",
