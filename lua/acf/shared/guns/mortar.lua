@@ -11,7 +11,7 @@ ACF_defineGunClass("MO", {
 } )
 
 ACF_defineGun("50mmM", { --id
-	name = "50mm Mortar",
+	name = "(+)50mm Mortar",
 	desc = "The 50mm is an uncommon light mortar often seen at the before or at the begening of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
 	model = "models/mortar/mortar_50mm.mdl",
 	gunclass = "MO",
@@ -21,11 +21,10 @@ ACF_defineGun("50mmM", { --id
 	year = 1930,
 	round = {
 		maxlength = 20,
-		propweight = 0.037
+		propweight = 0.03
 	}
 } )
 
---add a gun to the class
 ACF_defineGun("60mmM", { --id
 	name = "60mm Mortar",
 	desc = "The 60mm is a common light infantry support weapon, with a high rate of fire but a puny payload.",
@@ -36,8 +35,8 @@ ACF_defineGun("60mmM", { --id
 	rofmod = 1.25,
 	year = 1930,
 	round = {
-		maxlength = 26,
-		propweight = 0.050
+		maxlength = 20,
+		propweight = 0.037
 	}
 } )
 
@@ -50,8 +49,8 @@ ACF_defineGun("80mmM", {
 	weight = 120,
 	year = 1930,
 	round = {
-		maxlength = 35,
-		propweight = 0.15 
+		maxlength = 28,
+		propweight = 0.055 
 	}
 } )
 	
@@ -64,8 +63,8 @@ ACF_defineGun("120mmM", {
 	weight = 640,
 	year = 1935,
 	round = {
-		maxlength = 50,
-		propweight = 0.20 
+		maxlength = 45,
+		propweight = 0.175 
 	}
 } )
 	
@@ -78,13 +77,13 @@ ACF_defineGun("150mmM", {
 	weight = 1255,
 	year = 1945,
 	round = {
-		maxlength = 65,
-		propweight = 0.28 
+		maxlength = 58,
+		propweight = 0.235 
 	}
 } )
 
 ACF_defineGun("200mmM", {
-	name = "200mm Mortar",
+	name = "(+)200mm Mortar",
 	desc = "The 200mm is a beast, often used against fortifications.  Though enormously powerful, feel free to take a nap while it reloads",
 	model = "models/mortar/mortar_200mm.mdl",
 	gunclass = "MO",
@@ -92,14 +91,14 @@ ACF_defineGun("200mmM", {
 	weight = 2850,
 	year = 1940,
 	round = {
-		maxlength = 85,
-		propweight = 0.39 
+		maxlength = 80,
+		propweight = 0.330 
 	}
 } )
 
 
 ACF_defineGun("280mmM", {
-	name = "280mm Mortar",
+	name = "(+)280mm Mortar",
 	desc = "Massive payload, with a reload time to match. Found in rare WW2 siege artillery pieces. It's the perfect size for a jeep.",
 	model = "models/mortar/mortar_280mm.mdl",
 	gunclass = "MO",

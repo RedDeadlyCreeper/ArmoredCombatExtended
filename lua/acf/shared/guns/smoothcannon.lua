@@ -13,7 +13,7 @@ ACF_defineGunClass("SBC", {
 --add a gun to the class
 	
 ACF_defineGun("100mmSBC", {
-	name = "100mm Smoothbore Cannon",
+	name = "(+)100mm Smoothbore Cannon",
 	desc = "100mm Smoothbore, a great cannon for a light tank or tank destroyer",
 	model = "models/tankgun_old/tankgun_100mm.mdl",
 	gunclass = "SBC",
@@ -27,7 +27,7 @@ ACF_defineGun("100mmSBC", {
 } )
 	
 ACF_defineGun("120mmSBC", {
-	name = "120mm Smoothbore Cannon",
+	name = "(+)120mm Smoothbore Cannon",
 	desc = "120mm Smoothbore, powerful general purpose main battle tank cannon",
 	model = "models/tankgun_old/tankgun_120mm.mdl",
 	gunclass = "SBC",
@@ -41,7 +41,7 @@ ACF_defineGun("120mmSBC", {
 } )
 	
 ACF_defineGun("140mmSBC", {
-	name = "140mm Smoothbore Cannon",
+	name = "(+)140mm Smoothbore Cannon",
 	desc = "140mm Smoothbore, heavy railgun like cannon spawned out of a hatred of 60 tons",
 	model = "models/tankgun_old/tankgun_140mm.mdl",
 	gunclass = "SBC",

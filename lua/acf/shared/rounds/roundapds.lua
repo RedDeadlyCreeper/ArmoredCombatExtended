@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APDS =  { "MO", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR"} -- Yes, I know I left the flare launcher out, deal with it
+ACF.AmmoBlacklist.APDS =  { "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR"} -- Yes, I know I left the flare launcher out, deal with it
 
 local Round = {}
 
@@ -63,13 +63,13 @@ function Round.convert( Crate, PlayerData )
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1.35
 	Data.VelModifier = 1
-	Data.Ricochet = 60
+	Data.Ricochet = 62
 	else
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1
 	Data.VelModifier = 1
-	Data.Ricochet = 73
+	Data.Ricochet = 68
 	end
 	
 	Data.SCalMult = PlayerData["Data5"]

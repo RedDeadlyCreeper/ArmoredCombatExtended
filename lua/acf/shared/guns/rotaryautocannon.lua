@@ -13,6 +13,92 @@ ACF_defineGunClass("RAC", {
 
 ACF_defineGun("14.5mmRAC", { --id
 	name = "14.5mm Rotary Autocannon",
+	desc = "A lightweight rotary autocannon, used primarily against infantry and light vehicles.  It has a lower firerate than its larger brethren, but a significantly quicker cooldown period as well.",
+	model = "models/rotarycannon/kw/14_5mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 1.45,
+	weight = 310,
+	year = 1962,
+	magsize = 60,
+	magreload = 6,
+	rofmod = 5.4,
+	round = {
+		maxlength = 24,
+		propweight = 0.06
+	}
+} )
+
+ACF_defineGun("20mmRAC", {
+	name = "20mm Rotary Autocannon",
+	desc = "The 20mm is able to chew up light armor with decent penetration or put up a big flak screen. Typically mounted on ground attack aircraft, SPAAGs and the ocassional APC. Suffers from a moderate cooldown period between bursts to avoid overheating the barrels.",
+	model = "models/rotarycannon/kw/20mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 2.0,
+	weight = 920,
+	year = 1965,
+	magsize = 48,
+	magreload = 10,
+	rofmod = 2.05,
+	round = {
+		maxlength = 30,
+		propweight = 0.12
+	}
+} )
+
+ACF_defineGun("30mmRAC", {
+	name = "30mm Rotary Autocannon",
+	desc = "The 30mm is the bane of ground-attack aircraft, able to tear up light armor without giving one single fuck.  Also seen in the skies above dead T-72s.  Has a moderate cooldown period between bursts to avoid overheating the barrels.",
+	model = "models/rotarycannon/kw/30mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 3.0,
+	weight = 1680,
+	year = 1975,
+	magsize = 60,
+	magreload = 8,
+	rofmod = 0.884,
+	round = {
+		maxlength = 40,
+		propweight = 0.350
+	}
+} )
+
+
+ACF_defineGun("20mmHRAC", {
+	name = "20mm Heavy Rotary Autocannon",
+	desc = "A reinforced, heavy-duty 20mm rotary autocannon, free of barrel heat issues and with an optimized ammo feed.  Keep the bullets flowing!",
+	model = "models/rotarycannon/kw/20mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 2.0,
+	weight = 1280,
+	year = 1965,
+	magsize = 3000,
+	magreload = 1,
+	rofmod = 2.55,
+	round = {
+		maxlength = 33,
+		propweight = 0.12
+	}
+} )
+
+ACF_defineGun("30mmHRAC", {
+	name = "30mm Heavy Rotary Autocannon",
+	desc = "A reinforced, heavy duty 30mm rotary autocannon, free of barrel heat issues and with an optimized ammo feed.  Let the bullets fly!",
+	model = "models/rotarycannon/kw/30mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 3.0,
+	weight = 3850,
+	year = 1975,
+	magsize = 3000,
+	magreload = 2,
+	rofmod = 1.1,
+	round = {
+		maxlength = 44,
+		propweight = 0.350
+	}
+} )
+
+ACF_defineGun("(C)14.5mmRAC", { --id
+	name = "(C)14.5mm Rotary Autocannon",
 	desc = "A lightweight rotary autocannon, a great support weapon for effortlessly shredding infantry and technicals alike.",
 	model = "models/rotarycannon/kw/14_5mmrac.mdl",
 	gunclass = "RAC",
@@ -29,8 +115,8 @@ ACF_defineGun("14.5mmRAC", { --id
 	}
 } )
 
-ACF_defineGun("20mmRAC", {
-	name = "20mm Rotary Autocannon",
+ACF_defineGun("(C)20mmRAC", {
+	name = "(C)20mm Rotary Autocannon",
 	desc = "The 20mm is able to chew up light armor with decent penetration or put up a big flak screen. Typically mounted on ground attack aircraft, SPAAGs and the ocassional APC. Suffers from a moderate cooldown period between bursts to avoid overheating the barrels.",
 	model = "models/rotarycannon/kw/20mmrac.mdl",
 	gunclass = "RAC",
@@ -46,8 +132,8 @@ ACF_defineGun("20mmRAC", {
 	}
 } )
 
-ACF_defineGun("30mmRAC", {
-	name = "30mm Rotary Autocannon",
+ACF_defineGun("(C)30mmRAC", {
+	name = "(C)30mm Rotary Autocannon",
 	desc = "The 30mm is the bane of ground-attack aircraft, able to tear up light armor without giving one single fuck.  Also seen in the skies above dead T-72s.  Has a moderate cooldown period between bursts to avoid overheating the barrels.",
 	model = "models/rotarycannon/kw/30mmrac.mdl",
 	gunclass = "RAC",
@@ -64,7 +150,7 @@ ACF_defineGun("30mmRAC", {
 } )
 
 ACF_defineGun("14.5mmHRAC", { --id
-	name = "14.5mm Heavy Rotary Autocannon",
+	name = "(+)14.5mm Heavy Rotary Autocannon",
 	desc = "For those that want an even heavier machinegun capable of firing faster 14.5 rounds for all of eternity, great for scout helis",
 	model = "models/rotarycannon/kw/14_5mmrac.mdl",
 	gunclass = "RAC",
@@ -78,8 +164,8 @@ ACF_defineGun("14.5mmHRAC", { --id
 	}
 } )
 
-ACF_defineGun("20mmHRAC", {
-	name = "20mm Heavy Rotary Autocannon",
+ACF_defineGun("(C)20mmHRAC", {
+	name = "(C)20mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy-duty 20mm rotary autocannon, free of barrel heat issues and with an optimized ammo feed.  Keep the bullets flowing!",
 	model = "models/rotarycannon/kw/20mmrac.mdl",
 	gunclass = "RAC",
@@ -93,8 +179,8 @@ ACF_defineGun("20mmHRAC", {
 	}
 } )
 
-ACF_defineGun("30mmHRAC", {
-	name = "30mm Heavy Rotary Autocannon",
+ACF_defineGun("(C)30mmHRAC", {
+	name = "(C)30mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy duty 30mm rotary autocannon, free of barrel heat issues and with an optimized ammo feed.  Let the bullets fly!",
 	model = "models/rotarycannon/kw/30mmrac.mdl",
 	gunclass = "RAC",
@@ -107,4 +193,5 @@ ACF_defineGun("30mmHRAC", {
 		propweight = 0.350
 	}
 } )
+
 

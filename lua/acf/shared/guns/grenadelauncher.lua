@@ -28,7 +28,7 @@ ACF_defineGun("40mmGL", { --id
 } )
 
 ACF_defineGun("40mmGLSingle", { --id
-	name = "40mm Single Grenade Launcher",
+	name = "(+)40mm Single Grenade Launcher",
 	desc = "The 40mm grenade projecter excels at launching a small 40mm charge at nearby infantry.",
 	model = "models/launcher/40mmsl.mdl",
 	gunclass = "GL",

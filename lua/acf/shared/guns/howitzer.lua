@@ -83,7 +83,7 @@ ACF_defineGun("203mmHW", {
 
 
 ACF_defineGun("240mmHW", {
-	name = "240mm Howitzer",
+	name = "(+)240mm Howitzer",
 	desc = "A 9.4-inch deck gun, found on heavy siege artillery and cruisers.",
 	model = "models/howitzer/howitzer_240mm.mdl",
 	gunclass = "HW",
@@ -97,7 +97,7 @@ ACF_defineGun("240mmHW", {
 } )
 
 ACF_defineGun("290mmHW", {
-	name = "290mm Howitzer",
+	name = "(+)290mm Howitzer",
 	desc = " Mother of all howitzers. This 12in beast can be found on battleships. It WILL fuck your day up... when it reloads.",
 	model = "models/howitzer/howitzer_406mm.mdl",
 	gunclass = "HW",

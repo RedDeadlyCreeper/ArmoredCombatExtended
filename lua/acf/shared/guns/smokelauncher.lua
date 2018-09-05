@@ -28,7 +28,7 @@ ACF_defineGun("40mmSL", { --id
 } )
 
 ACF_defineGun("40mmSLMulti", { --id
-	name = "40mm MultiBarrel Smoke Launcher",
+	name = "(+)40mm MultiBarrel Smoke Launcher",
 	desc = "Parentable Multibarrel Smoke Launcher",
 	model = "models/launcher/40mmgl.mdl",
 	gunclass = "SL",

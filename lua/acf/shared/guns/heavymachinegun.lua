@@ -16,8 +16,8 @@ ACF_defineGunClass("HMG", {
 } )
 
 --add a gun to the class
-ACF_defineGun("20mmHMG", {
-	name = "20mm Heavy Machinegun",
+ACF_defineGun("(C)20mmHMG", {
+	name = "(C)20mm Heavy Machinegun",
 	desc = "The lightest of the HMGs, the 20mm has a rapid fire rate but suffers from poor payload size.  Often used to strafe ground troops or annoy low-flying aircraft.",
 	model = "models/machinegun/machinegun_20mm_compact.mdl",
 	gunclass = "HMG",
@@ -33,8 +33,8 @@ ACF_defineGun("20mmHMG", {
 	}
 } )
 
-ACF_defineGun("30mmHMG", {
-	name = "30mm Heavy Machinegun",
+ACF_defineGun("(C)30mmHMG", {
+	name = "(C)30mm Heavy Machinegun",
 	desc = "30mm shell chucker, light and compact. Your average cold war dogfight go-to.",
 	model = "models/machinegun/machinegun_30mm_compact.mdl",
 	gunclass = "HMG",
@@ -50,8 +50,8 @@ ACF_defineGun("30mmHMG", {
 	}
 } )
 
-ACF_defineGun("40mmHMG", {
-	name = "40mm Heavy Machinegun",
+ACF_defineGun("(C)40mmHMG", {
+	name = "(C)40mm Heavy Machinegun",
 	desc = "The heaviest of the heavy machineguns.  Massively powerful with a killer reload and hefty ammunition requirements, it can pop even relatively heavy targets with ease.",
 	model = "models/machinegun/machinegun_40mm_compact.mdl",
 	gunclass = "HMG",
@@ -67,3 +67,54 @@ ACF_defineGun("40mmHMG", {
 	}
 } )
 	
+--add a gun to the class
+ACF_defineGun("20mmHMG", {
+	name = "20mm Heavy Machinegun",
+	desc = "The lightest of the HMGs, the 20mm has a rapid fire rate but suffers from poor payload size.  Often used to strafe ground troops or annoy low-flying aircraft.",
+	model = "models/machinegun/machinegun_20mm_compact.mdl",
+	gunclass = "HMG",
+	caliber = 2.0,
+	weight = 160,
+	year = 1935,
+	rofmod = 1.9, --at 1.5, 675rpm; at 2.0, 480rpm
+	magsize = 10,
+	magreload = 8,
+	round = {
+		maxlength = 30,
+		propweight = 0.12
+	}
+} )
+
+ACF_defineGun("30mmHMG", {
+	name = "30mm Heavy Machinegun",
+	desc = "30mm shell chucker, light and compact. Your average cold war dogfight go-to.",
+	model = "models/machinegun/machinegun_30mm_compact.mdl",
+	gunclass = "HMG",
+	caliber = 3.0,
+	weight = 480,
+	year = 1941,
+	rofmod = 1.2, --at 1.05, 495rpm; 
+	magsize = 8,
+	magreload = 10,
+	round = {
+		maxlength = 37,
+		propweight = 0.35
+	}
+} )
+
+ACF_defineGun("40mmHMG", {
+	name = "40mm Heavy Machinegun",
+	desc = "The heaviest of the heavy machineguns.  Massively powerful with a killer reload and hefty ammunition requirements, it can pop even relatively heavy targets with ease.",
+	model = "models/machinegun/machinegun_40mm_compact.mdl",
+	gunclass = "HMG",
+	caliber = 4.0,
+	weight = 740,
+	year = 1955,
+	rofmod = 1, --at 0.75, 455rpm
+	magsize = 6,
+	magreload = 12,
+	round = {
+		maxlength = 42,
+		propweight = 0.9
+	}
+} )

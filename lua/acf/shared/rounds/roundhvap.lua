@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.HVAP =  { "MO", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR","RAC", "HRAC",  "AC"} -- Yes, I know I left the flare launcher out, deal with it
+ACF.AmmoBlacklist.HVAP =  { "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR","RAC", "HRAC",  "AC"} -- Yes, I know I left the flare launcher out, deal with it
 
 local Round = {}
 
@@ -32,24 +32,15 @@ function Round.convert( Crate, PlayerData )
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
-	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
+--	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
-    if GunClass == "SA" then
+--    if GunClass == "C" then
+
     Data.MinCalMult = 0.25
     Data.MaxCalMult = 0.5
     Data.PenModifier = 2
-    Data.Ricochet = 50
-    elseif GunClass == "C" then
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 0.5
-    Data.PenModifier = 2
-    Data.Ricochet = 55
-    else
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 0.5
-    Data.PenModifier = 2
-    Data.Ricochet = 85
-    end
+    Data.Ricochet = 66
+--    end
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
@@ -61,7 +52,7 @@ function Round.convert( Crate, PlayerData )
 	Data.CaliberMod = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
 	Data.LimitVel = 900										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.2									--Kinetic energy transfert to the target for movement purposes										
-	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass*0.5, Data.ProjMass*2.5, Data.Caliber )
+	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass*0.5, Data.ProjMass*1.98, Data.Caliber )
 	Data.BoomPower = Data.PropMass
 
 	if SERVER then --Only the crates need this part

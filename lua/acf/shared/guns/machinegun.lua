@@ -21,6 +21,8 @@ ACF_defineGun("7.62mmMG", { --id
 	weight = 15,
 	year = 1930,
 	rofmod = 1.59,
+	magsize = 250,
+	magreload = 6,
 	round = {
 		maxlength = 13,
 		propweight = 0.04
@@ -37,6 +39,8 @@ ACF_defineGun("12.7mmMG", {
 	weight = 30,
 	year = 1910,
 	rofmod = 0.766,
+	magsize = 150,
+	magreload = 6,
 	round = {
 		maxlength = 15.8,
 		propweight = 0.03
@@ -53,12 +57,14 @@ ACF_defineGun("14.5mmMG", {
 	weight = 45,
 	year = 1932,
 	rofmod = 0.72,
+	magsize = 90,
+	magreload = 5,
 	round = {
 		maxlength = 19.5,
 		propweight = 0.04
 	}
 } )
-	
+
 ACF_defineGun("20mmMG", {
 	name = "20mm Machinegun",
 	desc = "The 20mm MG is practically a cannon in its own right; the weight and recoil made it difficult to mount on light land vehicles, though it was adapted for use on both aircraft and ships.",
@@ -68,24 +74,74 @@ ACF_defineGun("20mmMG", {
 	caliber = 2.0,
 	weight = 95,
 	year = 1935,
-	rofmod = 0.50,
+	rofmod = 0.55,
+	magsize = 50,
+	magreload = 4,
 	round = {
 		maxlength = 22,
 		propweight = 0.09
 	}
 } )
---models/machinegun/machinegun_30mm.mdl
+
+--add a gun to the class
+ACF_defineGun("(C)7.62mmMG", { --id
+	name = "(C)7.62mm Machinegun",
+	desc = "The 7.62mm is effective against infantry, but its usefulness against armor is laughable at best.",
+	model = "models/machinegun/machinegun_762mm.mdl",
+	gunclass = "MG",
+	canparent = true,
+	caliber = 0.762,
+	weight = 15,
+	year = 1930,
+	rofmod = 1.59,
+	round = {
+		maxlength = 13,
+		propweight = 0.04
+	}
+} )
+
+ACF_defineGun("(C)12.7mmMG", {
+	name = "(C)12.7mm Machinegun",
+	desc = "The 12.7mm MG is still light, finding its way into a lot of mountings, including on top of tanks.",
+	model = "models/machinegun/machinegun_127mm.mdl",
+	gunclass = "MG",
+	canparent = true,
+	caliber = 1.27,
+	weight = 30,
+	year = 1910,
+	rofmod = 0.766,
+	round = {
+		maxlength = 15.8,
+		propweight = 0.03
+	}
+} )
+	
+ACF_defineGun("(C)14.5mmMG", {
+	name = "(C)14.5mm Machinegun",
+	desc = "The 14.5mm MG trades its smaller stablemates' rate of fire for more armor penetration and damage.",
+	model = "models/machinegun/machinegun_145mm.mdl",
+	gunclass = "MG",
+	canparent = true,
+	caliber = 1.45,
+	weight = 45,
+	year = 1932,
+	rofmod = 0.72,
+	round = {
+		maxlength = 19.5,
+		propweight = 0.04
+	}
+} )
 
 ACF_defineGun("25mmMG", {
-	name = "25mm Machinegun",
+	name = "(+)25mm Machinegun",
 	desc = "The 25mm MG is essentially an autocannon; it fires small 25mm bullets at a fast rate that gives it good AA capability.",
 	model = "models/machinegun/machinegun_25mm.mdl",
 	gunclass = "MG",
 	caliber = 2.5,
 	weight = 195,
 	year = 1938,
-	rofmod = 0.3,
-	magsize = 100,
+	rofmod = 0.35,
+	magsize = 60,
 	magreload = 3,
 	round = {
 		maxlength = 23.5,
