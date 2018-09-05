@@ -5,10 +5,10 @@
 - Recommended installation: SVN
   If you don't have a svn program, TortoiseSVN is a good one. http://TortoiseSVN.net
   This walkthrough assumes you are using TortoiseSVN, and have it installed already.
-  
+ 
   Go to your garrysmod addons folder ( \SteamApps\common\GarrysMod\garrysmod\addons ), create a new
   folder named ACF, right click it and choose "SVN Checkout".  In the "URL of repository" box, put
-  "https://github.com/nrlulz/ACF/trunk" (without the "") and click OK.  ACF is a fairly large addon,
+  "https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/trunk" (without the "") and click OK.  ACF is a fairly large addon,
   so it will take some time to download.
   
   If you want to update the ACF SVN at some point, right click the ACF folder in your addons and choose
@@ -19,7 +19,7 @@
   is NOT RECOMMENDED as it's a large, slow download, has a LOT of extra unused stuff which bloats the zip,
   and you have to redownload the entire thing if you want to update ACF.
   
-  Go to https://github.com/nrlulz/ACF and click the "Download Zip" button on the right side of the page.
+  Go to https://github.com/RedDeadlyCreeper/ArmoredCombatExtended and click the "Download Zip" button on the right side of the page.
   If you don't have an ACF folder inside your addons, create one.  Open the zip, go into the "ACF-Master"
   folder, and extract all the files into your ACF folder in addons.  The folder structure should look
   like "garrysmod\addons\ACF\lua" and NOT "garrysmod\addons\ACF\ACF-Master\lua".
