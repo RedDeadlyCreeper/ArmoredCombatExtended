@@ -14,8 +14,8 @@ ACF_defineGunClass("ATR", {
 ACF_defineGun("7.92mmATR", { --id
 	name = "(+)7.92mm Anti Tank Rifle",
 	desc = "The 7.92 Anti Tank Rifle is the desperate attempt of someone to fend off hordes of tracked beasts in the trenches",
-	model = "models/atrifle/atrifle_792.mdl",
-	gunclass = "SA",
+	model = "models/tankgun/atrifle_792mm.mdl",
+	gunclass = "ATR",
 	caliber = 7.92,
 	weight = 90,
 	year = 1917,
@@ -31,8 +31,8 @@ ACF_defineGun("7.92mmATR", { --id
 ACF_defineGun("14.5mmATR", { --id
 	name = "(+)14.5mm Anti Tank Rifle",
 	desc = "Commonly used by soviets as a budget way to kill expensive stuff, still worthless.",
-	model = "models/atrifle/atrifle_145.mdl",
-	gunclass = "SA",
+	model = "models/tankgun/atrifle_145mm.mdl",
+	gunclass = "ATR",
 	caliber = 1.45,
 	weight = 130,
 	year = 1917,
@@ -48,8 +48,8 @@ ACF_defineGun("14.5mmATR", { --id
 ACF_defineGun("20mmATR", { --id
 	name = "(+)20mm Anti Tank Rifle",
 	desc = "Collosal anti tank rifle, good for putting a hole through side armor at point blank, that is if you can carry it.",
-	model = "models/atrifle/atrifle_20.mdl",
-	gunclass = "SA",
+	model = "models/tankgun/atrifle_20mm.mdl",
+	gunclass = "ATR",
 	caliber = 2,
 	weight = 190,
 	year = 1917,

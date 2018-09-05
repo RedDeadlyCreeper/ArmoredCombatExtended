@@ -30,7 +30,7 @@ ACF_defineGun("40mmGL", { --id
 ACF_defineGun("20mmGL", { --id
 	name = "(+)20mm Grenade Launcher",
 	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak",
-	model = "models/launcher/40mmgl.mdl",
+	model = "models/launcher/20mmgl.mdl",
 	gunclass = "GL",
 	canparent = true,
 	caliber = 2.0,
