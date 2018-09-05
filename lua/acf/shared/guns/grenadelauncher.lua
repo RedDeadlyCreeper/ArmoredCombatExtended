@@ -27,6 +27,23 @@ ACF_defineGun("40mmGL", { --id
 	}
 } )
 
+ACF_defineGun("20mmGL", { --id
+	name = "(+)20mm Grenade Launcher",
+	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak",
+	model = "models/launcher/40mmgl.mdl",
+	gunclass = "GL",
+	canparent = true,
+	caliber = 2.0,
+	weight = 10,
+	magsize = 18,
+	magreload = 6,
+	year = 1970,
+	round = {
+		maxlength = 4,
+		propweight = 0.005
+	}
+} )
+
 ACF_defineGun("40mmGLSingle", { --id
 	name = "(+)40mm Single Grenade Launcher",
 	desc = "The 40mm grenade projecter excels at launching a small 40mm charge at nearby infantry.",
