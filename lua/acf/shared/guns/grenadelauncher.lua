@@ -34,7 +34,7 @@ ACF_defineGun("20mmGL", { --id
 	gunclass = "GL",
 	canparent = true,
 	caliber = 2.0,
-	weight = 10,
+	weight = 15,
 	magsize = 18,
 	magreload = 6,
 	year = 1970,

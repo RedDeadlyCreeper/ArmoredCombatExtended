@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APDS =  { "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR"} -- Yes, I know I left the flare launcher out, deal with it
+ACF.AmmoBlacklist.APDS =  { "ATR", "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR"} -- Yes, I know I left the flare launcher out, deal with it
 
 local Round = {}
 

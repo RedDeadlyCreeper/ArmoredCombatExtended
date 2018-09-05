@@ -16,15 +16,15 @@ ACF_defineGun("7.92mmATR", { --id
 	desc = "The 7.92 Anti Tank Rifle is the desperate attempt of someone to fend off hordes of tracked beasts in the trenches",
 	model = "models/tankgun/atrifle_792mm.mdl",
 	gunclass = "ATR",
-	caliber = 7.92,
+	caliber = 0.792,
 	weight = 90,
 	year = 1917,
 	rofmod = 1,
 	magsize = 5,
 	magreload = 6,
 	round = {
-		maxlength = 14,
-		propweight = 1.2
+		maxlength = 11,
+		propweight = 1.6
 	}
 } )
 
@@ -40,8 +40,8 @@ ACF_defineGun("14.5mmATR", { --id
 	magsize = 5,
 	magreload = 8,
 	round = {
-		maxlength = 23,
-		propweight = 2.2
+		maxlength = 19,
+		propweight = 2.9
 	}
 } )
 
@@ -57,7 +57,7 @@ ACF_defineGun("20mmATR", { --id
 	magsize = 5,
 	magreload = 10,
 	round = {
-		maxlength = 24,
-		propweight = 3.5
+		maxlength = 21,
+		propweight = 4.5
 	}
 } )

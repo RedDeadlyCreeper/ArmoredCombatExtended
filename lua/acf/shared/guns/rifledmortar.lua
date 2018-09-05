@@ -13,7 +13,7 @@ ACF_defineGunClass("RM", {
 ACF_defineGun("50mmRM", { --id
 	name = "(+)50mm Rifled Mortar",
 	desc = "The 50mm, why does this even exist?",
-	model = "models/mortar/mini/mortar_80mm.mdl",
+	model = "models/mortar/mortar_50mm.mdl",
 	gunclass = "RM",
 	caliber = 5.0,
 	weight = 48,
