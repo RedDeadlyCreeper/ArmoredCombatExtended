@@ -7,9 +7,9 @@ TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
 TOOL.ClientConVar[ "type" ] = "gun"
-TOOL.ClientConVar[ "id" ] = "12.7mmMG"
+TOOL.ClientConVar[ "id" ] = "7.62mmMG"
 
-TOOL.ClientConVar[ "data1" ] = "12.7mmMG"
+TOOL.ClientConVar[ "data1" ] = "7.62mmMG"
 TOOL.ClientConVar[ "data2" ] = "AP"
 TOOL.ClientConVar[ "data3" ] = 0
 TOOL.ClientConVar[ "data4" ] = 0

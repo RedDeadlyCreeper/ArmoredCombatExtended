@@ -19,11 +19,29 @@ ACF_defineGun("40mmSL", { --id
 	canparent = true,
 	caliber = 4.0,
 	rofmod = 0.6,
-	weight = 5,
+	weight = 1,
 	year = 1941,
 	round = {
-		maxlength = 15,
-		propweight = 0.00005 
+		maxlength = 17.5,
+		propweight = 0.000075 
+	}
+} )
+
+ACF_defineGun("40mmCL", { --id
+	name = "40mm Countermeasure Launcher",
+	desc = "A revolver-style launcher capable of firing off several smoke or flare rounds.",
+	model = "models/launcher/40mmgl.mdl",
+	gunclass = "SL",
+	canparent = true,
+	caliber = 4.0,
+	weight = 20,
+	rofmod = 0.015,
+	magsize = 6,
+	magreload = 40,
+	year = 1950,
+	round = {
+		maxlength = 12,
+		propweight = 0.001
 	}
 } )
 
@@ -35,12 +53,12 @@ ACF_defineGun("40mmSLMulti", { --id
 	canparent = true,
 	caliber = 4.0,
 	weight = 35,
-	rofmod = 0.03,
+	rofmod = 0.025,
 	magsize = 6,
 	magreload = 20,
 	year = 1975,
 	round = {
-		maxlength = 15,
-		propweight = 0.00005
+		maxlength = 17.5,
+		propweight = 0.001
 	}
 } )

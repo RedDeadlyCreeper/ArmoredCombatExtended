@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 1001 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 6 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1945
@@ -27,10 +27,10 @@ ACF.HEFrag = 1500		--Mean fragment number for equal weight TNT and casing
 ACF.HEBlastPen = 0.4	--Blast penetration exponent based of HE power
 ACF.HEFeatherExp = 0.5 	--exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
 
-ACF.HEATMVScale = 0.74	--Filler KE to HEAT slug KE conversion expotential
-ACF.HEATMulAmmo = 16.5 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
-ACF.HEATMulFuel = 8.25		--needs less multiplier, much less health than ammo
-ACF.HEATMulEngine = 8.25	--likewise
+ACF.HEATMVScale = 0.75	--Filler KE to HEAT slug KE conversion expotential
+ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
+ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
+ACF.HEATMulEngine = 10	--likewise
 ACF.HEATPenLayerMul = 0.75	--HEAT base energy multiplier
 
 ACF.DragDiv = 40		--Drag fudge factor
@@ -91,7 +91,7 @@ ACF.RefillDistance = 300 --Distance in which ammo crate starts refilling.
 ACF.RefillSpeed = 700 -- (ACF.RefillSpeed / RoundMass) / Distance 
 
 ACF.DebrisScale = 20 -- Ignore debris that is less than this bounding radius.
-ACF.SpreadScale = 4		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
+ACF.SpreadScale = 8		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
@@ -103,10 +103,10 @@ if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 end
 
 
-CreateConVar('sbox_max_acf_gun', 16)
-CreateConVar('sbox_max_acf_smokelauncher', 10)
-CreateConVar('sbox_max_acf_ammo', 32)
-CreateConVar('sbox_max_acf_misc', 32)
+CreateConVar('sbox_max_acf_gun', 20)
+CreateConVar('sbox_max_acf_smokelauncher', 20)
+CreateConVar('sbox_max_acf_ammo', 50)
+CreateConVar('sbox_max_acf_misc', 50)
 CreateConVar('acf_meshvalue', 1)
 CreateConVar("sbox_acf_restrictinfo", 1) -- 0=any, 1=owned
 
@@ -402,7 +402,7 @@ else
 end
 
 function ACF_UpdateChecking( )
-	http.Fetch("https://github.com/nrlulz/ACF",function(contents,size)
+	http.Fetch("https://github.com/RedDeadlyCreeper/ArmoredCombatExtended",function(contents,size)
 		local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
 		if rev and ACF.Version >= rev then
 			print("[ACF] ACF Is Up To Date, Latest Version: "..rev)

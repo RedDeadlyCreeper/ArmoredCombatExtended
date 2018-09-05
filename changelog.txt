@@ -1,5 +1,6 @@
 *RM1
 -Removed mags from smaller mgs
+-Retained Vanilla weapons
 -Removed mags from 20 and 30 AC
 -Added 25mm MG
 -added 40mm SGL
@@ -12,3 +13,5 @@
 -reduced SL reload time
 -tweaked RACs
 -Redid HMGs
+-Undid a lot of nerfs
+-New placeholder sounds?

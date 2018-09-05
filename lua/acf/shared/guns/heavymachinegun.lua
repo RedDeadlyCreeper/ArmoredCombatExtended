@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("HMG", {
-	spread = 0.4,
+	spread = 0.35,
 	name = "Heavy Machinegun",
 	desc = "Designed as autocannons for aircraft, HMGs are rapid firing, lightweight, and compact but sacrifice accuracy, magazine size, and reload times.  They excel at strafing and dogfighting.\nBecause of their long reload times and high rate of fire, it is best to aim BEFORE pushing the almighty fire switch.",
 	muzzleflash = "50cal_muzzleflash_noscale",
@@ -77,7 +77,7 @@ ACF_defineGun("20mmHMG", {
 	weight = 160,
 	year = 1935,
 	rofmod = 1.9, --at 1.5, 675rpm; at 2.0, 480rpm
-	magsize = 10,
+	magsize = 15,
 	magreload = 8,
 	round = {
 		maxlength = 30,
@@ -93,9 +93,9 @@ ACF_defineGun("30mmHMG", {
 	caliber = 3.0,
 	weight = 480,
 	year = 1941,
-	rofmod = 1.2, --at 1.05, 495rpm; 
-	magsize = 8,
-	magreload = 10,
+	rofmod = 1.1, --at 1.05, 495rpm; 
+	magsize = 12,
+	magreload = 9,
 	round = {
 		maxlength = 37,
 		propweight = 0.35
@@ -108,11 +108,11 @@ ACF_defineGun("40mmHMG", {
 	model = "models/machinegun/machinegun_40mm_compact.mdl",
 	gunclass = "HMG",
 	caliber = 4.0,
-	weight = 740,
+	weight = 780,
 	year = 1955,
-	rofmod = 1, --at 0.75, 455rpm
-	magsize = 6,
-	magreload = 12,
+	rofmod = 0.95, --at 0.75, 455rpm
+	magsize = 10,
+	magreload = 10,
 	round = {
 		maxlength = 42,
 		propweight = 0.9

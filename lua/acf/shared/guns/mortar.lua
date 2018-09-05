@@ -13,7 +13,7 @@ ACF_defineGunClass("MO", {
 ACF_defineGun("50mmM", { --id
 	name = "(+)50mm Mortar",
 	desc = "The 50mm is an uncommon light mortar often seen at the before or at the begening of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
-	model = "models/mortar/mortar_50mm.mdl",
+	model = "models/mortar/mini/mortar_80mm.mdl",
 	gunclass = "MO",
 	caliber = 5.0,
 	weight = 40,
@@ -83,7 +83,7 @@ ACF_defineGun("150mmM", {
 } )
 
 ACF_defineGun("200mmM", {
-	name = "(+)200mm Mortar",
+	name = "200mm Mortar",
 	desc = "The 200mm is a beast, often used against fortifications.  Though enormously powerful, feel free to take a nap while it reloads",
 	model = "models/mortar/mortar_200mm.mdl",
 	gunclass = "MO",
