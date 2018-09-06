@@ -63,15 +63,15 @@ ACF_defineGun("30mmRAC", {
 } )
 
 
-ACF_defineGun("20mmHRAC", {
-	name = "20mm Heavy Rotary Autocannon",
+ACF_defineGun("(C)20mmHRAC", {
+	name = "(C)20mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Phalanx.",
 	model = "models/rotarycannon/kw/20mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 2.0,
 	weight = 1200,
 	year = 1981,
-	magsize = 60,
+	magsize = 55,
 	magreload = 4,
 	rofmod = 2.5,
 	round = {
@@ -80,15 +80,15 @@ ACF_defineGun("20mmHRAC", {
 	}
 } )
 
-ACF_defineGun("30mmHRAC", {
-	name = "30mm Heavy Rotary Autocannon",
+ACF_defineGun("(C)30mmHRAC", {
+	name = "(C)30mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy duty 30mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Keeper of goals.",
 	model = "models/rotarycannon/kw/30mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 3.0,
 	weight = 2850,
 	year = 1985,
-	magsize = 50,
+	magsize = 45,
 	magreload = 6,
 	rofmod = 1.2,
 	round = {
@@ -106,9 +106,9 @@ ACF_defineGun("(C)14.5mmRAC", { --id
 	caliber = 1.45,
 	weight = 340,
 	year = 1962,
-	magsize = 150,
+	magsize = 100,
 	magreload = 6,
-	rofmod = 4.3,
+	rofmod = 3.3,
 	round = {
 		maxlength = 20.5,
 		propweight = 0.05
@@ -123,7 +123,7 @@ ACF_defineGun("(C)20mmRAC", {
 	caliber = 2.0,
 	weight = 920,
 	year = 1965,
-	magsize = 70,
+	magsize = 60,
 	magreload = 10,
 	rofmod = 1.65,
 	round = {
@@ -140,7 +140,7 @@ ACF_defineGun("(C)30mmRAC", {
 	caliber = 3.0,
 	weight = 1680,
 	year = 1975,
-	magsize = 50,
+	magsize = 45,
 	magreload = 8,
 	rofmod = 0.93,
 	round = {
