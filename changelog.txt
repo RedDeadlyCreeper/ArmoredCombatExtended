@@ -15,3 +15,5 @@
 -Redid HMGs
 -Undid a lot of nerfs
 -New placeholder sounds?
+*RM2
+-Added Gaghr AeroBine
