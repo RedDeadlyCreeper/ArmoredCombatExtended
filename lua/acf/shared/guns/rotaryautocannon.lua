@@ -106,7 +106,7 @@ ACF_defineGun("(C)14.5mmRAC", { --id
 	caliber = 1.45,
 	weight = 340,
 	year = 1962,
-	magsize = 150,
+	magsize = 250,
 	magreload = 6,
 	rofmod = 4.3,
 	round = {
@@ -154,6 +154,7 @@ ACF_defineGun("14.5mmHRAC", { --id
 	desc = "For those that want an even heavier machinegun capable of firing faster 14.5 rounds for all of eternity, great for scout helis",
 	model = "models/rotarycannon/kw/14_5mmrac.mdl",
 	gunclass = "RAC",
+	canparent = true,
 	caliber = 1.45,
 	weight = 500,
 	year = 1962,
