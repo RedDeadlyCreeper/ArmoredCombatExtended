@@ -24,7 +24,7 @@ ACF_defineGun("(C)20mmHMG", {
 	caliber = 2.0,
 	weight = 240,
 	year = 1935,
-	rofmod = 1.7, --at 1.5, 675rpm; at 2.0, 480rpm
+	rofmod = 2.5, --at 1.5, 675rpm; at 2.0, 480rpm
 	magsize = 60,
 	magreload = 13,
 	round = {
@@ -41,7 +41,7 @@ ACF_defineGun("(C)30mmHMG", {
 	caliber = 3.0,
 	weight = 580,
 	year = 1941,
-	rofmod = 1.2, --at 1.05, 495rpm; 
+	rofmod = 2.3, --at 1.05, 495rpm; 
 	magsize = 40,
 	magreload = 14,
 	round = {
@@ -58,7 +58,7 @@ ACF_defineGun("(C)40mmHMG", {
 	caliber = 4.0,
 	weight = 900,
 	year = 1955,
-	rofmod = 1, --at 0.75, 455rpm
+	rofmod = 2, --at 0.75, 455rpm
 	magsize = 40,
 	magreload = 15,
 	round = {
