@@ -29,7 +29,7 @@ ACF_DefineEngine( "3.3L-V4", {
 	fuel = "Diesel",
 	enginetype = "GenericDiesel",
 	weight = 275,
-	torque = 340,
+	torque = 480,
 	flywheelmass = 1.05,
 	idlerpm = 600,
 	peakminrpm = 1050,
