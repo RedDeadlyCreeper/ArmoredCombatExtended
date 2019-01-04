@@ -467,7 +467,7 @@ function ENT:Think()
 		else
 			if not (self.BulletData.Type == "Refill") then
 				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[self.BulletData.Type] then
-					self:EmitSound( "acf_other/explosions/cookOff"..math.random(1,4)..".wav", 350, math.max(255 - self.BulletData.PropMass*30,30)  )	
+					self:EmitSound( "acf_other/explosions/cookOff"..math.random(1,4)..".wav", 350, math.max(150 - self.BulletData.PropMass*10,30)  )	
 					local MuzzlePos = self:GetPos()
 					local MuzzleVec = VectorRand()
 					local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
