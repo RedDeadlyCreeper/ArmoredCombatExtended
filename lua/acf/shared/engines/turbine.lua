@@ -248,3 +248,24 @@ ACF_DefineEngine( "Turbine-Large-Ground-Trans", {
 	flywheeloverride = 1250,
 	pitch = 1.35
 } )
+
+ACF_DefineEngine( "(+)Turbine-Small-SuperAero", {
+	name = "(+)Turboshaft, Small",
+	desc = "Gaghr Aerobine, notorious for being used in littlebirds. Experimental.",
+	model = "models/engines/gasturbine_s.mdl",
+	sound = "acf_engines/turbine_small.wav",
+	category = "Turbine",
+	fuel = "Multifuel",
+	enginetype = "Turbine",
+	requiresfuel = true,
+	weight = 72,
+	torque = 350,
+	flywheelmass = 0.5,
+	idlerpm = 2000,
+	peakminrpm = 2500,
+	peakmaxrpm = 12000,
+	limitrpm = 14000,
+	iselec = true,
+	pitch = 0.7,
+	flywheeloverride = 12000
+} )
