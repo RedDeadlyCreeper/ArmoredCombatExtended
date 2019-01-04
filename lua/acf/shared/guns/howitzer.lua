@@ -112,7 +112,7 @@ ACF_defineGun("290mmHW", {
 
 ACF_defineGun("406mmHW", {
 	name = "(+)406mm Howitzer",
-	desc = "The ultimate anti evreything weapon, this wimpy 16 inch gun can commonly be found on American Battleships and emplacements and its usage in acf is a litteral war crime. HOW COULD YOU YOU MONSTER!",
+	desc = "The ultimate anti evreything weapon, this absurd 16 inch gun can commonly be found on American Battleships and emplacements and its usage in acf is a litteral war crime. HOW COULD YOU YOU MONSTER!",
 	model = "models/howitzer/howitzer_406mm.mdl",
 	gunclass = "HW",
 	caliber = 40.6,
