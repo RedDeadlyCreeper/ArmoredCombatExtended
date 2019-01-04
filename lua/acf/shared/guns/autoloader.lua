@@ -63,7 +63,7 @@ ACF_defineGun("120mmAL", {
 } )
 
 ACF_defineGun("140mmAL", {
-	name = "(+)140mm Autoloading Cannon",
+	name = "140mm Autoloading Cannon",
 	desc = "The 140mm can shred a medium tank's armor with one magazine, and even function as shoot & scoot artillery, with its useful HE payload.",
 	model = "models/tankgun/tankgun_al_140mm.mdl",
 	gunclass = "AL",
@@ -81,7 +81,7 @@ ACF_defineGun("140mmAL", {
 		
 
 ACF_defineGun("170mmAL", {
-	name = "170mm Autoloading Cannon",
+	name = "(+)170mm Autoloading Cannon",
 	desc = "The 170mm can shred an average 40ton tank's armor with one magazine.",
 	model = "models/tankgun/tankgun_al_170mm.mdl",
 	gunclass = "AL",
