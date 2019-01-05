@@ -365,8 +365,12 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	local Efficiency = 0.11 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
 	local vol = math.floor(Size.x * Size.y * Size.z)
 	self.Volume = vol*Efficiency	
+
+--	self.Capacity = math.floor(self.Volume*16.38/self.BulletData.RoundVolume)
 	
-	self.Capacity = math.floor(self.Volume*16.38/self.BulletData.RoundVolume)
+	local CapMul = (vol > 46000) and ((math.log(vol*0.00066)/math.log(2)-4)*0.125+1) or 1
+	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
+	
 --	self.Capacity = math.floor(self.Volume)
 	
 	self.Caliber = GunData.caliber
