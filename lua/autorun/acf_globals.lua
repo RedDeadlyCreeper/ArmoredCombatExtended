@@ -21,6 +21,21 @@ ACF.Spalling = 0
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 
+ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.CastResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
+
+ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.CeramicResilianceFactor = 0.3 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CeramicPierceDamage = 2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+
+ACF.RubberEffectiveness = 0.05
+ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberSpecialEffect=35 --Caliber of gun in mm where rubber catches. 35mm causes rubber to catch bullets below 35mm.
+ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
+ACF.RubberResilianceFactorSpecial = 1 --Higher = less damage, Lower = more damage. 2x = half damage.
+
+ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
+
 ACF.HEPower = 8000		--HE Filler power per KG in KJ
 ACF.HEDensity = 1.65	--HE Filler density (That's TNT density)
 ACF.HEFrag = 1500		--Mean fragment number for equal weight TNT and casing
