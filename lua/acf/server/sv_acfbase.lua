@@ -65,10 +65,11 @@ function ACF_Activate ( Entity , Recalc )
 		massMod = 0.75
 	elseif testMaterial == 3 then--Rubber
 		massMod = 0.2
-	elseif testMaterial == 3 then --ERA
-		massMod = 2
-	else
+	elseif testMaterial == 4 then --ERA
 		massMod = 1.3
+	else
+		massMod = 1
+		Entity.ACF.Material = 0 --Sets anything without a material to RHA and gives it a 1.0 massmod
 	end
 	
 	local Armour = ACF_CalcArmor( Area, Ductility, Entity:GetPhysicsObject():GetMass() / massMod ) -- So we get the equivalent thickness of that prop in mm if all its weight was a steel plate
