@@ -66,7 +66,7 @@ function ACF_Activate ( Entity , Recalc )
 	elseif testMaterial == 3 then--Rubber
 		massMod = 0.2
 	elseif testMaterial == 4 then --ERA
-		massMod = 1.3
+		massMod = 2
 	else
 		Entity.ACF.Material = 0 --Sets anything without a material to RHA and gives it a 1.0 massmod
 		massMod = 1
