@@ -392,7 +392,10 @@ function ENT:Think()
 	
 	--make sure it's not invisible to traces
 	if not self:IsSolid() then self.Fuel = 0 end
-	
+
+	--make sure it's not made spherical
+	if self.EntityMods and self.EntityMods.MakeSphericalCollisions then self.Fuel = 0 end
+
 	if self.Leaking > 0 then
 		self:NextThink( CurTime() + 0.25 )
 		self.Fuel = math.max(self.Fuel - self.Leaking,0)

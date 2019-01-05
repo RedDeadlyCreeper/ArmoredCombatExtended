@@ -448,7 +448,7 @@ function ENT:CheckLegal()
 	if not self:IsSolid() then return false end
 	
 	-- make sure it's not spherical :)
-	if self.EntityMods.MakeSphericalCollisions then return false end
+	if self.EntityMods and self.EntityMods.MakeSphericalCollisions then return false end
 
 	-- make sure weight is not below stock
 	if self:GetPhysicsObject():GetMass() < self.Weight then return false end
