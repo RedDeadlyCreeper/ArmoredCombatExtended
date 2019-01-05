@@ -55,7 +55,7 @@ function ACF_Activate ( Entity , Recalc )
 	local Area = Entity.ACF.Aera
 	local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
 	
-	local testMaterial = Entity.ACF.Material,0,4 or 0
+	local testMaterial = Entity.ACF.Material,0,4 or 5  --The 5 causes it to default to RHA if it doesnt have a material
 	local massMod = 1
 	if testMaterial == 0 then --RHA	
 		massMod = 1
@@ -68,8 +68,8 @@ function ACF_Activate ( Entity , Recalc )
 	elseif testMaterial == 4 then --ERA
 		massMod = 1.3
 	else
-		massMod = 1
 		Entity.ACF.Material = 0 --Sets anything without a material to RHA and gives it a 1.0 massmod
+		massMod = 1
 	end
 	
 	local Armour = ACF_CalcArmor( Area, Ductility, Entity:GetPhysicsObject():GetMass() / massMod ) -- So we get the equivalent thickness of that prop in mm if all its weight was a steel plate
