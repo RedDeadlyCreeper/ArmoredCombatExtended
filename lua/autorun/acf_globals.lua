@@ -32,7 +32,7 @@ ACF.RubberEffectiveness = 0.05
 ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberSpecialEffect=35 --Caliber of gun in mm where rubber catches. 35mm causes rubber to catch bullets below 35mm.
 ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
-ACF.RubberResilianceFactorSpecial = 1 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberResilianceFactorSpecial = 0.7 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
