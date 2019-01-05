@@ -8,13 +8,29 @@ TOOL.ConfigName	= ""
 
 TOOL.ClientConVar["thickness"] = 1
 TOOL.ClientConVar["ductility"] = 0
+TOOL.ClientConVar["material"] = 0
 CreateClientConVar( "acfarmorprop_area", 0, false, true ) -- we don't want this one to save
 
 -- Calculates mass, armor, and health given prop area and desired ductility and thickness.
-local function CalcArmor( Area, Ductility, Thickness )
-	
-	local mass =  Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078
-	local armor = ACF_CalcArmor( Area, Ductility, mass )
+local function CalcArmor( Area, Ductility, Thickness, Material )
+	local testMaterial = math.floor(Material + 0.5)
+	local massMod = 1
+	if testMaterial == 0 then --RHA	
+		massMod = 1
+	elseif testMaterial == 1 then --Cast
+		massMod = 1.5
+	elseif testMaterial == 2 then --Ceramic
+		massMod = 0.75
+	elseif testMaterial == 3 then--Rubber
+		massMod = 0.2
+	elseif testMaterial == 3 then --ERA
+		massMod = 1.3
+	else --Overflow
+		massMod = 1
+	end
+
+	local mass =  Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * massMod
+	local armor = ACF_CalcArmor( Area, Ductility, mass / massMod )
 	local health = ( Area + Area * Ductility ) / ACF.Threshold
 	
 	return mass, armor, health
@@ -24,7 +40,7 @@ end
 if CLIENT then
 
 	language.Add( "tool.acfarmorprop.name", "ACF Armor Properties" )
-	language.Add( "tool.acfarmorprop.desc", "Sets the weight of a prop by desired armor thickness and ductility." )
+	language.Add( "tool.acfarmorprop.desc", "Sets the weight of a prop by desired armor thickness, ductility, and material." )
 	language.Add( "tool.acfarmorprop.0", "Left click to apply settings.  Right click to copy settings.  Reload to get the total mass of an object and all constrained objects." )
 	
 	function TOOL.BuildCPanel( panel )
@@ -32,6 +48,7 @@ if CLIENT then
 		local Presets = vgui.Create( "ControlPresets" )
 			Presets:AddConVar( "acfarmorprop_thickness" )
 			Presets:AddConVar( "acfarmorprop_ductility" )
+			Presets:AddConVar( "acfarmorprop_material" )
 			Presets:SetPreset( "acfarmorprop" )
 		panel:AddItem( Presets )
 		
@@ -40,6 +57,9 @@ if CLIENT then
 		
 		panel:NumSlider( "Ductility", "acfarmorprop_ductility", -80, 80 )
 		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias). A ductile prop can survive more damage but is penetrated more easily (slider > 0).  A non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
+		
+		panel:NumSlider( "Material", "acfarmorprop_material", 0, 4 )
+		panel:ControlHelp( "Not for the feint of heart. If your a beginner leave this at 0. Sets the material of a prop to the following: (0)RHA, (1)Cast, (2)Ceramic, (3)Rubber, (4)ERA. The value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel." )
 		
 	end
 	
@@ -55,7 +75,8 @@ if CLIENT then
 		
 		local ductility = math.Clamp( ( tonumber( value ) or 0 ) / 100, -0.8, 0.8 )
 		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
-		local mass = CalcArmor( area, ductility, thickness )
+		local material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 4 )
+		local mass = CalcArmor( area, ductility, thickness , material)
 		
 		if mass > 50000 then
 			mass = 50000
@@ -64,6 +85,8 @@ if CLIENT then
 		else
 			return
 		end
+		
+		
 		
 		thickness = mass * 1000 / ( area + area * ductility ) / 0.78
 		RunConsoleCommand( "acfarmorprop_thickness", thickness )
@@ -80,7 +103,8 @@ if CLIENT then
 		
 		local thickness = math.Clamp( tonumber( value ) or 0, 0.1, 5000 )
 		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local mass = CalcArmor( area, ductility, thickness )
+		local material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 4 )
+		local mass = CalcArmor( area, ductility, thickness , material )
 		
 		if mass > 50000 then
 			mass = 50000
@@ -92,6 +116,22 @@ if CLIENT then
 		
 		ductility = -( 39 * area * thickness - mass * 50000 ) / ( 39 * area * thickness )
 		RunConsoleCommand( "acfarmorprop_ductility", math.Clamp( ductility * 100, -80, 80 ) )
+		
+	end )
+	
+	cvars.AddChangeCallback( "acfarmorprop_material", function( cvar, oldvalue, value )
+		
+		local area = GetConVarNumber( "acfarmorprop_area" )
+		
+		-- don't bother recalculating if we don't have a valid ent
+		if area == 0 then return end
+		
+		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
+		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
+		local material = math.Clamp( math.floor(tonumber( value )+0.5 or 0), 0, 4 )
+		
+
+		RunConsoleCommand( "acfarmorprop_material", math.floor(material+0.5))
 		
 	end )
 	
@@ -114,6 +154,12 @@ local function ApplySettings( ply, ent, data )
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
 	end
 	
+	if data.Material then
+		ent.ACF = ent.ACF or {}
+		ent.ACF.Material = data.Material
+		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
+	end
+	
 end
 duplicator.RegisterEntityModifier( "acfsettings", ApplySettings )
 duplicator.RegisterEntityModifier( "mass", ApplySettings )
@@ -128,12 +174,31 @@ function TOOL:LeftClick( trace )
 	if not ACF_Check( ent ) then return false end
 	
 	local ply = self:GetOwner()
+
 	
 	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
 	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
-	local mass = CalcArmor( ent.ACF.Aera, ductility / 100, thickness )
+	local material = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 4 )
+
+	local testMaterial = math.floor(material + 0.5)
+	local massMod = 1
+	if testMaterial == 0 then --RHA	
+		massMod = 1
+	elseif testMaterial == 1 then --Cast
+		massMod = 1.5
+	elseif testMaterial == 2 then --Ceramic
+		massMod = 0.75
+	elseif testMaterial == 3 then--Rubber
+		massMod = 0.2
+	elseif testMaterial == 3 then --ERA
+		massMod = 2
+	else
+		massMod = 1.3
+	end
 	
-	ApplySettings( ply, ent, { Mass = mass, Ductility = ductility } )
+	local mass = CalcArmor( ent.ACF.Aera, ductility / 100, thickness , material)
+	
+	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = material} )
 	
 	-- this invalidates the entity and forces a refresh of networked armor values
 	self.AimEntity = nil
@@ -155,6 +220,7 @@ function TOOL:RightClick( trace )
 	
 	ply:ConCommand( "acfarmorprop_ductility " .. ent.ACF.Ductility * 100 )
 	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
+	ply:ConCommand( "acfarmorprop_material " .. ent.ACF.Material )
 	
 	-- this invalidates the entity and forces a refresh of networked armor values
 	self.AimEntity = nil
@@ -208,6 +274,7 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
+		self.Weapon:SetNWFloat( "Material", ent.ACF.Material )
 		
 	else
 	
@@ -217,6 +284,7 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "Armour", 0 )
 		self.Weapon:SetNWFloat( "MaxHP", 0 )
 		self.Weapon:SetNWFloat( "MaxArmour", 0 )
+		self.Weapon:SetNWFloat( "Material", 0 )
 		
 	end
 	
@@ -234,20 +302,24 @@ function TOOL:DrawHUD()
 	local curmass = self.Weapon:GetNWFloat( "WeightMass" )
 	local curarmor = self.Weapon:GetNWFloat( "MaxArmour" )
 	local curhealth = self.Weapon:GetNWFloat( "MaxHP" )
+	local curmat = self.Weapon:GetNWFloat( "Material" )
 	
 	local area = GetConVarNumber( "acfarmorprop_area" )
 	local ductility = GetConVarNumber( "acfarmorprop_ductility" )
 	local thickness = GetConVarNumber( "acfarmorprop_thickness" )
+	local material = GetConVarNumber( "acfarmorprop_material" )
 	
-	local mass, armor, health = CalcArmor( area, ductility / 100, thickness )
+	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , material)
 	mass = math.min( mass, 50000 )
 	
 	local text = "Current:\nMass: " .. math.Round( curmass, 2 )
 	text = text .. "\nArmor: " .. math.Round( curarmor, 2 )
 	text = text .. "\nHealth: " .. math.Round( curhealth, 2 )
+	text = text .. "\nMaterial: " .. curmat 
 	text = text .. "\nAfter:\nMass: " .. math.Round( mass, 2 )
 	text = text .. "\nArmor: " .. math.Round( armor, 2 )
 	text = text .. "\nHealth: " .. math.Round( health, 2 )
+	text = text .. "\nMaterial: " .. material 
 	
 	local pos = ent:GetPos()
 	AddWorldTip( nil, text, nil, pos, nil )
