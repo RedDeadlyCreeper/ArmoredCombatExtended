@@ -441,7 +441,7 @@ end
 
 function ENT:Think()
 	if not self:IsSolid() then self.Ammo = 0 end
-	if self.EntityMods.MakeSphericalCollisions then self.Ammo = 0 end
+--	if self.EntityMods.MakeSphericalCollisions then self.Ammo = 0 end
 
 	self:UpdateMass()
 	
