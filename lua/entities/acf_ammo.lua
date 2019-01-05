@@ -355,11 +355,16 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		PlayerData.Data10 = self.RoundData10
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
-	local PhysObj = self:GetPhysicsObject()
-	local Efficiency = 0.13 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
-	local vol = PhysObj:GetVolume()
-    	local volMod = math.max( -(vol^2)*514065453/50000000000000 + 7.705540813*vol - 11397.59051,5)*0.59
-	self.Volume = volMod * Efficiency
+--	local PhysObj = self:GetPhysicsObject()
+--	local Efficiency = 0.13 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
+--	local vol = PhysObj:GetVolume()
+--    	local volMod = math.max( -(vol^2)*514065453/50000000000000 + 7.705540813*vol - 11397.59051,5)*0.59--
+--	self.Volume = volMod * Efficiency
+	
+	local Size = (self:OBBMaxs() - self:OBBMins())
+	local Efficiency = 0.11 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
+	local vol = math.floor(Size.x * Size.y * Size.z)
+	self.Volume = vol*Efficiency	
 	
 	self.Capacity = math.floor(self.Volume*16.38/self.BulletData.RoundVolume)
 --	self.Capacity = math.floor(self.Volume)
