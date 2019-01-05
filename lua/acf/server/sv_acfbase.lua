@@ -27,7 +27,7 @@ function ACF_Activate ( Entity , Recalc )
 		return
 	end
 	Entity.ACF = Entity.ACF or {} 
-	
+
 	local Count
 	local PhysObj = Entity:GetPhysicsObject()
 	if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
@@ -50,12 +50,30 @@ function ACF_Activate ( Entity , Recalc )
 	end
 	
 	Entity.ACF.Ductility = Entity.ACF.Ductility or 0
+
 	--local Area = (Entity.ACF.Aera+Entity.ACF.Aera*math.Clamp(Entity.ACF.Ductility,-0.8,0.8))
 	local Area = Entity.ACF.Aera
 	local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
-	local Armour = ACF_CalcArmor( Area, Ductility, Entity:GetPhysicsObject():GetMass() ) -- So we get the equivalent thickness of that prop in mm if all its weight was a steel plate
-	local Health = ( Area / ACF.Threshold ) * ( 1 + Ductility ) -- Setting the threshold of the prop aera gone
 	
+	local testMaterial = Entity.ACF.Material,0,4 or 0
+	local massMod = 1
+	if testMaterial == 0 then --RHA	
+		massMod = 1
+	elseif testMaterial == 1 then --Cast
+		massMod = 1.5
+	elseif testMaterial == 2 then --Ceramic
+		massMod = 0.75
+	elseif testMaterial == 3 then--Rubber
+		massMod = 0.2
+	elseif testMaterial == 3 then --ERA
+		massMod = 2
+	else
+		massMod = 1.3
+	end
+	
+	local Armour = ACF_CalcArmor( Area, Ductility, Entity:GetPhysicsObject():GetMass() / massMod ) -- So we get the equivalent thickness of that prop in mm if all its weight was a steel plate
+	local Health = ( Area / ACF.Threshold ) * ( 1 + Ductility ) -- Setting the threshold of the prop aera gone
+
 	local Percent = 1 
 	
 	if Recalc and Entity.ACF.Health and Entity.ACF.MaxHealth then
