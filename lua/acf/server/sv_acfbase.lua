@@ -516,6 +516,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 	end
 
 end
+end --I fucking hate evreything
 
 function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
 
