@@ -455,7 +455,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 			HitRes.Damage   = 999999999										-- I have yet to meet one who can survive this
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.05,1)						-- Remaining penetration
 			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.95)			
-
+			ACF_HE( Entity:GetPos() , Vector(0,0,1) , armor*0.02 , armor*0.2 , Inflictor , Entity, Entity ) --ERABOOM
 --			HitRes.Overkill = 0						-- Remaining penetration
 --			HitRes.Loss     = 1						-- Energy loss in percents 
 
