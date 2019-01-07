@@ -868,6 +868,13 @@ e2function number ranger:acfEffectiveArmor()
 	return math.Round(this.Entity.ACF.Armour/math.abs( math.cos(math.rad(ACF_GetHitAngle( this.HitNormal , this.HitPos-this.StartPos )))),1)
 end
 
+-- Returns the material of an entity
+e2function number entity:acfPropMaterial()
+	if not validPhysics(this) then return 0 end
+	if restrictInfo(self, this) then return 0 end
+	if not ACF_Check(this) then return 0 end
+	return (this.ACF.Material or 0)
+end
 
 -- [ Fuel Functions ] --
 
