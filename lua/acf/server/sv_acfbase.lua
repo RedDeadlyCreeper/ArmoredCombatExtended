@@ -451,9 +451,10 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 		if maxPenetration > losArmor then
 			print(BOOM)
 			local blastArmor = armor * ACF.ERAEffectivenessMult
+			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
 			HitRes.Damage   = 999999999										-- I have yet to meet one who can survive this
-			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.1,1)						-- Remaining penetration
-			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.9)			
+			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.05,1)						-- Remaining penetration
+			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.95)			
 
 --			HitRes.Overkill = 0						-- Remaining penetration
 --			HitRes.Loss     = 1						-- Energy loss in percents 
@@ -463,6 +464,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 			return HitRes
 		else
 		
+			local Penetration = math.min( maxPenetration , losArmor)
 			-- Projectile did not breach nor penetrate armor
 --			local Penetration = math.min( maxPenetration , losArmor )
 
