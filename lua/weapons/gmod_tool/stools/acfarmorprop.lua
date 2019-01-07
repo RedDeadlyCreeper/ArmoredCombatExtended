@@ -23,7 +23,7 @@ local function CalcArmor( Area, Ductility, Thickness, Material )
 		massMod = 0.75
 	elseif testMaterial == 3 then--Rubber
 		massMod = 0.2
-	elseif testMaterial == 3 then --ERA
+	elseif testMaterial == 4 then --ERA
 		massMod = 2
 	else --Overflow
 		massMod = 1
