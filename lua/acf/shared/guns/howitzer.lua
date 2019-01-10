@@ -109,7 +109,7 @@ ACF_defineGun("290mmHW", {
 		propweight = 57.0
 	}
 } )
-
+/*
 ACF_defineGun("406mmHW", {
 	name = "(+)406mm Howitzer",
 	desc = "The ultimate anti evreything weapon, this absurd 16 inch gun can commonly be found on American Battleships and emplacements and its usage in acf is a litteral war crime. HOW COULD YOU YOU MONSTER!",
@@ -123,3 +123,4 @@ ACF_defineGun("406mmHW", {
 		propweight = 98.3
 	}
 } )
+*/
