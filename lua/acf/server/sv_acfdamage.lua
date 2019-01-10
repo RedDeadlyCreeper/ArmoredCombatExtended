@@ -219,6 +219,31 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 
 end
 
+function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor )
+
+	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
+	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall),2)
+	local SpallWeight = TotalWeight/Spall*20
+	local SpallVel = (HEFiller*2000/SpallWeight*40)^0.5/Spall
+	local SpallAera = (SpallWeight/7.8)^0.33 
+	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
+
+	print("SpallVel: "..SpallVel)
+	print("SpallWeight: "..SpallWeight)
+	print("SpallCount: "..Spall)
+
+	
+	for i = 1,Spall do
+		local SpallTr = { }
+			SpallTr.start = HitPos
+			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel
+			SpallTr.filter = HitMask
+
+			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
+	end
+
+end
+
 function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 
 	local SpallRes = util.TraceLine(SpallTr)
