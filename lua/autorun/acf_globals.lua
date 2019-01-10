@@ -30,9 +30,9 @@ ACF.CeramicPierceDamage = 2 --Higher = more damage on pierce, Lower = less damag
 
 ACF.RubberEffectiveness = 0.05
 ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.RubberSpecialEffect=30 --Caliber of gun in mm where rubber catches. 35mm causes rubber to catch bullets below 35mm.
-ACF.RubberEffectivenessSpecial = 1 --How effective rubber is versus projectiles that qualify for the above.
-ACF.RubberResilianceFactorSpecial = 0.25 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
+ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
+ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
