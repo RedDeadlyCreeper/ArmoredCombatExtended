@@ -354,7 +354,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type)
 
 		-- Projectile caliber. Messy, function signature
 		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		if(Type == "HEAT") then
+		if(Type == "HEAT" or Type == "Spall") then
 		local DmgResist = 0.01+caliber/ACF.RubberSpecialEffect*60
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour - 1.3) / (7 - 1.3), 0, 1)
