@@ -228,9 +228,9 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
-	print("SpallVel: "..SpallVel)
-	print("SpallWeight: "..SpallWeight)
-	print("SpallCount: "..Spall)
+--	print("SpallVel: "..SpallVel)
+--	print("SpallWeight: "..SpallWeight)
+--	print("SpallCount: "..Spall)
 
 	
 	for i = 1,Spall do
