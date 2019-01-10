@@ -512,35 +512,48 @@ end
 /*
 ONE HUGE HACK to get good killicons.
 */
--- disabling this for now because it was breaking killicons completely and i don't want to deal with it right now
-/*
+
 if SERVER then
 	
-	hook.Add("PlayerDeath", "ACF_PlayerDeath",function( victim, inflictor, attacker )
-		if inflictor:GetClass() == "acf_ammo" then
-			net.Start("ACF_KilledByACF")
-				net.WriteString( victim:Nick()..";ammo;"..attacker:Nick() )
-			net.Broadcast()
-		end
+	
+
+	hook.Add( "OnNPCKilled", "ACF_NPCDeath", function( victim, attacker ,inflictor )
+--	print(victim:GetName() )
+--	print("Test: "..victim:GetClass() )
+		
 		if inflictor:GetClass() == "acf_gun" then
 			net.Start("ACF_KilledByACF")
-				net.WriteString( victim:Nick()..";"..inflictor.Class..";"..attacker:Nick() )
+				net.WriteString( victim:GetClass()..";"..inflictor.Class )
 			net.Broadcast()
+--			print(victim:GetClass().." was killed by acf weapon: "..inflictor.Class )
 		end
+end )
+
+
+	hook.Add("PlayerDeath", "ACF_PlayerDeath",function( victim, inflictor, attacker )
+	
+		if inflictor:GetClass() == "acf_gun" then
+			net.Start("ACF_KilledByACF")
+				net.WriteString( victim:Nick()..";"..inflictor.Class )
+			net.Broadcast()
+			print(victim:Nick().." was killed by acf weapon: "..inflictor.Class )
+		end
+		
 	end)
+
+	
 end
 
 
 if CLIENT then
-	
 	net.Receive("ACF_KilledByACF", function()
 		local Table = string.Explode(";", net.ReadString())
-		local victim, gun, attacker = Table[1], Table[2], Table[3]
-		
-		if attacker == "worldspawn" then attacker = "" end
-		GAMEMODE:AddDeathNotice( attacker, -1, "acf_"..gun, victim, 1001 )
+		local victim, gun = Table[1], Table[2]
+		GAMEMODE:AddDeathNotice( "ACF "..gun, -1, "acf_"..gun, victim, 1001 )
+--		GAMEMODE:AddDeathNotice( "ACF Gun", -1, "acf_AC", victim, 1001 )	
 	end)
 	
+/*
 	if not ACF.replacedPlayerKilled then
 		timer.Create("ACF_replacePlayerKilled", 1, 0, function()
 			local Hooks = usermessage.GetTable()
@@ -561,6 +574,7 @@ if CLIENT then
 			end
 		end)
 	end
+
 	if not ACF.replacedPlayerKilledByPlayer then
 		timer.Create("ACF_replacePlayerKilledByPlayer", 1, 0, function()
 			local Hooks = usermessage.GetTable()
@@ -583,5 +597,5 @@ if CLIENT then
 			end
 		end)
 	end
+*/	
 end
-*/
