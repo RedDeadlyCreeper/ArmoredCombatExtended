@@ -167,9 +167,11 @@ elseif CLIENT then
 	killicon.Add( "acf_HW", "HUD/killicons/acf_HW", Color( 200, 200, 48, 255 ) )
 	killicon.Add( "acf_MG", "HUD/killicons/acf_MG", Color( 200, 200, 48, 255 ) )
 	killicon.Add( "acf_MO", "HUD/killicons/acf_MO", Color( 200, 200, 48, 255 ) )
+	killicon.Add( "acf_RM", "HUD/killicons/acf_MO", Color( 200, 200, 48, 255 ) )
 	killicon.Add( "acf_RAC", "HUD/killicons/acf_RAC", Color( 200, 200, 48, 255 ) )
 	killicon.Add( "acf_SA", "HUD/killicons/acf_SA", Color( 200, 200, 48, 255 ) )
 	killicon.Add( "acf_ammo", "HUD/killicons/acf_ammo", Color( 200, 200, 48, 255 ) )
+	killicon.Add( "acf_ATR", "HUD/killicons/acf_SA", Color( 200, 200, 48, 255 ) )
 	
 	CreateConVar("acf_cl_particlemul", 1)
 	CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
