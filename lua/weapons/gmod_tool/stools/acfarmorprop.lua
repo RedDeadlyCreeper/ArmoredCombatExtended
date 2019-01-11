@@ -56,10 +56,10 @@ if CLIENT then
 		panel:ControlHelp( "Set the desired armor thickness (in mm) and the mass will be adjusted accordingly." )
 		
 		panel:NumSlider( "Ductility", "acfarmorprop_ductility", -80, 80 )
-		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias). A ductile prop can survive more damage but is penetrated more easily (slider > 0).  A non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
+		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias).\n\nA ductile prop can survive more damage but is penetrated more easily (slider > 0).\n\nA non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
 		
 		panel:NumSlider( "Material", "acfarmorprop_material", 0, 4 )
-		panel:ControlHelp( "Not for the feint of heart. If your a beginner leave this at 0. Sets the material of a prop to the following: (0)RHA, (1)Cast, (2)Ceramic, (3)Rubber, (4)ERA. The value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel." )
+		panel:ControlHelp( "Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\n(1)Cast\n(2)Ceramic\n(3)Rubber\n(4)ERA\n\n The value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel." )
 		
 	end
 	
