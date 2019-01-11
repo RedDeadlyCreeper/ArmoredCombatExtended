@@ -253,7 +253,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type)
 		elseif penProb > math.random() then									-- Penetration chance roll
 			local Penetration = math.min( maxPenetration, losArmor * ACF.CastEffectiveness )
 
-			HitRes.Damage   = var * dmul * ( Penetration / losArmor / ACF.CastEffectiveness )^2 * FrAera / ACF.CastResilianceFactor  
+			HitRes.Damage   = var * dmul * ( Penetration / armor / ACF.CastEffectiveness )^2 * FrAera / ACF.CastResilianceFactor  
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss     = Penetration / maxPenetration
 		
