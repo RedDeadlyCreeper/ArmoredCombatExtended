@@ -25,7 +25,7 @@ ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less
 ACF.CastResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CeramicResilianceFactor = 0.3 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CeramicResilianceFactor = 0.4 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.CeramicPierceDamage = 2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 
 ACF.RubberEffectiveness = 0.05
