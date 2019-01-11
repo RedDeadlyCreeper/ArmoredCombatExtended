@@ -22,7 +22,7 @@ ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 
 ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CastResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CastResilianceFactor = 7 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CeramicResilianceFactor = 1.5 --Higher = less damage, Lower = more damage. 2x = half damage.
