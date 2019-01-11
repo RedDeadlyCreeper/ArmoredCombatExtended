@@ -303,7 +303,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type)
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / ACF.CeramicEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-			HitRes.Damage   = var * dmul * FrAera							-- Inflicted Damage
+			HitRes.Damage   = var * dmul * FrAera * ACF.CeramicPierceDamage							-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -311,7 +311,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type)
 		elseif penProb > math.random() then									-- Penetration chance roll
 			local Penetration = math.min( maxPenetration, losArmor * ACF.CeramicEffectiveness )
 
-			HitRes.Damage   = var * dmul * ( Penetration / losArmor / ACF.CeramicEffectiveness * CeramicPierceDamage )^2 * FrAera / ACF.CeramicResilianceFactor  
+		HitRes.Damage   = var * dmul * ( Penetration / losArmor / ACF.CeramicEffectiveness * ACF.CeramicPierceDamage )^2 * FrAera / ACF.CeramicResilianceFactor  
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss     = Penetration / maxPenetration
 		
