@@ -263,7 +263,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type)
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * ACF.CastEffectiveness )
 
-		HitRes.Damage 	= var * dmul * ( Penetration / losArmor / ACF.CastEffectiveness )^2 * FrAera
+		HitRes.Damage 	= var * dmul * ( Penetration / armor / ACF.CastEffectiveness )^2 * FrAera
 		HitRes.Overkill = 0
 		HitRes.Loss 	= 1
 	
