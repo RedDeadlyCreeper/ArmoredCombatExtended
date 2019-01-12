@@ -221,6 +221,8 @@ function Round.guicreate( Panel, Table )
 	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("SCalMult",0,0,1000,2, "Subcaliber Size Multiplier", "")--Subcaliber Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	
+	acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")			--Tracer checkbox (Name, Title, Desc)
+	
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
 	--acfmenupanel:CPanelText("RicoDisplay", "")	--estimated rico chance
 	acfmenupanel:CPanelText("PenetrationDisplay", "")	--Proj muzzle penetration (Name, Desc)
@@ -237,7 +239,9 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.SCalMult
-		PlayerData.Data10 = 0	
+		local Tracer = 0
+		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
+		PlayerData.Data10 = Tracer				--Tracer
 	local Data = Round.convert( Panel, PlayerData )
 	
 	RunConsoleCommand( "acfmenu_data1", acfmenupanel.AmmoData.Data.id )
@@ -245,7 +249,7 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data3", Data.PropLength )		--For Gun ammo, Data3 should always be Propellant
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )		--And Data4 total round mass
 	RunConsoleCommand( "acfmenu_data5", Data.SCalMult )
-	RunConsoleCommand( "acfmenu_data10", 0 )
+	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
 	local CapMul = (vol > 46000) and ((math.log(vol*0.00066)/math.log(2)-4)*0.125+1) or 1
@@ -259,9 +263,10 @@ function Round.guiupdate( Panel, Table )
 
 	acfmenupanel:AmmoSlider("SCalMult",Data.SCalMult,Data.MinCalMult,Data.MaxCalMult,2, "Subcaliber Size Multiplier", "Caliber : "..math.floor(Data.Caliber * math.min(PlayerData.Data5,Data.MaxCalMult)*10).." mm")--Subcaliber round slider (Name, Min, Max, Decimals, Title, Desc)	
 	
+	acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*10)/10).."cm\n", "" )			--Tracer checkbox (Name, Title, Desc)
 	
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
-	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\\s")	--Proj muzzle velocity (Name, Desc)
 	
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
