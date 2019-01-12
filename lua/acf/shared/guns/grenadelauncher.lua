@@ -29,17 +29,17 @@ ACF_defineGun("40mmGL", { --id
 
 ACF_defineGun("20mmGL", { --id
 	name = "(+)20mm Grenade Launcher",
-	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak                using 40mm GL as placeholder bc the 20mm mini is borked",
+	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak                            using 40mm GL as placeholder bc the 20mm mini is borked",
 	model = "models/launcher/40mmgl.mdl",
 	gunclass = "GL",
 	canparent = true,
 	caliber = 2.0,
 	weight = 15,
-	magsize = 18,
-	magreload = 6,
+	magsize = 24,
+	magreload = 8,
 	year = 1970,
 	round = {
-		maxlength = 4,
+		maxlength = 7,
 		propweight = 0.005
 	}
 } )
