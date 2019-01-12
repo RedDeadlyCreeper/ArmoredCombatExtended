@@ -25,11 +25,11 @@ ACF_defineGun("(C)20mmHMG", {
 	weight = 240,
 	year = 1935,
 	rofmod = 2.5, --at 1.5, 675rpm; at 2.0, 480rpm
-	magsize = 60,
-	magreload = 13,
+	magsize = 80,
+	magreload = 12,
 	round = {
-		maxlength = 28,
-		propweight = 0.10
+		maxlength = 20,
+		propweight = 0.04
 	}
 } )
 
@@ -41,12 +41,12 @@ ACF_defineGun("(C)30mmHMG", {
 	caliber = 3.0,
 	weight = 580,
 	year = 1941,
-	rofmod = 2.3, --at 1.05, 495rpm; 
-	magsize = 40,
-	magreload = 14,
+	rofmod = 1.5, --at 1.05, 495rpm; 
+	magsize = 60,
+	magreload = 15,
 	round = {
-		maxlength = 34,
-		propweight = 0.33
+		maxlength = 25,
+		propweight = 0.08
 	}
 } )
 
@@ -58,12 +58,12 @@ ACF_defineGun("(C)40mmHMG", {
 	caliber = 4.0,
 	weight = 900,
 	year = 1955,
-	rofmod = 2, --at 0.75, 455rpm
+	rofmod = 1.1, --at 0.75, 455rpm
 	magsize = 40,
 	magreload = 15,
 	round = {
-		maxlength = 40,
-		propweight = 0.87
+		maxlength = 32,
+		propweight = 0.12
 	}
 } )
 	
