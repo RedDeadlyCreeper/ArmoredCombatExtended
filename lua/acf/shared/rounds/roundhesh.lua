@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.HESH = { "MG", "HMG", "RAC", "SL" , "AC" }
+ACF.AmmoBlacklist.HESH = { "MG", "HMG", "RAC", "SL" , "AC" , "SA" }
 
 local Round = {}
 
