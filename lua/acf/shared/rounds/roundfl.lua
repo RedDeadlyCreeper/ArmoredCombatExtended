@@ -7,7 +7,7 @@ local Round = {}
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "Flechette (FL)" --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
-Round.desc = "Flechette rounds contain several long thin steel spikes, functioning as a shotgun shell for cannons.  While it seems like the spikes would penetrate well, they tend to tumble in flight and impact at less than ideal angles, causing only minor penetration and structural damage.  They are best used against infantry or lightly armored mobile targets such as aircraft or light tanks, since flechettes trade brute damage for a better chance to hit."
+Round.desc = "Flechette rounds contain several long thin steel spikes, functioning as a shotgun shell for cannons.\n\nWhile it seems like the spikes would penetrate well, they tend to tumble in flight and impact at less than ideal angles, causing only minor penetration and structural damage.\n\nThey are best used against infantry or lightly armored mobile targets such as aircraft or light tanks, since flechettes trade brute damage for a better chance to hit."
 Round.netid = 8 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

@@ -8,7 +8,7 @@ local Round = {}
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "Armour Piercing Discarding Sabot (APDS)" --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
-Round.desc = "A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less"
+Round.desc = "A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less"
 Round.netid = 9 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

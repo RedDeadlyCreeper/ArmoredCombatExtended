@@ -8,7 +8,7 @@ local Round = {}
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "High Explosive Squash Head (HESH)" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell filled with explosives, that flattens and detonates on impact creating spall. Weaker blast than HE. This ammo is experimental and can supposedly be countered with a spall liner"
+Round.desc = "A shell filled with explosives, that flattens and detonates on impact creating spall. Weaker blast than HE.\n\n This ammo is experimental and can supposedly be countered with a spall liner"
 Round.netid = 12 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
