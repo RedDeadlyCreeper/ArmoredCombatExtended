@@ -21,14 +21,14 @@ ACF.Spalling = 0
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 
-ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CastResilianceFactor = 7 --Higher = less damage, Lower = more damage. 2x = half damage.
-
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.AluminumSpallResist=0.8  --Lower = less damage from spall
 ACF.AluminumSpallMult=1.5  --Higher = spalls more
 ACF.AluminumHeatMul=2  --Higher = More damage from HEAT
+
+ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.CastResilianceFactor = 7 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CeramicResilianceFactor = 1.5 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -39,6 +39,7 @@ ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x
 ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
 ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberHEVulnerbility = 0.35 --Lower = more damage
 
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
