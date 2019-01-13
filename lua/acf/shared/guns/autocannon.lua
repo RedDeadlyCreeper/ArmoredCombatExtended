@@ -10,6 +10,7 @@ ACF_defineGunClass("AC", {
 	soundNormal = " "
 } )
 
+--add a gun to the class
 ACF_defineGun("20mmAC", { --id
 	name = "20mm Autocannon",
 	desc = "The 20mm AC is the smallest of the family; having a good rate of fire but a tiny shell.",
@@ -19,8 +20,6 @@ ACF_defineGun("20mmAC", { --id
 	weight = 225,
 	year = 1930,
 	rofmod = 1.8,
-	magsize = 100,
-	magreload = 3,
 	round = {
 		maxlength = 32,
 		propweight = 0.13
@@ -29,39 +28,6 @@ ACF_defineGun("20mmAC", { --id
 	
 ACF_defineGun("30mmAC", {
 	name = "30mm Autocannon",
-	desc = "The 30mm AC can fire shells with sufficient space for a small payload, and has modest anti-armor capability",
-	model = "models/autocannon/autocannon_30mm.mdl",
-	gunclass = "AC",
-	caliber = 3.0,
-	weight = 960,
-	year = 1935,
-	rofmod = 1,
-	magsize = 75,
-	magreload = 3,
-	round = {
-		maxlength = 39,
-		propweight = 0.350
-	}
-} )
-
---add a gun to the class
-ACF_defineGun("(C)20mmAC", { --id
-	name = "(C)20mm Autocannon",
-	desc = "The 20mm AC is the smallest of the family; having a good rate of fire but a tiny shell.",
-	model = "models/autocannon/autocannon_20mm.mdl",
-	caliber = 2.0,
-	gunclass = "AC",
-	weight = 225,
-	year = 1930,
-	rofmod = 1.8,
-	round = {
-		maxlength = 32,
-		propweight = 0.13
-	}
-} )
-	
-ACF_defineGun("(C)30mmAC", {
-	name = "(C)30mm Autocannon",
 	desc = "The 30mm AC can fire shells with sufficient space for a small payload, and has modest anti-armor capability",
 	model = "models/autocannon/autocannon_30mm.mdl",
 	gunclass = "AC",
