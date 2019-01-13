@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("MG", {
-	spread = 0.24,
+	spread = 0.16,
 	name = "Machinegun",
 	desc = "Machineguns are light guns that fire equally light bullets at a fast rate.",
 	muzzleflash = "50cal_muzzleflash_noscale",
@@ -21,8 +21,6 @@ ACF_defineGun("7.62mmMG", { --id
 	weight = 15,
 	year = 1930,
 	rofmod = 1.59,
-	magsize = 250,
-	magreload = 6,
 	round = {
 		maxlength = 13,
 		propweight = 0.04
@@ -39,8 +37,6 @@ ACF_defineGun("12.7mmMG", {
 	weight = 30,
 	year = 1910,
 	rofmod = 0.766,
-	magsize = 150,
-	magreload = 6,
 	round = {
 		maxlength = 15.8,
 		propweight = 0.03
@@ -57,13 +53,12 @@ ACF_defineGun("14.5mmMG", {
 	weight = 45,
 	year = 1932,
 	rofmod = 0.72,
-	magsize = 90,
-	magreload = 5,
 	round = {
 		maxlength = 19.5,
 		propweight = 0.04
 	}
 } )
+
 
 ACF_defineGun("20mmMG", {
 	name = "20mm Machinegun",
@@ -80,55 +75,6 @@ ACF_defineGun("20mmMG", {
 	round = {
 		maxlength = 22,
 		propweight = 0.09
-	}
-} )
-
---add a gun to the class
-ACF_defineGun("(C)7.62mmMG", { --id
-	name = "(C)7.62mm Machinegun",
-	desc = "The 7.62mm is effective against infantry, but its usefulness against armor is laughable at best.",
-	model = "models/machinegun/machinegun_762mm.mdl",
-	gunclass = "MG",
-	canparent = true,
-	caliber = 0.762,
-	weight = 15,
-	year = 1930,
-	rofmod = 1.59,
-	round = {
-		maxlength = 13,
-		propweight = 0.04
-	}
-} )
-
-ACF_defineGun("(C)12.7mmMG", {
-	name = "(C)12.7mm Machinegun",
-	desc = "The 12.7mm MG is still light, finding its way into a lot of mountings, including on top of tanks.",
-	model = "models/machinegun/machinegun_127mm.mdl",
-	gunclass = "MG",
-	canparent = true,
-	caliber = 1.27,
-	weight = 30,
-	year = 1910,
-	rofmod = 0.766,
-	round = {
-		maxlength = 15.8,
-		propweight = 0.03
-	}
-} )
-	
-ACF_defineGun("(C)14.5mmMG", {
-	name = "(C)14.5mm Machinegun",
-	desc = "The 14.5mm MG trades its smaller stablemates' rate of fire for more armor penetration and damage.",
-	model = "models/machinegun/machinegun_145mm.mdl",
-	gunclass = "MG",
-	canparent = true,
-	caliber = 1.45,
-	weight = 45,
-	year = 1932,
-	rofmod = 0.72,
-	round = {
-		maxlength = 19.5,
-		propweight = 0.04
 	}
 } )
 
