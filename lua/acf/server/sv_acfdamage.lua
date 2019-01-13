@@ -219,12 +219,23 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 
 end
 
-function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor )
+function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor , Material)
 
+	local SpallMul = 1
+	if Material == 2 then 
+	SpallMul = 0.8
+	elseif Material == 3 then 
+	SpallMul = 0
+	elseif Material == 5 then
+	SpallMul = ACF.AluminumSpallMult
+	end
+	
+	if SpallMul > 0 then
+	
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall),2)
-	local SpallWeight = TotalWeight/Spall*20
-	local SpallVel = (HEFiller*2000/SpallWeight*40)^0.5/Spall
+	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall*SpallMul),1)
+	local SpallWeight = TotalWeight/Spall*20*SpallMul
+	local SpallVel = (HEFiller*2000/SpallWeight*40)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
@@ -241,7 +252,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 	end
-
+	end
 end
 
 function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )

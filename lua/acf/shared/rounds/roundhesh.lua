@@ -120,7 +120,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 		
 
 			table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-			ACF_Spall_HESH( HitPos , Bullet.Flight , Bullet.Filter , Bullet.FillerMass*100000 , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner ) --Do some spalling
+			ACF_Spall_HESH( HitPos , Bullet.Flight , Bullet.Filter , Bullet.FillerMass*100000 , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 --			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
 
 		
