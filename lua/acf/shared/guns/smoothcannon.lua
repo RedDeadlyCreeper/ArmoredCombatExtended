@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("SBC", {
-	spread = 0.35,
+	spread = 0.04,
 	name = "Smooth-Bore Cannon",
 	desc = "High velocity guns that Fire slower and are heavier due to more reinforced cannon barrels than their counterparts. They fire fin stabilized ammo and as of such are also more accurate than their counterparts.",
 	muzzleflash = "120mm_muzzleflash_noscale",
@@ -35,21 +35,21 @@ ACF_defineGun("120mmSBC", {
 	weight = 8000,
 	year = 1970,
 	round = {
-		maxlength = 110,
+		maxlength = 115,
 		propweight = 30
 	}
 } )
 	
 ACF_defineGun("140mmSBC", {
 	name = "(+)140mm Smoothbore Cannon",
-	desc = "140mm Smoothbore, heavy railgun like cannon spawned out of a hatred of 60 tons",
+	desc = "140mm Smoothbore, heavy railgun like cannon spawned out of a hatred of 60 tons. 'Your litterly removing the armor tool' -Anon",
 	model = "models/tankgun_old/tankgun_140mm.mdl",
 	gunclass = "SBC",
 	caliber = 14.0,
 	weight = 12000,
 	year = 1995,
 	round = {
-		maxlength = 127,
+		maxlength = 140,
 		propweight = 60
 	}
 } )
