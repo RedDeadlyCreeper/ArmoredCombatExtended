@@ -60,7 +60,7 @@ if CLIENT then
 		panel:NumSlider( "Ductility", "acfarmorprop_ductility", -80, 80 )
 		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias).\n\nA ductile prop can survive more damage but is penetrated more easily (slider > 0).\n\nA non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
 		
-		panel:NumSlider( "Material", "acfarmorprop_material", 0, 4 )
+		panel:NumSlider( "Material", "acfarmorprop_material", 0, 5 )
 		panel:ControlHelp( "Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\n(1)Cast\n(2)Ceramic\n(3)Rubber\n(4)ERA\n(5)Aluminum\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel.\n" )
 		
 	end
@@ -130,7 +130,7 @@ if CLIENT then
 		
 		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
 		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local material = math.Clamp( math.floor(tonumber( value )+0.5 or 0), 0, 4 )
+		local material = math.Clamp( math.floor(tonumber( value )+0.5 or 0), 0, 5 )
 		
 
 		RunConsoleCommand( "acfarmorprop_material", math.floor(material+0.5))
@@ -194,7 +194,7 @@ function TOOL:LeftClick( trace )
 		massMod = 0.2
 	elseif testMaterial == 4 then --ERA
 		massMod = 2
-	elseif testMaterial == 4 then --Aluminum
+	elseif testMaterial == 5 then --Aluminum
 		massMod = 0.35
 	else
 		massMod = 1.3
