@@ -147,13 +147,14 @@ function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, 
 	
 end
 
-function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type)
+function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	local armor    = Entity.ACF.Armour								-- Armor
 	local losArmor = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )  -- LOS Armor	
 	local losArmorHealth = armor * math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.0)  -- Bc people had to abuse armor angling, FML	
-	local ductilitymult    = math.max(math.abs(((Entity.ACF.Ductility or 1)*100-80)/6),1)
---	print("Duct: "..Entity.ACF.Ductility)
---	print("DuctMult: "..ductilitymult)
+--	local ductilitymult    = math.max(math.abs(((Entity.ACF.Ductility or 1)*100-80)/6),1)
+	local ductilitymult    = math.max((-5/16)*(Entity.ACF.Ductility or 1)*100+1,1)
+	print("Duct: "..Entity.ACF.Ductility)
+	print("DuctMult: "..ductilitymult)
 	--	local ductilitymult    = 32
 	local testMaterial = Entity.ACF.Material or 0
 		--TestMat=3 = rubber
