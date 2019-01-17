@@ -153,12 +153,38 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	local losArmorHealth = armor * math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.0)  -- Bc people had to abuse armor angling, FML	
 --	local ductilitymult    = math.max(math.abs(((Entity.ACF.Ductility or 1)*100-80)/6),1)
 	local ductilitymult    = math.max((-5/16)*(Entity.ACF.Ductility or 1)*100+1,1)
-	print("Duct: "..Entity.ACF.Ductility)
-	print("DuctMult: "..ductilitymult)
+--	print("Duct: "..Entity.ACF.Ductility)
+--	print("DuctMult: "..ductilitymult)
 	--	local ductilitymult    = 32
 	local testMaterial = Entity.ACF.Material or 0
 		--TestMat=3 = rubber
 		--TestMat = 4 = ERA
+	
+	local damageMult = 1
+--	print("DamageType: "..Type)
+
+	if Type == "AP" then
+	damageMult = ACF.APDamageMult
+	elseif Type == "APHE" then
+	damageMult = ACF.APHEDamageMult
+	elseif Type == "APDS" then
+	damageMult = ACF.APDSDamageMult
+	elseif Type == "HVAP" then
+	damageMult = ACF.HVAPDamageMult
+	elseif Type == "FL" then
+	damageMult = ACF.FLDamageMult
+	elseif Type == "HEAT" then
+	damageMult = ACF.HEATDamageMult
+	elseif Type == "HE" then
+	damageMult = ACF.HEDamageMult
+	elseif Type == "HESH" then
+	damageMult = ACF.HESHDamageMult
+	elseif Type == "HP" then
+	damageMult = ACF.HPDamageMult
+	end
+		
+--	print("Damage mult from type: "..damageMult)	
+		
 	if testMaterial == 0 then --RHA	
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
@@ -194,7 +220,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-			HitRes.Damage   = var * dmul * FrAera * ductilitymult							-- Inflicted Damage
+			HitRes.Damage   = var * dmul * FrAera * ductilitymult * damageMult							-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -202,7 +228,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		elseif penProb > math.random() then									-- Penetration chance roll
 			local Penetration = math.min( maxPenetration, losArmor )
 
-			HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult
+			HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult * damageMult
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss     = Penetration / maxPenetration
 		
@@ -212,7 +238,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor )
 
-		HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult
+		HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult * damageMult
 		HitRes.Overkill = 0
 		HitRes.Loss 	= 1
 	
@@ -252,7 +278,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / ACF.CastEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-			HitRes.Damage   = var * dmul * FrAera * ductilitymult							-- Inflicted Damage
+			HitRes.Damage   = var * dmul * FrAera * ductilitymult * damageMult							-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -260,7 +286,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		elseif penProb > math.random() then									-- Penetration chance roll
 			local Penetration = math.min( maxPenetration, losArmor * ACF.CastEffectiveness )
 
-			HitRes.Damage   = var * dmul * ( Penetration / armor / ACF.CastEffectiveness )^2 * FrAera / ACF.CastResilianceFactor  * ductilitymult 
+			HitRes.Damage   = var * dmul * ( Penetration / armor / ACF.CastEffectiveness )^2 * FrAera / ACF.CastResilianceFactor  * ductilitymult * damageMult
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss     = Penetration / maxPenetration
 		
@@ -270,7 +296,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * ACF.CastEffectiveness )
 
-		HitRes.Damage 	= var * dmul * ( Penetration / armor / ACF.CastEffectiveness )^2 * FrAera * ductilitymult	
+		HitRes.Damage 	= var * dmul * ( Penetration / armor / ACF.CastEffectiveness )^2 * FrAera * ductilitymult * damageMult	
 		HitRes.Overkill = 0
 		HitRes.Loss 	= 1
 	
@@ -310,7 +336,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / ACF.CeramicEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-			HitRes.Damage   = var * dmul * FrAera * ACF.CeramicPierceDamage * ductilitymult								-- Inflicted Damage
+			HitRes.Damage   = var * dmul * FrAera * ACF.CeramicPierceDamage * ductilitymult * damageMult								-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -318,7 +344,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		elseif penProb > math.random() then									-- Penetration chance roll
 			local Penetration = math.min( maxPenetration, losArmor * ACF.CeramicEffectiveness )
 
-		HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.CeramicEffectiveness * ACF.CeramicPierceDamage )^2 * FrAera / ACF.CeramicResilianceFactor * ductilitymult	  
+		HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.CeramicEffectiveness * ACF.CeramicPierceDamage )^2 * FrAera / ACF.CeramicResilianceFactor * ductilitymult * damageMult	  
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss     = Penetration / maxPenetration
 		
@@ -328,7 +354,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * ACF.CeramicEffectiveness )
 
-		HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth )^2 * FrAera / ACF.CeramicResilianceFactor * ductilitymult	  
+		HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth )^2 * FrAera / ACF.CeramicResilianceFactor * ductilitymult * damageMult	  
 		HitRes.Overkill = 0
 		HitRes.Loss 	= 1
 	
@@ -370,7 +396,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / ACF.RubberEffectivenessSpecial - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 			if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-				HitRes.Damage   = var * dmul * FrAera * ductilitymult								-- Inflicted Damage
+				HitRes.Damage   = var * dmul * FrAera * ductilitymult * damageMult								-- Inflicted Damage
 				HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 				HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -378,7 +404,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			elseif penProb > math.random() then									-- Penetration chance roll
 				local Penetration = math.min( maxPenetration, losArmor * ACF.RubberEffectivenessSpecial )
 
-				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberResilianceFactorSpecial * ductilitymult	
+				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberResilianceFactorSpecial * ductilitymult	 * damageMult
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
 		
@@ -388,7 +414,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * ACF.RubberEffectivenessSpecial )
 
-			HitRes.Damage 	= var * dmul * ( Penetration / losArmor / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberResilianceFactorSpecial * DmgResist * ductilitymult	
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmor / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberResilianceFactorSpecial * DmgResist * ductilitymult * damageMult	
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
 	
@@ -401,7 +427,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / ACF.RubberEffectivenessSpecial - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 			if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-				HitRes.Damage   = var * dmul * FrAera							-- Inflicted Damage
+				HitRes.Damage   = var * dmul * FrAera * damageMult							-- Inflicted Damage
 				HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 				HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -409,7 +435,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			elseif penProb > math.random() then									-- Penetration chance roll
 				local Penetration = math.min( maxPenetration, losArmor * ACF.RubberEffectivenessSpecial )
 
-				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberHEVulnerbility * ductilitymult	
+				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberHEVulnerbility * ductilitymult * damageMult	
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
 		
@@ -419,7 +445,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * ACF.RubberEffectivenessSpecial )
 
-			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberHEVulnerbility * ductilitymult	
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberHEVulnerbility * ductilitymult * damageMult	
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
 	
@@ -433,7 +459,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 			if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
 --			print("RubberBreach")
-				HitRes.Damage   = var * dmul * FrAera * ductilitymult								-- Inflicted Damage
+				HitRes.Damage   = var * dmul * FrAera * ductilitymult * damageMult								-- Inflicted Damage
 				HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 				HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 --				print("DmgBreach: "..HitRes.Damage)
@@ -442,7 +468,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			elseif penProb > math.random() then									-- Penetration chance roll
 --			print("RubberBreach")
 				local Penetration = math.min( maxPenetration, losArmor * ACF.RubberEffectiveness )
-				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth * ACF.RubberEffectiveness)^2 * FrAera / ACF.RubberResilianceFactor * ductilitymult	
+				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth * ACF.RubberEffectiveness)^2 * FrAera / ACF.RubberResilianceFactor * ductilitymult * damageMult	
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
 --			print("DmgPen: "..HitRes.Damage)		
@@ -451,7 +477,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 --			print("NoBreach")
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * ACF.RubberEffectiveness)
-			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth * ACF.RubberEffectiveness)^2 * FrAera / ACF.RubberResilianceFactor * ductilitymult	
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth * ACF.RubberEffectiveness)^2 * FrAera / ACF.RubberResilianceFactorCatch * ductilitymult * damageMult	
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
 --			print("DmgNoPen: "..HitRes.Damage)	
@@ -546,7 +572,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor*ACF.AluminiumEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-			HitRes.Damage   = var * dmul * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult							-- Inflicted Damage
+			HitRes.Damage   = var * dmul * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult							-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -557,7 +583,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			-- Projectile did not breach nor penetrate armor
 --			local Penetration = math.min( maxPenetration , losArmor )
 
-			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth*ACF.AluminiumEffectiveness )^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult	
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth*ACF.AluminiumEffectiveness )^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult	
 --			HitRes.Damage 	= 1
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
@@ -600,7 +626,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-			HitRes.Damage   = var * dmul * FrAera * ductilitymult								-- Inflicted Damage
+			HitRes.Damage   = var * dmul * FrAera * ductilitymult * damageMult								-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
@@ -608,7 +634,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		elseif penProb > math.random() then									-- Penetration chance roll
 			local Penetration = math.min( maxPenetration, losArmor )
 
-			HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult	
+			HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult * damageMult	
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss     = Penetration / maxPenetration
 		
@@ -618,7 +644,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor )
 
-		HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult	
+		HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth )^2 * FrAera * ductilitymult * damageMult	
 		HitRes.Overkill = 0
 		HitRes.Loss 	= 1
 	
