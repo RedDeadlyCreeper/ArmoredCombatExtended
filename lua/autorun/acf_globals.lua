@@ -36,12 +36,25 @@ ACF.CeramicPierceDamage = 10 --Higher = more damage on pierce, Lower = less dama
 
 ACF.RubberEffectiveness = 0.01
 ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberResilianceFactorCatch = 1 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
 ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
 ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
+
+
+ACF.APDamageMult = 1.5
+ACF.APHEDamageMult = 1.1
+ACF.APDSDamageMult = 1.3
+ACF.HVAPDamageMult = 1.6
+ACF.FLDamageMult = 2
+ACF.HEATDamageMult = 1
+ACF.HEDamageMult = 1
+ACF.HESHDamageMult = 1
+ACF.HPDamageMult = 3
+
 
 ACF.HEPower = 8000		--HE Filler power per KG in KJ
 ACF.HEDensity = 1.65	--HE Filler density (That's TNT density)
