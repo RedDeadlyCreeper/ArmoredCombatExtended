@@ -36,15 +36,15 @@ function Round.convert( Crate, PlayerData )
 	
 --    if GunClass == "C" then
 
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 0.5
-    Data.PenModifier = 2
-    Data.Ricochet = 66
+    Data.MinCalMult = 0.2
+    Data.MaxCalMult = 1
+    Data.PenModifier = 1.2
+    Data.Ricochet = 65
 --    end
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-	Data.ProjMass = (Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2 + (Data.FrAera - Data.SubFrAera) * (Data.ProjLength*7.9/3000)) --(Tungsten Core Mass + Aluminum Exterior Mass) * Mass modifier used for bad aerodynamics
+	Data.ProjMass = (Data.SubFrAera * (Data.ProjLength*7.9/1000) * 1.5 + (Data.FrAera - Data.SubFrAera) * (Data.ProjLength*7.9/10000)) --(Tungsten Core Mass + Sabot Exterior Mass) * Mass modifier used for bad aerodynamics
 	Data.ShovePower = 0.2
 	Data.PenAera = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod	
 	
