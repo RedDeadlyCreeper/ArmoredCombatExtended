@@ -115,10 +115,13 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 	if ACF_Check( Target ) then
 	
 		local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-		local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+		local Energy = ACF_Kinetic( Speed/4+Bullet.FillerMass*11811 , Bullet.ProjMass/4+Bullet.FillerMass*5, Bullet.LimitVel )
+--		print("ShellMass: "..Bullet.ProjMass)
+		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*11811, Energy, Target, HitPos, HitNormal/10 , Bone )
 		
+--		print("Speed: "..Speed)
 
+		
 			table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
 			ACF_Spall_HESH( HitPos , Bullet.Flight , Bullet.Filter , Bullet.FillerMass*100000 , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 --			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
