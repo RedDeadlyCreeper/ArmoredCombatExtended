@@ -229,13 +229,14 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	elseif Material == 5 then
 	SpallMul = ACF.AluminumSpallMult
 	end
+--	print("CMod: "..Caliber*4) 
 	
-	if SpallMul > 0 then
-	
+	if SpallMul > 0 and Caliber*3.8 > Armour then
+--	print("Spalling") 	
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall*SpallMul),1)
-	local SpallWeight = TotalWeight/Spall*20*SpallMul
-	local SpallVel = (HEFiller*2000/SpallWeight*40)^0.5/Spall*SpallMul
+	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall*SpallMul*0.25),1)
+	local SpallWeight = TotalWeight/Spall*SpallMul
+	local SpallVel = (HEFiller*20/SpallWeight*2)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
