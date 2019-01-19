@@ -122,8 +122,8 @@ function SWEP:PrimaryAttack()
 			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 			local Valid = ACF_Check ( ent )
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
-				ent.ACF.Health = math.min(ent.ACF.Health + (90/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
-				ent.ACF.Armour = ent.ACF.MaxArmour * (1 + ent.ACF.Health/ent.ACF.MaxHealth/2)
+				ent.ACF.Health = math.min(ent.ACF.Health + (600/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
+				ent.ACF.Armour = math.min(ent.ACF.MaxArmour * (ent.ACF.Health/ent.ACF.MaxHealth),ent.ACF.MaxArmour)
 				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", true, true )--Welding noise here, gotte figure out how to do a looped sound.
 				TeslaSpark(tr.HitPos , 1 )
 			end
@@ -163,10 +163,10 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 			local HitRes = {}
 			if(ent:IsPlayer()) then
-				HitRes = ACF_Damage ( ent , {Kinetic = 0.15,Momentum = 0,Penetration = 0.15} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+				HitRes = ACF_Damage ( ent , {Kinetic = 0.2,Momentum = 0,Penetration = 0.2} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			else
 				if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
-				HitRes = ACF_Damage ( ent , {Kinetic = 15,Momentum = 0,Penetration = 15} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+				HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			end
 			if HitRes.Kill then
 				constraint.RemoveAll( ent )
