@@ -46,16 +46,16 @@ ACF_defineGun("20mmGL", { --id
 
 ACF_defineGun("40mmGLSingle", { --id
 	name = "(+)40mm Single Grenade Launcher",
-	desc = "The 40mm grenade projecter excels at launching a small 40mm charge at nearby infantry.",
+	desc = "The 40mm grenade projecter excels at launching a small 40mm charge at nearby infantry or defending a tank from an incoming rocket.",
 	model = "models/launcher/40mmsl.mdl",
 	gunclass = "GL",
 	caliber = 4.0,
 	canparent = true,
 	weight = 10,
-	rofmod = 7.5,
+	rofmod = 12,
 	year = 1940,
 	round = {
-		maxlength = 8,
+		maxlength = 20,
 		propweight = 0.01
 	}
 } )
