@@ -624,7 +624,21 @@ function ENT:FireShell()
 			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + ACF_GetPhysicalParent(self):GetVelocity()
 			self.BulletData.Owner = self.User
 			self.BulletData.Gun = self
-			self.BulletData.FuseLength = self.FuseTime
+
+			local Cal = self.Caliber
+
+--			print("BooletType: "..self.BulletData.Type)
+			
+			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") then
+			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/12),0.3)
+			self.BulletData.FuseLength = math.max(self.FuseTime * FuseNoise,0.5)
+--			print("FuseNoise: "..FuseNoise)
+--			print("TestSuccess")
+--			else
+--			self.BulletData.FuseLength = 0
+--			print("TestFail")
+			end
+			
 			self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 			self:CreateShell( self.BulletData )
 			
