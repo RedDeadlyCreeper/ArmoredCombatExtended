@@ -18,9 +18,9 @@ ACF_defineGun("(+)12.7mmRAC", { --id
 	gunclass = "RAC",
 	canparent = true,
 	caliber = 1.27,
-	weight = 180,
+	weight = 160,
 	year = 1975,
-	rofmod = 4.8,
+	rofmod = 5.1,
 	round = {
 		maxlength = 14,
 		propweight = 0.05
