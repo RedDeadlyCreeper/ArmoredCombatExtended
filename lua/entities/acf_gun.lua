@@ -631,7 +631,7 @@ function ENT:FireShell()
 			
 			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") then
 			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/12),0.3)
-			self.BulletData.FuseLength = math.max(self.FuseTime * FuseNoise,0.5)
+			self.BulletData.FuseLength = self.FuseTime * FuseNoise
 --			print("FuseNoise: "..FuseNoise)
 --			print("TestSuccess")
 --			else
