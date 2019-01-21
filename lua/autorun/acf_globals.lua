@@ -20,6 +20,7 @@ ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^fa
 ACF.Spalling = 0
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
+ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.6 --Higher = less damage, Lower = more damage. 2x = half damage.
