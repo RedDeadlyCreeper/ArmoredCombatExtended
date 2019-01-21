@@ -27,16 +27,17 @@ function Round.convert( Crate, PlayerData )
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
 	--Shell sturdiness calcs
-	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000  --(Volume of the projectile as a cylinder - Volume of the cavity) * density of steel 
+	Data.ProjMass = math.max(GUIData.ProjVolume*0.5,0)*7.9/1000  --(Volume of the projectile as a cylinder - Volume of the cavity) * density of steel 
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
 	
 	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
 	GUIData.MinCavVol = 0
 	GUIData.MaxCavVol = math.min(GUIData.ProjVolume,MaxVol)
-	Data.CavVol = math.min(PlayerData.Data5,GUIData.MaxCavVol)
+	Data.CavVol = math.Clamp(PlayerData.Data5,GUIData.MinCavVol,GUIData.MaxCavVol)
 	
 	Data.ProjMass = ( (Data.FrAera * Data.ProjLength) - Data.CavVol )*7.9/1000 --Volume of the projectile as a cylinder * fraction missing due to hollow point (Data5) * density of steel
+	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local ExpRatio = (Data.CavVol/GUIData.ProjVolume)
 	Data.ShovePower = 0.2 + ExpRatio/2
 	Data.ExpCaliber = Data.Caliber + ExpRatio*Data.ProjLength
@@ -147,9 +148,7 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
-	local CapMul = (vol > 46000) and ((math.log(vol*0.00066)/math.log(2)-4)*0.125+1) or 1
-	local RoFMul = (vol > 46000) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1
-	local Cap = math.floor(CapMul * vol * 0.11 * ACF.AmmoMod * 16.38 / Data.RoundVolume)
+	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
 	
 	acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
 	
