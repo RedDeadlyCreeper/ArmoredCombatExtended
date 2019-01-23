@@ -1,4 +1,7 @@
-*r1
+r1
+--For an extended version history, please visit the github changelog.  https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/commits/master
+
+*r2
 -Removed mags from smaller mgs
 -Retained Vanilla weapons
 -Removed mags from 20 and 30 AC
@@ -16,18 +19,18 @@
 -Undid a lot of nerfs
 -New placeholder sounds?
 
-*r2
+*r3
 -Added Gaghr AeroBine
 
-*r3
+*r4
 -Added composite Armor
 -Added HESH
 
-*r4
+*r5
 -Reworked armor mechanics
 -Nerfed effectiveness of rubber vs standard ammo
 -Merged objectively better weapons with their vanilla counterparts
 
-*r5
+*r6
 -Added Ammotweak
 -Added Ferv's HP Ammo fix, Thank you Ferv.
