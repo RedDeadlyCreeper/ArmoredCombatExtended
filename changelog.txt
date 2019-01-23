@@ -1,5 +1,5 @@
 r100
---For an extended version history, please visit the github changelog.  https://github.com/nrlulz/ACF/commits/master
+--For an extended version history, please visit the github changelog.  https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/commits/master
 
 *r101
 -Removed mags from smaller mgs
