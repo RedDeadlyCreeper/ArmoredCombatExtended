@@ -17,3 +17,13 @@
 -New placeholder sounds?
 *RM2
 -Added Gaghr AeroBine
+*RM3
+-Added composite Armor
+-Added HESH
+*RM4
+-Reworked armor mechanics
+-Nerfed effectiveness of rubber vs standard ammo
+-Merged objectively better weapons with their vanilla counterparts
+*RM5
+-Added Ammotweak
+-Added Ferv's HP Ammo fix, Thank you Ferv.
