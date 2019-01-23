@@ -1,4 +1,4 @@
-*RM1
+*r1
 -Removed mags from smaller mgs
 -Retained Vanilla weapons
 -Removed mags from 20 and 30 AC
@@ -15,15 +15,15 @@
 -Redid HMGs
 -Undid a lot of nerfs
 -New placeholder sounds?
-*RM2
+*r2
 -Added Gaghr AeroBine
-*RM3
+*r3
 -Added composite Armor
 -Added HESH
-*RM4
+*r4
 -Reworked armor mechanics
 -Nerfed effectiveness of rubber vs standard ammo
 -Merged objectively better weapons with their vanilla counterparts
-*RM5
+*r5
 -Added Ammotweak
 -Added Ferv's HP Ammo fix, Thank you Ferv.
