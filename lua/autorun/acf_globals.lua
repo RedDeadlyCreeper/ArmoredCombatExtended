@@ -46,15 +46,15 @@ ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
 
-ACF.APDamageMult = 1.5
-ACF.APHEDamageMult = 1.1
+ACF.APDamageMult = 1.1
+ACF.APHEDamageMult = 1
 ACF.APDSDamageMult = 1.3
 ACF.HVAPDamageMult = 1.6
-ACF.FLDamageMult = 2
+ACF.FLDamageMult = 1
 ACF.HEATDamageMult = 1
 ACF.HEDamageMult = 1
 ACF.HESHDamageMult = 1
-ACF.HPDamageMult = 3
+ACF.HPDamageMult = 1
 
 
 ACF.HEPower = 8000		--HE Filler power per KG in KJ
