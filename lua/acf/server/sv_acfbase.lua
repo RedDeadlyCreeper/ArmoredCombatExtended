@@ -528,6 +528,17 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			--ACF.ERAEffectivenessMult
 			
 			return HitRes
+		else	
+			local Penetration = math.min( maxPenetration , losArmor)
+			-- Projectile did not breach nor penetrate armor
+--			local Penetration = math.min( maxPenetration , losArmor )
+
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth)^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult	
+--			HitRes.Damage 	= 1
+			HitRes.Overkill = 0
+			HitRes.Loss 	= 1
+	
+			return HitRes
 		end
 	elseif testMaterial == 5 then --Aluminum	
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
@@ -569,7 +580,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour - 1.3) / (7 - 1.3), 0, 1)
 
 		-- Penetration probability
-		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor*ACF.AluminiumEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
+		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor/ACF.AluminiumEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
 		if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
 			HitRes.Damage   = var * dmul * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult							-- Inflicted Damage
@@ -583,7 +594,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			-- Projectile did not breach nor penetrate armor
 --			local Penetration = math.min( maxPenetration , losArmor )
 
-			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth*ACF.AluminiumEffectiveness )^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult	
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth/ACF.AluminiumEffectiveness )^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult	
 --			HitRes.Damage 	= 1
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
