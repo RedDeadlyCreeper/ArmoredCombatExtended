@@ -533,7 +533,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			-- Projectile did not breach nor penetrate armor
 --			local Penetration = math.min( maxPenetration , losArmor )
 
-			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth)^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult	
+			HitRes.Damage 	= var * dmul * ( Penetration / losArmorHealth)^2 * FrAera * DamageModifier * ductilitymult * damageMult	
 --			HitRes.Damage 	= 1
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
@@ -577,7 +577,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
 
 		-- Breach probability
-		local breachProb = math.Clamp((caliber / Entity.ACF.Armour - 1.3) / (7 - 1.3), 0, 1)
+		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / ACF.AluminiumEffectiveness - 1.3) / (7 - 1.3), 0, 1)
 
 		-- Penetration probability
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor/ACF.AluminiumEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
@@ -588,7 +588,15 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
 
 			return HitRes
-		else
+		elseif penProb > math.random() then									-- Penetration chance roll
+			local Penetration = math.min( maxPenetration, losArmor*ACF.AluminiumEffectiveness )
+
+			HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth )^2 * FrAera / ACF.AluminumResialiance * DamageModifier * ductilitymult * damageMult	
+			HitRes.Overkill = (maxPenetration - Penetration)
+			HitRes.Loss     = Penetration / maxPenetration
+		
+			return HitRes
+		end
 		
 			local Penetration = math.min( maxPenetration , losArmor*ACF.AluminiumEffectiveness)
 			-- Projectile did not breach nor penetrate armor
@@ -600,7 +608,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			HitRes.Loss 	= 1
 	
 			return HitRes
-		end
 
 	else --If for some reason it doesnt identify what material it is
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
