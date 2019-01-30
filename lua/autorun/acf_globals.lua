@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 194 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 200 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2000
@@ -23,21 +23,21 @@ ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.AluminumResialiance = 0.6 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.AluminumSpallResist=0.8  --Lower = less damage from spall
-ACF.AluminumSpallMult=1.5  --Higher = spalls more
-ACF.AluminumHeatMul=2  --Higher = More damage from HEAT
+ACF.AluminumSpallMult =  2  --Higher = spalls more
+ACF.AluminumHeatMul = 4  --Higher = More damage from HEAT
 
 ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CastResilianceFactor = 25 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CeramicResilianceFactor = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.CeramicPierceDamage = 10 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.CeramicPierceDamage = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 
 ACF.RubberEffectiveness = 0.01
 ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.RubberResilianceFactorCatch = 1 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
+ACF.RubberResilianceFactorCatch = 0.05 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
 ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
 ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -50,11 +50,11 @@ ACF.APDamageMult = 1.1
 ACF.APHEDamageMult = 1
 ACF.APDSDamageMult = 1.3
 ACF.HVAPDamageMult = 1.6
-ACF.FLDamageMult = 1
+ACF.FLDamageMult = 1.1
 ACF.HEATDamageMult = 1
 ACF.HEDamageMult = 1
 ACF.HESHDamageMult = 1
-ACF.HPDamageMult = 1
+ACF.HPDamageMult = 3
 
 
 ACF.HEPower = 8000		--HE Filler power per KG in KJ
