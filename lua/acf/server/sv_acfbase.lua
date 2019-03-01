@@ -152,7 +152,7 @@ end
 function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	local armor    = Entity.ACF.Armour								-- Armor
 	local losArmor = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )  -- LOS Armor	
-	local losArmorHealth = armor * (1.5 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.5)*0.5 )  -- Bc people had to abuse armor angling, FML	
+	local losArmorHealth = armor * (1 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.5)*0.5 )  -- Bc people had to abuse armor angling, FML	
 --	local losArmorHealth = losArmor
 
 --	local ductilitymult    = math.max((-5/16)*(Entity.ACF.Ductility or 1)*100+1,1)
