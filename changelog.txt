@@ -34,3 +34,9 @@ r100
 *r105
 -Added Ammotweak
 -Added Ferv's HP Ammo fix, Thank you Ferv.
+
+*r106
+-Added Nothing's e2 functions
+-Added Textolite Armor.
+-Bugfixes.
+-Oh hey a changelog.
