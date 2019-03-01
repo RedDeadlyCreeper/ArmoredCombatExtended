@@ -171,8 +171,10 @@ if CLIENT then
 		killicon.Add( "acf_HW", "HUD/killicons/acf_HW", IconColor )
 		killicon.Add( "acf_MG", "HUD/killicons/acf_MG", IconColor )
 		killicon.Add( "acf_MO", "HUD/killicons/acf_MO", IconColor )
+		killicon.Add( "acf_RM", "HUD/killicons/acf_MO", IconColor )
 		killicon.Add( "acf_RAC", "HUD/killicons/acf_RAC", IconColor )
 		killicon.Add( "acf_SA", "HUD/killicons/acf_SA", IconColor )
+		killicon.Add( "acf_ATR", "HUD/killicons/acf_SA", IconColor )
 
 		local function doNothing()
 			return false
