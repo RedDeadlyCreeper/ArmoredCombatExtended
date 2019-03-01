@@ -141,7 +141,7 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 	
-	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3 , HitNormal , Bullet.FillerMass * 0.7 , Bullet.ProjMass - Bullet.FillerMass * 0.7 , Bullet.Owner )
+	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass * 0.7, Bullet.ProjMass - Bullet.FillerMass * 0.7, Bullet.Owner, nil, Bullet.Gun )
 	ACF_RemoveBullet( Index )
 	
 end
