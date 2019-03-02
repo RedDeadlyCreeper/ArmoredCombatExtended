@@ -629,14 +629,13 @@ function ENT:FireShell()
 
 --			print("BooletType: "..self.BulletData.Type)
 			
-			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") then
+			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM" or self.BulletData.Type == "HEP") then
 			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/12),0.3)
+			
+			if self.BulletData.FuseLength == 0 then
 			self.BulletData.FuseLength = self.FuseTime * FuseNoise
---			print("FuseNoise: "..FuseNoise)
---			print("TestSuccess")
---			else
---			self.BulletData.FuseLength = 0
---			print("TestFail")
+			end
+			
 			end
 			
 			self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
