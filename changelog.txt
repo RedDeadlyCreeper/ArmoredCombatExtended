@@ -40,3 +40,5 @@ r100
 -Added Textolite Armor.
 -Bugfixes.
 -Oh hey a changelog.
+-Added non fragmenting high explosive
+-Made standard HE fragmentation
