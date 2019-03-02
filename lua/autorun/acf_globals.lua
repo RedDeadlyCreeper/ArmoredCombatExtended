@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 222 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 203 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2000
@@ -61,6 +61,7 @@ ACF.HVAPDamageMult = 1.6
 ACF.FLDamageMult = 1.1
 ACF.HEATDamageMult = 1
 ACF.HEDamageMult = 1
+ACF.HEPDamageMult = 1 -- High Explosive No Fragmentation
 ACF.HESHDamageMult = 1
 ACF.HPDamageMult = 3
 
@@ -206,10 +207,12 @@ elseif CLIENT then
 end
 
 include("acf/shared/rounds/roundap.lua")
+--include("acf/shared/rounds/roundapbc.lua")
 include("acf/shared/rounds/roundapds.lua")
 include("acf/shared/rounds/roundhvap.lua")
 include("acf/shared/rounds/roundaphe.lua")
 include("acf/shared/rounds/roundhe.lua")
+include("acf/shared/rounds/roundhep.lua")
 include("acf/shared/rounds/roundhesh.lua")
 include("acf/shared/rounds/roundheat.lua")
 include("acf/shared/rounds/roundfl.lua")
