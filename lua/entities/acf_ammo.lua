@@ -355,17 +355,14 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		PlayerData.Data10 = self.RoundData10
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
-	local PhysObj = self:GetPhysicsObject()
-	local Efficiency = 0.13 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
-	local vol = PhysObj:GetVolume()
-    	local volMod = math.max( -(vol^2)*514065453/50000000000000 + 7.705540813*vol - 11397.59051,5)*0.59
-	self.Volume = volMod * Efficiency
 	
-	self.Capacity = math.floor(self.Volume*16.38/self.BulletData.RoundVolume)
---	self.Capacity = math.floor(self.Volume)
-	
+	local Efficiency = 0.1576 * ACF.AmmoMod
+	local vol = math.floor(self:GetPhysicsObject():GetVolume())
+	self.Volume = vol*Efficiency
+	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
+	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
 	self.Caliber = GunData.caliber
-	self.RoFMul = (vol > 46000) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
+	self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
 	
 	self:SetNWString( "Ammo", self.Ammo )
 	self:SetNWString( "WireName", GunData.name .. " Ammo" )
@@ -441,7 +438,7 @@ end
 
 function ENT:Think()
 	if not self:IsSolid() then self.Ammo = 0 end
-
+	
 	self:UpdateMass()
 	
 	if self.Ammo ~= self.AmmoLast then
@@ -468,7 +465,7 @@ function ENT:Think()
 		else
 			if not (self.BulletData.Type == "Refill") then
 				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[self.BulletData.Type] then
-					self:EmitSound( "acf_other/explosions/cookOff"..math.random(1,4)..".wav", 350, math.max(150 - self.BulletData.PropMass*10,30)  )	
+					self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
 					local MuzzlePos = self:GetPos()
 					local MuzzleVec = VectorRand()
 					local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
