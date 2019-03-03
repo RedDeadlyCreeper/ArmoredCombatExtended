@@ -2,10 +2,10 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 242 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 244 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
-ACF.Year = 2000
+ACF.Year = 1990
 
 ACF.Threshold = 264.7	--Health Divisor (don't forget to update cvar function down below)
 ACF.PartialPenPenalty = 5 --Exponent for the damage penalty for partial penetration
@@ -44,7 +44,7 @@ ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more da
 ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 
 ACF.TextoliteEffectiveness=0.07 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.TextoliteResilianceFactor = 1.8 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.TextoliteResilianceFactor = 5 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.TextoliteHEATEffectiveness = 3 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEATResilianceFactor = 2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.TextoliteHEResistance = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
