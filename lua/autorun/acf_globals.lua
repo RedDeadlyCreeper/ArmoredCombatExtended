@@ -43,9 +43,9 @@ ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles 
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 
-ACF.TextoliteEffectiveness=0.05 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.TextoliteEffectiveness=0.1 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.TextoliteResilianceFactor = 0.7 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEATEffectiveness = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteHEATEffectiveness = 3 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEATResilianceFactor = 2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.TextoliteHEResistance = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEEffectiveness = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
