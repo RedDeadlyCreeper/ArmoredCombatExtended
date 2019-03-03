@@ -210,7 +210,7 @@ function Round.guiupdate( Panel, Table )
 	
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "HEP"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "HE"										--Hardcoded, match ACFRoundTypes table index
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
