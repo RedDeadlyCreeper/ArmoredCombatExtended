@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.HE = { "MG", "RAC", "SL" }
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "High Explosive Fragmentation(HEF)" --Human readable name
+Round.name = "High Explosive (HE)" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell filled with explosives, fragments when detonating on impact"
+Round.desc = "A shell filled with explosives, detonating on impact"
 Round.netid = 2 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
@@ -83,7 +83,7 @@ end
 
 function Round.network( Crate, BulletData )
 
-	Crate:SetNWString( "AmmoType", "HEF" )
+	Crate:SetNWString( "AmmoType", "HE" )
 	Crate:SetNWString( "AmmoID", BulletData.Id )
 	Crate:SetNWFloat( "Caliber", BulletData.Caliber )
 	Crate:SetNWFloat( "ProjMass", BulletData.ProjMass )
