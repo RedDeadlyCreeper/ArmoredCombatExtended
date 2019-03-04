@@ -63,7 +63,7 @@ if CLIENT then
 		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias).\n\nA ductile prop can survive more damage but is penetrated more easily (slider > 0).\n\nA non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
 		
 		panel:NumSlider( "Material", "acfarmorprop_material", 0, 6 )
-		panel:ControlHelp( "Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\n(1)Cast\n(2)Ceramic\n(3)Rubber\n(4)ERA\n(5)Aluminum\n(6)Textolite\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel.\n" )
+		panel:ControlHelp( "Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\nRolled Steel that does not have any special traits, your standard ACF armor\n(1)Cast\nHeavier and softer than RHA but takes less damage\n(2)Ceramic\nLight plate that is lighter and more resiliant to penetration but is very brittle and hates being penetrated\n(3)Rubber\nRubber is effective vs heat jets and spall but does almost nothing to kinetic rounds\n(4)ERA\nERA is heavier than RHA,when penetrated it explodes damaging nearby props and the shell that hit it\n(5)Aluminum\nLighter than steel but very vulnerable to HEAT and spalling\n(6)Textolite\nFiberglass like material that isn't effective vs kinetic but is good vs HEAT and HE\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel.\n" )
 		
 	end
 	
