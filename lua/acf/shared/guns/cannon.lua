@@ -104,11 +104,11 @@ ACF_defineGun("170mmC", {
 	model = "models/tankgun/tankgun_170mm.mdl",
 	gunclass = "C",
 	caliber = 17.0,
-	weight = 12350,
+	weight = 14000,
 	year = 1990,
 	round = {
 		maxlength = 154,
-		propweight = 34
+		propweight = 40
 	}
 } )
 	
