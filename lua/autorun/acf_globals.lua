@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 257 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 258 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 1990
@@ -56,8 +56,8 @@ ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than i
 
 ACF.APDamageMult = 1.1
 ACF.APHEDamageMult = 1
-ACF.APDSDamageMult = 1.3
-ACF.HVAPDamageMult = 1.6
+ACF.APDSDamageMult = 1.05
+ACF.HVAPDamageMult = 1.1
 ACF.FLDamageMult = 1.1
 ACF.HEATDamageMult = 1
 ACF.HEDamageMult = 1
