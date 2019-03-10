@@ -419,6 +419,8 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	SpallMul = 0
 	elseif Material == 5 then
 	SpallMul = ACF.AluminumSpallMult
+	elseif Material == 6 then
+	SpallMul = ACF.TextoliteSpallMult
 	end
 --	print("CMod: "..Caliber*4) 
 	
@@ -696,7 +698,7 @@ function ACF_ScaledExplosion( ent )
 			HE = ent.BulletData["FillerMass"] or 0
 			Propel = ent.BulletData["PropMass"] or 0
 		end
-		HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo*2
+		HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo
 	end
 	local Radius = HEWeight^0.33*8*39.37
 	local Pos = ent:GetPos()

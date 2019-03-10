@@ -157,7 +157,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 --	local ductilitymult    = math.max((-5/16)*(Entity.ACF.Ductility or 1)*100+1,1)
 
-		local ductilitymult    = 1
+	local ductilitymult    = 1
 	local testMaterial = Entity.ACF.Material or 0
 		--TestMat=3 = rubber
 		--TestMat = 4 = ERA
