@@ -1,8 +1,8 @@
 --define the class
 ACF_defineGunClass("ATR", {
-	spread = 0.1,
+	spread = 0.05,
 	name = "Anti-Tank Rifle",
-	desc = "Anti Tank rifles fire stupidly fast small bullets to penetrate light armor. Built to fire HVAP out of these. Using placeholder models ATM.",
+	desc = "Anti Tank rifles fire stupidly fast small bullets to penetrate light armor. Built to fire HVAP out of these. Using placeholder models ATM. Extremely accurate.",
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 10,
 	sound = "acf_extra/tankfx/gnomefather/7mm1.wav",

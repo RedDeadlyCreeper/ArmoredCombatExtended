@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.HEP = { "MG", "RAC", "SL" }
+ACF.AmmoBlacklist.HEP = { "MG", "RAC", "SL", "ECM", "ATR" }
 
 local Round = {}
 
@@ -210,7 +210,7 @@ function Round.guiupdate( Panel, Table )
 	
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "HE"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "HEP"										--Hardcoded, match ACFRoundTypes table index
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol

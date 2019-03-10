@@ -1,7 +1,8 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APHE = { "MO", "MG", "RAC", "SL" }
+ACF.AmmoBlacklist.APHE = { "ATR", "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+
 
 local Round = {}
 
