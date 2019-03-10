@@ -632,9 +632,7 @@ function ENT:FireShell()
 			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM" or self.BulletData.Type == "HEP") then
 			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/12),0.3)
 			
-			if self.BulletData.FuseLength == 0 then
 			self.BulletData.FuseLength = self.FuseTime * FuseNoise
-			end
 			
 			end
 			
