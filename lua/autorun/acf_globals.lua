@@ -2,10 +2,10 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 258 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 234 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
-ACF.Year = 1990
+ACF.Year = 2000
 
 ACF.Threshold = 264.7	--Health Divisor (don't forget to update cvar function down below)
 ACF.PartialPenPenalty = 5 --Exponent for the damage penalty for partial penetration
@@ -24,12 +24,12 @@ ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate mo
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.AluminumSpallResist=0.75  --Lower = less damage from spall
+ACF.AluminumSpallResist=1.5  --Lower = less damage from spall
 ACF.AluminumSpallMult =  2  --Higher = spalls more
 ACF.AluminumHeatMul = 4  --Higher = More damage from HEAT
 
 ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CastResilianceFactor = 50 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CastResilianceFactor = 25 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CeramicResilianceFactor = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -43,9 +43,9 @@ ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles 
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 
-ACF.TextoliteEffectiveness=0.07 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.TextoliteResilianceFactor = 3 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEATEffectiveness = 3 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteEffectiveness=0.05 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.TextoliteResilianceFactor = 0.7 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.TextoliteHEATEffectiveness = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEATResilianceFactor = 2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.TextoliteHEResistance = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEEffectiveness = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
@@ -56,8 +56,8 @@ ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than i
 
 ACF.APDamageMult = 1.1
 ACF.APHEDamageMult = 1
-ACF.APDSDamageMult = 1.05
-ACF.HVAPDamageMult = 1.1
+ACF.APDSDamageMult = 1.3
+ACF.HVAPDamageMult = 1.6
 ACF.FLDamageMult = 1.1
 ACF.HEATDamageMult = 1
 ACF.HEDamageMult = 1
@@ -212,6 +212,7 @@ include("acf/shared/rounds/roundapds.lua")
 include("acf/shared/rounds/roundhvap.lua")
 include("acf/shared/rounds/roundaphe.lua")
 include("acf/shared/rounds/roundhe.lua")
+include("acf/shared/rounds/roundecmbattery.lua")
 include("acf/shared/rounds/roundhep.lua")
 include("acf/shared/rounds/roundhesh.lua")
 include("acf/shared/rounds/roundheat.lua")
