@@ -13,7 +13,7 @@ ACF.Countermeasure[ClassName] = this
 
 this.AppliesTo = 
 {
-	Infared = true,
+	Infrared = true,
 	Laser = true
 }
 
