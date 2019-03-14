@@ -1,5 +1,5 @@
 
-local ClassName = "Infared"
+local ClassName = "Infrared"
 
 
 ACF = ACF or {}
