@@ -45,7 +45,7 @@ r100
 
 *r107
 -Merged ACF missiles with ACE
--Added Infared guidance which has a shorter range but wider seek cone than radar
+-Added Infrared guidance which has a shorter range but wider seek cone than radar
 -Divided missiles between radar and infared guidance
 -Adjusted ACF Missiles group names and sorting to make more sense
 -Buffed AntiTank rifle accuracy
