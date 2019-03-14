@@ -25,7 +25,7 @@ ACF_defineGun("40mmAAM", { --id
 	desc = "Someone glued a radar dish to a firework.  It's puny, short-range and goes pop instead of boom. It's also fast and agile, like the tiny aircraft you'll be putting this on.",
 	model = "models/missiles/70mmffar.mdl",
 	gunclass = "AAM",
-    rack = "4xRK",  -- Which rack to spawn this missile on?
+	rack = "4xRK",  -- Which rack to spawn this missile on?
 	length = 45,
 	caliber = 4.0,
 	weight = 35,    -- Don't scale down the weight though!
@@ -46,8 +46,8 @@ ACF_defineGun("40mmAAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = ACF_GetAllGuidanceNames(),
-    fuses       = ACF_GetAllFuseNames(),
+    guidance    = {"Dumb", "Infrared"},
+    fuses       = {"Contact", "Radio"},
 
     seekcone    = 40,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
     viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
@@ -85,7 +85,7 @@ ACF_defineGun("AIM-9 AAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Infared"},
+    guidance    = {"Dumb", "Infrared"},
     fuses       = {"Contact", "Radio"},
 
 	racks       = {["1xRK"] = true,  ["2xRK"] = true, ["3xRK"] = true, ["1xRK_small"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
