@@ -46,11 +46,11 @@ r100
 *r107
 -Merged ACF missiles with ACE
 -Added Infrared guidance which has a shorter range but wider seek cone than radar
--Divided missiles between radar and infared guidance
+-Divided missiles between radar and infrared guidance
 -Adjusted ACF Missiles group names and sorting to make more sense
 -Buffed AntiTank rifle accuracy
 -Buffed armor health
 -Restricted ammo to its propper guns
--Added ECMs which counter radar guided missiles but not infared
+-Added ECMs which counter radar guided missiles but not infrared
 -More bugfixing
 -Buffed aim 120s speed but nerfed agility
