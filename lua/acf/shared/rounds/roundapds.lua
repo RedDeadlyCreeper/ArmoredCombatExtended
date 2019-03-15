@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APDS =  { "ATR", "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist.APDS =  { "ATR", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
 local Round = {}
 
@@ -51,6 +51,12 @@ function Round.convert( Crate, PlayerData )
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1.9
 	Data.VelModifier = 1.7
+	Data.Ricochet = 50
+	elseif GunClass == "MG" then
+	Data.MinCalMult = 0.5
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 1.7
+	Data.VelModifier = 1.8
 	Data.Ricochet = 50
 	elseif GunClass == "SA" then
 	Data.MinCalMult = 0.3
