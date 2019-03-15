@@ -135,6 +135,46 @@ ACF_defineGun("AT-3 ATGM", { --id
     armdelay    = 0.6     -- minimum fuse arming delay
 } )
 
+ACF_defineGun("9M113 ASM", { --id
+	name = "9M113 Missile",
+	desc = "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
+	model = "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
+	gunclass = "ASM",
+    rack = "1x Kornet",  -- Which rack to spawn this missile on?
+	length = 66,
+	caliber = 15.2,
+	weight = 100,    -- Don't scale down the weight though!
+    modeldiameter = 15.2, -- in cm
+	year = 1994,
+	round = {
+		model		= "models/missiles/glatgm/9m112f.mdl", --shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
+		rackmdl		= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
+		maxlength	= 45,
+		casing		= 0.2,			-- thickness of missile casing, cm
+		armour		= 5,			-- effective armour thickness of casing, in mm
+		propweight	= 1,			-- motor mass - motor casing
+		thrust		= 12000,			-- average thrust - kg*in/s^2
+		burnrate	= 150,			-- cm^3/s at average chamber pressure
+		starterpct	= 0.50,			-- percentage of the propellant consumed in the starter motor.
+		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
+		dragcoef	= 0.001,		-- drag coefficient while falling
+                dragcoefflight  = 0.01,                 -- drag coefficient during flight
+		finmul		= 0.01,			-- fin multiplier (mostly used for unpropelled guidance)
+        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+	},
+
+    ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
+	guidance    = {"Dumb", "Laser"},
+    fuses       = {"Contact", "Optical"},
+
+    racks       = {["1x Kornet"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+
+    viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
+
+    agility     = 0.05,		-- multiplier for missile turn-rate.
+    armdelay    = 0.1     -- minimum fuse arming delay
+} )
+
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("Ataka ATGM", { --id
 	name = "9M120 Ataka Missile",
