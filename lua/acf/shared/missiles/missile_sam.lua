@@ -149,7 +149,7 @@ ACF_defineGun("9M311", { --id
 	desc = "The 9M311 missile is a fast hypersonic Anti Air missile that while agile is not agile enough to hit maneuvering planes but excels against helicopters.",
 	model = "models/missiles/aim9.mdl",
 	gunclass = "SAM",
-    rack = "1x BGM-71E",  -- Which rack to spawn this missile on?
+    rack = "1x 9m311",  -- Which rack to spawn this missile on?
 	length = 109,		--Used for the physics calculations
 	caliber = 9,
 	weight = 71,    -- Don't scale down the weight though!
@@ -176,7 +176,7 @@ ACF_defineGun("9M311", { --id
     guidance    = {"Dumb", "Radar","Antimissile"},
     fuses       = {"Contact", "Optical"},
 
-    racks       = {["1x BGM-71E"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+    racks       = {["1x 9m311"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
 	seekcone    = 10,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.) 
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.	
