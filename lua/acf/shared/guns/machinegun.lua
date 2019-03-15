@@ -67,11 +67,9 @@ ACF_defineGun("20mmMG", {
 	gunclass = "MG",
 	canparent = true,
 	caliber = 2.0,
-	weight = 95,
+	weight = 115,
 	year = 1935,
 	rofmod = 0.55,
-	magsize = 50,
-	magreload = 4,
 	round = {
 		maxlength = 22,
 		propweight = 0.09
@@ -80,15 +78,14 @@ ACF_defineGun("20mmMG", {
 
 ACF_defineGun("25mmMG", {
 	name = "(+)25mm Machinegun",
-	desc = "The 25mm MG is essentially an autocannon; it fires small 25mm bullets at a fast rate that gives it good AA capability.",
+	desc = "The 25mm MG is essentially an autocannon; it fires small 25mm bullets at a fast rate that gives it good AA capability. Shilka Cannon.",
 	model = "models/machinegun/machinegun_25mm.mdl",
 	gunclass = "MG",
 	caliber = 2.5,
-	weight = 195,
-	year = 1938,
+	canparent = true,
+	weight = 255,
+	year = 1960,
 	rofmod = 0.35,
-	magsize = 60,
-	magreload = 3,
 	round = {
 		maxlength = 23.5,
 		propweight = 0.18
