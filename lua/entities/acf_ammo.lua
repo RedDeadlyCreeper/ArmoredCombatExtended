@@ -211,6 +211,9 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 		self.Inflictor = Inflictor
 		self.Damaged = CurTime() + (5 - Ratio*3)
 		Wire_TriggerOutput(self, "On Fire", 1)
+		self.Inflictor = Inflictor
+		self.Exploding = true
+		ACF_ScaledExplosion( self )
 	end
 	
 	return HitRes --This function needs to return HitRes
