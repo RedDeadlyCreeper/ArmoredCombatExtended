@@ -131,18 +131,18 @@ function EFFECT:ApplyMovement( Bullet )
 		local DeltaTime = ACF.CurTime - Bullet.LastThink
 		--local DeltaPos = Bullet.SimFlight*DeltaTime
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
-		local Length =  math.max(DeltaPos:Length()*2,1)
+		local Length =  math.max(DeltaPos:Length()*1.5,1)
 		local MaxSprites = 2 --math.min(math.floor(math.max(Bullet.Caliber/5,1)*1.333)+1,5)
 		local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos)-- - DeltaPos )
 		if (Light) then
 			Light:SetAngles( Bullet.SimFlight:Angle() )
 			Light:SetVelocity( Bullet.SimFlight:GetNormalized() ) --Vector() ) --Bullet.SimFlight )
 			Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
-			Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.075,0.15) ) -- 0.075, 0.1
-			Light:SetStartAlpha( 255 )
-			Light:SetEndAlpha( 155 )
-			Light:SetStartSize( 15*Bullet.Caliber ) -- 5
-			Light:SetEndSize( 1 ) --15*Bullet.Caliber
+			Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.1,0.2) ) -- 0.075, 0.1
+			Light:SetStartAlpha( 180 )
+			Light:SetEndAlpha( 30 )
+			Light:SetStartSize( 30*Bullet.Caliber ) -- 5
+			Light:SetEndSize( 5*Bullet.Caliber ) --15*Bullet.Caliber
 			Light:SetStartLength( Length )
 			Light:SetEndLength( 1 ) --Length
 		end
