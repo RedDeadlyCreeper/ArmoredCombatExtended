@@ -22,6 +22,8 @@ ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
+ACF.BoomMult = 15 --How much more does HE blow up, useful since crates detonate all at once now.
+
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.AluminumSpallResist=1.5  --Lower = less damage from spall
