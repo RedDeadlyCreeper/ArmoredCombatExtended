@@ -86,7 +86,7 @@ ACF_defineGun("170mmAL", {
 	model = "models/tankgun/tankgun_al_170mm.mdl",
 	gunclass = "AL",
 	caliber = 17.0,
-	weight = 13350,
+	weight = 14850,
 	year = 1970,
 	rofmod = 0.8,
 	magsize = 4,
