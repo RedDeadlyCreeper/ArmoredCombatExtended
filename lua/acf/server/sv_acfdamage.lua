@@ -698,7 +698,7 @@ function ACF_ScaledExplosion( ent )
 			HE = ent.BulletData["FillerMass"] or 0
 			Propel = ent.BulletData["PropMass"] or 0
 		end
-		HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo
+		HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo*ACF.BoomMult
 	end
 	local Radius = HEWeight^0.33*8*39.37
 	local Pos = ent:GetPos()
