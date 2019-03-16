@@ -24,24 +24,24 @@ ACF_defineGun("BGM-71E ATGM", { --id
     rack = "1x BGM-71E",  -- Which rack to spawn this missile on?
 	length = 46,		--Used for the physics calculations
 	caliber = 13,
-	weight = 23,    -- Don't scale down the weight though!
+	weight = 76.4,    -- Don't scale down the weight though!
 	year = 1970,
 	rofmod = 0.8,
 	round = {
 		model		= "models/missiles/bgm_71e.mdl",
 		rackmdl		= "models/missiles/bgm_71e.mdl",
-		maxlength	= 30,
+		maxlength	= 60,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
-		thrust		= 12000,				-- average thrust - kg*in/s^2
-		burnrate	= 200,				-- cm^3/s at average chamber pressure
+		thrust		= 14000,				-- average thrust - kg*in/s^2
+		burnrate	= 250,				-- cm^3/s at average chamber pressure
 		starterpct	= 0.2,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 2000,				-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.005,			-- drag coefficient while falling
                 dragcoefflight  = 0.06,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(8.8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(3.85)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -62,24 +62,24 @@ ACF_defineGun("9M113 ATGM", { --id
     rack = "1x Kornet",  -- Which rack to spawn this missile on?
 	length = 66,
 	caliber = 15.2,
-	weight = 100,    -- Don't scale down the weight though!
+	weight = 108,    -- Don't scale down the weight though!
     modeldiameter = 15.2, -- in cm
 	year = 1994,
 	round = {
 		model		= "models/missiles/glatgm/9m112f.mdl", --shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
 		rackmdl		= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
-		maxlength	= 45,
+		maxlength	= 90,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 12000,			-- average thrust - kg*in/s^2
+		thrust		= 8000,			-- average thrust - kg*in/s^2
 		burnrate	= 150,			-- cm^3/s at average chamber pressure
-		starterpct	= 0.50,			-- percentage of the propellant consumed in the starter motor.
+		starterpct	= 0.30,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.01,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -97,30 +97,30 @@ ACF_defineGun("9M113 ATGM", { --id
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
 ACF_defineGun("AT-3 ATGM", { --id
 	name = "AT-3 Missile",
-	desc = "The AT-3 missile (9M14P) is a short-range wire-guided anti-tank munition. It can be mounted on both helicopters and ground vehicles. Due to its low weight and size, it is a good alternative to the BGM-71E, at the expense of range and speed.",
+	desc = "The AT-3 missile (9M14P) is a short-range wire-guided anti-tank munition. It can be mounted on both helicopters and ground vehicles. Due to its low weight and size, it is a good alternative to the BGM-71E, at the expense of speed and warhead size.",
 	model = "models/missiles/at3.mdl",
 	gunclass = "ATGM",
     rack = "1xAT3RK",  -- Which rack to spawn this missile on?
 	length = 43,		--Used for the physics calculations
 	caliber = 13,
-	weight = 12,    -- Don't scale down the weight though!
+	weight = 48,    -- Don't scale down the weight though!
 	year = 1969,
 	rofmod = 0.75,
 	round = {
 		model		= "models/missiles/at3.mdl",
 		rackmdl		= "models/missiles/at3.mdl",
-		maxlength	= 30,
+		maxlength	= 38,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1,				-- motor mass - motor casing
-		thrust		= 4000,				-- average thrust - kg*in/s^2
-		burnrate	= 130,				-- cm^3/s at average chamber pressure
+		thrust		= 5000,				-- average thrust - kg*in/s^2
+		burnrate	= 150,				-- cm^3/s at average chamber pressure
 		starterpct	= 0.05,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 2000,				-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.005,			-- drag coefficient while falling
                 dragcoefflight  = 0.05,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(5.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -144,14 +144,14 @@ ACF_defineGun("Ataka ATGM", { --id
     rack = "1x Ataka",  -- Which rack to spawn this missile on?
 	length = 85,
 	caliber = 13,
-	weight = 65,    -- Don't scale down the weight though!
+	weight = 198,    -- Don't scale down the weight though!
     modeldiameter = 17.2 * 1.27, -- in cm
 	year = 1984,
 	rofmod = 0.8,
 	round = {
 		model		= "models/missiles/9m120.mdl",
 		rackmdl		= "models/missiles/9m120.mdl",
-		maxlength	= 50,
+		maxlength	= 70,
 		casing		= 0.1,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1.8,			-- motor mass - motor casing
@@ -162,7 +162,7 @@ ACF_defineGun("Ataka ATGM", { --id
 		dragcoef	= 0.003,		-- drag coefficient while falling
                 dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(4.3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -180,37 +180,37 @@ ACF_defineGun("Ataka ATGM", { --id
 -- The 9M17P, a very long range, very powerful but very slow antitank missile
 ACF_defineGun("AT-2 ATGM", { --id
 	name = "AT-2 Missile",
-	desc = "The 9M17P is a VERY powerful long-range antitank missile, which sacrifices flight speed for killing power.\nIt is an excellent long-range missile for heavy antitank work, and its size gives it good multipurpose capability.",
+	desc = "The 9M17P is a VERY powerful long-range antitank missile, which sacrifices flight speed for agility.\nIt is an excellent long-range missile for heavy antitank work, and its size gives it good multipurpose capability.",
 	model = "models/missiles/at2.mdl",
 	gunclass = "ATGM",
     rack = "1xRK",  -- Which rack to spawn this missile on?
 	length = 55,		--Used for the physics calculations
 	caliber = 16, 
-	weight = 27,    -- Don't scale down the weight though!
+	weight = 108,    -- Don't scale down the weight though!
 	year = 1969,
 	rofmod = 0.9,
 	round = {
 		model		= "models/missiles/at2.mdl",
 		rackmdl		= "models/missiles/at2.mdl",
-		maxlength	= 55,
+		maxlength	= 68,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1,				-- motor mass - motor casing
-		thrust		= 1500,				-- average thrust - kg*in/s^2
-		burnrate	= 50,				-- cm^3/s at average chamber pressure
+		thrust		= 1800,				-- average thrust - kg*in/s^2
+		burnrate	= 40,				-- cm^3/s at average chamber pressure
 		starterpct	= 0.2,				-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 500,				-- minimum speed beyond which the fins work at 100% efficiency
+		minspeed	= 200,				-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,			-- drag coefficient while falling
-                dragcoefflight  = 0.01,                 -- drag coefficient during flight
+        dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(5.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Laser", "Wire"},
     fuses       = {"Contact", "Optical"},
-	viewcone    = 90,   -- getting outside this cone will break the lock.  Divided by 2.
+	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["2x AGM-114"] = true, ["4x AGM-114"] = true, ["1xRK_small"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-    agility     = 0.2,     -- multiplier for missile turn-rate.
+    agility     = 0.3,     -- multiplier for missile turn-rate.
     armdelay    = 1     -- minimum fuse arming delay
 } )
