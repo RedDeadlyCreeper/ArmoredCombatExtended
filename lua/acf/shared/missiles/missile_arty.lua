@@ -169,7 +169,7 @@ ACF_defineGun("RW61 RA", { --id
 		rackmdl		= "models/missiles/RW61M.mdl",
 		maxlength	= 80,
 		casing		= 1.0,	        -- thickness of missile casing, cm
-		armour		= 24,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 5,	        -- motor mass - motor casing
 		thrust		= 5000,	    	-- average thrust - kg*in/s^2
 		burnrate	= 5000,	        -- cm^3/s at average chamber pressure
