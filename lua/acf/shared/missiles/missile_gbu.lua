@@ -37,8 +37,8 @@ ACF_defineGun("WalleyeGBU", { --id
 		model		= "models/bombs/gbu/agm62.mdl",
 		rackmdl		= "models/bombs/gbu/agm62.mdl",
 		maxlength	= 80,			-- real length is 3.45m, filler should be about 374kg
-		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.3,	        -- thickness of missile casing, cm
+		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 1,	        -- motor mass - motor casing
 		thrust		= 1,
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -75,8 +75,8 @@ ACF_defineGun("227kgGBU", { --id
 		model		= "models/bombs/gbu/gbu12.mdl",
 		rackmdl		= "models/bombs/gbu/gbu12.mdl",
 		maxlength	= 250,
-		casing		= 1.5,	        -- thickness of missile casing, cm
-		armour		= 20,			-- effective armour thickness of casing, in mm
+		casing		= 0.5,	        -- thickness of missile casing, cm
+		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -117,8 +117,8 @@ ACF_defineGun("454kgGBU", { --id
 		model		= "models/bombs/gbu/gbu16.mdl",
 		rackmdl		= "models/bombs/gbu/gbu16.mdl",
 		maxlength	= 500,
-		casing		= 2.0,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.5,	        -- thickness of missile casing, cm
+		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -157,8 +157,8 @@ ACF_defineGun("909kgGBU", { --id
 		model		= "models/bombs/gbu/gbu10_fold.mdl",
 		rackmdl		= "models/bombs/gbu/gbu10.mdl",
 		maxlength	= 510,
-		casing		= 2.0,	        -- thickness of missile casing, cm
-		armour		= 20,			-- effective armour thickness of casing, in mm
+		casing		= 0.5,	        -- thickness of missile casing, cm
+		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
