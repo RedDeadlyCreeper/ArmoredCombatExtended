@@ -37,9 +37,9 @@ ACF_defineGun("FIM-92 SAM", { --id
 		casing		= 0.1,	        -- thickness of missile casing, cm
 		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 1.5,	        -- motor mass - motor casing
-		thrust		= 7000,	    -- average thrust - kg*in/s^2			--was 120000
+		thrust		= 6000,	    -- average thrust - kg*in/s^2			--was 120000
 		burnrate	= 1000,	        -- cm^3/s at average chamber pressure	
-		starterpct	= 0.3,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
+		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 3000,		-- minimum speed beyond which the fins work at 100% efficiency	--was 15000
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.0001,                 -- drag coefficient during flight
@@ -52,10 +52,10 @@ ACF_defineGun("FIM-92 SAM", { --id
 
 	racks       = {["1x FIM-92"] = true,  ["2x FIM-92"] = true,  ["4x FIM-92"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    seekcone    = 7.5,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
-    viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.	--was 55
+    seekcone    = 15,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
+    viewcone    = 55,   -- getting outside this cone will break the lock.  Divided by 2.	--was 55
 
-    agility     = 3.0,     -- multiplier for missile turn-rate.		--was 1
+    agility     = 4.0,     -- multiplier for missile turn-rate.		--was 1
     armdelay    = 0.2     -- minimum fuse arming delay		-was 0.3
 } )
 
@@ -79,8 +79,8 @@ ACF_defineGun("Strela-1 SAM", { --id
 		casing		= 0.05,	        -- thickness of missile casing, cm
 		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1,	        -- motor mass - motor casing
-		thrust		= 4000,	    -- average thrust - kg*in/s^2		
-		burnrate	= 400,	        -- cm^3/s at average chamber pressure	
+		thrust		= 3500,	    -- average thrust - kg*in/s^2		
+		burnrate	= 300,	        -- cm^3/s at average chamber pressure	
 		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency	
 		dragcoef	= 0.003,		-- drag coefficient while falling	
