@@ -37,7 +37,7 @@ ACF_defineGun("RS82 ASR", { --id
 		rackmdl		= "models/missiles/rs82.mdl",
 		maxlength	= 25,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 8,			-- effective armour thickness of casing, in mm
+		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
 		thrust		= 15000,		-- average thrust - kg*in/s^2
 		burnrate	= 800,			-- cm^3/s at average chamber pressure
@@ -78,7 +78,7 @@ ACF_defineGun("HVAR ASR", { --id
 		rackmdl		= "models/missiles/hvar.mdl",
 		maxlength	= 25,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 12,			-- effective armour thickness of casing, in mm
+		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
 		thrust		= 25000,		-- average thrust - kg*in/s^2
 		burnrate	= 600,			-- cm^3/s at average chamber pressure
@@ -118,7 +118,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 		rackmdl		= "models/munitions/round_100mm_mortar_shot.mdl",
 		maxlength	= 63,
 		casing		= 0.08,			-- thickness of missile casing, cm
-		armour		= 10,			-- effective armour thickness of casing, in mm
+		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.5,			-- motor mass - motor casing
 		thrust		= 120000,		-- average thrust - kg*in/s^2 very high but only burns a brief moment, most of which is in the tube
 		burnrate	= 1200,			-- cm^3/s at average chamber pressure
@@ -158,7 +158,7 @@ ACF_defineGun("S-24 ASR", { --id
 		rackmdl		= "models/missiles/s24.mdl",
 		maxlength	= 40,
 		casing		= 0.3,			-- thickness of missile casing, cm
-		armour		= 18,			-- effective armour thickness of casing, in mm
+		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 15,			-- motor mass - motor casing
 		thrust		= 9000,		-- average thrust - kg*in/s^2
 		burnrate	= 1000,			-- cm^3/s at average chamber pressure
@@ -198,7 +198,7 @@ ACF_defineGun("Zuni ASR", { --id
 		rackmdl		= "models/ghosteh/zuni_folded.mdl",
 		maxlength	= 60,
 		casing		= 0.2,
-		armor		= 12,
+		armor		= 4,
 		propweight	= 0.7,
 		thrust		= 24000,
 		burnrate	= 1000,
