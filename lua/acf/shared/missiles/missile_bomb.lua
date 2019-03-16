@@ -32,17 +32,17 @@ ACF_defineGun("50kgBOMB", { --id
 	round = {
 		model		= "models/bombs/fab50.mdl",
 		rackmdl		= "models/bombs/fab50.mdl",
-		maxlength	= 50,
-		casing		= 0.5,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		maxlength	= 60,
+		casing		= 0.05,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.01,         -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,         -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient of the missile
 		finmul		= 0.008,		-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -75,16 +75,16 @@ ACF_defineGun("100kgBOMB", { --id
 		model		= "models/bombs/fab100.mdl",
 		rackmdl		= "models/bombs/fab100.mdl",
 		maxlength	= 100,
-		casing		= 0.7,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.1,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.005,        -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,        -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient of the missile
 		finmul		= 0.007,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -115,16 +115,16 @@ ACF_defineGun("250kgBOMB", { --id
 		model		= "models/bombs/fab250.mdl",
 		rackmdl		= "models/bombs/fab250.mdl",
 		maxlength	= 250, --was 115, wtf!
-		casing		= 1.5,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.15,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.005,        -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,        -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient of the missile
 		finmul		= 0.005,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -156,16 +156,16 @@ ACF_defineGun("500kgBOMB", { --id
 		model		= "models/bombs/fab500.mdl",
 		rackmdl		= "models/bombs/fab500.mdl",
 		maxlength	= 200,
-		casing		= 1.5,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.2,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.005,        -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,        -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient of the missile
 		finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -196,16 +196,16 @@ ACF_defineGun("1000kgBOMB", { --id
 		model		= "models/bombs/an_m66.mdl",
 		rackmdl		= "models/bombs/an_m66.mdl",
 		maxlength	= 375,
-		casing		= 2.0,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.2,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.005,        -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,        -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient of the missile
 		finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -237,16 +237,16 @@ ACF_defineGun("100kgGBOMB", { --id
 		model		= "models/missiles/micro.mdl",
 		rackmdl		= "models/missiles/micro.mdl",
 		maxlength	= 100,
-		casing		= 0.7,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.1,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.005,        -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,        -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.0001,		-- drag coefficient of the missile
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -273,16 +273,16 @@ ACF_defineGun("250kgGBOMB", { --id
 		model		= "models/missiles/fab250.mdl",
 		rackmdl		= "models/missiles/fab250.mdl",
 		maxlength	= 250, 
-		casing		= 1.5,	        -- thickness of missile casing, cm
-		armour		= 25,			-- effective armour thickness of casing, in mm
+		casing		= 0.2,	        -- thickness of missile casing, cm
+		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.005,        -- percentage of the propellant consumed in the starter motor.
+		starterpct	= 1,        -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient of the missile
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
