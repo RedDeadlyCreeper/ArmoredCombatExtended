@@ -22,7 +22,7 @@ ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 15 --How much more does HE blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 15 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -53,7 +53,8 @@ ACF.TextoliteHEResistance = 1.2 --Higher = more damage on pierce, Lower = less d
 ACF.TextoliteHEEffectiveness = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 
 
-ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
+ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA than its currentarmor
+ACF.ERAEffectivenessMult = 8 --How many more times is the detonating ERA than its maxarmor
 
 
 ACF.APDamageMult = 1.1
