@@ -21,30 +21,30 @@ ACF_defineGunClass("ASM", {
 -- The AGM-114, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("AGM-114 ASM", { --id
 	name = "AGM-114 Missile",
-	desc = "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types.",
+	desc = "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.",
 	model = "models/missiles/agm_114.mdl",
 	gunclass = "ASM",
     rack = "2x AGM-114",  -- Which rack to spawn this missile on?
 	length = 66,
 	caliber = 16,
-	weight = 45,    -- Don't scale down the weight though!
+	weight = 196,    -- Don't scale down the weight though!
     modeldiameter = 17.2 * 1.27, -- in cm
 	year = 1984,
 	round = {
 		model		= "models/missiles/agm_114.mdl",
 		rackmdl		= "models/missiles/agm_114.mdl",
-		maxlength	= 45,
+		maxlength	= 77,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 18000,			-- average thrust - kg*in/s^2
-		burnrate	= 180,			-- cm^3/s at average chamber pressure
+		thrust		= 11000,			-- average thrust - kg*in/s^2
+		burnrate	= 120,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.25,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 8000,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,		-- drag coefficient while falling
                 dragcoefflight  = 0.03,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -68,7 +68,7 @@ ACF_defineGun("AGM-45 ASM", { --id
     rack = "1xRK",  -- Which rack to spawn this missile on?
 	length = 1000,
 	caliber = 12,
-	weight = 150,    -- Don't scale down the weight though!
+	weight = 354,    -- Don't scale down the weight though!
     modeldiameter = 7.1 * 2.54, -- in cm
 	year = 1969,
 	rofmod = 0.6,
@@ -77,16 +77,16 @@ ACF_defineGun("AGM-45 ASM", { --id
 		rackmdl		= "models/missiles/aim120.mdl",
 		maxlength	= 120,
 		casing		= 0.15,			-- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 3,			-- motor mass - motor casing
-		thrust		= 800,		-- average thrust - kg*in/s^2
+		thrust		= 600,		-- average thrust - kg*in/s^2
 		burnrate	= 300,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.05,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0,                 -- drag coefficient during flight
 		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.75)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -111,23 +111,24 @@ ACF_defineGun("AGM-122 ASM", { --id
     rack = "1xRK",  -- Which rack to spawn this missile on?
 	length = 205,
 	caliber = 12.7, -- Aim-9 is listed as 9 as of 6/30/2017, why?  Wiki lists it as a 5" rocket!
-	weight = 88.5,    -- Don't scale down the weight though!
+	weight = 177,    -- Don't scale down the weight though!
 	rofmod = 0.3,
 	year = 1986,
 	round = {
 		model		= "models/missiles/aim9.mdl",
 		rackmdl		= "models/missiles/aim9.mdl",
-		maxlength	= 70,
+		maxlength	= 80,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 7,			-- effective armour thickness of casing, in mm
 		propweight	= 4,	        -- motor mass - motor casing
-		thrust		= 4500,	    -- average thrust - kg*in/s^2		--was 100000
+		thrust		= 4000,	    -- average thrust - kg*in/s^2		--was 100000
 		burnrate	= 1400,	        -- cm^3/s at average chamber pressure	--was 350
 		starterpct	= 0.4,          -- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 5000,		-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.001,                 -- drag coefficient during flight
-		finmul		= 0.03			-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
