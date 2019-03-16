@@ -54,3 +54,13 @@ r100
 -Added ECMs which counter radar guided missiles but not infrared
 -More bugfixing
 -Buffed aim 120s speed but nerfed agility
+
+*r108
+-Tweaked most of the ACF Missiles making ATGMs and ASMs less spammable.
+-Missile Payloads have also been significantly buffed and made closer to their RL values.
+-Decreased armor of almost all missiles across the board
+-Made ERA work differently vs KE and HEAT
+-More bugfixing
+-Rebalanced the burn time and thrust of SAMs
+-Added a few more sounds.
+-Ammocrates now instantly detonate
