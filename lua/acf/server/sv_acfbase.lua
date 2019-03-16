@@ -488,6 +488,13 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		end
 		
 	elseif testMaterial == 4 then --ERA	
+	
+		local blastArmor = armor
+		if Type == "HEAT" then
+		blastArmor = ACF.ERAEffectivenessMultHEAT * armor
+		else
+		blastArmor = ACF.ERAEffectivenessMult * armor
+		end
 --				print(ERABoom)	
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
@@ -518,11 +525,10 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
 		if maxPenetration > losArmor then
 --			print(BOOM)
-			local blastArmor = armor * ACF.ERAEffectivenessMult
 			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
 			HitRes.Damage   = 9999999999										-- I have yet to meet one who can survive this
-			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.05,1)						-- Remaining penetration
-			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.95)			
+			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
+			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)			
 			ACF_HE( Entity:GetPos() , Vector(0,0,1) , armor*0.01 , armor*0.1 , Inflictor , Entity, Entity ) --ERABOOM
 --			HitRes.Overkill = 0						-- Remaining penetration
 --			HitRes.Loss     = 1						-- Energy loss in percents 
