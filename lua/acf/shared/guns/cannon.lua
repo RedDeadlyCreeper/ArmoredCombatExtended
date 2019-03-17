@@ -18,7 +18,6 @@ ACF_defineGun("37mmC", { --id
 	gunclass = "C",
 	caliber = 3.7,
 	weight = 350,
-	canparent = true,
 	year = 1919,
 	rofmod = 1.4,
 	sound = "weapons/ACF_Gun/ac_fire4.wav",
