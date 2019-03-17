@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 325 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 328 -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2000
@@ -143,7 +143,7 @@ ACF.SpreadScale = 8		-- The maximum amount that damage can decrease a gun's accu
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
-ACF.EnableDefaultDP = true -- Enable the inbuilt damage protection system.
+ACF.EnableDefaultDP = false -- Enable the inbuilt damage protection system.
 
 
 if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
