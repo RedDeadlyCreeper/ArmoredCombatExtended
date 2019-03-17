@@ -17,11 +17,11 @@ ACF_defineGun("20mmAC", { --id
 	model = "models/autocannon/autocannon_20mm.mdl",
 	caliber = 2.0,
 	gunclass = "AC",
-	weight = 225,
+	weight = 450,
 	year = 1930,
-	rofmod = 1.8,
+	rofmod = 1.4,
 	round = {
-		maxlength = 32,
+		maxlength = 34,
 		propweight = 0.13
 	}
 } )
@@ -32,12 +32,12 @@ ACF_defineGun("30mmAC", {
 	model = "models/autocannon/autocannon_30mm.mdl",
 	gunclass = "AC",
 	caliber = 3.0,
-	weight = 960,
+	weight = 1540,
 	year = 1935,
-	rofmod = 1,
+	rofmod = 0.95,
 	round = {
-		maxlength = 39,
-		propweight = 0.350
+		maxlength = 45,
+		propweight = 0.5
 	}
 } )
 	
@@ -47,14 +47,14 @@ ACF_defineGun("40mmAC", {
 	model = "models/autocannon/autocannon_40mm.mdl",
 	gunclass = "AC",
 	caliber = 4.0,
-	weight = 1500,
+	weight = 2805,
 	year = 1940,
-	rofmod = 0.92,
-	magsize = 30,
+	rofmod = 0.85,
+	magsize = 50,
 	magreload = 3,
 	round = {
-		maxlength = 45,
-		propweight = 0.9
+		maxlength = 54,
+		propweight = 1
 	}
 } )
 	
@@ -64,14 +64,14 @@ ACF_defineGun("50mmAC", {
 	model = "models/autocannon/autocannon_50mm.mdl",
 	gunclass = "AC",
 	caliber = 5.0,
-	weight = 2130,
+	weight = 3720,
 	year = 1965,
 	rofmod = 0.9,
-	magsize = 20,
+	magsize = 30,
 	magreload = 3,
 	round = {
-		maxlength = 52,
-		propweight = 1.2
+		maxlength = 58,
+		propweight = 1.4
 	}
 } )
 
