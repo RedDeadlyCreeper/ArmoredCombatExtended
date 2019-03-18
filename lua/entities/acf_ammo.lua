@@ -185,8 +185,13 @@ function ENT:ACF_Activate( Recalc )
 end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
-
-	local Mul = ((Type == "HEAT" and ACF.HEATMulAmmo) or 1) --Heat penetrators deal bonus damage to ammo
+	local Mul = 1
+	local CMul = 1
+	if Type == "HEAT" then
+	Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo
+	CMul = 1.8
+	end
+	
 	local HitRes = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor )	--Calling the standard damage prop function
 	
 	if self.Exploding or not self.IsExplosive then return HitRes end
@@ -207,13 +212,24 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	if self.Damaged then return HitRes end
 	local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
 	--print(Ratio)
-	if ( Ratio * self.Capacity/self.Ammo ) > math.Rand(0,1) then  
+	local Chance = math.Rand(0,1)
+
+		if Chance > 0.9 / CMul then  
 		self.Inflictor = Inflictor
 		self.Damaged = CurTime() + (5 - Ratio*3)
 		Wire_TriggerOutput(self, "On Fire", 1)
-		self.Inflictor = Inflictor
-		self.Exploding = true
-		ACF_ScaledExplosion( self )
+--		print("Burning")
+	elseif( Chance > 0.5 / CMul) then --Instant Detonation
+	local FEnergy = ACF_Kinetic( 999999999999999999999 , 9999999999999999999999999999999999999, 90000 ) or Energy
+	
+	HitRes = ACF_PropDamage( Entity, FEnergy, 9999999, 0, Inflictor )	--I'd like to see someone dodge this jank code
+--	print("Instant Detonation")
+		if self.Ammo > 1 then
+			ACF_ScaledExplosion( self )
+		else
+			ACF_HEKill( self, VectorRand() )
+		end
+	return HitRes --This function needs to return HitRes
 	end
 	
 	return HitRes --This function needs to return HitRes
@@ -423,7 +439,6 @@ function ENT:TriggerInput( iname, value )
 		else
 			self.Load = false
 		end
-	elseif (iname == "Fuse Length" and value > 0 and (self.BulletData.RoundType == "HE" or self.BulletData.RoundType == "APHE")) then
 	end
 
 end
@@ -462,6 +477,11 @@ function ENT:Think()
 		
 	self:NextThink( CurTime() +  1 )
 	
+	
+	----
+	----
+	----
+	----
 	if self.Damaged then
 		if self.Damaged < CurTime() then
 			ACF_ScaledExplosion( self )
@@ -481,7 +501,7 @@ function ENT:Think()
 					self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 					self:CreateShell( self.BulletData )
 					
-					self.Ammo = self.Ammo - 1
+--					self.Ammo = self.Ammo - 1 --They have pracically infinite ammo anyways
 					
 				end
 			end
@@ -503,7 +523,7 @@ function ENT:Think()
 									
 							local Supply = math.ceil((50000/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*1000))/dist)
 							--Msg(tostring(50000).."/"..((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*1000).."/"..dist.."="..Supply.."\n")
-							local Transfert = math.min(Supply, Ammo.Capacity - Ammo.Ammo)
+							local Transfert = math.min(Supply, Ammo.Capacity - Ammo.Ammo) * math.ceil(self.Mass/2000)
 							Ammo.Ammo = Ammo.Ammo + Transfert
 							self.Ammo = self.Ammo - Transfert
 								
@@ -515,7 +535,10 @@ function ENT:Think()
 			end
 		end
 	end
-	
+	----
+	----
+	----
+	----
 	if self.SupplyingTo then
 		for k, EntID in pairs( self.SupplyingTo ) do
 			local Ammo = ents.GetByIndex(EntID)
