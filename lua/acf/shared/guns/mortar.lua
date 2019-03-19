@@ -20,7 +20,7 @@ ACF_defineGun("50mmM", { --id
 	rofmod = 1.25,
 	year = 1930,
 	round = {
-		maxlength = 20,
+		maxlength = 25,
 		propweight = 0.03
 	}
 } )
@@ -35,7 +35,7 @@ ACF_defineGun("60mmM", { --id
 	rofmod = 1.25,
 	year = 1930,
 	round = {
-		maxlength = 20,
+		maxlength = 30,
 		propweight = 0.037
 	}
 } )
@@ -49,7 +49,7 @@ ACF_defineGun("80mmM", {
 	weight = 120,
 	year = 1930,
 	round = {
-		maxlength = 28,
+		maxlength = 38,
 		propweight = 0.055 
 	}
 } )
@@ -77,7 +77,7 @@ ACF_defineGun("150mmM", {
 	weight = 1255,
 	year = 1945,
 	round = {
-		maxlength = 58,
+		maxlength = 60,
 		propweight = 0.235 
 	}
 } )
@@ -91,7 +91,7 @@ ACF_defineGun("200mmM", {
 	weight = 2850,
 	year = 1940,
 	round = {
-		maxlength = 80,
+		maxlength = 90,
 		propweight = 0.330 
 	}
 } )
@@ -106,7 +106,7 @@ ACF_defineGun("280mmM", {
 	weight = 9035,
 	year = 1945,
 	round = {
-		maxlength = 138,
+		maxlength = 150,
 		propweight = 0.462 
 	}
 } )
