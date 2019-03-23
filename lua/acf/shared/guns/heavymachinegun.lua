@@ -16,9 +16,9 @@ ACF_defineGunClass("HMG", {
 } )
 
 --add a gun to the class
-ACF_defineGun("(C)20mmHMG", {
-	name = "(C)20mm Heavy Machinegun",
-	desc = "The lightest of the HMGs, the 20mm has a rapid fire rate but suffers from poor payload size.  Often used to strafe ground troops or annoy low-flying aircraft.",
+ACF_defineGun("20mmHMGShort", {
+	name = "Shortened 20mm Heavy Machinegun",
+	desc = "The lightest of the HMGs, the 20mm has a rapid fire rate but suffers from poor payload size.  Often used to strafe ground troops or annoy low-flying aircraft. Has a very low velocity",
 	model = "models/machinegun/machinegun_20mm_compact.mdl",
 	gunclass = "HMG",
 	caliber = 2.0,
@@ -33,9 +33,9 @@ ACF_defineGun("(C)20mmHMG", {
 	}
 } )
 
-ACF_defineGun("(C)30mmHMG", {
-	name = "(C)30mm Heavy Machinegun",
-	desc = "30mm shell chucker, light and compact. Your average cold war dogfight go-to.",
+ACF_defineGun("30mmHMGShort", {
+	name = "Shortened 30mm Heavy Machinegun",
+	desc = "30mm shell chucker, light and compact. Great for lobbing mid sized HE shells at infantry.",
 	model = "models/machinegun/machinegun_30mm_compact.mdl",
 	gunclass = "HMG",
 	caliber = 3.0,
@@ -50,9 +50,9 @@ ACF_defineGun("(C)30mmHMG", {
 	}
 } )
 
-ACF_defineGun("(C)40mmHMG", {
-	name = "(C)40mm Heavy Machinegun",
-	desc = "The heaviest of the heavy machineguns.  Massively powerful with a killer reload and hefty ammunition requirements, it can pop even relatively heavy targets with ease.",
+ACF_defineGun("40mmHMGShort", {
+	name = "Shortened 40mm Heavy Machinegun",
+	desc = "The heaviest of the heavy machineguns.  Massively powerful with a killer reload and hefty ammunition requirements. Lobs low velocity shells at a high rate of fire.",
 	model = "models/machinegun/machinegun_40mm_compact.mdl",
 	gunclass = "HMG",
 	caliber = 4.0,
