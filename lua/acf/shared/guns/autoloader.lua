@@ -2,8 +2,8 @@
 ACF_defineGunClass("AL", {
 	spread = 0.08,
 	name = "Autoloader",
-	desc = "A cannon with attached autoloading mechanism.  While it allows for several quick shots, the mechanism adds considerable bulk, weight, and magazine reload time. The Autoloader also fires slightly smaller shells than their counterparts.",
-	muzzleflash = "door_explosion_core",
+	desc = "A cannon with attached autoloading mechanism.  While it allows for several quick shots, the mechanism adds considerable bulk, weight, and magazine reload time.",
+	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 0.64,
 	sound = "weapons/ACF_Gun/autoloader.wav",
 	soundDistance = "Cannon.Fire",
@@ -17,13 +17,13 @@ ACF_defineGun("75mmAL", { --id
 	model = "models/tankgun/tankgun_al_75mm.mdl",
 	gunclass = "AL",
 	caliber = 7.5,
-	weight = 2500,
+	weight = 1892,
 	year = 1946,
-	rofmod = 1.2,
-	magsize = 12,
-	magreload = 22.5,
+	rofmod = 1,
+	magsize = 8,
+	magreload = 15,
 	round = {
-		maxlength = 72,
+		maxlength = 78,
 		propweight = 3.8
 	}
 } )
@@ -34,13 +34,13 @@ ACF_defineGun("100mmAL", {
 	model = "models/tankgun/tankgun_al_100mm.mdl",
 	gunclass = "AL",
 	caliber = 10.0,
-	weight = 3600,
+	weight = 3325,
 	year = 1956,
-	rofmod = 0.9,
-	magsize = 10,
-	magreload = 35,
+	rofmod = 0.85,
+	magsize = 6,
+	magreload = 21,
 	round = {
-		maxlength = 88,
+		maxlength = 93,
 		propweight = 9.5
 	}
 } )
@@ -51,13 +51,13 @@ ACF_defineGun("120mmAL", {
 	model = "models/tankgun/tankgun_al_120mm.mdl",
 	gunclass = "AL",
 	caliber = 12.0,
-	weight = 7200,
+	weight = 6050,
 	year = 1956,
-	rofmod = 0.8,
-	magsize = 8,
+	rofmod = 0.757,
+	magsize = 5,
 	magreload = 27,
 	round = {
-		maxlength = 105,
+		maxlength = 110,
 		propweight = 18
 	}
 } )
@@ -68,13 +68,13 @@ ACF_defineGun("140mmAL", {
 	model = "models/tankgun/tankgun_al_140mm.mdl",
 	gunclass = "AL",
 	caliber = 14.0,
-	weight = 9500,
+	weight = 8830,
 	year = 1970,
-	rofmod = 0.8,
-	magsize = 8,
-	magreload = 40,
+	rofmod = 0.743,
+	magsize = 5,
+	magreload = 35,
 	round = {
-		maxlength = 110,
+		maxlength = 127,
 		propweight = 28
 	}
 } )
@@ -86,15 +86,14 @@ ACF_defineGun("170mmAL", {
 	model = "models/tankgun/tankgun_al_170mm.mdl",
 	gunclass = "AL",
 	caliber = 17.0,
-	weight = 15530,
+	weight = 14850,
 	year = 1970,
 	rofmod = 0.8,
-	magsize = 8,
-	magreload = 60,
+	magsize = 4,
+	magreload = 40,
 	round = {
-		maxlength = 145,
+		maxlength = 154,
 		propweight = 34
 	}
 } )
-
 
