@@ -46,7 +46,7 @@ ACF_defineGun("40mmAAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Infrared"},
+    guidance    = {"Dumb", "Radar" , "Infrared"},
     fuses       = {"Contact", "Radio"},
 
     seekcone    = 40,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -85,7 +85,7 @@ ACF_defineGun("AIM-9 AAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Infrared"},
+    guidance    = {"Dumb", "Radar" , "Infrared"},
     fuses       = {"Contact", "Radio"},
 
 	racks       = {["1xRK"] = true,  ["2xRK"] = true, ["3xRK"] = true, ["1xRK_small"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
@@ -127,7 +127,7 @@ ACF_defineGun("AIM-120 AAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-	guidance    = {"Dumb", "Radar"},
+	guidance    = {"Dumb", "Radar" , "Infrared"},
     fuses       = {"Contact", "Radio"},
 
 	racks       = {["1xRK"] = true, ["2xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
@@ -170,7 +170,7 @@ ACF_defineGun("AIM-54 AAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-	guidance    = {"Dumb", "Radar"},
+	guidance    = {"Dumb", "Radar" , "Infrared"},
     fuses       = {"Contact", "Radio"},
 
 	racks       = {["1xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
