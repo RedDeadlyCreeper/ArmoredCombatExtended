@@ -11,7 +11,8 @@ ACF_defineGunClass("RAC", {
 	color = {135, 135, 135}
 } )
 
-ACF_defineGun("(+)12.7mmRAC", { --id
+/*
+ACF_defineGun("12.7mmRAC", { --id
 	name = "12.7mm Rotary Autocannon",
 	desc = "A pocket sized rotary autocannon, great for shredding infantry.",
 	model = "models/rotarycannon/rotarycannon_127mm.mdl",
@@ -26,6 +27,7 @@ ACF_defineGun("(+)12.7mmRAC", { --id
 		propweight = 0.05
 	}
 } )
+*/
 
 ACF_defineGun("14.5mmRAC", { --id
 	name = "14.5mm Rotary Autocannon",
@@ -79,8 +81,8 @@ ACF_defineGun("30mmRAC", {
 	}
 } )
 
-ACF_defineGun("20mmHRAC", {
-	name = "20mm Heavy Rotary Autocannon",
+ACF_defineGun("Cooled20mmHRAC", {
+	name = "Liquid Cooled 20mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine and with an optimized ammo feed.  Phalanx.",
 	model = "models/rotarycannon/kw/20mmrac.mdl",
 	gunclass = "RAC",
@@ -95,8 +97,8 @@ ACF_defineGun("20mmHRAC", {
 	}
 } )
 
-ACF_defineGun("30mmHRAC", {
-	name = "30mm Heavy Rotary Autocannon",
+ACF_defineGun("Cooled30mmHRAC", {
+	name = "Liquid Cooled 30mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy duty 30mm rotary autocannon, able to fire heavier rounds with a larger magazine and with an optimized ammo feed.  Keeper of goals.",
 	model = "models/rotarycannon/kw/30mmrac.mdl",
 	gunclass = "RAC",
@@ -110,6 +112,7 @@ ACF_defineGun("30mmHRAC", {
 		propweight = 0.350
 	}
 } )
+
 
 ACF_defineGun("14.5mmHRAC", { --id
 	name = "(+)14.5mm Heavy Rotary Autocannon",
@@ -126,4 +129,37 @@ ACF_defineGun("14.5mmHRAC", { --id
 	}
 } )
 
+ACF_defineGun("20mmHRAC", {
+	name = "20mm Heavy Rotary Autocannon",
+	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Phalanx.",
+	model = "models/rotarycannon/kw/20mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 2.0,
+	weight = 1200,
+	year = 1981,
+	magsize = 60,
+	magreload = 4,
+	rofmod = 2.5,
+	round = {
+		maxlength = 36,
+		propweight = 0.12
+	}
+} )
+
+ACF_defineGun("30mmHRAC", {
+	name = "30mm Heavy Rotary Autocannon",
+	desc = "A reinforced, heavy duty 30mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Keeper of goals.",
+	model = "models/rotarycannon/kw/30mmrac.mdl",
+	gunclass = "RAC",
+	caliber = 3.0,
+	weight = 2850,
+	year = 1985,
+	magsize = 50,
+	magreload = 6,
+	rofmod = 1.2,
+	round = {
+		maxlength = 45,
+		propweight = 0.350
+	}
+} )
 
