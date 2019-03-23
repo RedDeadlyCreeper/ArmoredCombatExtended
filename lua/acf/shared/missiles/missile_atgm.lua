@@ -16,7 +16,7 @@ ACF_defineGunClass("ATGM", {
 } )
 
 -- The BGM-71E, a wire guided missile with medium anti-tank effectiveness.
-ACF_defineGun("BGM-71E ATGM", { --id
+ACF_defineGun("BGM-71E ASM", { --id
 	name = "BGM-71E Missile",
 	desc = "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.",
 	model = "models/missiles/bgm_71e.mdl",
@@ -54,7 +54,7 @@ ACF_defineGun("BGM-71E ATGM", { --id
     armdelay    = 0.4     -- minimum fuse arming delay
 } )
 
-ACF_defineGun("9M113 ATGM", { --id
+ACF_defineGun("9M113 ASM", { --id
 	name = "9M113 Missile",
 	desc = "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
 	model = "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
@@ -95,7 +95,7 @@ ACF_defineGun("9M113 ATGM", { --id
 } )
 
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
-ACF_defineGun("AT-3 ATGM", { --id
+ACF_defineGun("AT-3 ASM", { --id
 	name = "AT-3 Missile",
 	desc = "The AT-3 missile (9M14P) is a short-range wire-guided anti-tank munition. It can be mounted on both helicopters and ground vehicles. Due to its low weight and size, it is a good alternative to the BGM-71E, at the expense of speed and warhead size.",
 	model = "models/missiles/at3.mdl",
@@ -136,7 +136,7 @@ ACF_defineGun("AT-3 ATGM", { --id
 } )
 
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
-ACF_defineGun("Ataka ATGM", { --id
+ACF_defineGun("Ataka ASM", { --id
 	name = "9M120 Ataka Missile",
 	desc = "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads",
 	model = "models/missiles/9m120.mdl",
@@ -177,40 +177,39 @@ ACF_defineGun("Ataka ATGM", { --id
     armdelay    = 0.3     -- minimum fuse arming delay
 } )
 
--- The 9M17P, a very long range, very powerful but very slow antitank missile
-ACF_defineGun("AT-2 ATGM", { --id
+ACF_defineGun("AT-2 ASM", { --id
 	name = "AT-2 Missile",
-	desc = "The 9M17P is a VERY powerful long-range antitank missile, which sacrifices flight speed for agility.\nIt is an excellent long-range missile for heavy antitank work, and its size gives it good multipurpose capability.",
+	desc = "The 9M17P is a VERY powerful long-range antitank missile, which sacrifices flight speed for killing power.\nIt is an excellent long-range missile for heavy antitank work, and its size gives it good multipurpose capability.",
 	model = "models/missiles/at2.mdl",
 	gunclass = "ATGM",
     rack = "1xRK",  -- Which rack to spawn this missile on?
 	length = 55,		--Used for the physics calculations
 	caliber = 16, 
-	weight = 108,    -- Don't scale down the weight though!
+	weight = 27,    -- Don't scale down the weight though!
 	year = 1969,
 	rofmod = 0.9,
 	round = {
 		model		= "models/missiles/at2.mdl",
 		rackmdl		= "models/missiles/at2.mdl",
-		maxlength	= 68,
+		maxlength	= 55,
 		casing		= 0.1,				-- thickness of missile casing, cm
-		armour		= 4,				-- effective armour thickness of casing, in mm
+		armour		= 5,				-- effective armour thickness of casing, in mm
 		propweight	= 1,				-- motor mass - motor casing
-		thrust		= 1800,				-- average thrust - kg*in/s^2
-		burnrate	= 40,				-- cm^3/s at average chamber pressure
+		thrust		= 1500,				-- average thrust - kg*in/s^2
+		burnrate	= 50,				-- cm^3/s at average chamber pressure
 		starterpct	= 0.2,				-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 200,				-- minimum speed beyond which the fins work at 100% efficiency
+		minspeed	= 500,				-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,			-- drag coefficient while falling
-        dragcoefflight  = 0.01,                 -- drag coefficient during flight
+                dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(5.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Laser", "Wire"},
     fuses       = {"Contact", "Optical"},
-	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
+	viewcone    = 90,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["2x AGM-114"] = true, ["4x AGM-114"] = true, ["1xRK_small"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-    agility     = 0.3,     -- multiplier for missile turn-rate.
+    agility     = 0.2,     -- multiplier for missile turn-rate.
     armdelay    = 1     -- minimum fuse arming delay
 } )
