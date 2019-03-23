@@ -14,6 +14,7 @@ ACF.Countermeasure[ClassName] = this
 this.AppliesTo = 
 {
 	Radar = true
+	Infrared = true,
 }
 
 
