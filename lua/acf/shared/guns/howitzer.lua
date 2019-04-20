@@ -45,7 +45,7 @@ ACF_defineGun("122mmHW", {
 	model = "models/howitzer/howitzer_122mm.mdl",
 	gunclass = "HW",
 	caliber = 12.2,
-	weight = 3420,
+	weight = 2500,
 	year = 1900,
 	round = {
 		maxlength = 106,
@@ -59,7 +59,7 @@ ACF_defineGun("155mmHW", {
 	model = "models/howitzer/howitzer_155mm.mdl",
 	gunclass = "HW",
 	caliber = 15.5,
-	weight = 5340,
+	weight = 3400,
 	year = 1900,
 	round = {
 		maxlength = 124,
@@ -73,7 +73,7 @@ ACF_defineGun("203mmHW", {
 	model = "models/howitzer/howitzer_203mm.mdl",
 	gunclass = "HW",
 	caliber = 20.3,
-	weight = 10280,
+	weight = 5400,
 	year = 1900,
 	round = {
 		maxlength = 162.4,
@@ -88,7 +88,7 @@ ACF_defineGun("240mmHW", {
 	model = "models/howitzer/howitzer_240mm.mdl",
 	gunclass = "HW",
 	caliber = 24.0,
-	weight = 12980,
+	weight = 8000,
 	year = 1900,
 	round = {
 		maxlength = 192.0,
@@ -102,7 +102,7 @@ ACF_defineGun("290mmHW", {
 	model = "models/howitzer/howitzer_290mm.mdl",
 	gunclass = "HW",
 	caliber = 29,
-	weight = 24960,
+	weight = 14000,
 	year = 1900,
 	round = {
 		maxlength = 360,
@@ -116,7 +116,7 @@ ACF_defineGun("406mmHW", {
 	model = "models/howitzer/howitzer_406mm.mdl",
 	gunclass = "HW",
 	caliber = 40.6,
-	weight = 42520,
+	weight = 32000,
 	year = 1920,
 	round = {
 		maxlength = 580,

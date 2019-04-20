@@ -32,7 +32,7 @@ ACF_defineGun("30mmAC", {
 	model = "models/autocannon/autocannon_30mm.mdl",
 	gunclass = "AC",
 	caliber = 3.0,
-	weight = 960,
+	weight = 720,
 	year = 1935,
 	rofmod = 1,
 	round = {
@@ -78,7 +78,7 @@ ACF_defineGun("50mmAC", {
 ACF_defineGun("20mmHAC", { --id
     name = "20mm Heavy Autocannon",
     desc = "The 20mm HAC is the smallest heavy autocannon, special watercooling allows this autocannon to continuously fire its nonexistant payload at extreme rates, great for attacking unarmored planes or cutting down forests.",
-    model = "models/autocannon/autocannon_20mm_compact.mdl",
+    model = "models/autocannon/autocannon_20mm.mdl",
     caliber = 2.0,
     gunclass = "AC",
     weight = 350,
@@ -95,10 +95,10 @@ ACF_defineGun("20mmHAC", { --id
 ACF_defineGun("30mmHAC", {
     name = "30mm Heavy Autocannon",
     desc = "The watercooled 30mm HAC fires decently heavy shells at a rapid rate that are great for chewing through light armor",
-    model = "models/autocannon/autocannon_30mm_compact.mdl",
+    model = "models/autocannon/autocannon_30mm.mdl",
     gunclass = "AC",
     caliber = 3.0,
-    weight = 1600,
+    weight = 1200,
     year = 1935,
     rofmod = 0.75,
     magsize = 3000,
@@ -112,10 +112,10 @@ ACF_defineGun("30mmHAC", {
 ACF_defineGun("40mmHAC", {
     name = "40mm Heavy Autocannon",
     desc = "The watercooled 40mm HAC is a long range grinder created in secrecy by light vehicles with very little patience",
-    model = "models/autocannon/autocannon_40mm_compact.mdl",
+    model = "models/autocannon/autocannon_40mm.mdl",
     gunclass = "AC",
     caliber = 4.0,
-    weight = 2500,
+    weight = 2600,
     year = 1940,
     rofmod = 0.55,
     magsize = 3000,

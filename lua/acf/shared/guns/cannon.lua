@@ -48,7 +48,7 @@ ACF_defineGun("75mmC", {
 	model = "models/tankgun/tankgun_75mm.mdl",
 	gunclass = "C",
 	caliber = 7.5,
-	weight = 1420,
+	weight = 1200,
 	year = 1942,
 	round = {
 		maxlength = 78,
@@ -62,7 +62,7 @@ ACF_defineGun("100mmC", {
 	model = "models/tankgun/tankgun_100mm.mdl",
 	gunclass = "C",
 	caliber = 10.0,
-	weight = 2750,
+	weight = 1500,
 	year = 1944,
 	round = {
 		maxlength = 93,
@@ -76,7 +76,7 @@ ACF_defineGun("120mmC", {
 	model = "models/tankgun/tankgun_120mm.mdl",
 	gunclass = "C",
 	caliber = 12.0,
-	weight = 5200,
+	weight = 2000,
 	year = 1955,
 	round = {
 		maxlength = 110,
@@ -90,7 +90,7 @@ ACF_defineGun("140mmC", {
 	model = "models/tankgun/tankgun_140mm.mdl",
 	gunclass = "C",
 	caliber = 14.0,
-	weight = 8180,
+	weight = 3200,
 	year = 1990,
 	round = {
 		maxlength = 127,
@@ -104,7 +104,7 @@ ACF_defineGun("170mmC", {
 	model = "models/tankgun/tankgun_170mm.mdl",
 	gunclass = "C",
 	caliber = 17.0,
-	weight = 12350,
+	weight = 7000,
 	year = 1990,
 	round = {
 		maxlength = 154,
