@@ -70,7 +70,7 @@ function ACF_Activate ( Entity , Recalc )
 	elseif testMaterial == 5 then --Aluminum
 		massMod = 0.35
 	elseif testMaterial == 6 then --Textolite
-	massMod = 0.2
+	massMod = 0.35
 	else
 		Entity.ACF.Material = 0 --Sets anything without a material to RHA and gives it a 1.0 massmod
 		massMod = 1
