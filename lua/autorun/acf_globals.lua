@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 359  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 361  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2000
@@ -22,7 +22,7 @@ ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 15 --How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 18 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -45,26 +45,26 @@ ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles 
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 
-ACF.TextoliteEffectiveness=0.05 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.TextoliteResilianceFactor = 0.7 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEATEffectiveness = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteEffectiveness=0.2 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.TextoliteResilianceFactor = 1.3 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.TextoliteHEATEffectiveness = 0.55 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEATResilianceFactor = 2 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEResistance = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-ACF.TextoliteHEEffectiveness = 1.2 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteHEResistance = 1.3 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteHEEffectiveness = 0.9 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 
 
 ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA than its currentarmor
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
 
-ACF.APDamageMult = 1.1
+ACF.APDamageMult = 1.2
 ACF.APHEDamageMult = 1
-ACF.APDSDamageMult = 1.3
-ACF.HVAPDamageMult = 1.6
-ACF.FLDamageMult = 1.1
-ACF.HEATDamageMult = 1
+ACF.APDSDamageMult = 1.4
+ACF.HVAPDamageMult = 1.7
+ACF.FLDamageMult = 1.2
+ACF.HEATDamageMult = 1.3
 ACF.HEDamageMult = 1
-ACF.HEPDamageMult = 1 -- High Explosive No Fragmentation
+ACF.HEPDamageMult = 1.3 -- High Explosive No Fragmentation
 ACF.HESHDamageMult = 1
 ACF.HPDamageMult = 3
 
@@ -81,7 +81,7 @@ ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
 ACF.HEATMulEngine = 10	--likewise
 ACF.HEATPenLayerMul = 0.75	--HEAT base energy multiplier
 
-ACF.DragDiv = 40		--Drag fudge factor
+ACF.DragDiv = 20		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
 -- local PhysEnv = physenv.GetPerformanceSettings()
 ACF.PhysMaxVel = 4000
@@ -93,9 +93,9 @@ ACF.MVScale = 0.5  --Propellant to MV convertion expotential
 ACF.PDensity = 1.6	--Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
 
 ACF.TorqueBoost = 1.25 --torque multiplier from using fuel
-ACF.FuelRate = 5  --multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate = 1.5 --multiplier for electrics
-ACF.TankVolumeMul = 0.5 -- multiplier for fuel tank capacity, 1.0 is approx real world
+ACF.FuelRate = 10  --multiplier for fuel usage, 1.0 is approx real world
+ACF.ElecRate = 3 --multiplier for electrics
+ACF.TankVolumeMul = 1 -- multiplier for fuel tank capacity, 1.0 is approx real world
 
 ACF.EnableKillicons = true -- Enable killicons overwriting.
 
@@ -135,11 +135,11 @@ ACF.EngineHPMult = { --health multiplier for engines
 ACF.LiIonED = 0.458 -- li-ion energy density: kw hours / liter
 ACF.CuIToLiter = 0.0163871 -- cubic inches to liters
 
-ACF.RefillDistance = 300 --Distance in which ammo crate starts refilling.
-ACF.RefillSpeed = 700 -- (ACF.RefillSpeed / RoundMass) / Distance 
+ACF.RefillDistance = 400 --Distance in which ammo crate starts refilling.
+ACF.RefillSpeed = 1000 -- (ACF.RefillSpeed / RoundMass) / Distance 
 
 ACF.DebrisScale = 20 -- Ignore debris that is less than this bounding radius.
-ACF.SpreadScale = 8		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
+ACF.SpreadScale = 16		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
 ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
@@ -151,7 +151,7 @@ if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 end
 
 
-CreateConVar('sbox_max_acf_gun', 20)
+CreateConVar('sbox_max_acf_gun', 24)
 CreateConVar('sbox_max_acf_smokelauncher', 20)
 CreateConVar('sbox_max_acf_ammo', 50)
 CreateConVar('sbox_max_acf_misc', 50)
