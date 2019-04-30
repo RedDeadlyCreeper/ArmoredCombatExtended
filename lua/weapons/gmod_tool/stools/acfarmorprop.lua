@@ -28,7 +28,7 @@ local function CalcArmor( Area, Ductility, Thickness, Material )
 	elseif testMaterial == 5 then --Aluminum
 		massMod = 0.35
 	elseif testMaterial == 6 then --Textolite
-	massMod = 0.2
+	massMod = 0.35
 	else --Overflow
 		massMod = 1
 	end
