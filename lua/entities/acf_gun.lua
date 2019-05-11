@@ -637,9 +637,14 @@ function ENT:FireShell()
 			local Cal = self.Caliber
 
 --			print("BooletType: "..self.BulletData.Type)
-			
+			local FuseNoise = 1
 			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM" or self.BulletData.Type == "HEP") and Cal<=12 then
-			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
+			
+			if self.FuseTime < (0.35^Math.max(Cal-3,1)) then
+			FuseNoise = 1
+			else
+			FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
+			end
 --			local FuseNoise = 1 - 0.3
 			
 			self.BulletData.FuseLength = self.FuseTime * FuseNoise
