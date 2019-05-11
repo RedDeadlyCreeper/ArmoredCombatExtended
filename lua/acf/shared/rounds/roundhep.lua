@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.HEP = { "RAC", "SL", "ECM" }
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "High Explosive (HE)" --Human readable name
+Round.name = "Pure High Explosive (HE)" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell filled with explosives, detonating on impact"
+Round.desc = "A shell filled with explosives, detonating on impact. Less effective than fragmenting HE however has a more power shockwave that has a better chance of incapacitating infantry."
 Round.netid = 13 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
@@ -72,7 +72,7 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	GUIData.BlastRadius = (Data.FillerMass*1.3)^0.33*8
+	GUIData.BlastRadius = (Data.FillerMass*1.5)^0.33*8
 	local FragMass = Data.ProjMass - Data.FillerMass
 	GUIData.Fragments = math.max(math.floor((Data.FillerMass/FragMass)*ACF.HEFrag),2)
 	GUIData.FragMass = FragMass/GUIData.Fragments
@@ -103,7 +103,7 @@ function Round.cratetxt( BulletData )
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor((BulletData.FillerMass*1.3) * ACF.HEPower), " KJ"
+		"Blast Energy: ", math.floor((BulletData.FillerMass*1.5) * ACF.HEPower), " KJ"
 	}
 	
 	return table.concat(str)
@@ -132,7 +132,7 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 	
-	ACF_HEPure( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass*1.3, Bullet.Owner, nil, Bullet.Gun )
+	ACF_HEPure( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass*1.5, Bullet.Owner, nil, Bullet.Gun )
 	ACF_RemoveBullet( Index )
 	
 end

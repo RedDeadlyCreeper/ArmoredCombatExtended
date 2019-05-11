@@ -40,6 +40,12 @@ SWEP.Primary.UserData = {}
 	SWEP.Primary.UserData["Data8"] = 0
 	SWEP.Primary.UserData["Data9"] = 0
 	SWEP.Primary.UserData["Data10"] = 0
+	SWEP.Primary.UserData["Data11"] = 0
+	SWEP.Primary.UserData["Data12"] = 0
+	SWEP.Primary.UserData["Data13"] = 0
+	SWEP.Primary.UserData["Data14"] = 0
+	SWEP.Primary.UserData["Data15"] = 0
+	
 
 SWEP.Primary.Inaccuracy				= 0								--Base spray
 

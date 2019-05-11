@@ -235,7 +235,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	return HitRes --This function needs to return HitRes
 end
 
-function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10)
+function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
 	if not Owner:CheckLimit("_acf_ammo") then return false end
 	
@@ -255,7 +255,7 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
 	Ammo:SetSolid( SOLID_VPHYSICS )
 	
 	Ammo.Id = Id
-	Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10)
+	Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 	
 	Ammo.Ammo = Ammo.Capacity
 	Ammo.EmptyMass = ACF.Weapons.Ammo[Ammo.Id].weight
@@ -272,8 +272,8 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
 	
 	return Ammo
 end
-list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10"} )
-duplicator.RegisterEntityClass("acf_ammo", MakeACF_Ammo, "Pos", "Angle", "Id", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10" )
+list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
+duplicator.RegisterEntityClass("acf_ammo", MakeACF_Ammo, "Pos", "Angle", "Id", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10" , "RoundData11", "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
 
 function ENT:Update( ArgsTable )
 	
@@ -310,7 +310,7 @@ function ENT:Update( ArgsTable )
 	
 	local AmmoPercent = self.Ammo/math.max(self.Capacity,1)
 	
-	self:CreateAmmo(ArgsTable[4], ArgsTable[5], ArgsTable[6], ArgsTable[7], ArgsTable[8], ArgsTable[9], ArgsTable[10], ArgsTable[11], ArgsTable[12], ArgsTable[13], ArgsTable[14])
+	self:CreateAmmo(ArgsTable[4], ArgsTable[5], ArgsTable[6], ArgsTable[7], ArgsTable[8], ArgsTable[9], ArgsTable[10], ArgsTable[11], ArgsTable[12], ArgsTable[13], ArgsTable[14], ArgsTable[15], ArgsTable[16], ArgsTable[17], ArgsTable[18], ArgsTable[19])
 	
 	self.Ammo = math.floor(self.Capacity*AmmoPercent)
 	
@@ -341,7 +341,7 @@ function ENT:UpdateOverlayText()
 	
 end
 
-function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10)
+function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
 
 	local GunData = list.Get("ACFEnts").Guns[Data1]
 	if not GunData then 
@@ -360,6 +360,11 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.RoundData8 = ( Data8 or 0 )
 	self.RoundData9 = ( Data9 or 0 )
 	self.RoundData10 = ( Data10 or 0 )
+	self.RoundData11 = ( Data11 or 0 )
+	self.RoundData12 = ( Data12 or 0 )
+	self.RoundData13 = ( Data13 or 0 )
+	self.RoundData14 = ( Data14 or 0 )
+	self.RoundData15 = ( Data15 or 0 )
 	
 	local PlayerData = {}
 		PlayerData.Id = self.RoundId
@@ -372,6 +377,11 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		PlayerData.Data8 = self.RoundData8
 		PlayerData.Data9 = self.RoundData9
 		PlayerData.Data10 = self.RoundData10
+		PlayerData.Data11 = self.RoundData11
+		PlayerData.Data12 = self.RoundData12
+		PlayerData.Data13 = self.RoundData13
+		PlayerData.Data14 = self.RoundData14
+		PlayerData.Data15 = self.RoundData15
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
 	

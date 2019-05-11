@@ -19,6 +19,11 @@ TOOL.ClientConVar[ "data7" ] = 0
 TOOL.ClientConVar[ "data8" ] = 0
 TOOL.ClientConVar[ "data9" ] = 0
 TOOL.ClientConVar[ "data10" ] = 0
+TOOL.ClientConVar[ "data11" ] = 0
+TOOL.ClientConVar[ "data12" ] = 0
+TOOL.ClientConVar[ "data13" ] = 0
+TOOL.ClientConVar[ "data14" ] = 0
+TOOL.ClientConVar[ "data15" ] = 0
 
 cleanup.Register( "acfmenu" )
 

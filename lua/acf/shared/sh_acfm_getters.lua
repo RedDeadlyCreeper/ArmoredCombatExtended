@@ -159,6 +159,11 @@ function ACF_GetRoundFromCVars()
     round.Data8         = GetConVarString( "acfmenu_data8" )
     round.Data9         = GetConVarString( "acfmenu_data9" )
 	round.Data10        = GetConVarNumber( "acfmenu_data10" )
+	round.Data11        = GetConVarNumber( "acfmenu_data11" )
+	round.Data12        = GetConVarNumber( "acfmenu_data12" )
+	round.Data13        = GetConVarNumber( "acfmenu_data13" )
+	round.Data14        = GetConVarNumber( "acfmenu_data14" )
+	round.Data15        = GetConVarNumber( "acfmenu_data15" )
     
     return round
     

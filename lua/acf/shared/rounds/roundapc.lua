@@ -1,15 +1,15 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.AP =  { "MO", "RM", "SL", "GL", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist.APC =  { "MO", "RM", "SL", "GL", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "Armour Piercing (AP)" --Human readable name
+Round.name = "Armour Piercing Capped (APC)" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour"
-Round.netid = 1 --Unique ammotype ID for network transmission
+Round.netid = 16 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
 	
@@ -40,7 +40,9 @@ function Round.convert( Crate, PlayerData )
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	
 	Data.BoomPower = Data.PropMass
-
+	Data.Normalize = true
+	
+	
 	if SERVER then --Only the crates need this part
 		ServerData.Id = PlayerData.Id
 		ServerData.Type = PlayerData.Type
@@ -66,7 +68,7 @@ end
 
 function Round.network( Crate, BulletData )
 	
-	Crate:SetNWString( "AmmoType", "AP" )
+	Crate:SetNWString( "AmmoType", "APC" )
 	Crate:SetNWString( "AmmoID", BulletData.Id )
 	Crate:SetNWFloat( "Caliber", BulletData.Caliber )
 	Crate:SetNWFloat( "ProjMass", BulletData.ProjMass )
@@ -111,23 +113,56 @@ function Round.cratetxt( BulletData )
 	
 end
 
+
+function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
+
+	local NormieMult = 1
+	local Mat = Target.ACF.Material or 0
+	if Mat == 3 then
+	NormieMult = 0.05
+	elseif Mat == 6 then
+	NormieMult=0.5
+	end
+	
+	Bullet.Normalize = false
+	Bullet.Pos = HitPos
+	local FlightNormal = Bullet.Flight:GetNormalized() + (HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult
+	local Speed = Bullet.Flight:Length()
+--	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
+	Bullet.Flight = FlightNormal * Speed
+	
+	local DeltaTime = SysTime() - Bullet.LastThink
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
+	
+end
+
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 	if ACF_Check( Target ) then
 	
-		local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-		local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+		if not Bullet.Normalize then
+--		print("PropHit")
+			local Speed = Bullet.Flight:Length() / ACF.VelScale
+			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+			local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 		
-		if HitRes.Overkill > 0 then
-			table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-			ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-			return "Penetrated"
-		elseif HitRes.Ricochet then
-			return "Ricochet"
+			if HitRes.Overkill > 0 then
+				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+				Bullet.Normalize = true
+				return "Penetrated"
+			elseif HitRes.Ricochet then
+				Bullet.Normalize = true
+				return "Ricochet"
+			else
+				return false
+			end
 		else
-			return false
+		Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
+--		print("Normalize")
+		return "Penetrated"
 		end
 	else 
 		table.insert( Bullet.Filter , Target )
@@ -196,7 +231,7 @@ end
 
 function Round.guicreate( Panel, Table )
 
-	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.AP )
+	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.APC )
 	
 	acfmenupanel:CPanelText("BonusDisplay", "")
 	
@@ -220,7 +255,7 @@ function Round.guiupdate( Panel, Table )
 	
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "AP"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "APC"										--Hardcoded, match ACFRoundTypes table index
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		local Tracer = 0
@@ -266,5 +301,5 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
-list.Set( "ACFRoundTypes", "AP", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "AP" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+list.Set( "ACFRoundTypes", "APC", Round )  --Set the round properties
+list.Set( "ACFIdRounds", Round.netid, "APC" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

@@ -190,8 +190,17 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.MagSize = 1
 	if(Lookup.magsize) then
 		Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)
+				local Cal = Gun.Caliber
+		if Cal<3 and Cal>12 then  
+		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload"} )
+		end
 	else
+		local Cal = Gun.Caliber
+		if Cal>=3 and Cal<=12 then
 		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload" , "Fuse Time"} )
+		else
+		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload"} )
+		end
 	end
 	Gun.MagReload = 0
 	if(Lookup.magreload) then
@@ -629,8 +638,9 @@ function ENT:FireShell()
 
 --			print("BooletType: "..self.BulletData.Type)
 			
-			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM" or self.BulletData.Type == "HEP") then
-			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/12),0.3)
+			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM" or self.BulletData.Type == "HEP") and Cal<=12 then
+			local FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
+--			local FuseNoise = 1 - 0.3
 			
 			self.BulletData.FuseLength = self.FuseTime * FuseNoise
 			

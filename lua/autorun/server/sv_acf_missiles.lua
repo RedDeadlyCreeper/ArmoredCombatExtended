@@ -87,7 +87,14 @@ function ACFM_ExpandBulletData(bullet)
     toconvert["Data7"] =         bullet["Data7"] or 0
     toconvert["Data8"] =         bullet["Data8"] or 0
     toconvert["Data9"] =         bullet["Data9"] or 0
-    toconvert["Data10"] =         bullet["Tracer"] or bullet["Data10"] or 0
+    toconvert["Data10"] =        bullet["Tracer"] or bullet["Data10"] or 0
+    toconvert["Data11"] =        bullet["ConeAng2"] or bullet["Data11"] or 0
+    toconvert["Data12"] =        bullet["HEAllocation"] or bullet["Data12"] or 0
+    toconvert["Data13"] =        bullet["Data13"] or 0
+    toconvert["Data14"] =        bullet["Data14"] or 0
+    toconvert["Data15"] =        bullet["Data15"] or 0
+
+
     toconvert["Colour"] =         bullet["Colour"] or Color(255, 255, 255)
         
         
@@ -152,8 +159,11 @@ ACF.FillerDensity =
 {
     SM =    2000,
     HE =    1000,
+    HEP =    1000,
+    HESH =    1000,
     HP =    1,
     HEAT =  1450,
+    THEAT =  1450,
     APHE =  1000
 }
 
@@ -173,14 +183,18 @@ function ACFM_CompactBulletData(crate)
     compact["ProjLength"] = 	crate.ProjLength    or crate.RoundProjectile
     compact["Data5"] = 		    crate.Data5         or crate.RoundData5         or crate.FillerVol      or crate.CavVol             or crate.Flechettes
     compact["Data6"] = 		    crate.Data6         or crate.RoundData6         or crate.ConeAng        or crate.FlechetteSpread
-    compact["Data7"] = 		    crate.Data7         or crate.RoundData7
-    compact["Data8"] = 		    crate.Data8         or crate.RoundData8
+    compact["Data7"] = 		    crate.Data7			or crate.RoundData7
+    compact["Data8"] = 		    crate.Data8			or crate.RoundData8
     compact["Data9"] = 		    crate.Data9         or crate.RoundData9
     compact["Data10"] = 		crate.Data10        or crate.RoundData10        or crate.Tracer
+    compact["Data11"] = 		crate.Data11        or crate.RoundData11		or crate.ConeAng2
+    compact["Data12"] = 		crate.Data12        or crate.RoundData12      	or crate.HEAllocation
+    compact["Data13"] = 		crate.Data13        or crate.RoundData13
+    compact["Data14"] = 		crate.Data14        or crate.RoundData14
+    compact["Data15"] = 		crate.Data15        or crate.RoundData15
     
     compact["Colour"] = 		crate.GetColor and crate:GetColor() or crate.Colour
     compact["Sound"] =          crate.Sound
-    
     
     if not compact.Data5 and crate.FillerMass then
         local Filler = ACF.FillerDensity[compact.Type]
@@ -213,10 +227,14 @@ function ResetVelocity.AP(bdata)
 end
             
 ResetVelocity.HE = ResetVelocity.AP
+ResetVelocity.HEP = ResetVelocity.AP
+ResetVelocity.HESH = ResetVelocity.AP
 ResetVelocity.HP = ResetVelocity.AP
 ResetVelocity.FL = ResetVelocity.AP
 ResetVelocity.SM = ResetVelocity.AP
 ResetVelocity.APHE = ResetVelocity.AP
+ResetVelocity.APDS = ResetVelocity.AP
+ResetVelocity.HVAP = ResetVelocity.AP
             
 function ResetVelocity.HEAT(bdata)    
     
@@ -231,6 +249,34 @@ function ResetVelocity.HEAT(bdata)
     bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
     bdata.NotFirstPen = false
     
+end    
+
+function ResetVelocity.THEAT(bdata)    
+
+	DetCount = bdata.Detonated or 0
+    if DetCount == 0 then return ResetVelocity.AP(bdata) , print("APMode")	end
+    
+    if not (bdata.MuzzleVel and bdata.SlugMV and bdata.SlugMV1 and bdata.SlugMV2) then return end
+    
+	
+	
+	
+    bdata.Flight:Normalize()
+    
+    local penmul = bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1
+    
+	
+	
+	print(DetCount)	
+	if DetCount==1 then 
+	print("Detonation1")
+    bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
+    bdata.NotFirstPen = false
+    elseif DetCount == 2 then
+	print("Detonation2")
+    bdata.Flight = bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 
+    bdata.NotFirstPen = false	
+	end
 end    
 
 

@@ -118,6 +118,11 @@ function TOOL:RightClick( trace )
 		ArgsTable[12] = ent.RoundData8;
 		ArgsTable[13] = ent.RoundData9;
 		ArgsTable[14] = ent.RoundData10;
+		ArgsTable[15] = ent.RoundData11;
+		ArgsTable[16] = ent.RoundData12;
+		ArgsTable[17] = ent.RoundData13;
+		ArgsTable[18] = ent.RoundData14;
+		ArgsTable[19] = ent.RoundData15;
 
 		self.AmmoCopyData = ArgsTable;
 

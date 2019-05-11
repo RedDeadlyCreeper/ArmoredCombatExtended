@@ -383,21 +383,37 @@ function ACF_HEPure( Hitpos , HitNormal , FillerMass, Inflictor, NoOcc, Gun )
 		
 end
 
-function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflictor )
+function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflictor , Material)
 	
-	--if(!ACF.Spalling) then
-	if true then -- Folks say it's black magic and it kills their firstborns. So I had to disable it with more powerful magic.
+	if(!ACF.Spalling) then
 		return
 	end
-	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall),2)
-	local SpallWeight = TotalWeight/Spall
-	local SpallVel = (KE*2000/SpallWeight)^0.5/Spall
-	local SpallAera = (SpallWeight/7.8)^0.33 
-	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 600 )
 	
-	--print(SpallWeight)
-	--print(SpallVel)
+	local SpallMul = 1 --If all else fails treat it like RHA
+	if Material == 2 then 
+	SpallMul = 0.8 --Cast
+	elseif Material == 3 then 
+	SpallMul = 0 --Rubber does not spall
+	elseif Material == 5 then
+	SpallMul = ACF.AluminumSpallMult
+	elseif Material == 6 then
+	SpallMul = ACF.TextoliteSpallMult
+	end
+--	print("CMod: "..Caliber*4) 
+--	print(Caliber) 
+	
+	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
+	
+	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.0004
+	local Spall = math.max(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul),12)
+	local SpallWeight = TotalWeight/Spall*SpallMul
+	local SpallVel = (KE*2000/SpallWeight)^0.5/Spall*SpallMul
+	local SpallAera = (SpallWeight/7.8)^0.33 
+	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
+	
+--	print(SpallWeight)
+--	print(SpallVel)
+--	print(Spall)
 	
 	for i = 1,Spall do
 		local SpallTr = { }
@@ -407,7 +423,8 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 	end
-
+	end
+	
 end
 
 function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor , Material)
@@ -427,7 +444,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	if SpallMul > 0 and Caliber*3.8 > Armour then
 --	print("Spalling") 	
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall*SpallMul*0.25),1)
+	local Spall = math.max(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul),12)
 	local SpallWeight = TotalWeight/Spall*SpallMul
 	local SpallVel = (HEFiller*20/SpallWeight*2)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 

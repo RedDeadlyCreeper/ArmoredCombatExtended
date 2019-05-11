@@ -12,16 +12,16 @@ Round.desc = "Ammo Refill"
 function Round.convert( Crate, PlayerData )
 	
 	local BulletData = {}
-		BulletData.Id = PlayerData.Id or "12.7mmMG"
-		BulletData.Type = PlayerData.Type or "AP"
+		BulletData.Id = "7.62mmMG"
+		BulletData.Type = "AP"
 		
-		BulletData.Caliber = ACF.Weapons.Guns[PlayerData.Id].caliber
-		BulletData.ProjMass = 2*7.9/100 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-		BulletData.PropMass = 2*ACF.PDensity/1000 --Volume of the case as a cylinder * Powder density converted from g to kg
-		BulletData.FillerMass = BulletData.FillerMass or 0
-		BulletData.DragCoef = BulletData.DragCoef or 0
-		BulletData.Tracer = BulletData.Tracer or 0
-		BulletData.MuzzleVel = BulletData.MuzzleVel or 0
+		BulletData.Caliber = 0.762
+		BulletData.ProjMass = 0.158 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		BulletData.PropMass = 0.0032 --Volume of the case as a cylinder * Powder density converted from g to kg
+		BulletData.FillerMass = 0
+		BulletData.DragCoef = 0
+		BulletData.Tracer = 0
+		BulletData.MuzzleVel = 0
 		BulletData.RoundVolume = 1
 			
 	return BulletData

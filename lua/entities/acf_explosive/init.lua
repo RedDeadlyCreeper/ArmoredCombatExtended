@@ -53,7 +53,7 @@ end
 
 
 
-function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl)
+function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl, Data11, Data12, Data13, Data14, Data15)
 
 	if not Owner:CheckLimit("_acf_explosive") then return false end
 	
@@ -77,20 +77,20 @@ function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5,
 	Mdl = Mdl or ACF.Weapons.Guns[Id].model
 	
 	Bomb.Id = Id
-	Bomb:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl)
+	Bomb:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl, Data11, Data12, Data13 , Data14 , Data15)
 	
 	Owner:AddCount( "_acf_explosive", Bomb )
 	Owner:AddCleanup( "acfmenu", Bomb )
 	
 	return Bomb
 end
-list.Set( "ACFCvars", "acf_explosive", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "mdl"} )
-duplicator.RegisterEntityClass("acf_explosive", MakeACF_Explosive, "Pos", "Angle", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10", "Model" )
+list.Set( "ACFCvars", "acf_explosive", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "mdl", "data11", "data12", "data13", "data14", "data15"} )
+duplicator.RegisterEntityClass("acf_explosive", MakeACF_Explosive, "Pos", "Angle", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10", "Model" , "RoundData11" , "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
 
 
 
 
-function ENT:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl, bdata)
+function ENT:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl, bdata,Data11 ,Data12, Data13 ,Data14, Data15)
 
 	self:SetModelEasy(Mdl)
 	--Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
@@ -104,6 +104,11 @@ function ENT:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, 
 	self.RoundData8 = ( Data8 or 0 )
 	self.RoundData9 = ( Data9 or 0 )
 	self.RoundData10 = ( Data10 or 0 )
+	self.RoundData11 = ( Data11 or 0 )
+	self.RoundData12 = ( Data12 or 0 )
+	self.RoundData13 = ( Data13 or 0 )
+	self.RoundData14 = ( Data14 or 0 )
+	self.RoundData15 = ( Data15 or 0 )
 	
 	local PlayerData = bdata or ACFM_CompactBulletData(self)
 	
@@ -160,6 +165,11 @@ function ENT:SetBulletData(bdata)
 		bdata.Data8, 
 		bdata.Data9, 
 		bdata.Data10, 
+		bdata.Data11, 
+		bdata.Data12, 
+		bdata.Data13, 
+		bdata.Data14, 
+		bdata.Data15, 
 		nil,
 		bdata)
 	

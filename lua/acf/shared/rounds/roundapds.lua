@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.APDS =  { "ATR", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "Armour Piercing Discarding Sabot (APDS)" --Human readable name
+Round.name = "Armour Piercing Discarding Sabot LRP(APDS)" --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
-Round.desc = "A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less"
+Round.desc = "A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Unlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material."
 Round.netid = 9 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
@@ -167,23 +167,55 @@ function Round.cratetxt( BulletData )
 	
 end
 
+function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
+
+	local NormieMult = 1
+	local Mat = Target.ACF.Material or 0
+	if Mat == 3 then
+	NormieMult = 0.05
+	elseif Mat == 6 then
+	NormieMult=0.5
+	end
+	
+	Bullet.Normalize = false
+	Bullet.Pos = HitPos
+	local FlightNormal = Bullet.Flight:GetNormalized() + (HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult
+	local Speed = Bullet.Flight:Length()
+--	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
+	Bullet.Flight = FlightNormal * Speed
+	
+	local DeltaTime = SysTime() - Bullet.LastThink
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
+	
+end
+
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 	if ACF_Check( Target ) then
 	
-		local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-		local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+		if not Bullet.Normalize then
+--		print("PropHit")
+			local Speed = Bullet.Flight:Length() / ACF.VelScale
+			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+			local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 		
-		if HitRes.Overkill > 0 then
-			table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-			ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner ) --Do some spalling
-			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-			return "Penetrated"
-		elseif HitRes.Ricochet then
-			return "Ricochet"
+			if HitRes.Overkill > 0 then
+				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+				Bullet.Normalize = true
+				return "Penetrated"
+			elseif HitRes.Ricochet then
+				Bullet.Normalize = true
+				return "Ricochet"
+			else
+				return false
+			end
 		else
-			return false
+		Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
+--		print("Normalize")
+		return "Penetrated"
 		end
 	else 
 		table.insert( Bullet.Filter , Target )

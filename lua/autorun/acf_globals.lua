@@ -17,7 +17,7 @@ ACF.KEtoSpall = 1
 ACF.AmmoMod = 0.6		-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.ArmorMod = 1 
 ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^factor
-ACF.Spalling = 0
+ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
@@ -31,7 +31,7 @@ ACF.AluminumSpallMult =  2  --Higher = spalls more
 ACF.AluminumHeatMul = 4  --Higher = More damage from HEAT
 
 ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CastResilianceFactor = 25 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CastResilianceFactor = 35 --Higher = less damage, Lower = more damage. 2x = half damage.
 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CeramicResilianceFactor = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -59,8 +59,9 @@ ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than i
 
 ACF.APDamageMult = 1.2
 ACF.APHEDamageMult = 1
-ACF.APDSDamageMult = 1.4
-ACF.HVAPDamageMult = 1.7
+ACF.APDSDamageMult = 1.2
+ACF.APDSSDamageMult = 1
+ACF.HVAPDamageMult = 1.3
 ACF.FLDamageMult = 1.2
 ACF.HEATDamageMult = 1.3
 ACF.HEDamageMult = 1
@@ -74,12 +75,12 @@ ACF.HEDensity = 1.65	--HE Filler density (That's TNT density)
 ACF.HEFrag = 1500		--Mean fragment number for equal weight TNT and casing
 ACF.HEBlastPen = 0.4	--Blast penetration exponent based of HE power
 ACF.HEFeatherExp = 0.5 	--exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
-
 ACF.HEATMVScale = 0.75	--Filler KE to HEAT slug KE conversion expotential
+ACF.HEATMVScaleTan = 0.75	--Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
 ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
 ACF.HEATMulEngine = 10	--likewise
-ACF.HEATPenLayerMul = 0.75	--HEAT base energy multiplier
+ACF.HEATPenLayerMul = 0.90	--HEAT base energy multiplier
 
 ACF.DragDiv = 20		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
@@ -98,6 +99,8 @@ ACF.ElecRate = 3 --multiplier for electrics
 ACF.TankVolumeMul = 1 -- multiplier for fuel tank capacity, 1.0 is approx real world
 
 ACF.EnableKillicons = true -- Enable killicons overwriting.
+
+ACF.NormalizationFactor = 0.1 --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
@@ -210,8 +213,9 @@ elseif CLIENT then
 end
 
 include("acf/shared/rounds/roundap.lua")
---include("acf/shared/rounds/roundapbc.lua")
+include("acf/shared/rounds/roundapc.lua")
 include("acf/shared/rounds/roundapds.lua")
+include("acf/shared/rounds/roundapdss.lua")
 include("acf/shared/rounds/roundhvap.lua")
 include("acf/shared/rounds/roundaphe.lua")
 include("acf/shared/rounds/roundhe.lua")
@@ -219,6 +223,7 @@ include("acf/shared/rounds/roundecmbattery.lua")
 include("acf/shared/rounds/roundhep.lua")
 include("acf/shared/rounds/roundhesh.lua")
 include("acf/shared/rounds/roundheat.lua")
+include("acf/shared/rounds/roundtheat.lua")
 include("acf/shared/rounds/roundfl.lua")
 include("acf/shared/rounds/roundhp.lua")
 include("acf/shared/rounds/roundsmoke.lua")
@@ -448,10 +453,10 @@ function ACF_UpdateChecking( )
 		if rev and ACF.Version >= rev then
 			print("[ACF] ACF Is Up To Date, Latest Version: "..rev)
 		elseif !rev then
-			print("[ACF] No Internet Connection Detected! ACF Update Check Failed")
+			print("[ACE] No Internet Connection Detected! ACE Update Check Failed")
 		else
-			print("[ACF] A newer version of ACF is available! Version: "..rev..", You have Version: "..ACF.Version)
-			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACF is available!" ) end
+			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have Version: "..ACF.Version)
+			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
 		end
 		ACF.CurrentVersion = rev
 		
