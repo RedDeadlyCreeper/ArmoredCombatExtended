@@ -57,10 +57,25 @@ r100
 
 *r108
 -Tweaked most of the ACF Missiles making ATGMs and ASMs less spammable.
--Missile Payloads have also been significantly buffed and made closer to their RL values.
+-Missile Payloads have also been significantly buffed and made closer to their RL values
 -Decreased armor of almost all missiles across the board
 -Made ERA work differently vs KE and HEAT
 -More bugfixing
 -Rebalanced the burn time and thrust of SAMs
--Added a few more sounds.
+-Added a few more sounds
 -Ammocrates now instantly detonate
+
+*r109
+-Made Fuse input now show on incompatable guns
+-Tweaked random fuse noise for larger guns
+-Updated to include new additions to ACF
+-Re-Added fragmentation from penetration to both HEAT and KE ammo
+-Made cast heavier but more resiliant
+-Gave textolite its real life armor properties
+-Added Tandem HEAT
+-Added Slug penetrator rounds and renamed the APDS to LRP rounds
+-Added Armor piercing Capped Shell
+-Added normalization mechanic used by APC and LRP rounds
+-Reduced ammocrate HE explosion power
+-Made HEAT less effected by layers
+-Various bugfixes
