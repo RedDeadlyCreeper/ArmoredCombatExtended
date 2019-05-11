@@ -39,8 +39,8 @@ function Round.convert( Crate, PlayerData )
 --	if not PlayerData.HEAllocation then PlayerData.HEAllocation = 0 end
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	if not PlayerData.Data6 then PlayerData.Data6 = 0 end
-	if not PlayerData.Data11 then PlayerData.Data11 = 0 end
-	if not PlayerData.Data12 then PlayerData.Data12 = 0 end
+	if not PlayerData.Data13 then PlayerData.Data13 = 0 end
+	if not PlayerData.Data14 then PlayerData.Data14 = 0 end
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
@@ -53,7 +53,7 @@ function Round.convert( Crate, PlayerData )
 	local AirVol = 0
 	local AirVol2 = 0
 	ConeLength, ConeAera, AirVol = Round.ConeCalc( PlayerData.Data6, Data.Caliber/2, PlayerData.ProjLength )
-	ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( PlayerData.Data11, Data.Caliber/2, PlayerData.ProjLength )
+	ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( PlayerData.Data13, Data.Caliber/2, PlayerData.ProjLength )
 	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000 + ConeAera*ConeThick*7.9/1000 --Volume of the projectile as a cylinder - Volume of the filler - Volume of the crush cone * density of steel + Volume of the filler * density of TNT + Aera of the cone * thickness * density of steel
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
@@ -66,8 +66,8 @@ function Round.convert( Crate, PlayerData )
 	GUIData.MinConeAng = 0
 	GUIData.MaxConeAng = math.deg( math.atan((Data.ProjLength - ConeThick )/(Data.Caliber/2)) )
 	GUIData.ConeAng = math.Clamp(PlayerData.Data6*1, GUIData.MinConeAng, GUIData.MaxConeAng)
-	GUIData.ConeAng2 = math.Clamp(PlayerData.Data11*1, GUIData.MinConeAng, GUIData.MaxConeAng)
-	GUIData.HEAllocation = PlayerData.Data12
+	GUIData.ConeAng2 = math.Clamp(PlayerData.Data13*1, GUIData.MinConeAng, GUIData.MaxConeAng)
+	GUIData.HEAllocation = PlayerData.Data14
 	ConeLength, ConeAera, AirVol = Round.ConeCalc( GUIData.ConeAng, Data.Caliber/2, Data.ProjLength )
 	ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( GUIData.ConeAng2, Data.Caliber/2, Data.ProjLength )
 	local ConeVol = ConeAera * ConeThick
@@ -405,8 +405,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
 		PlayerData.Data6 = acfmenupanel.AmmoData.ConeAng
-		PlayerData.Data11 = acfmenupanel.AmmoData.ConeAng2
-		PlayerData.Data12 = acfmenupanel.AmmoData.HEAllocation
+		PlayerData.Data13 = acfmenupanel.AmmoData.ConeAng2
+		PlayerData.Data14 = acfmenupanel.AmmoData.HEAllocation
 		local Tracer = 0
 		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
 		PlayerData.Data10 = Tracer				--Tracer
@@ -419,8 +419,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data6", Data.ConeAng )
-	RunConsoleCommand( "acfmenu_data11", Data.ConeAng2 )
-	RunConsoleCommand( "acfmenu_data12", Data.HEAllocation )
+	RunConsoleCommand( "acfmenu_data13", Data.ConeAng2 )
+	RunConsoleCommand( "acfmenu_data14", Data.HEAllocation )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
