@@ -79,3 +79,10 @@ r100
 -Reduced ammocrate HE explosion power
 -Made HEAT less effected by layers
 -Various bugfixes
+
+*r110
+-Made missile startermotors provide a boost
+-Made missiles aim higher in flight to better counter gravity
+-Reworked Missile pen
+-Added Experimental Engine Heat FCN
+-Moar bugfixes
