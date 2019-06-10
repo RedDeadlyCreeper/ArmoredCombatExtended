@@ -112,12 +112,14 @@ function ENT:Initialize()
 	self.LastThink = 0
 	self.MassRatio = 1
 	self.FuelTank = 0
+	self.Heat=0
+	self.Efficiency = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
 	self.Legal = true
 	self.CanUpdate = true
 	self.RequiresFuel = false
 
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle" } ) --use fuel input?
-	self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM", "Torque", "Power", "Fuel Use", "Entity", "Mass", "Physical Mass" }, { "NORMAL","NORMAL","NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL" } )
+	self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM", "Torque", "Power", "Fuel Use", "Entity", "Mass", "Physical Mass" , "EngineHeat"}, { "NORMAL","NORMAL","NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
 	Wire_TriggerOutput( self, "Entity", self )
 	self.WireDebugName = "ACF Engine"
 
@@ -163,6 +165,7 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine.SpecialDamage = true
 	Engine.TorqueMult = 1
 	Engine.FuelTank = 0
+	Engine.Heat=21
 	
 	Engine.TorqueScale = ACF.TorqueScale[Engine.EngineType]
 	
@@ -516,7 +519,7 @@ function ENT:ACFInit()
 end
 
 function ENT:CalcRPM()
-
+	local PhysObj = self:GetPhysicsObject()
 	local DeltaTime = CurTime() - self.LastThink
 	-- local AutoClutch = math.min(math.max(self.FlyRPM-self.IdleRPM,0)/(self.IdleRPM+self.LimitRPM/10),1)
 	--local ClutchRatio = math.min(Clutch/math.max(TorqueDiff,0.05),1)
@@ -603,7 +606,28 @@ function ENT:CalcRPM()
 	end
 
 	self.FlyRPM = self.FlyRPM - math.min( TorqueDiff, TotalReqTq ) / self.Inertia
+--	self.Heat = self.Efficiency
+	local Mass = PhysObj:GetMass()
+	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/200 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.03 or 0
+	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass/75) * DeltaTime * 0.03
+	self.Heat = self.Heat +((Energy+Energyloss)/Mass/743.2)
+	local OverHeat = math.max(self.Heat/105,0)
+	if OverHeat > 1.05 then
+	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0)/100),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0)/100)} , 2 , 0 , self.Owner )
 
+			if HitRes.Kill then
+			ACF_HEKill( self, VectorRand() , 0)
+			end
+	end
+--	self.Heat = self.FuelUse 
+--	self.Heat = Energy/(PhysObj:GetMass()*743.2)
+--   HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )
+	--0.0026 coef used
+	--q=0.0026*(Ts-K)
+	--q=coef*(Ts-K)
+	
+--	743.2 Estimate for engine material, 35% weight steel, 65% weight aluminum
+	
 	-- Then we calc a smoothed RPM value for the sound effects
 	table.remove( self.RPM, 10 )
 	table.insert( self.RPM, 1, self.FlyRPM )
@@ -617,6 +641,7 @@ function ENT:CalcRPM()
 	Wire_TriggerOutput(self, "Torque", math.floor(self.Torque))
 	Wire_TriggerOutput(self, "Power", math.floor(Power))
 	Wire_TriggerOutput(self, "RPM", self.FlyRPM)
+	Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
 	
 	if self.Sound then
 		self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * self.SoundPitch) / 50, 255 ), 0 )

@@ -227,7 +227,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 		if self.Ammo > 1 then
 			ACF_ScaledExplosion( self )
 		else
-			ACF_HEKill( self, VectorRand() )
+			ACF_HEKill( self, VectorRand() , 0)
 		end
 	return HitRes --This function needs to return HitRes
 	end

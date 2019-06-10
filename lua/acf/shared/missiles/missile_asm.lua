@@ -33,7 +33,7 @@ ACF_defineGun("AGM-114 ASM", { --id
 	round = {
 		model		= "models/missiles/agm_114.mdl",
 		rackmdl		= "models/missiles/agm_114.mdl",
-		maxlength	= 77,
+		maxlength	= 45,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
@@ -44,7 +44,7 @@ ACF_defineGun("AGM-114 ASM", { --id
 		dragcoef	= 0.003,		-- drag coefficient while falling
                 dragcoefflight  = 0.03,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(7.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -56,7 +56,7 @@ ACF_defineGun("AGM-114 ASM", { --id
     viewcone    = 40,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.4,		-- multiplier for missile turn-rate.
-    armdelay    = 0.7     -- minimum fuse arming delay
+    armdelay    = 0.1     -- minimum fuse arming delay
 } )
 
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
@@ -117,7 +117,7 @@ ACF_defineGun("AGM-122 ASM", { --id
 	round = {
 		model		= "models/missiles/aim9.mdl",
 		rackmdl		= "models/missiles/aim9.mdl",
-		maxlength	= 80,
+		maxlength	= 70,
 		casing		= 0.1,	        -- thickness of missile casing, cm
 		armour		= 7,			-- effective armour thickness of casing, in mm
 		propweight	= 4,	        -- motor mass - motor casing
@@ -128,7 +128,7 @@ ACF_defineGun("AGM-122 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.001,                 -- drag coefficient during flight
 		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1.1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
