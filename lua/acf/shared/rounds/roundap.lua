@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.AP =  { "MO", "RM", "SL", "GL", "BOMB" , "GBU", "ASM", "AAM", 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "Armour Piercing (AP)" --Human readable name
+Round.name = "(AP) Armour Piercing" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour"
+Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour. Does the most damage out of the AP round types."
 Round.netid = 1 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
@@ -33,10 +33,10 @@ function Round.convert( Crate, PlayerData )
 	Data.ProjMass = Data.FrAera * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
 	Data.ShovePower = 0.2
 	Data.PenAera = Data.FrAera^ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
-	Data.LimitVel = 800										--Most efficient penetration speed in m/s
-	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
-	Data.Ricochet = 60										--Base ricochet angle
+	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)*1.2
+	Data.LimitVel = 750										--Most efficient penetration speed in m/s
+	Data.KETransfert = 0.3									--Kinetic energy transfert to the target for movement purposes
+	Data.Ricochet = 55										--Base ricochet angle
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	
 	Data.BoomPower = Data.PropMass

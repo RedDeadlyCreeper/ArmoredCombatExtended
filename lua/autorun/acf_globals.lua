@@ -57,11 +57,14 @@ ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA th
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
 
-ACF.APDamageMult = 1.2
-ACF.APHEDamageMult = 1
+ACF.APDamageMult = 1.3
+ACF.APCDamageMult = 1.3
+ACF.APBCDamageMult = 1.25
+ACF.APCBCDamageMult = 1.2
+ACF.APHEDamageMult = 1.1
 ACF.APDSDamageMult = 1.2
-ACF.APDSSDamageMult = 1
-ACF.HVAPDamageMult = 1.3
+ACF.APDSSDamageMult = 1.25
+ACF.HVAPDamageMult = 1.4
 ACF.FLDamageMult = 1.2
 ACF.HEATDamageMult = 1.3
 ACF.HEDamageMult = 1
@@ -214,13 +217,14 @@ end
 
 include("acf/shared/rounds/roundap.lua")
 include("acf/shared/rounds/roundapc.lua")
+include("acf/shared/rounds/roundapbc.lua")
+include("acf/shared/rounds/roundapcbc.lua")
 include("acf/shared/rounds/roundapds.lua")
 include("acf/shared/rounds/roundapdss.lua")
 include("acf/shared/rounds/roundhvap.lua")
 include("acf/shared/rounds/roundaphe.lua")
 include("acf/shared/rounds/roundhe.lua")
 include("acf/shared/rounds/roundecmbattery.lua")
-include("acf/shared/rounds/roundhep.lua")
 include("acf/shared/rounds/roundhesh.lua")
 include("acf/shared/rounds/roundheat.lua")
 include("acf/shared/rounds/roundtheat.lua")

@@ -1,14 +1,12 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APC =  { "MO", "RM", "SL", "GL", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
-
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "Armour Piercing Capped (APC)" --Human readable name
+Round.name = "(APC) Armour Piercing Capped Ballistic Capped" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour"
+Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour. Has a cap that helps it deal with sloped armor."
 Round.netid = 16 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
@@ -33,9 +31,9 @@ function Round.convert( Crate, PlayerData )
 	Data.ProjMass = Data.FrAera * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
 	Data.ShovePower = 0.2
 	Data.PenAera = Data.FrAera^ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
-	Data.LimitVel = 800										--Most efficient penetration speed in m/s
-	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
+	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)*1.2
+	Data.LimitVel = 750										--Most efficient penetration speed in m/s
+	Data.KETransfert = 0.3									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 60										--Base ricochet angle
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	
@@ -231,7 +229,7 @@ end
 
 function Round.guicreate( Panel, Table )
 
-	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.APC )
+	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.AP )
 	
 	acfmenupanel:CPanelText("BonusDisplay", "")
 	
