@@ -86,3 +86,8 @@ r100
 -Reworked Missile pen
 -Added Experimental Engine Heat FCN
 -Moar bugfixes
+
+*r111
+-Removed High Explosive Pure
+-Added new armor piercing
+-Buffed damage of armor piercing rounds
