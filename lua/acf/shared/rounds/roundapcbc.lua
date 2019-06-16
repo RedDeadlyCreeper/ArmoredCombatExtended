@@ -7,7 +7,7 @@ Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "(APCBC) Armour Piercing Capped Ballistic Capped" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour. A mix of APC and APBC that deals with sloped armor and drag but has the worst damage out of the AP rounds."
-Round.netid = 16 --Unique ammotype ID for network transmission
+Round.netid = 19 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
 	
@@ -66,7 +66,7 @@ end
 
 function Round.network( Crate, BulletData )
 	
-	Crate:SetNWString( "AmmoType", "APC" )
+	Crate:SetNWString( "AmmoType", "APCBC" )
 	Crate:SetNWString( "AmmoID", BulletData.Id )
 	Crate:SetNWFloat( "Caliber", BulletData.Caliber )
 	Crate:SetNWFloat( "ProjMass", BulletData.ProjMass )
@@ -253,7 +253,7 @@ function Round.guiupdate( Panel, Table )
 	
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "APC"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "APCBC"										--Hardcoded, match ACFRoundTypes table index
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		local Tracer = 0
@@ -299,5 +299,5 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
-list.Set( "ACFRoundTypes", "APC", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "APC" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+list.Set( "ACFRoundTypes", "APCBC", Round )  --Set the round properties
+list.Set( "ACFIdRounds", Round.netid, "APCBC" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

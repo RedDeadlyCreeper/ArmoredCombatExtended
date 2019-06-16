@@ -613,7 +613,7 @@ function ENT:CalcRPM()
 	self.Heat = self.Heat +((Energy+Energyloss)/Mass/743.2)
 	local OverHeat = math.max(self.Heat/105,0)
 	if OverHeat > 1.05 then
-	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0)/100),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0)/100)} , 2 , 0 , self.Owner )
+	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-400,0)/100),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-400,0)/100)} , 2 , 0 , self.Owner )
 
 			if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
