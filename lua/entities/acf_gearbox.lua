@@ -862,7 +862,7 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
 	local ReactTq = 0	
 	-- Calculate the ratio of total requested torque versus what's avaliable, and then multiply it but the current gearratio
 	local AvailTq = 0
-	if Torque ~= 0 then
+	if Torque ~= 0 and self.GearRatio ~= 0 then
 		AvailTq = math.min( math.abs( Torque ) / self.TotalReqTq, 1 ) / self.GearRatio * -( -Torque / math.abs( Torque ) ) * Loss * Slop
 	end
 	

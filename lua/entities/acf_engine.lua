@@ -610,7 +610,8 @@ function ENT:CalcRPM()
 	local Mass = PhysObj:GetMass()
 	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/200 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.03 or 0
 	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass/75) * DeltaTime * 0.03
-	self.Heat = self.Heat +((Energy+Energyloss)/Mass/743.2)
+--	self.Heat = self.Heat +((Energy+Energyloss)/Mass/743.2)
+	self.Heat = 21
 	local OverHeat = math.max(self.Heat/105,0)
 	if OverHeat > 1.05 then
 	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-400,0)/100),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-400,0)/100)} , 2 , 0 , self.Owner )
