@@ -21,7 +21,7 @@ function ENT:GetReloadTime(nextMsl)
     reloadMul = (reloadMul - (reloadMul - 1) * reloadBonus) / (mag^1.1)
     
     local ret = self:GetFireDelay(nextMsl) * reloadMul
-    self:SetNetworkedBeamFloat(	"Reload",		ret)
+    self:SetNWFloat(	"Reload",		ret)
     
     return ret
     
@@ -33,7 +33,7 @@ end
 function ENT:GetFireDelay(nextMsl)
 
     if not IsValid(nextMsl) then 
-        self:SetNetworkedBeamFloat(	"Interval",		self.LastValidFireDelay or 1)
+        self:SetNWFloat(	"Interval",		self.LastValidFireDelay or 1)
         return self.LastValidFireDelay or 1 
     end
 
@@ -48,7 +48,7 @@ function ENT:GetFireDelay(nextMsl)
     
     local interval =  ( (bdata.RoundVolume / 500) ^ 0.60 ) * (gun.rofmod or 1) * (class.rofmod or 1)
     self.LastValidFireDelay = interval
-    self:SetNetworkedBeamFloat(	"Interval",		interval)
+    self:SetNWFloat(	"Interval",		interval)
     
     return interval
     
@@ -421,21 +421,21 @@ end
 function ENT:SetStatusString()
 	local phys = self:GetPhysicsObject()
 	if(!IsValid(phys)) then
-		self:SetNetworkedBeamString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
+		self:SetNWString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
 		return
 	end
     if self:GetPhysicsObject():GetMass() < (self.LegalWeight or self.Mass) then
-        self:SetNetworkedBeamString("Status", "Underweight! (should be " .. tostring(self.LegalWeight or self.Mass) .. " kg)")
+        self:SetNWString("Status", "Underweight! (should be " .. tostring(self.LegalWeight or self.Mass) .. " kg)")
         return
     end
     
     local Crate = self:FindNextCrate()
     if not IsValid(Crate) then
-        self:SetNetworkedBeamString("Status", "Can't find ammo!")
+        self:SetNWString("Status", "Can't find ammo!")
         return
     end
     
-    self:SetNetworkedBeamString("Status", "")
+    self:SetNWString("Status", "")
     
 end
 
@@ -492,7 +492,7 @@ function ENT:UpdateRefillBonus()
     
     
     self.ReloadMultiplierBonus = math.min(totalBonus, 1)
-    self:SetNetworkedBeamFloat(	"ReloadBonus", self.ReloadMultiplierBonus)
+    self:SetNWFloat(	"ReloadBonus", self.ReloadMultiplierBonus)
     
     return self.ReloadMultiplierBonus
     
@@ -514,8 +514,8 @@ function ENT:Think()
         self:TrimNullMissiles()
 		Wire_TriggerOutput(self, "Shots Left", Ammo)
 		
-		self:SetNetworkedBeamString("GunType",		self.Id)
-		self:SetNetworkedBeamInt(	"Ammo",			Ammo)
+		self:SetNWString("GunType",		self.Id)
+		self:SetNWInt(	"Ammo",			Ammo)
 		
         self:GetReloadTime(self:PeekMissile())
         self:SetStatusString()
@@ -759,7 +759,7 @@ function ENT:LoadAmmo( Reload )
 
     self:TrimNullMissiles()
     Ammo = table.Count(self.Missiles)
-	self:SetNetworkedBeamInt("Ammo",	Ammo)
+	self:SetNWInt("Ammo",	Ammo)
 	
     local ReloadTime = 1
     
@@ -995,7 +995,7 @@ function ENT:FireMissile()
             self:MuzzleEffect( attach, missile.BulletData )
             
             Ammo = table.Count(self.Missiles)
-            self:SetNetworkedBeamInt("Ammo",	Ammo)
+            self:SetNWInt("Ammo",	Ammo)
             
         else
             self:EmitSound("weapons/pistol/pistol_empty.wav",500,100)

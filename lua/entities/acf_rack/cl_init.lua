@@ -13,7 +13,7 @@ function ENT:Draw()
 	self:DrawModel()	
     Wire_Render(self)
 	
-	-- local Ammo = math.max(self:GetNetworkedBeamInt("Ammo"), 0)
+	-- local Ammo = math.max(self:GetNWInt("Ammo"), 0)
 	-- if not self.munitionVis and self.gunType then return end
 	-- local attach, angpos, attachname, mountpoint, class, classtable, visEnt
 	-- //print("ammo", Ammo)
@@ -47,7 +47,7 @@ end
 
 
 function ENT:Think()
-	-- local gunType = self:GetNetworkedBeamString("GunType")
+	-- local gunType = self:GetNWString("GunType")
 	-- if gunType and gunType ~= self.gunType then
 		-- local guntbl = ACF.Weapons.Guns[gunType] or {round = {}}
 		-- local visModel = guntbl.round.rackmdl or guntbl.round.model or "models/munitions/round_100mm_shot.mdl"

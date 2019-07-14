@@ -2,7 +2,7 @@
 --define the class
 ACF_defineGunClass("UAR", {
     type            = "missile",
-	spread          = 1,
+	spread          = 0.2,
 	name            = "(Missile) Unguided Aerial Rockets",
 	desc            = "Rockets which fit in racks. Usefull in rocket artillery. Slower fire-rate than FFAR but bigger 'boom'",
 	muzzleflash     = "40mm_muzzleflash_noscale",
@@ -104,7 +104,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 	name		= "SPG-9 Rocket",
 	desc		= "A recoilless rocket launcher similar to an RPG or Grom.  The main charge ignites in the tube, while a rocket accelerates a small antitank grenade to the target, giving it a high initial velocity, smaller launch signature, and flatter trajectory than a conventional round but less accuracy.  A useful alternative to guided missiles, it is also quite capable as lightweight HE-slinging artillery for air-drop and expeditionary forces.",
 	model		= "models/munitions/round_100mm_mortar_shot.mdl",
-	caliber		= 7.3,
+	caliber		= 9.0,
 	gunclass	= "UAR",
     rack        = "1x SPG9",  -- Which rack to spawn this missile on?
     weight		= 40,
@@ -116,7 +116,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 	{
 		model		= "models/missiles/glatgm/9m112f.mdl",
 		rackmdl		= "models/munitions/round_100mm_mortar_shot.mdl",
-		maxlength	= 63,
+		maxlength	= 50,
 		casing		= 0.08,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.5,			-- motor mass - motor casing
@@ -127,7 +127,7 @@ ACF_defineGun("SPG-9 ASR", { --id
         dragcoefflight  = 0.05,                 -- drag coefficient during flight
         dragcoef	= 0.001,		-- drag coefficient while falling
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(4.1)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(4.5)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
