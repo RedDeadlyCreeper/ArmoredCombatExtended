@@ -221,7 +221,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 --	print("Detonated2")	
 	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * Bullet.HEAllocation, Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
 	Bullet.InitTime = SysTime()
-	Bullet.FuseLength = 0.005 + 40/((Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37):Length()*0.0254)
+	Bullet.FuseLength = 0.005 + 10/((Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37
 	Bullet.DragCoef = Bullet.SlugDragCoef2

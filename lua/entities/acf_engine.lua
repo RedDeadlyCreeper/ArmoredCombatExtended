@@ -107,7 +107,7 @@ function ENT:Initialize()
 	self.IsMaster = true
 	self.GearLink = {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
 	self.FuelLink = {}
-
+	
 	self.LastCheck = 0
 	self.LastThink = 0
 	self.MassRatio = 1
@@ -118,6 +118,8 @@ function ENT:Initialize()
 	self.CanUpdate = true
 	self.RequiresFuel = false
 
+	self.LastCurTime=CurTime()
+	
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle" } ) --use fuel input?
 	self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM", "Torque", "Power", "Fuel Use", "Entity", "Mass", "Physical Mass" , "EngineHeat"}, { "NORMAL","NORMAL","NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
 	Wire_TriggerOutput( self, "Entity", self )
@@ -621,6 +623,23 @@ function ENT:CalcRPM()
 			end
 	end
 ]]--
+
+if ((self.ACF.Health/self.ACF.MaxHealth) < 0.95) then
+
+	if (CurTime()-self.LastCurTime) > 1 then
+	self.LastCurTime=CurTime()
+--	print("Engine Failing")
+	self:EmitSound(Sound("acf_extra/tankfx/guns/20mm_0"..math.random(1,5)..".wav"),100, 70+math.random(-10,10))	
+	end
+
+	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass-400,20)/2.5),Momentum = 0,Penetration = (1+math.max(Mass-400,20)/2.5)} , 2 , 0 , self.Owner )
+
+			if HitRes.Kill then
+			ACF_HEKill( self, VectorRand() , 0)
+			end
+
+end
+
 
 --	self.Heat = self.FuelUse 
 --	self.Heat = Energy/(PhysObj:GetMass()*743.2)

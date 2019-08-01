@@ -22,7 +22,7 @@ ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 15 --How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 16 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -45,33 +45,34 @@ ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles 
 ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
 
-ACF.TextoliteEffectiveness=0.2 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.TextoliteResilianceFactor = 1.3 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.TextoliteEffectiveness=0.23 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.TextoliteResilianceFactor = 0.005 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.TextoliteHEATEffectiveness = 0.55 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEATResilianceFactor = 2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.TextoliteHEResistance = 1.3 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteHEEffectiveness = 0.9 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-
+ACF.TextoliteSpallMult = 1.3
 
 ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA than its currentarmor
 ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
 
 
-ACF.APDamageMult = 1.3
-ACF.APCDamageMult = 1.3
-ACF.APBCDamageMult = 1.25
-ACF.APCBCDamageMult = 1.2
-ACF.APHEDamageMult = 1.1
-ACF.APDSDamageMult = 1.2
-ACF.APDSSDamageMult = 1.25
-ACF.HVAPDamageMult = 1.4
-ACF.FLDamageMult = 1.2
-ACF.HEATDamageMult = 1.3
-ACF.HEDamageMult = 1
-ACF.HEPDamageMult = 1.3 -- High Explosive No Fragmentation
+ACF.APDamageMult = 1.4
+ACF.APCDamageMult = 1.4
+ACF.APBCDamageMult = 1.35
+ACF.APCBCDamageMult = 1.3
+ACF.APHEDamageMult = 1.2
+ACF.APDSDamageMult = 1.5
+ACF.APDSSDamageMult = 1.55
+ACF.HVAPDamageMult = 1.65
+ACF.FLDamageMult = 1.4
+ACF.HEATDamageMult = 1.5
+ACF.HEDamageMult = 2
 ACF.HESHDamageMult = 1
-ACF.HPDamageMult = 3
+ACF.HPDamageMult = 4
 
+
+ACF.HEDamageFactor = 3
 
 ACF.HEPower = 8000		--HE Filler power per KG in KJ
 ACF.HEDensity = 1.65	--HE Filler density (That's TNT density)
@@ -83,7 +84,7 @@ ACF.HEATMVScaleTan = 0.75	--Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
 ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
 ACF.HEATMulEngine = 10	--likewise
-ACF.HEATPenLayerMul = 0.90	--HEAT base energy multiplier
+ACF.HEATPenLayerMul = 0.95	--HEAT base energy multiplier
 
 ACF.DragDiv = 20		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
@@ -103,7 +104,7 @@ ACF.TankVolumeMul = 1 -- multiplier for fuel tank capacity, 1.0 is approx real w
 
 ACF.EnableKillicons = true -- Enable killicons overwriting.
 
-ACF.NormalizationFactor = 0.1 --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
+ACF.NormalizationFactor = 0.15 --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
@@ -249,6 +250,8 @@ ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds class
 game.AddParticles("particles/acf_muzzleflashes.pcf")
 game.AddParticles("particles/explosion1.pcf")
 game.AddParticles("particles/rocket_motor.pcf")
+game.AddParticles("particles/rocket_motor_sam.pcf")
+--game.AddParticles("particles/rocket_motor_atgm.pcf") --Unnecescary after merge
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")
 

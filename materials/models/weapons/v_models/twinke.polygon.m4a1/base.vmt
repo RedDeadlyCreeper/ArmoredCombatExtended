@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\twinke.polygon.m4a1\base"
+	"$bumpmap" "models/weapons/v_models/twinke.polygon.m4a1/base_normal"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+}

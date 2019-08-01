@@ -81,7 +81,7 @@ ACF_defineGun("Strela-1 SAM", { --id
 		propweight	= 1,	        -- motor mass - motor casing
 		thrust		= 3500,	    -- average thrust - kg*in/s^2		
 		burnrate	= 300,	        -- cm^3/s at average chamber pressure	
-		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.
+		starterpct	= 0.05,         	-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency	
 		dragcoef	= 0.003,		-- drag coefficient while falling	
                 dragcoefflight  = 0,                 -- drag coefficient during flight
@@ -124,7 +124,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 		propweight	= 1.5,	        -- motor mass - motor casing
 		thrust		= 20000,	    -- average thrust - kg*in/s^2			--was 120000
 		burnrate	= 500,	        -- cm^3/s at average chamber pressure	
-		starterpct	= 0.25,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
+		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 2500,		-- minimum speed beyond which the fins work at 100% efficiency	--was 15000
 		dragcoef	= 0.01,		-- drag coefficient while falling
                 dragcoefflight  = 0,                 -- drag coefficient during flight
@@ -146,7 +146,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 
 ACF_defineGun("9M311", { --id
 	name = "9M311 Missile",
-	desc = "The 9M311 missile is a fast hypersonic Anti Air missile that while agile is not agile enough to hit maneuvering planes but excels against helicopters.",
+	desc = "The 9M311 missile is a hypersonic Anti Air missile that while agile is not agile enough to hit maneuvering planes but excels against helicopters.",
 	model = "models/missiles/aim9.mdl",
 	gunclass = "SAM",
     rack = "1x 9m311",  -- Which rack to spawn this missile on?
@@ -162,12 +162,12 @@ ACF_defineGun("9M311", { --id
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 6,				-- effective armour thickness of casing, in mm
 		propweight	= 0.8,				-- motor mass - motor casing
-		thrust		= 30000,				-- average thrust - kg*in/s^2
+		thrust		= 17000,				-- average thrust - kg*in/s^2
 		burnrate	= 800,				-- cm^3/s at average chamber pressure
-		starterpct	= 0.3,				-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 100,				-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,			-- drag coefficient while falling
-        dragcoefflight  = 0.002,                 -- drag coefficient during flight
+		starterpct	= 0.2,				-- percentage of the propellant consumed in the starter motor.
+		minspeed	= 50,				-- minimum speed beyond which the fins work at 100% efficiency
+		dragcoef	= 0.001,			-- drag coefficient while falling
+        dragcoefflight  = 0.003,                 -- drag coefficient during flight
 		finmul		= 0.01,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(8.8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},

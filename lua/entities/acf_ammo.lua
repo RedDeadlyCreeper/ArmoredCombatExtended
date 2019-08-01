@@ -186,15 +186,18 @@ end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
 	local Mul = 1
-	local CMul = 1
-	if Type == "HEAT" then
+	local CMul = 0.75 --35% Chance to detonate
+	if Type == "HEAT" or Type == "THEAT" then
 	Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo
 	CMul = 1.8
+	elseif Type == "HE" then
+	Mul = 1.4
+	CMul = 1.5	
 	end
 	
 	local HitRes = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor )	--Calling the standard damage prop function
 	
-	if self.Exploding or not self.IsExplosive then return HitRes end
+	if not self.IsExplosive then return HitRes end
 	
 	if HitRes.Kill then
 		if hook.Run("ACF_AmmoExplode", self, self.BulletData ) == false then return HitRes end
@@ -202,7 +205,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 		if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
 			self.Inflictor = Inflictor
 		end
-		if self.Ammo > 1 then
+		if self.Ammo > 0 then
 			ACF_ScaledExplosion( self )
 		else
 			ACF_HEKill( self, VectorRand() )
@@ -213,6 +216,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
 	--print(Ratio)
 	local Chance = math.Rand(0,1)
+--	local Chance = 0
 
 		if Chance > 0.9 / CMul then  
 		self.Inflictor = Inflictor
@@ -224,7 +228,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	
 	HitRes = ACF_PropDamage( Entity, FEnergy, 9999999, 0, Inflictor )	--I'd like to see someone dodge this jank code
 --	print("Instant Detonation")
-		if self.Ammo > 1 then
+		if self.Ammo > 0 then
 			ACF_ScaledExplosion( self )
 		else
 			ACF_HEKill( self, VectorRand() , 0)

@@ -116,7 +116,10 @@ function ENT:CalcFlight()
 
 	if TargetPos then
 		local Dist = Pos:Distance(TargetPos)
-		TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 5000))
+--		TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 5000))
+--		TargetPos = TargetPos + (Vector(0,0,self.Gravity / Speed - self.Gravity / Dist * 5))
+		TargetPos = TargetPos + (Vector(0,0,self.Gravity / Speed * math.min(Dist/1200 , 2.5)))		
+--		TargetPos = TargetPos + (Vector(0,0,Dist*math.tan(math.asin(self.Gravity/Speed))))
 		local LOS = (TargetPos - Pos):GetNormalized()
 		local LastLOS = self.LastLOS
 		local NewDir = Dir
@@ -389,7 +392,7 @@ function ENT:ConfigureFlight()
 		self.Boost = 0
 	else
 		self.MotorLength = BulletData.PropMass / (Round.burnrate / 1000) * (1 - Round.starterpct)
-		self.Boost = (BulletData.PropMass / (Round.burnrate / 1000) * Round.starterpct)*Round.thrust * 0.001
+		self.Boost = (BulletData.PropMass / (Round.burnrate / 1000) * Round.starterpct)*Round.thrust * 0.002
 		self.Motor = Round.thrust
 	end
 	

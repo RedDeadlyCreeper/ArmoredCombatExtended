@@ -67,13 +67,13 @@ function Round.convert( Crate, PlayerData )
 	elseif GunClass == "C" then
 	Data.MinCalMult = 0.2
 	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.9
+	Data.PenModifier = 0.75
 	Data.VelModifier = 1
 	Data.Ricochet = 62
 	elseif GunClass == "SBC" then
 	Data.MinCalMult = 0.17
 	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.9
+	Data.PenModifier = 0.72
 	Data.VelModifier = 1.1
 	Data.Ricochet = 68
 	else

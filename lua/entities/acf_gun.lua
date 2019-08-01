@@ -633,7 +633,8 @@ function ENT:FireShell()
 			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + ACF_GetPhysicalParent(self):GetVelocity()
 			self.BulletData.Owner = self.User
 			self.BulletData.Gun = self
-
+			
+			
 			local Cal = self.Caliber
 
 --			print("BooletType: "..self.BulletData.Type)
