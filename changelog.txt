@@ -91,3 +91,22 @@ r100
 -Removed High Explosive Pure
 -Added new armor piercing
 -Buffed damage of armor piercing rounds
+
+*r112
+-Buffed most of the kinetic shells
+-Improved missile gravity compensation
+-New ATGM Rocket motor effect
+-Increased range of many ATGMs
+-Increased HEAT Jet drag coefficient
+-RACs can now fire HE (Ban the minmaxers)
+-Buff various cannons
+-HESH Rework
+-Textolite damage resistance nerf
+-Fragmentation rework
+-Reworked ammo detonation:
+-35% KE and frag detonation, 75% HE detonation, 90% Heat Detonation
+-Diesel explodes
+-Added basic SWEPs using CSS models
+-Damaged engines cease up
+-Fixed ammoboxes not detonating when completely destroyed
+-HE Iterates over multiple explosions
