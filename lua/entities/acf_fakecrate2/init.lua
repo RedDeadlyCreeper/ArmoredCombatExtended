@@ -36,19 +36,19 @@ end
 function ENT:RegisterTo(bullet)
 
 		if bullet.BulletData then
-			self:SetNetworkedString( "Sound", bullet.Primary and bullet.Primary.Sound or nil)
+			self:SetNWString( "Sound", bullet.Primary and bullet.Primary.Sound or nil)
 			self.Owner = bullet:GetOwner()
 			self:SetOwner(bullet:GetOwner())
 		end
 	
 	
-	self:SetNetworkedInt( "Caliber", bullet.Caliber or 10)
-	self:SetNetworkedInt( "ProjMass", bullet.ProjMass or 10)
-	self:SetNetworkedInt( "FillerMass", bullet.FillerMass or 0)
-	self:SetNetworkedInt( "FillerMass", bullet.BoomFillerMass or 0)
-	self:SetNetworkedInt( "DragCoef", bullet.DragCoef or 1)
-	self:SetNetworkedString( "AmmoType", bullet.Type or "AP")
-	self:SetNetworkedInt( "Tracer" , bullet.Tracer or 0)
+	self:GetNWInt( "Caliber", bullet.Caliber or 10)
+	self:GetNWInt( "ProjMass", bullet.ProjMass or 10)
+	self:GetNWInt( "FillerMass", bullet.FillerMass or 0)
+	self:GetNWInt( "FillerMass", bullet.BoomFillerMass or 0)
+	self:GetNWInt( "DragCoef", bullet.DragCoef or 1)
+	self:GetNWString( "AmmoType", bullet.Type or "AP")
+	self:GetNWInt( "Tracer" , bullet.Tracer or 0)
     
 	local col = bullet.Colour or self:GetColor()
 	self:SetNWVector( "Color" , Vector(col.r, col.g, col.b))
