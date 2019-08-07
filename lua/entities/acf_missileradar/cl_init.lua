@@ -12,7 +12,7 @@ end
 
 function ENT:DoNormalDraw()
 
-	local drawbubble = self:GetNetworkedBool("VisInfo", false)
+	local drawbubble = self:GetNWBool("VisInfo", false)
 	
 	if not drawbubble then return end
 	if not (LocalPlayer():GetEyeTrace().Entity == self and EyePos():Distance(self:GetPos()) < 256) then return end
