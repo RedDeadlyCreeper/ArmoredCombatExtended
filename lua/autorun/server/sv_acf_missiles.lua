@@ -126,7 +126,7 @@ function ACFM_MakeCrateForBullet(self, bullet)
 
     if not (type(bullet) == "table") then
         if bullet.BulletData then
-            self:SetNetworkedString( "Sound", bullet.Sound or (bullet.Primary and bullet.Primary.Sound))
+            self:SetNWString( "Sound", bullet.Sound or (bullet.Primary and bullet.Primary.Sound))
             self.Owner = bullet:GetOwner()
             self:SetOwner(bullet:GetOwner())
             bullet = bullet.BulletData
@@ -134,15 +134,15 @@ function ACFM_MakeCrateForBullet(self, bullet)
     end
     
     
-    self:SetNetworkedInt( "Caliber", bullet.Caliber or 10)
-    self:SetNetworkedInt( "ProjMass", bullet.ProjMass or 10)
-    self:SetNetworkedInt( "FillerMass", bullet.FillerMass or 0)
-    self:SetNetworkedInt( "DragCoef", bullet.DragCoef or 1)
-    self:SetNetworkedString( "AmmoType", bullet.Type or "AP")
-    self:SetNetworkedInt( "Tracer" , bullet.Tracer or 0)
+    self:SetNWInt( "Caliber", bullet.Caliber or 10)
+    self:SetNWInt( "ProjMass", bullet.ProjMass or 10)
+    self:SetNWInt( "FillerMass", bullet.FillerMass or 0)
+    self:SetNWInt( "DragCoef", bullet.DragCoef or 1)
+    self:SetNWString( "AmmoType", bullet.Type or "AP")
+    self:SetNWInt( "Tracer" , bullet.Tracer or 0)
     local col = bullet.Colour or self:GetColor()
-    self:SetNetworkedVector( "Color" , Vector(col.r, col.g, col.b))
-    self:SetNetworkedVector( "TracerColour" , Vector(col.r, col.g, col.b))
+    self:SetNWVector( "Color" , Vector(col.r, col.g, col.b))
+    self:SetNWVector( "TracerColour" , Vector(col.r, col.g, col.b))
     self:SetColor(col)
 
 end
