@@ -436,7 +436,7 @@ end
 
 function ENT:EnableClientInfo(bool)
 	self.ClientInfo = bool
-	self:SetNetworkedBool("VisInfo", bool)
+	self:SetNWBool("VisInfo", bool)
 	
 	if bool then
 		self:RefreshClientInfo()
