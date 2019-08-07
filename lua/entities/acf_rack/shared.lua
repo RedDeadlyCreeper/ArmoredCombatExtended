@@ -16,7 +16,7 @@ ENT.AdminSpawnable = false
 
 function ENT:GetOverlayText()
 
-	local name          = self:GetNetworkedString("WireName")
+	local name          = self:GetNWString("WireName")
 	local GunType       = self:GetNWString("GunType")
 	local Ammo          = self:GetNWInt("Ammo")
 	local FireRate      = self:GetNWFloat("Interval")
