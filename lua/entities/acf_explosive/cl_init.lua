@@ -12,7 +12,7 @@ end
 
 function ENT:DoNormalDraw()
 
-	local drawbubble = self:GetNetworkedBool("VisInfo", false)
+	local drawbubble = self:GetNWBool("VisInfo", false)
 	
 	if not drawbubble then return end
 	if not (LocalPlayer():GetEyeTrace().Entity == self and EyePos():Distance(self:GetPos()) < 256) then return end
@@ -29,9 +29,9 @@ end
 
 function ENT:GetOverlayText()
 
-	local roundID = self:GetNetworkedString("RoundId", "Unknown ID")
-	local roundType = self:GetNetworkedString("RoundType", "Unknown Type")
-	local filler = self:GetNetworkedFloat("FillerVol", 0)
+	local roundID = self:GetNWString("RoundId", "Unknown ID")
+	local roundType = self:GetNWString("RoundType", "Unknown Type")
+	local filler = self:GetNWFloat("FillerVol", 0)
 
 	local blast = (filler / 2) ^ 0.33 * 5 * 10 * 0.2
 	
