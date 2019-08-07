@@ -215,26 +215,26 @@ function ENT:UpdateStatus()
 
 	local phys = self.Entity:GetPhysicsObject()  	
 	if not IsValid(phys) then 
-		self:SetNetworkedBool("Status", "Physics error, please respawn this") 
+		self:SetNWBool("Status", "Physics error, please respawn this") 
 		return 
 	end
 
 	if phys:GetMass() < self.LegalMass then
-		self:SetNetworkedBool("Status", "Illegal mass, should be " .. self.LegalMass .. " kg") 
+		self:SetNWBool("Status", "Illegal mass, should be " .. self.LegalMass .. " kg") 
 		return 
 	end
 	
 	if not self:CheckWeldParent() then
-		self:SetNetworkedBool("Status", "Deactivated: parenting is disallowed") 
+		self:SetNWBool("Status", "Deactivated: parenting is disallowed") 
 		return 
 	end
 	
 	if not self.Active then
-		self:SetNetworkedBool("Status", "Inactive")
+		self:SetNWBool("Status", "Inactive")
 	elseif self.Outputs.Detected.Value > 0 then
-		self:SetNetworkedBool("Status", self.Outputs.Detected.Value .. " objects detected!")
+		self:SetNWBool("Status", self.Outputs.Detected.Value .. " objects detected!")
 	else
-		self:SetNetworkedBool("Status", "Active")
+		self:SetNWBool("Status", "Active")
 	end
 
 end
@@ -339,7 +339,7 @@ end
 
 function ENT:EnableClientInfo(bool)
 	self.ClientInfo = bool
-	self:SetNetworkedBool("VisInfo", bool)
+	self:SetNWBool("VisInfo", bool)
 	
 	if bool then
 		self:RefreshClientInfo()
