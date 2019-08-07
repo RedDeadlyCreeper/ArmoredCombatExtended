@@ -188,7 +188,7 @@ function SWEP:SetZoom(zoom)
     end
 	
 	
-	if SERVER then self:SetNetworkedBool("Zoomed", self.Zoomed) end
+	if SERVER then self:SetNWBool("Zoomed", self.Zoomed) end
 	
 	if self.Zoomed then
 		
