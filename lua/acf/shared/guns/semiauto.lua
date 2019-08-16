@@ -5,6 +5,7 @@ ACF_defineGunClass("SA", {
 	desc = "Semiautomatic cannons offer better payloads than autocannons and less weight at the cost of rate of fire.",
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.5,
+	year = 1935,
 	sound = "acf_extra/tankfx/gnomefather/25mm1.wav",
 	soundDistance = " ",
 	soundNormal = " "

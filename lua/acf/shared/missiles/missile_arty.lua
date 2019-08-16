@@ -8,6 +8,7 @@ ACF_defineGunClass("ARTY", {
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
 	sound           = "acf_extra/airfx/rocket_fire2.wav",
+	year = 1944,
 	soundDistance   = " ",
 	soundNormal     = " ",
     effect          = "Rocket Motor",
@@ -160,7 +161,7 @@ ACF_defineGun("RW61 RA", { --id
     rack        = "380mmRW61",  -- Which rack to spawn this missile on?
     weight		= 1800,
     length	    = 38,
-	year		= 1960,
+	year		= 1944,
 	rofmod		= 0.9,
 	roundclass	= "Rocket",
 	round		=

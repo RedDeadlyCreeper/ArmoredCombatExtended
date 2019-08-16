@@ -5,6 +5,7 @@ ACF_defineGunClass("RAC", {
 	desc = "Rotary Autocannons sacrifice weight, bulk and accuracy over classic Autocannons to get the highest rate of fire possible.",
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.07,
+	year = 1962,
 	sound = "weapons/acf_gun/mg_fire3.wav",
 	soundDistance = " ",
 	soundNormal = " ",
@@ -81,6 +82,7 @@ ACF_defineGun("30mmRAC", {
 	}
 } )
 
+if ACF.EnableNewContent then
 ACF_defineGun("Cooled20mmHRAC", {
 	name = "Liquid Cooled 20mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine and with an optimized ammo feed.  Phalanx.",
@@ -113,9 +115,8 @@ ACF_defineGun("Cooled30mmHRAC", {
 	}
 } )
 
-
 ACF_defineGun("14.5mmHRAC", { --id
-	name = "(+)14.5mm Heavy Rotary Autocannon",
+	name = "14.5mm Heavy Rotary Autocannon",
 	desc = "For those that want an even heavier machinegun capable of firing faster 14.5 rounds for all of eternity, great for scout helis",
 	model = "models/rotarycannon/kw/14_5mmrac.mdl",
 	gunclass = "RAC",
@@ -128,7 +129,7 @@ ACF_defineGun("14.5mmHRAC", { --id
 		propweight = 0.06
 	}
 } )
-
+end
 ACF_defineGun("20mmHRAC", {
 	name = "20mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Phalanx.",

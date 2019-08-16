@@ -5,6 +5,7 @@ ACF_defineGunClass("SL", {
 	desc = "Smoke launcher to block an attacker's line of sight.",
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 45,
+	year = 1941,
 	sound = "weapons/acf_gun/smoke_launch.wav",
 	soundDistance = "Mortar.Fire",
 	soundNormal = " "

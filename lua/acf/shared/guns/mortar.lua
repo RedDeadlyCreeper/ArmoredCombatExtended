@@ -5,6 +5,7 @@ ACF_defineGunClass("MO", {
 	desc = "Mortars are able to fire shells with usefull payloads from a light weight gun, at the price of limited velocities.",
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 2,
+	year = 1915,
 	sound = "weapons/ACF_Gun/mortar_new.wav",
 	soundDistance = "Mortar.Fire",
 	soundNormal = " "
@@ -47,7 +48,7 @@ ACF_defineGun("80mmM", {
 	gunclass = "MO",
 	caliber = 8.0,
 	weight = 120,
-	year = 1930,
+	year = 1915,
 	round = {
 		maxlength = 38,
 		propweight = 0.055 
@@ -96,9 +97,9 @@ ACF_defineGun("200mmM", {
 	}
 } )
 
-
+if ACF.EnableNewContent then
 ACF_defineGun("280mmM", {
-	name = "(+)280mm Mortar",
+	name = "280mm Mortar",
 	desc = "Massive payload, with a reload time to match. Found in rare WW2 siege artillery pieces. It's the perfect size for a jeep.",
 	model = "models/mortar/mortar_280mm.mdl",
 	gunclass = "MO",
@@ -110,4 +111,4 @@ ACF_defineGun("280mmM", {
 		propweight = 0.462 
 	}
 } )
-
+end

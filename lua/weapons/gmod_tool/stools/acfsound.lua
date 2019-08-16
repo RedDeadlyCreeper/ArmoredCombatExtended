@@ -10,7 +10,7 @@ TOOL.ClientConVar["pitch"] = "1"
 if CLIENT then
 	language.Add( "Tool.acfsound.name", "ACF Sound Replacer" )
 	language.Add( "Tool.acfsound.desc", "Change sound of guns/engines." )
-	language.Add( "Tool.acfsound.0", "Left click to apply sound. Right click to copy sound. Reload to set default sound." )
+	language.Add( "Tool.acfsound.0", "Left click to apply sound. Right click to copy sound. Reload to set default sound. Use an empty sound path to disable sound." )
 end
 
 

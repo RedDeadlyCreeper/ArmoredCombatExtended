@@ -8,14 +8,14 @@ ACF_defineGunClass("ECM", {
 	sound = "acf_extra/airfx/mobile_radar.wav",
 	soundDistance = " ",
 	soundNormal = " ",
-	
+	year = 1989,	
 	ammoBlacklist   = {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
 } )
 
 --add a gun to the class
 ACF_defineGun("STDECM", { --id
 	name = "Standard ECM Pod",
-	desc = "Jam those incoming missiles!!! MUAHAHAHAHAHAHA. Just hope you dont have to suffer through the 30 second recharge time.",
+	desc = "Jam those incoming missiles!!! MUHAHAHAHAHAHA. Just hope you dont have to suffer through the 30 second recharge time.",
 	model = "models/missiles/minipod.mdl",
 	gunclass = "ECM",
 	canparent = true,

@@ -8,13 +8,19 @@ TOOL.ConfigName	= ""
 
 TOOL.ClientConVar["thickness"] = 1
 TOOL.ClientConVar["ductility"] = 0
+if ACF.EnableNewContent and ACF.Year >= 1955 then
 TOOL.ClientConVar["material"] = 0
+end
 CreateClientConVar( "acfarmorprop_area", 0, false, true ) -- we don't want this one to save
 
 -- Calculates mass, armor, and health given prop area and desired ductility and thickness.
 local function CalcArmor( Area, Ductility, Thickness, Material )
-	local testMaterial = math.floor(Material + 0.5)
+	local testMaterial = 0
 	local massMod = 1
+	if ACF.EnableNewContent and ACF.Year >= 1955 then
+	testMaterial = math.floor(Material + 0.5)
+	massMod = 1
+	
 	if testMaterial == 0 then --RHA	
 		massMod = 1
 	elseif testMaterial == 1 then --Cast
@@ -32,7 +38,8 @@ local function CalcArmor( Area, Ductility, Thickness, Material )
 	else --Overflow
 		massMod = 1
 	end
-
+	end
+	
 	local mass =  Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * massMod
 	local armor = ACF_CalcArmor( Area, Ductility, mass / massMod )
 	local health = ( Area + Area * Ductility ) / ACF.Threshold
@@ -52,7 +59,9 @@ if CLIENT then
 		local Presets = vgui.Create( "ControlPresets" )
 			Presets:AddConVar( "acfarmorprop_thickness" )
 			Presets:AddConVar( "acfarmorprop_ductility" )
+			if ACF.EnableNewContent and ACF.Year >= 1955 then
 			Presets:AddConVar( "acfarmorprop_material" )
+			end
 			Presets:SetPreset( "acfarmorprop" )
 		panel:AddItem( Presets )
 		
@@ -61,10 +70,10 @@ if CLIENT then
 		
 		panel:NumSlider( "Ductility", "acfarmorprop_ductility", -80, 80 )
 		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias).\n\nA ductile prop can survive more damage but is penetrated more easily (slider > 0).\n\nA non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
-		
+		if ACF.EnableNewContent and ACF.Year >= 1955 then		
 		panel:NumSlider( "Material", "acfarmorprop_material", 0, 6 )
 		panel:ControlHelp( "Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\nRolled Steel that does not have any special traits, your standard ACF armor\n(1)Cast\nHeavier and softer than RHA but takes less damage\n(2)Ceramic\nLight plate that is lighter and more resiliant to penetration but is very brittle and hates being penetrated\n(3)Rubber\nRubber is effective vs heat jets and spall but does almost nothing to kinetic rounds\n(4)ERA\nERA is heavier than RHA,when penetrated it explodes damaging nearby props and the shell that hit it\n(5)Aluminum\nLighter than steel but very vulnerable to HEAT and spalling\n(6)Textolite\nFiberglass like material that isn't effective vs kinetic but is good vs HEAT and HE\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel.\n" )
-		
+		end
 	end
 	
 	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
@@ -79,7 +88,10 @@ if CLIENT then
 		
 		local ductility = math.Clamp( ( tonumber( value ) or 0 ) / 100, -0.8, 0.8 )
 		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
+		local material = 0
+		if ACF.EnableNewContent and ACF.Year >= 1955 then
 		local material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 4 )
+		end
 		local mass = CalcArmor( area, ductility, thickness , material)
 		
 		if mass > 50000 then
@@ -107,7 +119,10 @@ if CLIENT then
 		
 		local thickness = math.Clamp( tonumber( value ) or 0, 0.1, 5000 )
 		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 6 )
+		local material = 0
+		if ACF.EnableNewContent and ACF.Year >= 1955 then
+		material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 6 )
+		end
 		local mass = CalcArmor( area, ductility, thickness , material )
 		
 		if mass > 50000 then
@@ -132,8 +147,10 @@ if CLIENT then
 		
 		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
 		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local material = math.Clamp( math.floor(tonumber( value )+0.5 or 0), 0, 6 )
-		
+		local material = 0
+		if ACF.EnableNewContent and ACF.Year >= 1955 then
+		material = math.Clamp( math.floor(tonumber( value )+0.5 or 0), 0, 6 )
+		end
 
 		RunConsoleCommand( "acfarmorprop_material", math.floor(material+0.5))
 		
@@ -158,10 +175,12 @@ local function ApplySettings( ply, ent, data )
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
 	end
 	
+	if ACF.EnableNewContent and ACF.Year >= 1955 then	
 	if data.Material then
 		ent.ACF = ent.ACF or {}
 		ent.ACF.Material = data.Material
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
+	end
 	end
 	
 end
@@ -182,8 +201,12 @@ function TOOL:LeftClick( trace )
 	
 	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
 	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
-	local material = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 6 )
-
+	
+	local material = 0
+	if ACF.EnableNewContent and ACF.Year >= 1955 then
+	material = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 6 )
+	end
+	
 	local testMaterial = math.floor(material + 0.5)
 	local massMod = 1
 	if testMaterial == 0 then --RHA	
@@ -282,8 +305,11 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
-		self.Weapon:SetNWFloat( "Material", ent.ACF.Material )
-		
+		if ACF.EnableNewContent and ACF.Year >= 1955 then
+		self.Weapon:SetNWFloat( "Material", ent.ACF.Material)
+		else
+		self.Weapon:SetNWFloat( "Material", 0 )
+		end
 	else
 	
 		ply:ConCommand( "acfarmorprop_area 0" )
@@ -293,7 +319,6 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "MaxHP", 0 )
 		self.Weapon:SetNWFloat( "MaxArmour", 0 )
 		self.Weapon:SetNWFloat( "Material", 0 )
-		
 	end
 	
 	self.AimEntity = ent
@@ -315,19 +340,25 @@ function TOOL:DrawHUD()
 	local area = GetConVarNumber( "acfarmorprop_area" )
 	local ductility = GetConVarNumber( "acfarmorprop_ductility" )
 	local thickness = GetConVarNumber( "acfarmorprop_thickness" )
-	local material = GetConVarNumber( "acfarmorprop_material" )
-	
+	local material = 0
+	if ACF.EnableNewContent and ACF.Year >= 1955 then
+	material = GetConVarNumber( "acfarmorprop_material" )
+	end
 	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , material)
 	mass = math.min( mass, 50000 )
 	
 	local text = "Current:\nMass: " .. math.Round( curmass, 2 )
 	text = text .. "\nArmor: " .. math.Round( curarmor, 2 )
 	text = text .. "\nHealth: " .. math.Round( curhealth, 2 )
+	if ACF.EnableNewContent and ACF.Year >= 1955 then
 	text = text .. "\nMaterial: " .. curmat 
+	end
 	text = text .. "\nAfter:\nMass: " .. math.Round( mass, 2 )
 	text = text .. "\nArmor: " .. math.Round( armor, 2 )
 	text = text .. "\nHealth: " .. math.Round( health, 2 )
+	if ACF.EnableNewContent and ACF.Year >= 1955 then
 	text = text .. "\nMaterial: " .. material 
+	end
 	
 	local pos = ent:GetPos()
 	AddWorldTip( nil, text, nil, pos, nil )

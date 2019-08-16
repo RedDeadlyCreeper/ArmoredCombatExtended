@@ -5,6 +5,7 @@ ACF_defineGunClass("GL", {
 	desc = "Grenade Launchers can fire shells with relatively large payloads at a fast rate, but with very limited velocities and poor accuracy.",
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 1,
+	year = 1970,
 	sound = "weapons/acf_gun/grenadelauncher.wav",
 	soundDistance = " ",
 	soundNormal = " "
@@ -26,9 +27,9 @@ ACF_defineGun("40mmGL", { --id
 		propweight = 0.01
 	}
 } )
-
+if ACF.EnableNewContent then
 ACF_defineGun("20mmGL", { --id
-	name = "(+)20mm Grenade Launcher",
+	name = "20mm Grenade Launcher",
 	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak                            using 40mm GL as placeholder bc the 20mm mini is borked",
 	model = "models/launcher/40mmgl.mdl",
 	gunclass = "GL",
@@ -45,7 +46,7 @@ ACF_defineGun("20mmGL", { --id
 } )
 
 ACF_defineGun("40mmGLSingle", { --id
-	name = "(+)40mm Single Grenade Launcher",
+	name = "40mm Single Grenade Launcher",
 	desc = "The 40mm grenade projecter excels at launching a small 40mm charge at nearby infantry or defending a tank from an incoming rocket.",
 	model = "models/launcher/40mmsl.mdl",
 	gunclass = "GL",
@@ -59,3 +60,4 @@ ACF_defineGun("40mmGLSingle", { --id
 		propweight = 0.02
 	}
 } )
+end

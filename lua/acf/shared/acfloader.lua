@@ -2,6 +2,8 @@
 -- This loads the files in the engine, gearbox, fuel, and gun folders!
 -- Go edit those files instead of this one.
 
+--This file is overridden by the acf_missileloader
+
 AddCSLuaFile()
 
 local GunClasses = {}
@@ -45,21 +47,36 @@ end
 
 -- some factory functions for defining ents
 function ACF_defineGunClass( id, data )
+	if (data.year or 0) < ACF.Year then
 	data.id = id
 	GunClasses[ id ] = data
+	end
 end
 
 function ACF_defineGun( id, data )
+	if (data.year or 0) < ACF.Year then
 	data.id = id
 	data.round.id = id
 	table.Inherit( data, gun_base )
 	GunTable[ id ] = data
+--	print("Loaded Gun: "..data.name)
+--	print("YearDif: "..(ACF.Year-data.year))
+--	else
+--	print("Did not load Gun: "..data.name)
+--	return false
+	end
 end
 
 function ACF_DefineEngine( id, data )
+	if (data.year or 0) < ACF.Year then
 	data.id = id
 	table.Inherit( data, engine_base )
 	MobilityTable[ id ] = data
+	print("Loaded Engine: "..data.name)	
+	else
+	print("Did not load Engine: "..data.name)	
+	return false
+	end
 end
 
 function ACF_DefineGearbox( id, data )

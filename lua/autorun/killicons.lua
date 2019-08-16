@@ -57,7 +57,7 @@ if SERVER then
 			local AttackerClass = "worldspawn"
 
 			if ( IsValid( inflictor ) ) then
-				if inflictor.ACF and inflictor:GetClass() != "acf_ammo" then
+				if inflictor.ACF and inflictor.Class and inflictor:GetClass() != "acf_ammo" then
 					InflictorClass = "acf_" .. inflictor.Class
 				else
 					InflictorClass = inflictor:GetClass()

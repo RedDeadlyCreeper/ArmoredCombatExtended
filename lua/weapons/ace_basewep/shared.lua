@@ -32,7 +32,8 @@ SWEP.AutoSwitchTo		= false
 SWEP.AutoSwitchFrom		= false
 
 SWEP.Primary.Recoil			= 5
-SWEP.Primary.RecoilAngle	= 1
+SWEP.Primary.RecoilAngleVer	= 1
+SWEP.Primary.RecoilAngleHor	= 1
 SWEP.Primary.ClipSize		= 5
 SWEP.Primary.Delay			= 0.1
 SWEP.Primary.DefaultClip	= 30

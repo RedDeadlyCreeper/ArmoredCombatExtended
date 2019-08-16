@@ -108,7 +108,7 @@ function ENT:Initialize()
 	self.GearLink = {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
 	self.FuelLink = {}
 	
-	self.LastCheck = 0
+	self.NextUpdate = 0
 	self.LastThink = 0
 	self.MassRatio = 1
 	self.FuelTank = 0
@@ -117,7 +117,10 @@ function ENT:Initialize()
 	self.Legal = true
 	self.CanUpdate = true
 	self.RequiresFuel = false
-
+	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
+	
 	self.LastCurTime=CurTime()
 	
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle" } ) --use fuel input?
@@ -198,9 +201,10 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 
 	Engine.Out = Engine:WorldToLocal(Engine:GetAttachment(Engine:LookupAttachment( "driveshaft" )).Pos)
 
-	local phys = Engine:GetPhysicsObject()  	
+	local phys = Engine:GetPhysicsObject()
 	if IsValid( phys ) then
-		phys:SetMass( Engine.Weight ) 
+		phys:SetMass( Engine.Weight )
+		Engine.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
 	end
 
 	Engine:SetNWString( "WireName", Lookup.name )
@@ -318,6 +322,10 @@ function ENT:UpdateOverlayText()
 	text = text .. "Torque: " .. math.Round( self.PeakTorque * SpecialBoost ) .. " Nm / " .. math.Round( self.PeakTorque * SpecialBoost * 0.73 ) .. " ft-lb\n"
 	text = text .. "Powerband: " .. pbmin .. " - " .. pbmax .. " RPM\n"
 	text = text .. "Redline: " .. self.LimitRPM .. " RPM"
+
+	if not self.Legal then
+		text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
 	
 	self:SetOverlayText( text )
 	
@@ -328,21 +336,23 @@ function ENT:TriggerInput( iname, value )
 	if (iname == "Throttle") then
 		self.Throttle = math.Clamp(value,0,100)/100
 	elseif (iname == "Active") then
-		if (value > 0 and not self.Active) then
+		if (value > 0 and not self.Active and self.Legal) then
 			--make sure we have fuel
 			local HasFuel
 			if not self.RequiresFuel then
 				HasFuel = true
 			else 
 				for _,fueltank in pairs(self.FuelLink) do
-					if fueltank.Fuel > 0 and fueltank.Active then HasFuel = true break end
+					if fueltank.Fuel > 0 and fueltank.Active and fueltank.Legal then HasFuel = true break end
 				end
 			end
 			
 			if HasFuel then
 				self.Active = true
-				self.Sound = CreateSound(self, self.SoundPath)
-				self.Sound:PlayEx(0.5,100)
+				if not (self.SoundPath=="") then
+					self.Sound = CreateSound(self, self.SoundPath)
+					self.Sound:PlayEx(0.5,100)
+				end
 				self:ACFInit()
 			end
 		elseif (value <= 0 and self.Active) then
@@ -424,68 +434,69 @@ end
 
 function ENT:Think()
 
-	local Time = CurTime()
+	if ACF.CurTime > self.NextLegalCheck then
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, false, true, true, true)
+		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self:CheckRopes()
+		self:CheckFuel()
+		self:CalcMassRatio()
 
-	if self.Active then
-		if self.Legal then
-			self:CalcRPM()
-		end
+		self:UpdateOverlayText()
+		self.NextUpdate = ACF.CurTime + 1
 
-		if self.LastCheck < CurTime() then
-			self:CheckRopes()
-			self:CheckFuel()
-			self:CalcMassRatio()
-			self.Legal = self:CheckLegal()
-
-			self.LastCheck = Time + math.Rand(5, 10)
+		if not self.Legal and self.Active then
+			self:TriggerInput("Active",0) -- disable if not legal and active
 		end
 	end
 
-	self.LastThink = Time
-	self:NextThink( Time )
+	-- when not legal, update overlay displaying lockout and issues
+	if not self.Legal and ACF.CurTime > self.NextUpdate then
+		self:UpdateOverlayText()
+		self.NextUpdate = ACF.CurTime + 1
+	end
+
+	if self.Active then
+		self:CalcRPM()
+	end
+
+	self.LastThink = ACF.CurTime
+	self:NextThink( ACF.CurTime )
 	return true
 
 end
 
-function ENT:CheckLegal()
-
-	--make sure it's not invisible to traces
-	if not self:IsSolid() then return false end
-	
-	-- make sure it's not spherical :)
-	if self.EntityMods and self.EntityMods.MakeSphericalCollisions then return false end
-
-	-- make sure weight is not below stock
-	if self:GetPhysicsObject():GetMass() < self.Weight then return false end
-	
-	-- if it's not parented we're fine
-	if not IsValid( self:GetParent() ) then return true end
-
-	local rootparent = ACF_GetPhysicalParent(self)
-
-	--make sure it's welded to root parent
-	for k, v in pairs( constraint.FindConstraints( self, "Weld" ) ) do
-		if v.Ent1 == rootparent or v.Ent2 == rootparent then return true end
-	end
-	
-	return false
-	
-end
-
+-- specialized calcmassratio for engines
 function ENT:CalcMassRatio()
 	
 	local Mass = 0
 	local PhysMass = 0
+	local Check = nil
 	
 	-- get the shit that is physically attached to the vehicle
 	local PhysEnts = ACF_GetAllPhysicalConstraints( self )
-	
+
+	-- get the wheels directly connected to the drivetrain
+	local Wheels = ACF_GetLinkedWheels(self)
+
+	-- check if any wheels aren't in the physicalconstraint tree
+	for _,Ent in pairs( Wheels ) do
+		if not PhysEnts[Ent] then -- WE GOT EM BOIS
+			Check = Ent
+			Wheels[Ent] = nil -- manual removal, idk how table.remove would handle indexing by ent. probably not well. indexing by entity sucks, please use ent id.
+			break
+		end
+	end
+
+	-- if there's a wheel that's not in the engine constraint tree, use it as a start for getting physical constraints
+	if IsValid(Check) then -- sneaky bastards trying to get away with remote engines...  NOT ANYMORE
+		table.Merge(PhysEnts, Wheels) -- I mean, they'll still be remote... but they wont get free extra power from calcmass not seeing the contraption it's powering
+		ACF_GetAllPhysicalConstraints( Check, PhysEnts ) -- no need for assignment here
+	end
+
 	-- add any parented but not constrained props you sneaky bastards
 	local AllEnts = table.Copy( PhysEnts )
 	for k, v in pairs( PhysEnts ) do
-		
 		table.Merge( AllEnts, ACF_GetAllChildren( v ) )
-	
 	end
 	
 	for k, v in pairs( AllEnts ) do
@@ -534,7 +545,7 @@ function ENT:CalcRPM()
 	for i = 1, MaxTanks do
 		Tank = self.FuelLink[self.FuelTank+1]
 		self.FuelTank = (self.FuelTank + 1) % MaxTanks
-		if IsValid(Tank) and Tank.Fuel > 0 and Tank.Active then
+		if IsValid(Tank) and Tank.Fuel > 0 and Tank.Active and Tank.Legal then
 			break --return Tank
 		end
 		Tank = nil

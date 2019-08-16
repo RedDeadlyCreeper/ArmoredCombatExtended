@@ -56,6 +56,7 @@ net.Receive("ACF_RenderDamage", function()
 	end
 end)
 
+--[[
 usermessage.Hook("Atest", function(msg)
 	local ent = ents.GetByIndex( msg:ReadFloat() )
 	local V1, V2, V3 = msg:ReadVector(), msg:ReadVector(), msg:ReadVector()
@@ -70,3 +71,4 @@ usermessage.Hook("Atest", function(msg)
 		end
 	end)
 end)
+]]--

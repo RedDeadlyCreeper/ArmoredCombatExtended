@@ -34,6 +34,8 @@ function Round.convert( Crate, PlayerData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
+	if ACF.Year > 2000 then
+	
 	if GunClass == "AC" then
 	Data.MinCalMult = 0.35
 	Data.MaxCalMult = 1.0
@@ -83,6 +85,61 @@ function Round.convert( Crate, PlayerData )
 	Data.VelModifier = 1
 	Data.Ricochet = 62	
 	end
+	
+	else
+
+	if GunClass == "AC" then
+	Data.MinCalMult = 0.35
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 2 -- Autocannons are puny anyways
+	Data.VelModifier = 1.6
+	Data.Ricochet = 55
+	elseif GunClass == "RAC" then
+	Data.MinCalMult = 0.5
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 1.8
+	Data.VelModifier = 1.7
+	Data.Ricochet = 50
+	elseif GunClass == "HRAC" then
+	Data.MinCalMult = 0.5
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 1.9
+	Data.VelModifier = 1.7
+	Data.Ricochet = 50
+	elseif GunClass == "MG" then
+	Data.MinCalMult = 0.5
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 1.7
+	Data.VelModifier = 1.8
+	Data.Ricochet = 50
+	elseif GunClass == "SA" then
+	Data.MinCalMult = 0.3
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 2
+	Data.VelModifier = 1.6
+	Data.Ricochet = 60
+	elseif GunClass == "C" then
+	Data.MinCalMult = 0.25
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 1
+	Data.VelModifier = 1
+	Data.Ricochet = 62
+	elseif GunClass == "SBC" then
+	Data.MinCalMult = 0.23
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 0.85
+	Data.VelModifier = 1.1
+	Data.Ricochet = 68
+	else
+	Data.MinCalMult = 0.25
+	Data.MaxCalMult = 1.0
+	Data.PenModifier = 1.35
+	Data.VelModifier = 1
+	Data.Ricochet = 62	
+	end
+	
+	end
+	
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2

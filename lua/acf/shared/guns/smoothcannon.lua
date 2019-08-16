@@ -1,3 +1,5 @@
+if ACF.EnableNewContent then
+
 --define the class
 ACF_defineGunClass("SBC", {
 	spread = 0.04,
@@ -6,6 +8,7 @@ ACF_defineGunClass("SBC", {
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.7,
 	sound = "weapons/ACF_Gun/cannon_new.wav",
+	year = 1960,
 	soundDistance = "Cannon.Fire",
 	soundNormal = " "
 } )
@@ -69,3 +72,5 @@ ACF_defineGun("170mmC", {
 	}
 } )
 ]]--	
+
+end

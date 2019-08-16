@@ -5,6 +5,7 @@ ACF_defineGunClass("HMG", {
 	desc = "Designed as autocannons for aircraft, HMGs are rapid firing, lightweight, and compact but sacrifice accuracy, magazine size, and reload times.  They excel at strafing and dogfighting.\nBecause of their long reload times and high rate of fire, it is best to aim BEFORE pushing the almighty fire switch.",
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.17,
+	year = 1935,
 	sound = "weapons/ACF_Gun/mg_fire3.wav",
 	soundDistance = " ",
 	soundNormal = " ",

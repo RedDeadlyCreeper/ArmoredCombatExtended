@@ -296,6 +296,8 @@ function ENT:Initialize()
 	self.Legal = true
 	self.Parentable = false
 	self.RootParent = nil
+	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.LegalIssues = ""
 	
 end  
 
@@ -417,6 +419,7 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 	local phys = Gearbox:GetPhysicsObject()  	
 	if IsValid( phys ) then 
 		phys:SetMass( Gearbox.Mass ) 
+		Gearbox.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
 	end
 	
 	Gearbox.In = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "input" )).Pos)
@@ -596,6 +599,10 @@ function ENT:UpdateOverlayText()
 	
 	text = text .. "Final Drive: " .. math.Round( self.Gear0, 2 ) .. "\n"
 	text = text .. "Torque Rating: " .. self.MaxTorque .. " Nm / " .. math.Round( self.MaxTorque * 0.73 ) .. " ft-lb"
+
+	if not self.Legal then
+		text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
 	
 	self:SetOverlayText( text )
 	
@@ -656,6 +663,16 @@ function ENT:TriggerInput( iname, value )
 end
 
 function ENT:Think()
+
+	if ACF.CurTime > self.NextLegalCheck then
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, not self.Parentable, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
+		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self:UpdateOverlayText()
+
+		if self.Legal then
+			if self.Parentable then self.RootParent = ACF_GetPhysicalParent(self) end
+		end
+	end
 	
 	local Time = CurTime()
 	
@@ -663,44 +680,8 @@ function ENT:Think()
 		self:CheckRopes()
 	end
 	
-	self.Legal = self:CheckLegal()
-	
 	self:NextThink( Time + math.random( 5, 10 ) )
 	return true
-	
-end
-
-function ENT:CheckLegal()
-
-	--make sure it's not invisible to traces
-	if not self:IsSolid() then return false end
-	
-	-- make sure weight is not below stock
-	if self:GetPhysicsObject():GetMass() < self.Mass then return false end
-	
-	--make sure it's not spherical :)
-	if self.EntityMods and self.EntityMods.MakeSphericalCollisions then return false end
-
-	self.RootParent = nil
-	-- if not parented then its legal
-	if not IsValid(self:GetParent()) then return true end
-	
-	local rootparent = ACF_GetPhysicalParent(self)
-	
-	--if it's welded, make sure it's welded to root parent
-	if IsValid( constraint.FindConstraintEntity( self, "Weld" ) ) then
-		for k, v in pairs( constraint.FindConstraints( self, "Weld" ) ) do
-			if v.Ent1 == rootparent or v.Ent2 == rootparent then return true end
-		end
-	else
-		--if it's parented and not welded, check that it's allowed for this gearbox type
-		if self.Parentable then
-			self.RootParent = rootparent
-			return true
-		end
-	end
-
-	return false
 	
 end
 
@@ -752,6 +733,8 @@ function ENT:CheckEnts()
 end
 
 function ENT:Calc( InputRPM, InputInertia )
+
+	if not self.Legal then return 0 end
 
 	if self.LastActive == CurTime() then
 		return math.min( self.TotalReqTq, self.MaxTorque )
@@ -853,6 +836,7 @@ end
 
 function ENT:Act( Torque, DeltaTime, MassRatio )
 
+	if not self.Legal then self.LastActive = CurTime() return end
 	--internal torque loss from being damaged
 	local Loss = math.Clamp(((1 - 0.4) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, 0.4, 1)
 	

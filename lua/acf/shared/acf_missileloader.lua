@@ -99,29 +99,38 @@ local Classes = list.GetForEdit("ACFClasses")
 
 -- some factory functions for defining ents
 function ACF_defineGunClass( id, data )
+	if (data.year or 0) < ACF.Year then
 	data.id = id
     
     Classes.GunClass[ id ] = data
 	ACF.Classes.GunClass[ id ] = data
-    
-    if data.ammoBlacklist then
-        for k, v in pairs(data.ammoBlacklist) do
-            local ammobl = ACF.AmmoBlacklist[v]
-            ammobl[#ammobl+1] = id
-        end
-    end
+	else
+	print("Did not load Gun Class: "..data.name.." gun class exceeds time period.")
+	return false
+	end
+--    if data.ammoBlacklist then
+--        for k, v in pairs(data.ammoBlacklist) do
+--            local ammobl = ACF.AmmoBlacklist[v]
+--            ammobl[#ammobl+1] = id
+--        end
+--    end
 end
 
 
 
 
 function ACF_defineGun( id, data )
+	if (data.year or 0) < ACF.Year then
 	data.id = id
 	data.round.id = id
 	table.Inherit( data, gun_base )
     
 	Weapons.Guns[ id ] = data
     ACF.Weapons.Guns[ id ] = data
+	else
+--	print("Did not load Gun: "..data.name.." Gun exceeds time period.")
+	return false
+	end
 end
 
 
@@ -204,8 +213,5 @@ aaa_IncludeShared("acf/shared/guns")
 aaa_IncludeShared("acf/shared/radars")
 
 
-
-include("acf/shared/rounds/roundflare.lua")
-include("acf/shared/rounds/roundglgm.lua")
 ACF.RoundTypes = list.Get("ACFRoundTypes")
 ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer

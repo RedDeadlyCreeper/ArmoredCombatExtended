@@ -28,8 +28,9 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/p90/p90-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.2	
-SWEP.Primary.RecoilAngle	= 0.07		
+SWEP.Primary.Recoil			= 0.25	
+SWEP.Primary.RecoilAngleVer	= 0.15	
+SWEP.Primary.RecoilAngleHor	= 0.1		
 SWEP.Primary.Cone			= 0.035		
 SWEP.Primary.Delay			= 0.07
 SWEP.Primary.ClipSize		= 50		
@@ -111,10 +112,9 @@ end
 		
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
-
-	self.Weapon:EmitSound(Sound(self.Primary.Sound))
 	
 	if CLIENT then 
+	self.Weapon:EmitSound(Sound(self.Primary.Sound))
 	return 
 	end
 	

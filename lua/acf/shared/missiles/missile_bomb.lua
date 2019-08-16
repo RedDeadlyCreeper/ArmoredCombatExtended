@@ -2,10 +2,11 @@
 ACF_defineGunClass("BOMB", {
     type            = "missile",  -- i know i know
 	spread          = 1,
-	name            = "General Purpose Bomb",
+	name            = "(Bomb) General Purpose Bomb",
 	desc            = "Free-falling bombs.  Despite their lack of guidance and sophistication, they are exceptionally destructive on impact relative to their weight.",
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.1,
+	year = 1915,
 	sound           = "acf_extra/tankfx/clunk.wav",
 	soundDistance   = " ",
 	soundNormal     = " ",
@@ -20,14 +21,14 @@ ACF_defineGunClass("BOMB", {
 -- Balance the round in line with the 40mm pod rocket.
 ACF_defineGun("50kgBOMB", { --id
 	name = "50kg Free Falling Bomb",
-	desc = "Old WW2 100lb bomb, most effective vs exposed infantry and light trucks.",
+	desc = "Old 100lb bomb, most effective vs exposed infantry and light trucks.",
 	model = "models/bombs/fab50.mdl",
 	gunclass = "BOMB",
     rack = "3xRK",  -- Which rack to spawn this missile on?
 	length = 5,
 	caliber = 5.0,
 	weight = 50,    -- Don't scale down the weight though!
-	year = 1936,
+	year = 1915,
     modeldiameter = 2.4 * 2.7, -- in cm
 	round = {
 		model		= "models/bombs/fab50.mdl",

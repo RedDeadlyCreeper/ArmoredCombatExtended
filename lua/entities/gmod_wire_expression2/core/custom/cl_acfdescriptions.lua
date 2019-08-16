@@ -14,6 +14,7 @@ E2Helper.Descriptions["acfUnlinkFrom"] = "Unlink various ACF components."
 E2Helper.Descriptions["acfCapacity"] = "Returns the capacity of an ACF ammo crate or fuel tank."
 E2Helper.Descriptions["acfInfoRestricted"] = "Returns 1 if functions returning sensitive info are restricted to owned props."
 E2Helper.Descriptions["acfLinks"] = "Returns all the entities which are linked to this entity through ACF."
+E2Helper.Descriptions["acfGetLinkedWheels"] = "Returns any wheels linked to this engine/gearbox or its children links."
 E2Helper.Descriptions["acfDragDiv"] = "Returns current ACF drag divisor"
 
 --engine

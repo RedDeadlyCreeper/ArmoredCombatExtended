@@ -152,6 +152,9 @@ function ENT:Initialize()
 	self.Active = false
 	self.SupplyFuel = false
 	self.Leaking = 0
+	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
 	
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty" } )
 	self.Outputs = WireLib.CreateSpecialOutputs( self,
@@ -320,6 +323,10 @@ function ENT:UpdateOverlayText()
 	else
 		text = text .. "\nFuel Remaining: " .. math.Round( self.Fuel, 1 ) .. " liters / " .. math.Round( self.Fuel * 0.264172, 1 ) .. " gallons"
 	end
+
+	if not self.Legal then
+		text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
 	
 	self:SetOverlayText( text )
 	
@@ -389,9 +396,13 @@ function ENT:TriggerInput( iname, value )
 end
 
 function ENT:Think()
-	
-	--make sure it's not invisible to traces
-	if not self:IsSolid() then self.Fuel = 0 end
+
+	if ACF.CurTime > self.NextLegalCheck then
+		--local minmass = math.floor(self.Mass-6)  -- fuel is light, may as well save complexity and just check it's above empty mass
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, false, true, false, true) -- mass-6, as mass update is granular to 5 kg
+		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self:UpdateOverlayText()
+	end
 
 	--make sure it's not made spherical
 	if self.EntityMods and self.EntityMods.MakeSphericalCollisions then self.Fuel = 0 end
@@ -406,9 +417,9 @@ function ENT:Think()
 	end
 	
 	--refuelling
-	if self.Active and self.SupplyFuel and self.Fuel > 0 then
+	if self.Active and self.SupplyFuel and self.Fuel > 0 and self.Legal then
 		for _,Tank in pairs(ACF.FuelTanks) do
-			if self.FuelType == Tank.FuelType and not Tank.SupplyFuel then --don't refuel the refuellers, otherwise it'll be one big circlejerk
+			if self.FuelType == Tank.FuelType and not Tank.SupplyFuel and Tank.Legal then --don't refuel the refuellers, otherwise it'll be one big circlejerk
 				local dist = self:GetPos():Distance(Tank:GetPos())
 				if dist < ACF.RefillDistance then
 					if Tank.Capacity - Tank.Fuel > 0.1 then

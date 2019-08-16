@@ -261,6 +261,17 @@ e2function number entity:acfUnlinkFrom(entity target, number notify)
     return success and 1 or 0
 end
 
+-- returns any wheels linked to this engine/gearbox or child gearboxes
+e2function array entity:acfGetLinkedWheels()
+	if not (isEngine(this) or isGearbox(this)) then return {} end
+	local wheels = {}
+	for k,ent in pairs( ACF_GetLinkedWheels( this ) ) do -- we need to switch from grody indexing by ent, to numerical indexing
+		table.insert(wheels, ent)
+	end
+	return wheels
+end
+
+
 --returns current acf dragdivisor
 e2function number acfDragDiv()
 	return ACF.DragDiv
@@ -654,7 +665,14 @@ end
 e2function number entity:acfIsReloading()
 	if not isGun(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	if (this.Reloading) then return 1 end
+	--if (this.Reloading) then return 1 end
+	if not this.Ready then
+		if this.MagSize == 1 then
+			return 1
+		else
+			return this.CurrentShot >= this.MagSize and 1 or 0
+		end
+	end
 	return 0
 end
 
@@ -812,8 +830,10 @@ e2function number entity:acfPenetration()
 		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"]*39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"] )
 		return math.Round((Energy.Penetration/this.BulletData["PenAera"])*ACF.KEtoRHA,3)
 	elseif Type == "HEAT" then
-		Energy = ACF_Kinetic(this.BulletData["SlugMV"]*39.37, this.BulletData["SlugMass"], 9999999 )
-		return math.Round((Energy.Penetration/this.BulletData["SlugPenAera"])*ACF.KEtoRHA,3)
+		local Crushed, HEATFillerMass, BoomFillerMass = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
+		if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
+		Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV( this.BulletData, HEATFillerMass )*39.37, this.BulletData["SlugMass"], 9999999 )
+		return math.floor((Energy.Penetration/this.BulletData["SlugPenAera"])*ACF.KEtoRHA,3)
 	elseif Type == "FL" then
 		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"]*39.37 , this.BulletData["FlechetteMass"], this.BulletData["LimitVel"] )
 		return math.Round((Energy.Penetration/this.BulletData["FlechettePenArea"])*ACF.KEtoRHA, 3)

@@ -5,6 +5,7 @@ ACF_defineGunClass("AC", {
 	desc = "Autocannons have a rather high weight and bulk for the ammo they fire, but they can fire it extremely fast.",
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.35,
+	year = 1930,
 	sound = "weapons/ACF_Gun/ac_fire4.wav",
 	soundDistance = " ",
 	soundNormal = " "

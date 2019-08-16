@@ -98,7 +98,7 @@ ACF_DefineEngine( "19.0-V8", {
 	category = "V8",
 	fuel = "Diesel",
 	enginetype = "GenericDiesel",
-	weight = 1500,
+	weight = 1200,
 	torque = 2300,
 	flywheelmass = 4.5,
 	idlerpm = 500,

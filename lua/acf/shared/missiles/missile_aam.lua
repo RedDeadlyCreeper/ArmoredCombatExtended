@@ -11,7 +11,7 @@ ACF_defineGunClass("AAM", {
 	soundDistance   = " ",
 	soundNormal     = " ",
     effect          = "Rocket Motor",
-
+	year = 1953,
     reloadmul       = 8,
 
     ammoBlacklist   = {"AP", "APHE", "FL", "HEAT"} -- Including FL would mean changing the way round classes work.

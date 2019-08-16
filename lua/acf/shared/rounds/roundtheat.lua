@@ -27,6 +27,24 @@ function Round.ConeCalc( ConeAngle, Radius, Length )
 	
 end
 
+-- calculates conversion of filler from powering HEAT jet to raw HE based on crush vel
+-- above a threshold vel, HEAT jet doesn't have time to form properly, converting to raw HE proportionally
+-- Vel needs to be in m/s (gmu*0.0254)
+function Round.CrushCalc( Vel, FillerMass )
+	local Crushed = math.Clamp( (Vel - ACF.HEATMinCrush) / (ACF.HEATMaxCrush - ACF.HEATMinCrush), 0,1)
+	local HE_Filler = Lerp(Crushed, FillerMass*ACF.HEATBoomConvert, FillerMass)
+	local HEAT_Filler = Lerp(Crushed, FillerMass, 0)
+	--local HE_Filler = FillerMass * ACF.HEATBoomConvert + Crushed * FillerMass * (1-ACF.HEATBoomConvert)
+	--local HEAT_Filler = (1-Crushed) * FillerMass
+	return Crushed, HEAT_Filler, HE_Filler
+end
+
+-- coneang now required for slug recalculation at detonation, defaults to 55 if not present
+function Round.CalcSlugMV( Data, HEATFillerMass )
+	--keep fillermass/2 so that penetrator stays the same.
+	return ( HEATFillerMass/2 * ACF.HEPower * math.sin(math.rad(10+(Data.ConeAng or 55))/2) /Data.SlugMass)^ACF.HEATMVScale
+end
+
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )
 	
@@ -65,20 +83,25 @@ function Round.convert( Crate, PlayerData )
 		
 	GUIData.MinConeAng = 0
 	GUIData.MaxConeAng = math.deg( math.atan((Data.ProjLength - ConeThick )/(Data.Caliber/2)) )
-	GUIData.ConeAng = math.Clamp(PlayerData.Data6*1, GUIData.MinConeAng, GUIData.MaxConeAng)
-	GUIData.ConeAng2 = math.Clamp(PlayerData.Data13*1, GUIData.MinConeAng, GUIData.MaxConeAng)
+	Data.ConeAng = math.Clamp(PlayerData.Data6*1, GUIData.MinConeAng, GUIData.MaxConeAng)
+	Data.ConeAng2 = math.Clamp(PlayerData.Data13*1, GUIData.MinConeAng, GUIData.MaxConeAng)
 	GUIData.HEAllocation = PlayerData.Data14
-	ConeLength, ConeAera, AirVol = Round.ConeCalc( GUIData.ConeAng, Data.Caliber/2, Data.ProjLength )
-	ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( GUIData.ConeAng2, Data.Caliber/2, Data.ProjLength )
+	ConeLength, ConeAera, AirVol = Round.ConeCalc( Data.ConeAng, Data.Caliber/2, Data.ProjLength )
+	ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( Data.ConeAng2, Data.Caliber/2, Data.ProjLength )
 	local ConeVol = ConeAera * ConeThick
 	local ConeVol2 = ConeAera2 * ConeThick
 		
 	GUIData.MinFillerVol = 0
 	GUIData.MaxFillerVol = math.max(MaxVol -  AirVol - ConeVol,GUIData.MinFillerVol)
 	GUIData.FillerVol = math.Clamp(PlayerData.Data5*1,GUIData.MinFillerVol,GUIData.MaxFillerVol)
+
+
+	-- fillermass used for shell mass calcs
+	-- heatfillermass is how much fillermass is used to power heat jet
+	-- boomfillermass is how much fillermass creates HE damage on detonation. technically get 1/3 extra fillermass free as HE with no crushing, but screw trying to rebalance heat pen to properly use 1/3 of filler for HE and 2/3 for jet
+	-- distribution of heat and boom fillermass is calculated at detonation, or for GUI stuff
 	
 	Data.FillerMass = GUIData.FillerVol * ACF.HEDensity/1450
-	Data.BoomFillerMass = Data.FillerMass / 3 --manually update function "pierceeffect" with the divisor
 	Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol- AirVol-AirVol2-ConeVol-ConeVol2,0)*7.9/1000 + Data.FillerMass + ConeVol*7.9/1000 + ConeVol2*7.9/1000
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
@@ -86,13 +109,11 @@ function Round.convert( Crate, PlayerData )
 	--Let's calculate the actual HEAT slug
 	Data.SlugMass = ConeVol*7.9/1000
 	Data.SlugMass2 = ConeVol2*7.9/1000
-	local Rad =  math.rad(GUIData.ConeAng/2)
-	local Rad2 = math.rad(GUIData.ConeAng2/2)
+	local Rad =  math.rad(Data.ConeAng/2)
+	local Rad2 = math.rad(Data.ConeAng2/2)
 	Data.SlugCaliber =    Data.Caliber - Data.Caliber * (math.sin(Rad)*0.5+math.cos(Rad)*1.5)/2
 	Data.SlugCaliber2 =  Data.Caliber - Data.Caliber * (math.sin(Rad2)*0.5+math.cos(Rad2)*1.5)/2
 	Data.HEAllocation = GUIData.HEAllocation
-	Data.SlugMV =  ( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
-	Data.SlugMV2 = ( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
 	local SlugFrAera =  3.1416 * (Data.SlugCaliber/2)^2
 	local SlugFrAera2 = 3.1416 * (Data.SlugCaliber2/2)^2
 	Data.SlugPenAera =  SlugFrAera^ACF.PenAreaMod
@@ -100,11 +121,20 @@ function Round.convert( Crate, PlayerData )
 	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)
 	Data.SlugDragCoef2 = ((SlugFrAera2/10000)/Data.SlugMass2)
 	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
-
 	
-	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/2000 - ConeVol2*7.9/2000
+	Data.InitFlight = Vector(0,0,0)
+	
+-- these are only for compatibility with other stuff. it's recalculated when the round is detonated
+	local crush, heatfiller, boomfiller = Round.CrushCalc(Data.MuzzleVel, Data.FillerMass*Data.HEAllocation)
+	Data.BoomFillerMass = boomfiller
+	Data.SlugMV = Round.CalcSlugMV( Data, heatfiller )
+
+	crush, heatfiller, boomfiller = Round.CrushCalc(Data.MuzzleVel, Data.FillerMass*(1-Data.HEAllocation))
+	Data.BoomFillerMass = Data.BoomFillerMass+boomfiller
+	Data.SlugMV2 = Round.CalcSlugMV( Data, heatfiller )
 
 	--Random bullshit left
+	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000 - ConeVol2*7.9/1000
 	Data.ShovePower = 0.1
 	Data.PenAera = Data.FrAera^ACF.PenAreaMod
 	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
@@ -115,7 +145,7 @@ function Round.convert( Crate, PlayerData )
 	
 	Data.Detonated = 0
 	Data.NotFirstPen = false
-	Data.BoomPower = Data.PropMass + Data.FillerMass
+	Data.BoomPower = Data.PropMass + Data.FillerMass -- for when a crate is cooking off
 
 	if SERVER then --Only the crates need this part
 		ServerData.Id = PlayerData.Id
@@ -133,16 +163,33 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-
-	local SlugEnergy = ACF_Kinetic( Data.MuzzleVel*39.37 + Data.SlugMV*39.37 , Data.SlugMass, 999999 )
+	-- these are only GUI info, it's recalculated when the round is detonated since it's vel dependent
+	GUIData.Crushed, GUIData.HEATFillerMass, boomfiller = Round.CrushCalc(Data.MuzzleVel, Data.FillerMass*Data.HEAllocation)
+	GUIData.SlugMV = Round.CalcSlugMV( Data, GUIData.HEATFillerMass ) * (Data.SlugPenMul or 1) -- slugpenmul is a missiles thing
+	GUIData.SlugMassUsed = Data.SlugMass * (1-GUIData.Crushed)
+	GUIData.BoomFillerMass = boomfiller
+	local SlugEnergy = ACF_Kinetic( Data.MuzzleVel*39.37 + GUIData.SlugMV*39.37 ,GUIData.SlugMassUsed , 999999 )
+	
+	-- these are only GUI info, it's recalculated when the round is detonated since it's vel dependent
+	GUIData.Crushed2, GUIData.HEATFillerMass, boomfiller = Round.CrushCalc(Data.MuzzleVel, Data.FillerMass*(1-Data.HEAllocation))
+	GUIData.SlugMV2 = Round.CalcSlugMV( Data, GUIData.HEATFillerMass ) * (Data.SlugPenMul or 1) -- slugpenmul is a missiles thing
+	GUIData.SlugMassUsed2 = Data.SlugMass * (1-GUIData.Crushed2)
+	GUIData.BoomFillerMass = boomfiller+boomfiller
+	local SlugEnergy2 = ACF_Kinetic( Data.MuzzleVel*39.37 + GUIData.SlugMV2*39.37 ,GUIData.SlugMassUsed2 , 999999 )
+	
 	local SlugEnergy2 = ACF_Kinetic( Data.SlugMV2*39.37 , Data.SlugMass2, 999999 )
 	GUIData.MaxPen = (SlugEnergy.Penetration/Data.SlugPenAera)*ACF.KEtoRHA
 	GUIData.MaxPen2 = (SlugEnergy2.Penetration/Data.SlugPenAera2)*ACF.KEtoRHA
-	--GUIData.BlastRadius = (Data.FillerMass/2)^0.33*5*10
-	GUIData.BlastRadius = (Data.BoomFillerMass)^0.33*8--*39.37
-	GUIData.Fragments = math.max(math.floor((Data.BoomFillerMass/Data.CasingMass)*ACF.HEFrag),2)
-	GUIData.FragMass = Data.CasingMass/GUIData.Fragments
-	GUIData.FragVel = (Data.BoomFillerMass*ACF.HEPower*1000/Data.CasingMass/GUIData.Fragments)^0.5
+	local SVelEnergy = ACF_Kinetic( Data.SlugMV*39.37 , Data.SlugMass, 999999 )
+	local SVelEnergy2 = ACF_Kinetic( Data.SlugMV2*39.37 , Data.SlugMass2, 999999 )
+	GUIData.SMaxPen = (SVelEnergy.Penetration/Data.SlugPenAera)*ACF.KEtoRHA
+	GUIData.SMaxPen2 = (SVelEnergy2.Penetration/Data.SlugPenAera2)*ACF.KEtoRHA		
+
+	GUIData.TotalFragMass = Data.CasingMass + Data.SlugMass * GUIData.Crushed + Data.SlugMass2 * GUIData.Crushed2
+	GUIData.BlastRadius = (GUIData.BoomFillerMass)^0.33*8--*39.37
+	GUIData.Fragments = math.max(math.floor((GUIData.BoomFillerMass/GUIData.TotalFragMass)*ACF.HEFrag),2)
+	GUIData.FragMass = GUIData.TotalFragMass / GUIData.Fragments
+	GUIData.FragVel = (GUIData.BoomFillerMass*ACF.HEPower*1000/GUIData.TotalFragMass)^0.5
 	
 	return GUIData
 end
@@ -181,7 +228,7 @@ function Round.cratetxt( BulletData, builtFullData )
 		"Max Penetration(1st): ", math.floor(DData.MaxPen), " mm\n",
 		"Max Penetration(2nd): ", math.floor(DData.MaxPen2), " mm\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor((BulletData.BoomFillerMass) * ACF.HEPower), " KJ"
+		"Blast Energy: ", math.floor((Data.BoomFillerMass) * ACF.HEPower), " KJ"
 	}
 	
 	return table.concat(str)
@@ -198,16 +245,28 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.Detonated = Bullet.Detonated+1
 	DetCount = Bullet.Detonated	or 0
 	if DetCount == 1 then --First Detonation
+	Bullet.InitFlight = Bullet.Flight
 	Bullet.NotFirstPen = false
 --	print("Detonated1")
-	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * (1-Bullet.HEAllocation), Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
+
+
+	local Crushed, HEATFillerMass, BoomFillerMass = Round.CrushCalc(Bullet.Flight:Length()*0.0254, Bullet.FillerMass*Bullet.HEAllocation)
+
+	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, BoomFillerMass, Bullet.CasingMass + Bullet.SlugMass * Crushed, Bullet.Owner, nil, Bullet.Gun )
+
+	
+	if Crushed == 1 then return false end -- no HEAT jet to fire off, it was all converted to HE
+
+	local SlugMV = Round.CalcSlugMV( Bullet, HEATFillerMass )
+	Bullet.SlugMV = SlugMV
+	
 	Bullet.InitTime = SysTime()
 	Bullet.FuseLength = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
-	Bullet.ProjMass = Bullet.SlugMass
+	Bullet.ProjMass = Bullet.SlugMass * (1-Crushed)
 	Bullet.CannonCaliber = Bullet.Caliber
 	Bullet.Caliber = Bullet.SlugCaliber
 	Bullet.PenAera = Bullet.SlugPenAera
@@ -216,17 +275,27 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	local DeltaTime = SysTime() - Bullet.LastThink
 	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
+	return true
 	elseif DetCount == 2 then --Second Detonation
 	Bullet.NotFirstPen = false
 --	print("Detonated2")	
-	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * Bullet.HEAllocation, Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
+	local Crushed2, HEATFillerMass2, BoomFillerMass2 = Round.CrushCalc(Bullet.InitFlight:Length()*0.0254, Bullet.FillerMass*(1-Bullet.HEAllocation))
+
+	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, BoomFillerMass2, Bullet.CasingMass + Bullet.SlugMass2 * Crushed2, Bullet.Owner, nil, Bullet.Gun )
+
+	
+	if Crushed2 == 1 then return false end -- no HEAT jet to fire off, it was all converted to HE
+
+	local SlugMV2 = Round.CalcSlugMV( Bullet, HEATFillerMass2 )
+	Bullet.SlugMV2 = SlugMV2
+
 	Bullet.InitTime = SysTime()
 	Bullet.FuseLength = 0.005 + 10/((Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
-	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37
+	Bullet.Flight = Bullet.InitFlight + Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37
 	Bullet.DragCoef = Bullet.SlugDragCoef2
 	
-	Bullet.ProjMass = Bullet.SlugMass2
+	Bullet.ProjMass = Bullet.SlugMass2 * (1-Crushed2)
 	Bullet.CannonCaliber = Bullet.Caliber
 	Bullet.Caliber = Bullet.SlugCaliber2
 	Bullet.PenAera = Bullet.SlugPenAera2
@@ -235,7 +304,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	local DeltaTime = SysTime() - Bullet.LastThink
 	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
-	
+	return true
 	end
 --	print(Bullet.Detonated)
 end
@@ -274,8 +343,12 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			if HitRes.Ricochet then
 				return "Ricochet"
 			else
-				Round.detonate( Index, Bullet, HitPos, HitNormal )
-				return "Penetrated"
+				local jet = Round.detonate( Index, Bullet, HitPos, HitNormal )
+				if jet then 
+					return "Penetrated"
+				else
+					return false
+				end
 			end
 			
 		end
@@ -291,8 +364,12 @@ end
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 	DetCount = Bullet.Detonated or 0
 	if DetCount < 2 then	
-		Round.detonate( Index, Bullet, HitPos, HitNormal )
-		return "Penetrated"
+		local jet = Round.detonate( Index, Bullet, HitPos, HitNormal )
+		if jet then 
+			return "Penetrated"
+		else
+			return false
+		end
 	end
 	
 	local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, 999999 )
@@ -338,8 +415,9 @@ function Round.pierceeffect( Effect, Bullet )
 		util.Effect( "ACF_AP_Penetration", Spall )
 	
 	else
-		
-		local Radius = (Bullet.FillerMass/3)^0.33*8*39.37 --fillermass/3 has to be manually set, as this func uses networked data
+
+		local Crushed, HEATFillerMass, BoomFillerMass = Round.CrushCalc(Bullet.SimFlight:Length()*0.0254, Bullet.FillerMass*Data.HEAllocation)
+		local Radius = (BoomFillerMass)^0.33*8*39.37
 		local Flash = EffectData()
 			Flash:SetOrigin( Bullet.SimPos )
 			Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
@@ -446,7 +524,7 @@ function Round.guiupdate( Panel, Table )
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
 
-	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMassUsed*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).."\n Shell Velocity Pen boost(1): "..math.floor(Data.SMaxPen).."mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMassUsed2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen2).." mm \n Shell Velocity Pen boost(2): "..math.floor(Data.SMaxPen2).."\n")	--Proj muzzle penetration (Name, Desc)
 	
 end
 

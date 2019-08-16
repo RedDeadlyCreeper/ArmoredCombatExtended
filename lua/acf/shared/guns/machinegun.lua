@@ -5,6 +5,7 @@ ACF_defineGunClass("MG", {
 	desc = "Machineguns are light guns that fire equally light bullets at a fast rate.",
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.9,
+	year = 1910,
 	sound = "weapons/ACF_Gun/mg_fire4.wav",
 	soundNormal = "weapons/ACF_Gun/mg_fire4.wav",
 	soundDistance = "",
@@ -77,7 +78,7 @@ ACF_defineGun("20mmMG", {
 } )
 
 ACF_defineGun("25mmMG", {
-	name = "(+)25mm Machinegun",
+	name = "25mm Machinegun",
 	desc = "The 25mm MG is essentially an autocannon; it fires small 25mm bullets at a fast rate that gives it good AA capability. Shilka Cannon.",
 	model = "models/machinegun/machinegun_25mm.mdl",
 	gunclass = "MG",

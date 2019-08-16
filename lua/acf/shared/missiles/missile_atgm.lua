@@ -6,6 +6,7 @@ ACF_defineGunClass("ATGM", {
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
 	sound           = "acf_extra/airfx/rocket_fire2.wav",
+	year = 1969,
 	soundDistance   = " ",
 	soundNormal     = " ",
 --    effect          = "Rocket_Smoke_Trail",

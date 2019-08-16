@@ -149,8 +149,8 @@ function SWEP:ACEFireBullet()
 	
 --	print("MV: "..self.BulletData.Flight:Length()/39.37)
 	self.BulletData.Owner = self:GetParent()
-	self.BulletData.Gun = self
-
+	self.BulletData.Gun = self:GetParent()
+	self.BulletData.Crate = self.FakeCrate:EntIndex()
 	
 	if self.BeforeFire then
 		self:BeforeFire()
@@ -165,8 +165,7 @@ function SWEP:ACEFireBullet()
 	self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 	self:CreateShell( self.BulletData )	
 	
-	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1),math.random(-1,1),0)*self.Primary.RecoilAngle * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
-	
+	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
 end
 
 function SWEP:MuzzleEffect( MuzzlePos, MuzzleDir, realcall )

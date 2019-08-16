@@ -5,6 +5,7 @@ ACF_defineGunClass("SC", {
 	desc = "Short cannons trade muzzle velocity and accuracy for lighter weight and smaller size, with more penetration than howitzers and lighter than cannons.",
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.3,
+	year = 1915,
 	sound = "weapons/ACF_Gun/cannon_new.wav",
 	soundDistance = "Cannon.Fire",
 	soundNormal = " "
