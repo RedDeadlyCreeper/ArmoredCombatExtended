@@ -110,3 +110,16 @@ r100
 -Damaged engines cease up
 -Fixed ammoboxes not detonating when completely destroyed
 -HE Iterates over multiple explosions
+
+*r113
+-Reduced horizontal recoil of SWEPs
+-Introduced Ferv's amazing balance patch
+-Reworked ammobox explosions again
+-Added ability to restrict tech to an era
+-Added config to disable new guns, armor, and ammo
+-added limit for high caliber guns and cfg for what qualifies
+-added limit for rapid firing guns like RACs and MGs
+-Added many of Ferv's reworks
+-Refills have infinite ammo but larger crates fill faster
+-Increased Recoil
+-Added Ferv's HEAT Crush mechanics
