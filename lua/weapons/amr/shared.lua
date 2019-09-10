@@ -121,12 +121,11 @@ end
 		
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
-
-	self.Weapon:EmitSound(Sound(self.Primary.Sound))
 	
 	if CLIENT then 
 	return 
 	end
+	self.Weapon:EmitSound(Sound(self.Primary.Sound))
 	
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	

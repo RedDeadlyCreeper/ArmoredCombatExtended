@@ -11,7 +11,7 @@ SWEP.Spawnable		= true
 
 --Visual
 SWEP.ViewModelFlip 	= true
-SWEP.ViewModel		= "models/weapons/v_jen_ak47.mdl"	
+SWEP.ViewModel		= "models/weapons/v_rif_ak47.mdl"	
 SWEP.WorldModel		= "models/weapons/w_rif_ak47.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
 SWEP.HoldType		= "ar2"		
@@ -115,13 +115,11 @@ end
 		
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
-
-	self.Weapon:EmitSound(Sound(self.Primary.Sound))
 	
 	if CLIENT then 
 	return 
 	end
-	
+	self.Weapon:EmitSound(Sound(self.Primary.Sound))	
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
 	self:ACEFireBullet()

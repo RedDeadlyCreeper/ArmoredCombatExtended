@@ -27,13 +27,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )  
 	--debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
 
-	local BoomCount = math.Clamp(math.floor((Power^0.33)/40),1,20)
+	local BoomCount = math.Clamp(math.floor((Power^0.33)/60),1,10)
+--	local BoomCount = 1
 --	print("BoomCount: "..BoomCount)
 --	print("BoomPow: "..Power)
 --	Power = 10*((Power^0.33) / BoomCount)^3
-	Power = Power / BoomCount
-	local savedPow = Power
---	print("BoomMiniPow: "..Power)
 	
 	local Targets = ents.FindInSphere( Hitpos, Radius )
 	
@@ -41,20 +39,36 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	local FragWeight = FragMass/Fragments
 	local FragVel = (Power*50000/FragWeight/Fragments)^0.5
 	local FragAera = (FragWeight/7.8)^0.33
+	local SavedFragVel=FragVel
+
+--	Power = Power / BoomCount * 2
+
+
+	local savedPow = Power
+--	print("BoomMiniPow: "..Power)
 	
+	local LoopKill = true	
+	local PowerSpent = 0
+	local Iterations = 0
+	local Damage = {}
+	local TotalAera = 0
+		
 	local OccFilter = { NoOcc }
 	TraceInit.filter = OccFilter
 	for i=1,BoomCount,1 do
 	
 	Power = savedPow
-	local LoopKill = true
+	OccFilter = { NoOcc }
+	TraceInit.filter = OccFilter
+	FragVel=SavedFragVel
+	LoopKill = true
 	
 	while LoopKill and Power > 0 do
 		LoopKill = false
-		local PowerSpent = 0
-		local Iterations = 0
-		local Damage = {}
-		local TotalAera = 0
+		PowerSpent = 0
+		Iterations = 0
+		Damage = {}
+		TotalAera = 0
 		for i,Tar in pairs(Targets) do
 			Iterations = i
 			if ( Tar != nil and Power > 0 and not Tar.Exploding ) then
@@ -141,7 +155,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			local Tar = Table.Ent
 			local Feathering = (1-math.min(1,Table.Dist/Radius)) ^ ACF.HEFeatherExp
 			local AeraFraction = Table.Aera/TotalAera
-			local PowerFraction = Power * AeraFraction*BoomCount	--How much of the total power goes to that prop
+			local PowerFraction = Power * AeraFraction * BoomCount	--How much of the total power goes to that prop
 			local AreaAdjusted = (Tar.ACF.Aera / ACF.Threshold) * Feathering
 			
 			local BlastRes
@@ -654,8 +668,8 @@ function ACF_ScaledExplosion( ent )
 	else
 		local HE, Propel
 		if ent.RoundType == "Refill" then
-			HE = 0.001
-			Propel = 0.001
+			HE = 0.01
+			Propel = 0.01
 		else 
 			HE = ent.BulletData["FillerMass"] or 0
 			Propel = ent.BulletData["PropMass"] or 0
@@ -736,6 +750,11 @@ function ACF_ScaledExplosion( ent )
 	local AvgPos = totalpos / #ExplodePos
 
 	ent:Remove()
+	
+	
+	HEWeight=HEWeight*ACF.BoomMult
+	Radius = (HEWeight)^0.33*8*39.37
+			
 	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )
 	
 	local Flash = EffectData()
