@@ -36,7 +36,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
 		thrust		= 12000,				-- average thrust - kg*in/s^2
-		burnrate	= 60,				-- cm^3/s at average chamber pressure
+		burnrate	= 30,				-- cm^3/s at average chamber pressure
 		starterpct	= 0.2,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,				-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,			-- drag coefficient while falling

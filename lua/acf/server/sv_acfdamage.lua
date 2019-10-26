@@ -27,7 +27,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )  
 	--debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
 
-	local BoomCount = math.Clamp(math.floor((Power^0.33)/60),1,10)
+	local BoomCount = math.Clamp(math.floor((Power^0.33)/200),1,4)
 --	local BoomCount = 1
 --	print("BoomCount: "..BoomCount)
 --	print("BoomPow: "..Power)
@@ -270,7 +270,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
 --	print("SpallPass")
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.0004
-	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
+	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),12)
 	local SpallWeight = TotalWeight/Spall*SpallMul*400
 	local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
@@ -640,8 +640,8 @@ function ACF_ScaledExplosion( ent )
 	else
 		local HE, Propel
 		if ent.RoundType == "Refill" then
-			HE = 0.01
-			Propel = 0.01
+			HE = 0.001
+			Propel = 0.001
 		else 
 			HE = ent.BulletData["FillerMass"] or 0
 			Propel = ent.BulletData["PropMass"] or 0
