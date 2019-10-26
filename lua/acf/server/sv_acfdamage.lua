@@ -247,34 +247,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	end
 end
 
-function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflictor )
-	
-	--if(!ACF.Spalling) then
-	if true then -- Folks say it's black magic and it kills their firstborns. So I had to disable it with more powerful magic.
-		return
-	end
-	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.max(math.floor(Caliber*ACF.KEtoSpall),2)
-	local SpallWeight = TotalWeight/Spall
-	local SpallVel = (KE*2000/SpallWeight)^0.5/Spall
-	local SpallAera = (SpallWeight/7.8)^0.33 
-	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 600 )
-	
-	--print(SpallWeight)
-	--print(SpallVel)
-	
-	for i = 1,Spall do
-		local SpallTr = { }
-			SpallTr.start = HitPos
-			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel
-			SpallTr.filter = HitMask
-
-			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
-	end
-
-end
-
-
 
 function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflictor , Material)
 	
@@ -298,12 +270,12 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
 --	print("SpallPass")
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.0004
-	local Spall = math.max(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul),12)
+	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
 	local SpallWeight = TotalWeight/Spall*SpallMul*400
 	local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 8000 )
-	
+
 --	print("Weight: "..SpallWeight)
 --	print("Vel: "..SpallVel)
 --	print("Count: "..Spall)
@@ -311,7 +283,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	for i = 1,Spall do
 		local SpallTr = { }
 			SpallTr.start = HitPos
-			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel
+			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()):GetNormalized()*SpallVel*10 --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
@@ -350,7 +322,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	for i = 1,Spall do
 		local SpallTr = { }
 			SpallTr.start = HitPos
-			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel
+			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel*10 --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )

@@ -30,7 +30,7 @@ SWEP.Primary.Sound			= "acf_extra/tankfx/gnomefather/2pdr2.wav"
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 10	
 SWEP.Primary.RecoilAngle	= 15		
-SWEP.Primary.Cone			= 0.05		
+SWEP.Primary.Cone			= 0.025		
 SWEP.Primary.Delay			= 7
 SWEP.Primary.ClipSize		= 1		
 SWEP.Primary.DefaultClip	= 1			
@@ -148,7 +148,7 @@ end
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
-	self.Weapon:EmitSound(Sound(self.Primary.Sound))
+	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
 	
 	if CLIENT then 
 	return 

@@ -36,7 +36,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
 		thrust		= 12000,				-- average thrust - kg*in/s^2
-		burnrate	= 160,				-- cm^3/s at average chamber pressure
+		burnrate	= 60,				-- cm^3/s at average chamber pressure
 		starterpct	= 0.2,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,				-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,			-- drag coefficient while falling
@@ -74,8 +74,8 @@ ACF_defineGun("9M113 ASM", { --id
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 6200,			-- average thrust - kg*in/s^2
-		burnrate	= 50,			-- cm^3/s at average chamber pressure
+		thrust		= 6600,			-- average thrust - kg*in/s^2
+		burnrate	= 35,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.3,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
@@ -157,13 +157,13 @@ ACF_defineGun("Ataka ASM", { --id
 		casing		= 0.1,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1.8,			-- motor mass - motor casing
-		thrust		= 3500,			-- average thrust - kg*in/s^2
-		burnrate	= 160,			-- cm^3/s at average chamber pressure
+		thrust		= 3600,			-- average thrust - kg*in/s^2
+		burnrate	= 70,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.3,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1700,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,		-- drag coefficient while falling
                 dragcoefflight  = 0.01,                 -- drag coefficient during flight
-		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.04,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
@@ -197,8 +197,8 @@ ACF_defineGun("AT-2 ASM", { --id
 		casing		= 0.1,			-- thickness of missile casing, cm
 		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 2600,			-- average thrust - kg*in/s^2
-		burnrate	= 60,			-- cm^3/s at average chamber pressure
+		thrust		= 2800,			-- average thrust - kg*in/s^2
+		burnrate	= 20,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.25,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling

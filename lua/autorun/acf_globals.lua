@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 411  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 412  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2019
@@ -56,14 +56,14 @@ ACF.TextoliteHEEffectiveness = 0.9 --Higher = more damage on pierce, Lower = les
 ACF.TextoliteSpallMult = 1.3
 
 ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA than its currentarmor
-ACF.ERAEffectivenessMult = 10 --How many more times is the detonating ERA than its maxarmor
+ACF.ERAEffectivenessMult = 5 --How many more times is the detonating ERA than its maxarmor
 
 
-ACF.APDamageMult = 1.4
-ACF.APCDamageMult = 1.4
-ACF.APBCDamageMult = 1.35
-ACF.APCBCDamageMult = 1.3
-ACF.APHEDamageMult = 1.2
+ACF.APDamageMult = 1.2
+ACF.APCDamageMult = 1.2
+ACF.APBCDamageMult = 1.15
+ACF.APCBCDamageMult = 1.1
+ACF.APHEDamageMult = 1.0
 ACF.APDSDamageMult = 1.5
 ACF.APDSSDamageMult = 1.55
 ACF.HVAPDamageMult = 1.65

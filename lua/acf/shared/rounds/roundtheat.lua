@@ -204,7 +204,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.InitTime = SysTime()
 	Bullet.FuseLength = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
-	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
+	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
 	Bullet.ProjMass = Bullet.SlugMass
@@ -227,13 +227,12 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.DragCoef = Bullet.SlugDragCoef2
 	
 	Bullet.ProjMass = Bullet.SlugMass2
-	Bullet.CannonCaliber = Bullet.Caliber
 	Bullet.Caliber = Bullet.SlugCaliber2
 	Bullet.PenAera = Bullet.SlugPenAera2
 	Bullet.Ricochet = Bullet.SlugRicochet
 	
 	local DeltaTime = SysTime() - Bullet.LastThink
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())+25)
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	
 	end
@@ -253,9 +252,11 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss*64 , Bullet.CannonCaliber*2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
 --				print("Penetrated")
+--				print("KE: "..Energy.Kinetic)
+--				print("SpallCaliber: "..Bullet.CannonCaliber*2)
 				return "Penetrated"
 			elseif DetCount == 1 then --If bullet has detonated once and fails to pen
 				Round.detonate( Index, Bullet, HitPos, HitNormal )

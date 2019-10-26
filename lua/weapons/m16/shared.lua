@@ -31,7 +31,7 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 0.25	
 SWEP.Primary.RecoilAngleVer	= 0.16	
 SWEP.Primary.RecoilAngleHor	= 0.08		
-SWEP.Primary.Cone			= 0.015		
+SWEP.Primary.Cone			= 0.0075		
 SWEP.Primary.Delay			= 0.08
 SWEP.Primary.ClipSize		= 30		
 SWEP.Primary.DefaultClip	= 30			
@@ -110,12 +110,12 @@ end
 		
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
-	
+
+	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )		
 	if CLIENT then 
 	return 
 	end
 	
-	self.Weapon:EmitSound(Sound(self.Primary.Sound))
 	
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	

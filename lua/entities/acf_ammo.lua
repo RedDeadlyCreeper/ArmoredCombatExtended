@@ -99,7 +99,7 @@ if CLIENT then
 		local EntFrom, EntTo, Weapon = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() ), msg:ReadString()
 		if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
 		//local List = list.Get( "ACFRoundTypes")	
-		-- local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl"
+		-- local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl" --[Weapon] returns an invalid no
 		local Mdl = "models/munitions/round_100mm_shot.mdl"
 		EntFrom.RefillAmmoEffect = EntFrom.RefillAmmoEffect or {}
 		table.insert( EntFrom.RefillAmmoEffect, {EntFrom = EntFrom, EntTo = EntTo, Model = Mdl, StTime = SysTime()} )

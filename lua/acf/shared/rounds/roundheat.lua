@@ -182,7 +182,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.Ricochet = Bullet.SlugRicochet
 	
 	local DeltaTime = SysTime() - Bullet.LastThink
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())+25)
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	
 end
@@ -200,7 +200,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss*64 , Bullet.CannonCaliber*2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
 				
 				return "Penetrated"

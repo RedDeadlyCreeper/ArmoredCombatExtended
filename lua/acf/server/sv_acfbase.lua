@@ -499,10 +499,10 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	elseif testMaterial == 4 then --ERA	
 	
 		local blastArmor = armor
-		if Type == "HEAT" then
+		if Type == "HEAT" || Type == "THEAT" then
 		blastArmor = ACF.ERAEffectivenessMultHEAT * armor
 		else
-		blastArmor = ACF.ERAEffectivenessMult * armor
+		blastArmor = ACF.ERAEffectivenessMult * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
 		end
 --				print(ERABoom)	
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
@@ -535,7 +535,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		if maxPenetration > losArmor then
 --			print(BOOM)
 			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
-			HitRes.Damage   = 9999999999										-- I have yet to meet one who can survive this
+			HitRes.Damage   = 999999999999999										-- I have yet to meet one who can survive this Edit: NVM
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
 			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)			
 			ACF_HE( Entity:GetPos() , Vector(0,0,1) , armor*0.01 , armor*0.1 , Inflictor , Entity, Entity ) --ERABOOM
@@ -660,10 +660,10 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		-- Penetration probability
 		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / ACF.TextoliteHEATEffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;	
 
-			if breachProb > math.random() and maxPenetration > armor then				-- Breach chance roll
-				HitRes.Damage   = var * dmul * FrAera * ductilitymult								-- Inflicted Damage
-				HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
-				HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
+			if breachProb > math.random() and maxPenetration > armor * ACF.TextoliteHEATEffectiveness then				-- Breach chance roll
+				HitRes.Damage   = var * dmul * FrAera * ductilitymult / ACF.TextoliteHEATResilianceFactor							-- Inflicted Damage
+				HitRes.Overkill = maxPenetration - armor * ACF.TextoliteHEATEffectiveness						-- Remaining penetration
+				HitRes.Loss     = armor * ACF.TextoliteHEATEffectiveness / maxPenetration						-- Energy loss in percents
 
 				return HitRes
 			elseif penProb > math.random() then									-- Penetration chance roll

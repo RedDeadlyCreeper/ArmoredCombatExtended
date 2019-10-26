@@ -121,7 +121,7 @@ function ENT:Initialize()
 	self.Legal = true
 	self.LegalIssues = ""
 	
-	self.LastCurTime=CurTime()
+	self.LastDamageTime=CurTime()
 	
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle" } ) --use fuel input?
 	self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM", "Torque", "Power", "Fuel Use", "Entity", "Mass", "Physical Mass" , "EngineHeat"}, { "NORMAL","NORMAL","NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
@@ -637,13 +637,13 @@ function ENT:CalcRPM()
 
 if ((self.ACF.Health/self.ACF.MaxHealth) < 0.95) then
 
-	if (CurTime()-self.LastCurTime) > 1 then
-	self.LastCurTime=CurTime()
+	if (CurTime()-self.LastDamageTime) > 0.6 then
+	self.LastDamageTime=CurTime()
 --	print("Engine Failing")
 	self:EmitSound(Sound("acf_extra/tankfx/guns/20mm_0"..math.random(1,5)..".wav"),100, 70+math.random(-10,10))	
 	end
 
-	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass-400,20)/2.5),Momentum = 0,Penetration = (1+math.max(Mass-400,20)/2.5)} , 2 , 0 , self.Owner )
+	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5),Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)} , 2 , 0 , self.Owner )
 
 			if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)

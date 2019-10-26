@@ -27,6 +27,7 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
+	if not PlayerData.Data6 then PlayerData.Data6 = 0 end
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
@@ -55,6 +56,9 @@ function Round.convert( Crate, PlayerData )
 	
 	Data.BoomPower = Data.PropMass + Data.FillerMass
 
+	Data.HasPenned = false
+	Data.DetDelay = math.Clamp(PlayerData.Data6, 0, 5)
+	
 	if SERVER then --Only the crates need this part
 		ServerData.Id = PlayerData.Id
 		ServerData.Type = PlayerData.Type
@@ -90,6 +94,7 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "Caliber", BulletData.Caliber )
 	Crate:SetNWFloat( "ProjMass", BulletData.ProjMass )
 	Crate:SetNWFloat( "FillerMass", BulletData.FillerMass )
+	Crate:SetNWFloat( "FuseDelay", BulletData.DetDelay )
 	Crate:SetNWFloat( "PropMass", BulletData.PropMass )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
@@ -106,7 +111,8 @@ function Round.cratetxt( BulletData )
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor((BulletData.FillerMass) * ACF.HEPower), " KJ"
+		"Blast Energy: ", math.floor((BulletData.FillerMass) * ACF.HEPower), " KJ\n",
+		"Fuse Delay: ", math.floor((BulletData.DetDelay) * 1000), " ms"
 	}
 	
 	return table.concat(str)
@@ -122,6 +128,18 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 		local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 		
 		if HitRes.Overkill > 0 then
+		
+		if Bullet.HasPenned == false then
+		Bullet.HasPenned = true
+
+		Bullet.FuseLength = Bullet.DetDelay or 0
+		
+		Bullet.InitTime = SysTime()
+		
+		
+		end
+		
+		
 			table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
 			ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
@@ -220,13 +238,14 @@ function Round.guicreate( Panel, Table )
 end
 
 function Round.guiupdate( Panel, Table )
-	
+
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
 		PlayerData.Type = "APHE"										--Hardcoded, match ACFRoundTypes table index
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
+		PlayerData.Data6 = acfmenupanel.AmmoData.DetDelay		
 		local Tracer = 0
 		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
 		PlayerData.Data10 = Tracer				--Tracer
@@ -238,6 +257,7 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data3", Data.PropLength )		--For Gun ammo, Data3 should always be Propellant
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )		--And Data4 total round mass
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
+	RunConsoleCommand( "acfmenu_data6", Data.DetDelay )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
@@ -248,6 +268,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("DetDelay",Data.DetDelay,0,1,2, "Detonation Fuse Delay", "Delay : "..(math.Round(Data.DetDelay*1000,2)).." ms")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	
 	acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*5)/10).."cm\n", "" )			--Tracer checkbox (Name, Title, Desc)
 
