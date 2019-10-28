@@ -165,7 +165,7 @@ function SWEP:ACEFireBullet()
 	self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 	self:CreateShell( self.BulletData )	
 	
-	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
+--	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
 end
 
 function SWEP:MuzzleEffect( MuzzlePos, MuzzleDir, realcall )
