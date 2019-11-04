@@ -56,7 +56,7 @@ ACF_defineGun("RS82 ASR", { --id
 
     racks       = {["1xRK_small"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.0     -- minimum fuse arming delay
 } )
 
 
@@ -97,7 +97,7 @@ ACF_defineGun("HVAR ASR", { --id
 
     racks       = {["1xRK"] = true, ["1xRK_small"] = true, ["3xUARRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.0     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("SPG-9 ASR", { --id
@@ -129,7 +129,8 @@ ACF_defineGun("SPG-9 ASR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(4.5)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-	},
+
+		},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
@@ -137,7 +138,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 
     racks       = {["1x SPG9"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    armdelay    = 0.05     -- minimum fuse arming delay, very short since we have a high muzzle velocity
+    armdelay    = 0.0     -- minimum fuse arming delay, very short since we have a high muzzle velocity
 } )
 
 ACF_defineGun("S-24 ASR", { --id
@@ -178,7 +179,7 @@ ACF_defineGun("S-24 ASR", { --id
     racks       = {["1xRK"] = true, ["3xRK"] = true, ["2xRK"] = true, ["6xUARRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
 	skinindex   = {HEAT = 0, HE = 1},
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.0     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("Zuni ASR", { --id
@@ -214,7 +215,7 @@ ACF_defineGun("Zuni ASR", { --id
 	guidance	= {"Dumb"},
 	fuses		= {"Contact", "Timed", "Optical", "Radio"},
 	racks		= {["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["127mm4xPOD"] = true},
-	armdelay	= 0.1
+	armdelay	= 0.0
 
 })
 

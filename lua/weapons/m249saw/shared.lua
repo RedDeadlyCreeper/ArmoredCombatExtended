@@ -2,7 +2,7 @@ AddCSLuaFile("shared.lua")
 SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
-SWEP.PrintName		= "Famas"
+SWEP.PrintName		= "M249 SAW"
 SWEP.Slot		    = 2
 SWEP.SlotPos		= 1			
 end
@@ -11,8 +11,8 @@ SWEP.Spawnable		= true
 
 --Visual
 SWEP.ViewModelFlip 	= false
-SWEP.ViewModel		= "models/weapons/v_rif_famas.mdl"	
-SWEP.WorldModel		= "models/weapons/w_rif_famas.mdl"	
+SWEP.ViewModel		= "models/weapons/v_mach_m249para.mdl"	
+SWEP.WorldModel		= "models/weapons/w_mach_m249para.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
 SWEP.HoldType		= "ar2"		
 SWEP.CSMuzzleFlashes	= true
@@ -22,19 +22,19 @@ SWEP.CSMuzzleFlashes	= true
 SWEP.Weight			= 10						
  
 -- Weapon info		
-SWEP.Purpose		= "Speedy Boi Nato Shooter"	
+SWEP.Purpose		= "Rambo by day, spray n' pray by night."	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/famas/famas-1.wav"	
+SWEP.Primary.Sound			= "weapons/m249/m249-1.wav"	
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 0.3	
-SWEP.Primary.RecoilAngleVer	= 0.17	
-SWEP.Primary.RecoilAngleHor	= 0.12		
-SWEP.Primary.Cone			= 0.0075		
-SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 25		
-SWEP.Primary.DefaultClip	= 25			
+SWEP.Primary.RecoilAngleVer	= 0.16	
+SWEP.Primary.RecoilAngleHor	= 0.08		
+SWEP.Primary.Cone			= 0.015		
+SWEP.Primary.Delay			= 0.09
+SWEP.Primary.ClipSize		= 200		
+SWEP.Primary.DefaultClip	= 200			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= 1	
 SWEP.Primary.Ammo		= "AR2"	
@@ -45,15 +45,18 @@ SWEP.Secondary.DefaultClip	= -1
 
 SWEP.ReloadSoundEnabled = 1
 
-SWEP.Category 			= "ACE Sweps - AR"
+SWEP.Category 			= "ACE Sweps - Sp"
 
 SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 3
+SWEP.MaxInaccuracyMult = 7
 SWEP.InaccuracyAccumulationRate = 0.3
 SWEP.InaccuracyDecayRate = 1
+
+SWEP.CarrySpeedMul = 0.7 --WalkSpeedMult when carrying the weapon
+
 --
 
 function SWEP:InitBulletData()
@@ -150,5 +153,6 @@ function SWEP:Reload()
 	self:Think()
 	return true
 end
+
 
 

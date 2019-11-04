@@ -57,7 +57,7 @@ ACF_defineGun("AGM-114 ASM", { --id
     viewcone    = 40,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.3,		-- multiplier for missile turn-rate.
-    armdelay    = 0.1     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
@@ -100,7 +100,7 @@ ACF_defineGun("AGM-45 ASM", { --id
 	viewcone = 10,		--I don't think a fucking SAM site should have to dodge much >_>
 	
     agility     = 0.08,		-- multiplier for missile turn-rate.
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 --Sidearm, a lightweight anti-radar missile used by helicopters in the 80s
@@ -142,6 +142,6 @@ ACF_defineGun("AGM-122 ASM", { --id
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.3,  -- multiplier for missile turn-rate.
-    armdelay    = 0.2     -- minimum fuse arming delay		--was 0.4
+    armdelay    = 0.00     -- minimum fuse arming delay		--was 0.4
 } )
 

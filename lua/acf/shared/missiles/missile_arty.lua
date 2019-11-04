@@ -57,7 +57,7 @@ ACF_defineGun("Type 63 RA", { --id
 	agility		= 0.08,
 
 
-    armdelay    = 2     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 
@@ -102,7 +102,7 @@ ACF_defineGun("SAKR-10 RA", { --id
 	agility		= 0.07,
 	viewcone	= 180,
 
-    armdelay    = 3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 
@@ -147,7 +147,7 @@ ACF_defineGun("SS-40 RA", { --id
 	agility		= 0.03,
 	viewcone	= 180, 
 
-    armdelay    = 4     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 
@@ -191,5 +191,5 @@ ACF_defineGun("RW61 RA", { --id
     viewcone    = 55,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 0.5     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )

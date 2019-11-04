@@ -58,7 +58,7 @@ ACF_defineGun("WalleyeGBU", { --id
     viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2. 
     
     agility     = 2,     -- multiplier for missile turn-rate.
-    armdelay    = 1     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("227kgGBU", { --id
@@ -100,7 +100,7 @@ ACF_defineGun("227kgGBU", { --id
     viewcone    = 80,   -- getting outside this cone will break the lock.  Divided by 2. 
     
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 1     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("454kgGBU", { --id
@@ -140,7 +140,7 @@ ACF_defineGun("454kgGBU", { --id
     viewcone    = 80,   -- getting outside this cone will break the lock.  Divided by 2. 
     
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 1     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("909kgGBU", { --id
@@ -180,5 +180,5 @@ ACF_defineGun("909kgGBU", { --id
     viewcone    = 80,   -- getting outside this cone will break the lock.  Divided by 2. 
     
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )

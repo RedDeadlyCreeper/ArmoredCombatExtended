@@ -255,3 +255,54 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 
 	return EyePos, EyeAng
 end	
+
+
+function SWEP:ACEFireBullet()
+
+
+	self.Owner = self:GetParent()
+--	self:SetOwner(self:GetParent())
+	local ZoomedNumber = self.Zoomed and 1 or 0
+	local CrouchedNumber = self.Owner:Crouching() and 1 or 0
+		
+	local MuzzlePos = self.Owner:GetShootPos()
+	local MuzzleVec = self.Owner:GetAimVector()
+
+	
+	local EyeAngle = self.Owner:EyeAngles()
+	--Boolet Firing
+	local RandUnitSquare = (EyeAngle:Up() * (2 * math.random() - 1) + EyeAngle:Right() * (2 * math.random() - 1))
+	local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * (self.InaccuracyAccumulation - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber) * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+--	local Spread = Vector(0 , 0 , 0)
+--	local Spread = EyeAngle:Forward()/10 * SWEP.coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) 
+	local ShootVec = EyeAngle:Forward()+Spread
+--	local ShootVec = EyeAngle:Forward()
+	
+	self.BulletData.Pos = MuzzlePos+EyeAngle:Forward()*35
+	self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + self.Owner:GetVelocity()
+--	self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37
+	
+--	print("MV: "..self.BulletData.Flight:Length()/39.37)
+	self.BulletData.Owner = self:GetParent()
+	self.BulletData.Gun = self:GetParent()
+	self.BulletData.Crate = self.FakeCrate:EntIndex()
+	
+	if self.BeforeFire then
+		self:BeforeFire()
+	end
+	
+--function Round.create( Gun, BulletData )
+	
+--	ACF_CreateBullet( BulletData )
+	
+--end
+	
+	self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
+	self:CreateShell( self.BulletData )	
+	
+--	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
+end
+
+function SWEP:DoImpactEffect( tr, nDamageType )
+return true
+end

@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 414  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 415  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2019
@@ -94,7 +94,7 @@ ACF.HEATMaxCrush = 1200 -- vel where fully crushed
 ACF.DragDiv = 20		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
 -- local PhysEnv = physenv.GetPerformanceSettings()
-ACF.PhysMaxVel = 4000
+ACF.PhysMaxVel = 8000
 ACF.SmokeWind = 5 + math.random()*35 --affects the ability of smoke to be used for screening effect
 
 ACF.PBase = 1050		--1KG of propellant produces this much KE at the muzzle, in kj
@@ -552,7 +552,7 @@ end
 
 -- Cvars for recoil/he push
 CreateConVar("acf_hepush", 1)
-CreateConVar("acf_recoilpush", 2)
+CreateConVar("acf_recoilpush", 1)
 
 -- New healthmod/armormod/ammomod cvars
 CreateConVar("acf_healthmod", 1)

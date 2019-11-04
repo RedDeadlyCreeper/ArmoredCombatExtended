@@ -55,7 +55,7 @@ ACF_defineGun("40mmFFAR", { --id
 
     racks       = {["40mm7xPOD"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 
@@ -98,7 +98,7 @@ ACF_defineGun("70mmFFAR", { --id
 
     racks       = {["70mm7xPOD"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 /*
@@ -141,7 +141,7 @@ ACF_defineGun("40mmFFAR", { --id
     viewcone    = 55,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 
@@ -187,6 +187,6 @@ ACF_defineGun("70mmFFAR", { --id
     viewcone    = 55,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 0.3     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 */

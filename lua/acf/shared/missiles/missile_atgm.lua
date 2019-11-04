@@ -52,7 +52,7 @@ ACF_defineGun("BGM-71E ASM", { --id
     racks       = {["1x BGM-71E"] = true, ["2x BGM-71E"] = true, ["4x BGM-71E"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
     agility     = 0.25,     -- multiplier for missile turn-rate.
-    armdelay    = 0.05     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("9M113 ASM", { --id
@@ -93,7 +93,7 @@ ACF_defineGun("9M113 ASM", { --id
     viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.022,		-- multiplier for missile turn-rate.
-    armdelay    = 0.05     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
@@ -134,7 +134,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	skinindex   = {HEAT = 0, HE = 1},
 
     agility     = 0.6,     -- multiplier for missile turn-rate.
-    armdelay    = 0.05     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
@@ -176,7 +176,7 @@ ACF_defineGun("Ataka ASM", { --id
     viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.028,		-- multiplier for missile turn-rate.
-    armdelay    = 0.05     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 ACF_defineGun("AT-2 ASM", { --id
@@ -213,7 +213,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	viewcone    = 90,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["2x AGM-114"] = true, ["4x AGM-114"] = true, ["1xRK_small"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
     agility     = 0.2,     -- multiplier for missile turn-rate.
-    armdelay    = 0.05     -- minimum fuse arming delay
+    armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
 --[[

@@ -111,12 +111,12 @@ end
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
 
+	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
-	
+		
 	if CLIENT then 
 	return 
 	end
-	
 		
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
@@ -151,10 +151,6 @@ function SWEP:Reload()
 --player.GetByID( 1 ):GiveAmmo( 30-self:Clip1(), "AR2", true )
 	self:Think()
 	return true
-end
-
-function SWEP:DoImpactEffect( tr, nDamageType )
-return
 end
 
 

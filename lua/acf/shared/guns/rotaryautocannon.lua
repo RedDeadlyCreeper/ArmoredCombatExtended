@@ -39,8 +39,6 @@ ACF_defineGun("14.5mmRAC", { --id
 	caliber = 1.45,
 	weight = 340,
 	year = 1962,
-	magsize = 200,
-	magreload = 6,
 	rofmod = 4.3,
 	round = {
 		maxlength = 25,
@@ -56,8 +54,6 @@ ACF_defineGun("20mmRAC", {
 	caliber = 2.0,
 	weight = 760,
 	year = 1965,
-	magsize = 60,
-	magreload = 10,
 	rofmod = 1.65,
 	round = {
 		maxlength = 30,
@@ -73,44 +69,9 @@ ACF_defineGun("30mmRAC", {
 	caliber = 3.0,
 	weight = 1680,
 	year = 1975,
-	magsize = 50,
-	magreload = 8,
 	rofmod = 0.93,
 	round = {
 		maxlength = 40,
-		propweight = 0.350
-	}
-} )
-
-if ACF.EnableNewContent then
-ACF_defineGun("Cooled20mmHRAC", {
-	name = "Liquid Cooled 20mm Heavy Rotary Autocannon",
-	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine and with an optimized ammo feed.  Phalanx.",
-	model = "models/rotarycannon/kw/20mmrac.mdl",
-	gunclass = "RAC",
-	caliber = 2.0,
-	weight = 1280,
-	year = 1981,
-	magreload = 4,
-	rofmod = 2.2,
-	round = {
-		maxlength = 36,
-		propweight = 0.12
-	}
-} )
-
-ACF_defineGun("Cooled30mmHRAC", {
-	name = "Liquid Cooled 30mm Heavy Rotary Autocannon",
-	desc = "A reinforced, heavy duty 30mm rotary autocannon, able to fire heavier rounds with a larger magazine and with an optimized ammo feed.  Keeper of goals.",
-	model = "models/rotarycannon/kw/30mmrac.mdl",
-	gunclass = "RAC",
-	caliber = 3.0,
-	weight = 3850,
-	year = 1975,
-	magreload = 6,
-	rofmod = 1.2,
-	round = {
-		maxlength = 45,
 		propweight = 0.350
 	}
 } )
@@ -138,8 +99,6 @@ ACF_defineGun("20mmHRAC", {
 	caliber = 2.0,
 	weight = 1200,
 	year = 1981,
-	magsize = 60,
-	magreload = 4,
 	rofmod = 2.5,
 	round = {
 		maxlength = 36,
@@ -155,8 +114,6 @@ ACF_defineGun("30mmHRAC", {
 	caliber = 3.0,
 	weight = 2850,
 	year = 1985,
-	magsize = 50,
-	magreload = 6,
 	rofmod = 1.2,
 	round = {
 		maxlength = 45,

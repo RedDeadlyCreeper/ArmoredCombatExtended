@@ -2,7 +2,7 @@ AddCSLuaFile("shared.lua")
 SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
-SWEP.PrintName		= "Famas"
+SWEP.PrintName		= "Glock"
 SWEP.Slot		    = 2
 SWEP.SlotPos		= 1			
 end
@@ -10,11 +10,11 @@ end
 SWEP.Spawnable		= true	
 
 --Visual
-SWEP.ViewModelFlip 	= false
-SWEP.ViewModel		= "models/weapons/v_rif_famas.mdl"	
-SWEP.WorldModel		= "models/weapons/w_rif_famas.mdl"	
+SWEP.ViewModelFlip 	= true
+SWEP.ViewModel		= "models/weapons/v_pist_glock18.mdl"	
+SWEP.WorldModel		= "models/weapons/w_pist_glock18.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
-SWEP.HoldType		= "ar2"		
+SWEP.HoldType		= "pistol"		
 SWEP.CSMuzzleFlashes	= true
 
 
@@ -22,22 +22,22 @@ SWEP.CSMuzzleFlashes	= true
 SWEP.Weight			= 10						
  
 -- Weapon info		
-SWEP.Purpose		= "Speedy Boi Nato Shooter"	
+SWEP.Purpose		= "AP Pistol"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/famas/famas-1.wav"	
+SWEP.Primary.Sound			= "weapons/glock/glock18-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.3	
-SWEP.Primary.RecoilAngleVer	= 0.17	
-SWEP.Primary.RecoilAngleHor	= 0.12		
-SWEP.Primary.Cone			= 0.0075		
+SWEP.Primary.Recoil			= 0.25	
+SWEP.Primary.RecoilAngleVer	= 0.15	
+SWEP.Primary.RecoilAngleHor	= 0.1		
+SWEP.Primary.Cone			= 0.018		
 SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 25		
-SWEP.Primary.DefaultClip	= 25			
+SWEP.Primary.ClipSize		= 15		
+SWEP.Primary.DefaultClip	= 15			
 SWEP.Primary.Force			= 1	
-SWEP.Primary.Automatic		= 1	
-SWEP.Primary.Ammo		= "AR2"	
+SWEP.Primary.Automatic		= false	
+SWEP.Primary.Ammo		= "pistol"	
 
 SWEP.Secondary.Ammo		= "none"	
 SWEP.Secondary.ClipSize		= -1		
@@ -45,15 +45,17 @@ SWEP.Secondary.DefaultClip	= -1
 
 SWEP.ReloadSoundEnabled = 1
 
-SWEP.Category 			= "ACE Sweps - AR"
+SWEP.Category 			= "ACE Sweps - HG"
 
 SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 3
-SWEP.InaccuracyAccumulationRate = 0.3
+SWEP.MaxInaccuracyMult = 2
+SWEP.InaccuracyAccumulationRate = 0.15
 SWEP.InaccuracyDecayRate = 1
+SWEP.CarrySpeedMul = 1.5 --WalkSpeedMult when carrying the weapon
+
 --
 
 function SWEP:InitBulletData()
@@ -63,9 +65,9 @@ function SWEP:InitBulletData()
 		self.BulletData.Id = "7.62mmMG"
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
-		self.BulletData.Caliber = 0.556
-		self.BulletData.PropLength = 8 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 3.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.Caliber = 1.15
+		self.BulletData.PropLength = 2.5 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 4 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
@@ -112,7 +114,7 @@ function SWEP:PrimaryAttack()
 	if ( !self:CanPrimaryAttack() ) then return end		
 
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
-		self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
+	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
 	if CLIENT then 
 	return 
 	end
@@ -134,6 +136,7 @@ function SWEP:PrimaryAttack()
 	else
 		self:TakePrimaryAmmo(1)
 	end
+	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 end
 
 function SWEP:Think()				

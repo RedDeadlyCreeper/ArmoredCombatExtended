@@ -395,7 +395,7 @@ ACF_DefineRack("1x SPG9", {
 	year = 1968,
     magsize = 1,
 	armour  = 30,
-	caliber = 7.3,
+	caliber = 9.0,
 
 	protectmissile  = true,
     hidemissile     = true,

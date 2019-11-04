@@ -77,12 +77,12 @@ function SWEP:InitBulletData()
 		self.BulletData.Caliber = 8.4
 		self.BulletData.PropLength = 10 --Volume of the case as a cylinder * Powder density converted from g to kg		
 		self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-		self.BulletData.Data5 = 4300  --He Filler or Flechette count
+		self.BulletData.Data5 = 6000  --He Filler or Flechette count
 		self.BulletData.Data6 = 57 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
 		self.BulletData.Data8 = 0
 		self.BulletData.Data9 = 0
-		self.BulletData.Data10 = 1 -- Tracer
+		self.BulletData.Data10 = 0.5 -- Tracer
 		self.BulletData.Colour = Color(255, 50, 0)
 		--
 		self.BulletData.Data13 = 0 --THEAT ConeAng2
@@ -95,7 +95,7 @@ function SWEP:InitBulletData()
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 		self.BulletData.FillerVol = self.BulletData.Data5
 		self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity/1000
-		self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 3
+		self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 6
 		local ConeAera = 3.1416 * self.BulletData.Caliber/2 * ((self.BulletData.Caliber/2)^2 + self.BulletData.ProjLength^2)^0.5
 		local ConeThick = self.BulletData.Caliber/50
 	
@@ -136,7 +136,7 @@ function SWEP:InitBulletData()
 		self.BoomFillerMass = self.BulletData.BoomFillerMass
 		self.Type = self.BulletData.Type
 		self.BulletData.Tracer = self.BulletData.Data10
-		self.Tracer = self.BulletData.Tracer
+		self.Tracer = self.BulletData.Data10
 		self.Caliber = self.BulletData.Caliber
 		self.ProjMass = self.BulletData.ProjMass
 		self.FillerMass = self.BulletData.FillerMass
@@ -148,8 +148,8 @@ end
 function SWEP:PrimaryAttack()		
 	if ( !self:CanPrimaryAttack() ) then return end		
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
-	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
-	
+	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
+	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )		
 	if CLIENT then 
 	return 
 	end	
@@ -173,7 +173,6 @@ function SWEP:PrimaryAttack()
 	end
 --	self:TakePrimaryAmmo(1)
 
-	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 end
 
 function SWEP:Think()				
@@ -189,10 +188,6 @@ function SWEP:Reload()
 --player.GetByID( 1 ):GiveAmmo( 30-self:Clip1(), "AR2", true )
 	self:Think()
 	return true
-end
-
-function SWEP:DoImpactEffect( tr, nDamageType )
-return
 end
 
 

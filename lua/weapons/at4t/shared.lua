@@ -75,10 +75,10 @@ function SWEP:InitBulletData()
 		self.BulletData.Type = "THEAT"
 		self.BulletData.Id = 2
 		self.BulletData.Caliber = 12.0
-		self.BulletData.PropLength = 4.7 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.PropLength = 4 --Volume of the case as a cylinder * Powder density converted from g to kg		
 		self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-		self.BulletData.Data5 = 12000  --He Filler or Flechette count
-		self.BulletData.Data6 = 55 --HEAT ConeAng or Flechette Spread
+		self.BulletData.Data5 = 10000  --He Filler or Flechette count
+		self.BulletData.Data6 = 60 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
 		self.BulletData.Data8 = 0
 		self.BulletData.Data9 = 0
@@ -86,7 +86,7 @@ function SWEP:InitBulletData()
 		self.BulletData.Colour = Color(255, 110, 0)
 		--
 		self.BulletData.Data13 = 57 --THEAT ConeAng2
-		self.BulletData.Data14 = 0.93 --THEAT HE Allocation
+		self.BulletData.Data14 = 0.95 --THEAT HE Allocation
 		self.BulletData.Data15 = 0
 
 		self.BulletData.AmmoType  = self.BulletData.Type
@@ -95,7 +95,7 @@ function SWEP:InitBulletData()
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 		self.BulletData.FillerVol = self.BulletData.Data5
 		self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity/1000
-		self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 3
+		self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 6
 		local ConeAera = 3.1416 * self.BulletData.Caliber/2 * ((self.BulletData.Caliber/2)^2 + self.BulletData.ProjLength^2)^0.5
 		local ConeThick = self.BulletData.Caliber/50
 	
@@ -140,10 +140,10 @@ function SWEP:InitBulletData()
 --		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
 		local SlugEnergy = ACF_Kinetic( self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
 		self.BulletData.MaxPen = (SlugEnergy.Penetration/self.BulletData.SlugPenAera)*ACF.KEtoRHA
-		print("SlugPen: "..self.BulletData.MaxPen)
+--		print("SlugPen: "..self.BulletData.MaxPen)
 		local SlugEnergy = ACF_Kinetic( self.BulletData.SlugMV2*39.37 , self.BulletData.SlugMass2, 999999 )
 		self.BulletData.MaxPen = (SlugEnergy.Penetration/self.BulletData.SlugPenAera2)*ACF.KEtoRHA
-		print("SlugPen2: "..self.BulletData.MaxPen)		
+--		print("SlugPen2: "..self.BulletData.MaxPen)		
 		--For Fake Crate
 		self.BoomFillerMass = self.BulletData.BoomFillerMass
 		self.Type = self.BulletData.Type
@@ -162,6 +162,7 @@ function SWEP:PrimaryAttack()
 	if ( !self:CanPrimaryAttack() ) then return end		
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
 
+	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
 	
 	if CLIENT then 
@@ -188,7 +189,6 @@ function SWEP:PrimaryAttack()
 	end
 --	self:TakePrimaryAmmo(1)
 
-	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 end
 
 function SWEP:Think()				
@@ -204,10 +204,6 @@ function SWEP:Reload()
 --player.GetByID( 1 ):GiveAmmo( 30-self:Clip1(), "AR2", true )
 	self:Think()
 	return true
-end
-
-function SWEP:DoImpactEffect( tr, nDamageType )
-return
 end
 
 

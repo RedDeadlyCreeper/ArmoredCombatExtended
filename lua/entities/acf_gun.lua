@@ -21,7 +21,7 @@ if CLIENT then
 		self.RateScale = 1
 		self.FireAnim = self:LookupSequence( "shoot" )
 		self.CloseAnim = self:LookupSequence( "load" )
-		
+		self.LastThink = 0
 	end
 	
 	-- copied from base_wire_entity: DoNormalDraw's notip arg isn't accessible from ENT:Draw defined there.
@@ -147,9 +147,9 @@ function ENT:Initialize()
 		self.BulletData.ProjMass = 0
 	
 	self.Inaccuracy 	= 1
-	
+	self.LastThink = 0	
 	self.Inputs = Wire_CreateInputs( self, { "Fire", "Unload", "Reload", "Fuse Time" } )
-	self.Outputs = WireLib.CreateSpecialOutputs( self, { "Ready", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" }, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" } )
+	self.Outputs = WireLib.CreateSpecialOutputs( self, { "Ready", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat"}, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL"} )
 	Wire_TriggerOutput(self, "Entity", self)
 
 end  
@@ -189,6 +189,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Mass = Lookup.weight
 	Gun.Class = Lookup.gunclass
 	Gun.Parentable = Lookup.canparent
+	Gun.Heat = 21
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
 	end
@@ -507,6 +508,23 @@ function ENT:Think()
 		end
 	end
 
+	local DeltaTime = CurTime() - self.LastThink	
+	local PhysObj = self:GetPhysicsObject()
+	local Mass = PhysObj:GetMass()
+	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass/75) * DeltaTime * 0.03
+	self.Heat = self.Heat +(Energyloss/Mass/743.2)
+	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
+
+	local OverHeat = math.max(self.Heat/150,0)
+	if OverHeat > 1.0 then
+	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0))} , 2 , 0 , self.Owner )
+
+			if HitRes.Kill then
+			ACF_HEKill( self, VectorRand() , 0)
+			end
+	end
+
+	
 	local Time = CurTime()
 	if self.LastSend+1 <= Time then
 		local Ammo = 0
@@ -564,17 +582,16 @@ function ENT:Think()
 			self.CurrentShot = 0
 		end
 		
-		if self.Firing then
+		if self.Firing or self.Heat > 160 then
 			self:FireShell()	
 		elseif self.Reloading then
 			self:ReloadMag()
 			self.Reloading = false
 		end
 	end
-
+		self.LastThink = ACF.CurTime
 	self:NextThink(Time)
 	return true
-	
 end
 
 -- BNK ggg stuff, still used?
@@ -703,8 +720,12 @@ function ENT:FireShell()
 			self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 			self:CreateShell( self.BulletData )
 			
+			local PhysObj = self:GetPhysicsObject()
 			local HasPhys = constraint.FindConstraintEntity(self, "Weld"):IsValid() or not self:GetParent():IsValid()
 			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
+			local Mass = PhysObj:GetMass()			
+			self.Heat = self.Heat +((self.BulletData.PropMass * 8000000)/Mass/743.2)
+--			print(self.Heat)
 			
 			self.Ready = false
 			self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
