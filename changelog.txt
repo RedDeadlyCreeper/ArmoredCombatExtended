@@ -123,3 +123,23 @@ r100
 -Refills have infinite ammo but larger crates fill faster
 -Increased Recoil
 -Added Ferv's HEAT Crush mechanics
+
+*r114
+-Removed HEAT Crush mechanics
+-reduced recoil of cannons
+-removed magazine of RACs
+-added cannon HEAT system
+-Cannons start to get damaged at 150 Celcius
+-Cannons will fire their powder at 160 Celcius
+-Removed SWEP angular recoil
+-Doubled SWEP Accuracy
+-Added pistols, a shotgun, and the m249 SAW
+-Added APHE Fuses
+-Improved flight charecteristics of missiles
+-Fixed many Tandem HEAT related bugs
+-Removed HESH from missiles
+-Nerfed AT-4s
+-Nerfed ERA performance against KE to 5x instead of 10x
+-ERA now performs against KE rounds according to the ratio of its health
+-Improved the performance of spalling
+-Various other polishing, bugfixing, and quality of life changes

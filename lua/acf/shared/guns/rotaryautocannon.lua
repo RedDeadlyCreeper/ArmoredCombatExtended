@@ -12,24 +12,6 @@ ACF_defineGunClass("RAC", {
 	color = {135, 135, 135}
 } )
 
-/*
-ACF_defineGun("12.7mmRAC", { --id
-	name = "12.7mm Rotary Autocannon",
-	desc = "A pocket sized rotary autocannon, great for shredding infantry.",
-	model = "models/rotarycannon/rotarycannon_127mm.mdl",
-	gunclass = "RAC",
-	canparent = true,
-	caliber = 1.27,
-	weight = 160,
-	year = 1975,
-	rofmod = 5.1,
-	round = {
-		maxlength = 14,
-		propweight = 0.05
-	}
-} )
-*/
-
 ACF_defineGun("14.5mmRAC", { --id
 	name = "14.5mm Rotary Autocannon",
 	desc = "A lightweight rotary autocannon, a great support weapon for effortlessly shredding infantry and technicals alike.",
@@ -90,7 +72,8 @@ ACF_defineGun("14.5mmHRAC", { --id
 		propweight = 0.06
 	}
 } )
-end
+
+
 ACF_defineGun("20mmHRAC", {
 	name = "20mm Heavy Rotary Autocannon",
 	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Phalanx.",
