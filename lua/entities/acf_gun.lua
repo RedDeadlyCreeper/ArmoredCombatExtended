@@ -704,9 +704,9 @@ function ENT:FireShell()
 
 --			print("BooletType: "..self.BulletData.Type)
 			local FuseNoise = 1
-			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM" or self.BulletData.Type == "HEP") and Cal<=12 then
+			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") and Cal<=12 then
 			
-			if self.FuseTime < (0.35^math.max(Cal-3,1)) then
+			if self.FuseTime < (0.28^math.max(Cal-3,1)) then
 			FuseNoise = 1
 			else
 			FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)

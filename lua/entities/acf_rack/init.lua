@@ -715,7 +715,9 @@ function ENT:AddMissile()
 		function() 
 			if IsValid(missile) then 
 				local attach, muzzle = self:GetMuzzle(NextIdx, missile)
-			
+					if table.Count(self:GetAttachments()) == 0 then
+						muzzle.Pos = Vector(0,0,0)
+					end			
 				if(IsValid(self:GetParent())) then
 							
 					missile:SetPos(muzzle.Pos)
@@ -938,6 +940,10 @@ function ENT:FireMissile()
             local attach, muzzle = self:GetMuzzle(curShot - 1, missile)
         
             local MuzzlePos = muzzle.Pos--self:LocalToWorld(muzzle.Pos)
+			if table.Count(self:GetAttachments()) == 0 and IsValid(self:GetParent()) then
+				MuzzlePos = Vector(0,0,0)
+			end
+			
             local MuzzleVec = muzzle.Ang:Forward()
             
             local coneAng = math.tan(math.rad(self:GetInaccuracy())) 
