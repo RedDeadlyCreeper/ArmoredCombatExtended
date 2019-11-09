@@ -406,7 +406,7 @@ function ENT:ConfigureFlight()
 	self.CutoutTime = Time + self.MotorLength
 	self.CurPos = BulletData.Pos
 	self.CurDir = BulletData.Flight:GetNormalized()
-	self.LastVel = self.Launcher.Physical:GetVelocity() + self.CurDir * self.Boost + Vector(0,0,self.Gravity*0.002)
+	self.LastVel = self.CurDir * self.Boost + Vector(0,0,self.Gravity*0.002)
 	self.LastPos = self.CurPos
     self.Hit = false
 	self.HitNorm = Vector(0,0,0)
