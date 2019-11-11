@@ -54,7 +54,7 @@ SWEP.lastFire=CurTime()
 SWEP.MaxInaccuracyMult = 4
 SWEP.InaccuracyAccumulationRate = 0.3
 SWEP.InaccuracyDecayRate = 2
-SWEP.CarrySpeedMul = 1.2 --WalkSpeedMult when carrying the weapon
+SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon
 
 --
 

@@ -59,8 +59,8 @@ function ACFM_ModifyRoundDisplayFuncs()
 				local slugMV2 = data.SlugMV2
                 
                 data.MuzzleVel = 0
-                data.SlugMV = (slugMV or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1)
-				data.SlugMV2 = (slugMV2 or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1)
+                data.SlugMV = (slugMV or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
+				data.SlugMV2 = (slugMV2 or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
                 
                 local ret = oldDisplayData(data)
                 

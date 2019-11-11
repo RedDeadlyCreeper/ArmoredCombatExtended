@@ -2,6 +2,8 @@
 function EFFECT:Init( data )
 
 	self.Index = data:GetAttachment()
+	local Hit = data:GetScale()
+	local Bullet = ACF.BulletEffect[self.Index]
 	self:SetModel("models/munitions/round_100mm_shot.mdl")
 	if not ( self.Index ) then
 		--self:Remove()
@@ -10,9 +12,11 @@ function EFFECT:Init( data )
 	end
 	self.CreateTime = ACF.CurTime
 
-	local Hit = data:GetScale()
-	local Bullet = ACF.BulletEffect[self.Index]
-
+	
+--	local Model = ACF.RoundTypes[Bullet.AmmoType]["model"] or "models/munitions/round_100mm_shot.mdl"
+--	self:SetModel(Model)
+--	print(Model)
+	
 	if (Hit > 0 and Bullet) then	--Scale encodes the hit type, so if it's 0 it's a new bullet, else it's an update so we need to remove the effect
 
 		--print("Updating Bullet Effect")
@@ -66,7 +70,6 @@ function EFFECT:Init( data )
 			BulletData.TracerColour = BulletData.Crate:GetNWVector( "TracerColour", BulletData.Crate:GetColor() ) or Vector(255,255,255)
 		end
 
-
 		BulletData.Accel = BulletData.Crate:GetNWVector( "Accel", Vector(0,0,-600))
 
 		BulletData.LastThink = CurTime() --ACF.CurTime
@@ -81,7 +84,7 @@ function EFFECT:Init( data )
 		ACF_SimBulletFlight( ACF.BulletEffect[self.Index], self.Index )
 
 	end
-
+	
 end
 
 function EFFECT:HitEnd()
@@ -204,6 +207,9 @@ function EFFECT:Render()
 	if (Bullet) then
 		self.Entity:SetModelScale( Bullet.Caliber/10 , 0 )
 		self.Entity:DrawModel()       // Draw the model.
+		
+		local Model = ACF.RoundTypes[Bullet.AmmoType]["model"] or "models/munitions/round_100mm_shot.mdl"
+		self:SetModel(Model)
 	end
 
 end

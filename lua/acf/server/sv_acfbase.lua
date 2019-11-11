@@ -398,7 +398,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 		-- Projectile caliber. Messy, function signature
 		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		if(Type == "HEAT" or Type == "Spall") then
+		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" or Type == "Spall") then
 		local DmgResist = 0.01+caliber/ACF.RubberSpecialEffect*60
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / ACF.RubberEffectivenessSpecial - 1.3) / (7 - 1.3), 0, 1)
@@ -499,7 +499,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	elseif testMaterial == 4 then --ERA	
 	
 		local blastArmor = armor
-		if Type == "HEAT" || Type == "THEAT" then
+		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
 		blastArmor = ACF.ERAEffectivenessMultHEAT * armor
 		else
 		blastArmor = ACF.ERAEffectivenessMult * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
@@ -564,7 +564,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
 		if Type == "Spall" then
 		DamageModifier = ACF.AluminumSpallResist
-		elseif Type == "HEAT" then
+		elseif Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
 		DamageModifier = ACF.AluminumHeatMul
 		end
 			
@@ -653,7 +653,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 		-- Projectile caliber. Messy, function signature
 		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		if(Type == "HEAT") then
+		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") then
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / ACF.TextoliteHEATEffectiveness - 1.3) / (7 - 1.3), 0, 1)
 

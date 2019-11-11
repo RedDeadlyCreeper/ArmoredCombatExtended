@@ -18,7 +18,8 @@ ACF_defineGun("37mmSC", {
 	model = "models/tankgun/tankgun_short_37mm.mdl",
 	gunclass = "SC",
 	caliber = 3.7,
-	weight = 200,
+	weight = 55,
+	canparent = true,
 	rofmod = 1.4,
 	year = 1915,
 	sound = "weapons/ACF_Gun/ac_fire4.wav",
@@ -34,7 +35,7 @@ ACF_defineGun("50mmSC", {
 	model = "models/tankgun/tankgun_short_50mm.mdl",
 	gunclass = "SC",
 	caliber = 5.0,
-	weight = 330,
+	weight = 300,
 	year = 1915,
 	sound = "weapons/ACF_Gun/ac_fire4.wav",
 	round = {
@@ -49,7 +50,7 @@ ACF_defineGun("75mmSC", {
 	model = "models/tankgun/tankgun_short_75mm.mdl",
 	gunclass = "SC",
 	caliber = 7.5,
-	weight = 750,
+	weight = 480,
 	year = 1936,
 	round = {
 		maxlength = 76,
@@ -63,7 +64,7 @@ ACF_defineGun("100mmSC", {
 	model = "models/tankgun/tankgun_short_100mm.mdl",
 	gunclass = "SC",
 	caliber = 10.0,
-	weight = 1750,
+	weight = 1000,
 	year = 1940,
 	round = {
 		maxlength = 93,
@@ -77,7 +78,7 @@ ACF_defineGun("120mmSC", {
 	model = "models/tankgun/tankgun_short_120mm.mdl",
 	gunclass = "SC",
 	caliber = 12.0,
-	weight = 3800,
+	weight = 1400,
 	year = 1944,
 	round = {
 		maxlength = 110,
@@ -91,7 +92,7 @@ ACF_defineGun("140mmSC", {
 	model = "models/tankgun/tankgun_short_140mm.mdl",
 	gunclass = "SC",
 	caliber = 14.0,
-	weight = 6040,
+	weight = 2050,
 	year = 1999,
 	round = {
 		maxlength = 127,

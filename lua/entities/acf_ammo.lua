@@ -188,7 +188,7 @@ end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
 
-	local Mul = ((Type == "HEAT" and ACF.HEATMulAmmo) or 1) --Heat penetrators deal bonus damage to ammo
+	local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulAmmo) or 1) --Heat penetrators deal bonus damage to ammo
 	local HitRes = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor )	--Calling the standard damage prop function
 	
 	if self.Exploding or not self.IsExplosive then return HitRes end
@@ -211,7 +211,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
 
 	local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
-	if Type == "HEAT" or Type == "THEAT" then
+	if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
 	Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
 	CMul = 3
 	elseif Type == "HE" then

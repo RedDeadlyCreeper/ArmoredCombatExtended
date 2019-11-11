@@ -18,7 +18,7 @@ ACF_defineGun("75mmHW", { --id
 	model = "models/howitzer/howitzer_75mm.mdl",
 	gunclass = "HW",
 	caliber = 7.5,
-	weight = 530,
+	weight = 550,
 	year = 1900,
 	round = {
 		maxlength = 60,
@@ -32,7 +32,7 @@ ACF_defineGun("105mmHW", {
 	model = "models/howitzer/howitzer_105mm.mdl",
 	gunclass = "HW",
 	caliber = 10.5,
-	weight = 1480,
+	weight = 980,
 	year = 1900,
 	round = {
 		maxlength = 86,
@@ -46,7 +46,7 @@ ACF_defineGun("122mmHW", {
 	model = "models/howitzer/howitzer_122mm.mdl",
 	gunclass = "HW",
 	caliber = 12.2,
-	weight = 3420,
+	weight = 1450,
 	year = 1900,
 	round = {
 		maxlength = 106,
@@ -60,7 +60,7 @@ ACF_defineGun("155mmHW", {
 	model = "models/howitzer/howitzer_155mm.mdl",
 	gunclass = "HW",
 	caliber = 15.5,
-	weight = 5340,
+	weight = 2100,
 	year = 1900,
 	round = {
 		maxlength = 124,
@@ -74,7 +74,7 @@ ACF_defineGun("203mmHW", {
 	model = "models/howitzer/howitzer_203mm.mdl",
 	gunclass = "HW",
 	caliber = 20.3,
-	weight = 10280,
+	weight = 3900,
 	year = 1900,
 	round = {
 		maxlength = 162.4,
@@ -84,12 +84,12 @@ ACF_defineGun("203mmHW", {
 
 
 ACF_defineGun("240mmHW", {
-	name = "(+)240mm Howitzer",
+	name = "240mm Howitzer",
 	desc = "A 9.4-inch deck gun, found on heavy siege artillery and cruisers.",
 	model = "models/howitzer/howitzer_240mm.mdl",
 	gunclass = "HW",
 	caliber = 24.0,
-	weight = 12980,
+	weight = 8000,
 	year = 1900,
 	round = {
 		maxlength = 192.0,
@@ -98,12 +98,12 @@ ACF_defineGun("240mmHW", {
 } )
 
 ACF_defineGun("290mmHW", {
-	name = "(+)290mm Howitzer",
+	name = "290mm Howitzer",
 	desc = " Mother of all howitzers. This 12in beast was used to shell absurd underground compound. Using it is truly a warcrime.",
 	model = "models/howitzer/howitzer_290mm.mdl",
 	gunclass = "HW",
 	caliber = 29,
-	weight = 24960,
+	weight = 26800,
 	year = 1900,
 	round = {
 		maxlength = 360,
@@ -112,16 +112,16 @@ ACF_defineGun("290mmHW", {
 } )
 
 ACF_defineGun("406mmHW", {
-	name = "(+)406mm Howitzer",
-	desc = "The ultimate anti evreything weapon, this absurd 16 inch gun can commonly be found on American Battleships and emplacements and its mere existence is a warcrime. HOW COULD YOU YOU MONSTER!",
+	name = "406mm Howitzer",
+	desc = "The ultimate anti everything weapon, this absurd 16 inch gun can commonly be found on American Battleships and emplacements and its mere existence is a warcrime. HOW COULD YOU YOU MONSTER!",
 	model = "models/howitzer/howitzer_406mm.mdl",
 	gunclass = "HW",
 	caliber = 40.6,
-	weight = 42520,
+	weight = 121500,
 	year = 1920,
 	round = {
 		maxlength = 580,
-		propweight = 98.3
+		propweight = 40000
 	}
 } )
 

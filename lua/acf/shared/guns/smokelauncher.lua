@@ -35,7 +35,7 @@ ACF_defineGun("40mmCL", { --id
 	gunclass = "SL",
 	canparent = true,
 	caliber = 4.0,
-	weight = 20,
+	weight = 10,
 	rofmod = 0.015,
 	magsize = 6,
 	magreload = 20,

@@ -397,5 +397,71 @@ local Ammo4x8x8 = {}
 	Ammo4x8x8.weight = 960
 	Ammo4x8x8.volume = 366397
 AmmoTable["Ammo4x8x8"] = Ammo4x8x8
+
+local Shell75mm = {}
+	Shell75mm.id = "Shell75mm"
+	Shell75mm.ent = "acf_ammo"
+	Shell75mm.type = "Ammo"
+	Shell75mm.name = "Modular Ammo Crate"
+	Shell75mm.desc = "Modular Ammo Crate 75mm Size\n"
+	Shell75mm.model = "models/munitions/round_75mm.mdl"
+	Shell75mm.weight = 5
+	Shell75mm.volume = 613.313
+AmmoTable["Shell75mm"] = Shell75mm
+
+local Shell100mm = {}
+	Shell100mm.id = "Shell100mm"
+	Shell100mm.ent = "acf_ammo"
+	Shell100mm.type = "Ammo"
+	Shell100mm.name = "Modular Ammo Crate"
+	Shell100mm.desc = "Modular Ammo Crate 100mm Size\n"
+	Shell100mm.model = "models/munitions/round_100mm.mdl"
+	Shell100mm.weight = 10
+	Shell100mm.volume = 1453.780
+AmmoTable["Shell100mm"] = Shell100mm
+
+local Shell120mm = {}
+	Shell120mm.id = "Shell120mm"
+	Shell120mm.ent = "acf_ammo"
+	Shell120mm.type = "Ammo"
+	Shell120mm.name = "Modular Ammo Crate"
+	Shell120mm.desc = "Modular Ammo Crate 120mm Size\n"
+	Shell120mm.model = "models/munitions/round_120mm.mdl"
+	Shell120mm.weight = 15
+	Shell120mm.volume = 2512.131
+AmmoTable["Shell120mm"] = Shell120mm
+
+local Shell120mmAP = {}
+	Shell120mmAP.id = "Shell120mmAP"
+	Shell120mmAP.ent = "acf_ammo"
+	Shell120mmAP.type = "Ammo"
+	Shell120mmAP.name = "Modular Ammo Crate"
+	Shell120mmAP.desc = "Modular Ammo Crate 120mm Size\n"
+	Shell120mmAP.model = "models/munitions/round_120mm_ap.mdl"
+	Shell120mmAP.weight = 15
+	Shell120mmAP.volume = 2512.131
+AmmoTable["Shell120mmAP"] = Shell120mmAP
+
+local Shell140mm = {}
+	Shell140mm.id = "Shell140mm"
+	Shell140mm.ent = "acf_ammo"
+	Shell140mm.type = "Ammo"
+	Shell140mm.name = "Modular Ammo Crate"
+	Shell140mm.desc = "Modular Ammo Crate 140mm Size\n"
+	Shell140mm.model = "models/munitions/round_130mm.mdl"
+	Shell140mm.weight = 35
+	Shell140mm.volume = 6238.189
+AmmoTable["Shell140mm"] = Shell140mm
+
+local Shell170mm = {}
+	Shell170mm.id = "Shell170mm"
+	Shell170mm.ent = "acf_ammo"
+	Shell170mm.type = "Ammo"
+	Shell170mm.name = "Modular Ammo Crate"
+	Shell170mm.desc = "Modular Ammo Crate 140mm Size\n"
+	Shell170mm.model = "models/munitions/round_200mm.mdl"
+	Shell170mm.weight = 65
+	Shell170mm.volume = 11630.235
+AmmoTable["Shell170mm"] = Shell170mm
 	
 list.Set( "ACFEnts", "Ammo", AmmoTable )	--end ammo containers listing

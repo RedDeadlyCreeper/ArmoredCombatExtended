@@ -2,7 +2,7 @@
 ACF_defineGunClass("AC", {
 	spread = 0.12,
 	name = "Autocannon",
-	desc = "Autocannons have a rather high weight and bulk for the ammo they fire, but they can fire it extremely fast.",
+	desc = "Autocannons have a rather high weight and bulk for the ammo they fire, but they can fire it extremely fast. Don't fire too long or your ACs will overheat.",
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.35,
 	year = 1930,
@@ -18,7 +18,7 @@ ACF_defineGun("20mmAC", { --id
 	model = "models/autocannon/autocannon_20mm.mdl",
 	caliber = 2.0,
 	gunclass = "AC",
-	weight = 225,
+	weight = 170,
 	year = 1930,
 	rofmod = 1.8,
 	round = {
@@ -33,7 +33,7 @@ ACF_defineGun("30mmAC", {
 	model = "models/autocannon/autocannon_30mm.mdl",
 	gunclass = "AC",
 	caliber = 3.0,
-	weight = 960,
+	weight = 255,
 	year = 1935,
 	rofmod = 1,
 	round = {
@@ -48,11 +48,9 @@ ACF_defineGun("40mmAC", {
 	model = "models/autocannon/autocannon_40mm.mdl",
 	gunclass = "AC",
 	caliber = 4.0,
-	weight = 1500,
+	weight = 425,
 	year = 1940,
 	rofmod = 0.92,
-	magsize = 30,
-	magreload = 3,
 	round = {
 		maxlength = 45,
 		propweight = 0.9
@@ -65,11 +63,9 @@ ACF_defineGun("50mmAC", {
 	model = "models/autocannon/autocannon_50mm.mdl",
 	gunclass = "AC",
 	caliber = 5.0,
-	weight = 2130,
+	weight = 880,
 	year = 1965,
 	rofmod = 0.9,
-	magsize = 20,
-	magreload = 3,
 	round = {
 		maxlength = 52,
 		propweight = 1.2
@@ -82,11 +78,9 @@ ACF_defineGun("20mmHAC", { --id
     model = "models/autocannon/autocannon_20mm_compact.mdl",
     caliber = 2.0,
     gunclass = "AC",
-    weight = 350,
+    weight = 320,
     year = 1960,
     rofmod = 1.1,
-    magsize = 1000,
-    magreload = 3,
     round = {
         maxlength = 24,
         propweight = 0.13
@@ -99,11 +93,9 @@ ACF_defineGun("30mmHAC", {
     model = "models/autocannon/autocannon_30mm_compact.mdl",
     gunclass = "AC",
     caliber = 3.0,
-    weight = 1600,
+    weight = 700,
     year = 1935,
     rofmod = 0.75,
-    magsize = 3000,
-    magreload = 3,
     round = {
         maxlength = 28,
         propweight = 0.350
@@ -116,11 +108,9 @@ ACF_defineGun("40mmHAC", {
     model = "models/autocannon/autocannon_40mm_compact.mdl",
     gunclass = "AC",
     caliber = 4.0,
-    weight = 2500,
-    year = 1940,
+    weight = 1000,
+    year = 1000,
     rofmod = 0.55,
-    magsize = 3000,
-    magreload = 3,
     round = {
         maxlength = 34,
         propweight = 0.9

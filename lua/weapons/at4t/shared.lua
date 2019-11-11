@@ -31,7 +31,7 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 20	
 SWEP.Primary.RecoilAngle	= 30		
 SWEP.Primary.Cone			= 0.025		
-SWEP.Primary.Delay			= 12
+SWEP.Primary.Delay			= 7
 SWEP.Primary.ClipSize		= 1		
 SWEP.Primary.DefaultClip	= 1			
 SWEP.Primary.Automatic		= 0	
@@ -95,7 +95,7 @@ function SWEP:InitBulletData()
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 		self.BulletData.FillerVol = self.BulletData.Data5
 		self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity/1000
-		self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 6
+		self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 250
 		local ConeAera = 3.1416 * self.BulletData.Caliber/2 * ((self.BulletData.Caliber/2)^2 + self.BulletData.ProjLength^2)^0.5
 		local ConeThick = self.BulletData.Caliber/50
 	

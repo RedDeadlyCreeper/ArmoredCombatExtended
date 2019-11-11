@@ -11,5 +11,5 @@ ENT.Category 		= "ACF"
 ENT.WireDebugName = "ACF Missile Radar"
 ENT.AutomaticFrameAdvance = true 
 
-ENT.Spawnable 		= true
+ENT.Spawnable 		= false
 ENT.AdminOnly		= false

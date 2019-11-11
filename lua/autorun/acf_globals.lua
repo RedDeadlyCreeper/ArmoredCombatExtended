@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 420  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 421  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2019
@@ -16,13 +16,13 @@ ACF.KinFudgeFactor = 2.1	--True kinetic would be 2, over that it's speed biaised
 ACF.KEtoRHA = 0.25		--Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
 ACF.GroundtoRHA = 0.15		--How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall = 1
-ACF.AmmoMod = 0.6		-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoMod = 2.3		-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.ArmorMod = 1 
 ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 0.1576 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
+ACF.CrateVolEff = 0.5 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 2 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
@@ -103,6 +103,7 @@ ACF.MVScale = 0.5  --Propellant to MV convertion expotential
 ACF.PDensity = 1.6	--Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
 
 ACF.TorqueBoost = 1.25 --torque multiplier from using fuel
+ACF.DriverTorqueBoost = 0.25 --torque multiplier from having a driver
 ACF.FuelRate = 10  --multiplier for fuel usage, 1.0 is approx real world
 ACF.ElecRate = 3 --multiplier for electrics
 ACF.TankVolumeMul = 1 -- multiplier for fuel tank capacity, 1.0 is approx real world
@@ -182,7 +183,7 @@ end
 
 CreateConVar('sbox_max_acf_gun', 24)
 CreateConVar('sbox_max_acf_rapidgun', 4) --Guns like RACs, MGs, and ACs
-CreateConVar('sbox_max_acf_largegun', 2) --Guns with a caliber above 100mm
+CreateConVar('sbox_max_acf_largegun', 3) --Guns with a caliber above 100mm
 ACF.LargeCaliber = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 CreateConVar('sbox_max_acf_smokelauncher', 20)
 CreateConVar('sbox_max_acf_ammo', 50)
@@ -266,6 +267,10 @@ end
 if ACF.Year > 1960 then
 if ACF.EnableNewContent then
 include("acf/shared/rounds/roundapds.lua")
+include("acf/shared/rounds/roundapfsds.lua")
+include("acf/shared/rounds/roundapfsdss.lua")
+include("acf/shared/rounds/roundheatfs.lua")
+include("acf/shared/rounds/roundhefs.lua")
 end
 include("acf/shared/rounds/roundflare.lua")
 include("acf/shared/rounds/roundglgm.lua")
@@ -273,6 +278,7 @@ end
 if ACF.Year > 1989 and ACF.EnableNewContent then
 include("acf/shared/rounds/roundecmbattery.lua")
 include("acf/shared/rounds/roundtheat.lua")
+include("acf/shared/rounds/roundtheatfs.lua")
 end
 
 

@@ -2,7 +2,7 @@
 ACF_defineGunClass("RAC", {
 	spread = 0.3,
 	name = "Rotary Autocannon",
-	desc = "Rotary Autocannons sacrifice weight, bulk and accuracy over classic Autocannons to get the highest rate of fire possible.",
+	desc = "Rotary Autocannons sacrifice weight, bulk and accuracy over classic Autocannons to get the highest rate of fire possible. Don't fire too long or your RAC will overheat.",
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.07,
 	year = 1962,
@@ -19,7 +19,7 @@ ACF_defineGun("14.5mmRAC", { --id
 	gunclass = "RAC",
 	canparent = true,
 	caliber = 1.45,
-	weight = 340,
+	weight = 95,
 	year = 1962,
 	rofmod = 4.3,
 	round = {
@@ -34,7 +34,7 @@ ACF_defineGun("20mmRAC", {
 	model = "models/rotarycannon/kw/20mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 2.0,
-	weight = 760,
+	weight = 420,
 	year = 1965,
 	rofmod = 1.65,
 	round = {
@@ -49,7 +49,7 @@ ACF_defineGun("30mmRAC", {
 	model = "models/rotarycannon/kw/30mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 3.0,
-	weight = 1680,
+	weight = 610,
 	year = 1975,
 	rofmod = 0.93,
 	round = {
@@ -64,7 +64,7 @@ ACF_defineGun("14.5mmHRAC", { --id
 	model = "models/rotarycannon/kw/14_5mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 1.45,
-	weight = 500,
+	weight = 160,
 	year = 1962,
 	rofmod = 4.6,
 	round = {
@@ -76,13 +76,13 @@ ACF_defineGun("14.5mmHRAC", { --id
 
 ACF_defineGun("20mmHRAC", {
 	name = "20mm Heavy Rotary Autocannon",
-	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Phalanx.",
+	desc = "A reinforced, heavy-duty 20mm rotary autocannon, able to fire heavier rounds.  Phalanx.",
 	model = "models/rotarycannon/kw/20mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 2.0,
-	weight = 1200,
+	weight = 680,
 	year = 1981,
-	rofmod = 2.5,
+	rofmod = 1.8,
 	round = {
 		maxlength = 36,
 		propweight = 0.12
@@ -91,13 +91,13 @@ ACF_defineGun("20mmHRAC", {
 
 ACF_defineGun("30mmHRAC", {
 	name = "30mm Heavy Rotary Autocannon",
-	desc = "A reinforced, heavy duty 30mm rotary autocannon, able to fire heavier rounds with a larger magazine.  Keeper of goals.",
+	desc = "A reinforced, heavy duty 30mm rotary autocannon, able to fire heavier rounds.  Keeper of goals.",
 	model = "models/rotarycannon/kw/30mmrac.mdl",
 	gunclass = "RAC",
 	caliber = 3.0,
-	weight = 2850,
+	weight = 920,
 	year = 1985,
-	rofmod = 1.2,
+	rofmod = 1.0,
 	round = {
 		maxlength = 45,
 		propweight = 0.350

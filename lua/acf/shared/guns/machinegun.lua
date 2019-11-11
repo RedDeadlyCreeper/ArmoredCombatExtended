@@ -19,7 +19,7 @@ ACF_defineGun("7.62mmMG", { --id
 	gunclass = "MG",
 	canparent = true,
 	caliber = 0.762,
-	weight = 15,
+	weight = 10,
 	year = 1930,
 	rofmod = 1.59,
 	round = {
@@ -35,7 +35,7 @@ ACF_defineGun("12.7mmMG", {
 	gunclass = "MG",
 	canparent = true,
 	caliber = 1.27,
-	weight = 30,
+	weight = 20,
 	year = 1910,
 	rofmod = 0.766,
 	round = {
@@ -51,7 +51,7 @@ ACF_defineGun("14.5mmMG", {
 	gunclass = "MG",
 	canparent = true,
 	caliber = 1.45,
-	weight = 45,
+	weight = 25,
 	year = 1932,
 	rofmod = 0.72,
 	round = {
@@ -68,7 +68,7 @@ ACF_defineGun("20mmMG", {
 	gunclass = "MG",
 	canparent = true,
 	caliber = 2.0,
-	weight = 115,
+	weight = 35,
 	year = 1935,
 	rofmod = 0.55,
 	round = {
@@ -84,7 +84,7 @@ ACF_defineGun("25mmMG", {
 	gunclass = "MG",
 	caliber = 2.5,
 	canparent = true,
-	weight = 255,
+	weight = 40,
 	year = 1960,
 	rofmod = 0.35,
 	round = {

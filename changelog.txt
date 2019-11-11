@@ -143,3 +143,25 @@ r100
 -ERA now performs against KE rounds according to the ratio of its health
 -Improved the performance of spalling
 -Various other polishing, bugfixing, and quality of life changes
+
+*r115
+-Reduced splash radius of at-4
+-Added Crew Seats for driver, gunner, and loader
+-Gunner: Increase accuracy by 50%
+-Loader: Increase reload by 25%, 2 loaders per gun max
+-Driver: Increase HP by 25%
+-The Loaders can only be linked if you have a gunner
+-Signficicantly reduced cannon weight
+-Fixed cannon shell models
+-Added shell ammoboxes
+-Removed speed buff of pistols and SMGs
+-Removed Rifled Mortars
+-Added various Fin-Stabilized Rounds
+-Nerfed smoothbore accuracy, use FS rounds
+-Improved recognition of HEAT and THEAT for certain entities and armors
+-Made SWEPS spawn with 8 magazines of ammo
+-Added Starfall patches by DaDamRival
+-Fixed missile velocity inheritance from parent
+-Added Overheating warning to various cannons
+-Removed ability to spawn missile radars from the entity menu
+-Significantly buffed ammo capacity of ammo boxes

@@ -32,7 +32,7 @@ ACF_defineGun("60mmM", { --id
 	model = "models/mortar/mortar_60mm.mdl",
 	gunclass = "MO",
 	caliber = 6.0,
-	weight = 60,
+	weight = 80,
 	rofmod = 1.25,
 	year = 1930,
 	round = {
@@ -47,7 +47,7 @@ ACF_defineGun("80mmM", {
 	model = "models/mortar/mortar_80mm.mdl",
 	gunclass = "MO",
 	caliber = 8.0,
-	weight = 120,
+	weight = 210,
 	year = 1915,
 	round = {
 		maxlength = 38,
@@ -61,7 +61,7 @@ ACF_defineGun("120mmM", {
 	model = "models/mortar/mortar_120mm.mdl",
 	gunclass = "MO",
 	caliber = 12.0,
-	weight = 640,
+	weight = 440,
 	year = 1935,
 	round = {
 		maxlength = 45,
@@ -75,7 +75,7 @@ ACF_defineGun("150mmM", {
 	model = "models/mortar/mortar_150mm.mdl",
 	gunclass = "MO",
 	caliber = 15.0,
-	weight = 1255,
+	weight = 680,
 	year = 1945,
 	round = {
 		maxlength = 60,
@@ -89,7 +89,7 @@ ACF_defineGun("200mmM", {
 	model = "models/mortar/mortar_200mm.mdl",
 	gunclass = "MO",
 	caliber = 20.0,
-	weight = 2850,
+	weight = 980,
 	year = 1940,
 	round = {
 		maxlength = 90,
@@ -104,7 +104,7 @@ ACF_defineGun("280mmM", {
 	model = "models/mortar/mortar_280mm.mdl",
 	gunclass = "MO",
 	caliber = 28.0,
-	weight = 9035,
+	weight = 2000,
 	year = 1945,
 	round = {
 		maxlength = 150,

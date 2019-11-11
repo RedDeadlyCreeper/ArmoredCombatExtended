@@ -120,6 +120,9 @@ function ENT:Initialize()
 	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
+	self.CrewLink = {}
+	self.HasDriver = 0
+	
 	
 	self.LastDamageTime=CurTime()
 	
@@ -426,7 +429,7 @@ end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
 
-	local Mul = ((Type == "HEAT" and ACF.HEATMulEngine) or 1) --Heat penetrators deal bonus damage to engines
+	local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulEngine) or 1) --Heat penetrators deal bonus damage to engines
 	local HitRes = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor )	--Calling the standard damage prop function
 	
 	return HitRes --This function needs to return HitRes
@@ -573,7 +576,7 @@ function ENT:CalcRPM()
 	
 	--adjusting performance based on damage
 	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
-	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult
+	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1+self.HasDriver*ACF.DriverTorqueBoost)
 
 	-- Calculate the current torque from flywheel RPM
 	self.Torque = boost * self.Throttle * math.max( self.PeakTorque * math.min( self.FlyRPM / self.PeakMinRPM, (self.LimitRPM - self.FlyRPM) / (self.LimitRPM - self.PeakMaxRPM), 1 ), 0 )
@@ -724,12 +727,28 @@ end
 
 function ENT:Link( Target )
 
-	if not IsValid( Target ) or (Target:GetClass() ~= "acf_gearbox" and Target:GetClass() ~= "acf_fueltank") then
-		return false, "Can only link to gearboxes or fuel tanks!"
+	if not IsValid( Target ) or (Target:GetClass() ~= "acf_gearbox" and Target:GetClass() ~= "acf_fueltank" and Target:GetClass() ~= "ace_crewseat_driver") then
+		return false, "Can only link to gearboxes, fuel tanks, or driver crew seats!"
 	end
+	
 	
 	if Target:GetClass() == "acf_fueltank" then 
 		return self:LinkFuel( Target )
+	end
+	
+	if Target:GetClass() == "ace_crewseat_driver" then 
+
+	if self.HasDriver == 1 then
+	return false, "The engine already has a driver!"	
+	end	
+
+	table.insert( self.CrewLink, Target )
+	table.insert( Target.Master, self )
+	
+	self.HasDriver = 1
+	
+	return true, "Link successful!"
+	
 	end
 	
 	-- Check if target is already linked
@@ -773,6 +792,22 @@ function ENT:Unlink( Target )
 
 	if Target:GetClass() == "acf_fueltank" then
 		return self:UnlinkFuel( Target )
+	end
+	
+	
+		if Target:GetClass() == "ace_crewseat_driver" then 
+
+	self.HasDriver = 0
+
+		for Key,Value in pairs(self.CrewLink) do
+		if Value == Target then
+			table.remove(self.CrewLink,Key)
+			Success = true
+			self.HasDriver = 0
+			return true, "Unlink successful!"
+		end
+	end
+	
 	end
 	
 	for Key, Link in pairs( self.GearLink ) do
@@ -880,6 +915,22 @@ function ENT:PreEntityCopy()
 		duplicator.StoreEntityModifier( self, "FuelLink", fuel_info )
 	end
 
+	--driver seat link saving
+	for Key, Value in pairs(self.CrewLink) do					--First clean the table of any invalid entities
+		if not Value:IsValid() then
+			table.remove(self.CrewLink, Value)
+		end
+	end
+	for Key, Value in pairs(self.CrewLink) do					--Then save it
+		table.insert(entids, Value:EntIndex())
+	end
+
+	info.entities = entids
+	if info.entities then
+		duplicator.StoreEntityModifier( self, "CrewLink", info )
+	end
+	
+	
 	//Wire dupe info
 	self.BaseClass.PreEntityCopy( self )
 
@@ -902,7 +953,8 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 		end
 		Ent.EntityMods.GearLink = nil
 	end
-
+	
+--self.HasDriver
 	--fuel tank link Pasting
 	if (Ent.EntityMods) and (Ent.EntityMods.FuelLink) and (Ent.EntityMods.FuelLink.entities) then
 		local FuelLink = Ent.EntityMods.FuelLink
@@ -916,6 +968,23 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 		end
 		Ent.EntityMods.FuelLink = nil
 	end
+--ace_crewseat_gunner
+	if (Ent.EntityMods) and (Ent.EntityMods.CrewLink) and (Ent.EntityMods.CrewLink.entities) then
+		local CrewLink = Ent.EntityMods.CrewLink
+		if CrewLink.entities and table.Count(CrewLink.entities) > 0 then
+			for _,ID in pairs(CrewLink.entities) do
+				local Linked = CreatedEntities[ ID ]
+				if IsValid( Linked ) then
+					self:Link( Linked )
+				end
+			end
+		end
+		Ent.EntityMods.CrewLink = nil
+	end
+
+
+
+
 	
 	//Wire dupe info
 	self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )

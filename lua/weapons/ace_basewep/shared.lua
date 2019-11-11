@@ -85,6 +85,7 @@ SWEP.NormalPlayerWalkSpeed = 1000
 SWEP.NormalPlayerRunSpeed = 1000
 
 
+
 function SWEP:Think()
 	
 	if CLIENT then
@@ -167,6 +168,12 @@ function SWEP:CanZoom()
  --   if sprinting then return false end
     
     return true
+
+end
+
+function SWEP:Equip()
+
+self.Owner:GiveAmmo( 8*self.Primary.ClipSize, self.Primary.Ammo	, false )
 
 end
 
