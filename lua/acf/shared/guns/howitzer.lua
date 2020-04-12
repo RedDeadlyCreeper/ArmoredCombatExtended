@@ -117,7 +117,7 @@ ACF_defineGun("406mmHW", {
 	model = "models/howitzer/howitzer_406mm.mdl",
 	gunclass = "HW",
 	caliber = 40.6,
-	weight = 121500,
+	weight = 50000,
 	year = 1920,
 	round = {
 		maxlength = 580,

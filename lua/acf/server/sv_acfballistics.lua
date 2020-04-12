@@ -187,7 +187,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
 		RetryTrace = false
 		FlightTr.start = Bullet.StartTrace
-		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) --compensation
+		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation
 		util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)
 		--util.TraceHull(FlightTr)
 

@@ -165,3 +165,18 @@ r100
 -Added Overheating warning to various cannons
 -Removed ability to spawn missile radars from the entity menu
 -Significantly buffed ammo capacity of ammo boxes
+
+*r116
+-Removed Ammo proppelant ignition due to heat in guns.
+-Remove 170SBC from the cannon folder
+-Reduce weight of 406HW to 50 tons
+-Halved ammo explosion power, should reduce crashes due to ammo explosions.
+-Nerf AT-4 Speed to 200 m/s
+-Nerf AT-4 Proto to 120 m/s
+-Changed tandem At-4 pen to 60mm 1st, 400 second
+-Increased Cast Spalling
+-Increased Spall Count
+
+*r117
+-Made Engines and gearboxes directly parentable
+-Made non parentable guns able to be weld parented

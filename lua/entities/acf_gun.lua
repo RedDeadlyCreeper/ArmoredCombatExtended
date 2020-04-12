@@ -364,8 +364,8 @@ function ENT:Link( Target )
 	return false, "You need a gunner before you can have a loader!"	
 	end
 	
-	if self.LoaderCount >= 2 then
-	return false, "The gun already has 2 loaders!"	
+	if self.LoaderCount >= 3 then
+	return false, "The gun already has 3 loaders!"	
 	end
 --	print(Gun.Class)
 	if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" then
@@ -573,7 +573,7 @@ function ENT:Think()
 	if ACF.CurTime > self.NextLegalCheck then
 
 		-- check gun is legal
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, self.Parentable, false, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, not self.Parentable, true) self.Parentable
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 
 		-- check the seat is legal
@@ -682,7 +682,7 @@ function ENT:Think()
 			self.CurrentShot = 0
 		end
 		
-		if self.Firing or self.Heat > 160 then
+		if self.Firing then
 			self:FireShell()	
 		elseif self.Reloading then
 			self:ReloadMag()

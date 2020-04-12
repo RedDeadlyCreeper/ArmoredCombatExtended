@@ -112,7 +112,7 @@ function ENT:Initialize()
 	self.LastThink = 0
 	self.MassRatio = 1
 	self.FuelTank = 0
-	self.Heat=0
+	self.Heat=21
 	self.Efficiency = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
 	self.Legal = true
 	self.CanUpdate = true
@@ -438,7 +438,7 @@ end
 function ENT:Think()
 
 	if ACF.CurTime > self.NextLegalCheck then
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, false, true, true, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, false, true, false, true)
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:CheckRopes()
 		self:CheckFuel()

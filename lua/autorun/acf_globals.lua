@@ -2,10 +2,10 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 421  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 423  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
-ACF.Year = 2019
+ACF.Year = 2020
 
 ACF.EnableNewContent = true --If set to true this will enable new content like new guntypes, ammo, and composite armor
 
@@ -24,7 +24,7 @@ ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 0.5 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 2 --How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 1 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -86,10 +86,8 @@ ACF.HEATMVScaleTan = 0.75	--Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
 ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
 ACF.HEATMulEngine = 10	--likewise
-ACF.HEATPenLayerMul = 0.95	--HEAT base energy multiplier
+ACF.HEATPenLayerMul = 0.98	--HEAT base energy multiplier
 ACF.HEATBoomConvert = 1/3 -- percentage of filler that creates HE damage at detonation
-ACF.HEATMinCrush = 800 -- vel where crush starts, progressively converting round to raw HE
-ACF.HEATMaxCrush = 1200 -- vel where fully crushed
 
 ACF.DragDiv = 20		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world

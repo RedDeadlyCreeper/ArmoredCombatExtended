@@ -75,7 +75,7 @@ function SWEP:InitBulletData()
 		self.BulletData.Type = "THEAT"
 		self.BulletData.Id = 2
 		self.BulletData.Caliber = 12.0
-		self.BulletData.PropLength = 4 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.PropLength = 3 --Volume of the case as a cylinder * Powder density converted from g to kg		
 		self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 10000  --He Filler or Flechette count
 		self.BulletData.Data6 = 60 --HEAT ConeAng or Flechette Spread
@@ -86,7 +86,7 @@ function SWEP:InitBulletData()
 		self.BulletData.Colour = Color(255, 110, 0)
 		--
 		self.BulletData.Data13 = 57 --THEAT ConeAng2
-		self.BulletData.Data14 = 0.95 --THEAT HE Allocation
+		self.BulletData.Data14 = 0.85 --THEAT HE Allocation
 		self.BulletData.Data15 = 0
 
 		self.BulletData.AmmoType  = self.BulletData.Type

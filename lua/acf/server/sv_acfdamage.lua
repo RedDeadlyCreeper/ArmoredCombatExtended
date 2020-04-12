@@ -256,7 +256,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	
 	local SpallMul = 1 --If all else fails treat it like RHA
 	if Material == 2 then 
-	SpallMul = 0.8 --Cast
+	SpallMul = 1.2 --Cast
 	elseif Material == 3 then 
 	SpallMul = 0 --Rubber does not spall
 	elseif Material == 5 then
@@ -264,13 +264,14 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	elseif Material == 6 then
 	SpallMul = ACF.TextoliteSpallMult
 	end
+	
 --	print("CMod: "..Caliber*4) 
 --	print(Caliber) 
 	
 	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
 --	print("SpallPass")
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.0004
-	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),12)
+	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
 	local SpallWeight = TotalWeight/Spall*SpallMul*400
 	local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
@@ -296,7 +297,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
 	local SpallMul = 1
 	if Material == 2 then 
-	SpallMul = 0.8
+	SpallMul = 1.5
 	elseif Material == 3 then 
 	SpallMul = 0
 	elseif Material == 5 then

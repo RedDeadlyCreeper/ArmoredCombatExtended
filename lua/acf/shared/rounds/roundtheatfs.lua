@@ -91,8 +91,10 @@ function Round.convert( Crate, PlayerData )
 	Data.SlugCaliber =    Data.Caliber - Data.Caliber * (math.sin(Rad)*0.5+math.cos(Rad)*1.5)/2
 	Data.SlugCaliber2 =  Data.Caliber - Data.Caliber * (math.sin(Rad2)*0.5+math.cos(Rad2)*1.5)/2
 	Data.HEAllocation = GUIData.HEAllocation
-	Data.SlugMV =  ( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
-	Data.SlugMV2 = ( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMV =  0.5*( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMV2 = 0.5*( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMass = ConeVol*7.9/1000*4
+	Data.SlugMass2 = ConeVol2*7.9/1000*4
 	local SlugFrAera =  3.1416 * (Data.SlugCaliber/2)^2
 	local SlugFrAera2 = 3.1416 * (Data.SlugCaliber2/2)^2
 	Data.SlugPenAera =  SlugFrAera^ACF.PenAreaMod
@@ -198,11 +200,8 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.Detonated = Bullet.Detonated+1
 	DetCount = Bullet.Detonated	or 0
 	if DetCount == 1 then --First Detonation
-	Bullet.NotFirstPen = false
 --	print("Detonated1")
 	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * (1-Bullet.HEAllocation), Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
-	Bullet.InitTime = SysTime()
-	Bullet.FuseLength = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
 	Bullet.DragCoef = Bullet.SlugDragCoef
@@ -214,16 +213,15 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.Ricochet = Bullet.SlugRicochet
 	
 	local DeltaTime = SysTime() - Bullet.LastThink
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length()+25)
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	elseif DetCount == 2 then --Second Detonation
-	Bullet.NotFirstPen = false
 --	print("Detonated2")	
 	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * Bullet.HEAllocation, Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
 	Bullet.InitTime = SysTime()
-	Bullet.FuseLength = 0.005 + 10/((Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37
+	Bullet.FuseLength = 0.1 + 10/(Bullet.Flight:Length()*0.0254)
 	Bullet.DragCoef = Bullet.SlugDragCoef2
 	
 	Bullet.ProjMass = Bullet.SlugMass2
@@ -244,7 +242,6 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 	if ACF_Check( Target ) then
 			
 		if DetCount > 0 then --Bullet Has Detonated
-			Bullet.NotFirstPen = true
 			
 			local Speed = Bullet.Flight:Length() / ACF.VelScale
 			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, 999999 )
@@ -252,8 +249,8 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.1)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber*2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * 2000 / Bullet.ProjMass) * 39.37 
 --				print("Penetrated")
 --				print("KE: "..Energy.Kinetic)
 --				print("SpallCaliber: "..Bullet.CannonCaliber*2)

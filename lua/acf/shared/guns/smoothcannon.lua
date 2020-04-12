@@ -62,7 +62,7 @@ ACF_defineGun("170mmSBC", {
 	name = "170mm Smoothbore Cannon",
 	desc = "Some might laugh at those who choose to forego armor. The 170mm laughs at anyone as it casually tears all tanks alike to shreds.",
 	model = "models/tankgun/tankgun_170mm.mdl",
-	gunclass = "C",
+	gunclass = "SBC",
 	caliber = 17.0,
 	weight = 12350,
 	year = 1990,
