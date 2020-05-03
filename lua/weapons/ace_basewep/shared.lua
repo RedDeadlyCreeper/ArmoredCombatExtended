@@ -9,7 +9,7 @@ if (CLIENT) then
 	SWEP.Slot				= 4
 	SWEP.SlotPos			= 3
 	SWEP.IconLetter			= "y"
-	SWEP.DrawCrosshair		= false
+	SWEP.DrawCrosshair		= true
 	SWEP.Purpose		= "You shouldn't have this"
 	SWEP.Instructions       = ""
 
@@ -81,8 +81,8 @@ SWEP.ZoomPos = Vector(2,-2,2)
 SWEP.IronSightsAng = Angle(0.45, 0, 0)
 SWEP.CarrySpeedMul = 1 --WalkSpeedMult when carrying the weapon
 
-SWEP.NormalPlayerWalkSpeed = 1000
-SWEP.NormalPlayerRunSpeed = 1000
+SWEP.NormalPlayerWalkSpeed = 200
+SWEP.NormalPlayerRunSpeed = 400
 
 
 
@@ -171,12 +171,6 @@ function SWEP:CanZoom()
 
 end
 
-function SWEP:Equip()
-
-self.Owner:GiveAmmo( 8*self.Primary.ClipSize, self.Primary.Ammo	, false )
-
-end
-
 function SWEP:SecondaryAttack()
 
 	if SERVER and self.HasZoom and self:CanZoom() then
@@ -222,13 +216,13 @@ function SWEP:SetOwnerZoomSpeed(setSpeed)
 	if ( CLIENT ) then return end
     if setSpeed then
     
-        self.Owner:SetWalkSpeed( self.NormalPlayerWalkSpeed * 0.5 * self.CarrySpeedMul )
-        self.Owner:SetRunSpeed( self.NormalPlayerRunSpeed * 0.5 * self.CarrySpeedMul)
+        self.Owner:SetWalkSpeed( math.min(self.NormalPlayerWalkSpeed * 0.5 * self.CarrySpeedMul,self.NormalPlayerWalkSpeed) )
+        self.Owner:SetRunSpeed( math.min(self.NormalPlayerRunSpeed * 0.5 * self.CarrySpeedMul,self.NormalPlayerRunSpeed))
         
     elseif self.NormalPlayerWalkSpeed and self.NormalPlayerRunSpeed then
     
-        self.Owner:SetWalkSpeed( self.NormalPlayerWalkSpeed * self.CarrySpeedMul)
-        self.Owner:SetRunSpeed( self.NormalPlayerRunSpeed * self.CarrySpeedMul)
+        self.Owner:SetWalkSpeed( math.min(self.NormalPlayerWalkSpeed * self.CarrySpeedMul,self.NormalPlayerWalkSpeed))
+        self.Owner:SetRunSpeed( math.min(self.NormalPlayerRunSpeed * self.CarrySpeedMul,self.NormalPlayerRunSpeed))
         
     end
 
@@ -264,52 +258,85 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 end	
 
 
-function SWEP:ACEFireBullet()
-
-
-	self.Owner = self:GetParent()
---	self:SetOwner(self:GetParent())
-	local ZoomedNumber = self.Zoomed and 1 or 0
-	local CrouchedNumber = self.Owner:Crouching() and 1 or 0
-		
-	local MuzzlePos = self.Owner:GetShootPos()
-	local MuzzleVec = self.Owner:GetAimVector()
-
-	
-	local EyeAngle = self.Owner:EyeAngles()
-	--Boolet Firing
-	local RandUnitSquare = (EyeAngle:Up() * (2 * math.random() - 1) + EyeAngle:Right() * (2 * math.random() - 1))
-	local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * (self.InaccuracyAccumulation - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber) * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
---	local Spread = Vector(0 , 0 , 0)
---	local Spread = EyeAngle:Forward()/10 * SWEP.coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) 
-	local ShootVec = EyeAngle:Forward()+Spread
---	local ShootVec = EyeAngle:Forward()
-	
-	self.BulletData.Pos = MuzzlePos+EyeAngle:Forward()*35
-	self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + self.Owner:GetVelocity()
---	self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37
-	
---	print("MV: "..self.BulletData.Flight:Length()/39.37)
-	self.BulletData.Owner = self:GetParent()
-	self.BulletData.Gun = self:GetParent()
-	self.BulletData.Crate = self.FakeCrate:EntIndex()
-	
-	if self.BeforeFire then
-		self:BeforeFire()
-	end
-	
---function Round.create( Gun, BulletData )
-	
---	ACF_CreateBullet( BulletData )
-	
---end
-	
-	self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
-	self:CreateShell( self.BulletData )	
-	
---	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
-end
-
 function SWEP:DoImpactEffect( tr, nDamageType )
 return true
+end
+
+
+
+function SWEP:DrawScope(Zoomed)
+	if not (Zoomed and self.HasScope) then return false end
+	
+	local scrw = ScrW()
+	local scrw2 = ScrW() / 2
+	local scrh = ScrH()
+	local scrh2 = ScrH() / 2
+	
+	local traceargs = util.GetPlayerTrace(LocalPlayer())
+	traceargs.filter = {self.Owner, self.Owner:GetVehicle() or nil}
+	local trace = util.TraceLine(traceargs)
+		
+	local scrpos = trace.HitPos:ToScreen()
+	local devx = scrw2 - scrpos.x - 0.5
+	local devy = scrh2 - scrpos.y - 0.5
+
+	surface.SetDrawColor(0, 0, 0, 255) 
+
+	local rectsides = ((scrw - scrh) / 2) * 0.7
+
+	surface.SetDrawColor(0, 0, 0, 255) 
+
+	
+
+	surface.SetDrawColor(0, 0, 0, 255) 
+	
+	surface.SetMaterial(Material("gmod/scope"))
+	surface.DrawTexturedRect(rectsides - devx, 0 - devy, scrw - rectsides * 2, scrh)
+	
+	surface.DrawRect(0, 0, rectsides + 2 - devx, scrh)
+	surface.DrawRect(scrw - rectsides - 2 - devx, 0, rectsides + 2 + devx, scrh)
+	
+	if math.abs(devy) >= 0.5 then
+		surface.DrawRect(rectsides + 2 - devx, 0, scrw - rectsides * 2, -devy)
+		surface.DrawRect(rectsides + 2 - devx, scrh - devy, scrw - rectsides * 2, devy)
+	end
+	
+	return true
+end
+
+
+
+function SWEP:DoDrawCrosshair( x, y )
+
+	Zoom = self:GetNWBool("Zoomed") 
+
+
+self:DrawScope(Zoom)
+
+	ReticleSize = 1 + (self.Owner:KeyDown(IN_SPEED) and 0.5 or 0) + (self.Owner:Crouching() and -0.5 or 0) + (Zoom and -0.5 or 0) 
+--	ReticleSize = 1
+--	ReticleSize = self.InaccuracyAccumulation
+--	print(self.InaccuracyAccumulation)
+
+	surface.SetDrawColor( 255, 0, 0, 255 )
+	surface.DrawLine((x + 30), y, (x + 15*ReticleSize), y)
+	surface.DrawLine((x - 30), y, (x - 15*ReticleSize), y)
+	surface.DrawLine(x, y + 30, x, y + 15*ReticleSize)
+	surface.DrawLine(x, y - 30, x, y - 15*ReticleSize)
+--	surface.DrawOutlinedRect( x - 32, y - 32, 64, 64 )
+
+local scale = Vector( 15*ReticleSize, 15*ReticleSize, 0 )
+local segmentdist = 360 / ( 2 * math.pi * math.max( scale.x, scale.y ) / 2 )
+
+if ReticleSize > 0 then
+
+	surface.DrawRect( x - 1, y - 1, 2, 2 )
+for a = 0, 360 - segmentdist, segmentdist do
+	surface.DrawLine( x + math.cos( math.rad( a ) ) * scale.x, y - math.sin( math.rad( a ) ) * scale.y, x + math.cos( math.rad( a + segmentdist ) ) * scale.x, y - math.sin( math.rad( a + segmentdist ) ) * scale.y )
+end
+
+end
+
+	return true
+
 end

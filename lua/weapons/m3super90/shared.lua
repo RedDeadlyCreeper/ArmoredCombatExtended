@@ -2,7 +2,7 @@ AddCSLuaFile("shared.lua")
 SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
-SWEP.PrintName		= "Famas"
+SWEP.PrintName		= "Benelli M3"
 SWEP.Slot		    = 2
 SWEP.SlotPos		= 1			
 end
@@ -10,11 +10,10 @@ end
 SWEP.Spawnable		= true	
 
 --Visual
-SWEP.ViewModelFlip 	= false
-SWEP.ViewModel		= "models/weapons/v_rif_famas.mdl"	
-SWEP.WorldModel		= "models/weapons/w_rif_famas.mdl"	
-SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
-SWEP.HoldType		= "ar2"		
+SWEP.ViewModelFlip 	= true
+SWEP.ViewModel		= "models/weapons/v_shot_m3super90.mdl"	
+SWEP.WorldModel		= "models/weapons/w_shot_m3super90.mdl"	
+SWEP.HoldType		= "shotgun"		
 SWEP.CSMuzzleFlashes	= true
 
 
@@ -22,22 +21,22 @@ SWEP.CSMuzzleFlashes	= true
 SWEP.Weight			= 10						
  
 -- Weapon info		
-SWEP.Purpose		= "Speedy Boi Nato Shooter"	
+SWEP.Purpose		= "Buckshot SG"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/famas/famas-1.wav"	
+SWEP.Primary.Sound			= "weapons/shotgun/shotgun_dbl_fire.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.3	
-SWEP.Primary.RecoilAngleVer	= 0.17	
-SWEP.Primary.RecoilAngleHor	= 0.12		
-SWEP.Primary.Cone			= 0.0075		
-SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 25		
-SWEP.Primary.DefaultClip	= 25			
+SWEP.Primary.Recoil			= 12	
+SWEP.Primary.RecoilAngleVer	= 0.15	
+SWEP.Primary.RecoilAngleHor	= 0.1		
+SWEP.Primary.Cone			= 0.05		
+SWEP.Primary.Delay			= 1
+SWEP.Primary.ClipSize		= 8		
+SWEP.Primary.DefaultClip	= 8			
 SWEP.Primary.Force			= 1	
-SWEP.Primary.Automatic		= 1	
-SWEP.Primary.Ammo		= "AR2"	
+SWEP.Primary.Automatic		= false	
+SWEP.Primary.Ammo		= "buckshot"	
 
 SWEP.Secondary.Ammo		= "none"	
 SWEP.Secondary.ClipSize		= -1		
@@ -45,16 +44,19 @@ SWEP.Secondary.DefaultClip	= -1
 
 SWEP.ReloadSoundEnabled = 1
 
-SWEP.Category 			= "ACE Sweps - AR"
+SWEP.Category 			= "ACE Sweps - SG"
 
 SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 3
-SWEP.InaccuracyAccumulationRate = 0.3
+SWEP.MaxInaccuracyMult = 5
+SWEP.InaccuracyAccumulationRate = 0.5
 SWEP.InaccuracyDecayRate = 1
 SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon
+
+SWEP.Reloading = 0
+SWEP.NextReload = 0
 --
 
 function SWEP:InitBulletData()
@@ -64,9 +66,9 @@ function SWEP:InitBulletData()
 		self.BulletData.Id = "7.62mmMG"
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
-		self.BulletData.Caliber = 0.556
-		self.BulletData.PropLength = 8 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 3.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.Caliber = 1.2
+		self.BulletData.PropLength = 2 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 7 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
@@ -110,10 +112,11 @@ function SWEP:InitBulletData()
 end	
 		
 function SWEP:PrimaryAttack()		
+	self.Reloading = 0
 	if ( !self:CanPrimaryAttack() ) then return end		
 
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
-		self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
+	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
 	if CLIENT then 
 	return 
 	end
@@ -121,6 +124,11 @@ function SWEP:PrimaryAttack()
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
 	self:ACEFireBullet()
 	
 	self.lastFire=CurTime()
@@ -136,19 +144,47 @@ function SWEP:PrimaryAttack()
 	else
 		self:TakePrimaryAmmo(1)
 	end
+
+	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 end
 
-function SWEP:Think()				
+function SWEP:Think()	
+
+	if CurTime() > self.NextReload and self.Reloading == 1 then
+
+	if self:Clip1() < self.Primary.ClipSize and self:Ammo1() > 0 then
+	
+	self.Weapon:EmitSound(Sound("weapons/shotgun/shotgun_reload"..math.random(1,3)..".wav"))
+
+	self:SendWeaponAnim(ACT_VM_RELOAD)	
+	self.Weapon:SetClip1( self.Weapon:Clip1() + 1 )
+	
+	self.NextReload = CurTime()+0.8
+
+	elseif self:Clip1() == self.Primary.ClipSize and 	self.Reloading == 1 then
+	
+	self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)	
+	self.Reloading = 0
+	end
+	
+	end
+		
 end
 
 function SWEP:Reload()	
 
-	if self:Clip1() < self.Primary.ClipSize and self:Ammo1() > 0 and self.ReloadSoundEnabled == 1 then
-	self.Weapon:EmitSound(Sound(self.ReloadSound))
-	end
-	self:DefaultReload(ACT_VM_RELOAD)
+	if CurTime() > self.NextReload then
 	
---player.GetByID( 1 ):GiveAmmo( 30-self:Clip1(), "AR2", true )
+	if 	self.Reloading == 0 and self:Clip1() < self.Primary.ClipSize and self:Ammo1() > 0 then 
+
+	self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
+	self.Reloading = 1
+	self.NextReload = CurTime()+0.8
+	end
+	
+	end
+
+
 	self:Think()
 	return true
 end

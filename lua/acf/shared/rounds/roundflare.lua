@@ -1,12 +1,12 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.FLR = { "AC", "AL", "C", "HMG", "HW", "MG", "MO", "RAC", "SA", "SC", "SAM", "AAM", "ASM", "BOMB", "FFAR", "UAR", "GBU", "ECM" , "GL", "RM", "AR", "SBC", "ATR", "SL", "ATGM", "ARTY"}
+ACF.AmmoBlacklist.FLR = { "AC", "AL", "C", "HMG", "HW", "MG", "MO", "RAC", "SA", "SC", "SAM", "AAM", "ASM", "BOMB", "FFAR", "UAR", "GBU" }
 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(FLR) Flare" --Human readable name
+Round.name = "Flare (FLR)" --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = "A flare designed to confuse guided munitions."
 Round.netid = 8 --Unique ammotype ID for network transmission
@@ -102,7 +102,7 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "PropMass", BulletData.PropMass )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
-	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+	Crate:SetNWFloat( "Tracer", 1 )
 
 end
 
@@ -223,9 +223,7 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
-		local Tracer = 0
-		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
-		PlayerData.Data10 = Tracer				--Tracer
+		PlayerData.Data10 = 1				--Tracer
 	
 	local Data = Round.convert( Panel, PlayerData )
 	
@@ -234,7 +232,6 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data3", Data.PropLength )		--For Gun ammo, Data3 should always be Propellant
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )		--And Data4 total round mass
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
-	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
 	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
@@ -246,7 +243,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Dual Spectrum Filler", "Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
-	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
 	
 	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")

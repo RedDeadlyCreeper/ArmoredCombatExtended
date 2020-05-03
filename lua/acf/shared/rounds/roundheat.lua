@@ -81,7 +81,7 @@ function Round.convert( Crate, PlayerData )
 	
 	local SlugFrAera = 3.1416 * (Data.SlugCaliber/2)^2
 	Data.SlugPenAera = SlugFrAera^ACF.PenAreaMod
-	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*2
+	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*8
 	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 	
 	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000
@@ -170,9 +170,9 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
 	Bullet.Detonated = true
 	Bullet.InitTime = SysTime()
+	Bullet.FuseLength = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
-	Bullet.FuseLength = 0.1 + 10/(Bullet.Flight:Length()*0.0254)
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
 	Bullet.ProjMass = Bullet.SlugMass
@@ -182,7 +182,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.Ricochet = Bullet.SlugRicochet
 	
 	local DeltaTime = SysTime() - Bullet.LastThink
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())+25)
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	
 end
@@ -200,7 +200,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber*2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
 				
 				return "Penetrated"
@@ -379,8 +379,13 @@ function Round.guiupdate( Panel, Table )
 	
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
-		
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n")	--Proj muzzle penetration (Name, Desc)
+	
+	local R1V, R1P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 300 )
+	R1P = (ACF_Kinetic( (R1V + Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
+	local R2V, R2P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
+	R2P = (ACF_Kinetic( (R2V + Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
+	
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm RHA\n\n300m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n800m pen: "..math.Round(R2P,0).."mm @ "..math.Round(R2V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
 	
 end
 

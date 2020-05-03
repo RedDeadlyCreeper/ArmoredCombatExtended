@@ -77,7 +77,7 @@ function SWEP:InitBulletData()
 		self.BulletData.Caliber = 8.4
 		self.BulletData.PropLength = 6 --Volume of the case as a cylinder * Powder density converted from g to kg		
 		self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-		self.BulletData.Data5 = 6000  --He Filler or Flechette count
+		self.BulletData.Data5 = 5300  --He Filler or Flechette count
 		self.BulletData.Data6 = 57 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
 		self.BulletData.Data8 = 0
@@ -150,21 +150,25 @@ function SWEP:PrimaryAttack()
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )		
+
 	if CLIENT then 
-	return 
-	end	
+		return 
+		end	
+
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
-	self:ACEFireBullet()
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
-	
+	self:ACEFireBullet()
+
+
+		
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
 	
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
-	self.Owner:ViewPunch(Angle( -self.Primary.Recoil, 0, 0 ))
+	self.Owner:ViewPunch(Angle( -self.Primary.Recoil + math.Rand(-self.Primary.RecoilAngleVer,self.Primary.RecoilAngleVer), math.Rand(-self.Primary.RecoilAngleHor,self.Primary.RecoilAngleHor), 0 )*(1+self.InaccuracyAccumulation))	
 	
 	if self:Ammo1() > 0 then
 	self.Owner:RemoveAmmo( 1, "RPG_Round")

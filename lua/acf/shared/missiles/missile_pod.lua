@@ -6,7 +6,7 @@ ACF_defineGunClass("FFAR", {
 	name            = "(Missile) Folding-Fin Aerial Rockets",
 	desc            = "Small rockets which fit in tubes or pods.  Rapid-firing and versatile.",
 	muzzleflash     = "40mm_muzzleflash_noscale",
-	rofmod          = 0.5,
+	rofmod          = 1,
 	year = 1960,
 	sound           = "acf_extra/airfx/rocket_fire2.wav",
 	soundDistance   = " ",
@@ -35,7 +35,7 @@ ACF_defineGun("40mmFFAR", { --id
 	{
 		model		= "models/missiles/ffar_40mm.mdl",
 		rackmdl		= "models/missiles/ffar_40mm_closed.mdl",
-		maxlength	= 25,
+		maxlength	= 35,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.2,			-- motor mass - motor casing
@@ -78,7 +78,7 @@ ACF_defineGun("70mmFFAR", { --id
 	{
 		model		= "models/missiles/ffar_70mm.mdl",
 		rackmdl		= "models/missiles/ffar_70mm_closed.mdl",
-		maxlength	= 25,
+		maxlength	= 45,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing

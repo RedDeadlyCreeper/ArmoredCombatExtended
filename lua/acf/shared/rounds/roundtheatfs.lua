@@ -99,8 +99,8 @@ function Round.convert( Crate, PlayerData )
 	local SlugFrAera2 = 3.1416 * (Data.SlugCaliber2/2)^2
 	Data.SlugPenAera =  SlugFrAera^ACF.PenAreaMod
 	Data.SlugPenAera2 = SlugFrAera2^ACF.PenAreaMod
-	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)
-	Data.SlugDragCoef2 = ((SlugFrAera2/10000)/Data.SlugMass2)
+	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*10
+	Data.SlugDragCoef2 = ((SlugFrAera2/10000)/Data.SlugMass2)*10
 	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
 	

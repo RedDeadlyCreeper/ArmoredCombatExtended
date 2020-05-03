@@ -28,12 +28,12 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/m3/m3-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 5	
+SWEP.Primary.Recoil			= 8	
 SWEP.Primary.RecoilAngleVer	= 0.15	
 SWEP.Primary.RecoilAngleHor	= 0.1		
 SWEP.Primary.Cone			= 0.1		
 SWEP.Primary.Delay			= 0.3
-SWEP.Primary.ClipSize		= 8		
+SWEP.Primary.ClipSize		= 7		
 SWEP.Primary.DefaultClip	= 7			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= false	
@@ -51,10 +51,10 @@ SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 3
-SWEP.InaccuracyAccumulationRate = 0.2
+SWEP.MaxInaccuracyMult = 5
+SWEP.InaccuracyAccumulationRate = 0.5
 SWEP.InaccuracyDecayRate = 1
-SWEP.CarrySpeedMul = 1.5 --WalkSpeedMult when carrying the weapon
+SWEP.CarrySpeedMul = 1 --WalkSpeedMult when carrying the weapon
 
 SWEP.Reloading = 0
 SWEP.NextReload = 0
@@ -124,12 +124,16 @@ function SWEP:PrimaryAttack()
 	
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
-	self:ACEFireBullet()
-	self:ACEFireBullet()
-	self:ACEFireBullet()
-	self:ACEFireBullet()
-	self:ACEFireBullet()
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
+	self:ACEFireBullet()
 	
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
@@ -137,7 +141,8 @@ function SWEP:PrimaryAttack()
 	
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
-	self.Owner:ViewPunch(Angle( -self.Primary.Recoil, 0, 0 ))
+	self.Owner:ViewPunch(Angle( -self.Primary.Recoil + math.Rand(-self.Primary.RecoilAngleVer,self.Primary.RecoilAngleVer), math.Rand(-self.Primary.RecoilAngleHor,self.Primary.RecoilAngleHor), 0 )*(1+self.InaccuracyAccumulation))	
+
 	if (self.Primary.TakeAmmoPerBullet) then			
 		self:TakePrimaryAmmo(self.Primary.NumShots)
 	else

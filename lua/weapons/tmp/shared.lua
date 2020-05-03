@@ -117,27 +117,25 @@ function SWEP:PrimaryAttack()
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )		
 	
 	if CLIENT then 
-	return 
-	end	
-	
-	self.BulletData.Owner = self.Owner
-	self.BulletData.Gun = self	
-	self:ACEFireBullet()
+			return 
+		end
+
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
-	
+	self:ACEFireBullet()	
+		
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
 	
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
-	self.Owner:ViewPunch(Angle( -self.Primary.Recoil, 0, 0 ))
+	self.Owner:ViewPunch(Angle( -self.Primary.Recoil + math.Rand(-self.Primary.RecoilAngleVer,self.Primary.RecoilAngleVer), math.Rand(-self.Primary.RecoilAngleHor,self.Primary.RecoilAngleHor), 0 )*(1+self.InaccuracyAccumulation))	
+
 	if (self.Primary.TakeAmmoPerBullet) then			
 		self:TakePrimaryAmmo(self.Primary.NumShots)
 	else
 		self:TakePrimaryAmmo(1)
 	end
-	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 end
 
 function SWEP:Think()				

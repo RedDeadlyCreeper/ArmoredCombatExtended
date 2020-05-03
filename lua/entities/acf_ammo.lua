@@ -213,20 +213,20 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
 	if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
 	Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
-	CMul = 3
+	CMul = 6
 	elseif Type == "HE" then
-	CMul = 1.5	
+	CMul = 3	
 	end	
 	
 	local DetRand = math.Rand(0,1) * CMul
 	
 	
-	if DetRand >= 0.95 then --Tests if cooks off
+	if DetRand >= 0.975 then --Tests if cooks off
 		self.Inflictor = Inflictor
 		self.Damaged = CurTime() + (5 - Ratio*3)
 		Wire_TriggerOutput(self, "On Fire", 1)		
 --		print("Cookoff")
-	elseif DetRand >= 0.7 then  
+	elseif DetRand >= 0.85 then  
 		self.Inflictor = Inflictor
 		self.Damaged = 1 --Instant explosion guarenteed
 		Wire_TriggerOutput(self, "On Fire", 1)				

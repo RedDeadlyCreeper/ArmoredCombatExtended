@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("FGL", {
-	spread = 1.5,
+	spread = 3,
 	name = "Flare Launcher",
 	desc = "Flare Launchers can fire flares much more rapidly than other launchers, but can't load any other ammo types.",
 	muzzleflash = "40mm_muzzleflash_noscale",
@@ -22,8 +22,8 @@ ACF_defineGun("40mmFGL", { --id
 	canparent = true,
 	caliber = 4.0,
 	weight = 75,
-	magsize = 12,
-	magreload = 20,
+	magsize = 30,
+	magreload = 40,
 	year = 1970,
 	round = {
 		maxlength = 9,

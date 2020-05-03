@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("SL", {
-	spread = 0.4,
+	spread = 0.15,
 	name = "Smoke Launcher",
 	desc = "Smoke launcher to block an attacker's line of sight.",
 	muzzleflash = "40mm_muzzleflash_noscale",

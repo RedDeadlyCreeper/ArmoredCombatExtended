@@ -26,7 +26,7 @@ local function CalcArmor( Area, Ductility, Thickness, Material )
 	elseif testMaterial == 1 then --Cast
 		massMod = 2
 	elseif testMaterial == 2 then --Ceramic
-		massMod = 0.75
+		massMod = 1.25
 	elseif testMaterial == 3 then--Rubber
 		massMod = 0.2
 	elseif testMaterial == 4 then --ERA

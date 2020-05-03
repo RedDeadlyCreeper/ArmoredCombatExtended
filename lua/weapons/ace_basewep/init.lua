@@ -4,11 +4,13 @@ AddCSLuaFile ("shared.lua")
 include ("shared.lua")
  
 SWEP.Weight = 10
+SWEP.DeployDelay = 1 --Time in seconds after pulling out before firing
 SWEP.AutoSwitchTo = false
 SWEP.AutoSwitchFrom = false
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
+	self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
 	if IsValid(self:GetParent()) then
 		self.Owner = self:GetParent()
 		self:SetOwner(self:GetParent())
@@ -17,7 +19,6 @@ function SWEP:Initialize()
 	self:UpdateFakeCrate()
 
 end
-
 
 function SWEP:UpdateFakeCrate(realcrate)
 	if not IsValid(self.FakeCrate) then
@@ -48,8 +49,8 @@ local nosplode = {AP = true, APC = true, APCBC = true, APDS = true, APDSS = true
 local nopen = {HE = true, SM = true, FLR = true, HEAT = true, THEAT = true}
 local heat = {HEAT = true}
 local heatt = {THEAT = true}
+
 function SWEP:DoAmmoStatDisplay()
-    
     local bdata = self.BulletData
     
     local roundType = bdata.Type
@@ -98,20 +99,52 @@ function SWEP:DoAmmoStatDisplay()
 	self.Owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 10)", sendInfo))
 end
 
-function SWEP:Deploy()
+function SWEP:ACEFireBullet()
 
-	self.NormalPlayerWalkSpeed = self.Owner:GetWalkSpeed()
-    self.NormalPlayerRunSpeed = self.Owner:GetRunSpeed()
-    
-    self.Owner:SetWalkSpeed( self.NormalPlayerWalkSpeed * self.CarrySpeedMul )
-    self.Owner:SetRunSpeed( self.NormalPlayerRunSpeed * self.CarrySpeedMul)
-	self:Think()
-	self:DoAmmoStatDisplay()
-    
-    if self.Zoomed then
-        self:SetZoom(false)
-    end
-    
+
+	self.Owner = self:GetParent()
+--	self:SetOwner(self:GetParent())
+	local ZoomedNumber = self.Zoomed and 1 or 0
+	local CrouchedNumber = self.Owner:Crouching() and 1 or 0
+		
+	local MuzzlePos = self.Owner:GetShootPos()
+	local MuzzleVec = self.Owner:GetAimVector()
+
+	
+	local EyeAngle = self.Owner:EyeAngles()
+	--Boolet Firing
+	local RandUnitSquare = (EyeAngle:Up() * (2 * math.random() - 1) + EyeAngle:Right() * (2 * math.random() - 1))
+	local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * (self.InaccuracyAccumulation - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber) * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+--	local Spread = Vector(0 , 0 , 0)
+--	local Spread = EyeAngle:Forward()/10 * SWEP.coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) 
+	local ShootVec = EyeAngle:Forward()+Spread
+--	local ShootVec = EyeAngle:Forward()
+	
+	self.BulletData.Pos = MuzzlePos+EyeAngle:Forward()*30 --35
+	self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + self.Owner:GetVelocity()
+	
+--	print("MV: "..self.BulletData.Flight:Length()/39.37)
+	self.BulletData.Owner = self.Owner
+	self.BulletData.Gun = self
+	self.BulletData.Crate = self.FakeCrate:EntIndex()
+	
+	
+	if self.BeforeFire then
+		self:BeforeFire()
+	end
+	
+--function Round.create( Gun, BulletData )
+	
+--	ACF_CreateBullet( BulletData )
+	
+--end
+	
+--	self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
+	ACE_SWEP_CreateBullet( self.BulletData )	
+--	ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Update" , 0 , self.BulletData.Pos)
+
+
+--	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
 end
 
 function SWEP:Holster()
@@ -126,3 +159,63 @@ function SWEP:MuzzleEffect( MuzzlePos, MuzzleDir, realcall )
 end
 
 
+function ACE_SWEP_CreateBullet( BulletData )
+	
+--	if not IsValid(Swep) then error("Tried to create swep round with no swep or owner!") return end
+
+	ACF.CurBulletIndex = ACF.CurBulletIndex + 1		--Increment the index
+	if ACF.CurBulletIndex > ACF.BulletIndexLimt then
+		ACF.CurBulletIndex = 1
+	end
+
+	--Those are BulletData settings that are global and shouldn't change round to round	
+	local cvarGrav = GetConVar("sv_gravity")
+	BulletData["Accel"] = Vector(0,0,cvarGrav:GetInt()*-1)
+	BulletData["LastThink"] = ACF.SysTime
+	BulletData["FlightTime"] = 0
+	BulletData["TraceBackComp"] = BulletData.Owner:GetVelocity():Dot(BulletData.Flight:GetNormalized())
+	--BulletData.FiredPos = BulletData.Pos --when adding back in, update acfdamage roundimpact rico
+	--BulletData.FiredTime = ACF.SysTime --same as fuse inittime, can combine when readding
+	if type(BulletData["FuseLength"]) ~= "number" then
+		BulletData["FuseLength"] = 0
+	else
+		--print("Has fuse")
+		if BulletData["FuseLength"] > 0 then
+			BulletData["InitTime"] = ACF.SysTime
+		end
+	end
+
+	BulletData["Filter"] = { BulletData["Gun"] , BulletData.Owner}
+	BulletData["Index"] = ACF.CurBulletIndex
+	ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)		--Place the bullet at the current index pos
+--	print(ACF.Bullet[ACF.CurBulletIndex].Flight:Length()/39.37)
+	ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
+	ACF_CalcBulletFlight( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex] )
+	
+end
+
+function SWEP:Equip()
+
+	self.Owner:GiveAmmo( 8*self.Primary.ClipSize, self.Primary.Ammo	, false )
+	self:DoAmmoStatDisplay()
+	self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
+end
+
+
+
+function SWEP:Deploy()
+
+		self.NormalPlayerWalkSpeed = self.Owner:GetWalkSpeed()
+		self.NormalPlayerRunSpeed = self.Owner:GetRunSpeed()
+		
+		self.Owner:SetWalkSpeed( self.NormalPlayerWalkSpeed * self.CarrySpeedMul )
+		self.Owner:SetRunSpeed( self.NormalPlayerRunSpeed * self.CarrySpeedMul)
+		self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
+		self:Think()
+		self:DoAmmoStatDisplay()
+		
+		if self.Zoomed then
+			self:SetZoom(false)
+		end
+		
+	end

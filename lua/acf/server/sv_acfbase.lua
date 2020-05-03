@@ -1,4 +1,21 @@
 local UpdateIndex = 0
+
+function GetParent(Ent)
+	if not IsValid(Ent) then return nil end
+
+	local Parent = Ent
+
+	while IsValid(Parent:GetParent()) do
+		Parent = Parent:GetParent()
+	end
+
+	if Parent:GetClass() == gmod_wire_hologram then --Wire Holos don't act like things normally parented to, filter them out.
+		return nil	
+	else
+		return Parent
+	end
+end
+
 function ACF_UpdateVisualHealth(Entity)
 	if Entity.ACF.PrHealth == Entity.ACF.Health then return end
 	if not ACF_HealthUpdateList then
@@ -64,7 +81,7 @@ function ACF_Activate ( Entity , Recalc )
 		if testMaterial == 1 then --Cast
 			massMod = 2
 		elseif testMaterial == 2 then --Ceramic
-			massMod = 0.75
+			massMod = 1.25
 		elseif testMaterial == 3 then--Rubber
 			massMod = 0.2
 		elseif testMaterial == 4 then --ERA

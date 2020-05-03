@@ -624,7 +624,7 @@ function ENT:CalcRPM()
 	self.FlyRPM = self.FlyRPM - math.min( TorqueDiff, TotalReqTq ) / self.Inertia
 --	self.Heat = self.Efficiency
 	local Mass = PhysObj:GetMass()
-	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/200 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.03 or 0
+	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/180 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.03 or 0
 	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass/75) * DeltaTime * 0.03
 	self.Heat = self.Heat +((Energy+Energyloss)/Mass/743.2)
 --	self.Heat = 21

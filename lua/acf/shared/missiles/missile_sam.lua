@@ -98,7 +98,7 @@ ACF_defineGun("Strela-1 SAM", { --id
     seekcone    = 20,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.) 
     viewcone    = 40,   -- getting outside this cone will break the lock.  Divided by 2.	
 
-    agility     = 2,     -- multiplier for missile turn-rate.	
+    agility     = 1.5,     -- multiplier for missile turn-rate.	
     armdelay    = 0.00     -- minimum fuse arming delay	
 } )
 

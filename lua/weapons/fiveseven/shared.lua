@@ -121,8 +121,8 @@ function SWEP:PrimaryAttack()
 	
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
-	self:ACEFireBullet()
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+	self:ACEFireBullet()
 	
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
@@ -130,7 +130,8 @@ function SWEP:PrimaryAttack()
 	
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
-	self.Owner:ViewPunch(Angle( -self.Primary.Recoil, 0, 0 ))
+	self.Owner:ViewPunch(Angle( -self.Primary.Recoil + math.Rand(-self.Primary.RecoilAngleVer,self.Primary.RecoilAngleVer), math.Rand(-self.Primary.RecoilAngleHor,self.Primary.RecoilAngleHor), 0 )*(1+self.InaccuracyAccumulation))	
+
 	if (self.Primary.TakeAmmoPerBullet) then			
 		self:TakePrimaryAmmo(self.Primary.NumShots)
 	else

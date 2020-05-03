@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("GL", {
-	spread = 0.32,
+	spread = 0.4,
 	name = "Grenade Launcher",
 	desc = "Grenade Launchers can fire shells with relatively large payloads at a fast rate, but with very limited velocities and poor accuracy.",
 	muzzleflash = "40mm_muzzleflash_noscale",
@@ -17,6 +17,7 @@ ACF_defineGun("40mmGL", { --id
 	desc = "The 40mm chews up infantry but is about as useful as tits on a nun for fighting armor.  Often found on 4x4s rolling through the third world.",
 	model = "models/launcher/40mmgl.mdl",
 	gunclass = "GL",
+	canparent = true,
 	caliber = 4.0,
 	weight = 55,
 	magsize = 6,

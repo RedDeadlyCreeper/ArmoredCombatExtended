@@ -310,7 +310,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	if SpallMul > 0 and Caliber*28 > Armour then
 	
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
+	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul),24)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35
 	local SpallVel = (HEFiller*8500/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
@@ -641,8 +641,8 @@ function ACF_ScaledExplosion( ent )
 	else
 		local HE, Propel
 		if ent.RoundType == "Refill" then
-			HE = 0.001
-			Propel = 0.001
+			HE = 0.00025
+			Propel = 0.00025
 		else 
 			HE = ent.BulletData["FillerMass"] or 0
 			Propel = ent.BulletData["PropMass"] or 0

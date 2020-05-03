@@ -55,6 +55,17 @@ function EFFECT:Init( data )
 			self.Alive = false
 			return
 		end
+--[[
+		BulletData.SimFlight = data:GetStart()*10
+		BulletData.SimPos = data:GetOrigin()
+		BulletData.SimPosLast = BulletData.SimPos
+		BulletData.Caliber = BulletData.Crate:GetNWFloat( "Caliber", 10 )
+		BulletData.RoundMass = BulletData.Crate:GetNWFloat( "ProjMass", 10 )
+		BulletData.FillerMass = BulletData.Crate:GetNWFloat( "FillerMass" )
+		BulletData.WPMass = BulletData.Crate:GetNWFloat( "WPMass" )
+		BulletData.DragCoef = BulletData.Crate:GetNWFloat( "DragCoef", 1 )
+		BulletData.AmmoType = BulletData.Crate:GetNWString( "AmmoType", "AP" )
+--]]
 		BulletData.SimFlight = data:GetStart()*10
 		BulletData.SimPos = data:GetOrigin()
 		BulletData.SimPosLast = BulletData.SimPos

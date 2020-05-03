@@ -33,7 +33,7 @@ ACF_defineGun("50kgBOMB", { --id
 	round = {
 		model		= "models/bombs/fab50.mdl",
 		rackmdl		= "models/bombs/fab50.mdl",
-		maxlength	= 60,
+		maxlength	= 120,
 		casing		= 0.05,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -75,7 +75,7 @@ ACF_defineGun("100kgBOMB", { --id
 	round = {
 		model		= "models/bombs/fab100.mdl",
 		rackmdl		= "models/bombs/fab100.mdl",
-		maxlength	= 100,
+		maxlength	= 200,
 		casing		= 0.1,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -115,7 +115,7 @@ ACF_defineGun("250kgBOMB", { --id
 	round = {
 		model		= "models/bombs/fab250.mdl",
 		rackmdl		= "models/bombs/fab250.mdl",
-		maxlength	= 250, --was 115, wtf!
+		maxlength	= 400, --was 115, wtf!
 		casing		= 0.15,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -156,7 +156,7 @@ ACF_defineGun("500kgBOMB", { --id
 	round = {
 		model		= "models/bombs/fab500.mdl",
 		rackmdl		= "models/bombs/fab500.mdl",
-		maxlength	= 200,
+		maxlength	= 400,
 		casing		= 0.2,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -196,7 +196,7 @@ ACF_defineGun("1000kgBOMB", { --id
 	round = {
 		model		= "models/bombs/an_m66.mdl",
 		rackmdl		= "models/bombs/an_m66.mdl",
-		maxlength	= 375,
+		maxlength	= 600,
 		casing		= 0.2,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -237,7 +237,7 @@ ACF_defineGun("100kgGBOMB", { --id
 	round = {
 		model		= "models/missiles/micro.mdl",
 		rackmdl		= "models/missiles/micro.mdl",
-		maxlength	= 100,
+		maxlength	= 200,
 		casing		= 0.1,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -273,7 +273,7 @@ ACF_defineGun("250kgGBOMB", { --id
 	round = {
 		model		= "models/missiles/fab250.mdl",
 		rackmdl		= "models/missiles/fab250.mdl",
-		maxlength	= 250, 
+		maxlength	= 400, 
 		casing		= 0.2,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing

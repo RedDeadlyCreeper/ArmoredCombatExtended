@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 423  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 424  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -59,10 +59,10 @@ ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA th
 ACF.ERAEffectivenessMult = 5 --How many more times is the detonating ERA than its maxarmor
 
 
-ACF.APDamageMult = 1.2
-ACF.APCDamageMult = 1.2
-ACF.APBCDamageMult = 1.15
-ACF.APCBCDamageMult = 1.1
+ACF.APDamageMult = 1.1
+ACF.APCDamageMult = 1.1
+ACF.APBCDamageMult = 1.05
+ACF.APCBCDamageMult = 1.05
 ACF.APHEDamageMult = 1.0
 ACF.APDSDamageMult = 1.5
 ACF.APDSSDamageMult = 1.55
@@ -86,7 +86,7 @@ ACF.HEATMVScaleTan = 0.75	--Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
 ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
 ACF.HEATMulEngine = 10	--likewise
-ACF.HEATPenLayerMul = 0.98	--HEAT base energy multiplier
+ACF.HEATPenLayerMul = 0.95	--HEAT base energy multiplier
 ACF.HEATBoomConvert = 1/3 -- percentage of filler that creates HE damage at detonation
 
 ACF.DragDiv = 20		--Drag fudge factor

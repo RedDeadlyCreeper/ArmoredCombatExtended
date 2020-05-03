@@ -57,7 +57,7 @@ SWEP.IronSights = true
 SWEP.IronSightsPos = Vector(-2, -15, 2.98)
 SWEP.ZoomPos = Vector(2,-2,2)
 SWEP.IronSightsAng = Angle(0.45, 0, 0)
-SWEP.CarrySpeedMul = 0.6 --WalkSpeedMult when carrying the weapon
+SWEP.CarrySpeedMul = 0.5 --WalkSpeedMult when carrying the weapon
 
 SWEP.ZoomAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
 SWEP.ZoomRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
@@ -164,23 +164,25 @@ function SWEP:PrimaryAttack()
 
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
-	
+
 	if CLIENT then 
-	return 
-	end
-	
+		return 
+		end
+
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
-	self:ACEFireBullet()
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+	self:ACEFireBullet()
 	
+		
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
 	
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
-	self.Owner:ViewPunch(Angle( -self.Primary.Recoil, 0, 0 ))
+	self.Owner:ViewPunch(Angle( -self.Primary.Recoil + math.Rand(-self.Primary.RecoilAngleVer,self.Primary.RecoilAngleVer), math.Rand(-self.Primary.RecoilAngleHor,self.Primary.RecoilAngleHor), 0 )*(1+self.InaccuracyAccumulation))	
+
 	
 	if self:Ammo1() > 0 then
 	self.Owner:RemoveAmmo( 1, "RPG_Round")

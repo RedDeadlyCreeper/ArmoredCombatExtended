@@ -195,6 +195,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Class = Lookup.gunclass
 	Gun.Parentable = Lookup.canparent
 	Gun.Heat = 21
+	Gun.LinkRangeMul = math.min(Gun.Caliber / 10,1)
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
 	end
@@ -222,7 +223,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	if(Lookup.magreload) then
 		Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload)
 	end
-	Gun.MinLengthBonus = 0.75 * 3.1416*(Gun.Caliber/2)^2 * Lookup.round.maxlength
+	Gun.MinLengthBonus = 0.5 * 3.1416*(Gun.Caliber/2)^2 * Lookup.round.maxlength
 	
 	Gun:SetNWString( "WireName", Lookup.name )
 	Gun:SetNWString( "Class", Gun.Class )
@@ -622,7 +623,7 @@ function ENT:Think()
 		
 		for Key, Crate in pairs(self.AmmoLink) do --UnlinkDistance
 			if IsValid( Crate ) and Crate.Load and Crate.Legal then
-				if RetDist( self, Crate ) < 512 then
+				if RetDist( self, Crate ) < 512 * self.LinkRangeMul then
 					Ammo = Ammo + (Crate.Ammo or 0)
 					CrateBonus[Crate.RoFMul] = (CrateBonus[Crate.RoFMul] or 0) + Crate.Capacity
 					totalcap = totalcap + Crate.Capacity
@@ -636,7 +637,7 @@ function ENT:Think()
 		
 		for Key, Seat in pairs(self.CrewLink) do --UnlinkDistance
 			if IsValid( Seat ) then --Legality check missing atm
-				if RetDist( self, Seat ) < 100 then
+				if RetDist( self, Seat ) < 100 * self.LinkRangeMul then
 				--Do stuff
 				else
 					self:Unlink( Seat )

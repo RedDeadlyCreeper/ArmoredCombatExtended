@@ -39,15 +39,17 @@ function ENT:RegisterTo(bullet)
 			self:SetNWString( "Sound", bullet.Primary and bullet.Primary.Sound or nil)
 			self.Owner = bullet:GetOwner()
 			self:SetOwner(bullet:GetOwner())
+--			bullet = bullet.BulletData
 		end
 	
 	
-	self:GetNWInt( "Caliber", bullet.Caliber or 10)
-	self:GetNWInt( "ProjMass", bullet.ProjMass or 10)
-	self:GetNWInt( "FillerMass", bullet.FillerMass or bullet.BoomFillerMass or 0)
-	self:GetNWInt( "DragCoef", bullet.DragCoef or 1)
-	self:GetNWString( "AmmoType", bullet.Type or "AP")
-	self:GetNWInt( "Tracer" , bullet.Tracer or 0)
+	self:SetNWInt( "Caliber", bullet.Caliber or 10)
+	self:SetNWInt( "ProjMass", bullet.ProjMass or 10)
+	self:SetNWInt( "FillerMass", bullet.BoomFillerMass or bullet.FillerMass or 0)
+	self:SetNWInt( "DragCoef", bullet.DragCoef or 1)
+	self:SetNWString( "AmmoType", bullet.Type or "AP")
+	self:SetNWInt( "Tracer" , bullet.Tracer or 1)
+--	self:SetNWInt( "Tracer" , 1)
     
 	local col = bullet.Colour or self:GetColor()
 	self:SetNWVector( "Color" , Vector(col.r, col.g, col.b))
