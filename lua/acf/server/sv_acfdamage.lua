@@ -284,7 +284,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	for i = 1,Spall do
 		local SpallTr = { }
 			SpallTr.start = HitPos
-			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()):GetNormalized()*SpallVel*10 --I got bored of spall not going across the tank
+			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()):GetNormalized()*SpallVel*100 --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
@@ -299,7 +299,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	if Material == 2 then 
 	SpallMul = 1.5
 	elseif Material == 3 then 
-	SpallMul = 0
+	SpallMul = 0.1
 	elseif Material == 5 then
 	SpallMul = ACF.AluminumSpallMult
 	elseif Material == 6 then
@@ -307,10 +307,10 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	end
 --	print("CMod: "..Caliber*4) 
 	
-	if SpallMul > 0 and Caliber*28 > Armour then
-	
+	if SpallMul > 0 and Caliber*4.3 > Armour then
+	print(Caliber)
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
-	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul),24)
+	local Spall = math.min(math.floor((Caliber-3)*2*ACF.KEtoSpall*SpallMul),60)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35
 	local SpallVel = (HEFiller*8500/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
@@ -323,7 +323,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	for i = 1,Spall do
 		local SpallTr = { }
 			SpallTr.start = HitPos
-			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel*10 --I got bored of spall not going across the tank
+			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*SpallVel*100 --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )

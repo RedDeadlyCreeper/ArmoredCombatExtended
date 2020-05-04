@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 424  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 425  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -209,6 +209,14 @@ if SERVER then
 	include("acf/server/sv_acfdamage.lua")
 	include("acf/server/sv_acfballistics.lua")
 	
+	game.AddParticles( "particles/flares_fx.pcf" )
+	PrecacheParticleSystem( "ACFM_Flare" )
+
+	include("autorun/acf_missile/folder.lua")
+	include("autorun/sh_acfm_cvars.lua")
+	include("acf/shared/acf_missileloader.lua")
+	include("acf/shared/acfm_globals.lua")
+
 	if ACF.EnableDefaultDP then
 		include("acf/server/sv_acfpermission.lua")
 	end

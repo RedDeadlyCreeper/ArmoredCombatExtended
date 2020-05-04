@@ -30,12 +30,12 @@ SWEP.Primary.Sound			= "weapons/awp/awp1.wav"
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 1	
 SWEP.Primary.RecoilAngle	= 1		
-SWEP.Primary.Cone			= 0.015		
-SWEP.Primary.Delay			= 1
+SWEP.Primary.Cone			= 0.02
+SWEP.Primary.Delay			= 1.5
 SWEP.Primary.ClipSize		= 5		
 SWEP.Primary.DefaultClip	= 5			
 SWEP.Primary.Force			= 1	
-SWEP.Primary.Automatic		= 1	
+SWEP.Primary.Automatic		= 0	
 SWEP.Primary.Ammo		= "XBowBolt"	
 
 SWEP.Secondary.Ammo		= "none"	

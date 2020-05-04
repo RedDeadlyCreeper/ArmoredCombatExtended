@@ -92,13 +92,19 @@ function Round.convert( Crate, PlayerData )
 	Data.SlugCaliber2 =  Data.Caliber - Data.Caliber * (math.sin(Rad2)*0.5+math.cos(Rad2)*1.5)/2
 	Data.HEAllocation = GUIData.HEAllocation
 	Data.SlugMV =  ( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMass = Data.SlugMass*4^2
+	Data.SlugMV = Data.SlugMV/4
+
 	Data.SlugMV2 = ( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMass2 = Data.SlugMass2*4^2
+	Data.SlugMV2 = Data.SlugMV2/4
+
 	local SlugFrAera =  3.1416 * (Data.SlugCaliber/2)^2
 	local SlugFrAera2 = 3.1416 * (Data.SlugCaliber2/2)^2
 	Data.SlugPenAera =  SlugFrAera^ACF.PenAreaMod
 	Data.SlugPenAera2 = SlugFrAera2^ACF.PenAreaMod
-	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*8
-	Data.SlugDragCoef2 = ((SlugFrAera2/10000)/Data.SlugMass2)*8
+	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*1500
+	Data.SlugDragCoef2 = ((SlugFrAera2/10000)/Data.SlugMass2)*1500
 	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
 	
@@ -134,7 +140,7 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 
-	local SlugEnergy = ACF_Kinetic( Data.MuzzleVel*39.37 + Data.SlugMV*39.37 , Data.SlugMass, 999999 )
+	local SlugEnergy = ACF_Kinetic( Data.SlugMV*39.37 , Data.SlugMass, 999999 )
 	local SlugEnergy2 = ACF_Kinetic( Data.SlugMV2*39.37 , Data.SlugMass2, 999999 )
 	GUIData.MaxPen = (SlugEnergy.Penetration/Data.SlugPenAera)*ACF.KEtoRHA
 	GUIData.MaxPen2 = (SlugEnergy2.Penetration/Data.SlugPenAera2)*ACF.KEtoRHA
@@ -204,7 +210,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.InitTime = SysTime()
 	Bullet.FuseLength = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
 	Bullet.Pos = HitPos
-	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
+	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
 	Bullet.ProjMass = Bullet.SlugMass
@@ -446,7 +452,7 @@ function Round.guiupdate( Panel, Table )
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
 
-	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
 	
 end
 

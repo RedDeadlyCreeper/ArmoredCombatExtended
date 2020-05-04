@@ -210,3 +210,10 @@ r100
 - slightly made layers more effective vs HEAT 3x vs 5x
 - Buff Spaced Armor
 - made all engines parentable
+
+*r118
+-Fixed HESH Mechanics
+-Redid normalization code slightly
+-Made HEAT jets slower
+-Fixed Refill invalid ammo on cookoff
+-Fixed minimum ammo link distance bug

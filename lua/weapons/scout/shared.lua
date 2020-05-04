@@ -30,12 +30,12 @@ SWEP.Primary.Sound			= "weapons/scout/scout_fire-1.wav"
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 1	
 SWEP.Primary.RecoilAngle	= 1		
-SWEP.Primary.Cone			= 0.02		
-SWEP.Primary.Delay			= 0.8
+SWEP.Primary.Cone			= 0.025		
+SWEP.Primary.Delay			= 1.2
 SWEP.Primary.ClipSize		= 10		
 SWEP.Primary.DefaultClip	= 10			
 SWEP.Primary.Force			= 1	
-SWEP.Primary.Automatic		= 1	
+SWEP.Primary.Automatic		= 0	
 SWEP.Primary.Ammo		= "XBowBolt"	
 
 SWEP.Secondary.Ammo		= "none"	

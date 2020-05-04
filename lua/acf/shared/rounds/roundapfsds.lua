@@ -237,7 +237,7 @@ function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 	
 	Bullet.Normalize = false
 	Bullet.Pos = HitPos
-	local FlightNormal = Bullet.Flight:GetNormalized() + (HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult
+	local FlightNormal = Bullet.Flight:GetNormalized() + (Bullet.Flight:GetNormalized()-HitNormal) * ACF.NormalizationFactor * NormieMult * 2
 	local Speed = Bullet.Flight:Length()
 --	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
 	Bullet.Flight = FlightNormal * Speed

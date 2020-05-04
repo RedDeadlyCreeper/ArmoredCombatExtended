@@ -116,12 +116,12 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 	print("HitRegistered")
 	
 		local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Energy = ACF_Kinetic( Speed/4+Bullet.FillerMass*11811 , Bullet.ProjMass/4+Bullet.FillerMass*5, Bullet.LimitVel )
+		local Energy = ACF_Kinetic( Speed/4+Bullet.FillerMass*2500 , Bullet.ProjMass/4+Bullet.FillerMass*5, Bullet.LimitVel )
 --		print("ShellMass: "..Bullet.ProjMass)
-		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*11811, Energy, Target, HitPos, HitNormal/10 , Bone )
+		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*2500, Energy, Target, HitPos, HitNormal/10 , Bone )
 		
 		table.insert( Bullet.Filter , Target )
-		ACF_Spall_HESH( HitPos , Bullet.Flight , Bullet.Filter , Bullet.FillerMass*100000 , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*100000 , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 
 		
 --		print("Speed: "..Speed)
@@ -145,7 +145,7 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 	
---	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass * 0.7, Bullet.ProjMass - Bullet.FillerMass * 0.7, Bullet.Owner, nil, Bullet.Gun )
+	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass * 0.4, Bullet.ProjMass - Bullet.FillerMass * 0.4, Bullet.Owner, nil, Bullet.Gun )
 	ACF_RemoveBullet( Index )
 	
 end

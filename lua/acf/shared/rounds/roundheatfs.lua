@@ -78,10 +78,12 @@ function Round.convert( Crate, PlayerData )
 	local Rad = math.rad(GUIData.ConeAng/2)
 	Data.SlugCaliber =  Data.Caliber - Data.Caliber * (math.sin(Rad)*0.5+math.cos(Rad)*1.5)/2
 	Data.SlugMV = ( Data.FillerMass/2 * ACF.HEPower * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScale --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMass = Data.SlugMass*4^2
+	Data.SlugMV = Data.SlugMV/4
 	
 	local SlugFrAera = 3.1416 * (Data.SlugCaliber/2)^2
 	Data.SlugPenAera = SlugFrAera^ACF.PenAreaMod
-	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*10
+	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*1500
 	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 	
 	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000
@@ -116,7 +118,7 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 
-	local SlugEnergy = ACF_Kinetic( Data.MuzzleVel*39.37 + Data.SlugMV*39.37 , Data.SlugMass, 999999 )
+	local SlugEnergy = ACF_Kinetic( Data.SlugMV*39.37 , Data.SlugMass, 999999 )
 	GUIData.MaxPen = (SlugEnergy.Penetration/Data.SlugPenAera)*ACF.KEtoRHA
 	--GUIData.BlastRadius = (Data.FillerMass/2)^0.33*5*10
 	GUIData.BlastRadius = (Data.BoomFillerMass)^0.33*8--*39.37
@@ -171,7 +173,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.Detonated = true
 	Bullet.InitTime = SysTime()
 	Bullet.Pos = HitPos
-	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
+	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
 	Bullet.FuseLength = 0.1 + 10/(Bullet.Flight:Length()*0.0254)
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
@@ -380,7 +382,7 @@ function Round.guiupdate( Panel, Table )
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
 		
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n")	--Proj muzzle penetration (Name, Desc)
 	
 end
 

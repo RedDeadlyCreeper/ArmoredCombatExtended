@@ -199,7 +199,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 		if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
 			self.Inflictor = Inflictor
 		end
-		if self.Ammo > 1 then
+		if self.Ammo > 1 or (self.BulletData.Type == "Refill") then
 			ACF_ScaledExplosion( self )
 		else
 			ACF_HEKill( self, VectorRand() )
@@ -217,9 +217,14 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	elseif Type == "HE" then
 	CMul = 3	
 	end	
-	
-	local DetRand = math.Rand(0,1) * CMul
-	
+
+	local DetRand = 0	
+
+	if (self.BulletData.Type == "Refill") then
+	DetRand = 0.85
+	else
+	DetRand = math.Rand(0,1) * CMul
+	end
 	
 	if DetRand >= 0.975 then --Tests if cooks off
 		self.Inflictor = Inflictor

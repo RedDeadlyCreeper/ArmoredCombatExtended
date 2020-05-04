@@ -195,7 +195,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Class = Lookup.gunclass
 	Gun.Parentable = Lookup.canparent
 	Gun.Heat = 21
-	Gun.LinkRangeMul = math.min(Gun.Caliber / 10,1)
+	Gun.LinkRangeMul = math.max(Gun.Caliber / 10,1)^1.2
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
 	end
