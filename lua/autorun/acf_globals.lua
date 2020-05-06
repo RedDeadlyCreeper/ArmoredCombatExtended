@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 426  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 427  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -110,6 +110,8 @@ ACF.EnableKillicons = true -- Enable killicons overwriting.
 
 ACF.NormalizationFactor = 0.15 --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
+ACF.AllowCSLua = 0
+
 --[[
 	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
 	with a hard to predict check time and punishing lockout time
@@ -174,12 +176,21 @@ ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccu
 ACF.EnableDefaultDP = true -- Enable the inbuilt damage protection system.
 
 
-include("autorun/translation/ace_translationpacks.lua") --File that is overwritten to install a translation pack
+
+	if ACF.AllowCSLua > 0 then
+	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
+	RunConsoleCommand( "sv_allowcslua", 1 )
+	include("autorun/translation/ace_translationpacks.lua") --File that is overwritten to install a translation pack
+	else
+	RunConsoleCommand( "sv_allowcslua", 0 )
+	include("autorun/translation/ace_translationpacks.lua")
+	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
+	end
 
 if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 	include("acf/shared/acf_userconfig.lua")
 end
-
+--ace_translationpacksserver
 
 CreateConVar('sbox_max_acf_gun', 24)
 CreateConVar('sbox_max_acf_rapidgun', 4) --Guns like RACs, MGs, and ACs
