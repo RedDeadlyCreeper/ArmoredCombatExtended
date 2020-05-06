@@ -3,7 +3,7 @@ ACF_defineGunClass("GBU", {
     type            = "missile",  -- i know i know
 	spread          = 1,
 	name            = "(Bomb)Guided Bomb Unit",
-	desc            = "Guided Bomb Unit.  Similar to a regular bomb, but able to be guided in flight to a vector coordinate.  Most useful versus hard, unmoving targets.",
+	desc            = ACFTranslation.MissileClasses[6],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.1,
 	year = 1967,

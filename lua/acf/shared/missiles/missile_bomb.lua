@@ -3,7 +3,7 @@ ACF_defineGunClass("BOMB", {
     type            = "missile",  -- i know i know
 	spread          = 1,
 	name            = "(Bomb) General Purpose Bomb",
-	desc            = "Free-falling bombs.  Despite their lack of guidance and sophistication, they are exceptionally destructive on impact relative to their weight.",
+	desc            = ACFTranslation.MissileClasses[5],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.1,
 	year = 1915,

@@ -3,7 +3,7 @@ ACF_defineGunClass("SAM", {
     type            = "missile",  -- i know i know
 	spread          = 1,
 	name            = "(Missile) Surface-To-Air Missile",
-	desc            = "Missiles specialized for surface-to-air operation, and well suited to lower altitude operation against ground attack aircraft.",
+	desc            = ACFTranslation.MissileClasses[8],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
 	year = 1960,

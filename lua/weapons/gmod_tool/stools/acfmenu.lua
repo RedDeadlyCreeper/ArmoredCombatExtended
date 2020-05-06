@@ -28,21 +28,21 @@ TOOL.ClientConVar[ "data15" ] = 0
 cleanup.Register( "acfmenu" )
 
 if CLIENT then
-	language.Add( "Tool.acfmenu.listname", "ACF Menu" )
-	language.Add( "Tool.acfmenu.name", "Armored Combat Framework" )
-	language.Add( "Tool.acfmenu.desc", "Spawn the Armored Combat Framework weapons and ammo" )
-	language.Add( "Tool.acfmenu.0", "Left click to spawn the entity of your choice, Right click to link an entity to another (+Use to unlink)" )
-	language.Add( "Tool.acfmenu.1", "Right click to link the selected sensor to a pod" )
+	language.Add( "Tool.acfmenu.listname", ACFTranslation.ACFMenuTool[1] )
+	language.Add( "Tool.acfmenu.name", ACFTranslation.ACFMenuTool[2] )
+	language.Add( "Tool.acfmenu.desc", ACFTranslation.ACFMenuTool[3] )
+	language.Add( "Tool.acfmenu.0", ACFTranslation.ACFMenuTool[4] )
+	language.Add( "Tool.acfmenu.1", ACFTranslation.ACFMenuTool[5] )
 	
-	language.Add( "Undone_ACF Entity", "Undone ACF Entity" )
-	language.Add( "Undone_acf_engine", "Undone ACF Engine" )
-	language.Add( "Undone_acf_gearbox", "Undone ACF Gearbox" )
-	language.Add( "Undone_acf_ammo", "Undone ACF Ammo" )
-	language.Add( "Undone_acf_gun", "Undone ACF Gun" )
-	language.Add( "SBoxLimit_acf_gun", "You've reached the ACF Guns limit!" )
-	language.Add( "SBoxLimit_acf_rack", "You've reached the ACF Launchers limit!" )
-	language.Add( "SBoxLimit_acf_ammo", "You've reached the ACF Explosives limit!" )
-	language.Add( "SBoxLimit_acf_sensor", "You've reached the ACF Sensors limit!" )
+	language.Add( "Undone_ACF Entity", ACFTranslation.ACFMenuTool[6] )
+	language.Add( "Undone_acf_engine",ACFTranslation.ACFMenuTool[7] )
+	language.Add( "Undone_acf_gearbox", ACFTranslation.ACFMenuTool[8] )
+	language.Add( "Undone_acf_ammo", ACFTranslation.ACFMenuTool[9] )
+	language.Add( "Undone_acf_gun", ACFTranslation.ACFMenuTool[10] )
+	language.Add( "SBoxLimit_acf_gun", ACFTranslation.ACFMenuTool[11] )
+	language.Add( "SBoxLimit_acf_rack", ACFTranslation.ACFMenuTool[12] )
+	language.Add( "SBoxLimit_acf_ammo", ACFTranslation.ACFMenuTool[13] )
+	language.Add( "SBoxLimit_acf_sensor", ACFTranslation.ACFMenuTool[14] )
 
 	/*------------------------------------
 		BuildCPanel
@@ -92,7 +92,7 @@ function TOOL:LeftClick( trace )
 		else
 			-- Using the Duplicator entity register to find the right factory function
 			local Ent = DupeClass.Func( ply, unpack( ArgTable ) )
-			if not IsValid(Ent) then ACF_SendNotify(ply, false, "Couldn't create entity.") return false end
+			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
 			Ent:Activate()
 			--Ent:GetPhysicsObject():Wake()
 			Ent:DropToFloor()
@@ -106,7 +106,7 @@ function TOOL:LeftClick( trace )
 			
 		return true
 	else
-		print("Didn't find entity duplicator records")
+		print(ACFTranslation.ACFMenuTool[16])
 	end
 
 end

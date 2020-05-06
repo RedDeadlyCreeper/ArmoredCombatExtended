@@ -12,10 +12,10 @@ TOOL.AmmoCopyData = {};
 
 if CLIENT then
 
-	language.Add( "Tool.acfcopy.listname", "ACF Copy Tool" );
-	language.Add( "Tool.acfcopy.name", "Armored Combat Framework" );
-	language.Add( "Tool.acfcopy.desc", "Copy ammo or gearbox data from one object to another" );
-	language.Add( "Tool.acfcopy.0", "Left click to paste data, Right click to copy data" );
+	language.Add( "Tool.acfcopy.listname", ACFTranslation.CopyToolText[1] );
+	language.Add( "Tool.acfcopy.name", ACFTranslation.CopyToolText[2] );
+	language.Add( "Tool.acfcopy.desc", ACFTranslation.CopyToolText[3] );
+	language.Add( "Tool.acfcopy.0", ACFTranslation.CopyToolText[4] );
 
 	function TOOL.BuildCPanel( CPanel )
 	
@@ -93,7 +93,7 @@ function TOOL:RightClick( trace )
 
 		self.GearboxCopyData = ArgsTable;
 
-		ACF_SendNotify( pl, true, "Gearbox copied successfully!" );
+		ACF_SendNotify( pl, true, ACFTranslation.CopyToolText[5] );
 
 	end
 
@@ -126,7 +126,7 @@ function TOOL:RightClick( trace )
 
 		self.AmmoCopyData = ArgsTable;
 
-		ACF_SendNotify( pl, true, "Ammo copied successfully!" );
+		ACF_SendNotify( pl, true, ACFTranslation.CopyToolText[6] );
 
 	end
 

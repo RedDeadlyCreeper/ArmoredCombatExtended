@@ -2,7 +2,7 @@
 ACF_defineGunClass("SA", {
 	spread = 0.14,
 	name = "Semiautomatic Cannon",
-	desc = "Semiautomatic cannons offer better payloads than autocannons and less weight at the cost of rate of fire.",
+	desc = ACFTranslation.GunClasses[12],
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.5,
 	year = 1935,

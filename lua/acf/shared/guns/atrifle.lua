@@ -2,7 +2,7 @@
 ACF_defineGunClass("ATR", {
 	spread = 0.02,
 	name = "Anti-Tank Rifle",
-	desc = "Anti Tank rifles fire stupidly fast small bullets to penetrate light armor. Built to fire HVAP out of these. Using placeholder models ATM. Extremely accurate.",
+	desc = ACFTranslation.GunClasses[1],
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 10,
 	year = 1917,

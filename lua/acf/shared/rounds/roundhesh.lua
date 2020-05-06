@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.HESH = { "MG", "HMG", "RAC", "SL" , "AC" , "SA" , "GL", "ECM",
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(HESH) High Explosive Squash Head" --Human readable name
+Round.name = "(HESH) "..ACFTranslation.ShellHESH[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell filled with explosives, that flattens and detonates on impact creating spall. Weaker blast than HE.\n\nThis ammo is experimental and can supposedly be countered with a spall liner"
+Round.desc = ACFTranslation.ShellHESH[2]
 Round.netid = 12 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

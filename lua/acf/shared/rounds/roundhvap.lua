@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.HVAP =  { "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APCR) Armor-Piercing Composite Rigid" --Human readable name
+Round.name = "(APCR) "..ACFTranslation.ShellAPCR[1] --Human readable name
 Round.model = "models/munitions/round_100mm_ap_shot.mdl" --Shell flight model
-Round.desc = "A soft projectile that contains a heavy tungsten core, penetrates and does a lot more damage than APDS or APFSDS, but has horrible drag characteristics"
+Round.desc = ACFTranslation.ShellAPCR[2]
 Round.netid = 11 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

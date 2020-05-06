@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.HEATFS = { "C","MG", "Al","HMG" ,"RAC", "SC","ATR" , "MO" , "R
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(HEAT-FS) High Explosive Anti-Tank Fin-Stabilized" --Human readable name
+Round.name = "(HEAT-FS) "..ACFTranslation.ShellHEATFS[1] --Human readable name
 Round.model = "models/munitions/round_100mm_mortar_shot.mdl" --Shell flight model
-Round.desc = "A shell with a shaped charge.  When the round detonates, the explosive energy is focused into driving a small molten metal penetrator into the victim with extreme force, though this results in reduced damage from the explosion itself.  Multiple layers of armor will dissipate the penetrator quickly."
+Round.desc = ACFTranslation.ShellHEATFS[2]
 Round.netid = 18 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

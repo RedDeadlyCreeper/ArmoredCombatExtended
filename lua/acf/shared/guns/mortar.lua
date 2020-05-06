@@ -2,7 +2,7 @@
 ACF_defineGunClass("MO", {
 	spread = 0.7,
 	name = "Mortar",
-	desc = "Mortars are able to fire shells with usefull payloads from a light weight gun, at the price of limited velocities.",
+	desc = ACFTranslation.GunClasses[10],
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 2,
 	year = 1915,

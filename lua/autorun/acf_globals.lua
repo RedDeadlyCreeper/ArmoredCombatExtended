@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 425  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 426  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -174,6 +174,8 @@ ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccu
 ACF.EnableDefaultDP = true -- Enable the inbuilt damage protection system.
 
 
+include("autorun/translation/ace_translationpacks.lua") --File that is overwritten to install a translation pack
+
 if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 	include("acf/shared/acf_userconfig.lua")
 end
@@ -199,6 +201,14 @@ if SERVER and ACF.EnableDefaultDP then
 	AddCSLuaFile( "acf/client/gui/cl_acfsetpermission.lua" )
 end
 
+game.AddParticles( "particles/flares_fx.pcf" )
+PrecacheParticleSystem( "ACFM_Flare" )
+
+include("autorun/acf_missile/folder.lua")
+include("autorun/sh_acfm_cvars.lua")
+include("acf/shared/acf_missileloader.lua")
+include("acf/shared/acfm_globals.lua")
+
 if SERVER then
 
 	util.AddNetworkString( "ACF_KilledByACF" )
@@ -208,14 +218,6 @@ if SERVER then
 	include("acf/server/sv_acfbase.lua")
 	include("acf/server/sv_acfdamage.lua")
 	include("acf/server/sv_acfballistics.lua")
-	
-	game.AddParticles( "particles/flares_fx.pcf" )
-	PrecacheParticleSystem( "ACFM_Flare" )
-
-	include("autorun/acf_missile/folder.lua")
-	include("autorun/sh_acfm_cvars.lua")
-	include("acf/shared/acf_missileloader.lua")
-	include("acf/shared/acfm_globals.lua")
 
 	if ACF.EnableDefaultDP then
 		include("acf/server/sv_acfpermission.lua")
@@ -282,7 +284,7 @@ include("acf/shared/rounds/roundflare.lua")
 include("acf/shared/rounds/roundglgm.lua")
 end
 if ACF.Year > 1989 and ACF.EnableNewContent then
-include("acf/shared/rounds/roundecmbattery.lua")
+--include("acf/shared/rounds/roundecmbattery.lua")
 include("acf/shared/rounds/roundtheat.lua")
 include("acf/shared/rounds/roundtheatfs.lua")
 end
@@ -304,7 +306,7 @@ ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds class
 game.AddParticles("particles/acf_muzzleflashes.pcf")
 game.AddParticles("particles/explosion1.pcf")
 game.AddParticles("particles/rocket_motor.pcf")
-game.AddParticles("particles/rocket_motor_sam.pcf")
+--game.AddParticles("particles/rocket_motor_sam.pcf") --Doesnt exist yet
 --game.AddParticles("particles/rocket_motor_atgm.pcf") --Unnecescary after merge
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")

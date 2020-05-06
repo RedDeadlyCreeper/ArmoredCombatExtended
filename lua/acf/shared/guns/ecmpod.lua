@@ -8,7 +8,7 @@ ACF_defineGunClass("ECM", {
 	sound = "acf_extra/airfx/mobile_radar.wav",
 	soundDistance = " ",
 	soundNormal = " ",
-	year = 1989,	
+	year = 9999999,	--Go away broken stuff
 	ammoBlacklist   = {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
 } )
 

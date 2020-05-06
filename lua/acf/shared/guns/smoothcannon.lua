@@ -4,7 +4,7 @@ if ACF.EnableNewContent then
 ACF_defineGunClass("SBC", {
 	spread = 0.3,
 	name = "Smooth-Bore Cannon",
-	desc = "High velocity guns that Fire slower and are heavier due to more reinforced cannon barrels than their counterparts. They fire fin stabilized ammo and as of such are also more accurate than their counterparts.",
+	desc = ACFTranslation.GunClasses[15],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.7,
 	sound = "weapons/ACF_Gun/cannon_new.wav",

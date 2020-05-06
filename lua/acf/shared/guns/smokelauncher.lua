@@ -2,7 +2,7 @@
 ACF_defineGunClass("SL", {
 	spread = 0.15,
 	name = "Smoke Launcher",
-	desc = "Smoke launcher to block an attacker's line of sight.",
+	desc = ACFTranslation.GunClasses[14],
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 45,
 	year = 1941,

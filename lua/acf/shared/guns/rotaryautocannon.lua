@@ -2,7 +2,7 @@
 ACF_defineGunClass("RAC", {
 	spread = 0.35,
 	name = "Rotary Autocannon",
-	desc = "Rotary Autocannons sacrifice weight, bulk and accuracy over classic Autocannons to get the highest rate of fire possible. Don't fire too long or your RAC will overheat.",
+	desc = ACFTranslation.GunClasses[11],
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.07,
 	year = 1962,

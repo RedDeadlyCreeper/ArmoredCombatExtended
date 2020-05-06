@@ -2,7 +2,7 @@
 ACF_defineGunClass("AC", {
 	spread = 0.14,
 	name = "Autocannon",
-	desc = "Autocannons have a rather high weight and bulk for the ammo they fire, but they can fire it extremely fast. Don't fire too long or your ACs will overheat.",
+	desc = ACFTranslation.GunClasses[2],
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.35,
 	year = 1930,

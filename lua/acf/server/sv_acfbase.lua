@@ -899,40 +899,41 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 			Damage = Damage + HitRes.Damage*20				
 			
 		elseif ( Bone == 0 or Bone == 2 or Bone == 3 ) then		--This means we hit the torso. We are assuming body armour/tough exoskeleton/zombie don't give fuck here, so it's tough
-			Target.ACF.Armour = Mass*0.08	--Set the armour thickness as a percentage of Squishy weight, this gives us 8mm for a player, about 90mm for an Antlion Guard. Seems about right
+			Target.ACF.Armour = Mass*0.04	--Set the armour thickness as a percentage of Squishy weight, this gives us 8mm for a player, about 90mm for an Antlion Guard. Seems about right
 			HitRes = ACF_CalcDamage( Target , Energy , FrAera , Angle , Type)		--Armour plate,, so sensitive to impact angle
 			Damage = HitRes.Damage*5
 			if HitRes.Overkill > 0 then
 				Target.ACF.Armour = Size*0.5*0.02							--Half the bounding radius seems about right for most critters torso size
 				HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)		
-				Damage = Damage + HitRes.Damage*50							--If we penetrate the armour then we get into the important bits inside, so DAMAGE
+				Damage = Damage + HitRes.Damage*25							--If we penetrate the armour then we get into the important bits inside, so DAMAGE
 			end
 			Target.ACF.Armour = Mass*0.185	--Then to check if we can get out of the other side, 2x armour + 1x guts
 			HitRes = ACF_CalcDamage( Target , Energy , FrAera , Angle , Type)
+			Damage = Damage + HitRes.Damage*5		
 			
 		elseif ( Bone == 4 or Bone == 5 ) then 		--This means we hit an arm or appendage, so ormal damage, no armour
 		
 			Target.ACF.Armour = Size*0.2*0.02							--A fitht the bounding radius seems about right for most critters appendages
 			HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)		--This is flesh, angle doesn't matter
-			Damage = HitRes.Damage*30							--Limbs are somewhat less important
+			Damage = HitRes.Damage*10							--Limbs are somewhat less important
 		
 		elseif ( Bone == 6 or Bone == 7 ) then
 		
 			Target.ACF.Armour = Size*0.2*0.02							--A fitht the bounding radius seems about right for most critters appendages
 			HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)		--This is flesh, angle doesn't matter
-			Damage = HitRes.Damage*30							--Limbs are somewhat less important
+			Damage = HitRes.Damage*10							--Limbs are somewhat less important
 			
 		elseif ( Bone == 10 ) then					--This means we hit a backpack or something
 		
 			Target.ACF.Armour = Size*0.1*0.02							--Arbitrary size, most of the gear carried is pretty small
 			HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)		--This is random junk, angle doesn't matter
-			Damage = HitRes.Damage*2								--Damage is going to be fright and shrapnel, nothing much		
+			Damage = HitRes.Damage*1								--Damage is going to be fright and shrapnel, nothing much		
 
 		else 										--Just in case we hit something not standard
 		
 			Target.ACF.Armour = Size*0.2*0.02						
 			HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 )
-			Damage = HitRes.Damage*30	
+			Damage = HitRes.Damage*10	
 			
 		end
 		

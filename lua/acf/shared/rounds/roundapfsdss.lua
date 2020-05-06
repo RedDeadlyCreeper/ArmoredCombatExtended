@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.APFSDSS =  { "C","MG", "Al","HMG" ,"RAC", "SC","ATR" , "MO" , 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APFSDS-Slug) Slug Armour Piercing Fin-Stabilized Discarding Sabot" --Human readable name
+Round.name = "(APFSDS-Slug) "..ACFTranslation.ShellAPFSDSS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
-Round.desc = "A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Uses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APDS is better than LRP APDS for defeating flatter armor."
+Round.desc = ACFTranslation.ShellAPFSDSS[2]
 Round.netid = 17 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

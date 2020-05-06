@@ -4,7 +4,7 @@ ACF_defineGunClass("FFAR", {
     type            = "missile",
 	spread          = 1,
 	name            = "(Missile) Folding-Fin Aerial Rockets",
-	desc            = "Small rockets which fit in tubes or pods.  Rapid-firing and versatile.",
+	desc            = ACFTranslation.MissileClasses[7],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
 	year = 1960,

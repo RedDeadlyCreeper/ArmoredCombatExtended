@@ -1,7 +1,7 @@
 
 ACF_DefineRadarClass("OMNI-AM", {
 	name = "Spherical Anti-missile Radar",
-	desc = "A missile radar with full 360-degree detection but a limited range.  Only detects launched missiles.\nThese may be parented to what they are welded to.",
+	desc = ACFTranslation.Radar[5],
 } )
 
 
@@ -10,7 +10,7 @@ ACF_DefineRadarClass("OMNI-AM", {
 ACF_DefineRadar("SmallOMNI-AM", {
 	name 		= "Small Spherical Radar",
 	ent			= "acf_missileradar",
-	desc 		= "A lightweight omni-directional radar with a smaller range.",
+	desc 		= ACFTranslation.Radar[6],
 	model		= "models/radar/radar_sp_sml.mdl",
 	class 		= "OMNI-AM",
 	weight 		= 300,
@@ -21,7 +21,7 @@ ACF_DefineRadar("SmallOMNI-AM", {
 ACF_DefineRadar("MediumOMNI-AM", {
 	name 		= "Medium Spherical Radar",
 	ent			= "acf_missileradar",
-	desc 		= "A omni-directional radar with a regular range.",
+	desc 		= ACFTranslation.Radar[7],
 	model		= "models/radar/radar_sp_mid.mdl", -- medium one is for now scalled big one - will be changed
 	class 		= "OMNI-AM",
 	weight 		= 600,
@@ -32,7 +32,7 @@ ACF_DefineRadar("MediumOMNI-AM", {
 ACF_DefineRadar("LargeOMNI-AM", {
 	name 		= "Large Spherical Radar",
 	ent			= "acf_missileradar",
-	desc 		= "A heavy omni-directional radar with a large range.",
+	desc 		= ACFTranslation.Radar[8],
 	model		= "models/radar/radar_sp_big.mdl",
 	class 		= "OMNI-AM",
 	weight 		= 1200,

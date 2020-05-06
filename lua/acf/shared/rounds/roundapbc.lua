@@ -5,9 +5,9 @@ AddCSLuaFile()
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APBC) Armour Piercing Ballistic Capped" --Human readable name
+Round.name = "(APBC) "..ACFTranslation.ShellAPBC[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell made out of a solid piece of steel, meant to penetrate armour. Has a ballistic cap and has better drag performance than its uncapped counterpart."
+Round.desc = ACFTranslation.ShellAPBC[2]
 Round.netid = 18 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

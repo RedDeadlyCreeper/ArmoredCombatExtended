@@ -211,9 +211,15 @@ r100
 - Buff Spaced Armor
 - made all engines parentable
 
-*r118
+*r119
 -Fixed HESH Mechanics
 -Redid normalization code slightly
 -Made HEAT jets slower
 -Fixed Refill invalid ammo on cookoff
 -Fixed minimum ammo link distance bug
+
+*r120
+-Added support for translation packs, these are installed clientside and translate the most of the ACF menu content for the players.
+-Removed broken ECM jammers
+-Made armor of players lower
+-Reduced accuracy of AWP

@@ -2,7 +2,7 @@
 ACF_defineGunClass("SC", {
 	spread = 0.25,
 	name = "Short-Barrel Cannon",
-	desc = "Short cannons trade muzzle velocity and accuracy for lighter weight and smaller size, with more penetration than howitzers and lighter than cannons.",
+	desc = ACFTranslation.GunClasses[13],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.3,
 	year = 1915,

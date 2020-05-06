@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.APHE = { "ATR", "MO", "RM", "RAC", "SL", "GL", "MG", "BOMB" , 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APHE) Armour Piercing High Explosive" --Human readable name
+Round.name = "(APHE) "..ACFTranslation.ShellAPFSDSS[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "An armour piercing round with a cavity for High explosives. Less capable of defeating armour than plain Armour Piercing, but will explode after penetration"
+Round.desc = ACFTranslation.ShellAPFSDSS[2]
 Round.netid = 5 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

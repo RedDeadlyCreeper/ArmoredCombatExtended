@@ -2,7 +2,7 @@
 ACF_defineGunClass("AL", {
 	spread = 0.1,
 	name = "Autoloader",
-	desc = "A cannon with attached autoloading mechanism.  While it allows for several quick shots, the mechanism adds considerable bulk, weight, and magazine reload time.",
+	desc = ACFTranslation.GunClasses[3],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 0.64,
 	year = 1946,

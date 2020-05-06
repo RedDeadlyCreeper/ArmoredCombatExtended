@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.APDS =  { "ATR", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APDS-LRP) Long Rod Armour Piercing Discarding Sabot" --Human readable name
+Round.name = "(APDS-LRP) "..ACFTranslation.ShellAPDS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
-Round.desc = "A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Unlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material."
+Round.desc = ACFTranslation.ShellAPDS[2]
 Round.netid = 9 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

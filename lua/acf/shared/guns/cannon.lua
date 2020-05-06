@@ -2,7 +2,7 @@
 ACF_defineGunClass("C", {
 	spread = 0.1,
 	name = "Cannon",
-	desc = "High velocity guns that can fire very powerful ammunition, but are rather slow to reload.",
+	desc = ACFTranslation.GunClasses[4],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.5,
 	sound = "weapons/ACF_Gun/cannon_new.wav",

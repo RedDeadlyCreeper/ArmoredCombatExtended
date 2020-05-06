@@ -1,7 +1,7 @@
 
 ACF_DefineRadarClass("DIR-AM", {
 	name = "Directional Anti-missile Radar",
-	desc = "A radar with unlimited range but a limited view cone.  Only detects launched missiles.\nThese can be parented to what they are welded to.",
+	desc = ACFTranslation.Radar[1],
 } )
 
 
@@ -10,7 +10,7 @@ ACF_DefineRadarClass("DIR-AM", {
 ACF_DefineRadar("SmallDIR-AM", {
 	name 		= "Small Directional Radar",
 	ent			= "acf_missileradar",
-	desc 		= "A lightweight directional radar with a smaller view cone.",
+	desc 		= ACFTranslation.Radar[2],
 	model		= "models/radar/radar_sml.mdl",
 	class 		= "DIR-AM",
 	weight 		= 200,
@@ -21,7 +21,7 @@ ACF_DefineRadar("SmallDIR-AM", {
 ACF_DefineRadar("MediumDIR-AM", {
 	name 		= "Medium Directional Radar",
 	ent			= "acf_missileradar",
-	desc 		= "A directional radar with a regular view cone.",
+	desc 		= ACFTranslation.Radar[3],
 	model		= "models/radar/radar_mid.mdl", -- medium one is for now scalled big one - will be changed
 	class 		= "DIR-AM",
 	weight 		= 400,
@@ -32,7 +32,7 @@ ACF_DefineRadar("MediumDIR-AM", {
 ACF_DefineRadar("LargeDIR-AM", {
 	name 		= "Large Directional Radar",
 	ent			= "acf_missileradar",
-	desc 		= "A heavy directional radar with a large view cone.",
+	desc 		= ACFTranslation.Radar[4],
 	model		= "models/radar/radar_big.mdl",
 	class 		= "DIR-AM",
 	weight 		= 600,

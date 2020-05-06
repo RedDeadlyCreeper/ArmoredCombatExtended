@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.THEATFS = { "C","MG", "Al","HMG" ,"RAC", "SC","ATR" , "MO" , "
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(THEAT-FS) Tandem High Explosive Anti-Tank Fin-Stabilized" --Human readable name
+Round.name = "(THEAT-FS) "..ACFTranslation.THEATFS[1] --Human readable name
 Round.model = "models/munitions/round_100mm_mortar_shot.mdl" --Shell flight model
-Round.desc = "A shell with multiple shaped charges. Similar to HEAT the explosive charge accelerates a molten jet to penetrate armor, unlike typical HEAT when the jet fails to penetrate a second charge will detonate and finish the job. This makes this form of ammo exceptional against special armor types like ERA"
+Round.desc = ACFTranslation.THEATFS[2]
 Round.netid = 19 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

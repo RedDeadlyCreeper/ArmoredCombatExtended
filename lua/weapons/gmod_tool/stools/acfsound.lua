@@ -8,9 +8,9 @@ TOOL.ConfigName		= ""
 
 TOOL.ClientConVar["pitch"] = "1"
 if CLIENT then
-	language.Add( "Tool.acfsound.name", "ACF Sound Replacer" )
-	language.Add( "Tool.acfsound.desc", "Change sound of guns/engines." )
-	language.Add( "Tool.acfsound.0", "Left click to apply sound. Right click to copy sound. Reload to set default sound. Use an empty sound path to disable sound." )
+	language.Add( "Tool.acfsound.name", ACFTranslation.SoundToolText[1] )
+	language.Add( "Tool.acfsound.desc", ACFTranslation.SoundToolText[2] )
+	language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
 end
 
 
@@ -98,9 +98,9 @@ local function IsReallyValid(trace, ply)
 	if not ACF.SoundToolSupport[class] then 
 	
 		if string.StartWith(class, "acf_") then
-			ACF_SendNotify( ply, false, class .. " is not supported by the sound tool!" )
+			ACF_SendNotify( ply, false, class .. ACFTranslation.SoundToolText[4] )
 		else
-			ACF_SendNotify( ply, false, "Only ACF entities are supported by the ACF sound tool!" )
+			ACF_SendNotify( ply, false, ACFTranslation.SoundToolText[5] )
 		end
 		
 		return false
@@ -235,7 +235,7 @@ function TOOL.BuildCPanel(panel)
     SoundPitch:SetDecimals( 0.1 )
 	SoundPitch:SetWide(wide)
 	SoundPitch:SetText("Pitch:")
-	SoundPitch:SetToolTip("Works only for engines")
+	SoundPitch:SetToolTip(ACFTranslation.SoundToolText[6])
 	SoundPitch:SetConVar( "acfsound_pitch" )
 	SoundPitch:SetValue( 1 )
 	panel:AddItem(SoundPitch)

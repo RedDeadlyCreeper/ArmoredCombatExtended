@@ -2,7 +2,7 @@
 ACF_defineGunClass("MG", {
 	spread = 0.16,
 	name = "Machinegun",
-	desc = "Machineguns are light guns that fire equally light bullets at a fast rate.",
+	desc = ACFTranslation.GunClasses[9],
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.9,
 	year = 1910,

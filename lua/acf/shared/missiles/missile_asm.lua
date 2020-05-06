@@ -4,7 +4,7 @@ ACF_defineGunClass("ASM", {
     type            = "missile",
 	spread          = 1,
 	name            = "(Missile) Air-To-Surface Missile",
-	desc            = "Missiles specialized for air-to-surface operation. These missiles are heavier than air-to-air missiles and may only be wire or laser guided.",
+	desc            = ACFTranslation.MissileClasses[3],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	year = 1969,
 	rofmod          = 1,

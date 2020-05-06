@@ -2,7 +2,7 @@
 ACF_defineGunClass("HW", {
 	spread = 0.15,
 	name = "Howitzer",
-	desc = "Howitzers are limited to rather mediocre muzzle velocities, but can fire extremely heavy projectiles with large useful payload capacities.",
+	desc = ACFTranslation.GunClasses[8],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.3,
 	year = 1900,

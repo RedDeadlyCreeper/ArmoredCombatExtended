@@ -6,9 +6,9 @@ ACF.AmmoBlacklist.SM = { "MG", "C", "GL", "HMG", "AL", "AC", "RAC", "SA", "SC" ,
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(SM) Smoke" --Human readable name
+Round.name = "(SM) "..ACFTranslation.ShellSm[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "A shell filled white phosporous, detonating on impact. Smoke filler produces a long lasting cloud but takes a while to be effective, whereas WP filler quickly creates a cloud that also dissipates quickly. \n\n Can only be used in the 40mm Smoke Launcher"
+Round.desc = ACFTranslation.ShellSm[2]
 Round.netid = 6 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )

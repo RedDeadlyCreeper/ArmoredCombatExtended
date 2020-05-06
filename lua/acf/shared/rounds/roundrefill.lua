@@ -4,9 +4,9 @@ AddCSLuaFile()
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "Refill" --Human readable name
+Round.name = ACFTranslation.ShellRef[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
-Round.desc = "Ammo Refill"
+Round.desc = ACFTranslation.ShellRef[2]
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )

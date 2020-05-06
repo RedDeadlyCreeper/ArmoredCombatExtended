@@ -50,10 +50,10 @@ end
 
 if CLIENT then
 
-	language.Add( "tool.acfarmorprop.name", "ACF Armor Properties" )
-	language.Add( "tool.acfarmorprop.desc", "Sets the weight of a prop by desired armor thickness, ductility, and material." )
-	language.Add( "tool.acfarmorprop.0", "Left click to apply settings.  Right click to copy settings.  Reload to get the total mass of an object and all constrained objects." )
-	
+	language.Add( "tool.acfarmorprop.name", ACFTranslation.ArmorPropertiesText[1] )
+	language.Add( "tool.acfarmorprop.desc", ACFTranslation.ArmorPropertiesText[2] )
+	language.Add( "tool.acfarmorprop.0", ACFTranslation.ArmorPropertiesText[3] )
+--	print(ACFTranslation.ArmorPropertiesText[1])
 	function TOOL.BuildCPanel( panel )
 		
 		local Presets = vgui.Create( "ControlPresets" )
@@ -65,14 +65,14 @@ if CLIENT then
 			Presets:SetPreset( "acfarmorprop" )
 		panel:AddItem( Presets )
 		
-		panel:NumSlider( "Thickness", "acfarmorprop_thickness", 1, 5000 )
-		panel:ControlHelp( "Set the desired armor thickness (in mm) and the mass will be adjusted accordingly." )
+		panel:NumSlider( ACFTranslation.ArmorPropertiesText[4], "acfarmorprop_thickness", 1, 5000 )
+		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[5] )
 		
-		panel:NumSlider( "Ductility", "acfarmorprop_ductility", -80, 80 )
-		panel:ControlHelp( "Set the desired armor ductility (thickness-vs-health bias).\n\nA ductile prop can survive more damage but is penetrated more easily (slider > 0).\n\nA non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0)." )
+		panel:NumSlider( ACFTranslation.ArmorPropertiesText[6], "acfarmorprop_ductility", -80, 80 )
+		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[7] )
 		if ACF.EnableNewContent and ACF.Year >= 1955 then		
-		panel:NumSlider( "Material", "acfarmorprop_material", 0, 6 )
-		panel:ControlHelp( "Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\nRolled Steel that does not have any special traits, your standard ACF armor\n(1)Cast\nHeavier and softer than RHA but takes less damage\n(2)Ceramic\nLight plate that is lighter and more resiliant to penetration but is very brittle and hates being penetrated\n(3)Rubber\nRubber is effective vs heat jets and spall but does almost nothing to kinetic rounds\n(4)ERA\nERA is heavier than RHA,when penetrated it explodes damaging nearby props and the shell that hit it\n(5)Aluminum\nLighter than steel but very vulnerable to HEAT and spalling\n(6)Textolite\nFiberglass like material that isn't effective vs kinetic but is good vs HEAT and HE\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel.\n" )
+		panel:NumSlider( ACFTranslation.ArmorPropertiesText[8], "acfarmorprop_material", 0, 6 )
+		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[9] )
 		end
 	end
 	
@@ -281,11 +281,11 @@ function TOOL:Reload( trace )
 	else
 		pwr = pwr .. math.Round(data.Power / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power) .. " hp"
 		if data.Fuel == 1 then
-			pwr = pwr .. "\n" .. math.Round(data.Power * 1.25 / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power * 1.25) .. " hp with fuel"
+			pwr = pwr .. "\n" .. math.Round(data.Power * 1.25 / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power * 1.25) .. " hp "..ACFTranslation.ArmorPropertiesText[10]
 		end
 	end
 	
-	self:GetOwner():ChatPrint( "Total mass is " .. total .. " kg  ("..phystotal.." kg physical, "..parenttotal.." kg parented, "..physratio.."% physical)"..pwr )
+	self:GetOwner():ChatPrint( ACFTranslation.ArmorPropertiesText[11] .. total .. " kg  ("..phystotal.." kg "..ACFTranslation.ArmorPropertiesText[12]..", "..parenttotal.." kg "..ACFTranslation.ArmorPropertiesText[13]..", "..physratio.."% "..ACFTranslation.ArmorPropertiesText[12]..")"..pwr )
 	
 end
 
@@ -347,17 +347,17 @@ function TOOL:DrawHUD()
 	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , material)
 	mass = math.min( mass, 50000 )
 	
-	local text = "Current:\nMass: " .. math.Round( curmass, 2 )
-	text = text .. "\nArmor: " .. math.Round( curarmor, 2 )
-	text = text .. "\nHealth: " .. math.Round( curhealth, 2 )
+	local text = ACFTranslation.ArmorPropertiesText[14] .. math.Round( curmass, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( curarmor, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( curhealth, 2 )
 	if ACF.EnableNewContent and ACF.Year >= 1955 then
-	text = text .. "\nMaterial: " .. curmat 
+	text = text .. ACFTranslation.ArmorPropertiesText[17] .. curmat 
 	end
-	text = text .. "\nAfter:\nMass: " .. math.Round( mass, 2 )
-	text = text .. "\nArmor: " .. math.Round( armor, 2 )
-	text = text .. "\nHealth: " .. math.Round( health, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[18] .. math.Round( mass, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( armor, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( health, 2 )
 	if ACF.EnableNewContent and ACF.Year >= 1955 then
-	text = text .. "\nMaterial: " .. material 
+	text = text .. ACFTranslation.ArmorPropertiesText[17] .. material 
 	end
 	
 	local pos = ent:GetPos()
@@ -386,7 +386,7 @@ function TOOL:DrawToolScreen( w, h )
 		surface.SetFont( "Torchfont" )
 		
 		-- header
-		draw.SimpleTextOutlined( "ACF Stats", "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[19], "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 		
 		-- armor bar
 		draw.RoundedBox( 6, 10, 83, 236, 64, Color( 200, 200, 200, 255 ) )
@@ -394,7 +394,7 @@ function TOOL:DrawToolScreen( w, h )
 			draw.RoundedBox( 6, 15, 88, Armour / MaxArmour * 226, 54, Color( 0, 0, 200, 255 ) )
 		end
 		
-		draw.SimpleTextOutlined( "Armour", "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[20], "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 		draw.SimpleTextOutlined( ArmourTxt, "Torchfont", 128, 130, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 		
 		-- health bar
@@ -403,7 +403,7 @@ function TOOL:DrawToolScreen( w, h )
 			draw.RoundedBox( 6, 15, 188, Health / MaxHealth * 226, 54, Color( 200, 0, 0, 255 ) )
 		end
 		
-		draw.SimpleTextOutlined( "Health", "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[21], "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 		draw.SimpleTextOutlined( HealthTxt, "Torchfont", 128, 230, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 	cam.End2D()
 	
