@@ -507,8 +507,9 @@ function ENT:Think()
 		if self.Ammo <= 1 or self.Damaged < CurTime() then -- immediately detonate if there's 1 or 0 shells
 			ACF_ScaledExplosion( self ) -- going to let empty crates harmlessly poot still, as an audio cue it died
 		else
-			if not (self.BulletData.Type == "Refill") then
-				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[self.BulletData.Type] then
+			CrateType = self.BulletData.Type or "Refill"
+			if not (CrateType == "Refill") then
+				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
 					self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
 					local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
@@ -517,7 +518,7 @@ function ENT:Think()
 					self.BulletData.Owner = self.Inflictor or self.Owner
 					self.BulletData.Gun = self
 					self.BulletData.Crate = self:EntIndex()
-					self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
+					self.CreateShell = ACF.RoundTypes[CrateType].create
 					self:CreateShell( self.BulletData )
 					
 					self.Ammo = self.Ammo - 1
@@ -541,7 +542,7 @@ function ENT:Think()
 							self:RefillEffect( Ammo )
 						end
 								
-						local Supply = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*1000))*self:GetPhysicsObject():GetMass()^1.1)
+						local Supply = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*500))*self:GetPhysicsObject():GetMass()^1.1)
 						--Msg(tostring(50000).."/"..((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*1000).."/"..dist.."="..Supply.."\n")
 						local Transfert = math.min(Supply, Ammo.Capacity - Ammo.Ammo)
 						Ammo.Ammo = Ammo.Ammo + Transfert

@@ -123,3 +123,54 @@ ACF_DefineEngine( "13.0-V12", {
 	peakmaxrpm = 4000,
 	limitrpm = 4250
 } )
+
+ACF_DefineEngine( "V-2-34", {
+	name = "V-2-34",
+	desc = "Old engine. Used in T34.",
+	model = "models/engines/v8l.mdl",
+	sound = "acf_engines/v12_dieselmedium.wav",
+	category = "V12",
+	fuel = "Diesel",
+	enginetype = "GenericDiesel",
+	weight = 1050,
+	torque = 870,
+	flywheelmass = 2.7,
+	idlerpm = 675,
+	peakminrpm = 1100,
+	peakmaxrpm = 3300,
+	limitrpm = 3500
+} )
+
+ACF_DefineEngine( "AVDS-1790-9A", {
+	name = "AVDS-1790-9A",
+	desc = "AVDS-1790-9A tank engine; massively powerful, but enormous and heavy",
+	model = "models/engines/v12l.mdl",
+	sound = "acf_extra/vehiclefx/engines/gnomefather/m60.wav",
+	category = "V12",
+	fuel = "Diesel",
+	enginetype = "GenericDiesel",
+	weight = 2100,
+	torque = 3600,
+	flywheelmass = 7,
+	idlerpm = 500,
+	peakminrpm = 650,
+	peakmaxrpm = 1900,
+	limitrpm = 2800
+} )
+
+ACF_DefineEngine( "AVDS-1790-1500", {
+	name = "AVDS-1790-1500",
+	desc = "AVDS-1790-1500 tank engine; massively powerful, but enormous and heavy",
+	model = "models/engines/v12l.mdl",
+	sound = "acf_extra/vehiclefx/engines/gnomefather/m60.wav",
+	category = "V12",
+	fuel = "Diesel",
+	enginetype = "GenericDiesel",
+	weight = 2850,
+	torque = 4073,
+	flywheelmass = 6.6,
+	idlerpm = 500,
+	peakminrpm = 650,
+	peakmaxrpm = 2100,
+	limitrpm = 2800
+} )

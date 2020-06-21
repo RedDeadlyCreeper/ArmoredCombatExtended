@@ -137,3 +137,23 @@ ACF_DefineEngine( "Electric-Large-NoBatt", {
 	iselec = true,
 	flywheeloverride = 6000
 } )
+
+ACF_DefineEngine( "Induction motor, small", {
+	name = "Induction motor, small",
+	desc = "A small electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy.\n\nStandalone electric motors don't have integrated batteries, saving on weight and volume, but require you to supply your own batteries.",
+	model = "models/engines/emotor-standalone-sml.mdl",
+	sound = "acf_engines/electric_small.wav",
+	category = "Electric",
+	fuel = "Electric",
+	enginetype = "Electric",
+	requiresfuel = true,
+	weight = 250, --250
+	torque = 500,
+	flywheelmass = 0.3,
+	idlerpm = 40,
+	peakminrpm = 1,
+	peakmaxrpm = 1,
+	limitrpm = 6500,
+	iselec = true,
+	flywheeloverride = 4750
+} )

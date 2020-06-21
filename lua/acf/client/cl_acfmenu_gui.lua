@@ -1,4 +1,3 @@
-
 function PANEL:Init( )
 
 	acfmenupanel = self.Panel
@@ -6,7 +5,7 @@ function PANEL:Init( )
 	// height
 	
 	
-	self:SetTall( surface.ScreenHeight() - 120 )
+	self:SetTall( surface.ScreenHeight() - 150 )
 	
 	//Weapon Select	
 	
@@ -90,13 +89,16 @@ function PANEL:Init( )
 		
 	end
 	
-	local Mobility = self.WeaponSelect:AddNode( "Mobility" )
-	local Engines = Mobility:AddNode( "Engines" )
+	local Mobility = self.WeaponSelect:AddNode( "Mobility" )	
 	local Gearboxes = Mobility:AddNode( "Gearboxes" )
 	local FuelTanks = Mobility:AddNode( "Fuel Tanks" )
+	local Engines = Mobility:AddNode("Engines")
 	local EngineSubcats = {}
+        
 	for _, MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
-		NodeAdd = Mobility
+		local Categories = EngineSubcats
+		local NodeAdd = Mobility
+
 		if( MobilityTable.ent == "acf_engine" ) then
 			NodeAdd = Engines
 		elseif ( MobilityTable.ent == "acf_gearbox" ) then
@@ -104,27 +106,44 @@ function PANEL:Init( )
 		elseif ( MobilityTable.ent == "acf_fueltank" ) then
 			NodeAdd = FuelTanks
 		end
-		if((EngineSubcats["misce"] == nil) and (EngineSubcats["miscg"] == nil)) then
-			EngineSubcats["misce"] = Engines:AddNode( "Miscellaneous" )
-			EngineSubcats["miscg"] = Gearboxes:AddNode( "Miscellaneous" )
+
+		if not Categories["miscg"] then
+			Categories["miscg"] = Gearboxes:AddNode("Miscellaneous")
 		end
-		if(MobilityTable.category) then
-			if(!EngineSubcats[MobilityTable.category]) then
-				EngineSubcats[MobilityTable.category] = NodeAdd:AddNode( MobilityTable.category )
+
+		if MobilityTable.fuel then
+			local Category = Categories[MobilityTable.fuel]
+			
+			if not Category then
+				local Node = NodeAdd:AddNode(MobilityTable.fuel)
+			
+				Category = {
+					_Node = Node,
+					Default = Node:AddNode("Miscellaneous")
+				}
+				
+				Categories[MobilityTable.fuel] = Category
 			end
+		
+			Categories = Category
+			NodeAdd = Category._Node
+		end
+		
+		if MobilityTable.category and not Categories[MobilityTable.category] then
+			Categories[MobilityTable.category] = NodeAdd:AddNode(MobilityTable.category)
 		end
 	end
+                
 	
 	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
 		
 		local NodeAdd = Mobility
 		if MobilityTable.ent == "acf_engine" then
-			NodeAdd = Engines
-			if(MobilityTable.category) then
-				NodeAdd = EngineSubcats[MobilityTable.category]
-			else
-				NodeAdd = EngineSubcats["misce"]
-			end
+			local FuelCategory = EngineSubcats[MobilityTable.fuel]
+			local Category = MobilityTable.category
+			local Node = Category and FuelCategory[Category] or FuelCategory.Default
+			
+			NodeAdd = Node
 		elseif MobilityTable.ent == "acf_gearbox" then
 			NodeAdd = Gearboxes
 			if(MobilityTable.category) then

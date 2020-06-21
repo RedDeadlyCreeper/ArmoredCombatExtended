@@ -87,7 +87,7 @@ function ACF_Activate ( Entity , Recalc )
 		elseif testMaterial == 4 then --ERA
 			massMod = 2
 		elseif testMaterial == 5 then --Aluminum
-			massMod = 0.35
+			massMod = 0.221
 		elseif testMaterial == 6 then --Textolite
 		massMod = 0.35
 		end

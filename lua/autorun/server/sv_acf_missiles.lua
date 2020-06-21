@@ -155,7 +155,6 @@ ACF.FillerDensity =
 {
     SM =    2000,
     HE =    1000,
-    HEP =    1000,
     HESH =    1000,
     HP =    1,
     HEAT =  1450,
@@ -241,7 +240,7 @@ function ResetVelocity.HEAT(bdata)
     
     bdata.Flight:Normalize()
     
-    local penmul = bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2
+    local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
     
     bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
     bdata.NotFirstPen = false
@@ -260,7 +259,7 @@ function ResetVelocity.THEAT(bdata)
 	
     bdata.Flight:Normalize()
     
-    local penmul = bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2
+    local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
     
 	
 	

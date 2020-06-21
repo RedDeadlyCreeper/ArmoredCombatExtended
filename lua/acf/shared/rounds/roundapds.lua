@@ -228,15 +228,21 @@ function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 
 	local NormieMult = 1
 	local Mat = Target.ACF.Material or 0
-	if Mat == 3 then
-	NormieMult = 0.05
-	elseif Mat == 6 then
-	NormieMult=0.5
-	end
+	if Mat == 1 then
+		NormieMult = 0.8
+		elseif Mat == 2 then
+		NormieMult = 1.5
+		elseif Mat == 3 then
+		NormieMult = 0.05
+		elseif Mat == 5 then
+		NormieMult = 0.7	
+		elseif Mat == 6 then
+		NormieMult=0.5
+		end
 	
 	Bullet.Normalize = false
 	Bullet.Pos = HitPos
-	local FlightNormal = Bullet.Flight:GetNormalized() + (Bullet.Flight:GetNormalized()-HitNormal) * ACF.NormalizationFactor * NormieMult * 2
+	local FlightNormal = Bullet.Flight:GetNormalized() - (Bullet.Flight:GetNormalized()-HitNormal) * ACF.NormalizationFactor * NormieMult * 2
 	local Speed = Bullet.Flight:Length()
 --	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
 	Bullet.Flight = FlightNormal * Speed

@@ -91,11 +91,11 @@ function Round.convert( Crate, PlayerData )
 	Data.SlugCaliber =    Data.Caliber - Data.Caliber * (math.sin(Rad)*0.5+math.cos(Rad)*1.5)/2
 	Data.SlugCaliber2 =  Data.Caliber - Data.Caliber * (math.sin(Rad2)*0.5+math.cos(Rad2)*1.5)/2
 	Data.HEAllocation = GUIData.HEAllocation
-	Data.SlugMV =  ( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMV =  1.3*( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
 	Data.SlugMass = Data.SlugMass*4^2
 	Data.SlugMV = Data.SlugMV/4
 
-	Data.SlugMV2 = ( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMV2 = 1.3*( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
 	Data.SlugMass2 = Data.SlugMass2*4^2
 	Data.SlugMV2 = Data.SlugMV2/4
 

@@ -128,7 +128,7 @@ ACF_defineGun("SPG-9 ASR", { --id
         dragcoefflight  = 0.05,                 -- drag coefficient during flight
         dragcoef	= 0.001,		-- drag coefficient while falling
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(4.5)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(2.5)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 
 		},
 

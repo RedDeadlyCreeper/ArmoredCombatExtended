@@ -278,3 +278,26 @@ ACF_DefineEngine( "(+)Turbine-Small-SuperAero", {
 	pitch = 0.7,
 	flywheeloverride = 12000
 } )
+
+
+
+ACF_DefineEngine( "AGT 1500 Large Turbine", {
+	name = "AGT 1500 Large Turbine",
+	desc = "A large gas turbine, powerful with a wide powerband\n\nThese turbines are optimized for aero use, but can be used in other specialized roles, being powerful but suffering from poor throttle response and fuel consumption.",
+	model = "models/engines/gasturbine_l.mdl",
+	sound = "acf_extra/vehiclefx/engines/abrams.wav",
+	category = "Turbine",
+	fuel = "Multifuel",
+	enginetype = "Turbine",
+	requiresfuel = true,
+	weight = 2500,
+	torque = 2203,
+	flywheelmass = 10.5,
+	idlerpm = 2000,
+	peakminrpm = 1350,
+	peakmaxrpm = 2025,
+	limitrpm = 13500,
+	iselec = true,
+        pitch = 1.3,
+	flywheeloverride = 5300
+} )
