@@ -45,7 +45,7 @@ ACF_defineGun("AGM-114 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.02,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(7.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(4.55)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -87,7 +87,7 @@ ACF_defineGun("AGM-45 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0,                 -- drag coefficient during flight
 		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.75)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -129,7 +129,7 @@ ACF_defineGun("AGM-122 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.001,                 -- drag coefficient during flight
 		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(1.1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.

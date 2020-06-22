@@ -47,7 +47,7 @@ ACF_defineGun("RS82 ASR", { --id
         dragcoef	= 0.002,		-- drag coefficient while falling
         dragcoefflight  = 0.025,                 -- drag coefficient during flight
 		finmul		= 0.008,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6.63)  	--  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	--  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -88,7 +88,7 @@ ACF_defineGun("HVAR ASR", { --id
         dragcoef	= 0.002,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 		finmul		= 0.01,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6.25)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(2.2)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -128,7 +128,7 @@ ACF_defineGun("SPG-9 ASR", { --id
         dragcoefflight  = 0.05,                 -- drag coefficient during flight
         dragcoef	= 0.001,		-- drag coefficient while falling
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(2.5)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1.1)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 
 		},
 
@@ -169,7 +169,7 @@ ACF_defineGun("S-24 ASR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -209,7 +209,7 @@ ACF_defineGun("Zuni ASR", { --id
 		dragcoef	= 0.0001,
 		dragcoefflight = 0.001,
 		finmul		= 0.0001,
-		penmul		= math.sqrt(2)
+		penmul		= math.sqrt(1)
 	},
 	ent			= "acf_missile_to_rack",
 	guidance	= {"Dumb"},
