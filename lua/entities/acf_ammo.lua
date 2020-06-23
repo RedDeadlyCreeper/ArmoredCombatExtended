@@ -360,10 +360,10 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	end
 	
 	--Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
-	self.RoundId = Data1		--Weapon this round loads into, ie 140mmC, 105mmH ...
-	self.RoundType = Data2		--Type of round, IE AP, HE, HEAT ...
-	self.RoundPropellant = Data3--Lenght of propellant
-	self.RoundProjectile = Data4--Lenght of the projectile
+	self.RoundId = ( Data1 or 1	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
+	self.RoundType = ( Data2 or "AP"	) --Type of round, IE AP, HE, HEAT ...
+	self.RoundPropellant = ( Data3 or 0 )--Lenght of propellant
+	self.RoundProjectile = ( Data4 or 0 )--Lenght of the projectile
 	self.RoundData5 = ( Data5 or 0 )
 	self.RoundData6 = ( Data6 or 0 )
 	self.RoundData7 = ( Data7 or 0 )
@@ -377,21 +377,21 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.RoundData15 = ( Data15 or 0 )
 	
 	local PlayerData = {}
-		PlayerData.Id = self.RoundId
-		PlayerData.Type = self.RoundType
-		PlayerData.PropLength = self.RoundPropellant
-		PlayerData.ProjLength = self.RoundProjectile
-		PlayerData.Data5 = self.RoundData5
-		PlayerData.Data6 = self.RoundData6
-		PlayerData.Data7 = self.RoundData7
-		PlayerData.Data8 = self.RoundData8
-		PlayerData.Data9 = self.RoundData9
-		PlayerData.Data10 = self.RoundData10
-		PlayerData.Data11 = self.RoundData11	
-		PlayerData.Data12 = self.RoundData12	
-		PlayerData.Data13 = self.RoundData13	
-		PlayerData.Data14 = self.RoundData14	
-		PlayerData.Data15 = self.RoundData15
+		PlayerData.Id = self.RoundId or 0
+		PlayerData.Type = self.RoundType or "AP"
+		PlayerData.PropLength = self.RoundPropellant or 0
+		PlayerData.ProjLength = self.RoundProjectile or 0
+		PlayerData.Data5 = self.RoundData5 or 0
+		PlayerData.Data6 = self.RoundData6 or 0
+		PlayerData.Data7 = self.RoundData7 or 0
+		PlayerData.Data8 = self.RoundData8 or 0
+		PlayerData.Data9 = self.RoundData9 or 0
+		PlayerData.Data10 = self.RoundData10 or 0
+		PlayerData.Data11 = self.RoundData11 or 0	
+		PlayerData.Data12 = self.RoundData12 or 0	
+		PlayerData.Data13 = self.RoundData13 or 0	
+		PlayerData.Data14 = self.RoundData14 or 0	
+		PlayerData.Data15 = self.RoundData15 or 0
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
 	

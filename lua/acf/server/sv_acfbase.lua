@@ -172,7 +172,7 @@ end
 function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	local armor    = Entity.ACF.Armour								-- Armor
 	local losArmor = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )  -- LOS Armor	
-	local losArmorHealth = armor * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )  -- Bc people had to abuse armor angling, FML	
+	local losArmorHealth = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )  -- Bc people had to abuse armor angling, FML	
 --	local losArmorHealth = losArmor
 
 --	local ductilitymult    = math.max((-5/16)*(Entity.ACF.Ductility or 1)*100+1,1)
@@ -214,6 +214,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 --	print("Damage mult from type: "..damageMult)	
 		
 	if testMaterial == 0 then --RHA	
+		armor = armor^ACF.CurveRHA
+		losArmor = losArmor^ACF.CurveRHA
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
 		local HitRes = {}
@@ -272,6 +274,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	
 		return HitRes
 	elseif testMaterial == 1 then --Cast	
+		armor = armor^ACF.CurveCast
+		losArmor = losArmor^ACF.CurveCast
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
 		local HitRes = {}
@@ -330,6 +334,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	
 		return HitRes
 	elseif testMaterial == 2 then --Ceramic	
+		armor = armor^ACF.CurveCeram
+		losArmor = losArmor^ACF.CurveCeram
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
 		local HitRes = {}
@@ -342,6 +348,9 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 				dmul = 0
 			end
 		end
+
+		dmul = 1+((Type=="HE")*9)
+
 		--SITP Stuff
 		--TODO: comment out ISSITP when not necessary
 		local var = 1
@@ -389,6 +398,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		return HitRes
 	
 	elseif testMaterial == 3 then --Rubber	
+		armor = armor^ACF.RubbCurve
+		losArmor = losArmor^ACF.RubbCurve
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
 		local HitRes = {}
@@ -514,7 +525,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		end
 		
 	elseif testMaterial == 4 then --ERA	
-	
+
 		local blastArmor = armor
 		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
 		blastArmor = ACF.ERAEffectivenessMultHEAT * armor
@@ -575,6 +586,9 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			return HitRes
 		end
 	elseif testMaterial == 5 then --Aluminum	
+		armor = armor^ACF.AluminumCurve
+		losArmor = losArmor^ACF.AluminumCurve
+
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
 		local DamageModifier = 1
@@ -644,6 +658,9 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			return HitRes
 
 	elseif testMaterial == 6 then --Textolite	
+		armor = armor^ACF.TextoliteCurve
+		losArmor = losArmor^ACF.TextoliteCurve
+	
 		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
 	
 		local HitRes = {}

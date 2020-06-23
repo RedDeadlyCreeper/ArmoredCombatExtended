@@ -646,7 +646,7 @@ if ((self.ACF.Health/self.ACF.MaxHealth) < 0.95) then
 	self:EmitSound(Sound("acf_extra/tankfx/guns/20mm_0"..math.random(1,5)..".wav"),100, 70+math.random(-10,10))	
 	end
 
-	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5),Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)} , 2 , 0 , self.Owner )
+	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100,Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100} , 2 , 0 , self.Owner )
 
 			if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)

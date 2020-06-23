@@ -86,7 +86,7 @@ function Round.convert( Crate, PlayerData )
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * (math.min(PlayerData.Data5,Data.MaxCalMult))^2
-	Data.ProjMass = Data.SubFrAera * ((Data.ProjLength*7.9/1000*0.75) * 0.8+(Data.ProjLength*7.9/1000*0.25) * 2.5 * 0.8) --Volume of the projectile as a cylinder * density of steel, the first part is the steel projectile holder mass and the second is the subcaliber mass.
+	Data.ProjMass = Data.SubFrAera * ((Data.ProjLength*7.9/1000*0.75) * 0.95 +(Data.ProjLength*7.9/1000*0.25) * 2.5 * 0.95) --Volume of the projectile as a cylinder * density of steel, the first part is the steel projectile holder mass and the second is the subcaliber mass.
 	Data.ShovePower = 0.2
 	Data.PenAera = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod	
 	

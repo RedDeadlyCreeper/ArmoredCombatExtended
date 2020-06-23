@@ -306,9 +306,11 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	SpallMul = ACF.TextoliteSpallMult
 	end
 --	print("CMod: "..Caliber*4) 
-	
-	if SpallMul > 0 and Caliber*4.3 > Armour then
-	print(Caliber)
+
+--	print(HEFiller)
+
+	if SpallMul > 0 and HEFiller/1501 > Armour then
+
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
 	local Spall = math.min(math.floor((Caliber-3)*2*ACF.KEtoSpall*SpallMul),60)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35

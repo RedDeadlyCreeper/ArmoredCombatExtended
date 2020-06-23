@@ -74,7 +74,7 @@ function Round.convert( Crate, PlayerData )
 	local ConeVol2 = ConeAera2 * ConeThick
 		
 	GUIData.MinFillerVol = 0
-	GUIData.MaxFillerVol = math.max(MaxVol -  AirVol - ConeVol,GUIData.MinFillerVol)*0.9
+	GUIData.MaxFillerVol = math.max(MaxVol -  AirVol - ConeVol,GUIData.MinFillerVol)*0.95
 	GUIData.FillerVol = math.Clamp(PlayerData.Data5,GUIData.MinFillerVol,GUIData.MaxFillerVol)
 	
 	Data.FillerMass = GUIData.FillerVol * ACF.HEDensity/1450

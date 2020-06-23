@@ -38,8 +38,8 @@ ACF.CastResilianceFactor = 35 --Higher = less damage, Lower = more damage. 2x = 
 ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CeramicResilianceFactor = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.CeramicPierceDamage = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-
-ACF.RubberEffectiveness = 0.01
+	
+ACF.RubberEffectiveness = 0.05
 ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberResilianceFactorCatch = 0.05 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
 ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
@@ -72,6 +72,16 @@ ACF.HEATDamageMult = 1.5
 ACF.HEDamageMult = 2
 ACF.HESHDamageMult = 1
 ACF.HPDamageMult = 4
+
+--Material thickness exponential curves, implemented to reduce high thickness memes.
+--Higher thickness plates take less damage. Enjoy balancing the two.
+ACF.CurveRHA = 0.99
+ACF.CurveCast = 0.97
+ACF.CurveCeram = 0.95
+ACF.RubbCurve = 0.90
+ACF.AluminumCurve = 0.96
+ACF.TextoliteCurve = 0.94
+
 
 
 ACF.HEDamageFactor = 50
@@ -194,7 +204,7 @@ end
 
 CreateConVar('sbox_max_acf_gun', 24)
 CreateConVar('sbox_max_acf_rapidgun', 4) --Guns like RACs, MGs, and ACs
-CreateConVar('sbox_max_acf_largegun', 3) --Guns with a caliber above 100mm
+CreateConVar('sbox_max_acf_largegun', 2) --Guns with a caliber above 100mm
 ACF.LargeCaliber = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 CreateConVar('sbox_max_acf_smokelauncher', 20)
 CreateConVar('sbox_max_acf_ammo', 50)
@@ -278,6 +288,7 @@ if ACF.Year > 1939 then --A surprising amount of things were made during WW2
 include("acf/shared/rounds/roundhesh.lua")
 include("acf/shared/rounds/roundheat.lua")
 include("acf/shared/rounds/roundaphe.lua")
+include("acf/shared/rounds/roundaphecbc.lua")
 if ACF.EnableNewContent then
 include("acf/shared/rounds/roundapdss.lua")
 include("acf/shared/rounds/roundhvap.lua")

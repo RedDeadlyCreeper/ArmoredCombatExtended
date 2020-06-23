@@ -135,6 +135,7 @@ function ENT:Initialize()
 	self.Legal = true
 	self.LegalIssues = ""
 	self.FuseTime = 0
+	self.ROFLimit = 0 --Used for selecting firerate
 	
 	self.IsMaster = true --needed?
 	self.AmmoLink = {}
@@ -209,14 +210,14 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 		Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)
 				local Cal = Gun.Caliber
 		if Cal<3 and Cal>12 then  
-		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload"} )
+		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload", "ROFLimit"} )
 		end
 	else
 		local Cal = Gun.Caliber
 		if Cal>=3 and Cal<=12 then
-		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload" , "Fuse Time"} )
+		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload" , "Fuse Time", "ROFLimit"} )
 		else
-		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload"} )
+		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "ROFLimit"} )
 		end
 	end
 	Gun.MagReload = 0
@@ -428,7 +429,7 @@ function ENT:Link( Target )
 			ReloadBuff = 1.25-(self.LoaderCount*0.25)
 			end
 	
-	self.ReloadTime = ( ( math.max(Target.BulletData.RoundVolume,self.MinLengthBonus) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * ReloadBuff
+	self.ReloadTime = math.max(( ( math.max(Target.BulletData.RoundVolume,self.MinLengthBonus) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * ReloadBuff, self.ROFLimit)
 	self.RateOfFire = 60 / self.ReloadTime
 	Wire_TriggerOutput( self, "Fire Rate", self.RateOfFire )
 	Wire_TriggerOutput( self, "Muzzle Weight", math.floor( Target.BulletData.ProjMass * 1000 ) )
@@ -559,6 +560,9 @@ function ENT:TriggerInput( iname, value )
 	else
 		self.FuseTime = 0
 	end
+	elseif (iname == "ROFLimit") then
+		self.ROFLimit = math.max(1/(value/60),0)
+--		print("Test")
 	end		
 end
 
@@ -904,7 +908,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 			if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
 			ReloadBuff = 1.25-(self.LoaderCount*0.25)
 			end
-		self.ReloadTime = ( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * cb * ReloadBuff
+		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * cb * ReloadBuff, self.ROFLimit)
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 		
 		self.RateOfFire = (60/self.ReloadTime)
