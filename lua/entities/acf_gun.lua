@@ -561,7 +561,7 @@ function ENT:TriggerInput( iname, value )
 		self.FuseTime = 0
 	end
 	elseif (iname == "ROFLimit") then
-		self.ROFLimit = math.max(1/(value/60),0)
+		self.ROFLimit = math.min(1/(value/60),60)
 --		print("Test")
 	end		
 end

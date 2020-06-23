@@ -349,7 +349,9 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			end
 		end
 
-		dmul = 1+((Type=="HE")*9)
+		if Type=="HE" then
+		dmul = dmul*10
+		end
 
 		--SITP Stuff
 		--TODO: comment out ISSITP when not necessary

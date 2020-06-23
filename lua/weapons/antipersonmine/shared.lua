@@ -31,7 +31,7 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 10	
 SWEP.Primary.RecoilAngle	= 15		
 SWEP.Primary.Cone			= 0.025		
-SWEP.Primary.Delay			= 1
+SWEP.Primary.Delay			= 1.5
 SWEP.Primary.ClipSize		= 1		
 SWEP.Primary.DefaultClip	= 1			
 SWEP.Primary.Automatic		= 0	
@@ -76,7 +76,6 @@ function SWEP:PrimaryAttack()
 	if CLIENT then 
 		return 
 		end	
-
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
@@ -93,6 +92,7 @@ function SWEP:PrimaryAttack()
 		ent:Spawn()
 		ent:SetVelocity( Forward * 10 )
 		ent:SetOwner( self.Owner )
+		self.Owner:AddCleanup( "aceexplosives", ent )
 	end
 		
 	self.lastFire=CurTime()

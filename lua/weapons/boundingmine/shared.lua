@@ -31,7 +31,7 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 10	
 SWEP.Primary.RecoilAngle	= 15		
 SWEP.Primary.Cone			= 0.025		
-SWEP.Primary.Delay			= 2
+SWEP.Primary.Delay			= 3
 SWEP.Primary.ClipSize		= 1		
 SWEP.Primary.DefaultClip	= 1			
 SWEP.Primary.Automatic		= 0	
@@ -93,6 +93,7 @@ function SWEP:PrimaryAttack()
 		ent:Spawn()
 		ent:SetVelocity( Forward * 10 )
 		ent:SetOwner( self.Owner )
+		self.Owner:AddCleanup( "aceexplosives", ent )
 	end
 		
 	self.lastFire=CurTime()
