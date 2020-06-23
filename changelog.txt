@@ -223,3 +223,24 @@ r100
 -Removed broken ECM jammers
 -Made armor of players lower
 -Reduced accuracy of AWP
+
+*r121
+-Fixed Normalization
+-Fixed RW61 not spawning
+-Twisted + Kemgus menu changes
+-Made more materials normalize differently
+-Reduced weight of aluminum(0.34 to 0.221)
+-Halved refill speed of all refills to encourage large refills
+-Increase base HEAT pen
+-Added AT, AP, bounding mine, and grenade SWEPs
+-Reduced size penalty for FS shells
+-Added armor thickness curves for each armor
+-Added HE bonus damage to ceramic
+-Updated Armor Analyzer to include new armor curves(check ACE files)
+-Invalid Ammo no longer bricks the server when shot
+-Increased anti tank missile velocity
+-Reworked HESH spalling penetration
+-Added firerate limiter to cannons
+-Buffed ROF of most MGs
+-Throttle effects engine ceasing damage
+-Added APHECBC shells, APHE that normalizes
