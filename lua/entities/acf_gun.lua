@@ -370,7 +370,7 @@ function ENT:Link( Target )
 	return false, "The gun already has 3 loaders!"	
 	end
 --	print(Gun.Class)
-	if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" then
+	if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" or self.Class == "AL" then
 	return false, "This gun cannot have a loader!"	
 	end	
 	
@@ -771,7 +771,7 @@ end
 function ENT:FireShell()
 	
 	local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
-	if CanDo == false then return end
+
 	if(self.IsUnderWeight == nil) then
 		self.IsUnderWeight = true
 		if(ISBNK) then

@@ -133,7 +133,7 @@ function SWEP:PrimaryAttack()
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
-	
+
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
 	self.Owner:ViewPunch(Angle( -self.Primary.Recoil + math.Rand(-self.Primary.RecoilAngleVer,self.Primary.RecoilAngleVer), math.Rand(-self.Primary.RecoilAngleHor,self.Primary.RecoilAngleHor), 0 )*(1+self.InaccuracyAccumulation))	

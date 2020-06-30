@@ -73,11 +73,11 @@ ACF_defineGun("9M113 ASM", { --id
 		maxlength	= 45,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
-		propweight	= 3,			-- motor mass - motor casing
-		thrust		= 36000,			-- average thrust - kg*in/s^2
-		burnrate	= 200,			-- cm^3/s at average chamber pressure
-		starterpct	= 0.3,			-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 6000,			-- minimum speed beyond which the fins work at 100% efficiency
+		propweight	= 1,			-- motor mass - motor casing
+		thrust		= 6600,			-- average thrust - kg*in/s^2
+		burnrate	= 40,			-- cm^3/s at average chamber pressure
+		starterpct	= 0.2,			-- percentage of the propellant consumed in the starter motor.
+		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.03,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
@@ -90,9 +90,9 @@ ACF_defineGun("9M113 ASM", { --id
 
     racks       = {["1x Kornet"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.
+    viewcone    = 25,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.022,		-- multiplier for missile turn-rate.
+    agility     = 0.21,		-- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -156,9 +156,9 @@ ACF_defineGun("Ataka ASM", { --id
 		maxlength	= 50,
 		casing		= 0.12,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
-		propweight	= 2.4,			-- motor mass - motor casing
-		thrust		= 14000,			-- average thrust - kg*in/s^2
-		burnrate	= 300,			-- cm^3/s at average chamber pressure
+		propweight	= 1.7,			-- motor mass - motor casing
+		thrust		= 18500,			-- average thrust - kg*in/s^2
+		burnrate	= 130,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.3,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 5000,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
@@ -173,9 +173,9 @@ ACF_defineGun("Ataka ASM", { --id
 
     racks       = {["1x Ataka"] = true, ["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.
+    viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.028,		-- multiplier for missile turn-rate.
+    agility     = 0.18,		-- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 

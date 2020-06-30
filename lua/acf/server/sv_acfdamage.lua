@@ -460,7 +460,7 @@ end
 function ACF_KEShove(Target, Pos, Vec, KE )
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE )
 	if CanDo == false then return end
-	
+
 	local parent = ACF_GetPhysicalParent(Target)
 	local phys = parent:GetPhysicsObject()
 	

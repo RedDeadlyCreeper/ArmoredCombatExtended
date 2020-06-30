@@ -46,8 +46,10 @@ local function modepermission(owner, attacker, ent)
 	local ownerid = owner:SteamID()
 	local attackerid = attacker:SteamID()
 	local ownerperms = perms.GetDamagePermissions(ownerid)
-	
-	if ownerperms[attackerid] then
+	local godOwner = owner:HasGodMode()
+	local godInflictor = attacker:HasGodMode()
+
+	if ownerperms[attackerid] and not (godOwner or godInflictor) then
 		--print("permitted")
 		return
 	end

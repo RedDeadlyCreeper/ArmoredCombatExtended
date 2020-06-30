@@ -34,17 +34,23 @@ local DefaultPermission = false
 		ent			Entity:	The entity which may be damaged.
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
-//*/
+//*
 local function modepermission(owner, attacker, ent)
 	local szs = perms.Safezones
 	
 	if szs then
 		local entpos = ent:GetPos()
 		local attpos = attacker:GetPos()
-		
-		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) then return false end
+		local godOwner = ent:HasGodMode()
+		local godInflictor = attacker:HasGodMode()
+
+		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) or godOwner or godInflictor then return false end
 	end
 	
+	local godOwner = owner:HasGodMode()
+	local godInflictor = attacker:HasGodMode()
+	if  godOwner or godInflictor then  return false    end
+
 	return 
 end
 
@@ -71,7 +77,7 @@ local function modethink()
 	for k, ply in pairs(player.GetAll()) do
 		--print(ply:GetPos(), perms.IsInSafezone(ply:GetPos()))
 		if not perms.IsInSafezone(ply:GetPos()) then
-			ply:GodDisable()
+--			ply:GodDisable()
 			
 			if ShouldDisableNoclip and ply:GetMoveType() ~= MOVETYPE_WALK then
 				ply:SetMoveType(MOVETYPE_WALK)
