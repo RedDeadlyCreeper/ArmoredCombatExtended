@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 433  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 434  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -16,15 +16,15 @@ ACF.KinFudgeFactor = 2.1	--True kinetic would be 2, over that it's speed biaised
 ACF.KEtoRHA = 0.25		--Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
 ACF.GroundtoRHA = 0.15		--How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall = 1
-ACF.AmmoMod = 2.3		-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoMod = 0.575		-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.ArmorMod = 1 
 ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 0.5 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
+ACF.CrateVolEff = 0.125 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 1 --How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 5 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -99,7 +99,7 @@ ACF.HEATMulEngine = 10	--likewise
 ACF.HEATPenLayerMul = 0.95	--HEAT base energy multiplier
 ACF.HEATBoomConvert = 1/3 -- percentage of filler that creates HE damage at detonation
 
-ACF.DragDiv = 20		--Drag fudge factor
+ACF.DragDiv = 80		--Drag fudge factor
 ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
 -- local PhysEnv = physenv.GetPerformanceSettings()
 ACF.PhysMaxVel = 8000
@@ -174,7 +174,7 @@ ACF.LiIonED = 0.458 -- li-ion energy density: kw hours / liter
 ACF.CuIToLiter = 0.0163871 -- cubic inches to liters
 
 ACF.RefillDistance = 400 --Distance in which ammo crate starts refilling.
-ACF.RefillSpeed = 1000 -- (ACF.RefillSpeed / RoundMass) / Distance 
+ACF.RefillSpeed = 250 -- (ACF.RefillSpeed / RoundMass) / Distance 
 
 ACF.ChildDebris = 50 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
 ACF.DebrisIgniteChance = 0.25

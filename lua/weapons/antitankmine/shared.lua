@@ -84,6 +84,7 @@ function SWEP:PrimaryAttack()
 
 	local Forward = self.Owner:EyeAngles():Forward()
 
+if not self.Owner:HasGodMode() then
 	local ent = ents.Create( "ace_antitankmine" )
 	
 	if ( IsValid( ent ) ) then
@@ -95,7 +96,7 @@ function SWEP:PrimaryAttack()
 		ent:SetOwner( self.Owner )
 		self.Owner:AddCleanup( "aceexplosives", ent )
 	end
-		
+end		
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
@@ -110,9 +111,6 @@ function SWEP:PrimaryAttack()
 	end
 --	self:TakePrimaryAmmo(1)
 
-end
-
-function SWEP:Think()				
 end
 
 function SWEP:Reload()	

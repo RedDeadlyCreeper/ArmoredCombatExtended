@@ -872,9 +872,9 @@ end
 function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun  , Type)
 
 	local HitRes = ACF_CalcDamage( Entity , Energy , FrAera , Angle  , Type)
-	
 	local Driver = Entity:GetDriver()
-	if Driver:IsValid() then
+	local validd = Driver:IsValid()
+	if validd then
 		--if Ammo == true then
 		--	Driver.KilledByAmmo = true
 		--end
@@ -886,7 +886,10 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 	end
 
 	HitRes.Kill = false
-	if HitRes.Damage >= Entity.ACF.Health then
+	if HitRes.Damage >= Entity.ACF.Health then --Drivers will no longer survive seat destruction
+			if validd then
+				Driver:Kill()
+			end
 		HitRes.Kill = true 
 	else
 		Entity.ACF.Health = Entity.ACF.Health - HitRes.Damage

@@ -101,6 +101,7 @@ end
 
 function SWEP:ACEFireBullet()
 
+	if not self.Owner:HasGodMode() then
 
 	self.Owner = self:GetParent()
 --	self:SetOwner(self:GetParent())
@@ -110,11 +111,12 @@ function SWEP:ACEFireBullet()
 	local MuzzlePos = self.Owner:GetShootPos()
 	local MuzzleVec = self.Owner:GetAimVector()
 
+	local sprinting = (self.Owner:KeyDown(IN_SPEED) and 1 or 0.5) * 2 --Sprinting doubles inaccuracy
 	
 	local EyeAngle = self.Owner:EyeAngles()
 	--Boolet Firing
 	local RandUnitSquare = (EyeAngle:Up() * (2 * math.random() - 1) + EyeAngle:Right() * (2 * math.random() - 1))
-	local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * (self.InaccuracyAccumulation - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber) * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+	local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * self.InaccuracyAccumulation * (1 - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber) * sprinting * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
 --	local Spread = Vector(0 , 0 , 0)
 --	local Spread = EyeAngle:Forward()/10 * SWEP.coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) 
 	local ShootVec = EyeAngle:Forward()+Spread
@@ -145,6 +147,9 @@ function SWEP:ACEFireBullet()
 
 
 --	self.Owner:SetEyeAngles( EyeAngle+Angle(math.random(-1,1)*self.Primary.RecoilAngleVer,math.random(-1,1)*self.Primary.RecoilAngleHor,0) * (self.InaccuracyAccumulation - CrouchedNumber * self.CrouchRecoilImprovement - self.ZoomRecoilImprovement * ZoomedNumber) )
+	else
+		print("SWEP fired in godmode. Refusing to create bullet")
+	end
 end
 
 function SWEP:Holster()
@@ -169,6 +174,7 @@ function ACE_SWEP_CreateBullet( BulletData )
 	end
 
 	--Those are BulletData settings that are global and shouldn't change round to round	
+
 	local cvarGrav = GetConVar("sv_gravity")
 	BulletData["Accel"] = Vector(0,0,cvarGrav:GetInt()*-1)
 	BulletData["LastThink"] = ACF.SysTime
@@ -209,7 +215,7 @@ function SWEP:Deploy()
 		self.NormalPlayerRunSpeed = self.Owner:GetRunSpeed()
 		
 		self.Owner:SetWalkSpeed( self.NormalPlayerWalkSpeed * self.CarrySpeedMul )
-		self.Owner:SetRunSpeed( self.NormalPlayerRunSpeed * self.CarrySpeedMul)
+		self.Owner:SetRunSpeed( self.NormalPlayerRunSpeed * self.CarrySpeedMul * 0.8)
 		self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
 		self:Think()
 		self:DoAmmoStatDisplay()

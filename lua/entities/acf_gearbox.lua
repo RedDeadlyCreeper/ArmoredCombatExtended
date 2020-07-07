@@ -209,8 +209,8 @@ if CLIENT then
 				acfmenupanel.CData[Gear]:SetText( Desc or "Gear "..Gear )
 				acfmenupanel.CData[Gear].Label:SizeToContents()
 				acfmenupanel.CData[Gear]:SetDark( true )
-				acfmenupanel.CData[Gear]:SetMin( CVT and 1 or -1 )
-				acfmenupanel.CData[Gear]:SetMax( CVT and 10000 or 1 )
+				acfmenupanel.CData[Gear]:SetMin( CVT and 1 or -2 )
+				acfmenupanel.CData[Gear]:SetMax( CVT and 20000 or 2 )
 				acfmenupanel.CData[Gear]:SetDecimals( (not CVT) and 2 or 0 )
 				acfmenupanel.CData[Gear].Gear = Gear
 				acfmenupanel.CData[Gear].ID = ID

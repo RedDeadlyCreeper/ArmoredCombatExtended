@@ -82,19 +82,21 @@ function SWEP:PrimaryAttack()
 
 
 	local Forward = self.Owner:EyeAngles():Forward()
+	if not self.Owner:HasGodMode() then
 
-	local ent = ents.Create( "ace_antipersonelmine" )
+		local ent = ents.Create( "ace_antipersonelmine" )
 	
-	if ( IsValid( ent ) ) then
+		if ( IsValid( ent ) ) then
 
-		ent:SetPos( self.Owner:GetShootPos() + Forward * 32 )
-		ent:SetAngles( self.Owner:EyeAngles() )
-		ent:Spawn()
-		ent:SetVelocity( Forward * 10 )
-		ent:SetOwner( self.Owner )
-		self.Owner:AddCleanup( "aceexplosives", ent )
-	end
-		
+			ent:SetPos( self.Owner:GetShootPos() + Forward * 32 )
+			ent:SetAngles( self.Owner:EyeAngles() )
+			ent:Spawn()
+			ent:SetVelocity( Forward * 10 )
+			ent:SetOwner( self.Owner )
+			self.Owner:AddCleanup( "aceexplosives", ent )
+		end
+	end	
+
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
@@ -109,9 +111,6 @@ function SWEP:PrimaryAttack()
 	end
 --	self:TakePrimaryAmmo(1)
 
-end
-
-function SWEP:Think()				
 end
 
 function SWEP:Reload()	

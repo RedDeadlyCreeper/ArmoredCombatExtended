@@ -116,10 +116,7 @@ function ENT:CalcFlight()
 
 	if TargetPos then
 		local Dist = Pos:Distance(TargetPos)
---		TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 5000))
---		TargetPos = TargetPos + (Vector(0,0,self.Gravity / Speed - self.Gravity / Dist * 5))
-		TargetPos = TargetPos + (Vector(0,0,self.Gravity / Speed * math.min(Dist/1200 , 2.5)))		
---		TargetPos = TargetPos + (Vector(0,0,Dist*math.tan(math.asin(self.Gravity/Speed))))
+		TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000))
 		local LOS = (TargetPos - Pos):GetNormalized()
 		local LastLOS = self.LastLOS
 		local NewDir = Dir
@@ -385,17 +382,14 @@ function ENT:ConfigureFlight()
     local Time = CurTime()
 	local noThrust = ACF_GetGunValue(self.BulletData, "nothrust")
 
-		
 	if noThrust then
 		self.MotorLength = 0
 		self.Motor = 0
-		self.Boost = 0
 	else
 		self.MotorLength = BulletData.PropMass / (Round.burnrate / 1000) * (1 - Round.starterpct)
-		self.Boost = (BulletData.PropMass / (Round.burnrate / 1000) * Round.starterpct)*Round.thrust * 0.002
 		self.Motor = Round.thrust
 	end
-	
+
 	self.Gravity = GetConVar("sv_gravity"):GetFloat()
 	self.DragCoef = Round.dragcoef
 	self.DragCoefFlight = (Round.dragcoefflight or Round.dragcoef)
@@ -406,13 +400,6 @@ function ENT:ConfigureFlight()
 	self.CutoutTime = Time + self.MotorLength
 	self.CurPos = BulletData.Pos
 	self.CurDir = BulletData.Flight:GetNormalized()
-	if self.Launcher.acfphysparent then
-	self.LastVel = self.Launcher.acfphysparent:GetVelocity() * 1/66 + self.CurDir * self.Boost + Vector(0,0,self.Gravity*0.002)
---	print("Working")
-	else
-	self.LastVel = self.CurDir * self.Boost + Vector(0,0,self.Gravity*0.002)	
-	end
---		self.LastVel = self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay
 	self.LastPos = self.CurPos
     self.Hit = false
 	self.HitNorm = Vector(0,0,0)
@@ -549,7 +536,7 @@ function ENT:Think()
 		if self.FirstThink == true then
 			self.FirstThink = false
 			self.LastThink = CurTime() - self.ThinkDelay
---			self.LastVel = self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay
+			self.LastVel = self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay
 		end
 		self:CalcFlight()
 

@@ -111,7 +111,7 @@ function SWEP:PrimaryAttack()
 
 end
 
-function SWEP:Think()				
+function SWEP:Think()	--Jumping and throwing grenades for more range is allowed and encouraged			
 end
 
 function SWEP:Reload()	

@@ -181,6 +181,18 @@ ACFTranslation.ShellAPCBC = {
 
 }
 
+ACFTranslation.ShellAPHE = {
+	"Armour Piercing High Explosive", --AmmoName (1)
+	"An armour piercing round with a cavity for High explosives. Less capable of defeating armour than plain Armour Piercing, but will explode after penetration." --Desc (2)
+
+}
+
+ACFTranslation.ShellAPHECBC = {
+	"Armour Piercing High Explosive Capped Ballistic Capped", --AmmoName (1)
+	"A shell made out of a solid piece of steel, meant to penetrate armour. Has a cap that helps it deal with sloped armor." --Desc (2)
+
+}
+
 ACFTranslation.ShellAPDS = {
 	"Long Rod Armour Piercing Discarding Sabot", --AmmoName (1)
 	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Unlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)

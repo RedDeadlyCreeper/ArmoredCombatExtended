@@ -87,8 +87,8 @@ function ENT:Initialize()
 	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",      "Reload",   "Target Pos" },
                                                      { "NORMAL",    "NORMAL",   "VECTOR"    } )
                                                      
-	self.Outputs = WireLib.CreateSpecialOutputs( self, 	{ "Ready",	"Entity",	"Shots Left",  "Position",  "Target" },
-														{ "NORMAL",	"ENTITY",	"NORMAL",      "VECTOR",    "ENTITY" } )
+	self.Outputs = WireLib.CreateSpecialOutputs( self, 	{ "Ready",	"Entity",	"Shots Left",  "Position" },
+														{ "NORMAL",	"ENTITY",	"NORMAL",      "VECTOR" } )
                                                         
 	Wire_TriggerOutput(self, "Entity", self)
 	Wire_TriggerOutput(self, "Ready", 1)
@@ -715,11 +715,11 @@ function ENT:AddMissile()
 		function() 
 			if IsValid(missile) then 
 				local attach, muzzle = self:GetMuzzle(NextIdx, missile)
+			
+				if(IsValid(self:GetParent())) then
 					if table.Count(self:GetAttachments()) == 0 then
 						muzzle.Pos = Vector(0,0,0)
-					end			
-				if(IsValid(self:GetParent())) then
-							
+					end
 					missile:SetPos(muzzle.Pos)
 					missile:SetAngles(self:GetAngles())
 				else
@@ -851,7 +851,6 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	Rack.Muzzleflash        = gundef.muzzleflash or gunclass.muzzleflash or ""
 	Rack.RoFmod             = gunclass["rofmod"]
 	Rack.Sound              = gundef.sound or gunclass.sound
-	print("rack sound", Rack.Sound)
 	Rack.Inaccuracy         = gunclass["spread"]
     
     Rack.HideMissile        = ACF_GetRackValue(Id, "hidemissile")
@@ -943,7 +942,6 @@ function ENT:FireMissile()
 			if table.Count(self:GetAttachments()) == 0 and IsValid(self:GetParent()) then
 				MuzzlePos = Vector(0,0,0)
 			end
-			
             local MuzzleVec = muzzle.Ang:Forward()
             
             local coneAng = math.tan(math.rad(self:GetInaccuracy())) 

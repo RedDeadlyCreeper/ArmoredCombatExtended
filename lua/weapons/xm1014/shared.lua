@@ -125,6 +125,10 @@ function SWEP:PrimaryAttack()
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+	if ( self.Owner:IsPlayer() ) then
+		self.Owner:LagCompensation( true )
+	end
+
 	self:ACEFireBullet()
 	self:ACEFireBullet()
 	self:ACEFireBullet()
@@ -134,6 +138,10 @@ function SWEP:PrimaryAttack()
 	self:ACEFireBullet()
 	self:ACEFireBullet()
 	self:ACEFireBullet()
+	
+	if ( self.Owner:IsPlayer() ) then
+		self.Owner:LagCompensation( false )
+	end
 	
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
@@ -172,7 +180,22 @@ function SWEP:Think()
 	end
 	
 	end
-		
+
+	if !(self.Owner:IsOnGround()) then --If owner leaves ground cause 2 second penalty to firing
+		self:SetNextPrimaryFire( CurTime() + 2 )
+	end
+
+	if self.ThinkAfter then self:ThinkAfter() end
+	
+	
+	if SERVER then
+        
+        if self.Zoomed and not self:CanZoom() then
+            self:SetZoom(false)
+        end
+        
+	end
+
 end
 
 function SWEP:Reload()	

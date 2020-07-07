@@ -132,7 +132,16 @@ function SWEP:PrimaryAttack()
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+	
+	if ( self.Owner:IsPlayer() ) then
+		self.Owner:LagCompensation( true )
+	end
+
 	self:ACEFireBullet()
+	
+	if ( self.Owner:IsPlayer() ) then
+		self.Owner:LagCompensation( false )
+	end
 	
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
@@ -146,9 +155,6 @@ function SWEP:PrimaryAttack()
 	else
 		self:TakePrimaryAmmo(1)
 	end
-end
-
-function SWEP:Think()				
 end
 
 function SWEP:Reload()	
