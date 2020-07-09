@@ -178,7 +178,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 --			print( table.Count( ACE.contraptionEnts ) )
 --			PrintTable(ACE.contraptionEnts)
 
-			updateContraptionsTick = updateContraptionsTick - 759 + 400
+			updateContraptionsTick = updateContraptionsTick - 759
 			PotentialParents = {}
 		end
 
