@@ -103,7 +103,8 @@ function Round.cratetxt( BulletData )
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor((BulletData.FillerMass) * ACF.HEPower), " KJ"
+		"Blast Energy: ", math.floor((BulletData.FillerMass) * ACF.HEPower), " KJ\n",
+		"Blast Penetration: ", math.floor(BulletData.FillerMass/1501*4* ACF.HEPower), " mm"
 	}
 	
 	return table.concat(str)
@@ -121,7 +122,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*2500, Energy, Target, HitPos, HitNormal/10 , Bone )
 		
 		table.insert( Bullet.Filter , Target )
-		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*100000 , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*4*ACF.HEPower , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 
 		
 --		print("Speed: "..Speed)
@@ -256,7 +257,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
-	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m.".." Blast penetration: "..math.floor(Data.FillerMass/1501*4* ACF.HEPower).."mm.")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 	
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )

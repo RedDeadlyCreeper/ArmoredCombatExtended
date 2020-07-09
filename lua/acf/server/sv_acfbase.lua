@@ -1,5 +1,197 @@
 local UpdateIndex = 0
 
+local updateContraptionsTick = 660
+ACE = ACE or {}
+
+ACE.contraptionEnts = {}
+ACE.contraptionHeat = {} --I wish i could assign properties more easily to props
+local proplist = {}
+local proplistadd = {}
+local PotentialParents = {}
+local propScanCount = 0
+
+ACE.radarEntities = {}
+ACE.radarIDs = {}
+ACE.ECMPods = {}
+
+
+function updateContraptionList() --Only fails if every prop is parented to a holoentity, this is an almost nonexistent case and even then most people parent holos to the entity that made them.
+
+	updateContraptionsTick = updateContraptionsTick + 1 --Executes every 10-20 seconds
+	if updateContraptionsTick == 660 or updateContraptionsTick == 693 or updateContraptionsTick == 726 or updateContraptionsTick == 759 then --divides the props into 4 subiterations
+
+		if updateContraptionsTick == 660 then --Creates initial contraption prop table
+			print("[ACE] ContraptionScan")
+			--local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+			proplist = ents.FindByClass( "prop_*" ) --Iterate through all props
+
+			ACE.ECMPods = ents.FindByClass( "ace_ecm" )
+
+			proplistadd = ents.FindByClass( "acf_gun" ) 
+			table.Add( proplist, proplistadd )
+			proplistadd = ents.FindByClass( "acf_engine" ) 
+			table.Add( proplist, proplistadd )
+			ACE.radarEntities = ents.FindByClass( "ace_trackingradar" )
+
+				for id, ent in pairs(ACE.radarEntities) do
+					ACE.radarIDs[ent] = id
+				end
+			table.Add( proplist, ACE.radarEntities )
+			propScanCount = table.Count(proplist)
+			
+		end
+		
+--		local scanfrom = 0
+--		local scanto = 1
+			
+--			if updateContraptionsTick == 660 then
+--				scanfrom = 1
+--				scanto = 0.25*propScanCount
+			--	print("T1")
+--			elseif updateContraptionsTick == 693 then	
+--				scanfrom = 0.25*propScanCount
+--				scanto = 0.5*propScanCount	
+			--	print("T2")		
+--			elseif updateContraptionsTick == 726 then
+--				scanfrom = 0.5*propScanCount
+--				scanto = 0.75*propScanCount
+			--	print("T3")
+--			elseif updateContraptionsTick == 759 then --theoretically this should be able to be done with an else but i cant be too cautious
+--				scanfrom = 0.75*propScanCount
+--				scanto = 1.0*propScanCount
+			--	print("T4")
+--			end
+			
+--			local scanThis = {}
+
+			--Worst case the below for loop will iterate over the same prop 4 times with only 1 prop, with 2 each prop gets iterated 2 times
+			--A price I am willing to pay for almost lagless iteration of thousands of constrained props
+
+--			for id = math.floor(scanfrom), math.ceil(scanto) do --Will doublecheck some props bet better that than to miss a prop
+--				scanThis[id] = proplist[id]
+--			end
+--			print( table.Count(scanThis))
+
+
+		
+			for id, ent in pairs(proplist) do
+
+					if IsValid(ent) then 
+
+				local TestHeat = 0 --Heat addition system
+				if (ent.Heat or 0) > 0 then --
+					TestHeat = ent.Heat
+					print("HotCheck")
+				end
+				
+				scanEnt = GetParent(ent)
+	
+				if scanEnt:IsConstrained() then
+	
+					local ScanPhys = scanEnt:GetPhysicsObject()
+					local Mass = ScanPhys:GetMass()
+	
+					for id2, ent2 in pairs(constraint.GetAllConstrainedEntities( scanEnt)) do --Iteration of self hatred, F to pay respect for server, This is hellcode. A weld screw this over.
+	
+						local tent2 = GetParent(ent2)
+	
+						local TestPhys = tent2:GetPhysicsObject()
+	
+						local TestMass = TestPhys:GetMass()
+	
+						if TestMass > Mass then
+							Mass = TestMass
+							scanEnt = tent2
+						end
+	
+	
+	
+					end
+	
+	
+					if scanEnt != nil then
+	
+						if TestHeat > 0 then
+							scanEnt.THeat = (scanEnt.THeat or 0) + TestHeat
+--							print(scanEnt.THeat)
+--							print("Hot")
+						end
+	
+						if not (table.HasValue(PotentialParents,scanEnt)) then
+							
+	
+							table.insert(PotentialParents, scanEnt)
+	--						print("Added Entity")
+						end
+	
+					end				
+					
+				else
+	
+					if scanEnt != nil then
+	
+						if TestHeat > 0 then
+							scanEnt.THeat = (scanEnt.THeat or 0) + TestHeat
+--							print(scanEnt.THeat)
+--							print("Hot")
+						end
+	
+						if not (table.HasValue(PotentialParents,scanEnt)) then
+	
+							table.insert(PotentialParents, scanEnt)
+	--						print("Added Entity")
+						end
+	
+					end
+				end
+	
+	
+	
+					end
+	
+			end
+
+		proplist = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+
+		for id, ent in pairs(proplist) do
+
+			scanEnt = GetParent(ent)
+
+			if scanEnt != nil then
+
+				if not (table.HasValue(PotentialParents,scanEnt)) then
+					table.insert(PotentialParents, scanEnt)
+--					print("Added Entity")
+				end--
+
+			end
+
+		end
+
+		--local proplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+		--table.Add( proplist, proplistadd )
+
+
+		if updateContraptionsTick >= 759 then --Jobs done
+			
+			ACE.contraptionEnts = PotentialParents
+--			print( table.Count( ACE.contraptionEnts ) )
+--			PrintTable(ACE.contraptionEnts)
+
+			updateContraptionsTick = updateContraptionsTick - 759 + 400
+			PotentialParents = {}
+		end
+
+
+	end
+end
+
+
+
+
+hook.Add("Think", "ACE_CategorizeContraptions", updateContraptionList)
+
+
 function GetParent(Ent)
 	if not IsValid(Ent) then return nil end
 

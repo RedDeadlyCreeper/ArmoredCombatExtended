@@ -23,13 +23,13 @@ ACF_DefineEngine( "4.6-V12", {
 ACF_DefineEngine( "7.0-V12", {
 	name = "7.0L V12 Petrol",
 	desc = "A high end V12; primarily found in very expensive cars",
-	model = "models/engines/v12m.mdl",
+	model = "models/engines/v12s.mdl",
 	sound = "acf_engines/v12_petrolmedium.wav",
 	category = "V12",
 	fuel = "Petrol",
 	enginetype = "GenericPetrol",
 	weight = 360,
-	torque = 500,
+	torque = 300,
 	flywheelmass = 0.45,
 	idlerpm = 800,
 	peakminrpm = 3600,
@@ -124,9 +124,9 @@ ACF_DefineEngine( "13.0-V12", {
 	limitrpm = 4250
 } )
 
-ACF_DefineEngine( "V-2-34", {
-	name = "V-2-34",
-	desc = "Old engine. Used in T34.",
+ACF_DefineEngine( "16.5-V12", {
+	name = "16.5-V12 Diesel",
+	desc = "V-2-34.Pretty powerful but heavy with nice torque.",
 	model = "models/engines/v8l.mdl",
 	sound = "acf_engines/v12_dieselmedium.wav",
 	category = "V12",
@@ -141,8 +141,8 @@ ACF_DefineEngine( "V-2-34", {
 	limitrpm = 3500
 } )
 
-ACF_DefineEngine( "AVDS-1790-9A", {
-	name = "AVDS-1790-9A",
+ACF_DefineEngine( "24.8-V12", {
+	name = "24.8-V12 Diesel",
 	desc = "AVDS-1790-9A tank engine; massively powerful, but enormous and heavy",
 	model = "models/engines/v12l.mdl",
 	sound = "acf_extra/vehiclefx/engines/gnomefather/m60.wav",
@@ -158,9 +158,9 @@ ACF_DefineEngine( "AVDS-1790-9A", {
 	limitrpm = 2800
 } )
 
-ACF_DefineEngine( "AVDS-1790-1500", {
-	name = "AVDS-1790-1500",
-	desc = "AVDS-1790-1500 tank engine; massively powerful, but enormous and heavy",
+ACF_DefineEngine( "27.0-V12", {
+	name = "27.0-V12 Diesel",
+	desc = "AVDS-1790-1500 tank engine; massively powerful, but enormous and heavy.Best diesel engine in V12",
 	model = "models/engines/v12l.mdl",
 	sound = "acf_extra/vehiclefx/engines/gnomefather/m60.wav",
 	category = "V12",

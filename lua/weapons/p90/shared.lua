@@ -20,7 +20,11 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
- 
+SWEP.ZoomAccuracyImprovement = 0.63 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement 
+SWEP.CrouchAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
+SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement 
+
 -- Weapon info		
 SWEP.Purpose		= "Rush B"	
 SWEP.Instructions	= "Left mouse to shoot"		
@@ -84,8 +88,7 @@ function SWEP:InitBulletData()
 		self.BulletData.FrAera    = 3.1416 * (self.BulletData.Caliber/2)^2
 		self.BulletData.ProjMass  = self.BulletData.FrAera * (self.BulletData.ProjLength*7.9/1000)
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
---		self.BulletData.DragCoef  = 0 --Alternatively manually set it
-		self.BulletData.DragCoef  = ((self.BulletData.FrAera/10000)/self.BulletData.ProjMass)	
+		self.BulletData.DragCoef  = 0.1 --Alternatively manually set it
 
 		--Don't touch below here
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		

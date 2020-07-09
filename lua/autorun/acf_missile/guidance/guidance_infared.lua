@@ -22,42 +22,14 @@ this.SeekCone = 20
 -- Cone to retain targets within.
 this.ViewCone = 25
 
--- Targets this close to the front are good enough.
-this.SeekTolerance = math.cos( math.rad( 2 ) )
-
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 100000 -- The re-seek cycle is expensive, let's disable it until we figure out some optimization.
+this.SeekDelay = 5 -- Re-seek drastically reduced cost so we can re-seek
 
--- Delay between re-seeks if an entity is provided via wiremod.
-this.WireSeekDelay = 0.1
+--Sensitivity of the IR Seeker, higher sensitivity is for aircraft
+this.SeekSensitivity = 1
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 200	-- ~5m
-
--- Entity class whitelist
--- thanks to Sestze for the listing.
-this.DefaultFilter = 
-{
-    prop_physics                = true,
-    gmod_wheel                  = true,
-    gmod_hoverball              = true,
-    gmod_wire_expression2       = true,
-    gmod_wire_thruster          = true,
-    gmod_thruster               = true,
-    gmod_wire_light             = true,
-    gmod_light                  = true,
-    gmod_emitter                = true,
-    gmod_button                 = true,
-    phys_magnet                 = true,
-    prop_vehicle_jeep           = true,
-    prop_vehicle_airboat        = true,
-    prop_vehicle_prisoner_pod   = true,
-    acf_engine                  = true,
-    acf_ammo                    = true,
-    acf_gun                     = true,
-    acf_gearbox                 = true,
-    gmod_wire_hologram		= false	--let's see if this works.  rockets shouldn't home on holos
-}
 
 
 this.desc = "This guidance package detects a target-position infront of itself, and guides the munition towards it. It has a larger seek cone than a radar seeker but a smaller range."
@@ -66,8 +38,6 @@ this.desc = "This guidance package detects a target-position infront of itself, 
 
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
-    --self.Filter = self.DefaultFilter
-	self.Filter = table.Copy(self.DefaultFilter)
 	self.LastTargetPos = Vector()
 end
 
@@ -78,52 +48,11 @@ function this:Configure(missile)
     
     self:super().Configure(self, missile)
     
-    self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone*1.3
-	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
-    self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone*1.3
-    
+    self.ViewCone = (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
+	self.ViewConeCos = (math.cos(math.rad(self.ViewCone)))*1.2
+    self.SeekCone = (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
+    self.SeekSensitivity = ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 end
-
-
-
--- Use this to make sure you don't alter the shared default filter unintentionally
-function this:GetSeekFilter(class)
-    if self.Filter == self.DefaultFilter then
-        self.Filter = table.Copy(self.DefaultFilter)
-    end
-    
-    return self.Filter
-end
-
-
-
-
-function this:GetNamedWireInputs(missile)
-
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
-
-    local names = {}
-    
-    if outputs.Target and outputs.Target.Type == "ENTITY" then
-        names[#names+1] = "Target"
-    end
-    
-    return names
-
-end
-
-
-
-
-function this:GetFallbackWireInputs()
-
-    -- Can't scan for entity outputs: a lot of ents have self-outputs.
-    return {}
-
-end
-
-
 
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
@@ -174,8 +103,8 @@ function this:ApplyOverride(missile)
 		local ret = self.Override:GetGuidanceOverride(missile, self)
 		
 		if ret then		
-			ret.ViewCone = self.ViewCone*1.3
-			ret.ViewConeRad = math.rad(self.ViewCone*1.3)
+			ret.ViewCone = self.ViewCone
+			ret.ViewConeRad = math.rad(self.ViewCone)
 			return ret
 		end
 		
@@ -198,136 +127,56 @@ function this:CheckTarget(missile)
 	
 end
 
-
-
-
-function this:GetWireTarget(missile)
-	
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
-    
-    if not IsValid(self.InputSource) then 
-		return nil
-	end
-    
-    local outputs = self.InputSource.Outputs
-    
-    if not outputs then
-        return nil
-	end
-    
-    
-    for k, name in pairs(self.InputNames) do
-        
-        local outTbl = outputs[name]
-        
-        if not (outTbl and outTbl.Value) then continue end
-        
-        local val = outTbl.Value
-        
-        if IsValid(val) and IsEntity(val) then 
-            return val
-        end
-        
-    end
-    
-end
-
-
-
---ents.findincone not working? weird.
-function JankCone (init, forward, range, cone)
-	local allents = ents.GetAll()
-	local tblout = {}
-	
-	for k, v in pairs (allents) do
-		if not IsValid(v) then continue end
-		local dist = (v:GetPos() - init):Length()
-		local ang = math.deg(math.acos(math.Clamp(((v:GetPos() - init):GetNormalized()):Dot(forward), -1, 1)))
-		if (dist > range) then continue end
-		if (ang > cone) then continue end
-		
-		table.insert(tblout, v)
-	end
-	return tblout
-end
-
-
-
-
 function this:GetWhitelistedEntsInCone(missile)
 
-    local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
-	local minDot = math.cos(math.rad(self.SeekCone))
-	
-	--local found = ents.FindInCone(missilePos, missileForward, 50000, self.SeekCone)
-	local found = JankCone(missilePos, missileForward, 12000, self.SeekCone) -- ~300M range
-	
+	local missilePos = missile:GetPos()
 	local foundAnim = {}
-	local foundEnt
-	local minDistSqr = ( self.MinimumDistance * self.MinimumDistance )
 	
-    local filter = self.Filter
-	for i, foundEnt in pairs(found) do
-	
-		--if not (IsValid(foundEnt) and self.Filter[foundEnt:GetClass()]) then continue end
-		if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then	continue end
-		local foundLocalPos = foundEnt:GetPos() - missilePos
-		
-		local foundDistSqr = foundLocalPos:LengthSqr()
-		if foundDistSqr < minDistSqr then continue end
-		
-		local foundDot = foundLocalPos:GetNormalized():Dot(missileForward)
-		if foundDot < minDot then continue end
-		
-		table.insert(foundAnim, foundEnt)
-		
+
+	local ScanArray = ACE.contraptionEnts
+
+
+	for k, scanEnt in pairs(ScanArray) do
+
+		if(IsValid(scanEnt))then
+			local entpos = scanEnt:GetPos()
+			local difpos = entpos - missilePos
+			local dist = difpos:Length()
+
+			if dist > self.MinimumDistance then -- Target is outside min seek cone
+--					print("InDist")		
+
+					local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
+
+					if not LOStr.Hit then --Trace did not hit world	
+
+--							print(scanEnt)
+							table.insert(foundAnim, scanEnt)
+
+
+
+
+
+			
+					end
+
+			
+			end
+
+
+
+		end
+
 	end
     
     return foundAnim
     
 end
 
-
-
-
-function this:HasLOSVisibility(ent, missile)
-
-	local traceArgs = 
-	{
-		start = missile:GetPos(),
-		endpos = ent:GetPos(),
-		mask = MASK_SOLID_BRUSHONLY,
-		filter = {missile, ent}
-	}
-	
-	local res = util.TraceLine(traceArgs)
-	
-	--debugoverlay.Line( missile:GetPos(), ent:GetPos(), 15, Color(res.Hit and 255 or 0, res.Hit and 0 or 255, 0), true )
-	
-	return not res.Hit
-
-end
-
-
-
-
 -- Return the first entity found within the seek-tolerance, or the entity within the seek-cone closest to the seek-tolerance.
 function this:AcquireLock(missile)
 
 	local curTime = CurTime()
-    
-    if self.LastSeek + self.WireSeekDelay <= curTime then 
-    
-        local wireEnt = self:GetWireTarget(missile)
-        
-        if wireEnt then
-            --print("wiremod provided", wireEnt)
-            return wireEnt
-        end
-        
-    end
     
 	if self.LastSeek + self.SeekDelay > curTime then 
         --print("tried seeking within timeout period")
@@ -339,57 +188,49 @@ function this:AcquireLock(missile)
 	local found = self:GetWhitelistedEntsInCone(missile)
     	
 	-- Part 2: get a good seek target
-	local foundCt = table.Count(found)
-	if foundCt < 2 then 
-        --print("shortcircuited and found", found[1])
-        return found[1] 
-    end
 	
     local missilePos = missile:GetPos()
 	local missileForward = missile:GetForward()
-    
-	local mostCentralEnt 
-	local lastKey
-	
-	while not mostCentralEnt do
-	
-		local ent
-		lastKey, ent = next(found, lastKey)
-		
-		if not ent then break end
-		
-		if self:HasLOSVisibility(ent, missile) then
-			mostCentralEnt = ent
-		end
-		
-	end
-	
-	if not mostCentralEnt then return nil end
-	
-	local mostCentralPos = mostCentralEnt:GetPos()
-	local highestDot = (mostCentralEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
-	local currentEnt
-	local currentDot
-	
-	for k, ent in next, found, lastKey do
-		
-		currentEnt = ent
-		currentDot = (currentEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
-		
-		if currentDot > highestDot and self:HasLOSVisibility(currentEnt, missile) then
-			mostCentralEnt = currentEnt
-			highestDot = currentDot
-			
-			if currentDot >= self.SeekTolerance then 
-                --print("found", mostCentralEnt, "in tolerance")
-                return currentEnt 
-            end
+
+
+
+
+	local bestAng = 0
+	local bestent = nil
+
+	for k, classifyent in pairs(found) do
+		local entpos = classifyent:GetPos()
+		local difpos = entpos - missilePos
+		local dist = difpos:Length()
+		local entvel = classifyent:GetVelocity()
+		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+
+		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + entvel:Length()/17.6)*math.min(4000/math.max(dist,0.01),1))
+--dist
+--		print(testHeat)
+		if testHeat > 100 then --Hotter than 100 deg C
+			if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
+
+				local testang = testHeat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
+--				print(testHeat)
+--				print((360-(absang.p + absang.y)))
+				if testang > bestAng then --Sorts targets as closest to being directly in front of radar
+				bestAng = testang
+				bestent = classifyent
+				end
+
+			end
 		end
 	end
+
+	
+
     
-    --print("iterated and found", mostCentralEnt)
-    
-	return mostCentralEnt
+--    print("iterated and found", mostCentralEnt)
+	if not bestent then return nil end
+
+	return bestent
 end
 
 

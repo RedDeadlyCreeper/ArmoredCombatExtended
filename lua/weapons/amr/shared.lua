@@ -20,7 +20,12 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
- 
+SWEP.ZoomAccuracyImprovement = 0.95 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomRecoilImprovement = 0.6 -- 0.3 means 0.7 the recoil movement 
+
+SWEP.CrouchAccuracyImprovement = 0.85 -- 0.3 means 0.7 the inaccuracy
+SWEP.CrouchRecoilImprovement = 0.8 -- 0.3 means 0.7 the recoil movement
+
 -- Weapon info		
 SWEP.Purpose		= "Oversized Tank Sniper"	
 SWEP.Instructions	= "Crouch when aiming, Left mouse to shoot"		

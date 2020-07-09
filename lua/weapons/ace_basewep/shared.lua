@@ -56,7 +56,7 @@ SWEP.ScopeChopAngle = Angle(0, 0, -90)
 SWEP.ZoomTime = 0.4
 
 
-SWEP.InaccuracyCrouchBonus = 1.7
+SWEP.InaccuracyCrouchBonus = 0.7
 SWEP.InaccuracyDuckPenalty = 6
 
 SWEP.HasZoom = true
@@ -69,11 +69,11 @@ SWEP.Launcher = false
 SWEP.InaccuracyAccumulation = 1
 
 SWEP.ZoomFOV = 50
-SWEP.ZoomAccuracyImprovement = 0.2 -- 0.3 means 0.7 the inaccuracy
-SWEP.ZoomRecoilImprovement = 0.5 -- 0.3 means 0.7 the recoil movement
+SWEP.ZoomAccuracyImprovement = 0.9 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomRecoilImprovement = 0.6 -- 0.3 means 0.7 the recoil movement
 
-SWEP.CrouchAccuracyImprovement = 0.2 -- 0.3 means 0.7 the inaccuracy
-SWEP.CrouchRecoilImprovement = 0.5 -- 0.3 means 0.7 the recoil movement
+SWEP.CrouchAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
+SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement
 
 SWEP.IronSights = true
 SWEP.IronSightsPos = Vector(-2, -4.74, 2.98)

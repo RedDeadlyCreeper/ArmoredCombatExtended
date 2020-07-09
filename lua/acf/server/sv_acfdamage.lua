@@ -271,7 +271,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
 --	print("SpallPass")
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.0004
-	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
+	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*2),40)
 	local SpallWeight = TotalWeight/Spall*SpallMul*400
 	local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
@@ -314,7 +314,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	local TotalWeight = 3.1416*(Caliber/2)^2 * Armour * 0.00079
 	local Spall = math.min(math.floor((Caliber-3)*2*ACF.KEtoSpall*SpallMul),60)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35
-	local SpallVel = (HEFiller*8500/SpallWeight)^0.5/Spall*SpallMul
+	local SpallVel = (HEFiller*8500*25000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
@@ -556,7 +556,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local entClass = Entity:GetClass()
 	local obj = Entity:GetPhysicsObject()
 	local grav = true
-	local mass = 25
+	local mass = 5000 --Reduce odds of crazy physics
 	if obj:IsValid() then
 		mass = math.max(obj:GetMass(), mass)
 		if ISSITP then

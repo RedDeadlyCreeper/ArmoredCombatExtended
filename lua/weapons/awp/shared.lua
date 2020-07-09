@@ -20,6 +20,10 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
+SWEP.ZoomAccuracyImprovement = 0.99 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomRecoilImprovement = 0.99 -- 0.3 means 0.7 the recoil movement 
+SWEP.CrouchAccuracyImprovement = 0.7 -- 0.3 means 0.7 the inaccuracy
+SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement
  
 -- Weapon info		
 SWEP.Purpose		= "Powerful Sniper Rifle"	

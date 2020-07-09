@@ -192,25 +192,6 @@ function ENT:Think()
 end
 
 
---adapted from acf engine checks, thanks ferv
---returns if passes weldparent check.  True means good, false means bad
-function ENT:CheckWeldParent()
-	
-	local entParent = self:GetParent()
-
-	-- if it's not parented we're fine
-	if not IsValid( self:GetParent() ) then return true end
-
-	--if welded to parent, it's ok
-	for k, v in pairs( constraint.FindConstraints( self, "Weld" ) ) do
-		if v.Ent1 == entParent or v.Ent2 == entParent then return true end
-	end
-
-	return false
-	
-end
-
-
 function ENT:UpdateStatus()
 
 	local phys = self.Entity:GetPhysicsObject()  	
@@ -221,11 +202,6 @@ function ENT:UpdateStatus()
 
 	if phys:GetMass() < self.LegalMass then
 		self:SetNWBool("Status", "Illegal mass, should be " .. self.LegalMass .. " kg") 
-		return 
-	end
-	
-	if not self:CheckWeldParent() then
-		self:SetNWBool("Status", "Deactivated: parenting is disallowed") 
 		return 
 	end
 	

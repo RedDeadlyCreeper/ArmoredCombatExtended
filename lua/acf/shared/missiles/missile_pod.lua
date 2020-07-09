@@ -101,6 +101,49 @@ ACF_defineGun("70mmFFAR", { --id
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
+ACF_defineGun("70mmFFAR", { --id
+
+	name		= "70mm DAGR Pod Rocket",
+	desc		= "A 70mm FFAR, this one has a seeker built onto it.",
+	model		= "models/missiles/launcher7_70mm.mdl",
+	caliber		= 7,
+	gunclass	= "FFAR",
+    rack        = "70mm7xPOD",  -- Which rack to spawn this missile on?
+    weight		= 12,
+    length	    = 15,
+	year		= 1960,
+	rofmod		= 0.6,
+	roundclass	= "Rocket",
+	round		=
+	{
+		model		= "models/missiles/ffar_70mm.mdl",
+		rackmdl		= "models/missiles/ffar_70mm_closed.mdl",
+		maxlength	= 35,
+		casing		= 0.3,			-- thickness of missile casing, cm
+		armour		= 8,			-- effective armour thickness of casing, in mm
+		propweight	= 0.7,			-- motor mass - motor casing
+		thrust		= 15000,		-- average thrust - kg*in/s^2
+		burnrate	= 300,			-- cm^3/s at average chamber pressure
+		starterpct	= 0.2,
+        minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
+        dragcoef	= 0.001,		-- drag coefficient while falling
+        dragcoefflight  = 0.02,                 -- drag coefficient during flight
+	finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
+        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+	},
+
+    ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
+    guidance    = {"Dumb", "Infrared"},
+    fuses       = {"Contact", "Timed"},
+
+    racks       = {["70mm7xPOD"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+
+    seekcone    = 30,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+    viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.
+	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
+    armdelay    = 0.00     -- minimum fuse arming delay
+} )
+
 /*
 ACF_defineGun("40mmFFAR", { --id
 
@@ -143,8 +186,6 @@ ACF_defineGun("40mmFFAR", { --id
     agility     = 1,     -- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
-
-
 
 
 ACF_defineGun("70mmFFAR", { --id
