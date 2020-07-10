@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 437  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 439  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -22,7 +22,7 @@ ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^fa
 ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 0.125 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
+ACF.CrateVolEff = 0.135 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 5 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
