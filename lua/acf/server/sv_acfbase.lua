@@ -18,9 +18,10 @@ ACE.ECMPods = {}
 function updateContraptionList() --Only fails if every prop is parented to a holoentity, this is an almost nonexistent case and even then most people parent holos to the entity that made them.
 
 	updateContraptionsTick = updateContraptionsTick + 1 --Executes every 10-20 seconds
-	if updateContraptionsTick == 660 or updateContraptionsTick == 693 or updateContraptionsTick == 726 or updateContraptionsTick == 759 then --divides the props into 4 subiterations
+--	if updateContraptionsTick == 660 or updateContraptionsTick == 693 or updateContraptionsTick == 726 or updateContraptionsTick == 759 then --divides the props into 4 subiterations
+	if updateContraptionsTick >= 660 then
 
-		if updateContraptionsTick == 660 then --Creates initial contraption prop table
+--		if updateContraptionsTick == 660 then --Creates initial contraption prop table
 			print("[ACE] ContraptionScan")
 			--local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
 			proplist = ents.FindByClass( "prop_*" ) --Iterate through all props
@@ -31,6 +32,8 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 			table.Add( proplist, proplistadd )
 			proplistadd = ents.FindByClass( "acf_engine" ) 
 			table.Add( proplist, proplistadd )
+			proplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+			table.Add( proplist, proplistadd )
 			ACE.radarEntities = ents.FindByClass( "ace_trackingradar" )
 
 				for id, ent in pairs(ACE.radarEntities) do
@@ -39,7 +42,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 			table.Add( proplist, ACE.radarEntities )
 			propScanCount = table.Count(proplist)
 			
-		end
+--		end
 		
 --		local scanfrom = 0
 --		local scanto = 1
@@ -74,19 +77,19 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 
 
 		
-			for id, ent in pairs(proplist) do
+	for id, ent in pairs(proplist) do
 
-					if IsValid(ent) then 
+		if IsValid(ent) then 
 
-				local TestHeat = 0 --Heat addition system
+					local TestHeat = 0 --Heat addition system
 				if (ent.Heat or 0) > 0 then --
 					TestHeat = ent.Heat
-					print("HotCheck")
+--					print("HotCheck")
 				end
 				
 				scanEnt = GetParent(ent)
 	
-				if scanEnt:IsConstrained() then
+			if scanEnt:IsConstrained() then
 	
 					local ScanPhys = scanEnt:GetPhysicsObject()
 					local Mass = ScanPhys:GetMass()
@@ -109,7 +112,6 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 					end
 	
 	
-					if scanEnt != nil then
 	
 						if TestHeat > 0 then
 							scanEnt.THeat = (scanEnt.THeat or 0) + TestHeat
@@ -121,64 +123,44 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 							
 	
 							table.insert(PotentialParents, scanEnt)
-	--						print("Added Entity")
+							--print("Added Entity")
 						end
-	
-					end				
+				
 					
-				else
+			else
 	
-					if scanEnt != nil then
 	
 						if TestHeat > 0 then
 							scanEnt.THeat = (scanEnt.THeat or 0) + TestHeat
---							print(scanEnt.THeat)
---							print("Hot")
+							--print(scanEnt.THeat)
+							--print("Hot")
 						end
 	
 						if not (table.HasValue(PotentialParents,scanEnt)) then
 	
 							table.insert(PotentialParents, scanEnt)
-	--						print("Added Entity")
+							--print("Added Entity")
 						end
 	
-					end
-				end
-	
-	
-	
-					end
-	
 			end
-
-		proplist = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
-
-		for id, ent in pairs(proplist) do
-
-			scanEnt = GetParent(ent)
-
-			if scanEnt != nil then
-
-				if not (table.HasValue(PotentialParents,scanEnt)) then
-					table.insert(PotentialParents, scanEnt)
---					print("Added Entity")
-				end--
-
-			end
+	
+	
 
 		end
+	
+	end
 
 		--local proplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
 		--table.Add( proplist, proplistadd )
 
 
-		if updateContraptionsTick >= 759 then --Jobs done
+		if updateContraptionsTick >= 660 then --Jobs done
 			
 			ACE.contraptionEnts = PotentialParents
 --			print( table.Count( ACE.contraptionEnts ) )
 --			PrintTable(ACE.contraptionEnts)
 
-			updateContraptionsTick = updateContraptionsTick - 759
+			updateContraptionsTick = updateContraptionsTick - 660
 			PotentialParents = {}
 		end
 

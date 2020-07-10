@@ -15,8 +15,10 @@ function Round.create( Gun, BulletData )
 	
 	ACF_CreateBullet( BulletData )
 	
-	local bdata = ACF.Bullet[BulletData.Index]
+	local bdata = ACF.Bullet[BulletData.Index] or {}
 	
+	if table.IsEmpty( bdata ) then return false end
+
 	bdata.CreateTime = SysTime()
 	
 	ACFM_RegisterFlare(bdata)

@@ -183,20 +183,21 @@ if beingjammed < 1 then
 							local err = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
 							if err < besterr then --Sorts targets as closest to being directly in front of radar
-								testClosestToBeam = k
+								testClosestToBeam = table.getn( ownArray ) + 1
 								besterr = err
 							end
 						--print((entpos - thisPos):Length())
-						ownArray[k] = scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or ""
+						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
 
-						posArray[k] = entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCdis*0.1 )) --3 
+						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCdis*0.1 ))) --3 
 
-						velArray[k] = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCdis*0.05) )
-						velArray[k] = Vector(math.Clamp(velArray[k].x,-7000,7000),math.Clamp(velArray[k].y,-7000,7000),math.Clamp(velArray[k].z,-7000,7000))
+						local veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCdis*0.05) )
+						veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
 
-						if math.abs(velArray[k].x) >= 7000 or math.abs(velArray[k].y) >= 7000 or math.abs(velArray[k].z) >= 7000 then --IDK if this is more intensive than length
-						velArray[k] = Vector(0,0,0)
+						if math.abs(veltest.x) >= 7000 or math.abs(veltest.y) >= 7000 or math.abs(veltest.z) >= 7000 then --IDK if this is more intensive than length
+							veltest = Vector(0,0,0)
 						end
+						table.insert(velArray,veltest)
 
 					end
 

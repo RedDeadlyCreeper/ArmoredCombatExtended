@@ -121,9 +121,9 @@ if self.Active and self.IsLegal then
 
 						detected = 1
 
-						radIDs[k] = ACE.radarIDs[scanEnt]
+						table.insert(radIDs,ACE.radarIDs[scanEnt])
 					
-						detAngs[k] = Angle(nonlocang.p * randinac.p, nonlocang.y * randinac.y, nonlocang.r * randinac.r) --3 
+						table.insert(detAngs, Angle(nonlocang.p * randinac.p, nonlocang.y * randinac.y, nonlocang.r * randinac.r) )--3 
 						end
 
 					end

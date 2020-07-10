@@ -10,6 +10,9 @@ ACFM_ECMUID = 0
 
 
 function ACFM_RegisterFlare(bdata)
+	
+	local test = ACFM_Flares[bdata.Index] or {}
+	if table.IsEmpty( test ) then return false end
 
 	bdata.FlareUID = ACFM_FlareUID
 	ACFM_Flares[bdata.Index] = ACFM_FlareUID
@@ -24,7 +27,7 @@ function ACFM_RegisterFlare(bdata)
 
 	
 	ACFM_OnFlareSpawn(bdata)
-	
+
 end
 
 function ACFM_RegisterECM(bdata)

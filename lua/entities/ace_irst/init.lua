@@ -107,7 +107,7 @@ if self.Active and self.IsLegal then
 	local testClosestToBeam = -1
 	local besterr = math.huge --Hugh mungus number
 
-
+--	PrintTable(ScanArray)
 	for k, scanEnt in pairs(ScanArray) do
 
 		if(IsValid(scanEnt))then
@@ -146,17 +146,20 @@ if self.Active and self.IsLegal then
 							local err = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
 							if err < besterr then --Sorts targets as closest to being directly in front of radar
-								testClosestToBeam = k
+								testClosestToBeam =  table.getn( ownArray ) + 1
 								besterr = err
 							end
 						--print((entpos - thisPos):Length())
 
 
-						ownArray[k] = scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or ""
-						
+--						ownArray[k] = scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or ""
+						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+--						ownArray[k] = scanEnt:CPPIGetOwner():GetName()
+--						print(scanEnt:CPPIGetOwner():GetName())
+
 						local angerr = 1 + randinac * (errorFromAng + errorFromHeat)
 
-						posArray[k] = nonlocang * angerr --3 
+						table.insert(posArray,nonlocang * angerr )
 
 					end
 
