@@ -21,7 +21,7 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
-	self.Cone = 15
+	self.Cone = 15 --30 degree default cone
 	self.InaccuracyMul = (0.035 * (self.Cone/15)^0.6)*0.2 
 	self.DPLRFAC = 65-(self.Cone/2)
 	
@@ -54,7 +54,7 @@ function ENT:TriggerInput( inp, value )
 		self:SetActive((value ~= 0) and self:isLegal())
 	end
 	if inp == "Cone" then
-		self.Cone = math.Clamp(value,3,30)
+		self.Cone = math.Clamp(value/2,3,30)
 		local curTime = CurTime()	
 		self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
 		self.InaccuracyMul = (0.035 * (self.Cone/15)^0.6)*0.2     -- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg

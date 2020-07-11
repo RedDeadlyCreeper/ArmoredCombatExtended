@@ -21,7 +21,7 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
-	self.Cone = 60 --120 degree forward facing cone
+	self.Cone = 45 --120 degree forward facing cone
 	
 	self.Heat = 21
 

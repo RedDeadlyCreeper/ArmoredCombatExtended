@@ -93,7 +93,7 @@ function SWEP:Think()
 --	end
 	
 	if !(self.Owner:IsOnGround()) then --If owner leaves ground cause 2 second penalty to firing
-	self:SetNextPrimaryFire( CurTime() + 2 )
+	self:SetNextPrimaryFire( CurTime() + 1 )
 	end
 
 	if self.ThinkAfter then self:ThinkAfter() end

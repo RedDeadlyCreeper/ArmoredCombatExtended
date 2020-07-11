@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 439  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 440  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -16,15 +16,15 @@ ACF.KinFudgeFactor = 2.1	--True kinetic would be 2, over that it's speed biaised
 ACF.KEtoRHA = 0.25		--Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
 ACF.GroundtoRHA = 0.15		--How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall = 1
-ACF.AmmoMod = 0.575		-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoMod = 1.15		-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.ArmorMod = 1 
 ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 0.135 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
+ACF.CrateVolEff = 0.375 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 5 --How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 1.5 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.

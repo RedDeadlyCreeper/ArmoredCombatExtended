@@ -21,7 +21,7 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
-	self.Cone = 90
+	self.Cone = 45
 
 	self.LegalTick = 0
 	self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds

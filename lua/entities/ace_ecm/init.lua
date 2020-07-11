@@ -103,12 +103,10 @@ if self.Active and self.IsLegal and not self.OutOfEnergy then
 	local thisPos = self:GetPos()
 
 	scanEnt = ACE.radarEntities[self.JamID]
-		
-		local entpos = scanEnt:GetPos()
 
 		if(IsValid(scanEnt))then
 			local radActive = scanEnt.Active 
-				
+			local entpos = scanEnt:GetPos()
 
 			local LOStr = util.TraceLine( {start = thisPos ,endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
 
@@ -137,7 +135,12 @@ else
 
 end
 
+
+if self.OutOfEnergy then
+	WireLib.TriggerOutput( self, "Energy", 0 )
+else
 WireLib.TriggerOutput( self, "Energy", self.JamEnergy )
+end
 
 end
 
