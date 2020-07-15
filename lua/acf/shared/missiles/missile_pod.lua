@@ -46,7 +46,7 @@ ACF_defineGun("40mmFFAR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 		finmul		= 0.003,		-- fin multiplier (mostly used for unpropelled guidance)
-		penmul		= math.sqrt(4)
+		penmul		= math.sqrt(2)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -89,7 +89,7 @@ ACF_defineGun("70mmFFAR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 	finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -129,7 +129,7 @@ ACF_defineGun("70mmFFARDAGR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 	finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -138,13 +138,15 @@ ACF_defineGun("70mmFFARDAGR", { --id
 
     racks       = {["70mm7xPOD"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
+    agility     = 0.08,     -- multiplier for missile turn-rate.
+
     seekcone    = 30,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
     viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.
 	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
-/*
+--[[
 ACF_defineGun("40mmFFAR", { --id
 
 	name		= "40mm Pod Rocket",
@@ -230,4 +232,4 @@ ACF_defineGun("70mmFFAR", { --id
     agility     = 1,     -- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
-*/
+]]--

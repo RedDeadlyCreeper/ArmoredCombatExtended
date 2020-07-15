@@ -422,8 +422,8 @@ function ENT:SetStatusString()
 		self:SetNWString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
 		return
 	end
-    if self:GetPhysicsObject():GetMass() < (self.LegalWeight or self.Mass) then
-        self:SetNWString("Status", "Underweight! (should be " .. tostring(self.LegalWeight or self.Mass) .. " kg)")
+    if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)-1) then
+        self:SetNWString("Status", "Underweight! (should be " .. tostring((self.LegalWeight or self.Mass)-1) .. " kg)")
         return
     end
     
@@ -657,7 +657,7 @@ function ENT:SetLoadedWeight()
     local addWeight = 0
     
     for k, missile in pairs(self.Missiles) do
-        addWeight = addWeight + missile.RoundWeight
+        addWeight = addWeight + missile.RoundWeight + 1
         
         local phys = missile:GetPhysicsObject()  	
         if (IsValid(phys)) then  		
@@ -907,7 +907,7 @@ function ENT:CheckLegal()
 	if not self:IsSolid() then return false end
 	
 	-- make sure weight is not below stock
-	if self:GetPhysicsObject():GetMass() < (self.LegalWeight or self.Mass) then return false end
+	if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)) then return false end --If you really want your 5kg per launcher you can have it, this fixes some rounding fun when setting launcher weight.
 
 	-- update the acfphysparent
 	ACF_GetPhysicalParent(self)

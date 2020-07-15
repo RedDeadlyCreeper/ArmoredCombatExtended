@@ -226,12 +226,12 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	DetRand = math.Rand(0,1) * CMul
 	end
 	
-	if DetRand >= 0.975 then --Tests if cooks off
+	if DetRand >= 0.95 then --Tests if cooks off
 		self.Inflictor = Inflictor
 		self.Damaged = CurTime() + (5 - Ratio*3)
 		Wire_TriggerOutput(self, "On Fire", 1)		
 --		print("Cookoff")
-	elseif DetRand >= 0.85 then  
+	elseif DetRand >= 0.7 then  
 		self.Inflictor = Inflictor
 		self.Damaged = 1 --Instant explosion guarenteed
 		Wire_TriggerOutput(self, "On Fire", 1)				
@@ -472,7 +472,7 @@ function ENT:Think()
 	
 	if ACF.CurTime > self.NextLegalCheck then
 		--local minmass = math.floor(self.EmptyMass+self.AmmoMassMax*((self.Ammo-1)/math.max(self.Capacity,1)))-5  -- some possible weirdness with heavy shells, and refills.  just going to check above empty mass
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, false, true, false, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, false, true, true, true)
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:UpdateOverlayText()
 

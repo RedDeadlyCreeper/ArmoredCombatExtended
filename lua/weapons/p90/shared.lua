@@ -88,7 +88,7 @@ function SWEP:InitBulletData()
 		self.BulletData.FrAera    = 3.1416 * (self.BulletData.Caliber/2)^2
 		self.BulletData.ProjMass  = self.BulletData.FrAera * (self.BulletData.ProjLength*7.9/1000)
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-		self.BulletData.DragCoef  = 0.1 --Alternatively manually set it
+		self.BulletData.DragCoef  = 0.05 --Alternatively manually set it
 
 		--Don't touch below here
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		

@@ -51,7 +51,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 
     racks       = {["1x BGM-71E"] = true, ["2x BGM-71E"] = true, ["4x BGM-71E"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    agility     = 0.25,     -- multiplier for missile turn-rate.
+    agility     = 0.14,     -- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -92,7 +92,7 @@ ACF_defineGun("9M113 ASM", { --id
 
     viewcone    = 25,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.21,		-- multiplier for missile turn-rate.
+    agility     = 0.04,		-- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -133,7 +133,7 @@ ACF_defineGun("AT-3 ASM", { --id
 
 	skinindex   = {HEAT = 0, HE = 1},
 
-    agility     = 0.6,     -- multiplier for missile turn-rate.
+    agility     = 0.1,     -- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -168,14 +168,14 @@ ACF_defineGun("Ataka ASM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-	guidance    = {"Dumb", "Laser"},
+	guidance    = {"Dumb", "Laser", "Infrared"},
     fuses       = {"Contact", "Optical"},
 
     racks       = {["1x Ataka"] = true, ["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.18,		-- multiplier for missile turn-rate.
+    agility     = 0.03,		-- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -198,8 +198,8 @@ ACF_defineGun("AT-2 ASM", { --id
 		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
 		thrust		= 1500,			-- average thrust - kg*in/s^2
-		burnrate	= 50,			-- cm^3/s at average chamber pressure
-		starterpct	= 0.25,			-- percentage of the propellant consumed in the starter motor.
+		burnrate	= 25,			-- cm^3/s at average chamber pressure
+		starterpct	= 0.5,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.01,                 -- drag coefficient during flight

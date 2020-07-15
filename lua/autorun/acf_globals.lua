@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 440  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 441  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -508,7 +508,7 @@ end
 -- checks if an ent meets the given requirements for legality
 -- MinInertia needs to be mass normalized (normalized=inertia/mass)
 -- ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
-function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
+function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip)
 	-- check it exists
 	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
 
@@ -558,10 +558,13 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 	if IsValid( Ent:GetParent() ) then
 
 		-- if no parenting allowed
-		if not (Parentable or ParentRequiresWeld) then
+		if not (Parentable) then
 			table.insert(problems,"Parented")
 		end
 
+
+
+		--[[ --Obsolete, used weld input for parentcheck
 		-- legal if weld not required, otherwise check if parented with weld
 		if ParentRequiresWeld then
 			local welded = false
@@ -579,6 +582,13 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 				table.insert(problems,"Parented without weld to root parent")
 			end
 		end
+		]]--
+
+		--Re-used requires wel parent, don't mind me being evil
+		if NeedsGateParent and (not IsValid( Ent:GetParent():GetParent()) ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
+			table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
+		end
+
 	end
 
 	-- legal if number of problems is 0

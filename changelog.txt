@@ -244,3 +244,48 @@ r100
 -Buffed ROF of most MGs
 -Throttle effects engine ceasing damage
 -Added APHECBC shells, APHE that normalizes
+
+*r121
+-Missile Radar parenting fix
+-Added ECM, a new system that can be used to jam the new radar entities
+-Reworked all missile guidance to utilize the new radar and IR systems
+-Added an IRST tracker that uses heat to get the direction of an entitiy
+-Added Tracking Radar which outputs tracking information of an entity and with realistic shortcomings of real radar.
+-Nerfed the capacity of ammo by 0.25x and increased crate explosion power by 5x to compensate
+-Significantly reduced the air resistence of shells
+-A destroyed seat will now kill the driver
+-Jumping with a swep causes the a 2 second fire penalty to occur
+-Sprintmul lowered for sweps, also sprinting now doubles inaccuracy
+-The AT-4 now spawns with more ammo
+-Sweps now compensate for lag
+-SWEPS dont fire in godmode
+-fixed GLATGM Lolpen display displaying wrong penetration
+-Added translations for APHE and APHECBC
+-RAC HE, AKA the end of the world
+-Up to 2x Overdrive gearing for gearboxes
+-Gun ROF Limiter clamped to a max of a 10 second reload.
+-HESH penetration display
+-Way more HEAT fragments and AP fragments
+-Added 2 types of RWR to detect enemy radar
+-Increased weight of debris override weight
+
+*r122
+-Decreased contraption profiler lag by distributing the load over multiple seconds
+-Changed ammovolume to 0.75x what it was before the original ammo change
+-Decreased airborn penalty for sweps from 2 seconds to 1 second
+-Reduced IRST cone to 90 degrees
+-A few other bugfixes
+
+*r123
+-Heavily optimized contraption profiler
+-ATGMs now have boosted agility on launch
+-Reduced insane agility on ATGMs
+-Added DAGR FFAR and added IR seeker for AGM-114
+-Increased spalling damage and made it travel a minimum distance
+-Doubled ammo detonation chance
+-Fixed missile launcher legal weight rounding error
+-Decreased swep jump penalty from 1s to 0.25s
+-Significantly increased the drag of shotguns
+-Gave AWP explosive ammo and reduced velocity
+-Made Engines, Gearboxes, Ammo, and Fuel to require propper gate parenting(Trace Bypass exploit)
+-Increased contraption profiler check delay from 10-20s to 20-40s, made dupefinished cause a check

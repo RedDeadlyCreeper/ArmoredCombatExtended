@@ -122,8 +122,17 @@ function ENT:CalcFlight()
 		local NewDir = Dir
 		local DirDiff = 0
 
+--		if self.Fuse and (CurTime() - self.Fuse.TimeStarted < self.MinArmingDelay or not self.Fuse:IsArmed()) then
+
+
+
 		if LastLOS then
-			local Agility = self.Agility
+			local AGMult = 1
+			if CurTime() - self.Fuse.TimeStarted < 0.1 then
+				AGMult = 10
+			end
+
+			local Agility = self.Agility * AGMult
 			local SpeedMul = math.min((Speed / DeltaTime / self.MinimumSpeed) ^ 3,1)
 
 			local LOSDiff = math.deg(math.acos( LastLOS:Dot(LOS) )) * 20

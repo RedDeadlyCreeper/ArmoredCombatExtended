@@ -92,8 +92,8 @@ function SWEP:Think()
 --		self:ZoomThink()
 --	end
 	
-	if !(self.Owner:IsOnGround()) then --If owner leaves ground cause 2 second penalty to firing
-	self:SetNextPrimaryFire( CurTime() + 1 )
+	if !(self.Owner:IsOnGround()) then --If owner leaves ground cause 0.25 second penalty to firing
+	self:SetNextPrimaryFire( CurTime() + 0.25 )
 	end
 
 	if self.ThinkAfter then self:ThinkAfter() end
