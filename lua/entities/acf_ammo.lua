@@ -133,7 +133,7 @@ function ENT:Initialize()
 	self.Damaged = false
 	self.CanUpdate = true
 	self.Load = false
-	self.EmptyMass = 0
+	self.EmptyMass = 1
 	self.AmmoMassMax = 0
 	self.NextMassUpdate = 0
 	self.Ammo = 0
@@ -150,7 +150,13 @@ function ENT:Initialize()
 	self.NextThink = CurTime() +  1
 	
 	ACF.AmmoCrates = ACF.AmmoCrates or {}
-	
+
+	self.Capacity = 1
+	self.AmmoMassMax =  1
+	self.Caliber = 1
+	self.RoFMul = 1
+	self.LastMass = 1
+
 end
 
 function ENT:ACF_Activate( Recalc )
@@ -199,10 +205,12 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 		if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
 			self.Inflictor = Inflictor
 		end
-		if self.Ammo > 1 or (self.BulletData.Type == "Refill") then
+		if self.Ammo > 1 and (not (self.BulletData.Type == "Refill")) then
 			ACF_ScaledExplosion( self )
 		else
-			ACF_HEKill( self, VectorRand() )
+--			ACF_HEKill( self, VectorRand() )
+			self:Remove()
+			--print("HEKill")
 		end
 	end
 	
@@ -221,7 +229,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	local DetRand = 0	
 
 	if (self.BulletData.Type == "Refill") then
-	DetRand = 0.85
+	DetRand = 0.75
 	else
 	DetRand = math.Rand(0,1) * CMul
 	end
@@ -263,8 +271,13 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
 	Ammo.Id = Id
 	Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 	
+	local vol = math.floor(Ammo:GetPhysicsObject():GetVolume())
+
 	Ammo.Ammo = Ammo.Capacity
-	Ammo.EmptyMass = ACF.Weapons.Ammo[Ammo.Id].weight
+
+	Ammo.EmptyMass = ACF.Weapons.Ammo[Ammo.Id].weight or 1
+
+
 	Ammo.Mass = Ammo.EmptyMass + Ammo.AmmoMassMax
 	Ammo.LastMass = 1
 	
@@ -395,15 +408,45 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
 	
+	local Min,Max = self:GetCollisionBounds()
+	local Size = (Max - Min)
+
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
+
+	local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
+	local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
+
+	if width > 4 then
+	local shellLength = math.min(shellLength,width*5)
+	end
+
+--	print(shellLength)
+
 	self.Volume = vol*Efficiency
-	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
-	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
-	self.AmmoMassMax = (self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2 -- why *2 ?
-	self.Caliber = GunData.caliber
+--	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
+
+	--Vertical placement
+	local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
+--	print("Cap1: "..cap1)
+	--Horizontal Placement 1
+	local cap2 = (math.floor(Size.x/shellLength) * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
+--	print("Cap2: "..cap2)
+	--Horizontal placement 2
+	local cap3 = (math.floor(Size.y/shellLength) * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
+--	print("Cap3: "..cap3)
+
+--	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
+	if not (self.BulletData.Type == "Refill") then
+	self.Capacity = math.max(cap1,cap2,cap3)
+	self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
+	else
+	self.Capacity = 99999999
+	self.AmmoMassMax = vol*1	
+	end
+	self.Caliber = width or 1
 	self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
-	
+
 	self:SetNWString( "Ammo", self.Ammo )
 	self:SetNWString( "WireName", GunData.name .. " Ammo" )
 	
@@ -418,7 +461,7 @@ function ENT:UpdateMass()
 	self.Mass = self.EmptyMass + self.AmmoMassMax*(self.Ammo/math.max(self.Capacity,1))
 	
 	--reduce superflous engine calls, update crate mass every 5 kgs change or every 10s-15s
-	if math.abs(self.LastMass - self.Mass) > 5 or CurTime() > self.NextMassUpdate then
+	if math.abs((self.LastMass or 0) - self.Mass) > 5 or CurTime() > self.NextMassUpdate then
 		self.LastMass = self.Mass
 		self.NextMassUpdate = CurTime()+math.Rand(10,15)
 		local phys = self:GetPhysicsObject()  	
@@ -504,11 +547,15 @@ function ENT:Think()
 	
 	-- cookoff handling
 	if self.Damaged then
-		if self.Ammo <= 1 or self.Damaged < CurTime() then -- immediately detonate if there's 1 or 0 shells
+		CrateType = self.BulletData.Type or "Refill"
+		if CrateType == "Refill" then
+--			ACF_ScaledExplosion( self ) 
+--			ACF_HEKill( self, VectorRand() )
+			self:Remove()
+--			print("HEKill") --:Remove()
+		elseif self.Ammo <= 1 or self.Damaged < CurTime() then -- immediately detonate if there's 1 or 0 shells
 			ACF_ScaledExplosion( self ) -- going to let empty crates harmlessly poot still, as an audio cue it died
 		else
-			CrateType = self.BulletData.Type or "Refill"
-			if not (CrateType == "Refill") then
 				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
 					self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
 					local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
@@ -524,12 +571,11 @@ function ENT:Think()
 					self.Ammo = self.Ammo - 1
 					
 				end
-			end
 			self:NextThink( CurTime() + 0.01 + self.BulletData.RoundVolume^0.5/100 )
 		end
 
 	-- Completely new, fresh, genius, beautiful, flawless refill system.
-	elseif self.RoundType == "Refill" and self.Ammo > 0 and self.Load then
+	elseif self.RoundType == "Refill" and self.Load then
 		for _,Ammo in pairs( ACF.AmmoCrates ) do
 			if Ammo.RoundType ~= "Refill" then
 				local dist = self:GetPos():Distance(Ammo:GetPos())
@@ -542,7 +588,7 @@ function ENT:Think()
 							self:RefillEffect( Ammo )
 						end
 								
-						local Supply = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*500))*self:GetPhysicsObject():GetMass()^1.1)
+						local Supply = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*5000))*self:GetPhysicsObject():GetMass()^1.2)
 						--Msg(tostring(50000).."/"..((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*1000).."/"..dist.."="..Supply.."\n")
 						local Transfert = math.min(Supply, Ammo.Capacity - Ammo.Ammo)
 						Ammo.Ammo = Ammo.Ammo + Transfert

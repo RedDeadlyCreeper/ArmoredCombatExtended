@@ -827,9 +827,19 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
 			HitRes.Damage   = 999999999999999										-- I have yet to meet one who can survive this Edit: NVM
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
-			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)			
-			ACF_HE( Entity:GetPos() , Vector(0,0,1) , armor*0.01 , armor*0.1 , Inflictor , Entity, Entity ) --ERABOOM
---			HitRes.Overkill = 0						-- Remaining penetration
+			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)		
+			
+			local HEWeight = armor*0.1			
+			local Radius = (HEWeight*0.0001)^0.33*8*39.37
+
+			ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*1 , Inflictor , Entity, Entity ) --ERABOOM
+			local Flash = EffectData()
+				Flash:SetOrigin( Entity:GetPos() )
+				Flash:SetNormal( Vector(0,0,-1) )
+				Flash:SetRadius( math.max( Radius, 1 ) )
+			util.Effect( "ACF_Scaled_Explosion", Flash )
+
+			--			HitRes.Overkill = 0						-- Remaining penetration
 --			HitRes.Loss     = 1						-- Energy loss in percents 
 
 			--ACF.ERAEffectivenessMult

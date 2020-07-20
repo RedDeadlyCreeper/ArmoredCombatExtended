@@ -16,13 +16,15 @@ ACF.KinFudgeFactor = 2.1	--True kinetic would be 2, over that it's speed biaised
 ACF.KEtoRHA = 0.25		--Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
 ACF.GroundtoRHA = 0.15		--How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall = 1
-ACF.AmmoMod = 1.15		-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoMod = 2.6		-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoLengthMul = 1
+ACF.AmmoWidthMul = 1
 ACF.ArmorMod = 1 
 ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 0.375 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
+ACF.CrateVolEff = 1 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 1.5 --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
@@ -30,7 +32,7 @@ ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower 
 ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.AluminumSpallResist=1.5  --Lower = less damage from spall
 ACF.AluminumSpallMult =  2  --Higher = spalls more
-ACF.AluminumHeatMul = 4  --Higher = More damage from HEAT
+ACF.AluminumHeatMul = 80  --Higher = More damage from HEAT
 
 ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CastResilianceFactor = 35 --Higher = less damage, Lower = more damage. 2x = half damage.
@@ -39,8 +41,8 @@ ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = les
 ACF.CeramicResilianceFactor = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.CeramicPierceDamage = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 	
-ACF.RubberEffectiveness = 0.05
-ACF.RubberResilianceFactor = 3.5 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberEffectiveness = 0.02
+ACF.RubberResilianceFactor = 1.5 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberResilianceFactorCatch = 0.05 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
 ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
 ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
@@ -68,9 +70,9 @@ ACF.APDSDamageMult = 1.5
 ACF.APDSSDamageMult = 1.55
 ACF.HVAPDamageMult = 1.65
 ACF.FLDamageMult = 1.4
-ACF.HEATDamageMult = 1.5
+ACF.HEATDamageMult = 2
 ACF.HEDamageMult = 2
-ACF.HESHDamageMult = 1
+ACF.HESHDamageMult = 1.2
 ACF.HPDamageMult = 4
 
 --Material thickness exponential curves, implemented to reduce high thickness memes.
@@ -79,7 +81,7 @@ ACF.CurveRHA = 0.99
 ACF.CurveCast = 0.97
 ACF.CurveCeram = 0.95
 ACF.RubbCurve = 0.90
-ACF.AluminumCurve = 0.96
+ACF.AluminumCurve = 0.93
 ACF.TextoliteCurve = 0.94
 
 

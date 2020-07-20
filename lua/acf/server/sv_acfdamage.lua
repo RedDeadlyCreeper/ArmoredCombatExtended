@@ -21,17 +21,10 @@ local TraceInit = { output = TraceRes }
 function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 	local Power = FillerMass * ACF.HEPower					--Power in KiloJoules of the filler mass of  TNT
 	local Radius = (FillerMass)^0.33*8*39.37				--Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m
---	print("Radius: "..Radius/39.37)
 	local MaxSphere = (4 * 3.1415 * (Radius*2.54 )^2) 		--Surface Aera of the sphere at maximum radius
 	local Amp = math.min(Power/2000,50)
 	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )  
 	--debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
-
-	local BoomCount = math.Clamp(math.floor((Power^0.33)/200),1,4)
---	local BoomCount = 1
---	print("BoomCount: "..BoomCount)
---	print("BoomPow: "..Power)
---	Power = 10*((Power^0.33) / BoomCount)^3
 	
 	local Targets = ents.FindInSphere( Hitpos, Radius )
 	
@@ -39,36 +32,17 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	local FragWeight = FragMass/Fragments
 	local FragVel = (Power*50000/FragWeight/Fragments)^0.5
 	local FragAera = (FragWeight/7.8)^0.33
-	local SavedFragVel=FragVel
-
---	Power = Power / BoomCount * 2
-
-
-	local savedPow = Power
---	print("BoomMiniPow: "..Power)
 	
-	local LoopKill = true	
-	local PowerSpent = 0
-	local Iterations = 0
-	local Damage = {}
-	local TotalAera = 0
-		
 	local OccFilter = { NoOcc }
 	TraceInit.filter = OccFilter
-	for i=1,BoomCount,1 do
-	
-	Power = savedPow
-	OccFilter = { NoOcc }
-	TraceInit.filter = OccFilter
-	FragVel=SavedFragVel
-	LoopKill = true
+	local LoopKill = true
 	
 	while LoopKill and Power > 0 do
 		LoopKill = false
-		PowerSpent = 0
-		Iterations = 0
-		Damage = {}
-		TotalAera = 0
+		local PowerSpent = 0
+		local Iterations = 0
+		local Damage = {}
+		local TotalAera = 0
 		for i,Tar in pairs(Targets) do
 			Iterations = i
 			if ( Tar != nil and Power > 0 and not Tar.Exploding ) then
@@ -155,7 +129,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			local Tar = Table.Ent
 			local Feathering = (1-math.min(1,Table.Dist/Radius)) ^ ACF.HEFeatherExp
 			local AeraFraction = Table.Aera/TotalAera
-			local PowerFraction = Power * AeraFraction * BoomCount	--How much of the total power goes to that prop
+			local PowerFraction = Power * AeraFraction	--How much of the total power goes to that prop
 			local AreaAdjusted = (Tar.ACF.Aera / ACF.Threshold) * Feathering
 			
 			local BlastRes
@@ -220,7 +194,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
 							local Debris = ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 33.3 * (GetConVarNumber("acf_hepush") * 0.1 or 1) )
+							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 33.3 * (GetConVarNumber("acf_hepush") or 1) )
 						end
 					end
 				end)
@@ -236,7 +210,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					table.insert( OccFilter , Debris )						--Add the debris created to the ignore so we don't hit it in other rounds
 					LoopKill = true --look for fresh targets since we blew a hole somewhere
 				else
-					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 33.3 * (GetConVarNumber("acf_hepush") * 0.1 or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
+					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 10 * (GetConVarNumber("acf_hepush") or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
 				end
 			end
 			PowerSpent = PowerSpent + PowerFraction*BlastRes.Loss/2--Removing the energy spent killing props
@@ -244,7 +218,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 		end
 		Power = math.max(Power - PowerSpent,0)	
 	end
-	end
+		
 end
 
 
@@ -685,7 +659,7 @@ function ACF_ScaledExplosion( ent )
 				else
 					local FoundHEWeight
 					if Found:GetClass() == "acf_fueltank" then
-						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 0.1
+						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 10
 					else
 						local HE, Propel
 						if Found.RoundType == "Refill" then
@@ -727,7 +701,7 @@ function ACF_ScaledExplosion( ent )
 	ent:Remove()
 	
 	
-	HEWeight=HEWeight*ACF.BoomMult
+	HEWeight=HEWeight*ACF.BoomMult*1.5
 	Radius = (HEWeight)^0.33*8*39.37
 			
 	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )

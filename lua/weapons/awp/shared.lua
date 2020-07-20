@@ -73,16 +73,16 @@ SWEP.CarrySpeedMul = 0.8 --WalkSpeedMult when carrying the weapon
 --
 
 function SWEP:InitBulletData()
-	
+
 	self.BulletData = {}
 
 		self.BulletData.Id = "7.62mmMG"
-		self.BulletData.Type = "HE"
-		self.BulletData.Id = 3
+		self.BulletData.Type = "AP"
+		self.BulletData.Id = 1
 		self.BulletData.Caliber = 0.762
-		self.BulletData.PropLength = 4 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 5.1 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-		self.BulletData.Data5 = 20  --He Filler or Flechette count
+		self.BulletData.PropLength = 20 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 12 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
 		self.BulletData.Data8 = 0
@@ -98,16 +98,14 @@ function SWEP:InitBulletData()
 		self.BulletData.FrAera    = 3.1416 * (self.BulletData.Caliber/2)^2
 		self.BulletData.ProjMass  = self.BulletData.FrAera * (self.BulletData.ProjLength*7.9/1000)
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-		self.BulletData.FillerVol = self.BulletData.Data5
-		self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity/1000
-				self.BulletData.DragCoef  = 0 --Alternatively manually set it
-		--self.BulletData.DragCoef  = ((self.BulletData.FrAera/10000)/self.BulletData.ProjMass)	
+--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
+		self.BulletData.DragCoef  = ((self.BulletData.FrAera/10000)/self.BulletData.ProjMass)	
 
 		--Don't touch below here
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		
 		self.BulletData.ShovePower = 0.2
 		self.BulletData.KETransfert = 0.3
-		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod
+		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod * 4
 		self.BulletData.Pos = Vector(0 , 0 , 0)
 		self.BulletData.LimitVel = 800	
 		self.BulletData.Ricochet = 60
@@ -120,7 +118,7 @@ function SWEP:InitBulletData()
 		self.Tracer = self.BulletData.Tracer
 		self.Caliber = self.BulletData.Caliber
 		self.ProjMass = self.BulletData.ProjMass
-		self.FillerMass = self.BulletData.FillerMass
+		self.FillerMass = self.BulletData.Data5
 		self.DragCoef = self.BulletData.DragCoef
 		self.Colour = self.BulletData.Colour
 		

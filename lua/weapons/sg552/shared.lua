@@ -2,7 +2,7 @@ AddCSLuaFile("shared.lua")
 SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
-SWEP.PrintName		= "P90"
+SWEP.PrintName		= "SG552"
 SWEP.Slot		    = 2
 SWEP.SlotPos		= 1			
 end
@@ -11,8 +11,8 @@ SWEP.Spawnable		= true
 
 --Visual
 SWEP.ViewModelFlip 	= true
-SWEP.ViewModel		= "models/weapons/v_smg_p90.mdl"	
-SWEP.WorldModel		= "models/weapons/w_smg_p90.mdl"	
+SWEP.ViewModel		= "models/weapons/v_rif_sg552.mdl"	
+SWEP.WorldModel		= "models/weapons/w_rif_sg552.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
 SWEP.HoldType		= "ar2"		
 SWEP.CSMuzzleFlashes	= true
@@ -20,28 +20,24 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
-SWEP.ZoomAccuracyImprovement = 0.63 -- 0.3 means 0.7 the inaccuracy
-SWEP.ZoomRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement 
-SWEP.CrouchAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
-SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement 
-
+ 
 -- Weapon info		
-SWEP.Purpose		= "Rush B"	
+SWEP.Purpose		= "Slow but sure NATO shooter"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/p90/p90-1.wav"	
+SWEP.Primary.Sound			= "weapons/sg552/sg552-1.wav"	
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 0.25	
-SWEP.Primary.RecoilAngleVer	= 0.15	
+SWEP.Primary.RecoilAngleVer	= 0.18	
 SWEP.Primary.RecoilAngleHor	= 0.1		
-SWEP.Primary.Cone			= 0.0175		
-SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 50		
-SWEP.Primary.DefaultClip	= 50			
+SWEP.Primary.Cone			= 0.005		
+SWEP.Primary.Delay			= 0.09
+SWEP.Primary.ClipSize		= 30		
+SWEP.Primary.DefaultClip	= 30			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= 1	
-SWEP.Primary.Ammo		= "SMG1"	
+SWEP.Primary.Ammo		= "AR2"	
 
 SWEP.Secondary.Ammo		= "none"	
 SWEP.Secondary.ClipSize		= -1		
@@ -49,17 +45,20 @@ SWEP.Secondary.DefaultClip	= -1
 
 SWEP.ReloadSoundEnabled = 1
 
-SWEP.Category 			= "ACE Sweps - SMG"
+SWEP.Category 			= "ACE Sweps - AR"
 
 SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 2
-SWEP.InaccuracyAccumulationRate = 0.15
+SWEP.MaxInaccuracyMult = 5
+SWEP.InaccuracyAccumulationRate = 0.3
 SWEP.InaccuracyDecayRate = 1
-SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon
 
+SWEP.HasScope = true
+SWEP.ZoomFOV = 20
+
+SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon
 --
 
 function SWEP:InitBulletData()
@@ -69,9 +68,9 @@ function SWEP:InitBulletData()
 		self.BulletData.Id = "7.62mmMG"
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
-		self.BulletData.Caliber = 0.57
-		self.BulletData.PropLength = 16 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 12 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.Caliber = 0.556
+		self.BulletData.PropLength = 8 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 3.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
@@ -88,13 +87,14 @@ function SWEP:InitBulletData()
 		self.BulletData.FrAera    = 3.1416 * (self.BulletData.Caliber/2)^2
 		self.BulletData.ProjMass  = self.BulletData.FrAera * (self.BulletData.ProjLength*7.9/1000)
 		self.BulletData.PropMass  = self.BulletData.FrAera * (self.BulletData.PropLength*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-		self.BulletData.DragCoef  = 0.08 --Alternatively manually set it
+--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
+		self.BulletData.DragCoef  = ((self.BulletData.FrAera/10000)/self.BulletData.ProjMass)	
 
 		--Don't touch below here
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		
 		self.BulletData.ShovePower = 0.2
 		self.BulletData.KETransfert = 0.3
-		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod*2.5
+		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod
 		self.BulletData.Pos = Vector(0 , 0 , 0)
 		self.BulletData.LimitVel = 800	
 		self.BulletData.Ricochet = 60
@@ -118,10 +118,11 @@ function SWEP:PrimaryAttack()
 
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
+		
 	if CLIENT then 
 	return 
 	end
-	
+		
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
@@ -163,5 +164,6 @@ function SWEP:Reload()
 	self:Think()
 	return true
 end
+
 
 

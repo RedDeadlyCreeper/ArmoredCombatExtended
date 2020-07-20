@@ -13,11 +13,11 @@ function Round.convert( Crate, PlayerData )
 	
 	local BulletData = {}
 		BulletData.Id = "7.62mmMG"
-		BulletData.Type = "AP"
+		BulletData.Type = "Refill"
 		
-		BulletData.Caliber = 0.762
-		BulletData.ProjMass = 0.158 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-		BulletData.PropMass = 0.0032 --Volume of the case as a cylinder * Powder density converted from g to kg
+		BulletData.Caliber = 1
+		BulletData.ProjMass = 1 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		BulletData.PropMass = 1 --Volume of the case as a cylinder * Powder density converted from g to kg
 		BulletData.FillerMass = 0
 		BulletData.DragCoef = 0
 		BulletData.Tracer = 0

@@ -2,7 +2,7 @@ AddCSLuaFile("shared.lua")
 SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
-SWEP.PrintName		= "P90"
+SWEP.PrintName		= "UMP 45"
 SWEP.Slot		    = 2
 SWEP.SlotPos		= 1			
 end
@@ -11,8 +11,8 @@ SWEP.Spawnable		= true
 
 --Visual
 SWEP.ViewModelFlip 	= true
-SWEP.ViewModel		= "models/weapons/v_smg_p90.mdl"	
-SWEP.WorldModel		= "models/weapons/w_smg_p90.mdl"	
+SWEP.ViewModel		= "models/weapons/v_smg_ump45.mdl"	
+SWEP.WorldModel		= "models/weapons/w_smg_ump45.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
 SWEP.HoldType		= "ar2"		
 SWEP.CSMuzzleFlashes	= true
@@ -30,7 +30,7 @@ SWEP.Purpose		= "Rush B"
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/p90/p90-1.wav"	
+SWEP.Primary.Sound			= "weapons/ump45/ump45-1.wav"	
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 0.25	
 SWEP.Primary.RecoilAngleVer	= 0.15	
