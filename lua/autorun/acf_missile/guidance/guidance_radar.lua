@@ -72,7 +72,7 @@ function this:GetGuidance(missile)
 	local missilePos = missile:GetPos()
 	local missileForward = missile:GetForward()
 	local targetPhysObj = self.Target:GetPhysicsObject()
-	local targetPos = self.Target:GetPos()
+	local targetPos = self.Target:GetPos() + Vector(0,0,25)
 	
 	-- this was causing radar to break in certain conditions, usually on parented props.
 	--if IsValid(targetPhysObj) then

@@ -174,7 +174,7 @@ ACF_defineGun("AGM-65 ASM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-	guidance    = {"Dumb" , "Infrared", "Laser"},
+	guidance    = {"Dumb" , "Infrared"},
     fuses       = {"Contact", "Optical"},
 
 	racks       = {["1xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
@@ -182,7 +182,7 @@ ACF_defineGun("AGM-65 ASM", { --id
     seekcone    = 10,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
     viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.7,    -- multiplier for missile turn-rate.
+    agility     = 0.15,    -- multiplier for missile turn-rate.
 	armdelay    = 0.00,     -- minimum fuse arming delay --was 0.3
 	penmul      = math.sqrt(0.53)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 } )
