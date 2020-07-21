@@ -58,7 +58,7 @@ function ENT:TriggerInput( inp, value )
 		local curTime = CurTime()	
 		self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
 		self.InaccuracyMul = (0.035 * (self.Cone/15)^0.6)*0.2     -- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
-		self.DPLRFAC = 65-(self.Cone/2)
+		self.DPLRFAC = 90-(self.Cone/2)
 	end
 end
 
@@ -164,19 +164,30 @@ if beingjammed < 1 then
 
 				if not LOStr.Hit then --Trace did not hit world
 					
-					local DPLR = self:WorldToLocal(thisPos+entvel*2)
-					local Dopplertest = math.min(math.abs( entvel:Length()/math.max(math.abs(DPLR.Y),0.01))*100,10000)
-					local Dopplertest2 = math.min(math.abs(entvel:Length()/math.max(math.abs(DPLR.Z),0.01))*100,10000)
+					local DPLR
+					local evlen = entvel:Length()
+					if evlen > 0.5 then
+						DPLR = self:WorldToLocal(thisPos+entvel*2)
+					else
+						evlen = 0
+						DPLR = Vector(0.001,0.001,0.001)
+					end
+					
+					--print(evlen)
+
+					local Dopplertest = math.min(math.abs( evlen/math.abs(DPLR.Y))*100,10000)
+					local Dopplertest2 = math.min(math.abs( evlen/math.abs(DPLR.Z))*100,10000)
 
 				--Also objects not coming directly towards the radar create more error.
 					local DopplerERR = (((math.abs(DPLR.y)^2+math.abs(DPLR.z)^2)^0.5)/velLength/2)*0.1
 
-					local GCtr = util.TraceLine( {start = entpos, endpos = entpos + difpos:GetNormalized() * 1000 ,collisiongroup  = COLLISION_GROUP_DEBRIS}) --Hits anything in the world.
+					local GCtr = util.TraceLine( {start = entpos, endpos = entpos + difpos:GetNormalized() * 2000 ,collisiongroup  = COLLISION_GROUP_DEBRIS}) --Hits anything in the world.
 					local GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
---					print(GCtr.Fraction)
+					local GCFr = GCtr.Fraction
+--					print(GCdis)
 --					if GCdis <= 0.5 then --Get canceled by ground clutter
 
-					if (Dopplertest < self.DPLRFAC or Dopplertest2 < self.DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/entvel:Length()) > 0.3) or (GCdis <= 0.5) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+					if (Dopplertest < self.DPLRFAC or Dopplertest2 < self.DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/evlen) > 0.3) or (GCdis >= 0.5) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
 						--1000 u = ~57 mph
 
 
@@ -189,16 +200,20 @@ if beingjammed < 1 then
 						--print((entpos - thisPos):Length())
 						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
 
-						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCdis*0.1 ))) --3 
+						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCFr*0.05 ))) --3 
 
-						local veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCdis*0.05) )
-						veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
+							local veltest
 
-						if math.abs(veltest.x) >= 7000 or math.abs(veltest.y) >= 7000 or math.abs(veltest.z) >= 7000 then --IDK if this is more intensive than length
+						if evlen == 0 then --IDK if this is more intensive than length
 							veltest = Vector(0,0,0)
+						else
+							veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.025) )
+							veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
+
 						end
 						table.insert(velArray,veltest)
-
+					else
+--						print("DopplerFail")
 					end
 
 				else

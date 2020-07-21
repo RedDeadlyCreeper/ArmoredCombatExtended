@@ -20,13 +20,13 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
-SWEP.ZoomAccuracyImprovement = 0.63 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomAccuracyImprovement = 0.7 -- 0.3 means 0.7 the inaccuracy
 SWEP.ZoomRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement 
 SWEP.CrouchAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement 
 
 -- Weapon info		
-SWEP.Purpose		= "Rush B"	
+SWEP.Purpose		= "Rush A"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
@@ -35,10 +35,10 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 0.25	
 SWEP.Primary.RecoilAngleVer	= 0.15	
 SWEP.Primary.RecoilAngleHor	= 0.1		
-SWEP.Primary.Cone			= 0.0175		
+SWEP.Primary.Cone			= 0.015		
 SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 50		
-SWEP.Primary.DefaultClip	= 50			
+SWEP.Primary.ClipSize		= 30		
+SWEP.Primary.DefaultClip	= 30			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= 1	
 SWEP.Primary.Ammo		= "SMG1"	
@@ -55,8 +55,8 @@ SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 2
-SWEP.InaccuracyAccumulationRate = 0.15
+SWEP.MaxInaccuracyMult = 1.5
+SWEP.InaccuracyAccumulationRate = 0.2
 SWEP.InaccuracyDecayRate = 1
 SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon
 
@@ -69,8 +69,8 @@ function SWEP:InitBulletData()
 		self.BulletData.Id = "7.62mmMG"
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
-		self.BulletData.Caliber = 0.57
-		self.BulletData.PropLength = 16 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.Caliber = 0.9
+		self.BulletData.PropLength = 7 --Volume of the case as a cylinder * Powder density converted from g to kg		
 		self.BulletData.ProjLength = 12 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread

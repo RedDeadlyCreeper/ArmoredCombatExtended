@@ -50,3 +50,19 @@ ACF_DefineEngine( "22.0-V10", {
 	peakmaxrpm = 1900,
 	limitrpm = 2500
 } )
+ACF_DefineEngine( "23.0-V10", {
+	name = "23.0L V10 Petrol",
+	desc = "You should be crazy to install this engine.Designed for drag racers",
+	model = "models/engines/v10big.mdl",
+	sound = "acf_engines/v10_petrolmedium.wav",
+	category = "V10",
+	fuel = "Petrol",
+	enginetype = "GenericPetrol",
+	weight = 2110,
+	torque = 1200,
+	flywheelmass = 0.45,
+	idlerpm = 1000,
+	peakminrpm = 3850,
+	peakmaxrpm = 6000,
+	limitrpm = 9000
+} )

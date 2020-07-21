@@ -25,7 +25,7 @@ ACF_defineGun("FIM-92 SAM", { --id
 	gunclass = "SAM",
     rack = "1x FIM-92",  -- Which rack to spawn this missile on?
 	length = 66,
-	caliber = 5.9,
+	caliber = 11,
 	weight = 20,--15.1,    -- Don't scale down the weight though!
     modeldiameter = 6.6, -- in cm
 	year = 1978,
@@ -34,7 +34,7 @@ ACF_defineGun("FIM-92 SAM", { --id
 	round = {
 		model		= "models/missiles/fim_92.mdl",
 		rackmdl		= "models/missiles/fim_92_folded.mdl",
-		maxlength	= 100,
+		maxlength	= 195,
 		casing		= 0.1,	        -- thickness of missile casing, cm
 		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 1.5,	        -- motor mass - motor casing
@@ -68,7 +68,7 @@ ACF_defineGun("Strela-1 SAM", { --id
 	gunclass = "SAM",
     rack = "1x Strela-1",  -- Which rack to spawn this missile on?
 	length = 60,
-	caliber = 8.0,
+	caliber = 12,
 	weight = 150,--15.1,    -- Don't scale down the weight though!
     modeldiameter = 12, -- in cm
 	year = 1960,
@@ -76,12 +76,12 @@ ACF_defineGun("Strela-1 SAM", { --id
 	round = {
 		model		= "models/missiles/9m31.mdl",
 		rackmdl		= "models/missiles/9m31f.mdl",
-		maxlength	= 105,
+		maxlength	= 165,
 		casing		= 0.05,	        -- thickness of missile casing, cm
 		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1,	        -- motor mass - motor casing
-		thrust		= 3500,	    -- average thrust - kg*in/s^2		
-		burnrate	= 300,	        -- cm^3/s at average chamber pressure	
+		thrust		= 3800,	    -- average thrust - kg*in/s^2		
+		burnrate	= 400,	        -- cm^3/s at average chamber pressure	
 		starterpct	= 0.05,         	-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency	
 		dragcoef	= 0.003,		-- drag coefficient while falling	
@@ -111,7 +111,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 	gunclass = "SAM",
     rack = "2x FIM-92",  -- Which rack to spawn this missile on?
 	length = 40,
-	caliber = 5.9,
+	caliber = 11,
 	weight = 200,--15.1,    -- Don't scale down the weight though!
     modeldiameter = 6.6, -- in cm
 	year = 2010,
@@ -119,11 +119,11 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 	round = {
 		model		= "models/missiles/fim_92_folded.mdl",
 		rackmdl		= "models/missiles/fim_92_folded.mdl",
-		maxlength	= 150,
+		maxlength	= 195,
 		casing		= 0.01,	        -- thickness of missile casing, cm
 		armour		= 3,			-- effective armour thickness of casing, in mm
 		propweight	= 1.5,	        -- motor mass - motor casing
-		thrust		= 20000,	    -- average thrust - kg*in/s^2			--was 120000
+		thrust		= 22000,	    -- average thrust - kg*in/s^2			--was 120000
 		burnrate	= 500,	        -- cm^3/s at average chamber pressure	
 		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 2500,		-- minimum speed beyond which the fins work at 100% efficiency	--was 15000
@@ -134,7 +134,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Antimissile"},
-    fuses       = {"Contact"},
+    fuses       = {"Contact", "Radio"},
 
 	racks       = {["2x FIM-92"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -152,14 +152,14 @@ ACF_defineGun("9M311", { --id
 	gunclass = "SAM",
     rack = "1x 9m311",  -- Which rack to spawn this missile on?
 	length = 109,		--Used for the physics calculations
-	caliber = 9,
+	caliber = 12,
 	weight = 71,    -- Don't scale down the weight though!
 	year = 1982,
 	rofmod = 0.8,
 	round = {
 		model		= "models/missiles/aim9.mdl",
 		rackmdl		= "models/missiles/aim9.mdl",
-		maxlength	= 80,
+		maxlength	= 140,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 6,				-- effective armour thickness of casing, in mm
 		propweight	= 0.8,				-- motor mass - motor casing

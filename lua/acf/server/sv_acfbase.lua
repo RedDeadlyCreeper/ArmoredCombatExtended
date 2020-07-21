@@ -5,13 +5,14 @@ ACE = ACE or {}
 
 ACE.contraptionEnts = {}
 ACE.contraptionHeat = {} --I wish i could assign properties more easily to props
-local proplist = {} --Proplist for all props, emptied on sort termination
-local proplist2 = {} --Actually scanned proplist, emptied on sort termination
-local proplist3 = {} --Used to store the already sorted props, not using contraption ents so the refresh does not overwrite the main with a partially built table
-local proplist4 = {} --Used to store constrained proplists for slow iteration, empty on termination
-local proplist5 = {} --Seperate loop to iterate props and not overwrite the normal prop iteration system.
-local proplistadd = {}
+local cpscanproplist = {} --Proplist for all props, emptied on sort termination
+local cpscanproplist2 = {} --Actually scanned proplist, emptied on sort termination
+local cpscanproplist3 = {} --Used to store the already sorted props, not using contraption ents so the refresh does not overwrite the main with a partially built table
+local cpscanproplist4 = {} --Used to store constrained proplists for slow iteration, empty on termination
+local cpscanproplist5 = {} --Seperate loop to iterate props and not overwrite the normal prop iteration system.
+local cpscanproplistadd = {}
 local propScanCount = 0
+local TestHeat = 0
 
 ACE.radarEntities = {}
 ACE.radarIDs = {}
@@ -34,95 +35,114 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 							print("[ACE] ContraptionScan")
 							--PrintMessage(HUD_PRINTTALK, "Sorting Started.")
 							--local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
-							proplist = ents.FindByClass( "prop_*" ) --Iterate through all props
+							cpscanproplist = ents.FindByClass( "prop_*" ) --Iterate through all props
 
 							ACE.ECMPods = ents.FindByClass( "ace_ecm" )
 
-							proplistadd = ents.FindByClass( "acf_gun" ) 
-							table.Add( proplist, proplistadd )
-							proplistadd = ents.FindByClass( "acf_engine" ) 
-							table.Add( proplist, proplistadd )
-							proplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
-							table.Add( proplist, proplistadd )
+							cpscanproplistadd = ents.FindByClass( "acf_gun" ) 
+							table.Add( cpscanproplist, cpscanproplistadd )
+							cpscanproplistadd = ents.FindByClass( "acf_engine" ) 
+							table.Add( cpscanproplist, cpscanproplistadd )
+							cpscanproplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+							table.Add( cpscanproplist, cpscanproplistadd )
 							ACE.radarEntities = ents.FindByClass( "ace_trackingradar" )
 
 								for id, ent in pairs(ACE.radarEntities) do
 									ACE.radarIDs[ent] = id
 								end
-							table.Add( proplist, ACE.radarEntities )
-							propScanCount = table.Count(proplist)
+
+							table.Add( cpscanproplist, ACE.radarEntities )
+							propScanCount = table.Count(cpscanproplist)
+
+							TestHeat = 0 --Heat addition system
+
+							for id, ent in pairs(ACE.contraptionEnts) do
+
+								if IsValid(ent) then
+									ent.THeat = 0
+								end
+
+							end
 						end
 
 
-		local TestHeat = 0 --Heat addition system
 
-		if not table.IsEmpty( proplist4 ) then --For iterating chains of constrained entities
+		if (not table.IsEmpty( cpscanproplist4 )) or (not table.IsEmpty( cpscanproplist5 ))  then --For iterating chains of constrained entities
 
-				--		print("[ACE] Constrained iteration")
+								--print("[ACE] Constrained iteration")
 
-						if table.IsEmpty( proplist5 ) then
+						if table.IsEmpty( cpscanproplist5 ) then
 
-				--print( "[ACE] Found ("..table.Count( proplist4 )..") Contraptions" )	
+								--print( "[ACE] Found ("..table.Count( cpscanproplist4 )..") Contraptions" )	
 
-			MaxIterations = 20 --1 props aka 33 props per second at 33 tick, plenty if you ask me.
-			for id, ent in pairs(proplist4) do
-				MaxIterations = MaxIterations - 1
-				table.remove(proplist4,1) --Removes first entity
-				table.insert(proplist5, ent)--Adds the entity to the props to be iterated
-				if MaxIterations == 0 then --If we run over the iteration limit pause
+									MaxIterations = 20 --1 props aka 33 props per second at 33 tick, plenty if you ask me.
+								for id, ent in pairs(cpscanproplist4) do
 
-					break
+									table.remove(cpscanproplist4,1) --Removes first entity
 
-				end
-			end
+									if IsValid(ent) then
+										MaxIterations = MaxIterations - 1
+										table.insert(cpscanproplist5, ent)--Adds the entity to the props to be iterated
 
+										ACE_CPro_scanEnt = GetParent(ent)
+										local ScanPhys = ACE_CPro_scanEnt:GetPhysicsObject()
+										ACE_CPro_Mass = ScanPhys:GetMass()
 
+											if MaxIterations == 0 then --If we run over the iteration limit pause
 
-		end
-				--print( "[ACE] iterated ("..table.Count( proplist5 )..") Contraptions" )	
+												break
 
-			for id, ent in pairs(proplist5) do --Iteration of self hatred, F to pay respect for server, This is hellcode.
+											end
 
---				TestHeat = 0 --Heat addition system --Fix later
---				if (ent.Heat or 0) > 0 then --
---					TestHeat = ent.Heat
-	--					print("HotCheck")
---				end
+									end
+								end
 
-				tent = GetParent(ent)
+						end
+									--print( "[ACE] iterated ("..table.Count( cpscanproplist5 )..") Contraptions" )	
 
-				if IsValid(tent) then
+						for id, ent in pairs(cpscanproplist5) do --Iteration of self hatred, F to pay respect for server, This is hellcode.
 
-				local TestPhys = tent:GetPhysicsObject()
+											if (ent.Heat or 0) > 0 then -- Need to test
+												TestHeat = ent.Heat
+												print(TestHeat)
+												--print("HotCheck")
+											end
 
-				local TestMass = TestPhys:GetMass()
+												tent = GetParent(ent)
 
-				if TestMass > ACE_CPro_Mass then
-					ACE_CPro_Mass = TestMass
-					ACE_CPro_scanEnt = tent
-				end
+									if IsValid(tent) then
 
-				table.remove(proplist5,1) --Removed the entity since we already sorted it
---				print( "[ACE] iterated ("..table.Count( proplist5 )..") Contraptions" )
-				end
+										local TestPhys = tent:GetPhysicsObject()
 
-			end
+										local TestMass = TestPhys:GetMass()
 
-			if  table.IsEmpty( proplist5 ) then --Dont iterating through constrained entities, return to normal and add entity to table
---					print("Finished")	
+											if TestMass > ACE_CPro_Mass then
+													ACE_CPro_Mass = TestMass
+													ACE_CPro_scanEnt = tent
+											end
+										--print( "[ACE] iterated ("..table.Count( cpscanproplist5 )..") Contraptions" )
+									end
+									table.remove(cpscanproplist5,1) --Removed the entity since we already sorted it
+
+						end
+
+			if  table.IsEmpty( cpscanproplist4 ) then --Done iterating through constrained entities, return to normal and add entity to table
+					--print("Finished")	
+					
 				if TestHeat > 0 then
 					ACE_CPro_scanEnt.THeat = (ACE_CPro_scanEnt.THeat or 0) + TestHeat
-					--print(scanEnt.THeat)
+					--print(TestHeat)
 					--print("Hot")
+					TestHeat = 0 --Heat addition system
 				end
 
-				if not (table.HasValue(proplist3,ACE_CPro_scanEnt)) then
+				if not (table.HasValue(cpscanproplist3,ACE_CPro_scanEnt)) then
 					
 
-					table.insert(proplist3, ACE_CPro_scanEnt)
+					table.insert(cpscanproplist3, ACE_CPro_scanEnt)
 					--print("Added Entity")
 				end
---				print( "[ACE] iterated ("..table.Count( proplist4 )..") Contraptions" )
+					--print( "[ACE] iterated ("..table.Count( cpscanproplist4 )..") Contraptions" )
 			end
 
 
@@ -130,12 +150,12 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 
 		else --For iterating over regular parented or unparented props
 
-			if table.IsEmpty( proplist2 ) then
-				MaxIterations = 6 --1 props aka 33 props per second at 33 tick, plenty if you ask me.
-				for id, ent in pairs(proplist) do
+			if table.IsEmpty( cpscanproplist2 ) then
+				MaxIterations = 20 --1 props aka 33 props per second at 33 tick, plenty if you ask me.
+				for id, ent in pairs(cpscanproplist) do
 					MaxIterations = MaxIterations - 1
-					table.remove(proplist,1) --Removes first entity
-					table.insert(proplist2, ent)--Adds the entity to the props to be iterated
+					table.remove(cpscanproplist,1) --Removes first entity
+					table.insert(cpscanproplist2, ent)--Adds the entity to the props to be iterated
 					if MaxIterations <= 0 then --If we run over the iteration limit pause
 
 						break
@@ -143,24 +163,26 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 					end
 				end
 
-			end--
+			end
 				
-			for id, ent in pairs(proplist2) do
+			for id, ent in pairs(cpscanproplist2) do
 
-				if IsValid(ent) then 
+				if (ent.Heat or 0) > 0 then --
+					TestHeat = ent.Heat
+					--print(TestHeat)
+					--print("HotCheck")
+				end
 
-							TestHeat = 0 --Heat addition system
-						if (ent.Heat or 0) > 0 then --
-							TestHeat = ent.Heat
-							--print("HotCheck")
-						end
+				scanEnt = GetParent(ent)
+
+				if IsValid(scanEnt) then 
+
 						
-						scanEnt = GetParent(ent)
 			
 					if scanEnt:IsConstrained() then --Brace for break
-						proplist4 = {}
+						cpscanproplist4 = {}
 						for id, ent2 in pairs(constraint.GetAllConstrainedEntities( scanEnt)) do --Do you want to be normal? NO? Ok.
-							table.insert(proplist4, ent2)
+							table.insert(cpscanproplist4, ent2)
 						end
 
 						ACE_CPro_scanEnt = scanEnt
@@ -197,51 +219,55 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 									--print("Hot")
 								end
 			
-								if not (table.HasValue(proplist3,scanEnt)) then
+								if not (table.HasValue(cpscanproplist3,scanEnt)) then
 									
 			
-									table.insert(proplist3, scanEnt)
+									table.insert(cpscanproplist3, scanEnt)
 									--print("Added Entity")
 								end
 						]]--
-						table.remove(proplist2,1) --Removed the entity since we already sorted it
+						table.remove(cpscanproplist2,1) --Removed the entity since we already sorted it
 						break --Break the cycle
 							
 					else
-			
-			
+						scanEnt = GetParent(ent)
+
+						
 								if TestHeat > 0 then
-									scanEnt.THeat = (scanEnt.THeat or 0) + TestHeat
+									scanEnt.THeat = (ent.THeat or 0) + TestHeat
 									--print(scanEnt.THeat)
 									--print("Hot")
+									TestHeat = 0 --Heat addition system
 								end
+
+								
+								if not (table.HasValue(cpscanproplist3,scanEnt)) then
 			
-								if not (table.HasValue(proplist3,scanEnt)) then
-			
-									table.insert(proplist3, scanEnt)
+									table.insert(cpscanproplist3, scanEnt)
 									--print("Added Entity")
 								end
-								table.remove(proplist2,1) --Removed the entity since we already sorted it
+								table.remove(cpscanproplist2,1) --Removed the entity since we already sorted it
 					end
 			
 			
-
+				else
+					table.remove(cpscanproplist2,1)  --Found a bug!
 				end
 			end
 		end
-		--local proplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
-		--table.Add( proplist, proplistadd )
+		--local cpscanproplistadd = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+		--table.Add( cpscanproplist, cpscanproplistadd )
 
 
-		if table.IsEmpty( proplist ) then --Jobs done
+		if table.IsEmpty( cpscanproplist ) then --Jobs done
 			
-			ACE.contraptionEnts = proplist3
+			ACE.contraptionEnts = cpscanproplist3
 			print( "[ACE] Found ("..table.Count( ACE.contraptionEnts )..") contraptions in ("..math.Round(CurTime()-ScanTime)..") seconds." )	
 --			PrintTable(ACE.contraptionEnts)
 
 			updateContraptionsTick = 0
-			proplist2 = {} --Clear out table
-			proplist3 = {}
+			cpscanproplist2 = {} --Clear out table
+			cpscanproplist3 = {}
 		end
 
 
@@ -340,7 +366,7 @@ function ACF_Activate ( Entity , Recalc )
 		if testMaterial == 1 then --Cast
 			massMod = 2
 		elseif testMaterial == 2 then --Ceramic
-			massMod = 1.25
+			massMod = 0.8
 		elseif testMaterial == 3 then--Rubber
 			massMod = 0.2
 		elseif testMaterial == 4 then --ERA

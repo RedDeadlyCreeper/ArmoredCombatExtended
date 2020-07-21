@@ -20,24 +20,24 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
-SWEP.ZoomAccuracyImprovement = 0.65 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
 SWEP.ZoomRecoilImprovement = 0.65 -- 0.3 means 0.7 the recoil movement 
 SWEP.CrouchAccuracyImprovement = 0.4 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement
 -- Weapon info		
-SWEP.Purpose		= "Slavic bullet thrower"	
+SWEP.Purpose		= "Bullet thrower"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
 SWEP.Primary.Sound			= "Weapon_Galil.Single"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.5	
-SWEP.Primary.RecoilAngleVer	= 0.2	
-SWEP.Primary.RecoilAngleHor	= 0.12		
-SWEP.Primary.Cone			= 0.01		
+SWEP.Primary.Recoil			= 0.3	
+SWEP.Primary.RecoilAngleVer	= 0.15	
+SWEP.Primary.RecoilAngleHor	= 0.10		
+SWEP.Primary.Cone			= 0.015		
 SWEP.Primary.Delay			= 0.10
-SWEP.Primary.ClipSize		= 30		
-SWEP.Primary.DefaultClip	= 30			
+SWEP.Primary.ClipSize		= 25		
+SWEP.Primary.DefaultClip	= 25			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= 1	
 SWEP.Primary.Ammo		= "AR2"	
@@ -54,7 +54,7 @@ SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 5
+SWEP.MaxInaccuracyMult = 2.5
 SWEP.InaccuracyAccumulationRate = 0.3
 SWEP.InaccuracyDecayRate = 1
 SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon

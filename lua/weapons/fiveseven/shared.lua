@@ -3,7 +3,7 @@ SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
 SWEP.PrintName		= "Five Seven"
-SWEP.Slot		    = 2
+SWEP.Slot		    = 1
 SWEP.SlotPos		= 1			
 end
 
@@ -32,7 +32,7 @@ SWEP.Primary.Recoil			= 0.25
 SWEP.Primary.RecoilAngleVer	= 0.15	
 SWEP.Primary.RecoilAngleHor	= 0.1		
 SWEP.Primary.Cone			= 0.018		
-SWEP.Primary.Delay			= 0.07
+SWEP.Primary.Delay			= 0.15
 SWEP.Primary.ClipSize		= 20		
 SWEP.Primary.DefaultClip	= 20			
 SWEP.Primary.Force			= 1	
@@ -66,7 +66,7 @@ function SWEP:InitBulletData()
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
 		self.BulletData.Caliber = 0.57
-		self.BulletData.PropLength = 4.7 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.PropLength = 4.9 --Volume of the case as a cylinder * Powder density converted from g to kg		
 		self.BulletData.ProjLength = 4 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread

@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 441  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 442  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -37,8 +37,8 @@ ACF.AluminumHeatMul = 80  --Higher = More damage from HEAT
 ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
 ACF.CastResilianceFactor = 35 --Higher = less damage, Lower = more damage. 2x = half damage.
 
-ACF.CeramicEffectiveness=3 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CeramicResilianceFactor = 1.2 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CeramicEffectiveness=2.4 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.CeramicResilianceFactor = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.CeramicPierceDamage = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 	
 ACF.RubberEffectiveness = 0.02

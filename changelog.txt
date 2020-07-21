@@ -289,3 +289,19 @@ r100
 -Gave AWP explosive ammo and reduced velocity
 -Made Engines, Gearboxes, Ammo, and Fuel to require propper gate parenting(Trace Bypass exploit)
 -Increased contraption profiler check delay from 10-20s to 20-40s, made dupefinished cause a check
+
+*r124
+-Jumping no longer allows rapidfire SWEP cheese
+-Ammo now simulates propper shell volume. Its about 1:1 IRL size
+-Adjusted all missiles(Again)
+-Fixed Radar
+-Fixed IR
+-fixed contraption profiler
+-Added a few more of Kemgus' engines
+-Added a ton of new pistols, SMGs, and a few ARs
+-Rebalanced P90, AWP, TMP, and many other SWEPS
+-Added ERA effect
+-Refills now hold infinite ammo and weigh different weights
+-Reverted a few HE changes that made HE bug more likely
+-Update Armor Analyzer
+-Added Kemgus' 9 speed transmissions

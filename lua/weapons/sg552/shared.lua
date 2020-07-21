@@ -20,7 +20,8 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
- 
+SWEP.ZoomAccuracyImprovement = 0.7 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomRecoilImprovement = 5 -- 0.3 means 0.7 the recoil movement  
 -- Weapon info		
 SWEP.Purpose		= "Slow but sure NATO shooter"	
 SWEP.Instructions	= "Left mouse to shoot"		
@@ -28,10 +29,10 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/sg552/sg552-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.25	
-SWEP.Primary.RecoilAngleVer	= 0.18	
-SWEP.Primary.RecoilAngleHor	= 0.1		
-SWEP.Primary.Cone			= 0.005		
+SWEP.Primary.Recoil			= 0.6	
+SWEP.Primary.RecoilAngleVer	= 0.11	
+SWEP.Primary.RecoilAngleHor	= 0.19		
+SWEP.Primary.Cone			= 0.025		
 SWEP.Primary.Delay			= 0.09
 SWEP.Primary.ClipSize		= 30		
 SWEP.Primary.DefaultClip	= 30			

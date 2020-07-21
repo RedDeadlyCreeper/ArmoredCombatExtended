@@ -54,6 +54,23 @@ ACF_DefineEngine( "23.0-V12", {
 	limitrpm = 3250
 } )
 
+ACF_DefineEngine( "25.0-V12", {
+	name = "25.0L V12 Petrol",
+	desc = "Best petrol V12 engine ever ",
+	model = "models/engines/v12l.mdl",
+	sound = "acf_engines/v12_petrollarge.wav",
+	category = "V12",
+	fuel = "Petrol",
+	enginetype = "GenericPetrol",
+	weight = 2600,
+	torque = 2050,
+	flywheelmass = 5.2,
+	idlerpm = 500,
+	peakminrpm = 1800,
+	peakmaxrpm = 3900,
+	limitrpm = 5000
+} )
+
 -- Diesel
 
 ACF_DefineEngine( "4.0-V12", {

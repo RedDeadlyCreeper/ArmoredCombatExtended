@@ -34,7 +34,7 @@ ACF_defineGun("AGM-114 ASM", { --id
 	round = {
 		model		= "models/missiles/agm_114.mdl",
 		rackmdl		= "models/missiles/agm_114.mdl",
-		maxlength	= 45,
+		maxlength	= 150,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
@@ -45,7 +45,7 @@ ACF_defineGun("AGM-114 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.05,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(4.55)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.518)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -76,7 +76,7 @@ ACF_defineGun("AGM-45 ASM", { --id
 	round = {
 		model		= "models/missiles/aim120.mdl",
 		rackmdl		= "models/missiles/aim120.mdl",
-		maxlength	= 120,
+		maxlength	= 150,
 		casing		= 0.15,			-- thickness of missile casing, cm
 		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 3,			-- motor mass - motor casing
@@ -87,7 +87,7 @@ ACF_defineGun("AGM-45 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0,                 -- drag coefficient during flight
 		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.18)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -118,7 +118,7 @@ ACF_defineGun("AGM-122 ASM", { --id
 	round = {
 		model		= "models/missiles/aim9.mdl",
 		rackmdl		= "models/missiles/aim9.mdl",
-		maxlength	= 70,
+		maxlength	= 140,
 		casing		= 0.1,	        -- thickness of missile casing, cm
 		armour		= 7,			-- effective armour thickness of casing, in mm
 		propweight	= 4,	        -- motor mass - motor casing
@@ -129,7 +129,7 @@ ACF_defineGun("AGM-122 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
                 dragcoefflight  = 0.001,                 -- drag coefficient during flight
 		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.

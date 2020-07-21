@@ -24,7 +24,7 @@ ACF_defineGun("RS82 ASR", { --id
 	name		= "RS-82 Rocket",
 	desc		= "A small, unguided rocket, often used in multiple-launch artillery as well as for attacking pinpoint ground targets.  It has a small amount of propellant, limiting its range, but is compact and light.",
 	model		= "models/missiles/rs82.mdl",
-	caliber		= 8,
+	caliber		= 10,
 	gunclass	= "UAR",
     rack        = "1xRK_small",  -- Which rack to spawn this missile on?
     weight		= 5,
@@ -36,7 +36,7 @@ ACF_defineGun("RS82 ASR", { --id
 	{
 		model		= "models/missiles/rs82.mdl",
 		rackmdl		= "models/missiles/rs82.mdl",
-		maxlength	= 25,
+		maxlength	= 50,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
@@ -47,7 +47,7 @@ ACF_defineGun("RS82 ASR", { --id
         dragcoef	= 0.002,		-- drag coefficient while falling
         dragcoefflight  = 0.025,                 -- drag coefficient during flight
 		finmul		= 0.008,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(1)  	--  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.115)  	--  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -77,7 +77,7 @@ ACF_defineGun("HVAR ASR", { --id
 	{
 		model		= "models/missiles/hvar.mdl",
 		rackmdl		= "models/missiles/hvar.mdl",
-		maxlength	= 25,
+		maxlength	= 135,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
@@ -88,7 +88,7 @@ ACF_defineGun("HVAR ASR", { --id
         dragcoef	= 0.002,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 		finmul		= 0.01,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(2.2)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.115)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -117,7 +117,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 	{
 		model		= "models/missiles/glatgm/9m112f.mdl",
 		rackmdl		= "models/munitions/round_100mm_mortar_shot.mdl",
-		maxlength	= 50,
+		maxlength	= 100,
 		casing		= 0.08,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.5,			-- motor mass - motor casing
@@ -128,7 +128,7 @@ ACF_defineGun("SPG-9 ASR", { --id
         dragcoefflight  = 0.05,                 -- drag coefficient during flight
         dragcoef	= 0.001,		-- drag coefficient while falling
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(1.1)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.3)  	-- 215.9 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 
 		},
 
@@ -146,7 +146,7 @@ ACF_defineGun("S-24 ASR", { --id
 	name		= "S-24 Rocket",
 	desc		= "A big, unguided rocket. Mostly used by late cold war era attack planes and helicopters.",
 	model		= "models/missiles/s24.mdl",
-	caliber		= 24,
+	caliber		= 35,
 	gunclass	= "UAR",
     rack        = "1xRK",  -- Which rack to spawn this missile on?
     weight		= 235,
@@ -158,7 +158,7 @@ ACF_defineGun("S-24 ASR", { --id
 	{
 		model		= "models/missiles/s24.mdl",
 		rackmdl		= "models/missiles/s24.mdl",
-		maxlength	= 40,
+		maxlength	= 130,
 		casing		= 0.3,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 15,			-- motor mass - motor casing
@@ -169,7 +169,7 @@ ACF_defineGun("S-24 ASR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.115)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -186,7 +186,7 @@ ACF_defineGun("Zuni ASR", { --id
 	name		= "Zuni Rocket",
 	desc		= "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.",
 	model		= "models/ghosteh/zuni.mdl",
-	caliber		= 12.7,
+	caliber		= 14,
 	gunclass	= "UAR",
 	rack		= "127mm4xPOD",
 	weight		= 120,
@@ -198,7 +198,7 @@ ACF_defineGun("Zuni ASR", { --id
 	{
 		model		= "models/ghosteh/zuni.mdl",
 		rackmdl		= "models/ghosteh/zuni_folded.mdl",
-		maxlength	= 60,
+		maxlength	= 200,
 		casing		= 0.2,
 		armor		= 4,
 		propweight	= 0.7,
@@ -209,7 +209,7 @@ ACF_defineGun("Zuni ASR", { --id
 		dragcoef	= 0.0001,
 		dragcoefflight = 0.001,
 		finmul		= 0.0001,
-		penmul		= math.sqrt(1)
+		penmul		= math.sqrt(0.115)
 	},
 	ent			= "acf_missile_to_rack",
 	guidance	= {"Dumb"},

@@ -3,7 +3,7 @@ SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
 SWEP.PrintName		= "XM1014"
-SWEP.Slot		    = 2
+SWEP.Slot		    = 3
 SWEP.SlotPos		= 1			
 end
 

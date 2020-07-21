@@ -20,24 +20,24 @@ SWEP.CSMuzzleFlashes	= true
 
 -- Other settings
 SWEP.Weight			= 10						
-SWEP.ZoomAccuracyImprovement = 0.6 -- 0.3 means 0.7 the inaccuracy
+SWEP.ZoomAccuracyImprovement = 0.4 -- 0.3 means 0.7 the inaccuracy
 SWEP.ZoomRecoilImprovement = 0.26 -- 0.3 means 0.7 the recoil movement 
-SWEP.CrouchAccuracyImprovement = 0.49 -- 0.3 means 0.7 the inaccuracy
-SWEP.CrouchRecoilImprovement = 0.4 -- 0.3 means 0.7 the recoil movement 
+SWEP.CrouchAccuracyImprovement = 0.29 -- 0.3 means 0.7 the inaccuracy
+SWEP.CrouchRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement 
 -- Weapon info		
-SWEP.Purpose		= "Sneaky snek"	
+SWEP.Purpose		= "Go cut bois with huge recoil"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/mac10/mac10-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.25	
-SWEP.Primary.RecoilAngleVer	= 0.1	
-SWEP.Primary.RecoilAngleHor	= 0.05			
-SWEP.Primary.Cone			= 0.0115		
-SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 20		
-SWEP.Primary.DefaultClip	= 20			
+SWEP.Primary.Recoil			= 0.5	
+SWEP.Primary.RecoilAngleVer	= 0.05	
+SWEP.Primary.RecoilAngleHor	= 0.5			
+SWEP.Primary.Cone			= 0.014		
+SWEP.Primary.Delay			= 0.06
+SWEP.Primary.ClipSize		= 32		
+SWEP.Primary.DefaultClip	= 32			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= 1	
 SWEP.Primary.Ammo		= "smg1"	
@@ -54,10 +54,10 @@ SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 4
-SWEP.InaccuracyAccumulationRate = 0.3
-SWEP.InaccuracyDecayRate = 2
-SWEP.CarrySpeedMul = 0.9 --WalkSpeedMult when carrying the weapon
+SWEP.MaxInaccuracyMult = 4.2
+SWEP.InaccuracyAccumulationRate = 0.5
+SWEP.InaccuracyDecayRate = 2.1
+SWEP.CarrySpeedMul = 0.95 --WalkSpeedMult when carrying the weapon
 
 --
 
@@ -68,16 +68,16 @@ function SWEP:InitBulletData()
 		self.BulletData.Id = "7.62mmMG"
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
-		self.BulletData.Caliber = 0.9
-		self.BulletData.PropLength = 0.6 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 12 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.Caliber = 01.143
+		self.BulletData.PropLength = 1.1 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 7 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
 		self.BulletData.Data8 = 0
 		self.BulletData.Data9 = 0
-		self.BulletData.Data10 = 0 -- Tracer
-		self.BulletData.Colour = Color(0, 0, 0)
+		self.BulletData.Data10 = 1 -- Tracer
+		self.BulletData.Colour = Color(255, 0, 0)
 		--
 		self.BulletData.Data13 = 0 --THEAT ConeAng2
 		self.BulletData.Data14 = 0 --THEAT HE Allocation

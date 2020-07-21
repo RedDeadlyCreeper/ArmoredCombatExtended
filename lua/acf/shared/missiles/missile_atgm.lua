@@ -31,7 +31,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 	round = {
 		model		= "models/missiles/bgm_71e.mdl",
 		rackmdl		= "models/missiles/bgm_71e.mdl",
-		maxlength	= 30,
+		maxlength	= 105,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
@@ -42,7 +42,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 		dragcoef	= 0.003,			-- drag coefficient while falling
         dragcoefflight  = 0.06,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(8.5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.797)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -56,7 +56,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 } )
 
 ACF_defineGun("9M113 ASM", { --id
-	name = "9M113 Missile",
+	name = "9M133 Missile",
 	desc = "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
 	model = "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 	gunclass = "ATGM",
@@ -70,18 +70,18 @@ ACF_defineGun("9M113 ASM", { --id
 	round = {
 		model		= "models/missiles/glatgm/9m112f.mdl", --shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
 		rackmdl		= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
-		maxlength	= 45,
+		maxlength	= 105,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 6600,			-- average thrust - kg*in/s^2
+		thrust		= 7000,			-- average thrust - kg*in/s^2
 		burnrate	= 40,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.2,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.03,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(5)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1.2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -111,7 +111,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	round = {
 		model		= "models/missiles/at3.mdl",
 		rackmdl		= "models/missiles/at3.mdl",
-		maxlength	= 30,
+		maxlength	= 55,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
@@ -122,7 +122,7 @@ ACF_defineGun("AT-3 ASM", { --id
 		dragcoef	= 0.005,			-- drag coefficient while falling
         dragcoefflight  = 0.1,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -153,7 +153,7 @@ ACF_defineGun("Ataka ASM", { --id
 	round = {
 		model		= "models/missiles/9m120.mdl",
 		rackmdl		= "models/missiles/9m120.mdl",
-		maxlength	= 50,
+		maxlength	= 105,
 		casing		= 0.12,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1.7,			-- motor mass - motor casing
@@ -164,7 +164,7 @@ ACF_defineGun("Ataka ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.04,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(3.235)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.854)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.

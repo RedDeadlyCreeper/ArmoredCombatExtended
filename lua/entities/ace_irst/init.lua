@@ -17,7 +17,7 @@ function ENT:Initialize()
 	self:GetPhysicsObject():SetMass(400)
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "ClosestToBeam"} )
+	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
 
 	self:SetActive(false)
 
@@ -70,6 +70,7 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Detected", 0 )
 		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Angle", {} )
+		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )	
 		self.Heat = 21
 	end
@@ -102,6 +103,7 @@ if self.Active and self.IsLegal then
 	local randinac = math.Rand(-1,1) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 	local ownArray = {}
+	local effHeatArray = {}
 	local posArray = {}
 
 	local testClosestToBeam = -1
@@ -135,10 +137,10 @@ if self.Active and self.IsLegal then
 
 				if not LOStr.Hit then --Trace did not hit world
 
-					local testHeat = ((scanEnt.THeat or 0) + entvel:Length()/17.6)*math.min(8000/math.max(dist,0.01),1)
+					local testHeat = ((scanEnt.THeat or 0) + entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)
+--					local testHeat = (scanEnt.THeat or 0)--
 					local errorFromHeat = math.max((200-testHeat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
-
-
+				
 					if testHeat > 50 then --Hotter than 50 deg C
 						--1000 u = ~57 mph
 
@@ -158,7 +160,7 @@ if self.Active and self.IsLegal then
 --						print(scanEnt:CPPIGetOwner():GetName())
 
 						local angerr = 1 + randinac * (errorFromAng + errorFromHeat)
-
+						table.insert(effHeatArray, testHeat)
 						table.insert(posArray,nonlocang * angerr )
 
 					end
@@ -180,12 +182,14 @@ if self.Active and self.IsLegal then
 		WireLib.TriggerOutput( self, "Detected", 1 )
 		WireLib.TriggerOutput( self, "Owner", ownArray )
 		WireLib.TriggerOutput( self, "Angle", posArray )
+		WireLib.TriggerOutput( self, "EffHeat", effHeatArray )
 		WireLib.TriggerOutput( self, "ClosestToBeam", testClosestToBeam )		
 
 	else --Nothing detected
 		WireLib.TriggerOutput( self, "Detected", 0 )
 		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Angle", {} )
+		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )	
 	end
 --	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "ClosestToBeam"} )

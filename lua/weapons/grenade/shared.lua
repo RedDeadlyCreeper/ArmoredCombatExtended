@@ -14,7 +14,7 @@ SWEP.ViewModelFlip 	= true
 SWEP.ViewModel		= "models/weapons/v_eq_fraggrenade.mdl"	
 SWEP.WorldModel		= "models/weapons/w_eq_fraggrenade.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
-SWEP.HoldType		= "rpg"		
+SWEP.HoldType		= "grenade"		
 SWEP.CSMuzzleFlashes	= true
 
 
@@ -95,12 +95,15 @@ function SWEP:PrimaryAttack()
 		ent:SetOwner( self.Owner )
 	end
 		
+	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
+	self.Owner:SetAnimation( PLAYER_ATTACK1 )		
+
 	self.lastFire=CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 	
 	
-	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )							
-	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
+--	self.Weapon:SendWeaponAnim( ACT_VM_RELOAD )							
+--	self.Owner:SetAnimation( PLAYER_ATTACK1 )			
 	
 	if self:Ammo1() > 0 then
 	self.Owner:RemoveAmmo( 1, "RPG_Round")

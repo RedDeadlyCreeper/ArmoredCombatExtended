@@ -35,7 +35,7 @@ ACF_defineGun("40mmFFAR", { --id
 	{
 		model		= "models/missiles/ffar_40mm.mdl",
 		rackmdl		= "models/missiles/ffar_40mm_closed.mdl",
-		maxlength	= 35,
+		maxlength	= 60,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.2,			-- motor mass - motor casing
@@ -46,7 +46,7 @@ ACF_defineGun("40mmFFAR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 		finmul		= 0.003,		-- fin multiplier (mostly used for unpropelled guidance)
-		penmul		= math.sqrt(2)
+		penmul		= math.sqrt(1)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -78,7 +78,7 @@ ACF_defineGun("70mmFFAR", { --id
 	{
 		model		= "models/missiles/ffar_70mm.mdl",
 		rackmdl		= "models/missiles/ffar_70mm_closed.mdl",
-		maxlength	= 45,
+		maxlength	= 90,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
@@ -89,7 +89,7 @@ ACF_defineGun("70mmFFAR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 	finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -118,7 +118,7 @@ ACF_defineGun("70mmFFARDAGR", { --id
 	{
 		model		= "models/missiles/ffar_70mm.mdl",
 		rackmdl		= "models/missiles/ffar_70mm_closed.mdl",
-		maxlength	= 35,
+		maxlength	= 90,
 		casing		= 0.3,			-- thickness of missile casing, cm
 		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
@@ -129,7 +129,7 @@ ACF_defineGun("70mmFFARDAGR", { --id
         dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.02,                 -- drag coefficient during flight
 	finmul		= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -163,7 +163,7 @@ ACF_defineGun("40mmFFAR", { --id
 	{
 		model		= "models/missiles/ffar_40mm.mdl",
 		rackmdl		= "models/missiles/ffar_40mm_closed.mdl",
-		maxlength	= 25,
+		maxlength	= 60,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.2,			-- motor mass - motor casing
@@ -173,7 +173,7 @@ ACF_defineGun("40mmFFAR", { --id
         minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
         dragcoef	= 0.003,		-- drag coefficient of the missile
 		finmul		= 0.001,		-- fin multiplier (mostly used for unpropelled guidance)
-		penmul		= math.sqrt(4)
+		penmul		= math.sqrt(1)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -207,7 +207,7 @@ ACF_defineGun("70mmFFAR", { --id
 	{
 		model		= "models/missiles/ffar_70mm.mdl",
 		rackmdl		= "models/missiles/ffar_70mm_closed.mdl",
-		maxlength	= 25,
+		maxlength	= 90,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
@@ -217,7 +217,7 @@ ACF_defineGun("70mmFFAR", { --id
         minspeed	= 5000,			-- minimum speed beyond which the fins work at 100% efficiency
         dragcoef	= 0.004,		-- drag coefficient of the missile
 		finmul		= 0.002,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(6)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.8)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.

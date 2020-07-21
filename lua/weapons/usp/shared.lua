@@ -3,7 +3,7 @@ SWEP.Base = "ace_basewep"
 
 if (CLIENT) then
 SWEP.PrintName		= "USP"
-SWEP.Slot		    = 2
+SWEP.Slot		    = 1
 SWEP.SlotPos		= 1			
 end
 
@@ -22,19 +22,19 @@ SWEP.CSMuzzleFlashes	= true
 SWEP.Weight			= 10						
  
 -- Weapon info		
-SWEP.Purpose		= "AP Pistol"	
+SWEP.Purpose		= "AP Pistol to shoot at melons"	
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/usp/usp_unsil-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.25	
-SWEP.Primary.RecoilAngleVer	= 0.15	
-SWEP.Primary.RecoilAngleHor	= 0.1		
-SWEP.Primary.Cone			= 0.018		
-SWEP.Primary.Delay			= 0.07
-SWEP.Primary.ClipSize		= 20		
-SWEP.Primary.DefaultClip	= 20			
+SWEP.Primary.Recoil			= 0.47	
+SWEP.Primary.RecoilAngleVer	= 0.27	
+SWEP.Primary.RecoilAngleHor	= 0.17		
+SWEP.Primary.Cone			= 0.017		
+SWEP.Primary.Delay			= 0.16
+SWEP.Primary.ClipSize		= 12		
+SWEP.Primary.DefaultClip	= 12			
 SWEP.Primary.Force			= 1	
 SWEP.Primary.Automatic		= false	
 SWEP.Primary.Ammo		= "pistol"	
@@ -51,9 +51,9 @@ SWEP.AimOffset = Vector(0,0,0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire=CurTime()
 
-SWEP.MaxInaccuracyMult = 2
-SWEP.InaccuracyAccumulationRate = 0.15
-SWEP.InaccuracyDecayRate = 1
+SWEP.MaxInaccuracyMult = 1.6
+SWEP.InaccuracyAccumulationRate = 0.28
+SWEP.InaccuracyDecayRate = 1.5
 SWEP.CarrySpeedMul = 1 --WalkSpeedMult when carrying the weapon
 
 --
@@ -65,9 +65,9 @@ function SWEP:InitBulletData()
 		self.BulletData.Id = "7.62mmMG"
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
-		self.BulletData.Caliber = 0.57
-		self.BulletData.PropLength = 4.7 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 4 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.Caliber = 0.9
+		self.BulletData.PropLength = 2.8 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 6 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
