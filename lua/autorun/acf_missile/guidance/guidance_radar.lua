@@ -25,7 +25,7 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 5 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 1 -- Re-seek drastically reduced cost so we can re-seek
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m

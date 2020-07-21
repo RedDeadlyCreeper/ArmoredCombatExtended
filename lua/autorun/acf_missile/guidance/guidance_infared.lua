@@ -23,7 +23,7 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 5 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 1 -- Re-seek drastically reduced cost so we can re-seek
 
 --Sensitivity of the IR Seeker, higher sensitivity is for aircraft
 this.SeekSensitivity = 1
@@ -150,7 +150,6 @@ function this:GetWhitelistedEntsInCone(missile)
 
 					if not LOStr.Hit then --Trace did not hit world	
 
---							print(scanEnt)
 							table.insert(foundAnim, scanEnt)
 
 
@@ -206,16 +205,17 @@ function this:AcquireLock(missile)
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
-		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + entvel:Length()/17.6)*math.min(4000/math.max(dist,0.01),1))
+		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1))
 --dist
 --		print(testHeat)
-		if testHeat > 100 then --Hotter than 100 deg C
-			if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
+		if testHeat > 50 then --Hotter than 50 deg C
 
+			if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
 				local testang = testHeat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
 --				print(testHeat)
 --				print((360-(absang.p + absang.y)))
 				if testang > bestAng then --Sorts targets as closest to being directly in front of radar
+					print("Locking")
 				bestAng = testang
 				bestent = classifyent
 				end
@@ -229,7 +229,6 @@ function this:AcquireLock(missile)
     
 --    print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
-
 	return bestent
 end
 

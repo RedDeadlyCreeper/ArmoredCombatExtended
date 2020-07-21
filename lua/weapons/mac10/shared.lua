@@ -14,7 +14,7 @@ SWEP.ViewModelFlip 	= true
 SWEP.ViewModel		= "models/weapons/v_smg_mac10.mdl"	
 SWEP.WorldModel		= "models/weapons/w_smg_mac10.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
-SWEP.HoldType		= "smg"		
+SWEP.HoldType		= "pistol"		
 SWEP.CSMuzzleFlashes	= true
 
 
@@ -31,7 +31,7 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/mac10/mac10-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.5	
+SWEP.Primary.Recoil			= 0.4	
 SWEP.Primary.RecoilAngleVer	= 0.05	
 SWEP.Primary.RecoilAngleHor	= 0.5			
 SWEP.Primary.Cone			= 0.014		

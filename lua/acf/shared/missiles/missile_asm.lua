@@ -145,3 +145,44 @@ ACF_defineGun("AGM-122 ASM", { --id
     armdelay    = 0.00     -- minimum fuse arming delay		--was 0.4
 } )
 
+ACF_defineGun("AGM-65 ASM", { --id
+	name = "AGM-65 Maverick Missile",
+	desc = "You see that tank over there a mile away? I want you to lock onto it and forget about it.",
+	model = "models/missiles/aim54.mdl",
+	gunclass = "ASM",
+    rack = "1xRK",  -- Which rack to spawn this missile on?
+	length = 1000,
+	caliber = 22,
+	weight = 300,    -- Don't scale down the weight though!
+	year = 1974,
+	modeldiameter = 9.0 * 2.54, -- in cm
+	rofmod          = 0.1,
+	round = {
+		model		= "models/missiles/aim54.mdl",
+		rackmdl		= "models/missiles/aim54.mdl",
+		maxlength	= 220,
+		casing		= 0.2,	        -- thickness of missile casing, cm
+		armour		= 4,			-- effective armour thickness of casing, in mm
+		propweight	= 5,	        -- motor mass - motor casing
+		thrust		= 10000,	    -- average thrust - kg*in/s^2		--was 200000
+		burnrate	= 200,	        -- cm^3/s at average chamber pressure	--was 800
+		starterpct	= 0.1,          -- percentage of the propellant consumed in the starter motor.
+		minspeed	= 1000,			-- minimum speed beyond which the fins work at 100% efficiency
+		dragcoef	= 0.01,		-- drag coefficient while falling
+                dragcoefflight  = 0.1,                 -- drag coefficient during flight
+		finmul		= 0.05			-- fin multiplier (mostly used for unpropelled guidance)
+	},
+
+    ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
+	guidance    = {"Dumb" , "Infrared", "Laser"},
+    fuses       = {"Contact", "Optical"},
+
+	racks       = {["1xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+
+    seekcone    = 10,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+    viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
+
+    agility     = 0.7,    -- multiplier for missile turn-rate.
+	armdelay    = 0.00,     -- minimum fuse arming delay --was 0.3
+	penmul      = math.sqrt(0.53)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+} )

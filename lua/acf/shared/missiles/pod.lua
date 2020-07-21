@@ -239,7 +239,7 @@ ACF_DefineRack("1x FIM-92", {
 	year = 1984,
     magsize = 1,
 	armour  = 12,
-	caliber = 5.9, 
+	caliber = 11, 
 	protectmissile  = true,
     hidemissile     = false,
     whitelistonly   = true,
@@ -259,7 +259,7 @@ ACF_DefineRack("2x FIM-92", {
 	year = 1984,
     magsize = 2,
 	armour  = 16,
-	caliber = 5.9,
+	caliber = 11,
 	rofmod = 3,
 
 	protectmissile  = true,
@@ -282,7 +282,7 @@ ACF_DefineRack("4x FIM-92", {
 	year = 1984,
     magsize = 4,
 	armour  = 20,
-	caliber = 5.9,
+	caliber = 11,
 
 	protectmissile  = true,
     hidemissile     = false,
@@ -307,7 +307,7 @@ ACF_DefineRack("1x Strela-1", {
 	year = 1968,
     magsize = 1,
 	armour  = 50,
-	caliber = 8,
+	caliber = 12,
 
 	protectmissile  = true,
     hidemissile     = false,
@@ -328,7 +328,7 @@ ACF_DefineRack("2x Strela-1", {
 	year = 1968,
     magsize = 2,
 	armour  = 80,
-	caliber = 8,
+	caliber = 12,
 
 	protectmissile  = true,
     hidemissile     = false,
@@ -350,7 +350,7 @@ ACF_DefineRack("4x Strela-1", {
 	year = 1968,
     magsize = 4,
 	armour  = 100,
-	caliber = 8,
+	caliber = 12,
 	
 	protectmissile  = true,
     hidemissile     = false,
@@ -463,7 +463,7 @@ ACF_DefineRack("1x 9m311", {
 	year = 1970,
     magsize = 1,
 	armour  = 18,
-    caliber = 9,
+    caliber = 12,
 
     whitelistonly   = true,
 	protectmissile 	= true,

@@ -90,7 +90,7 @@ function SWEP:InitBulletData()
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		
 		self.BulletData.ShovePower = 0.2
 		self.BulletData.KETransfert = 0.3
-		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod
+		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod*1.2
 		self.BulletData.Pos = Vector(0 , 0 , 0)
 		self.BulletData.LimitVel = 800	
 		self.BulletData.Ricochet = 60

@@ -21,7 +21,7 @@ SWEP.CSMuzzleFlashes	= true
 -- Other settings
 SWEP.Weight			= 10						
 SWEP.ZoomAccuracyImprovement = 0.7 -- 0.3 means 0.7 the inaccuracy
-SWEP.ZoomRecoilImprovement = 5 -- 0.3 means 0.7 the recoil movement  
+SWEP.ZoomRecoilImprovement = 0.5 -- 0.3 means 0.7 the recoil movement  
 -- Weapon info		
 SWEP.Purpose		= "Slow but sure NATO shooter"	
 SWEP.Instructions	= "Left mouse to shoot"		
@@ -29,10 +29,10 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "weapons/sg552/sg552-1.wav"	
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 0.6	
+SWEP.Primary.Recoil			= 0.3	
 SWEP.Primary.RecoilAngleVer	= 0.11	
 SWEP.Primary.RecoilAngleHor	= 0.19		
-SWEP.Primary.Cone			= 0.025		
+SWEP.Primary.Cone			= 0.015		
 SWEP.Primary.Delay			= 0.09
 SWEP.Primary.ClipSize		= 30		
 SWEP.Primary.DefaultClip	= 30			
@@ -70,8 +70,8 @@ function SWEP:InitBulletData()
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
 		self.BulletData.Caliber = 0.556
-		self.BulletData.PropLength = 8 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 3.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.PropLength = 9 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
@@ -95,7 +95,7 @@ function SWEP:InitBulletData()
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		
 		self.BulletData.ShovePower = 0.2
 		self.BulletData.KETransfert = 0.3
-		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod
+		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod*1.9
 		self.BulletData.Pos = Vector(0 , 0 , 0)
 		self.BulletData.LimitVel = 800	
 		self.BulletData.Ricochet = 60

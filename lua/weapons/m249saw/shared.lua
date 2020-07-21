@@ -22,7 +22,7 @@ SWEP.CSMuzzleFlashes	= true
 SWEP.Weight			= 10						
 SWEP.ZoomAccuracyImprovement = 0.5 -- 0.3 means 0.7 the inaccuracy
 SWEP.ZoomRecoilImprovement = 0.4 -- 0.3 means 0.7 the recoil movement 
-SWEP.CrouchAccuracyImprovement = 0.44 -- 0.3 means 0.7 the inaccuracy
+SWEP.CrouchAccuracyImprovement = 0.7 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.7 -- 0.3 means 0.7 the recoil movement
  
 -- Weapon info		
@@ -96,7 +96,7 @@ function SWEP:InitBulletData()
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		
 		self.BulletData.ShovePower = 0.2
 		self.BulletData.KETransfert = 0.3
-		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod
+		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod*1.5
 		self.BulletData.Pos = Vector(0 , 0 , 0)
 		self.BulletData.LimitVel = 800	
 		self.BulletData.Ricochet = 60

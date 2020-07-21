@@ -59,7 +59,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 							for id, ent in pairs(ACE.contraptionEnts) do
 
 								if IsValid(ent) then
-									ent.THeat = 0
+									ent.SCTHeat = 0
 								end
 
 							end
@@ -104,7 +104,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 
 											if (ent.Heat or 0) > 0 then -- Need to test
 												TestHeat = ent.Heat
-												print(TestHeat)
+												--print(TestHeat)
 												--print("HotCheck")
 											end
 
@@ -130,7 +130,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 					--print("Finished")	
 					
 				if TestHeat > 0 then
-					ACE_CPro_scanEnt.THeat = (ACE_CPro_scanEnt.THeat or 0) + TestHeat
+					ACE_CPro_scanEnt.SCTHeat = (ACE_CPro_scanEnt.SCTHeat or 0) + TestHeat
 					--print(TestHeat)
 					--print("Hot")
 					TestHeat = 0 --Heat addition system
@@ -234,7 +234,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 
 						
 								if TestHeat > 0 then
-									scanEnt.THeat = (ent.THeat or 0) + TestHeat
+									scanEnt.SCTHeat = (ent.SCTHeat or 0) + TestHeat
 									--print(scanEnt.THeat)
 									--print("Hot")
 									TestHeat = 0 --Heat addition system
@@ -264,6 +264,14 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 			ACE.contraptionEnts = cpscanproplist3
 			print( "[ACE] Found ("..table.Count( ACE.contraptionEnts )..") contraptions in ("..math.Round(CurTime()-ScanTime)..") seconds." )	
 --			PrintTable(ACE.contraptionEnts)
+
+					for id, ent in pairs(ACE.contraptionEnts) do
+
+						if IsValid(ent) then
+							ent.THeat = ent.SCTHeat
+						end
+
+					end
 
 			updateContraptionsTick = 0
 			cpscanproplist2 = {} --Clear out table

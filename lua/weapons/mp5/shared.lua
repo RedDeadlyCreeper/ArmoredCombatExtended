@@ -70,8 +70,8 @@ function SWEP:InitBulletData()
 		self.BulletData.Type = "AP"
 		self.BulletData.Id = 1
 		self.BulletData.Caliber = 0.9
-		self.BulletData.PropLength = 7 --Volume of the case as a cylinder * Powder density converted from g to kg		
-		self.BulletData.ProjLength = 12 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.BulletData.PropLength = 1.7 --Volume of the case as a cylinder * Powder density converted from g to kg		
+		self.BulletData.ProjLength = 4 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		self.BulletData.Data5 = 0  --He Filler or Flechette count
 		self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 		self.BulletData.Data7 = 0
@@ -94,7 +94,7 @@ function SWEP:InitBulletData()
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		
 		self.BulletData.ShovePower = 0.2
 		self.BulletData.KETransfert = 0.3
-		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod*2.5
+		self.BulletData.PenAera = self.BulletData.FrAera^ACF.PenAreaMod*0.6
 		self.BulletData.Pos = Vector(0 , 0 , 0)
 		self.BulletData.LimitVel = 800	
 		self.BulletData.Ricochet = 60

@@ -14,7 +14,7 @@ SWEP.ViewModelFlip 	= true
 SWEP.ViewModel		= "models/weapons/v_smg_tmp.mdl"	
 SWEP.WorldModel		= "models/weapons/w_smg_tmp.mdl"	
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"	
-SWEP.HoldType		= "smg"		
+SWEP.HoldType		= "pistol"		
 SWEP.CSMuzzleFlashes	= true
 
 
