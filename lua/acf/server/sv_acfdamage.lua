@@ -244,7 +244,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	
 	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
 --	print("SpallPass")
-	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(Armour,100) * 0.0004
+	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(Armour,50) * 0.0004
 	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*2),40)
 	local SpallWeight = TotalWeight/Spall*SpallMul*400
 	local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
@@ -285,12 +285,12 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
 	if SpallMul > 0 and HEFiller/1501 > Armour then
 
-	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(Armour,100) * 0.00079
+	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(Armour,50) * 0.00079
 	local Spall = math.min(math.floor((Caliber-3)*2*ACF.KEtoSpall*SpallMul),60)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35
 	local SpallVel = (HEFiller*8500*25000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
-	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
+	local SpallEnergy = ACF_Kinetic( SpallVel*1000 , SpallWeight, 800 )
 
 --	print("Weight: "..SpallWeight)
 --	print("Vel: "..SpallVel)
