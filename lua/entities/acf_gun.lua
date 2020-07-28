@@ -601,8 +601,10 @@ function ENT:Think()
 		end
 	end
 
-	local DeltaTime = CurTime() - self.LastThink	
 	local PhysObj = self:GetPhysicsObject()
+	if IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
+
+	local DeltaTime = CurTime() - self.LastThink	
 	local Mass = PhysObj:GetMass()
 	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass*2/75) * DeltaTime * 0.03
 	self.Heat = math.max(self.Heat +(Energyloss/Mass*2/743.2),21)
@@ -817,7 +819,7 @@ function ENT:FireShell()
 
 --			print("BooletType: "..self.BulletData.Type)
 			local FuseNoise = 1
-			if Cal>=3 and (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") and Cal<=12 then
+			if (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") and Cal<=12 then
 			
 			if self.FuseTime < (0.28^math.max(Cal-3,1)) then
 			FuseNoise = 1

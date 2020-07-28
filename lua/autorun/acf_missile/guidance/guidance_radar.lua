@@ -25,7 +25,7 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 1 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m
@@ -158,7 +158,7 @@ function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does n
 
 						local GCtr = util.TraceLine( {
 							 start = entpos,
-							 endpos = entpos + difpos:GetNormalized() * 1500 ,
+							 endpos = entpos + difpos:GetNormalized() * 1000 ,
 							 collisiongroup  = COLLISION_GROUP_WORLD,
 							 filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
 

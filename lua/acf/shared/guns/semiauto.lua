@@ -19,11 +19,11 @@ ACF_defineGun("25mmSA", { --id
 	gunclass = "SA",
 	canparent = true,
 	caliber = 2.5,
-	weight = 95,
+	weight = 75,
 	year = 1935,
-	rofmod = 1.224,
-	magsize = 5,
-	magreload = 2,
+	rofmod = 0.7,
+	magsize = 20,
+	magreload = 4,
 	round = {
 		maxlength = 39,
 		propweight = 0.5
@@ -39,16 +39,16 @@ ACF_defineGun("37mmSA", {
 	caliber = 3.7,
 	weight = 180,
 	year = 1940,
-	rofmod = 1.063,
-	magsize = 5,
-	magreload = 3.5,
+	rofmod = 0.5,
+	magsize = 15,
+	magreload = 6,
 	round = {
 		maxlength = 42,
 		propweight = 1.125
 	}
 } )
 
-ACF_defineGun("45mmSA", {
+ACF_defineGun("45mmSA", { --
 	name = "45mm Semiautomatic Cannon",
 	desc = "The 45mm can easily shred light armor, with a respectable rate of fire, but its armor penetration pales in comparison to regular cannons.",
 	model = "models/autocannon/semiautocannon_45mm.mdl",
@@ -57,9 +57,9 @@ ACF_defineGun("45mmSA", {
 	caliber = 4.5,
 	weight = 495,
 	year = 1965,
-	rofmod = 1,
-	magsize = 5,
-	magreload = 4,
+	rofmod = 0.47,
+	magsize = 12,
+	magreload = 7,
 	round = {
 		maxlength = 52,
 		propweight = 1.8
@@ -75,9 +75,9 @@ ACF_defineGun("57mmSA", {
 	caliber = 5.7,
 	weight = 780,
 	year = 1965,
-	rofmod = 1,
-	magsize = 5,
-	magreload = 4.5,
+	rofmod = 0.5,
+	magsize = 9,
+	magreload = 12,
 	round = {
 		maxlength = 62,
 		propweight = 2
@@ -86,16 +86,16 @@ ACF_defineGun("57mmSA", {
 
 ACF_defineGun("76mmSA", {
 	name = "76mm Semiautomatic Cannon",
-	desc = "The 76mm semiauto is a fearsome weapon, able to put 5 76mm rounds downrange in 8 seconds.",
+	desc = "The 76mm semiauto is a fearsome weapon, able to put 12 76mm rounds downrange in 7 seconds.",
 	model = "models/autocannon/semiautocannon_76mm.mdl",
 	gunclass = "SA",
 	canparent = true,
 	caliber = 7.62,
 	weight = 1700,
 	year = 1984,
-	rofmod = 1,
-	magsize = 5,
-	magreload = 5,
+	rofmod = 0.4,
+	magsize = 12,
+	magreload = 10,
 	round = {
 		maxlength = 70,
 		propweight = 4.75

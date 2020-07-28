@@ -305,3 +305,19 @@ r100
 -Reverted a few HE changes that made HE bug more likely
 -Update Armor Analyzer
 -Added Kemgus' 9 speed transmissions
+
+*r125
+-fixed guncaliber error leading to increased pen
+-Removed HRACs and buffed RACs
+-Small caliber weapons cannot use HE(30mm and below excluding the 30mm AC and 30mm short HMG)
+-fixed a shell caliber issue that caused shells to have a lower pen area
+-Buffed ROF of many below 37mm guns to compensate for the lack of HE
+-massively buffed semiautos
+-added 2 piece ammo with 30% penalty, applies automatically
+-Invalid ammocrates should no longer spam the console with errors
+-buffed short cannon accuracy
+-fixed an armor bug that caused composite not to spall propperly
+-Angled ceramic takes more damage
+-decreased HE push force
+-fixed a few bugs with radar clutter
+-made radar missiles less prone to ground clutter

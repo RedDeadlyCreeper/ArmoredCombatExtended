@@ -11,22 +11,6 @@ ACF_defineGunClass("MO", {
 	soundNormal = " "
 } )
 
-ACF_defineGun("50mmM", { --id
-	name = "(+)50mm Mortar",
-	desc = "The 50mm is an uncommon light mortar often seen at or before the begening of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
-	model = "models/mortar/mortar_50mm.mdl",
-	gunclass = "MO",
-	canparent = true,
-	caliber = 5.0,
-	weight = 40,
-	rofmod = 1.25,
-	year = 1930,
-	round = {
-		maxlength = 25,
-		propweight = 0.03
-	}
-} )
-
 ACF_defineGun("60mmM", { --id
 	name = "60mm Mortar",
 	desc = "The 60mm is a common light infantry support weapon, with a high rate of fire but a puny payload.",
@@ -104,6 +88,24 @@ ACF_defineGun("200mmM", {
 } )
 
 if ACF.EnableNewContent then
+
+
+	ACF_defineGun("50mmM", { --id
+	name = "50mm Mortar",
+	desc = "The 50mm is an uncommon light mortar often seen at or before the begening of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
+	model = "models/mortar/mortar_50mm.mdl",
+	gunclass = "MO",
+	canparent = true,
+	caliber = 5.0,
+	weight = 40,
+	rofmod = 1.25,
+	year = 1930,
+	round = {
+		maxlength = 25,
+		propweight = 0.03
+	}
+} )
+
 ACF_defineGun("280mmM", {
 	name = "280mm Mortar",
 	desc = "Massive payload, with a reload time to match. Found in rare WW2 siege artillery pieces. It's the perfect size for a jeep.",

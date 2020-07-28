@@ -1,6 +1,6 @@
 local UpdateIndex = 0
 
-local updateContraptionsTick = 900
+local updateContraptionsTick = 0
 ACE = ACE or {}
 
 ACE.contraptionEnts = {}
@@ -25,10 +25,14 @@ ACE_CPro_scanEnt = nil --Contraption profiler heavies constrained entity
 ScanTime = 0
 
 function updateContraptionList() --Only fails if every prop is parented to a holoentity, this is an almost nonexistent case and even then most people parent holos to the entity that made them.
+--print("Test")
 
-	updateContraptionsTick = updateContraptionsTick + 1 --Executes every 10-20 seconds
---	if updateContraptionsTick == 660 or updateContraptionsTick == 693 or updateContraptionsTick == 726 or updateContraptionsTick == 759 then --divides the props into 4 subiterations
-	if updateContraptionsTick >= 1320 then
+if updateContraptionsTick > CurTime() then return end
+
+
+	if not table.IsEmpty( cpscanproplist ) then
+--print("Test")		
+		--[[
 
 						if updateContraptionsTick == 1320 then
 							ScanTime = CurTime()
@@ -65,6 +69,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 							end
 						end
 
+		]]--
 
 
 		if (not table.IsEmpty( cpscanproplist4 )) or (not table.IsEmpty( cpscanproplist5 ))  then --For iterating chains of constrained entities
@@ -261,10 +266,11 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 
 		if table.IsEmpty( cpscanproplist ) then --Jobs done
 			
-			ACE.contraptionEnts = cpscanproplist3
-			print( "[ACE] Found ("..table.Count( ACE.contraptionEnts )..") contraptions in ("..math.Round(CurTime()-ScanTime)..") seconds." )	
---			PrintTable(ACE.contraptionEnts)
+			table.Add( ACE.contraptionEnts, cpscanproplist3 )
+			print( "[ACE] Found ("..table.Count( ACE.contraptionEnts )..") contraptions in ("..math.Round(CurTime()-ScanTime-1)..") seconds." )	
+			--PrintTable(ACE.contraptionEnts)
 
+			--[[
 					for id, ent in pairs(ACE.contraptionEnts) do
 
 						if IsValid(ent) then
@@ -272,6 +278,7 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 						end
 
 					end
+			]]--
 
 			updateContraptionsTick = 0
 			cpscanproplist2 = {} --Clear out table
@@ -280,12 +287,52 @@ function updateContraptionList() --Only fails if every prop is parented to a hol
 
 
 	end
+
+	for id, ent in pairs(ACE.contraptionEnts) do
+
+		if not IsValid(ent) then
+			table.remove( ACE.contraptionEnts, id )
+			print("[ACE] Removed a contraption")
+		end
+
+	end
+
 end
 
-function ACEdupeCategorizeContraptions()
-	updateContraptionsTick = 1300
-	updateContraptionList()
+function ACEdupeCategorizeContraptions(ArgTable)
+	
+	local proplist = ArgTable[1]["CreatedEntities"]
+
+	for id, ent in pairs(proplist) do
+
+		if IsValid(ent) then
+			table.insert(cpscanproplist, ent)
+		end
+
+	end
+
+	--	table.Add( cpscanproplist, proplist )
+
+	ScanTime = CurTime()
+
+	print("[ACE] ContraptionScan")
+
+	ACE.ECMPods = ents.FindByClass( "ace_ecm" )
+
+	ACE.radarEntities = ents.FindByClass( "ace_trackingradar" )
+
+	for id, ent in pairs(ACE.radarEntities) do
+		ACE.radarIDs[ent] = id
+	end
+
+	updateContraptionsTick = ScanTime + 1
+
+	TestHeat = 0
+--	print(table.Count( cpscanproplist ))
+
 end
+
+
 
 hook.Add("AdvDupe_FinishPasting","ACE_CategorizeContraptions_dupefinished",ACEdupeCategorizeContraptions)
 
@@ -643,6 +690,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			end
 		end
 
+		dmul = losArmor / armor --Angled ceramic takes more damage. Fully angled ceramic takes up to 7x the damage
+		
 		if Type=="HE" then
 		dmul = dmul*10
 		end
@@ -723,7 +772,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		-- Projectile caliber. Messy, function signature
 		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
 		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" or Type == "Spall") then
-		local DmgResist = 0.01+caliber/ACF.RubberSpecialEffect*60
+		local DmgResist = 0.01+math.min(caliber*10/ACF.RubberSpecialEffect,5)*6
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / ACF.RubberEffectivenessSpecial - 1.3) / (7 - 1.3), 0, 1)
 
@@ -739,7 +788,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			elseif penProb > math.random() then									-- Penetration chance roll
 				local Penetration = math.min( maxPenetration, losArmor * ACF.RubberEffectivenessSpecial )
 
-				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberResilianceFactorSpecial * ductilitymult	 * damageMult
+				HitRes.Damage   = var * dmul * ( Penetration / losArmorHealth / ACF.RubberEffectivenessSpecial )^2 * FrAera / ACF.RubberResilianceFactorSpecial * DmgResist * ductilitymult	 * damageMult
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
 		

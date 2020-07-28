@@ -194,7 +194,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
 							local Debris = ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 33.3 * (GetConVarNumber("acf_hepush") or 1) )
+							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 0.333 * (GetConVarNumber("acf_hepush") or 1) )
 						end
 					end
 				end)
@@ -210,7 +210,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					table.insert( OccFilter , Debris )						--Add the debris created to the ignore so we don't hit it in other rounds
 					LoopKill = true --look for fresh targets since we blew a hole somewhere
 				else
-					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 10 * (GetConVarNumber("acf_hepush") or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
+					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 0.1 * (GetConVarNumber("acf_hepush") or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
 				end
 			end
 			PowerSpent = PowerSpent + PowerFraction*BlastRes.Loss/2--Removing the energy spent killing props
@@ -229,27 +229,32 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	end
 	
 	local SpallMul = 1 --If all else fails treat it like RHA
+	local ArmorMul = 1
+
 	if Material == 2 then 
-	SpallMul = 1.2 --Cast
+		SpallMul = 1.2 --Cast
+		ArmorMul = 1.8
 	elseif Material == 3 then 
-	SpallMul = 0 --Rubber does not spall
+		SpallMul = 0 --Rubber does not spall
 	elseif Material == 5 then
-	SpallMul = ACF.AluminumSpallMult
+		SpallMul = ACF.AluminumSpallMult
+		ArmorMul = 0.334
 	elseif Material == 6 then
-	SpallMul = ACF.TextoliteSpallMult
+		SpallMul = ACF.TextoliteSpallMult
+		ArmorMul = 0.23
 	end
 	
---	print("CMod: "..Caliber*4) 
---	print(Caliber) 
-	
-	if SpallMul > 0 and Caliber*10 > Armour and Caliber > 3 then
---	print("SpallPass")
-	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(Armour,50) * 0.0004
-	local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*2),40)
-	local SpallWeight = TotalWeight/Spall*SpallMul*400
-	local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
-	local SpallAera = (SpallWeight/7.8)^0.33 
-	local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 8000 )
+		--	print("CMod: "..Caliber*4) 
+		--	print(Caliber) 
+	local UsedArmor = Armour*ArmorMul
+	if (SpallMul > 0) and (Caliber*10 > UsedArmor) and (Caliber > 3) then
+		--print("SpallPass")
+		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.0004
+		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
+		local SpallWeight = TotalWeight/Spall*SpallMul*400
+		local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
+		local SpallAera = (SpallWeight/7.8)^0.33 
+		local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 8000 )
 
 --	print("Weight: "..SpallWeight)
 --	print("Vel: "..SpallVel)
@@ -270,25 +275,33 @@ end
 function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor , Material)
 
 	local SpallMul = 1
+	local ArmorMul = 1
+
 	if Material == 2 then 
 	SpallMul = 1.5
+	ArmorMul = 1.8
 	elseif Material == 3 then 
 	SpallMul = 0.1
+	ArmorMul = 0.01
 	elseif Material == 5 then
 	SpallMul = ACF.AluminumSpallMult
+	ArmorMul = 0.334
 	elseif Material == 6 then
 	SpallMul = ACF.TextoliteSpallMult
+	ArmorMul = 0.23
 	end
 --	print("CMod: "..Caliber*4) 
 
 --	print(HEFiller)
 
-	if SpallMul > 0 and HEFiller/1501 > Armour then
+local UsedArmor = Armour*ArmorMul
 
-	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(Armour,50) * 0.00079
-	local Spall = math.min(math.floor((Caliber-3)*2*ACF.KEtoSpall*SpallMul),60)
+	if SpallMul > 0 and HEFiller/1501 > UsedArmor then
+
+	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.00079
+	local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35
-	local SpallVel = (HEFiller*8500*25000/SpallWeight)^0.5/Spall*SpallMul
+	local SpallVel = (HEFiller*212500000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel*1000 , SpallWeight, 800 )
 
@@ -613,7 +626,7 @@ function ACF_ScaledExplosion( ent )
 	
 	local HEWeight
 	if ent:GetClass() == "acf_fueltank" then
-		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 0.1
+		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 1
 	else
 		local HE, Propel
 		if ent.RoundType == "Refill" then
@@ -701,7 +714,7 @@ function ACF_ScaledExplosion( ent )
 	ent:Remove()
 	
 	
-	HEWeight=HEWeight*ACF.BoomMult*1.5
+	HEWeight=HEWeight*ACF.BoomMult
 	Radius = (HEWeight)^0.33*8*39.37
 			
 	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )

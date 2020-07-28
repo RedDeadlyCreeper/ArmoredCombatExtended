@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("SC", {
-	spread = 0.25,
+	spread = 0.20,
 	name = "Short-Barrel Cannon",
 	desc = ACFTranslation.GunClasses[13],
 	muzzleflash = "120mm_muzzleflash_noscale",

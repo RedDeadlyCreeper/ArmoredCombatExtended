@@ -479,7 +479,7 @@ function ENT:UpdateRefillBonus()
                 
                 dist = math.max(0, dist * 2 - maxDist)
 
-                local bonus = ( crate.Volume / minFullEfficiency ) * ( maxDist - dist ) / maxDist
+                local bonus = ( (crate.Volume or 0.1) / minFullEfficiency ) * ( maxDist - dist ) / maxDist
                 
                 totalBonus = totalBonus + bonus
                 

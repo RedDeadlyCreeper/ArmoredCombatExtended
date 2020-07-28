@@ -160,7 +160,7 @@ if beingjammed < 1 then
 
 			if (absang.p < self.Cone and absang.y < self.Cone) then --Entity is within radar cone
 
-				local LOStr = util.TraceLine( {start = thisPos ,endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
+				local LOStr = util.TraceLine( {start = thisPos ,endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD, filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
 
 				if not LOStr.Hit then --Trace did not hit world
 					
@@ -181,13 +181,13 @@ if beingjammed < 1 then
 				--Also objects not coming directly towards the radar create more error.
 					local DopplerERR = (((math.abs(DPLR.y)^2+math.abs(DPLR.z)^2)^0.5)/velLength/2)*0.1
 
-					local GCtr = util.TraceLine( {start = entpos, endpos = entpos + difpos:GetNormalized() * 2000 ,collisiongroup  = COLLISION_GROUP_DEBRIS}) --Hits anything in the world.
+					local GCtr = util.TraceLine( {start = entpos, endpos = entpos + difpos:GetNormalized() * 2000 ,collisiongroup  = COLLISION_GROUP_DEBRIS, filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
 					local GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
 					local GCFr = GCtr.Fraction
 --					print(GCdis)
 --					if GCdis <= 0.5 then --Get canceled by ground clutter
 
-					if (Dopplertest < self.DPLRFAC or Dopplertest2 < self.DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/evlen) > 0.3) or (GCdis >= 0.5) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+					if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.25) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
 						--1000 u = ~57 mph
 
 
@@ -200,7 +200,7 @@ if beingjammed < 1 then
 						--print((entpos - thisPos):Length())
 						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
 
-						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCFr*0.05 ))) --3 
+						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCdis*0.03 ))) --3 
 
 							local veltest
 

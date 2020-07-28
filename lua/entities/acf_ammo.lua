@@ -137,6 +137,7 @@ function ENT:Initialize()
 	self.AmmoMassMax = 0
 	self.NextMassUpdate = 0
 	self.Ammo = 0
+	self.IsTwoPiece = false
 	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
@@ -145,7 +146,7 @@ function ENT:Initialize()
 	self.Sequence = 0
 	
 	self.Inputs = Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
-	self.Outputs = Wire_CreateOutputs( self, { "Munitions", "On Fire" } )
+	self.Outputs = Wire_CreateOutputs( self, { "Munitions" } )
 		
 	self.NextThink = CurTime() +  1
 	
@@ -156,6 +157,23 @@ function ENT:Initialize()
 	self.Caliber = 1
 	self.RoFMul = 1
 	self.LastMass = 1
+
+	--Lets see if this fixes some invalid ammo
+	self.RoundId = ( self.RoundId or 1	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
+	self.RoundType = ( self.RoundType or "AP"	) --Type of round, IE AP, HE, HEAT ...
+	self.RoundPropellant = ( self.RoundPropellant or 0 )--Lenght of propellant
+	self.RoundProjectile = ( self.RoundProjectile or 0 )--Lenght of the projectile
+	self.RoundData5 = ( self.RoundData5 or 0 )
+	self.RoundData6 = ( self.RoundData6 or 0 )
+	self.RoundData7 = ( self.RoundData7 or 0 )
+	self.RoundData8 = ( self.RoundData8 or 0 )
+	self.RoundData9 = ( self.RoundData9 or 0 )
+	self.RoundData10 = ( self.RoundData10 or 0 )
+	self.RoundData11 = ( self.RoundData11 or 0 )	
+	self.RoundData12 = ( self.RoundData12 or 0 )	
+	self.RoundData13 = ( self.RoundData13 or 0 )	
+	self.RoundData14 = ( self.RoundData14 or 0 )	
+	self.RoundData15 = ( self.RoundData15 or 0 )
 
 end
 
@@ -216,6 +234,11 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	
 	-- cookoff chance calculation
 	if self.Damaged then return HitRes end
+
+	if table.IsEmpty( self.BulletData or {} ) then  
+		self:Remove()	
+	else
+
 	local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
 
 	local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
@@ -237,15 +260,15 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 	if DetRand >= 0.95 then --Tests if cooks off
 		self.Inflictor = Inflictor
 		self.Damaged = CurTime() + (5 - Ratio*3)
-		Wire_TriggerOutput(self, "On Fire", 1)		
 --		print("Cookoff")
 	elseif DetRand >= 0.7 then  
 		self.Inflictor = Inflictor
-		self.Damaged = 1 --Instant explosion guarenteed
-		Wire_TriggerOutput(self, "On Fire", 1)				
+		self.Damaged = 1 --Instant explosion guarenteed		
 --		print("Instant boom")
 	end
 	
+	end
+
 	return HitRes --This function needs to return HitRes
 end
 
@@ -343,6 +366,9 @@ function ENT:UpdateOverlayText()
 	
 	local roundType = self.RoundType
 	
+	
+	if table.IsEmpty( self.BulletData or {} ) then  return end
+
 	if self.BulletData.Tracer and self.BulletData.Tracer > 0 then 
 		roundType = roundType .. "-T"
 	end
@@ -356,10 +382,17 @@ function ENT:UpdateOverlayText()
 		text = text .. "\n" .. RoundData.cratetxt( self.BulletData, self )
 	end
 
+	if self.IsTwoPiece then
+		text = text .. "\nUses 2 piece ammo\n30% reload penalty"
+	end
+
+
 	if not self.Legal then
 		text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	end
-	
+
+
+
 	self:SetOverlayText( text )
 	
 end
@@ -414,38 +447,60 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
 
-	local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
-	local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
+	if not (self.BulletData.Type == "Refill") then
 
-	if width > 4 then
-	local shellLength = math.min(shellLength,width*5)
+		local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
+		local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
+	
+	--	if width > 4 then
+	--	local shellLength = math.min(shellLength,width*5)
+	--	end
+	
+	--	print(shellLength)
+	
+		self.Volume = vol*Efficiency
+	--	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
+	
+		--Vertical placement
+		local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
+		--Horizontal Placement 1
+		local cap2 = (math.floor(Size.x/shellLength) * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
+		--Horizontal placement 2
+		local cap3 = (math.floor(Size.y/shellLength) * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
+		--Vertical 2 piece placement
+		local cap4 = math.floor(math.floor(Size.z/shellLength*2)/2 * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
+		--Horizontal 2 piece  Placement 1
+		local cap5 = math.floor(math.floor(Size.x/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
+		--Horizontal 2 piece  placement 2
+		local cap6 = math.floor(math.floor(Size.y/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
+
+	
+	--	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
+
+	local tval1 = math.max(cap1,cap2,cap3)
+	local tval2 = math.max(cap4,cap5,cap6)
+
+	if (tval2-tval1)/(tval1+tval2) > 0.2 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 20% shells
+		self.Capacity = tval2
+		self.IsTwoPiece = true
+	else
+		self.Capacity = tval1
+		self.IsTwoPiece = false
 	end
 
---	print(shellLength)
 
-	self.Volume = vol*Efficiency
---	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
-
-	--Vertical placement
-	local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
---	print("Cap1: "..cap1)
-	--Horizontal Placement 1
-	local cap2 = (math.floor(Size.x/shellLength) * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
---	print("Cap2: "..cap2)
-	--Horizontal placement 2
-	local cap3 = (math.floor(Size.y/shellLength) * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
---	print("Cap3: "..cap3)
-
---	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
-	if not (self.BulletData.Type == "Refill") then
-	self.Capacity = math.max(cap1,cap2,cap3)
 	self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
 	else
+
+	local vol = math.floor(self:GetPhysicsObject():GetVolume())
+	self.Volume = vol*Efficiency
+	
 	self.Capacity = 99999999
 	self.AmmoMassMax = vol*1	
 	end
-	self.Caliber = width or 1
+	self.Caliber = GunData.caliber or 1
 	self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
+	self.RoFMul = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0) --30% ROF penalty for 2 piece
 
 	self:SetNWString( "Ammo", self.Ammo )
 	self:SetNWString( "WireName", GunData.name .. " Ammo" )
@@ -516,6 +571,22 @@ function ENT:Think()
 	if ACF.CurTime > self.NextLegalCheck then
 		--local minmass = math.floor(self.EmptyMass+self.AmmoMassMax*((self.Ammo-1)/math.max(self.Capacity,1)))-5  -- some possible weirdness with heavy shells, and refills.  just going to check above empty mass
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, false, true, true, true)
+
+		if self.Legal then --Low caliber HE check
+			
+
+			if self.Caliber < 3 then
+
+				CrateType = self.BulletData.Type or "Refill"
+				--if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
+				if CrateType == "HE" or CrateType == "APHE" or CrateType == "HEAT" or CrateType == "THEAT" or CrateType == "HEATFS" or CrateType == "THEATFS" then --If there was ever a reason to believe FS rounds are stupid this is it(They Are)
+					self.LegalIssues = self.LegalIssues.."Explosive rounds cannot be used on guns 30mm and below"
+					self.Legal = false
+				end
+			end
+
+		end
+
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:UpdateOverlayText()
 

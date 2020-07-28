@@ -21,7 +21,7 @@ ACF_defineGun("20mmAC", { --id
 	canparent = true,
 	weight = 170,
 	year = 1930,
-	rofmod = 1.8,
+	rofmod = 1,
 	round = {
 		maxlength = 32,
 		propweight = 0.13
@@ -34,7 +34,7 @@ ACF_defineGun("30mmAC", {
 	model = "models/autocannon/autocannon_30mm.mdl",
 	gunclass = "AC",
 	canparent = true,
-	caliber = 3.0,
+	caliber = 3.01,
 	weight = 255,
 	year = 1935,
 	rofmod = 1,
@@ -85,7 +85,7 @@ ACF_defineGun("20mmHAC", { --id
 	canparent = true,
     weight = 320,
     year = 1960,
-    rofmod = 1.1,
+    rofmod = 0.8,
     round = {
         maxlength = 24,
         propweight = 0.13
@@ -101,7 +101,7 @@ ACF_defineGun("30mmHAC", {
     caliber = 3.0,
     weight = 700,
     year = 1935,
-    rofmod = 0.75,
+    rofmod = 0.55,
     round = {
         maxlength = 28,
         propweight = 0.350
@@ -115,7 +115,7 @@ ACF_defineGun("40mmHAC", {
     gunclass = "AC",
 	canparent = true,
     caliber = 4.0,
-    weight = 1000,
+    weight = 1400,
     year = 1000,
     rofmod = 0.55,
     round = {

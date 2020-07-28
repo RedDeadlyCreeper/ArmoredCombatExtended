@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 442  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 443  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -42,7 +42,7 @@ ACF.CeramicResilianceFactor = 0.8 --Higher = less damage, Lower = more damage. 2
 ACF.CeramicPierceDamage = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 	
 ACF.RubberEffectiveness = 0.02
-ACF.RubberResilianceFactor = 1.5 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberResilianceFactor = 0.5 --Higher = less damage, Lower = more damage. 2x = half damage.
 ACF.RubberResilianceFactorCatch = 0.05 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
 ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
 ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
@@ -308,7 +308,6 @@ include("acf/shared/rounds/roundflare.lua")
 include("acf/shared/rounds/roundglgm.lua")
 end
 if ACF.Year > 1989 and ACF.EnableNewContent then
---include("acf/shared/rounds/roundecmbattery.lua")
 include("acf/shared/rounds/roundtheat.lua")
 include("acf/shared/rounds/roundtheatfs.lua")
 end

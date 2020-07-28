@@ -23,7 +23,7 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 1 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
 
 --Sensitivity of the IR Seeker, higher sensitivity is for aircraft
 this.SeekSensitivity = 1
