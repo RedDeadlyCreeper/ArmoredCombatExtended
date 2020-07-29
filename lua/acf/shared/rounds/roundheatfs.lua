@@ -178,7 +178,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
 	Bullet.ProjMass = Bullet.SlugMass
-	Bullet.CannonCaliber = Bullet.Caliber
+	Bullet.CannonCaliber = Bullet.Caliber * 2
 	Bullet.Caliber = Bullet.SlugCaliber
 	Bullet.PenAera = Bullet.SlugPenAera
 	Bullet.Ricochet = Bullet.SlugRicochet

@@ -210,7 +210,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	
 	Bullet.ProjMass = Bullet.SlugMass
-	Bullet.CannonCaliber = Bullet.Caliber
+	Bullet.CannonCaliber = Bullet.Caliber * 2
 	Bullet.Caliber = Bullet.SlugCaliber
 	Bullet.PenAera = Bullet.SlugPenAera
 	Bullet.Ricochet = Bullet.SlugRicochet
@@ -252,11 +252,10 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber*2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * 2000 / Bullet.ProjMass) * 39.37 
 --				print("Penetrated")
 --				print("KE: "..Energy.Kinetic)
---				print("SpallCaliber: "..Bullet.CannonCaliber*2)
 				return "Penetrated"
 			elseif DetCount == 1 then --If bullet has detonated once and fails to pen
 				Round.detonate( Index, Bullet, HitPos, HitNormal )
