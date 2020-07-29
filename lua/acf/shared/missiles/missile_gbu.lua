@@ -33,6 +33,7 @@ ACF_defineGun("WalleyeGBU", { --id
 	caliber = 31.8, --fat fucker, real diameter is 0.318m
 	weight = 510,    --510kg
 	year = 1967,
+	rofmod		= 1.6,
     modeldiameter = 21.2 * 1.4, -- in cm
 	round = {
 		model		= "models/bombs/gbu/agm62.mdl",
@@ -52,7 +53,7 @@ ACF_defineGun("WalleyeGBU", { --id
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Laser"},
-    fuses       = {"Contact", "Timed", "Optical"},
+    fuses       = {"Contact", "Timed", "Optical", "Cluster"},
 	racks       = {["1xRK"] = true,  ["2xRK"] = true,  ["3xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
     seekcone    = 90,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
     viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2. 
@@ -71,6 +72,7 @@ ACF_defineGun("227kgGBU", { --id
 	caliber = 10.5,
 	weight = 250,    -- Don't scale down the weight though!
 	year = 1976,
+	rofmod		= 1.6,
     modeldiameter = 16.3 * 1.9, -- in cm
 	round = {
 		model		= "models/bombs/gbu/gbu12.mdl",
@@ -91,7 +93,7 @@ ACF_defineGun("227kgGBU", { --id
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb", "Laser"},
 
-    fuses       = {"Contact", "Timed", "Optical"},
+    fuses       = {"Contact", "Timed", "Optical", "Cluster"},
  
 	racks       = {["1xRK"] = true,  ["2xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -113,6 +115,7 @@ ACF_defineGun("454kgGBU", { --id
 	caliber = 17.0,
 	weight = 500,    -- Don't scale down the weight though!
 	year = 1976,
+	rofmod		= 1.5,
     modeldiameter = 16.3 * 1.9, -- in cm
 	round = {
 		model		= "models/bombs/gbu/gbu16.mdl",
@@ -132,7 +135,7 @@ ACF_defineGun("454kgGBU", { --id
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb", "Laser"},
-    fuses       = {"Contact", "Timed", "Optical"},
+    fuses       = {"Contact", "Timed", "Optical", "Cluster"},
  
 	racks       = {["1xRK"] = true,  ["2xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
  
@@ -153,6 +156,7 @@ ACF_defineGun("909kgGBU", { --id
 	caliber = 20.0,
 	weight = 1000,    -- Don't scale down the weight though! 
 	year = 1976,
+	rofmod		= 2,
     modeldiameter = 16.3 * 4.5, -- in cm
 	round = {
 		model		= "models/bombs/gbu/gbu10_fold.mdl",
@@ -172,7 +176,7 @@ ACF_defineGun("909kgGBU", { --id
    
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb", "Laser"},
-    fuses       = {"Contact", "Timed", "Optical"},
+    fuses       = {"Contact", "Timed", "Optical", "Cluster"},
  
 	racks       = {["1xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
  

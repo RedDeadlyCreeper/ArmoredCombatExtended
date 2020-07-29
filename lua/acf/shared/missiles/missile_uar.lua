@@ -30,7 +30,7 @@ ACF_defineGun("RS82 ASR", { --id
     weight		= 5,
     length	    = 40,
 	year		= 1933,
-	rofmod		= 0.6,
+	rofmod		= 0.07,
 	roundclass	= "Rocket",
 	round		=
 	{
@@ -54,7 +54,7 @@ ACF_defineGun("RS82 ASR", { --id
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Timed"},
 
-    racks       = {["1xRK_small"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+    racks       = {["1xRK"] = true, ["1xRK_small"] = true, ["3xUARRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
     armdelay    = 0.0     -- minimum fuse arming delay
 } )
@@ -77,7 +77,7 @@ ACF_defineGun("HVAR ASR", { --id
 	{
 		model		= "models/missiles/hvar.mdl",
 		rackmdl		= "models/missiles/hvar.mdl",
-		maxlength	= 135,
+		maxlength	= 155,
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
@@ -111,7 +111,7 @@ ACF_defineGun("SPG-9 ASR", { --id
     weight		= 40,
     length	    = 20,
 	year		= 1962,
-	rofmod		= 0.75,
+	rofmod		= 0.4,
 	roundclass	= "Rocket",
 	round		=
 	{
@@ -152,18 +152,18 @@ ACF_defineGun("S-24 ASR", { --id
     weight		= 235,
     length	    = 25,
 	year		= 1960,
-	rofmod		= 0.6,
+	rofmod		= 0.4,
 	roundclass	= "Rocket",
 	round		=
 	{
 		model		= "models/missiles/s24.mdl",
 		rackmdl		= "models/missiles/s24.mdl",
-		maxlength	= 130,
+		maxlength	= 100,
 		casing		= 0.3,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
-		propweight	= 15,			-- motor mass - motor casing
+		propweight	= 20,			-- motor mass - motor casing
 		thrust		= 9000,		-- average thrust - kg*in/s^2
-		burnrate	= 1000,			-- cm^3/s at average chamber pressure
+		burnrate	= 2000,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.15,
         minspeed	= 10000,			-- minimum speed beyond which the fins work at 100% efficiency
         dragcoef	= 0.001,		-- drag coefficient while falling

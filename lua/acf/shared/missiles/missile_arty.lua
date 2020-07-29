@@ -28,7 +28,7 @@ ACF_defineGun("Type 63 RA", { --id
     weight		= 80,
     length	    = 80,
 	year		= 1960,
-	rofmod		= 0.6,
+	rofmod		= 0.3,
 	roundclass	= "Rocket",
 	round		=
 	{
@@ -73,7 +73,7 @@ ACF_defineGun("SAKR-10 RA", { --id
     weight		= 160,
     length	    = 320, --320
 	year		= 1980,
-	rofmod		= 0.75,
+	rofmod		= 0.25,
 	roundclass	= "Rocket",
 	round		=
 	{
@@ -118,7 +118,7 @@ ACF_defineGun("SS-40 RA", { --id
     weight		= 320,
     length	    = 420,
 	year		= 1983,
-	rofmod		= 1.1,
+	rofmod		= 0.2,
 	roundclass	= "Rocket",
 	round		=
 	{
@@ -162,13 +162,13 @@ ACF_defineGun("RW61 RA", { --id
     weight		= 1800,
     length	    = 38,
 	year		= 1944,
-	rofmod		= 0.9,
+	rofmod		= 0.25,
 	roundclass	= "Rocket",
 	round		=
 	{
 		model		= "models/missiles/RW61M.mdl",
 		rackmdl		= "models/missiles/RW61M.mdl",
-		maxlength	= 80,
+		maxlength	= 160,
 		casing		= 1.0,	        -- thickness of missile casing, cm
 		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 5,	        -- motor mass - motor casing
@@ -183,7 +183,7 @@ ACF_defineGun("RW61 RA", { --id
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
-    fuses       = {"Contact", "Optical"},
+    fuses       = {"Contact", "Optical", "Cluster"}, --Because who doesn't love cluster RW61s
 
     racks       = {["380mmRW61"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 

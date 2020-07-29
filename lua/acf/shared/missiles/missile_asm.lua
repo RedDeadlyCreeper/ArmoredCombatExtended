@@ -156,7 +156,7 @@ ACF_defineGun("AGM-65 ASM", { --id
 	weight = 300,    -- Don't scale down the weight though!
 	year = 1974,
 	modeldiameter = 9.0 * 2.54, -- in cm
-	rofmod          = 0.1,
+	rofmod          = 0.3,
 	round = {
 		model		= "models/missiles/aim54.mdl",
 		rackmdl		= "models/missiles/aim54.mdl",

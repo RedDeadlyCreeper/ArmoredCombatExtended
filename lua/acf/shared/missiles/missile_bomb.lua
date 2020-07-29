@@ -92,7 +92,7 @@ ACF_defineGun("100kgBOMB", { --id
 	guidance    = {"Dumb"},
 	fuses       = {"Contact", "Optical", "Cluster"},
     
-	racks       = {["1xRK_small"] = true, ["1kRK"] = true, ["2xRK"] = true,  ["3xRK"] = true, ["4xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+	racks       = {["1xRK_small"] = true,  ["1xRK"] = true, ["2xRK"] = true,  ["3xRK"] = true, ["4xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
  
     seekcone    = 40,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
     viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2. 
@@ -189,14 +189,14 @@ ACF_defineGun("1000kgBOMB", { --id
 	gunclass = "BOMB",
     rack = "1xRK",  -- Which rack to spawn this missile on?
 	length = 30000,
-	caliber = 30.0,
+	caliber = 40.0,
 	weight = 1000,    -- Don't scale down the weight though! 
 	year = 1945,
     modeldiameter = 16.3 * 4.5, -- in cm
 	round = {
 		model		= "models/bombs/an_m66.mdl",
 		rackmdl		= "models/bombs/an_m66.mdl",
-		maxlength	= 600,
+		maxlength	= 500,
 		casing		= 0.2,	        -- thickness of missile casing, cm
 		armour		= 6,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
@@ -253,7 +253,7 @@ ACF_defineGun("100kgGBOMB", { --id
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb"},
 	fuses       = {"Contact", "Optical", "Cluster"},
-	racks       = {["1xRK_small"] = true, ["1kRK"] = true, ["2xRK"] = true,  ["3xRK"] = true, ["4xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+	racks       = {["1xRK_small"] = true,  ["1xRK"] = true, ["2xRK"] = true,  ["3xRK"] = true, ["4xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
     
 	armdelay    = 0.00     -- minimum fuse arming delay
 })
@@ -290,6 +290,6 @@ ACF_defineGun("250kgGBOMB", { --id
 	guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
  
-	racks       = {["1xRK"] = true,  ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+	racks       = {["1xRK_small"] = true,  ["1xRK"] = true, ["2xRK"] = true,  ["3xRK"] = true, ["4xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
     armdelay    = 0.00     -- minimum fuse arming delay
 } )

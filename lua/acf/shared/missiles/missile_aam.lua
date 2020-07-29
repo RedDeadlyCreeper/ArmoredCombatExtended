@@ -109,6 +109,7 @@ ACF_defineGun("AIM-120 AAM", { --id
 	caliber = 12,
 	weight = 125,    -- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year = 1991,
+	rofmod = 0.35,
     modeldiameter = 7.1 * 2.54, -- in cm
 	round = {
 		model		= "models/missiles/aim120c.mdl",
@@ -152,6 +153,7 @@ ACF_defineGun("AIM-54 AAM", { --id
 	caliber = 22,
 	weight = 300,    -- Don't scale down the weight though!
 	year = 1974,
+	rofmod = 0.32,
     modeldiameter = 9.0 * 2.54, -- in cm
 	round = {
 		model		= "models/missiles/aim54.mdl",

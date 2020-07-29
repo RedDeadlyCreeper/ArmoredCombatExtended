@@ -29,7 +29,7 @@ ACF_defineGun("FIM-92 SAM", { --id
 	weight = 20,--15.1,    -- Don't scale down the weight though!
     modeldiameter = 6.6, -- in cm
 	year = 1978,
-	rofmod = 1.2,
+	rofmod = 0.15,
 
 	round = {
 		model		= "models/missiles/fim_92.mdl",
@@ -72,6 +72,7 @@ ACF_defineGun("Strela-1 SAM", { --id
 	weight = 150,--15.1,    -- Don't scale down the weight though!
     modeldiameter = 12, -- in cm
 	year = 1960,
+	rofmod = 0.3,
 
 	round = {
 		model		= "models/missiles/9m31.mdl",
@@ -115,6 +116,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 	weight = 200,--15.1,    -- Don't scale down the weight though!
     modeldiameter = 6.6, -- in cm
 	year = 2010,
+	rofmod = 0.3,
 
 	round = {
 		model		= "models/missiles/fim_92_folded.mdl",
@@ -155,7 +157,7 @@ ACF_defineGun("9M311", { --id
 	caliber = 12,
 	weight = 71,    -- Don't scale down the weight though!
 	year = 1982,
-	rofmod = 0.8,
+	rofmod = 0.3,
 	round = {
 		model		= "models/missiles/aim9.mdl",
 		rackmdl		= "models/missiles/aim9.mdl",

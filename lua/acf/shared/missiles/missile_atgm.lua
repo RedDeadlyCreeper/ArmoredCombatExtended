@@ -27,7 +27,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 	caliber = 13,
 	weight = 76.4,    -- Don't scale down the weight though!
 	year = 1970,
-	rofmod = 1.2,
+	rofmod = 0.55,
 	round = {
 		model		= "models/missiles/bgm_71e.mdl",
 		rackmdl		= "models/missiles/bgm_71e.mdl",
@@ -66,7 +66,7 @@ ACF_defineGun("9M113 ASM", { --id
 	weight = 108,    -- Don't scale down the weight though!
     modeldiameter = 15.2, -- in cm
 	year = 1994,
-	rofmod = 1.4,
+	rofmod = 0.7,
 	round = {
 		model		= "models/missiles/glatgm/9m112f.mdl", --shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
 		rackmdl		= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
@@ -107,7 +107,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	caliber = 13,
 	weight = 48,    -- Don't scale down the weight though!
 	year = 1969,
-	rofmod = 1.1,
+	rofmod = 0.4,
 	round = {
 		model		= "models/missiles/at3.mdl",
 		rackmdl		= "models/missiles/at3.mdl",
@@ -149,7 +149,7 @@ ACF_defineGun("Ataka ASM", { --id
 	weight = 198,    -- Don't scale down the weight though!
     modeldiameter = 17.2 * 1.27, -- in cm
 	year = 1984,
-	rofmod = 1.4,
+	rofmod = 0.6,
 	round = {
 		model		= "models/missiles/9m120.mdl",
 		rackmdl		= "models/missiles/9m120.mdl",
@@ -189,7 +189,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	caliber = 16, 
 	weight = 108,    -- Don't scale down the weight though!
 	year = 1969,
-	rofmod = 1.3,
+	rofmod = 0.4,
 	round = {
 		model		= "models/missiles/at2.mdl",
 		rackmdl		= "models/missiles/at2.mdl",
