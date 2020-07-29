@@ -602,7 +602,7 @@ function ENT:Think()
 	end
 
 	local PhysObj = self:GetPhysicsObject()
-	if IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
+	if not IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
 
 	local DeltaTime = CurTime() - self.LastThink	
 	local Mass = PhysObj:GetMass()
