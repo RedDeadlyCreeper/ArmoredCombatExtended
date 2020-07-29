@@ -123,7 +123,7 @@ if SERVER then
 			end
 
 			if inflictor.ACF and inflictor:GetClass() != "acf_ammo" then
-				InflictorClass = "acf_" .. inflictor.Class
+				InflictorClass = "acf_" .. (inflictor.Class or "gun")
 			else
 				InflictorClass = inflictor:GetClass()
 			end
