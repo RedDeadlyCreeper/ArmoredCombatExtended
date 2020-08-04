@@ -10,8 +10,7 @@ ACF_defineGunClass("SAM", {
 	sound           = "acf_extra/airfx/rocket_fire2.wav",
 	soundDistance   = " ",
 	soundNormal     = " ",
-    effect          = "Rocket Motor",
-
+	effect          = "Rocket Motor",
     reloadmul       = 8,
 
     ammoBlacklist   = {"AP", "APHE", "FL", "HEAT"} -- Including FL would mean changing the way round classes work.
@@ -22,6 +21,7 @@ ACF_defineGun("FIM-92 SAM", { --id
 	name = "FIM-92 Missile",
 	desc = "The FIM-92 Stinger is a lightweight and versatile close-range air defense missile.\nWith a seek cone of 15 degrees and a sharply limited range that makes it useless versus high-flying targets, it is best to aim before firing and choose shots carefully.",
 	model = "models/missiles/fim_92.mdl",
+    effect          = "Rocket Motor FFAR", --Tiny motor for tiny rocket
 	gunclass = "SAM",
     rack = "1x FIM-92",  -- Which rack to spawn this missile on?
 	length = 66,
@@ -109,6 +109,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 	name = "SIMBAD Missile",
 	desc = "A point defense antimissile system, built from an antiaircraft missile launcher.  It can only intercept missiles, but is VERY fast.",
 	model = "models/missiles/fim_92_folded.mdl",
+    effect          = "Rocket Motor FFAR", --Tiny motor for tiny rocket
 	gunclass = "SAM",
     rack = "2x FIM-92",  -- Which rack to spawn this missile on?
 	length = 40,

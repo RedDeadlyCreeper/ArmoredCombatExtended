@@ -77,6 +77,7 @@ function EFFECT:Metal()
 			Debris:SetColor( 120,120,120 )
 		end
 	end
+
 		
 	for i=0, 5*self.Scale do
 	
@@ -107,8 +108,9 @@ function EFFECT:Metal()
 		Sparks:SetRadius( self.Scale )
 	util.Effect( "Sparks", Sparks )
 	
- end
- 
+end
+
+
 function EFFECT:Concrete()
   
 	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
@@ -181,8 +183,37 @@ function EFFECT:Concrete()
 		Sparks:SetRadius( self.Scale )
 	util.Effect( "Sparks", Sparks )
 	
- end
- 
+end
+
+
+--[[
+function EFFECT:Concrete()
+  
+	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)	
+
+	--local Embers = self.Emitter:Add( "APPen", self.Origin )
+	
+--	ParticleEffect( "APPen", self.Origin, self.DirVec:Angle())
+
+	local Smoke = self.Emitter:Add( "APPen", self.Origin )
+	if (Smoke) then
+		Smoke:SetVelocity( self.Normal * math.random( 20,40*self.Scale) + VectorRand() * math.random( 25,50*self.Scale) )
+		Smoke:SetStartSize( 1*self.Scale )
+		Smoke:SetEndSize( 2*self.Scale )
+	end
+
+
+	local Sparks = EffectData()
+		Sparks:SetOrigin( self.Origin )
+		Sparks:SetNormal( self.Normal )
+		Sparks:SetMagnitude( self.Scale )
+		Sparks:SetScale( self.Scale )
+		Sparks:SetRadius( self.Scale )
+	util.Effect( "Sparks", Sparks )
+	
+end
+]]--
+
 /*---------------------------------------------------------
    THINK
 ---------------------------------------------------------*/

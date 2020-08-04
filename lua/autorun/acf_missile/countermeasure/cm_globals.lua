@@ -1,16 +1,14 @@
 
 
 ACFM_Flares = {}
-ACFM_ECMs = {}
 
 ACFM_FlareUID = 0
-ACFM_ECMUID = 0
 
 
 
 
 function ACFM_RegisterFlare(bdata)
-	
+
 	local test = ACFM_Flares[bdata.Index] or {}
 	if table.IsEmpty( test ) then return false end
 
@@ -27,24 +25,6 @@ function ACFM_RegisterFlare(bdata)
 
 	
 	ACFM_OnFlareSpawn(bdata)
-
-end
-
-function ACFM_RegisterECM(bdata)
-
-	bdata.ECMUID = ACFM_ECMUID
-	ACFM_ECMs[bdata.Index] = ACFM_ECMUID
-	
-	ACFM_ECMUID = ACFM_ECMUID + 1
-	
-	
-	local ecmObj = ACF.Countermeasure.Flare()
-	ecmObj:Configure(bdata)
-	
-	bdata.ECMObj = ecmObj
-
-	
-	ACFM_OnECMSpawn(bdata)
 	
 end
 
@@ -63,18 +43,6 @@ function ACFM_UnregisterFlare(bdata)
 
 end
 
-function ACFM_UnregisterECM(bdata)
-
-	local ecmObj = bdata.ECMObj
-	
-	if ecmObj then
-		ecmObj.ECM = nil
-	end
-
-	ACFM_ecms[bdata.Index] = nil
-
-end
-
 
 
 
@@ -86,18 +54,6 @@ function ACFM_OnFlareSpawn(bdata)
 	
 	for k, missile in pairs(missiles) do
 		missile.Guidance.Override = flareObj
-	end
-
-end
-
-function ACFM_OnECMSpawn(bdata)
-
-	local ecmObj = bdata.ECMObj
-
-	local missiles = ecmObj:ApplyToAll()
-	
-	for k, missile in pairs(missiles) do
-		missile.Guidance.Override = ecmObj
 	end
 
 end
@@ -118,27 +74,6 @@ function ACFM_GetFlaresInCone(pos, dir, degs)
 		
 		if ACFM_ConeContainsPos(pos, dir, degs, flare.Pos) then
 			ret[#ret+1] = flare
-		end
-		
-	end
-
-	return ret
-	
-end
-
-function ACFM_GetECMsInCone(pos, dir, degs)
-
-	local ret = {}
-	local bullets = ACF.Bullet
-	
-	for idx, uid in pairs(ACFM_ECM) do
-		
-		local ecm = bullets[idx]
-		
-		if not (ecm and ecm.FlareUID and ecm.FlareUID == uid) then continue end
-		
-		if ACFM_ConeContainsPos(pos, dir, degs, ecm.Pos) then
-			ret[#ret+1] = ecm
 		end
 		
 	end

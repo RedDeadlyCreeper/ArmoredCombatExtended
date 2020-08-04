@@ -34,12 +34,13 @@ function ENT:Think()
 					local groundRanger = util.TraceLine( {
 						start = self:GetPos() + Vector(0,0,20),
 						endpos = self:GetPos() + Vector(0,0,-50),
+						collisiongroup = COLLISION_GROUP_WORLD,
 						filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
 					} )	
 					
 					if groundRanger.Hit and groundRanger.HitWorld then
 					self:SetPos(groundRanger.HitPos+Vector(0,0,-1))
-					self:SetAngles(groundRanger.Normal:Angle()+Angle(-90,0,0))
+					self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
 					self.MineState = 1
 					self.phys:EnableMotion(false)
 					end
@@ -50,6 +51,7 @@ function ENT:Think()
 					local triggerRanger = util.TraceHull( {
 						start = self:GetPos() + Vector(0,0,52),
 						endpos = self:GetPos() + Vector(0,0,87.1),
+						ignoreworld  = true,
 						mins = Vector( -60, -60, -20 ),
 						maxs = Vector( 60, 60, 20 ),
 						mask = MASK_SHOT_HULL

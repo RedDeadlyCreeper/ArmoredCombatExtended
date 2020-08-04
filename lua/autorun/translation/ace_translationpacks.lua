@@ -3,7 +3,7 @@ ACFTranslation = {}
 ACFTranslation.ArmorPropertiesText = {
 	--/////////Tool Display description/////////--
 
-	"ACF Armor Properties",--Name (1)
+	"ACE Armor Properties",--Name (1)
 	"Sets the weight of a prop by desired armor thickness, ductility, and material.",--Description 1 (2)
 	"Left click to apply settings.  Right click to copy settings.  Reload to get the total mass of an object and all constrained objects.",--Description 2 (3)
 
@@ -37,7 +37,7 @@ ACFTranslation.ArmorPropertiesText = {
 
 	--/////////Toolgun Display Text/////////--	
 
-	"ACF Stats", --ACF Stats (19)
+	"ACE Stats", --ACF Stats (19)
 	"Armour", --Armor (20)	
 	"Health" --Hitpoints (21)
 
@@ -46,7 +46,7 @@ ACFTranslation.ArmorPropertiesText = {
 ACFTranslation.CopyToolText = {
 	--/////////Tool Display description/////////--
 
-	"ACF Copy Tool", --Tool Name (1)
+	"ACE Copy Tool", --Tool Name (1)
 	"Armored Combat Extended", -- ACE Modification Name (2)
 	"Copy ammo or gearbox data from one object to another", -- Description 1 (3)
 	"Left click to paste data, Right click to copy data",  -- Description 2 (4)
@@ -69,7 +69,7 @@ ACFTranslation.SoundToolText = {
 	--/////////Notifications/////////--
 
 	" is not supported by the sound tool!", --Not supported text (4)
-	"Only ACF entities are supported by the ACF sound tool!", --Only supported (5)
+	"Only ACE entities are supported by the ACE sound tool!", --Only supported (5)
 	"Works only for engines" --Engines only (6)
 
 }
@@ -97,7 +97,7 @@ ACFTranslation.ACFMenuTool = {
 
 ACFTranslation.ACFCuttingTorch = {
 
-	"ACF Cutting torch", --Tool Name (1)
+	"ACE Cutting torch", --Tool Name (1)
 	"Used to clear baricades and repair vehicles.",--Description 1 (2)
 	"Primary to repair.\nSecondary to damage."-- Description 2 (3)
 

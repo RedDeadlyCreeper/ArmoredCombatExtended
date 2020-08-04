@@ -620,6 +620,7 @@ end
 --converts what would be multiple simultaneous cache detonations into one large explosion
 function ACF_ScaledExplosion( ent )
 	local Inflictor = nil
+	local Owner = ent:CPPIGetOwner()
 	if( ent.Inflictor ) then
 		Inflictor = ent.Inflictor
 	end
@@ -648,7 +649,7 @@ function ACF_ScaledExplosion( ent )
 	local Filter = {ent}
 	while Search do
 		for key,Found in pairs(ents.FindInSphere(Pos, Radius)) do
-			if Found.IsExplosive and not Found.Exploding then	
+			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms
 				local Hitat = Found:NearestPoint( Pos )
 				
 				local Occlusion = {}

@@ -21,7 +21,7 @@ ACF_defineGun("7.62mmMG", { --id
 	caliber = 0.762,
 	weight = 10,
 	year = 1930,
-	rofmod = 0.8,
+	rofmod = 1.2,
 	round = {
 		maxlength = 13,
 		propweight = 0.04
@@ -37,7 +37,7 @@ ACF_defineGun("12.7mmMG", {
 	caliber = 1.27,
 	weight = 20,
 	year = 1910,
-	rofmod = 0.650,
+	rofmod = 0.74,
 	round = {
 		maxlength = 15.8,
 		propweight = 0.03

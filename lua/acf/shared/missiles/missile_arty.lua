@@ -11,7 +11,7 @@ ACF_defineGunClass("ARTY", {
 	year = 1944,
 	soundDistance   = " ",
 	soundNormal     = " ",
-    effect          = "Rocket Motor",
+    effect          = "Rocket Motor Arty",
 
     ammoBlacklist   = {"AP", "APHE", "FL", "SM"} -- Including FL would mean changing the way round classes work.
 } )

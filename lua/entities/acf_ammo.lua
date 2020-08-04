@@ -480,7 +480,7 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	local tval1 = math.max(cap1,cap2,cap3)
 	local tval2 = math.max(cap4,cap5,cap6)
 
-	if (tval2-tval1)/(tval1+tval2) > 0.2 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 20% shells
+	if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
 		self.Capacity = tval2
 		self.IsTwoPiece = true
 	else

@@ -10,7 +10,7 @@ ACF_defineGunClass("AAM", {
 	sound           = "acf_extra/airfx/rocket_fire2.wav",
 	soundDistance   = " ",
 	soundNormal     = " ",
-    effect          = "Rocket Motor",
+    effect          = "Rocket Motor Missile1",
 	year = 1953,
     reloadmul       = 8,
 

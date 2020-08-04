@@ -71,10 +71,10 @@ end
 
 function ENT:Think()
 	if(IsValid(self)) then
-			if self.KillTime<CurTime() then
-				self:Detonate()
+		local TimeNew = CurTime()
+			if self.KillTime<TimeNew then
+				self:Remove()
 			end
-			local TimeNew = CurTime()
 			
 
 			

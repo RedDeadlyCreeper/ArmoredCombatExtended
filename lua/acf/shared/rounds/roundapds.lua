@@ -225,25 +225,30 @@ function Round.cratetxt( BulletData )
 end
 
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
-
+--	print("Testb")
 	local NormieMult = 1
 	local Mat = Target.ACF.Material or 0
 	if Mat == 1 then
 		NormieMult = 0.8
-		elseif Mat == 2 then
+	elseif Mat == 2 then
 		NormieMult = 1.5
-		elseif Mat == 3 then
+	elseif Mat == 3 then
 		NormieMult = 0.05
-		elseif Mat == 5 then
+	elseif Mat == 5 then
 		NormieMult = 0.7	
-		elseif Mat == 6 then
+	elseif Mat == 6 then
 		NormieMult=0.5
-		end
+	end
 	
-	Bullet.Normalize = false
+	Bullet.Normalize = true
 	Bullet.Pos = HitPos
-	local FlightNormal = Bullet.Flight:GetNormalized() - (Bullet.Flight:GetNormalized()-HitNormal) * ACF.NormalizationFactor * NormieMult * 2
+
+	local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized()--Guess it doesnt need localization
+--	local FlightNormal = Bullet.Flight:GetNormalized() + (-HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult
+--	local FlightNormal = -HitNormal
+
 	local Speed = Bullet.Flight:Length()
+
 --	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
 	Bullet.Flight = FlightNormal * Speed
 	
@@ -257,7 +262,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 	if ACF_Check( Target ) then
 	
-		if not Bullet.Normalize then
+		if Bullet.Normalize then
 --		print("PropHit")
 			local Speed = Bullet.Flight:Length() / ACF.VelScale
 			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
@@ -267,10 +272,10 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
 				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 				Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-				Bullet.Normalize = true
+				Bullet.Normalize = false
 				return "Penetrated"
 			elseif HitRes.Ricochet then
-				Bullet.Normalize = true
+				Bullet.Normalize = false
 				return "Ricochet"
 			else
 				return false

@@ -10,9 +10,12 @@ local cpscanproplist2 = {} --Actually scanned proplist, emptied on sort terminat
 local cpscanproplist3 = {} --Used to store the already sorted props, not using contraption ents so the refresh does not overwrite the main with a partially built table
 local cpscanproplist4 = {} --Used to store constrained proplists for slow iteration, empty on termination
 local cpscanproplist5 = {} --Seperate loop to iterate props and not overwrite the normal prop iteration system.
+local cpscanproplist6 = {} --Used to store the currently scanned hot entities in a constrained list iteration
 local cpscanproplistadd = {}
 local propScanCount = 0
 local TestHeat = 0
+
+local CPPScanPro = 0
 
 ACE.radarEntities = {}
 ACE.radarIDs = {}
@@ -87,7 +90,13 @@ if updateContraptionsTick > CurTime() then return end
 
 									if IsValid(ent) then
 										MaxIterations = MaxIterations - 1
+										
 										table.insert(cpscanproplist5, ent)--Adds the entity to the props to be iterated
+										
+										if (ent.Heat or 0) > 0 then --Add entity to list of hot entities if it has a heat value
+											table.insert(cpscanproplist6, ent)
+										end										
+										
 
 										ACE_CPro_scanEnt = GetParent(ent)
 										local ScanPhys = ACE_CPro_scanEnt:GetPhysicsObject()
@@ -106,12 +115,6 @@ if updateContraptionsTick > CurTime() then return end
 									--print( "[ACE] iterated ("..table.Count( cpscanproplist5 )..") Contraptions" )	
 
 						for id, ent in pairs(cpscanproplist5) do --Iteration of self hatred, F to pay respect for server, This is hellcode.
-
-											if (ent.Heat or 0) > 0 then -- Need to test
-												TestHeat = ent.Heat
-												--print(TestHeat)
-												--print("HotCheck")
-											end
 
 												tent = GetParent(ent)
 
@@ -134,17 +137,28 @@ if updateContraptionsTick > CurTime() then return end
 			if  table.IsEmpty( cpscanproplist4 ) then --Done iterating through constrained entities, return to normal and add entity to table
 					--print("Finished")	
 					
-				if TestHeat > 0 then
-					ACE_CPro_scanEnt.SCTHeat = (ACE_CPro_scanEnt.SCTHeat or 0) + TestHeat
-					--print(TestHeat)
-					--print("Hot")
-					TestHeat = 0 --Heat addition system
-				end
 
 				if not (table.HasValue(cpscanproplist3,ACE_CPro_scanEnt)) then
 					
 
 					table.insert(cpscanproplist3, ACE_CPro_scanEnt)
+					ACE_CPro_scanEnt.HotEnts = ACE_CPro_scanEnt.HotEnts or {}
+
+					for id, ent in pairs(cpscanproplist6) do
+
+						table.remove(cpscanproplist6,1) --Removes first entity
+
+						if IsValid(ent) then
+
+							if not (table.HasValue(ACE_CPro_scanEnt.HotEnts,ent)) then
+								--print("HotEnt")
+								table.insert( ACE_CPro_scanEnt.HotEnts, ent )
+							end
+
+						end
+
+					end
+
 					--print("Added Entity")
 				end
 					--print( "[ACE] iterated ("..table.Count( cpscanproplist4 )..") Contraptions" )
@@ -171,27 +185,20 @@ if updateContraptionsTick > CurTime() then return end
 			end
 				
 			for id, ent in pairs(cpscanproplist2) do
+--				print("Test")
 
-				if (ent.Heat or 0) > 0 then --
-					TestHeat = ent.Heat
-					--print(TestHeat)
-					--print("HotCheck")
-				end
-
-				scanEnt = GetParent(ent)
-
-				if IsValid(scanEnt) then 
+				if IsValid(ent) then 
 
 						
 			
-					if scanEnt:IsConstrained() then --Brace for break
-						cpscanproplist4 = {}
-						for id, ent2 in pairs(constraint.GetAllConstrainedEntities( scanEnt)) do --Do you want to be normal? NO? Ok.
+					if ent:IsConstrained() then --Brace for break
+						cpscanproplist4 = {ent}
+						for id, ent2 in pairs(constraint.GetAllConstrainedEntities( ent)) do --Do you want to be normal? NO? Ok.
 							table.insert(cpscanproplist4, ent2)
 						end
 
-						ACE_CPro_scanEnt = scanEnt
-						local ScanPhys = scanEnt:GetPhysicsObject()
+						ACE_CPro_scanEnt = ent
+						local ScanPhys = ent:GetPhysicsObject()
 						ACE_CPro_Mass = ScanPhys:GetMass()
 
 						--print("Constrained -----------------------")
@@ -235,14 +242,25 @@ if updateContraptionsTick > CurTime() then return end
 						break --Break the cycle
 							
 					else
+						--print("Test")
 						scanEnt = GetParent(ent)
 
-						
-								if TestHeat > 0 then
-									scanEnt.SCTHeat = (ent.SCTHeat or 0) + TestHeat
-									--print(scanEnt.THeat)
-									--print("Hot")
-									TestHeat = 0 --Heat addition system
+					--	print(ent:GetClass())
+								if ((ent.Heat or 0) > 0) then
+									--scanEnt.SCTHeat = (ent.SCTHeat or 0) + TestHeat
+									--print("HotEnt")
+								
+									if IsValid(ent) then
+			
+										scanEnt.HotEnts = scanEnt.HotEnts or {}
+
+										if not (table.HasValue(scanEnt.HotEnts,ent)) then
+											--print("HotEnt")
+											table.insert( scanEnt.HotEnts, ent )
+										end
+			
+									end
+
 								end
 
 								
@@ -251,6 +269,9 @@ if updateContraptionsTick > CurTime() then return end
 									table.insert(cpscanproplist3, scanEnt)
 									--print("Added Entity")
 								end
+			
+
+
 								table.remove(cpscanproplist2,1) --Removed the entity since we already sorted it
 					end
 			
@@ -332,12 +353,39 @@ function ACEdupeCategorizeContraptions(ArgTable)
 
 end
 
+--CPPScanPro
+function ACEUpdateContraptions() --Used to update information like HEAT, Weight, legality, stuff
+	local TCount = table.Count( ACE.contraptionEnts )
+
+	if TCount > 0 then
+
+		CPPScanPro = CPPScanPro + 1
+		if CPPScanPro > TCount then
+			CPPScanPro = 1
+		end
+
+		local ScanEnt = ACE.contraptionEnts[CPPScanPro]
+
+		ScanEnt.THeat = 0
+
+		for id, ent in pairs(ScanEnt.HotEnts or {}) do --Iterate through all hot ents for object
+
+			ScanEnt.THeat = ScanEnt.THeat + ent.Heat or 0
+
+		end		
+
+--		print(table.Count(ScanEnt.HotEnts))
+--		print("FoundHeat: "..ScanEnt.THeat)
+	end
+end
+
 
 
 hook.Add("AdvDupe_FinishPasting","ACE_CategorizeContraptions_dupefinished",ACEdupeCategorizeContraptions)
 
 
 hook.Add("Think", "ACE_CategorizeContraptions", updateContraptionList)
+hook.Add("Think", "ACE_UpdateContraptions", ACEUpdateContraptions)
 
 
 function GetParent(Ent)

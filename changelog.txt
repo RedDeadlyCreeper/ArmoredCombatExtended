@@ -321,3 +321,13 @@ r100
 -decreased HE push force
 -fixed a few bugs with radar clutter
 -made radar missiles less prone to ground clutter
+
+*r126
+-Fixed normalization. FINALLY
+-Mines no detonate on the world
+-Mines now place at surface angles
+-fixed IR Heat system
+-Added new missile particle effects
+-fixed a bug where ammo could bypass damage perms
+-Added new explosion effects
+-Nerfed MG ROF
