@@ -365,17 +365,24 @@ function ACEUpdateContraptions() --Used to update information like HEAT, Weight,
 		end
 
 		local ScanEnt = ACE.contraptionEnts[CPPScanPro]
+		if ScanEnt:IsValid() then
+			ScanEnt.THeat = 0
 
-		ScanEnt.THeat = 0
+			for id, ent in pairs(ScanEnt.HotEnts or {}) do --Iterate through all hot ents for object
+				if ent:IsValid() then
 
-		for id, ent in pairs(ScanEnt.HotEnts or {}) do --Iterate through all hot ents for object
+				ScanEnt.THeat = ScanEnt.THeat + ent.Heat or 0
+				else
+					table.remove( ScanEnt.HotEnts, id )					
+				end
+			end		
 
-			ScanEnt.THeat = ScanEnt.THeat + ent.Heat or 0
+	--		print(table.Count(ScanEnt.HotEnts))
+	--		print("FoundHeat: "..ScanEnt.THeat)
 
-		end		
-
---		print(table.Count(ScanEnt.HotEnts))
---		print("FoundHeat: "..ScanEnt.THeat)
+		else
+			table.remove( ACE.contraptionEnts, CPPScanPro )
+		end
 	end
 end
 
