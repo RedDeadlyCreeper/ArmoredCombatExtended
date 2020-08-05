@@ -100,7 +100,7 @@ function EFFECT:Core()
 local Radius = self.Radius
 local PMul = self.ParticleMul
 
-if (Radius*PMul)/2 > 20 then --Smoke Embers
+if (Radius*PMul)/2 > 10 then --Smoke Embers
 	for i=0, (0.5*Radius*PMul)^0.7 do	
 --		ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(math.Rand(-Radius*5,Radius*5),math.Rand(-Radius*5,Radius*5),20+Radius), Angle(math.Rand(-10,10),0,math.Rand(-10,10))) --self.DirVec:Angle()
 		ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(0,0,5+Radius*5), Angle(math.Rand(-45,45),0,math.Rand(-45,45))) --self.DirVec:Angle()
