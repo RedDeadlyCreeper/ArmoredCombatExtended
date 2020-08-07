@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APDS =  { "ATR", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
 local Round = {}
 
@@ -13,7 +13,7 @@ Round.netid = 9 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
 
-			ACF_CreateBullet( BulletData )
+		ACF_CreateBullet( BulletData )
 			
 end
 

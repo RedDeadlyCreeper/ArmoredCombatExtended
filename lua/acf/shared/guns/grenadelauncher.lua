@@ -35,14 +35,14 @@ ACF_defineGun("20mmGL", { --id
 	model = "models/launcher/40mmgl.mdl",
 	gunclass = "GL",
 	canparent = true,
-	caliber = 2.0,
+	caliber = 3.01,
 	weight = 10,
 	magsize = 24,
 	magreload = 8,
 	year = 1970,
 	round = {
-		maxlength = 7,
-		propweight = 0.005
+		maxlength = 5,
+		propweight = 0.007
 	}
 } )
 
