@@ -36,7 +36,7 @@ function Round.convert( Crate, PlayerData )
 	
 	if ACF.Year > 2000 then
 	
-	if GunClass == "AC" then
+	if GunClass == "AC" or GunClass == "HMG" then
 	Data.MinCalMult = 0.35
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 2 -- Autocannons are puny anyways

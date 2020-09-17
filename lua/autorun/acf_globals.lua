@@ -756,7 +756,7 @@ cleanup.Register( "aceexplosives" )
 
 ACFM = ACFM or {}
 
-ACFM.FlareBurnMultiplier = 0.025
+ACFM.FlareBurnMultiplier = 0.5
 ACFM.FlareDistractMultiplier = 1 / 35
 
 AddCSLuaFile()

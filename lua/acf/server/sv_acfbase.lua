@@ -377,11 +377,16 @@ function ACEUpdateContraptions() --Used to update information like HEAT, Weight,
 				end
 			end		
 
+			if ScanEnt.THeat > 50 then
+				print(ScanEnt.THeat)
+			end
+
 	--		print(table.Count(ScanEnt.HotEnts))
 	--		print("FoundHeat: "..ScanEnt.THeat)
 
 		else
 			table.remove( ACE.contraptionEnts, CPPScanPro )
+			print("Remove")
 		end
 	end
 end

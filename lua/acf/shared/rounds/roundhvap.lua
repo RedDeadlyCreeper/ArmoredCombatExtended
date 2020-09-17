@@ -36,10 +36,10 @@ function Round.convert( Crate, PlayerData )
 	
 --    if GunClass == "C" then
 
-    Data.MinCalMult = 0.2
+    Data.MinCalMult = 0.25
     Data.MaxCalMult = 1
-    Data.PenModifier = 1.2
-    Data.Ricochet = 65
+    Data.PenModifier = 1.7
+    Data.Ricochet = 60
 --    end
 	
 	Data.SCalMult = PlayerData["Data5"]
@@ -48,7 +48,7 @@ function Round.convert( Crate, PlayerData )
 	Data.ShovePower = 0.2
 	Data.PenAera = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod	
 	
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
+	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)*0.8
 	Data.CaliberMod = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
 	Data.LimitVel = 900										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.2									--Kinetic energy transfert to the target for movement purposes										

@@ -182,34 +182,34 @@ r100
 -Made non parentable guns able to be weld parented
 
 *r118
-- Reduce AP ammorack chance but increase HE chance (Halved AP Det chance, HE and HEAT remain same.)
-- Increase cannon spread across the board (Especially decreased smoothbore accuracy without FS rounds)
-- Make crewseat range based off caliber (100mm is 1x, 400mm gets 4x range)
-- Increase weight of ceramic (1.67x as heavy)
-- Reduce explosion power of refills
-- Reduced walkspeed of shotgun from 1.5x to 1.0x, Made shotgun have 6 shots instead of 8, Shotguns shoot 9 bullets instead of 5 now.
-- Slight nerf to AP damage.
-- Added SWEP fire delay after deploying. By default this is 1 second after pulling a SWEP out. For launchers this is 4 seconds.
-- Increase FFAR rocket max size and firerate
-- Re-add flare tracers
-- 470mm pen AT-4
-- Increase max ROF boost from shorter ammunition
-- Flare launcher has 30 flares and double the reload time (Need to fix flare effect)
-- Increased HESH spall count
-- Fix SWEP Tracers
-- Added XM25, A handheld grenade launcher with rangefinding airburst grenades.
-- Fixed a bug where accuracy falloff would effect the first round after a long wait.
-- Added M3 Shotgun, it fires less projectiles that travel faster and pierce more armor. Less spammable
-- Add Swep Crosshair and scopes.
-- Increased Random Recoil based off of inaccuracy accumumation
-- nerf strela turn rate
-- Add Scout Rifle, A fast firing sniper rifle that fires tracerless bullets
-- Add AWP Sniper Rifle, A harder hitting sniper rifle that is more accurate
-- Fixed Tandem HEAT?
-- Increase Bomb Power
-- slightly made layers more effective vs HEAT 3x vs 5x
-- Buff Spaced Armor
-- made all engines parentable
+-Reduce AP ammorack chance but increase HE chance (Halved AP Det chance, HE and HEAT remain same.)
+-Increase cannon spread across the board (Especially decreased smoothbore accuracy without FS rounds)
+-Make crewseat range based off caliber (100mm is 1x, 400mm gets 4x range)
+-Increase weight of ceramic (1.67x as heavy)
+-Reduce explosion power of refills
+-Reduced walkspeed of shotgun from 1.5x to 1.0x, Made shotgun have 6 shots instead of 8, Shotguns shoot 9 bullets instead of 5 now.
+-Slight nerf to AP damage.
+-Added SWEP fire delay after deploying. By default this is 1 second after pulling a SWEP out. For launchers this is 4 seconds.
+-Increase FFAR rocket max size and firerate
+-Re-add flare tracers
+-470mm pen AT-4
+-Increase max ROF boost from shorter ammunition
+-Flare launcher has 30 flares and double the reload time (Need to fix flare effect)
+-Increased HESH spall count
+-Fix SWEP Tracers
+-Added XM25, A handheld grenade launcher with rangefinding airburst grenades.
+-Fixed a bug where accuracy falloff would effect the first round after a long wait.
+-Added M3 Shotgun, it fires less projectiles that travel faster and pierce more armor. Less spammable
+-Add Swep Crosshair and scopes.
+-Increased Random Recoil based off of inaccuracy accumumation
+-nerf strela turn rate
+-Add Scout Rifle, A fast firing sniper rifle that fires tracerless bullets
+-Add AWP Sniper Rifle, A harder hitting sniper rifle that is more accurate
+-Fixed Tandem HEAT?
+-Increase Bomb Power
+-slightly made layers more effective vs HEAT 3x vs 5x
+-Buff Spaced Armor
+-made all engines parentable
 
 *r119
 -Fixed HESH Mechanics
@@ -307,27 +307,39 @@ r100
 -Added Kemgus' 9 speed transmissions
 
 *r125
--fixed guncaliber error leading to increased pen
+-Fixed guncaliber error leading to increased pen
 -Removed HRACs and buffed RACs
 -Small caliber weapons cannot use HE(30mm and below excluding the 30mm AC and 30mm short HMG)
--fixed a shell caliber issue that caused shells to have a lower pen area
+-Fixed a shell caliber issue that caused shells to have a lower pen area
 -Buffed ROF of many below 37mm guns to compensate for the lack of HE
--massively buffed semiautos
--added 2 piece ammo with 30% penalty, applies automatically
+-Massively buffed semiautos
+-Added 2 piece ammo with 30% penalty, applies automatically
 -Invalid ammocrates should no longer spam the console with errors
--buffed short cannon accuracy
--fixed an armor bug that caused composite not to spall propperly
+-Buffed short cannon accuracy
+-Fixed an armor bug that caused composite not to spall propperly
 -Angled ceramic takes more damage
--decreased HE push force
--fixed a few bugs with radar clutter
--made radar missiles less prone to ground clutter
+-Decreased HE push force
+-Fixed a few bugs with radar clutter
+-Made radar missiles less prone to ground clutter
 
 *r126
 -Fixed normalization. FINALLY
 -Mines no detonate on the world
 -Mines now place at surface angles
--fixed IR Heat system
+-Fixed IR Heat system
 -Added new missile particle effects
--fixed a bug where ammo could bypass damage perms
+-Fixed a bug where ammo could bypass damage perms
 -Added new explosion effects
 -Nerfed MG ROF
+
+*r127
+-Reworked bullet tracebacks reducing AP glitching
+-Removed other forms of HE from cannons
+-Rebalanced gun and engine heat system
+-Nerfed APCR
+-Made HE damage more reliable
+-Buffed penetration of AT-4T
+-Updated armor analyzer to better reflect armor values
+-Missiles will now swap targets on the fly
+-Fixed flares
+-Slightly adjusted HESH mechanics

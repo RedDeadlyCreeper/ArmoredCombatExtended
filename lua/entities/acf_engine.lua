@@ -112,7 +112,7 @@ function ENT:Initialize()
 	self.LastThink = 0
 	self.MassRatio = 1
 	self.FuelTank = 0
-	self.Heat=21
+	self.Heat=0
 	self.Efficiency = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
 	self.Legal = true
 	self.CanUpdate = true
@@ -173,7 +173,7 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine.SpecialDamage = true
 	Engine.TorqueMult = 1
 	Engine.FuelTank = 0
-	Engine.Heat=21
+	Engine.Heat=0
 	
 	Engine.TorqueScale = ACF.TorqueScale[Engine.EngineType]
 	
@@ -624,9 +624,9 @@ function ENT:CalcRPM()
 	self.FlyRPM = self.FlyRPM - math.min( TorqueDiff, TotalReqTq ) / self.Inertia
 --	self.Heat = self.Efficiency
 	local Mass = PhysObj:GetMass()
-	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/180 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.03 or 0
-	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass/75) * DeltaTime * 0.03
-	self.Heat = self.Heat +((Energy+Energyloss)/Mass/743.2)
+	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/180 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.04 or 0
+	local Energyloss = ((42500*(-self.Heat))) * ((50+Mass^0.5)/8) * DeltaTime * 0.03
+	self.Heat = math.max(self.Heat +((Energy+Energyloss)/(Mass^0.5)/743.2),0)
 --	self.Heat = 21
 --	local OverHeat = math.max(self.Heat/105,0)
 --[[	if OverHeat > 1.05 then

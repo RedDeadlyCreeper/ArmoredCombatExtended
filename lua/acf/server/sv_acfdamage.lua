@@ -20,13 +20,13 @@ local TraceInit = { output = TraceRes }
 
 function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 	local Power = FillerMass * ACF.HEPower					--Power in KiloJoules of the filler mass of  TNT
-	local Radius = (FillerMass)^0.33*8*39.37				--Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m
+	local Radius = (FillerMass)^0.33*8*39.37				--Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
 	local MaxSphere = (4 * 3.1415 * (Radius*2.54 )^2) 		--Surface Aera of the sphere at maximum radius
 	local Amp = math.min(Power/2000,50)
 	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )  
 	--debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
 	
-	local Targets = ents.FindInSphere( Hitpos, Radius )
+	local Targets = ents.FindInSphere( Hitpos, Radius )--Will give tiny HE just a pinch of radius to help it hit the player
 	
 	local Fragments = math.max(math.floor((FillerMass/FragMass)*ACF.HEFrag),2)
 	local FragWeight = FragMass/Fragments
@@ -50,16 +50,40 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 				if ( Type ) then
 					local Hitat = nil
 					if Type == "Squishy" then 	--A little hack so it doesn't check occlusion at the feet of players
+						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
+
+						Hitat = Tar:NearestPoint( Hitpos )					
+						local cldist = Hitpos:Distance( Hitat ) or 999999999
+						local Tpos
+						local Tdis = 999999999
+						
 						local Eyes = Tar:LookupAttachment("eyes")
+
 						if Eyes then
-							Hitat = Tar:GetAttachment( Eyes )
-							if Hitat then
+
+
+							local Eyeat = Tar:GetAttachment( Eyes )
+							if Eyeat then
 								--Msg("Hitting Eyes\n")
-								Hitat = Hitat.Pos
-							else
-								Hitat = Tar:NearestPoint( Hitpos )
+								Tpos = Eyeat.Pos
+								Tdis = Hitpos:Distance( Tpos ) or 999999999
+								if Tdis < cldist then
+									Hitat = Tpos
+									cldist = cldist
+								end
+
 							end
+
+
 						end
+
+						Tpos = Tar:WorldSpaceCenter()
+						Tdis = Hitpos:Distance( Tpos ) or 999999999
+						if Tdis < cldist then
+							Hitat = Tpos
+							cldist = cldist
+						end
+
 					else
 						Hitat = Tar:NearestPoint( Hitpos )
 					end
@@ -76,10 +100,20 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					local Occ = util.TraceLine( Occlusion )	
 					]]--
 
-					TraceInit.start = Hitpos
-					TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
-					TraceInit.filter = OccFilter
-					TraceInit.mask = MASK_SOLID
+
+					--But what if we tested that there werent an object between
+						local testFilter = {}
+						table.Add( testFilter, OccFilter )
+						TraceInit.start = Hitpos
+						TraceInit.endpos = Hitat
+						TraceInit.filter = testFilter
+						TraceInit.mask = MASK_SOLID
+
+
+					--TraceInit.start = Hitpos
+					--TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
+					--TraceInit.filter = OccFilter
+					--TraceInit.mask = MASK_SOLID
 
 					util.TraceLine( TraceInit ) -- automatically stored in output table: TraceRes
 					
@@ -97,11 +131,12 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					end
 					--]]
 					
-					if ( !TraceRes.Hit ) then
+					--if ( !TraceRes.Hit ) then
 						--no hit
-					elseif ( TraceRes.Hit and TraceRes.Entity:EntIndex() != Tar:EntIndex() ) then
+					--elseif ( TraceRes.Hit and TraceRes.Entity:EntIndex() != Tar:EntIndex() ) then
 						--occluded, no hit
-					else
+					--else
+					if ( !TraceRes.Hit ) then --Its reversed, if we did not hit anything then the trace was not blocked
 						Targets[i] = nil	--Remove the thing we just hit from the table so we don't hit it again in the next round
 						local Table = {}
 							Table.Ent = Tar

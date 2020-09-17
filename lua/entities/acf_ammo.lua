@@ -579,7 +579,7 @@ function ENT:Think()
 
 				CrateType = self.BulletData.Type or "Refill"
 				--if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
-				if CrateType == "HE" or CrateType == "APHE" or CrateType == "HEAT" or CrateType == "THEAT" or CrateType == "HEATFS" or CrateType == "THEATFS" then --If there was ever a reason to believe FS rounds are stupid this is it(They Are)
+				if CrateType == "HE" or CrateType == "APHE" or CrateType == "HEAT" or CrateType == "THEAT" or CrateType == "HEATFS" or CrateType == "THEATFS" or CrateType == "APHECBC" or CrateType == "HEFS" or CrateType == "HESH" then --If there was ever a reason to believe FS rounds are stupid this is it(They Are)
 					self.LegalIssues = self.LegalIssues.."Explosive rounds cannot be used on guns 30mm and below"
 					self.Legal = false
 				end

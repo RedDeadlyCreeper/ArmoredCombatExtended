@@ -195,7 +195,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Mass = Lookup.weight
 	Gun.Class = Lookup.gunclass
 	Gun.Parentable = Lookup.canparent
-	Gun.Heat = 21
+	Gun.Heat = 0
 	Gun.LinkRangeMul = math.max(Gun.Caliber / 10,1)^1.2
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
@@ -604,15 +604,15 @@ function ENT:Think()
 	local PhysObj = self:GetPhysicsObject()
 	if not IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
 
-	local DeltaTime = CurTime() - self.LastThink	
+	DeltaTime = CurTime() - self.LastThink	
 	local Mass = PhysObj:GetMass()
-	local Energyloss = ((42500*(291-(self.Heat+273)))) * (1+Mass*2/75) * DeltaTime * 0.03
-	self.Heat = math.max(self.Heat +(Energyloss/Mass*2/743.2),21)
+	local Energyloss = ((42500*(-self.Heat))) * (1+(Mass^0.5)*2/75) * DeltaTime * 0.03
+	self.Heat = math.max(self.Heat +(Energyloss/(Mass^0.5)*2/743.2),0)
 	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
 
 	local OverHeat = math.max(self.Heat/150,0)
 	if OverHeat > 1.0 then
-	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-500,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-500,0.1))} , 2 , 0 , self.Owner )
+	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
 
 			if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
@@ -810,8 +810,10 @@ function ENT:FireShell()
 			
 			self:MuzzleEffect( MuzzlePos, MuzzleVec )
 			
-			self.BulletData.Pos = MuzzlePos
-			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + ACF_GetPhysicalParent(self):GetVelocity()
+			local TestVel = ACF_GetPhysicalParent(self):GetVelocity()
+
+			self.BulletData.Pos = MuzzlePos + TestVel * DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
+			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
 			self.BulletData.Owner = self.User
 			self.BulletData.Gun = self
 
@@ -839,7 +841,7 @@ function ENT:FireShell()
 			local HasPhys = constraint.FindConstraintEntity(self, "Weld"):IsValid() or not self:GetParent():IsValid()
 			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
 			local Mass = PhysObj:GetMass()			
-			self.Heat = self.Heat +((self.BulletData.PropMass * 2500000)/Mass/743.2)
+			self.Heat = self.Heat +(((0.1+self.BulletData.PropMass)^1.3 * 180000)/(Mass^0.5)/743.2)
 --			print(self.Heat)
 			
 			self.Ready = false

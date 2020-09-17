@@ -117,13 +117,13 @@ end
 
 function this:CheckTarget(missile)
 
-	if not (self.Target or self.Override) then	
+--	if not (self.Target or self.Override) then	
 		local target = self:AcquireLock(missile)
 
 		if IsValid(target) then 
 			self.Target = target
 		end
-	end
+--	end
 	
 end
 
@@ -205,7 +205,7 @@ function this:AcquireLock(missile)
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
-		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1))
+		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + 2*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1))
 --dist
 --		print(testHeat)
 		if testHeat > 50 then --Hotter than 50 deg C

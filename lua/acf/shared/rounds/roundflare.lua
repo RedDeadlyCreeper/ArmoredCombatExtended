@@ -13,17 +13,39 @@ Round.netid = 8 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
 	
-	ACF_CreateBullet( BulletData )
+--	ACF_CreateBullet( BulletData )
 	
-	local bdata = ACF.Bullet[BulletData.Index] or {}
+--	local bdata = ACF.Bullet[BulletData.Index] or {}
 
 
-	if table.IsEmpty( bdata ) then return false end
+--	if table.IsEmpty( bdata ) then return false end
 	
-	bdata.CreateTime = SysTime()
+--	bdata.CreateTime = SysTime()
 	
-	ACFM_RegisterFlare(bdata)
+--	ACFM_RegisterFlare(bdata)
+
+
+local ent = ents.Create( "ace_flare" )
 	
+if ( IsValid( ent ) ) then
+
+
+	ent:SetPos( BulletData.Pos )
+	ent:SetAngles( BulletData.Flight:Angle() )
+	ent.Life = (BulletData.FillerMass or 1) / (0.4*ACFM.FlareBurnMultiplier)
+	ent:Spawn()
+	ent:SetOwner( Gun.Owner )
+
+	local phys = ent:GetPhysicsObject()
+	phys:SetVelocity( BulletData.Flight )
+	ent.Heat = (BulletData.FillerMass or 1) * 1000
+
+--	Data.BurnRate = Data.FrAera * ACFM.FlareBurnMultiplier
+--	Data.DistractChance = (2 / math.pi) * math.atan(Data.FrAera * ACFM.FlareDistractMultiplier)
+--	Data.BurnTime = Data.FillerMass / Data.BurnRate
+
+end
+
 end
 
 -- Function to convert the player's slider data into the complete round data
@@ -61,9 +83,9 @@ function Round.convert( Crate, PlayerData )
 	Data.LimitVel = 700										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 75										--Base ricochet angle
-	
-	Data.BurnRate = Data.FrAera * ACFM.FlareBurnMultiplier
-	Data.DistractChance = (2 / math.pi) * math.atan(Data.FrAera * ACFM.FlareDistractMultiplier)
+
+	Data.BurnRate = 0.4 * ACFM.FlareBurnMultiplier
+	Data.DistractChance = (2 / math.pi) * math.atan(0.4 * ACFM.FlareDistractMultiplier)
 	Data.BurnTime = Data.FillerMass / Data.BurnRate
 	
 	Data.BoomPower = Data.PropMass + Data.FillerMass

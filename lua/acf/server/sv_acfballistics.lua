@@ -39,7 +39,9 @@ function ACF_CreateBullet( BulletData )
 
 	--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
 	if BulletData["Gun"]:IsValid() then										--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
+
 		BulletData["TraceBackComp"] = math.max(ACF_GetPhysicalParent(BulletData["Gun"]):GetPhysicsObject():GetVelocity():Dot(BulletData["Flight"]:GetNormalized()),0)
+
 		--print(BulletData["TraceBackComp"])
 		if BulletData["Gun"].sitp_inspace then
 			BulletData["Accel"] = Vector(0, 0, 0)
@@ -106,8 +108,17 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 	local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	Bullet.Flight = Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime				--Calculates the next shell vector
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime)))
+--	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(     math.min(Bullet.FlightTime-0.035,math.max(DeltaTime,0.035))*Bullet.Flight:Length()     -Bullet.TraceBackComp*DeltaTime     )
 	
+	--0.035 seconds of max backtrace of shell velocity, a bit more than 1 tick at 33 ticks/second
+
+	--ACF.PhysMaxVel*1,     limits max backtrace length at 200 meters.
+	--ACF.PhysMaxVel*0.025, limits max backtrace length at 5 meters.
+	--ACF.PhysMaxVel*0.1, limits max backtrace length at 20 meters.
+	--Distance in meters a vehicle covers each tick in meters
+
+
 	--print(math.Round((Bullet.Pos-Bullet.StartTrace):Length(),1))
 	--debugoverlay.Cross(Bullet.Pos,3,15,Color(255,255,255,32), true) --true start
 	--debugoverlay.Box(Bullet.StartTrace,Vector(-2,-2,-2),Vector(2,2,2),15,Color(0,255,0,32), true) --backtrace start

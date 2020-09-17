@@ -137,7 +137,7 @@ if self.Active and self.IsLegal then
 
 				if not LOStr.Hit then --Trace did not hit world
 
-					local testHeat = ((scanEnt.THeat or 0) + entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)
+					local testHeat = ((scanEnt.THeat or 0) + 2*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)
 --					local testHeat = (scanEnt.THeat or 0)--
 					local errorFromHeat = math.max((200-testHeat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
 				
