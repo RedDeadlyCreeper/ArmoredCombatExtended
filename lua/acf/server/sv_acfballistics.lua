@@ -108,8 +108,8 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 	local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	Bullet.Flight = Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime				--Calculates the next shell vector
---	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(     math.min(Bullet.FlightTime-0.035,math.max(DeltaTime,0.035))*Bullet.Flight:Length()     -Bullet.TraceBackComp*DeltaTime     )
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace
+--	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(     math.min(Bullet.FlightTime-0.035,math.max(DeltaTime,0.035))*Bullet.Flight:Length()     -Bullet.TraceBackComp*DeltaTime     )
 	
 	--0.035 seconds of max backtrace of shell velocity, a bit more than 1 tick at 33 ticks/second
 
