@@ -101,22 +101,16 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					]]--
 
 
-					--But what if we tested that there werent an object between
-						local testFilter = {}
-						table.Add( testFilter, OccFilter )
-						TraceInit.start = Hitpos
-						TraceInit.endpos = Hitat
-						TraceInit.filter = testFilter
-						TraceInit.mask = MASK_SOLID
+					TraceInit.start = Hitpos
+					TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
+					TraceInit.filter = OccFilter
+					TraceInit.mask = MASK_SOLID
+					TraceInit.mins = Vector( 0, 0, 0 )
+					TraceInit.maxs = Vector( 0, 0, 0 ) 
 
+					--util.TraceLine( TraceInit ) -- automatically stored in output table: TraceRes
+					util.TraceHull( TraceInit )
 
-					--TraceInit.start = Hitpos
-					--TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
-					--TraceInit.filter = OccFilter
-					--TraceInit.mask = MASK_SOLID
-
-					util.TraceLine( TraceInit ) -- automatically stored in output table: TraceRes
-					
 					--[[
 					--retry for prop center if no hits at all, might have whiffed through bounding box and missed phys hull
 					--nearestpoint uses intersect of bbox from source point to origin (getpos), this is effectively just redoing the same thing
@@ -131,12 +125,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					end
 					--]]
 					
-					--if ( !TraceRes.Hit ) then
+					if ( !TraceRes.Hit ) then
 						--no hit
-					--elseif ( TraceRes.Hit and TraceRes.Entity:EntIndex() != Tar:EntIndex() ) then
+					elseif ( TraceRes.Hit and TraceRes.Entity:EntIndex() != Tar:EntIndex() ) then
 						--occluded, no hit
-					--else
-					if ( !TraceRes.Hit ) then --Its reversed, if we did not hit anything then the trace was not blocked
+					else
 						Targets[i] = nil	--Remove the thing we just hit from the table so we don't hit it again in the next round
 						local Table = {}
 							Table.Ent = Tar
@@ -196,9 +189,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 						start = NewHitpos,
 						endpos = NewHitat + (NewHitat-NewHitpos):GetNormalized()*100,
 						filter = NoOcc,
-						mask = MASK_SOLID
+						mask = MASK_SOLID,
+						mins = Vector( 0, 0, 0 ), 
+						maxs = Vector( 0, 0, 0 ) 
 					}
-					local Occ = util.TraceLine( Occlusion )	
+					local Occ = util.TraceHull( Occlusion )	
 					
 					if ( !Occ.Hit and NewHitpos != NewHitat ) then
 						local NewHitat = Tar:GetPos()
@@ -206,9 +201,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 							start = NewHitpos,
 							endpos = NewHitat + (NewHitat-NewHitpos):GetNormalized()*100,
 							filter = NoOcc,
-							mask = MASK_SOLID
+							mask = MASK_SOLID,
+							mins = Vector( 0, 0, 0 ), 
+							maxs = Vector( 0, 0, 0 ) 
 						}
-						Occ = util.TraceLine( Occlusion )	
+						Occ = util.TraceHull( Occlusion )	
 					end
 					
 					if ( Occ.Hit and Occ.Entity:EntIndex() != Tar:EntIndex() ) then
@@ -336,7 +333,7 @@ local UsedArmor = Armour*ArmorMul
 	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.00079
 	local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
 	local SpallWeight = TotalWeight/Spall*SpallMul*35
-	local SpallVel = (HEFiller*212500000/SpallWeight)^0.5/Spall*SpallMul
+	local SpallVel = (HEFiller*2125000000/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel*1000 , SpallWeight, 800 )
 
@@ -349,6 +346,8 @@ local UsedArmor = Armour*ArmorMul
 			SpallTr.start = HitPos
 			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*math.max(SpallVel*100,300) --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
+			SpallTr.mins = Vector( 0, 0, 0 )
+			SpallTr.maxs = Vector( 0, 0, 0 )
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 	end
@@ -357,7 +356,7 @@ end
 
 function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 
-	local SpallRes = util.TraceLine(SpallTr)
+	local SpallRes = util.TraceHull(SpallTr)
 	
 	if SpallRes.Hit and ACF_Check( SpallRes.Entity ) then
 --		print("SpallHit")
@@ -450,7 +449,9 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 		DigTr.endpos = HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1)
 		DigTr.filter = Bullet.Filter
 		DigTr.mask = MASK_SOLID_BRUSHONLY
-	local DigRes = util.TraceLine(DigTr)
+		DigTr.mins = Vector( 0, 0, 0 )
+		DigTr.maxs = Vector( 0, 0, 0 ) 
+	local DigRes = util.TraceHull(DigTr)
 	--print(util.GetSurfacePropName(DigRes.SurfaceProps))
 	
 	local loss = DigRes.FractionLeftSolid
@@ -578,7 +579,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local entClass = Entity:GetClass()
 	local obj = Entity:GetPhysicsObject()
 	local grav = true
-	local mass = 5000 --Reduce odds of crazy physics
+	local mass = 50000 --Reduce odds of crazy physics
 	if obj:IsValid() then
 		mass = math.max(obj:GetMass(), mass)
 		if ISSITP then
@@ -690,8 +691,10 @@ function ACF_ScaledExplosion( ent )
 				local Occlusion = {}
 					Occlusion.start = Pos
 					Occlusion.endpos = Hitat
-					Occlusion.filter = Filter
-				local Occ = util.TraceLine( Occlusion )
+					Occlusion.filter = FilterTraceHull
+					Occlusion.mins = Vector( 0, 0, 0 )
+					Occlusion.maxs = Vector( 0, 0, 0 ) 
+				local Occ = util.TraceHull( Occlusion )
 				
 				if ( Occ.Fraction == 0 ) then
 					table.insert(Filter,Occ.Entity)
@@ -699,7 +702,9 @@ function ACF_ScaledExplosion( ent )
 						Occlusion.start = Pos
 						Occlusion.endpos = Hitat
 						Occlusion.filter = Filter
-					Occ = util.TraceLine( Occlusion )
+						Occlusion.mins = Vector( 0, 0, 0 )
+						Occlusion.maxs = Vector( 0, 0, 0 ) 
+					Occ = util.TraceHull( Occlusion )
 					--print("Ignoring nested prop")
 				end
 					

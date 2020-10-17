@@ -21,7 +21,7 @@ ACF_defineGun("14.5mmRAC", { --id
 	caliber = 1.45,
 	weight = 160,
 	year = 1962,
-	rofmod = 4.3,
+	rofmod = 2.6,
 	round = {
 		maxlength = 25,
 		propweight = 0.06

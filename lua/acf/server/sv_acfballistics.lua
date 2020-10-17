@@ -9,7 +9,7 @@ ACF.SkyboxGraceZone = 100 --grace zone for the high angle fire
 
 -- optimization; reuse tables for ballistics traces
 local FlightRes = { }
-local FlightTr = { output = FlightRes }
+local FlightTr = { output = FlightRes, 	mins = Vector( 0, 0, 0 ), maxs = Vector( 0, 0, 0 ) }
 -- end init
 
 --creates a new bullet being fired
@@ -108,8 +108,9 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 	local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	Bullet.Flight = Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime				--Calculates the next shell vector
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace
---	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(     math.min(Bullet.FlightTime-0.035,math.max(DeltaTime,0.035))*Bullet.Flight:Length()     -Bullet.TraceBackComp*DeltaTime     )
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace. Disabled due to reports of it breaking things.
+
+--	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime)))
 	
 	--0.035 seconds of max backtrace of shell velocity, a bit more than 1 tick at 33 ticks/second
 
@@ -199,8 +200,8 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		RetryTrace = false
 		FlightTr.start = Bullet.StartTrace
 		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation
-		util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)
-		--util.TraceHull(FlightTr)
+		--util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)
+		util.TraceHull(FlightTr)
 
 		--We hit something that's not world, if it's visclipped, filter it out and retry		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then

@@ -841,7 +841,7 @@ function ENT:FireShell()
 			local HasPhys = constraint.FindConstraintEntity(self, "Weld"):IsValid() or not self:GetParent():IsValid()
 			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
 			local Mass = PhysObj:GetMass()			
-			self.Heat = self.Heat +(((0.1+self.BulletData.PropMass)^1.3 * 180000)/(Mass^0.5)/743.2)
+			self.Heat = self.Heat +(((0.2+self.BulletData.PropMass)^1.05 * 180000)/(Mass^0.5)/743.2)
 --			print(self.Heat)
 			
 			self.Ready = false
