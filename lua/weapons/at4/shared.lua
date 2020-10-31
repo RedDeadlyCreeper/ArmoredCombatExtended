@@ -28,7 +28,7 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "acf_extra/tankfx/gnomefather/2pdr2.wav"
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 10	
+SWEP.Primary.Recoil			= 20	
 SWEP.Primary.RecoilAngle	= 15		
 SWEP.Primary.Cone			= 0.025		
 SWEP.Primary.Delay			= 7
@@ -82,7 +82,7 @@ function SWEP:InitBulletData()
 		self.BulletData.Data7 = 0
 		self.BulletData.Data8 = 0
 		self.BulletData.Data9 = 0
-		self.BulletData.Data10 = 0.5 -- Tracer
+		self.BulletData.Data10 = 1 -- Tracer
 		self.BulletData.Colour = Color(255, 50, 0)
 		--
 		self.BulletData.Data13 = 0 --THEAT ConeAng2

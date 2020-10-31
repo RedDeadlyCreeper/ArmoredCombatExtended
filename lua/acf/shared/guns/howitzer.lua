@@ -1,10 +1,10 @@
 --define the class
 ACF_defineGunClass("HW", {
-	spread = 0.15,
+	spread = 0.25,
 	name = "Howitzer",
 	desc = ACFTranslation.GunClasses[8],
 	muzzleflash = "120mm_muzzleflash_noscale",
-	rofmod = 1.3,
+	rofmod = 1.5,
 	year = 1900,
 	sound = "weapons/ACF_Gun/howitzer_new2.wav",
 	soundDistance = "Howitzer.Fire",

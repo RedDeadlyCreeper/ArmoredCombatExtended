@@ -28,7 +28,7 @@ SWEP.Instructions	= "Left mouse to shoot"
 -- Primary fire settings
 SWEP.Primary.Sound			= "acf_extra/tankfx/gnomefather/2pdr2.wav"
 SWEP.Primary.NumShots		= 1	
-SWEP.Primary.Recoil			= 20	
+SWEP.Primary.Recoil			= 40	
 SWEP.Primary.RecoilAngle	= 30		
 SWEP.Primary.Cone			= 0.025		
 SWEP.Primary.Delay			= 7

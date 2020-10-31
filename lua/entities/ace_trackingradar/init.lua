@@ -187,7 +187,7 @@ if beingjammed < 1 then
 --					print(GCdis)
 --					if GCdis <= 0.5 then --Get canceled by ground clutter
 
-					if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.25) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+					if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.3) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
 						--1000 u = ~57 mph
 
 
@@ -207,7 +207,7 @@ if beingjammed < 1 then
 						if evlen == 0 then --IDK if this is more intensive than length
 							veltest = Vector(0,0,0)
 						else
-							veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.025) )
+							veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.03) )
 							veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
 
 						end

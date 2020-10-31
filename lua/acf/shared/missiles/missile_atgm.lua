@@ -11,7 +11,7 @@ ACF_defineGunClass("ATGM", {
 	soundNormal     = " ",
 --    effect          = "Rocket_Smoke_Trail",
     effect          = "Rocket Motor ATGM",
-    reloadmul       = 6,
+    reloadmul       = 5,
 
     ammoBlacklist   = {"AP", "APHE", "FL", "SM"} -- Including FL would mean changing the way round classes work.
 } )
@@ -92,7 +92,7 @@ ACF_defineGun("9M113 ASM", { --id
 
     viewcone    = 25,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.04,		-- multiplier for missile turn-rate.
+    agility     = 0.05,		-- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -175,7 +175,7 @@ ACF_defineGun("Ataka ASM", { --id
 
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.03,		-- multiplier for missile turn-rate.
+    agility     = 0.045,		-- multiplier for missile turn-rate.
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -204,7 +204,7 @@ ACF_defineGun("AT-2 ASM", { --id
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(1.05)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1.3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
