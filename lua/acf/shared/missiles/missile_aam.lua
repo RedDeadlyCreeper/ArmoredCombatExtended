@@ -18,44 +18,6 @@ ACF_defineGunClass("AAM", {
 } )
 
 
--- Not based on any real missile - this is for smaller aircraft.
--- Balance the round in line with the 40mm pod rocket.
-ACF_defineGun("40mmAAM", { --id
-	name = "40mm Air-to-air Missile",
-	desc = "Someone glued a radar dish to a firework.  It's puny, short-range and goes pop instead of boom. It's also fast and agile, like the tiny aircraft you'll be putting this on.",
-	model = "models/missiles/70mmffar.mdl",
-	gunclass = "AAM",
-	rack = "4xRK",  -- Which rack to spawn this missile on?
-	length = 45,
-	caliber = 4.0,
-	weight = 35,    -- Don't scale down the weight though!
-	year = 1953,
-	round = {
-		model		= "models/missiles/70mmffar.mdl",
-		rackmdl		= "models/missiles/70mmffar.mdl",
-		maxlength	= 45,
-		casing		= 0.2,	        -- thickness of missile casing, cm
-		armour		= 5,				-- effective armour thickness of casing, in mm
-		propweight	= 1,	        -- motor mass - motor casing
-		thrust		= 8000,	    -- average thrust - kg*in/s^2
-		burnrate	= 450,	        -- cm^3/s at average chamber pressure
-		starterpct	= 0.15,          -- percentage of the propellant consumed in the starter motor.
-		minspeed	= 8000,			-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,		-- drag coefficient of the missile
-		finmul		= 0.003			-- fin multiplier (mostly used for unpropelled guidance)
-	},
-
-    ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Radar" , "Infrared"},
-    fuses       = {"Contact", "Radio"},
-
-    seekcone    = 40,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
-
-    agility     = 0.00     -- multiplier for missile turn-rate.
-} )
-
-
 -- The sidewinder analogue. we have to scale it down because acf is scaled down.
 ACF_defineGun("AIM-9 AAM", { --id
 	name = "AIM-9 Missile",
@@ -94,7 +56,8 @@ ACF_defineGun("AIM-9 AAM", { --id
     viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.		--was 30
 
     agility     = 5,  -- multiplier for missile turn-rate.
-    armdelay    = 0.00     -- minimum fuse arming delay		--was 0.4
+	armdelay    = 0.00,     -- minimum fuse arming delay		--was 0.4
+	SeekSensitivity = 3
 } )
 
 -- Sparrow analog.  We have to scale it down because acf is scaled down.  It's also short-range due to AAM guidelines.
@@ -137,7 +100,8 @@ ACF_defineGun("AIM-120 AAM", { --id
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.	--was 25
 
     agility     = 2,    -- multiplier for missile turn-rate.
-    armdelay    = 0.00     -- minimum fuse arming delay --was 0.3
+	armdelay    = 0.00,     -- minimum fuse arming delay --was 0.3
+	SeekSensitivity = 2.5
 } )
 
 --Phoenix.  Since we've rebalanced missile, and since we're making this a SPECIALIST weapon and scaling it to gmod, we can do it.
@@ -181,5 +145,6 @@ ACF_defineGun("AIM-54 AAM", { --id
     viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.7,    -- multiplier for missile turn-rate.
-    armdelay    = 0.00     -- minimum fuse arming delay --was 0.3
+	armdelay    = 0.00,     -- minimum fuse arming delay --was 0.3
+	SeekSensitivity = 3
 } )

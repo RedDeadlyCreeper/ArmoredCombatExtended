@@ -115,8 +115,8 @@ function SWEP:InitBulletData()
 		local SlugFrAera2 = 3.1416 * (self.BulletData.SlugCaliber2/2)^2
 		self.BulletData.SlugPenAera = SlugFrAera^ACF.PenAreaMod
 		self.BulletData.SlugPenAera2 = SlugFrAera^ACF.PenAreaMod
-		self.BulletData.SlugDragCoef = ((SlugFrAera/10000)/self.BulletData.SlugMass)*2
-		self.BulletData.SlugDragCoef2 = ((SlugFrAera2/10000)/self.BulletData.SlugMass2)*2
+		self.BulletData.SlugDragCoef = ((SlugFrAera/10000)/self.BulletData.SlugMass)*1000
+		self.BulletData.SlugDragCoef2 = ((SlugFrAera2/10000)/self.BulletData.SlugMass2)*1000
 		self.BulletData.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 		self.BulletData.SlugRicochet2 = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 	

@@ -193,6 +193,9 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--FlightTr.mins = -FlightTr.maxs
 	FlightTr.mask = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
+	TROffset = (0.3937*Bullet.Caliber*2)/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2
+	FlightTr.maxs = Vector( TROffset, TROffset, TROffset )
+	FlightTr.mins = -FlightTr.maxs
 	
 	--perform the trace for damage
 	local RetryTrace = true
@@ -219,14 +222,32 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 		--If we hit stuff then send the resolution to the bullets damage function
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
+
+		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
+--		local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/BulletVel:Length()) * DeltaTime
+		local DTImpact = (FlightRes.HitPos-Bullet.Pos):Length()/(Bullet.Flight * ACF.VelScale * DeltaTime):Length() * DeltaTime
+
+--		DTImpact = 1
+		--Gets the distance the bullet traveled and divides it by the distance the bullet should have traveled during deltatime. Used to calculate drag time.
+		local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+--		print(Drag)
+		--Adjusts bullet speed by time it spent flying into target.
+		Bullet.Flight = Bullet.Flight - Drag * DTImpact
+		--print("Before")
+		--print(Bullet.Flight)
+
 		local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
 		if Retry == "Penetrated" then		--If we should do the same trace again, then do so
 			if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 			ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
+			--print("After")
+			--print(Bullet.Flight)
 			ACF_DoBulletsFlight( Index, Bullet )
 		elseif Retry == "Ricochet"  then
 			if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
 			ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
+			--print("After")
+			--print(Bullet.Flight)
 			ACF_CalcBulletFlight( Index, Bullet, true )
 		else						--Else end the flight here
 			if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
@@ -234,7 +255,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 			ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
 		end
-	
+
 	--bullet hit the world
 	elseif FlightRes.HitWorld then
 		if not FlightRes.HitSky then									--If we hit the world then try to see if it's thin enough to penetrate

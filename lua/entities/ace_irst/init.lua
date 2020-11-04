@@ -100,7 +100,7 @@ if self.Active and self.IsLegal then
 
 	local thisPos = self:GetPos()
 	local thisforward = self:GetForward()
-	local randinac = math.Rand(-1,1) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+	local randinac = math.Rand(-2,2) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 	local ownArray = {}
 	local effHeatArray = {}

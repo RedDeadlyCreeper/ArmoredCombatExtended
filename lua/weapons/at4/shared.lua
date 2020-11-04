@@ -107,7 +107,7 @@ function SWEP:InitBulletData()
 --		print("SlugMV: "..self.BulletData.SlugMV)
 		local SlugFrAera = 3.1416 * (self.BulletData.SlugCaliber/2)^2
 		self.BulletData.SlugPenAera = SlugFrAera^ACF.PenAreaMod
-		self.BulletData.SlugDragCoef = ((SlugFrAera/10000)/self.BulletData.SlugMass)*2
+		self.BulletData.SlugDragCoef = ((SlugFrAera/10000)/self.BulletData.SlugMass)*1000
 		self.BulletData.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 	
 		self.BulletData.CasingMass = self.BulletData.ProjMass - self.BulletData.FillerMass - ConeVol*7.9/1000
@@ -115,6 +115,7 @@ function SWEP:InitBulletData()
 		self.BulletData.FragMass = self.BulletData.CasingMass/self.BulletData.Fragments
 		--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
 		self.BulletData.DragCoef  = ((self.BulletData.FrAera/10000)/self.BulletData.ProjMass)	
+		print(self.BulletData.SlugDragCoef)
 
 		--Don't touch below here
 		self.BulletData.MuzzleVel = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber )		

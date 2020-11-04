@@ -810,7 +810,11 @@ function ENT:FireShell()
 			
 			self:MuzzleEffect( MuzzlePos, MuzzleVec )
 			
-			local TestVel = ACF_GetPhysicalParent(self):GetVelocity()
+			--local TestVel = ACF_GetPhysicalParent(self):GetVelocity()
+		
+			local GPos = self:GetPos()
+			local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity()+GPos)
+			TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
 
 			self.BulletData.Pos = MuzzlePos + TestVel * DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
 			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
@@ -820,18 +824,18 @@ function ENT:FireShell()
 			local Cal = self.Caliber
 
 --			print("BooletType: "..self.BulletData.Type)
-			local FuseNoise = 1
-			if (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") and Cal<=12 then
-			
-			if self.FuseTime < (0.28^math.max(Cal-3,1)) then
-			FuseNoise = 1
-			else
-			FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
-			end
---			local FuseNoise = 1 - 0.3
-			
-			self.BulletData.FuseLength = self.FuseTime * FuseNoise
-			
+
+				local FuseNoise = 1
+			if Cal<12 then
+				if (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") then
+					if self.FuseTime < (0.28^math.max(Cal-3,1)) then
+					FuseNoise = 1
+					else
+					FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
+					end
+				
+					self.BulletData.FuseLength = self.FuseTime * FuseNoise
+				end
 			end
 
 			self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create

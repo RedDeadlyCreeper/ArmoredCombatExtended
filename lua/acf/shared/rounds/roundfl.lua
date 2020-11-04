@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-ACF.AmmoBlacklist["FL"] = { "ATR", "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist["FL"] = { "ATR", "MO", "RM", "SL", "GL", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
 
 local Round = {}
@@ -74,15 +74,15 @@ function Round.convert( Crate, PlayerData )
 
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	if GunClass == "SA" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*3-4.5),1,32)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*7-4),1,128)
 	elseif GunClass == "MO" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-12,1,32)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*7)-12,1,128)
 	elseif GunClass == "HW" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-10,1,32)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*7)-10,1,128)
 	else
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*4)-8,1,32)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*7)-8,1,128)
 	end
-	Data["MinFlechettes"] = math.min(6,Data["MaxFlechettes"]) --force bigger guns to have higher min count
+	Data["MinFlechettes"] = 2
 	Data["Flechettes"] = math.Clamp(math.floor(PlayerData["Data5"]),Data["MinFlechettes"], Data["MaxFlechettes"])  --number of flechettes
 	
 	Data["MinSpread"] = 0.25
@@ -184,7 +184,6 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 		if HitRes.Overkill > 0 then
 			table.insert( Bullet["Filter"] , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-			ACF_Spall( HitPos , Bullet["Flight"] , Bullet["Filter"] , Energy.Kinetic*HitRes.Loss , Bullet["Caliber"] , Target.ACF.Armour , Bullet["Owner"] , Target.ACF.Material) --Do some spalling
 			Bullet["Flight"] = Bullet["Flight"]:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet["ProjMass"])^0.5 * 39.37
 			return "Penetrated"
 		elseif HitRes.Ricochet then
@@ -268,7 +267,7 @@ function Round.guicreate( Panel, Table )
 
 	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("Flechettes",3,3,32,0, "Flechettes", "")	--flechette count Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("Flechettes",2,3,128,0, "Flechettes", "")	--flechette count Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FlechetteSpread",10,5,60,1, "Flechette Spread", "")	--flechette spread Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")			--Tracer checkbox (Name, Title, Desc)

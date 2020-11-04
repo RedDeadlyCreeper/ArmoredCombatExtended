@@ -57,7 +57,8 @@ ACF_defineGun("FIM-92 SAM", { --id
     viewcone    = 55,   -- getting outside this cone will break the lock.  Divided by 2.	--was 55
 
     agility     = 4.0,     -- multiplier for missile turn-rate.		--was 1
-    armdelay    = 0.00     -- minimum fuse arming delay		-was 0.3
+	armdelay    = 0.00,     -- minimum fuse arming delay		-was 0.3
+	SeekSensitivity = 2
 } )
 
 -- The 9M31 Strela-1, a bulky, slow medium-range anti-air missile.
@@ -100,7 +101,8 @@ ACF_defineGun("Strela-1 SAM", { --id
     viewcone    = 40,   -- getting outside this cone will break the lock.  Divided by 2.	
 
     agility     = 1.5,     -- multiplier for missile turn-rate.	
-    armdelay    = 0.00     -- minimum fuse arming delay	
+	armdelay    = 0.00,     -- minimum fuse arming delay	
+	SeekSensitivity = 2
 } )
 
 -- The SIMBAD-RC is a 2-tube point-defense missile system that's basicaly like 2 stingers shooting missiles 
@@ -186,5 +188,6 @@ ACF_defineGun("9M311", { --id
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.	
 	
     agility     = 1,     -- multiplier for missile turn-rate.
-    armdelay    = 0.00     -- minimum fuse arming delay
+    armdelay    = 0.00,     -- minimum fuse arming delay
+	SeekSensitivity = 2
 } )

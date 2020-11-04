@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("HW", {
-	spread = 0.25,
+	spread = 0.3,
 	name = "Howitzer",
 	desc = ACFTranslation.GunClasses[8],
 	muzzleflash = "120mm_muzzleflash_noscale",
@@ -81,7 +81,6 @@ ACF_defineGun("203mmHW", {
 	caliber = 20.3,
 	weight = 3900,
 	year = 1900,
-	rofmod = 0.8,
 	round = {
 		maxlength = 162.4,
 		propweight = 28.5
@@ -98,7 +97,6 @@ ACF_defineGun("240mmHW", {
 	caliber = 24.0,
 	weight = 8000,
 	year = 1900,
-	rofmod = 0.8,
 	round = {
 		maxlength = 192.0,
 		propweight = 33.7
@@ -114,7 +112,6 @@ ACF_defineGun("290mmHW", {
 	caliber = 29,
 	weight = 26800,
 	year = 1900,
-	rofmod = 0.5,
 	round = {
 		maxlength = 360,
 		propweight = 57.0
@@ -130,7 +127,6 @@ ACF_defineGun("406mmHW", {
 	caliber = 40.6,
 	weight = 50000,
 	year = 1920,
-	rofmod = 0.5,
 	round = {
 		maxlength = 540,
 		propweight = 40000

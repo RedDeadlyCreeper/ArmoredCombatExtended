@@ -22,7 +22,7 @@ function ENT:Initialize()
 	self:SetActive(false)
 
 	self.Cone = 15 --30 degree default cone
-	self.InaccuracyMul = (0.035 * (self.Cone/15)^0.6)*0.2 
+	self.InaccuracyMul = (0.035 * (self.Cone/15)^2)*0.2 
 	self.DPLRFAC = 65-(self.Cone/2)
 	
 	self.Heat = 21
@@ -30,6 +30,7 @@ function ENT:Initialize()
 	self.LegalTick = 0
 	self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
 	self.IsLegal = true
+	self.ConeInducedGCTRSize = self.Cone * 10
 end
 
 --ATGMs tracked
@@ -54,11 +55,12 @@ function ENT:TriggerInput( inp, value )
 		self:SetActive((value ~= 0) and self:isLegal())
 	end
 	if inp == "Cone" then
-		self.Cone = math.Clamp(value/2,3,30)
+		self.Cone = math.Clamp(value/2,3,45)
 		local curTime = CurTime()	
 		self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
-		self.InaccuracyMul = (0.035 * (self.Cone/15)^0.6)*0.2     -- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
+		self.InaccuracyMul = (0.035 * (self.Cone/15)^2)*0.2     -- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
 		self.DPLRFAC = 90-(self.Cone/2)
+		self.ConeInducedGCTRSize = self.Cone * 10
 	end
 end
 
@@ -160,7 +162,13 @@ if beingjammed < 1 then
 
 			if (absang.p < self.Cone and absang.y < self.Cone) then --Entity is within radar cone
 
-				local LOStr = util.TraceLine( {start = thisPos ,endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD, filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
+				local LOStr = util.TraceHull( {
+					start = thisPos ,endpos = entpos,
+					collisiongroup = COLLISION_GROUP_WORLD, 
+					filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
+					mins = Vector( -0, -0, -0 ),
+					maxs = Vector( 0, 0, 0 )
+				}) --Hits anything in the world.
 
 				if not LOStr.Hit then --Trace did not hit world
 					
@@ -181,13 +189,27 @@ if beingjammed < 1 then
 				--Also objects not coming directly towards the radar create more error.
 					local DopplerERR = (((math.abs(DPLR.y)^2+math.abs(DPLR.z)^2)^0.5)/velLength/2)*0.1
 
-					local GCtr = util.TraceLine( {start = entpos, endpos = entpos + difpos:GetNormalized() * 2000 ,collisiongroup  = COLLISION_GROUP_DEBRIS, filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
-					local GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
-					local GCFr = GCtr.Fraction
+					local GCtr = util.TraceHull( {
+						start = entpos,
+						endpos = entpos + difpos:GetNormalized() * 2000,
+						collisiongroup  = COLLISION_GROUP_DEBRIS,
+						filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
+						mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),
+						maxs = Vector( self.ConeInducedGCTRSize, self.ConeInducedGCTRSize, self.ConeInducedGCTRSize )
+					}) --Hits anything in the world.
+
+					if not GCtr.HitSky then
+						GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
+						GCFr = GCtr.Fraction
+					else
+						GCdis = 0 --returns amount of ground clutter
+						GCFr = 1
+					end
+
 --					print(GCdis)
 --					if GCdis <= 0.5 then --Get canceled by ground clutter
 
-					if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.3) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+					if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.4) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
 						--1000 u = ~57 mph
 
 
@@ -200,7 +222,7 @@ if beingjammed < 1 then
 						--print((entpos - thisPos):Length())
 						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
 
-						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.4 + GCdis*0.03 ))) --3 
+						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
 
 							local veltest
 
