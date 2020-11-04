@@ -401,13 +401,25 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	local Ricochet = 0
 	if HitRes.Loss == 1 then
 		-- Ricochet distribution center
-		local sigmoidCenter = Bullet.DetonatorAngle or ( Bullet.Ricochet - math.abs(Speed / 39.37 - Bullet.LimitVel) / 100 )
+--		local sigmoidCenter = Bullet.DetonatorAngle or ( Bullet.Ricochet - math.abs(Speed / 39.37 - Bullet.LimitVel,0) / 100 )
 		
 		-- Ricochet probability (sigmoid distribution); up to 5% minimal ricochet probability for projectiles with caliber < 20 mm 
-		local ricoProb = math.Clamp( 1 / (1 + math.exp( (Angle - sigmoidCenter) / -4) ), math.max(-0.05 * (Bullet.Caliber - 2) / 2, 0), 1 )
+--		local ricoProb = math.Clamp( 1 / (1 + math.exp( (Angle - sigmoidCenter) / -4) ), math.max(-0.05 * (Bullet.Caliber - 2) / 2, 0), 1 )
+
+			local sigmoidCenter = Bullet.DetonatorAngle or ( Bullet.Ricochet - math.max(Speed / 39.37 - Bullet.LimitVel,0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
+			local ricoProb = 1
+
+		if Angle > 85 then
+			ricoProb = 0 --Guarenteed Richochet
+		elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(sin(90-Angle),0.0001)  then
+			ricoProb = 1 --Guarenteed to not richochet
+		else
+			ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter*4),1)
+		end
+
 
 		-- Checking for ricochet
-		if ricoProb > math.random() and Angle < 90 then
+		if ricoProb < math.random() then
 			Ricochet       = math.Clamp(Angle / 90, 0.05, 1) -- atleast 5% of energy is kept
 			HitRes.Loss    = 1 - Ricochet
 			Energy.Kinetic = Energy.Kinetic * HitRes.Loss

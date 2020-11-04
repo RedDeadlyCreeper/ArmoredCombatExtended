@@ -35,7 +35,7 @@ function Round.convert( Crate, PlayerData )
 	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
 	Data.LimitVel = 800										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.2									--Kinetic energy transfert to the target for movement purposes
-	Data.Ricochet = 55										--Base ricochet angle
+	Data.Ricochet = 54										--Base ricochet angle
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	
 	Data.BoomPower = Data.PropMass

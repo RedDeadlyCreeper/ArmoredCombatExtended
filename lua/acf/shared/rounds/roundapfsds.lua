@@ -43,55 +43,55 @@ function Round.convert( Crate, PlayerData )
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 2 -- Autocannons are puny anyways
 	Data.VelModifier = 1.6
-	Data.Ricochet = 55
+	Data.Ricochet = 70
 	elseif GunClass == "RAC" then
 	Data.MinCalMult = 0.5
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1.8
 	Data.VelModifier = 1.7
-	Data.Ricochet = 50
+	Data.Ricochet = 70
 	elseif GunClass == "HRAC" then
 	Data.MinCalMult = 0.5
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1.9
 	Data.VelModifier = 1.7
-	Data.Ricochet = 50
+	Data.Ricochet = 70
 	elseif GunClass == "MG" then
 	Data.MinCalMult = 0.45
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1.7
 	Data.VelModifier = 1.8
-	Data.Ricochet = 50
+	Data.Ricochet = 70
 	elseif GunClass == "SA" then
 	Data.MinCalMult = 0.3
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 2
 	Data.VelModifier = 1.6
-	Data.Ricochet = 60
+	Data.Ricochet = 70
 	elseif GunClass == "C" then
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 0.8
 	Data.VelModifier = 0.9
-	Data.Ricochet = 62
+	Data.Ricochet = 70
 	elseif GunClass == "AL" then
 	Data.MinCalMult = 0.28
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 0.8
 	Data.VelModifier = 0.9
-	Data.Ricochet = 62
+	Data.Ricochet = 70
 	elseif GunClass == "SBC" then
 	Data.MinCalMult = 0.23
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 0.8
 	Data.VelModifier = 1.1
-	Data.Ricochet = 68
+	Data.Ricochet = 70
 	else
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1.35
 	Data.VelModifier = 1
-	Data.Ricochet = 62	
+	Data.Ricochet = 70	
 	end
 	
 	else
