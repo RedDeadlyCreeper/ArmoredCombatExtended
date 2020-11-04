@@ -411,7 +411,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
 		if Angle > 85 then
 			ricoProb = 0 --Guarenteed Richochet
-		elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(sin(90-Angle),0.0001)  then
+		elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(math.sin(90-Angle),0.0001)  then
 			ricoProb = 1 --Guarenteed to not richochet
 		else
 			ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter*4),1)
