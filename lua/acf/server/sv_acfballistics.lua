@@ -193,7 +193,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--FlightTr.mins = -FlightTr.maxs
 	FlightTr.mask = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
-	TROffset = (0.3937*Bullet.Caliber*2)/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2
+	TROffset = 0.3937*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 	FlightTr.maxs = Vector( TROffset, TROffset, TROffset )
 	FlightTr.mins = -FlightTr.maxs
 	
