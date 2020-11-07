@@ -251,7 +251,7 @@ function TOOL:RightClick( trace )
 	
 	ply:ConCommand( "acfarmorprop_ductility " .. ent.ACF.Ductility * 100 )
 	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
-	ply:ConCommand( "acfarmorprop_material " .. ent.ACF.Material )
+	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or 0) )
 	
 	-- this invalidates the entity and forces a refresh of networked armor values
 	self.AimEntity = nil
@@ -306,7 +306,7 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 		if ACF.EnableNewContent and ACF.Year >= 1955 then
-		self.Weapon:SetNWFloat( "Material", ent.ACF.Material)
+		self.Weapon:SetNWFloat( "Material", (ent.ACF.Material or 0))
 		else
 		self.Weapon:SetNWFloat( "Material", 0 )
 		end

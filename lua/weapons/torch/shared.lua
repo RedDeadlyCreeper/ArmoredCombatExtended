@@ -124,7 +124,8 @@ function SWEP:PrimaryAttack()
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
 				ent.ACF.Health = math.min(ent.ACF.Health + (600/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
 				ent.ACF.Armour = math.min(ent.ACF.MaxArmour * (ent.ACF.Health/ent.ACF.MaxHealth),ent.ACF.MaxArmour)
-				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", true, true )--Welding noise here, gotte figure out how to do a looped sound.
+--				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 50 , true, true )--Welding noise here, gotte figure out how to do a looped sound.
+				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_WEAPON )
 				TeslaSpark(tr.HitPos , 1 )
 			end
 			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
@@ -183,7 +184,8 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				effectdata:SetStart( userid:GetShootPos() )
 				effectdata:SetOrigin( tr.HitPos )
 				util.Effect( "Sparks", effectdata , true , true )
-				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", true , true ) --old annoyinly loud sounds
+--				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", true , true ) --old annoyinly loud sounds
+				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", 75, 100, 1, CHAN_WEAPON )
 			end
 		else 
 			self.Weapon:SetNWFloat( "HP", 0 )

@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 448  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
+ACF.Version = 449  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
 ACF.Year = 2020
@@ -230,7 +230,6 @@ PrecacheParticleSystem( "ACFM_Flare" )
 include("autorun/acf_missile/folder.lua")
 include("autorun/sh_acfm_cvars.lua")
 include("acf/shared/acf_missileloader.lua")
-include("acf/shared/acfm_globals.lua")
 
 if SERVER then
 

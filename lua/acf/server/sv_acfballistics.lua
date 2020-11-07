@@ -110,7 +110,7 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 	Bullet.Flight = Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime				--Calculates the next shell vector
 	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace. Disabled due to reports of it breaking things.
 
---	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime)))
+		--	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime)))
 	
 	--0.035 seconds of max backtrace of shell velocity, a bit more than 1 tick at 33 ticks/second
 
@@ -140,6 +140,8 @@ end
 
 --handles bullet terminal ballistics, fusing, and visclip checking
 function ACF_DoBulletsFlight( Index, Bullet )
+
+
 	local CanDo = hook.Run("ACF_BulletsFlight", Index, Bullet )
 	if CanDo == false then return end
 	if Bullet.FuseLength and Bullet.FuseLength > 0 then
@@ -222,33 +224,62 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 		--If we hit stuff then send the resolution to the bullets damage function
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
-
+		
 		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
---		local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/BulletVel:Length()) * DeltaTime
-		local DTImpact = (FlightRes.HitPos-Bullet.Pos):Length()/(Bullet.Flight * ACF.VelScale * DeltaTime):Length() * DeltaTime
+
+
+		--local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/(Bullet.Flight:Length() * ACF.VelScale * DeltaTime) * DeltaTime) or 0.01515
+		local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
 
 --		DTImpact = 1
+
 		--Gets the distance the bullet traveled and divides it by the distance the bullet should have traveled during deltatime. Used to calculate drag time.
 		local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
---		print(Drag)
+
+--		print("GAP")
+--		print(DTImpact)
+--		print(DeltaTime)
 		--Adjusts bullet speed by time it spent flying into target.
-		Bullet.Flight = Bullet.Flight - Drag * DTImpact
 		--print("Before")
-		--print(Bullet.Flight)
+		--print(Bullet.Flight:Length()/39.37)
+		Bullet.Flight = Bullet.Flight - Drag * DTImpact
+		--print("After")
+		--print(Bullet.Flight:Length()/39.37)
+
+
 
 		local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
 		if Retry == "Penetrated" then		--If we should do the same trace again, then do so
 			if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
-			ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
-			--print("After")
-			--print(Bullet.Flight)
-			ACF_DoBulletsFlight( Index, Bullet )
+
+					Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
+				if Bullet.ImpactCount > 50 then --A bullet has impacted more than 50 props. But why though?			
+					ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
+					ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
+					ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
+				else
+
+					ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
+					--print("After")
+					--print(Bullet.Flight)
+					ACF_DoBulletsFlight( Index, Bullet )
+				end
+
 		elseif Retry == "Ricochet"  then
 			if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
+
+			Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
+			if Bullet.ImpactCount > 50 then --A bullet has impacted more than 50 props. But why though?			
+				ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
+				ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
+				ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
+			else
+
 			ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
 			--print("After")
 			--print(Bullet.Flight)
 			ACF_CalcBulletFlight( Index, Bullet, true )
+			end
 		else						--Else end the flight here
 			if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )

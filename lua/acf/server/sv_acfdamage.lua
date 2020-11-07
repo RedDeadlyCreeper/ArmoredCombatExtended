@@ -328,7 +328,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
 local UsedArmor = Armour*ArmorMul
 
-	if SpallMul > 0 and HEFiller/1501 > UsedArmor then
+	if SpallMul > 0 and HEFiller/1501*4 > UsedArmor then
 
 	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.00079
 	local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
@@ -399,15 +399,13 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	)
 
 	local Ricochet = 0
-	if HitRes.Loss == 1 then
-		-- Ricochet distribution center
---		local sigmoidCenter = Bullet.DetonatorAngle or ( Bullet.Ricochet - math.abs(Speed / 39.37 - Bullet.LimitVel,0) / 100 )
-		
-		-- Ricochet probability (sigmoid distribution); up to 5% minimal ricochet probability for projectiles with caliber < 20 mm 
---		local ricoProb = math.Clamp( 1 / (1 + math.exp( (Angle - sigmoidCenter) / -4) ), math.max(-0.05 * (Bullet.Caliber - 2) / 2, 0), 1 )
 
-			local sigmoidCenter = Bullet.DetonatorAngle or ( Bullet.Ricochet - math.max(Speed / 39.37 - Bullet.LimitVel,0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
+		--	if HitRes.Loss == 1 then --Why did we need to fail to pen to get a richochet anyway?
+
+			local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
 			local ricoProb = 1
+
+		--print(Angle)
 
 		if Angle > 85 then
 			ricoProb = 0 --Guarenteed Richochet
@@ -419,12 +417,12 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
 
 		-- Checking for ricochet
-		if ricoProb < math.random() then
-			Ricochet       = math.Clamp(Angle / 90, 0.05, 1) -- atleast 5% of energy is kept
+		if ricoProb < math.random() and Angle < 90 then --The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
+			Ricochet       = math.Clamp(Angle / 90, 0.1, 1) -- atleast 10% of energy is kept
 			HitRes.Loss    = 1 - Ricochet
 			Energy.Kinetic = Energy.Kinetic * HitRes.Loss
 		end	
-	end
+		--	end
 	
 	ACF_KEShove(
 		Target,
