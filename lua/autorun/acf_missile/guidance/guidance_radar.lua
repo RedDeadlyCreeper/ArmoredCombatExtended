@@ -154,13 +154,16 @@ function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does n
 
 					if not LOStr.Hit then --Trace did not hit world
 --					if true then
---						print("HasLOS")		
-
-						local GCtr = util.TraceLine( {
+--						print("HasLOS")		 
+						local ConeInducedGCTRSize = dist/100 --2 meter wide tracehull for every 100m distance
+						local GCtr = util.TraceHull( {
 							 start = entpos,
 							 endpos = entpos + difpos:GetNormalized() * 1000 ,
 							 collisiongroup  = COLLISION_GROUP_WORLD,
-							 filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
+							 mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
+							 maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
+							 filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
+							}) --Hits anything in the world.
 
 							--Doppler testing fun
 							local DPLR = missile:WorldToLocal(missilePos+entvel*2)

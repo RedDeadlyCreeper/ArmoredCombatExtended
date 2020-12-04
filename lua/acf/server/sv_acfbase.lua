@@ -371,7 +371,7 @@ function ACEUpdateContraptions() --Used to update information like HEAT, Weight,
 			for id, ent in pairs(ScanEnt.HotEnts or {}) do --Iterate through all hot ents for object
 				if ent:IsValid() then
 
-				ScanEnt.THeat = ScanEnt.THeat + ent.Heat or 0
+				ScanEnt.THeat = ScanEnt.THeat + (ent.Heat or 0) + 20 --Makes every hot object add an extra 20 degrees. Done to make heli gunships and planes easier to target.
 				else
 					table.remove( ScanEnt.HotEnts, id )					
 				end

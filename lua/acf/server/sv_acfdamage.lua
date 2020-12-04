@@ -332,8 +332,8 @@ local UsedArmor = Armour*ArmorMul
 
 	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.00079
 	local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
-	local SpallWeight = TotalWeight/Spall*SpallMul*35
-	local SpallVel = (HEFiller*2125000000/SpallWeight)^0.5/Spall*SpallMul
+	local SpallWeight = TotalWeight/Spall*SpallMul
+	local SpallVel = (HEFiller*10/SpallWeight)^0.5/Spall*SpallMul
 	local SpallAera = (SpallWeight/7.8)^0.33 
 	local SpallEnergy = ACF_Kinetic( SpallVel*1000 , SpallWeight, 800 )
 
