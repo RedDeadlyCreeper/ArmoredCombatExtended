@@ -13,7 +13,7 @@ ACF_defineGunClass("SAM", {
 	effect          = "Rocket Motor",
     reloadmul       = 8,
 
-    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT"} -- Including FL would mean changing the way round classes work.
+    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT","THEAT"} -- Including FL would mean changing the way round classes work.
 } )
 
 -- The FIM-92, a lightweight, medium-speed short-range anti-air missile.
@@ -138,7 +138,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Antimissile"},
+    guidance    = {"Dumb","Antimissile"},
     fuses       = {"Contact", "Radio"},
 
 	racks       = {["2x FIM-92"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'

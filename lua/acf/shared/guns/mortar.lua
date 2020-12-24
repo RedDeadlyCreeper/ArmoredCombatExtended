@@ -120,4 +120,19 @@ ACF_defineGun("280mmM", {
 		propweight = 0.462 
 	}
 } )
+
+ACF_defineGun("380mmM", {
+	name = "380mm Mortar",
+	desc = "Massive payload, with a reload time to match. Found in rare WW2 siege artillery pieces.",
+	model = "models/mortar/mortar_300mm.mdl",
+	gunclass = "MO",
+	canparent = true,
+	caliber = 38.0,
+	weight = 5000,
+	year = 1941,
+	round = {
+		maxlength = 180,
+		propweight = 0.562 
+	}
+} )
 end

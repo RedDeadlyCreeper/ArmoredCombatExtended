@@ -46,6 +46,17 @@ local AmmoLarge = {}
 	AmmoLarge.volume = 140503
 AmmoTable["AmmoLarge"] = AmmoLarge
 
+local AmmoSuperLarge = {}
+	AmmoSuperLarge.id = "AmmoSuperLarge"
+	AmmoSuperLarge.ent = "acf_ammo"
+	AmmoSuperLarge.type = "Ammo"
+	AmmoSuperLarge.name = "Super Large Ammo Crate"
+	AmmoSuperLarge.desc = "Super Large ammo crate\n"
+	AmmoSuperLarge.model = "models/ammocrate_superlarge.mdl"
+	AmmoSuperLarge.weight = 5000
+	AmmoSuperLarge.volume = 281006
+AmmoTable["AmmoSuperLarge"] = AmmoSuperLarge
+
 local Ammo1x1x8 = {}
 	Ammo1x1x8.id = "Ammo1x1x8"
 	Ammo1x1x8.ent = "acf_ammo"

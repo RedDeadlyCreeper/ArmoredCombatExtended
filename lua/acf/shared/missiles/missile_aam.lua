@@ -14,7 +14,7 @@ ACF_defineGunClass("AAM", {
 	year = 1953,
     reloadmul       = 8,
 
-    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT"} -- Including FL would mean changing the way round classes work.
+    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT","THEAT"} -- Including FL would mean changing the way round classes work.
 } )
 
 

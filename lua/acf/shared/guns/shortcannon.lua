@@ -104,3 +104,19 @@ ACF_defineGun("140mmSC", {
 		propweight = 12.8
 	}
 } )
+
+ACF_defineGun("170mmSC", {
+	name = "170mm Short Cannon",
+	desc = "A specialized weapon, developed from dark magic and anti-heavy tank hatred.  Deal with it.",
+	model = "models/tankgun/tankgun_short_170mm.mdl",
+	gunclass = "SC",
+	canparent = true,
+	caliber = 17.0,
+	weight = 3200,
+	year = 1999,
+	round = {
+		maxlength = 147,
+		propweight = 14.8
+	}
+} )
+

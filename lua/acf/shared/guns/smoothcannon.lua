@@ -14,6 +14,36 @@ ACF_defineGunClass("SBC", {
 } )
 
 --add a gun to the class
+
+ACF_defineGun("50mmSBC", {
+	name = "50mm Smoothbore Cannon",
+	desc = "50mm Smoothbore, a very smoll gun for a light tank or tank destroyer",
+	model = "models/tankgun_old/tankgun_50mm.mdl",
+	canparent = true,
+	gunclass = "SBC",
+	caliber = 5.0,
+	weight = 650,
+	year = 1965,
+	round = {
+		maxlength = 63,
+		propweight = 2.1
+	}
+} )
+
+ACF_defineGun("75mmSBC", {
+	name = "75mm Smoothbore Cannon",
+	desc = "75mm Smoothbore, a great cannon for a light tank or tank destroyer",
+	model = "models/tankgun_old/tankgun_75mm.mdl",
+	canparent = true,
+	gunclass = "SBC",
+	caliber = 7.5,
+	weight = 900,
+	year = 1960,
+	round = {
+		maxlength = 78,
+		propweight = 3.8
+	}
+} )
 	
 ACF_defineGun("100mmSBC", {
 	name = "100mm Smoothbore Cannon",
@@ -64,7 +94,7 @@ ACF_defineGun("140mmSBC", {
 ACF_defineGun("170mmSBC", {
 	name = "170mm Smoothbore Cannon",
 	desc = "Some might laugh at those who choose to forego armor. The 170mm laughs at anyone as it casually tears all tanks alike to shreds.",
-	model = "models/tankgun/tankgun_170mm.mdl",
+	model = "models/tankgun/tankgun_170mmsb.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 17.0,
