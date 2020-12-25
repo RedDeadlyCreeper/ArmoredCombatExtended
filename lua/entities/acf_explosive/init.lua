@@ -245,38 +245,40 @@ function ENT:Detonate(overrideBData)
 	
 	timer.Simple(3, function() if IsValid(self) then if IsValid(self.FakeCrate) then self.FakeCrate:Remove() end self:Remove() end end)
 	
-	if overrideBData.Entity.Fuse.Cluster == nil then
+	if overrideBData then 
+	    if overrideBData.Entity.Fuse.Cluster == nil then
 		
-		bdata.Owner = 	bdata.Owner or self.Owner
-		bdata.Pos = 	pos + (self.DetonateOffset or bdata.Flight:GetNormalized())
-		bdata.NoOcc = 	self
-		bdata.Gun =     self
+		   bdata.Owner = 	bdata.Owner or self.Owner
+		   bdata.Pos = 	pos + (self.DetonateOffset or bdata.Flight:GetNormalized())
+		   bdata.NoOcc = 	self
+		   bdata.Gun =     self
 		
-		debugoverlay.Line(bdata.Pos, bdata.Pos + bdata.Flight, 10, Color(255, 128, 0))
+		   debugoverlay.Line(bdata.Pos, bdata.Pos + bdata.Flight, 10, Color(255, 128, 0))
 		
-		if bdata.Filter then bdata.Filter[#bdata.Filter+1] = self
-		else bdata.Filter = {self} end
+		   if bdata.Filter then bdata.Filter[#bdata.Filter+1] = self
+		   else bdata.Filter = {self} end
 		
-		bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
-		bdata.ProjMass = bdata.ProjMass or bdata.RoundMass 
+		   bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
+		   bdata.ProjMass = bdata.ProjMass or bdata.RoundMass 
 		
-		bdata.HandlesOwnIteration = nil
+		   bdata.HandlesOwnIteration = nil
 
-		ACFM_BulletLaunch(bdata)
+		   ACFM_BulletLaunch(bdata)
 		
 		
 
-		self:SetSolid(SOLID_NONE)
-		phys:EnableMotion(false)
+		   self:SetSolid(SOLID_NONE)
+		   phys:EnableMotion(false)
 		
-		self:DoReplicatedPropHit(bdata)
+		   self:DoReplicatedPropHit(bdata)
 		
-		self:SetNoDraw(true)
-	else
-		self:SetNoDraw(true)
-		--self:ClusterBomb(ACFM_CompactBulletData(bdata),bdata.Flight or phyvel)
-		--overrideBData.Entity:Remove()
-		self:ClusterNew(bdata)
+		   self:SetNoDraw(true)
+	   else
+		   self:SetNoDraw(true)
+		   --self:ClusterBomb(ACFM_CompactBulletData(bdata),bdata.Flight or phyvel)
+		   --overrideBData.Entity:Remove()
+		   self:ClusterNew(bdata)
+	   end
 	end
 end
 

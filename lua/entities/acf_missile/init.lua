@@ -493,7 +493,12 @@ function ENT:ForceDetonate()
 
 	ACF_ActiveMissiles[self] = nil
 
-	self.DetonateOffset = self.LastVel:GetNormalized() * -1
+    if self.LastVel != nil then   
+	
+	   self.DetonateOffset = self.LastVel:GetNormalized() * -1 
+	   
+	end
+
 
     self.BaseClass.Detonate(self, self.BulletData)
 
