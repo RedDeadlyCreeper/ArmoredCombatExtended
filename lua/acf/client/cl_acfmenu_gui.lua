@@ -40,14 +40,14 @@ function PANEL:Init( )
 		
 	end
 	
-	local HomeNode = self.WeaponSelect:AddNode( "ACF Home" )
+	local HomeNode = self.WeaponSelect:AddNode( "ACE Information" )
 	HomeNode.mytable = {}
 		HomeNode.mytable.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
 		HomeNode.mytable.guiupdate = (function( Panel, Table ) ACFHomeGUIUpdate( Table ) end or nil)
 	function HomeNode:DoClick()
 		acfmenupanel:UpdateDisplay(self.mytable)
 	end
-	HomeNode.Icon:SetImage( "icon16/newspaper.png" )
+	HomeNode.Icon:SetImage( "icon16/cog.png" )
 	
 	local RoundAttribs = list.Get("ACFRoundTypes")
 	self.RoundAttribs = {}
@@ -270,7 +270,7 @@ function ACFHomeGUICreate( Table )
 	--start version
 	
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
-	versiontext = "Version\n\n".."Git Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+	versiontext = "Git Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
 	acfmenupanel["CData"]["VersionInit"]:SetDark( true )
 	acfmenupanel["CData"]["VersionInit"]:SizeToContents()
@@ -290,7 +290,7 @@ function ACFHomeGUICreate( Table )
 
 	end
 	
-	acfmenupanel["CData"]["VersionText"]:SetText("ACF Is "..versionstring.."!\n\n\n\n")
+	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n\n\n")
 	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SetColor(color) 
 	acfmenupanel["CData"]["VersionText"]:SizeToContents() 
@@ -340,7 +340,7 @@ function ACFHomeGUIUpdate( Table )
 
 	end
 	
-	acfmenupanel["CData"]["VersionText"]:SetText("ACF Is "..versionstring.."!\n\n\n\n")
+	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n\n\n")
 	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SetColor(color) 
 	acfmenupanel["CData"]["VersionText"]:SizeToContents() 
