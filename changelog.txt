@@ -343,3 +343,13 @@ r100
 -Missiles will now swap targets on the fly
 -Fixed flares
 -Slightly adjusted HESH mechanics
+
+*r128
+-Rebalanced gearboxes
+-Rebalanced MG Penetration
+-Missile bug workaround(T/HEAT for missiles is still buggy, but there is no more weird ricochets and HE works fine) Once we fix it, it would be on the branch
+-Some rebalancing of sweps(Greande got more weight, so it doesn't act as a ball)
+-Slight optimisation of code(Cleared some unused code and cleared some trash in it)
+-Fixed some errors when joining to server
+-Fixed error when detonating missile by detonate input
+-removed HE restrictions on 20mm caliber guns or lower
