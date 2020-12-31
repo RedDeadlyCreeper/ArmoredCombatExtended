@@ -8,9 +8,9 @@ local Gear4LW = 240
 local StWB = 0.75 --straight weight bonus mulitplier
 
 -- Torque Rating
-local Gear4ST = 540
-local Gear4MT = 1700
-local Gear4LT = 10000
+local Gear4ST = 750
+local Gear4MT = 1500
+local Gear4LT = 7120
 local StTB = 1.25 --straight torque bonus multiplier
 
 -- Inline
