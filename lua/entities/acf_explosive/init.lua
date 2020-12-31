@@ -15,8 +15,10 @@ function ENT:Initialize()
 	self.SpecialDamage = true	--If true needs a special ACF_OnDamage function
 	self.ShouldTrace = false
 	
+	
 	self.Inputs = Wire_CreateInputs( self, { "Detonate" } )
 	self.Outputs = Wire_CreateOutputs( self, {} )
+	
 	
 	self.ThinkDelay = 0.1
 	
@@ -203,7 +205,7 @@ local trace = {}
 function ENT:TraceFunction()
 	local pos = self:GetPos()
 	trace.start = pos
-	trace.endpos = pos + self:GetVelocity() * self.ThinkDelay
+	trace.endpos = pos + self:GetVelocity() * self.ThinkDelay * -1  
 	trace.filter = self.TraceFilter
 
 	local res = util.TraceEntity( trace, self ) 
@@ -218,7 +220,7 @@ end
 function ENT:Think()
  	
 	if self.ShouldTrace then
-		self:TraceFunction()
+		self:TraceFunction()		
 	end
 	
 	self:NextThink(CurTime() + self.ThinkDelay)
@@ -239,7 +241,7 @@ function ENT:Detonate(overrideBData)
 	local bdata = overrideBData or self.BulletData
 	local phys = self:GetPhysicsObject()
 	local pos = self:GetPos()
-		
+	
 	local phyvel = 	phys and phys:GetVelocity() or Vector(0, 0, 1000)
 	bdata.Flight = 	bdata.Flight or phyvel
 	
@@ -247,9 +249,9 @@ function ENT:Detonate(overrideBData)
 	
 	if overrideBData then 
 	    if overrideBData.Entity.Fuse.Cluster == nil then
-		
+		   
 		   bdata.Owner = 	bdata.Owner or self.Owner
-		   bdata.Pos = 	pos + (self.DetonateOffset or bdata.Flight:GetNormalized())
+		   bdata.Pos = pos + (self.DetonateOffset or bdata.Flight:GetNormalized())
 		   bdata.NoOcc = 	self
 		   bdata.Gun =     self
 		
@@ -385,36 +387,43 @@ function ENT:CreateShell()
 	--You overwrite this with your own function, defined in the ammo definition file
 end
 
-
+---Since Retry has decided to fuck me during the last hours i decided to optimize this
 function ENT:DoReplicatedPropHit(Bullet)
 
 	local FlightRes = { Entity = self, HitNormal = Bullet.Flight, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC }
 	local Index = Bullet.Index
 	
-	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
-	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
+	--This part stucks saying Retry = ricochet. Some way to fix it?
+	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]	  
+	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup ) --If we hit stuff then send the resolution to the damage function
+	--If we should do the same trace again, then do so.
 	
-	if Retry == "Penetrated" then		--If we should do the same trace again, then do so
-		--print("a")
+	if Retry == "Penetrated" then		  --If retry gets fixed some day, HEAT will use THIS condition.
+		print("Missile Penetration!")
+		
         ACFM_ResetVelocity(Bullet)
-        
-		if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
-		ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
+		if Bullet.OnPenetrated then 
+		   Bullet.OnPenetrated(Index, Bullet, FlightRes) 	   
+		end	
+     	ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
 		ACF_CalcBulletFlight( Index, Bullet, true )
-	elseif Retry == "Ricochet"  then
-		--print("b")
-        ACFM_ResetVelocity(Bullet)
-        
-		if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
-		ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
-		ACF_CalcBulletFlight( Index, Bullet, true )
-	else						--Else end the flight here
-		--print("c")
-		if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
+					
+	elseif Retry == "Ricochet" then    	--We dont need missiles ricocheting anymore. Everything is using THIS condition, the reason of why HE works PERFECTLY. Not having Retry == penetrated means HEAT/THEAT never will work correctly cuz this area is not designed for HEAT/THEAT.
+		print("Missile Non penetration. Missile exploding")
+		
+        ACFM_ResetVelocity(Bullet)	
+		
+		if Bullet.Type != "THEAT" or Bullet.Type != "HEAT" then --Just to make HEAT was presented. NOT real fix, expect some bugs.
+		if Bullet.OnEndFlight then 	
+		   Bullet.OnEndFlight(Index, Bullet, FlightRes) 	   
+		end	
 		ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 		ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
-		ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
+		ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )		
+        end	
 	end
+	
+	
 	
 end
 

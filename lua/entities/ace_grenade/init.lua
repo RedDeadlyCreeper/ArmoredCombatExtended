@@ -12,7 +12,7 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject()
-	phys:SetMass(4) --4.1 kg mine, round down.
+	phys:SetMass(4.5) --4.1 kg mine, round down.
 	
 	self.FuseTime = 4
 	self.phys = phys
