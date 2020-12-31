@@ -5,7 +5,7 @@ ACF.AmmoBlacklist = {}
 ACF.Version = 453  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
 ACF.CurrentVersion = 0 -- just defining a variable, do not change
 
-ACF.Year = 2020
+ACF.Year = 2021
 
 ACF.EnableNewContent = true --If set to true this will enable new content like new guntypes, ammo, and composite armor
 
