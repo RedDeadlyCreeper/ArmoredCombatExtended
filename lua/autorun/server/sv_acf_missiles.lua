@@ -9,12 +9,11 @@
     By Bubbus + Cre8or
     
     A reimplementation of XCF missiles and bombs, with guidance and more.
-
 ]]
 
 
 
-if not ACF then error("ACF is not installed - ACF Missiles requires it!") end
+
 
 
 
@@ -36,7 +35,7 @@ function ACFM_BulletLaunch(BData)
     end
 
     local cvarGrav = GetConVar("sv_gravity")
-    BData.Accel = Vector(0,0,cvarGrav:GetInt()*-1)            --Those are BData settings that are global and shouldn't change round to round
+    BData.Accel = Vector(0,0,-1)            --Those are BData settings that are global and shouldn't change round to round
     BData.LastThink = BData.LastThink or SysTime()
     BData["FlightTime"] = 0
     --BData["TraceBackComp"] = 0
@@ -105,7 +104,7 @@ function ACFM_ExpandBulletData(bullet)
     ret.Type = ret.Type or bullet.Type
     
     local cvarGrav = GetConVar("sv_gravity")
-    ret.Accel = Vector(0,0,cvarGrav:GetInt()*-1)
+    ret.Accel = Vector(0,0,-1)
     if ret.Tracer == 0 and bullet["Tracer"] and bullet["Tracer"] > 0 then ret.Tracer = bullet["Tracer"] end
     ret.Colour = toconvert["Colour"]
     
@@ -155,11 +154,8 @@ ACF.FillerDensity =
 {
     SM =    2000,
     HE =    1000,
-    HESH =    1000,
-    HP =    1,
     HEAT =  1450,
     THEAT =  1450,
-    APHE =  1000
 }
 
 
@@ -207,9 +203,6 @@ function ACFM_CompactBulletData(crate)
     return compact
 end
 
-
-
-
 local ResetVelocity = {}
 
 function ResetVelocity.AP(bdata)    
@@ -218,33 +211,28 @@ function ResetVelocity.AP(bdata)
 
     bdata.Flight:Normalize()
     
-    bdata.Flight = bdata.Flight * (bdata.MuzzleVel * 39.37)
+    bdata.Flight = Vector(0,0,0)---(bdata.Flight * (bdata.MuzzleVel * 39.37))
     
 end
             
 ResetVelocity.HE = ResetVelocity.AP
 ResetVelocity.HEP = ResetVelocity.AP
-ResetVelocity.HESH = ResetVelocity.AP
-ResetVelocity.HP = ResetVelocity.AP
-ResetVelocity.FL = ResetVelocity.AP
 ResetVelocity.SM = ResetVelocity.AP
-ResetVelocity.APHE = ResetVelocity.AP
-ResetVelocity.APDS = ResetVelocity.AP
-ResetVelocity.HVAP = ResetVelocity.AP
-            
+--ResetVelocity.HEAT = ResetVelocity.AP
+           
 function ResetVelocity.HEAT(bdata)    
-    
+  
     if not bdata.Detonated then return ResetVelocity.AP(bdata) end
-    
+     --[[  
     if not (bdata.MuzzleVel and bdata.SlugMV) then return end
     
     bdata.Flight:Normalize()
     
-    local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
+    local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77     --local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
     
-    bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
+    bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 100000 ) --bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 39.37 )
     bdata.NotFirstPen = false
-    
+]]--
 end    
 
 function ResetVelocity.THEAT(bdata)    
@@ -266,11 +254,11 @@ function ResetVelocity.THEAT(bdata)
 --	print(DetCount)	
 	if DetCount==1 then 
 --	print("Detonation1")
-    bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
+    bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 39.37 )
     bdata.NotFirstPen = false
     elseif DetCount == 2 then
 --	print("Detonation2")
-    bdata.Flight = bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 
+    bdata.Flight = -(bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 )
     bdata.NotFirstPen = false	
 	end
 end     
