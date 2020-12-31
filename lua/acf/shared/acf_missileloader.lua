@@ -6,6 +6,8 @@
 
 AddCSLuaFile()
 
+if ACF.Weapons then
+
 ACF.Weapons.Rack = ACF.Weapons.Rack or {}
 ACF.Classes.Rack = ACF.Classes.Rack or {}
 
@@ -215,3 +217,5 @@ aaa_IncludeShared("acf/shared/radars")
 
 ACF.RoundTypes = list.Get("ACFRoundTypes")
 ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
+
+end
