@@ -211,28 +211,27 @@ function ResetVelocity.AP(bdata)
 
     bdata.Flight:Normalize()
     
-    bdata.Flight = Vector(0,0,0)---(bdata.Flight * (bdata.MuzzleVel * 39.37))
+    bdata.Flight = -(bdata.Flight * (bdata.MuzzleVel * 39.37))
     
 end
             
 ResetVelocity.HE = ResetVelocity.AP
 ResetVelocity.HEP = ResetVelocity.AP
 ResetVelocity.SM = ResetVelocity.AP
---ResetVelocity.HEAT = ResetVelocity.AP
            
 function ResetVelocity.HEAT(bdata)    
   
     if not bdata.Detonated then return ResetVelocity.AP(bdata) end
-     --[[  
+      
     if not (bdata.MuzzleVel and bdata.SlugMV) then return end
     
     bdata.Flight:Normalize()
     
     local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77     --local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
     
-    bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 100000 ) --bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 39.37 )
+    bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 39.37 )
     bdata.NotFirstPen = false
-]]--
+
 end    
 
 function ResetVelocity.THEAT(bdata)    
@@ -242,9 +241,6 @@ function ResetVelocity.THEAT(bdata)
     
     if not (bdata.MuzzleVel and bdata.SlugMV and bdata.SlugMV1 and bdata.SlugMV2) then return end
     
-	
-	
-	
     bdata.Flight:Normalize()
     
     local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
