@@ -11,6 +11,8 @@ DEFINE_BASECLASS("acf_explosive")
 
 function ENT:Initialize()
 
+
+
 	self.BaseClass.Initialize(self)
 
 	if !IsValid(self.Entity.Owner) then
@@ -28,8 +30,8 @@ function ENT:Initialize()
 	self.PhysObj:EnableGravity( false )
 	self.PhysObj:EnableMotion( false )
 
-	self.SpecialDamage = true	--If true needs a special ACF_OnDamage function
-	self.SpecialHealth = true	--If true needs a special ACF_Activate function
+	self.SpecialDamage = false	--If true needs a special ACF_OnDamage function
+	self.SpecialHealth = false	--If true needs a special ACF_Activate function
 
 	self:SetNWFloat("LightSize", 0)
 
@@ -528,9 +530,11 @@ function ENT:Dud()
 		local VelMul = (0.8 + Dot * 0.7) * Vel:Length()
 		Vel = NewDir * VelMul
 	end
-
+    
+	if Vel then   --making check
 	Phys:SetVelocity(Vel)
-
+    end
+	
 	timer.Simple(30, function() if IsValid(self) then self:Remove() end end)
 end
 
@@ -539,7 +543,7 @@ end
 
 function ENT:Think()
 	local Time = CurTime()
-
+    
 	if self.Launched and not self.MissileDetonated then
 
 		if self.Hit then
@@ -565,7 +569,7 @@ function ENT:Think()
         end
 
 	end
-
+	
 	return self.BaseClass.Think(self)
 end
 
@@ -600,7 +604,7 @@ end
 
 
 function ENT:ACF_Activate( Recalc )
-
+--[[
 	local EmptyMass = self.RoundWeight or self.Mass or 10
 
 	self.ACF = self.ACF or {}
@@ -609,6 +613,8 @@ function ENT:ACF_Activate( Recalc )
 	if not self.ACF.Aera then
 		self.ACF.Aera = PhysObj:GetSurfaceArea() * 6.45
 	end
+	
+	
 	if not self.ACF.Volume then
 		self.ACF.Volume = PhysObj:GetVolume() * 16.38
 	end
@@ -631,12 +637,17 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.Mass = self.Mass
 	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
 	self.ACF.Type = "Prop"
-
+    
+	
+ 
+	
+]]--
 end
 
 
 
 
+--[[
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 
 function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This function needs to return HitRes
@@ -666,6 +677,7 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 	return HitRes
 
 end
+]]--
 
 
 

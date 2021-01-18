@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL","SBC"}
 
 local Round = {}
 
@@ -78,12 +78,6 @@ function Round.convert( Crate, PlayerData )
 	Data.PenModifier = 0.8
 	Data.VelModifier = 0.9
 	Data.Ricochet = 68
-	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 1.1
-	Data.Ricochet = 68
 	else
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
@@ -130,12 +124,6 @@ function Round.convert( Crate, PlayerData )
 	Data.PenModifier = 1
 	Data.VelModifier = 1
 	Data.Ricochet = 62
-	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.85
-	Data.VelModifier = 1.1
-	Data.Ricochet = 68
 	else
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
@@ -223,7 +211,7 @@ function Round.cratetxt( BulletData )
 		--"Cartridge Mass: ", math.Round(TotalMass, 2), MassUnit, "\n",
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm"
-		--"Max Pen. Damage: ", math.Round(MaxHP.Damage, 1), " HP\n",
+		--"Max Pen. Damage: ", math.Round(MaxHP.Damage, 1), " HP\n"
 	}
 	
 	return table.concat(str)
@@ -370,7 +358,7 @@ function Round.guicreate( Panel, Table )
 	acfmenupanel:AmmoSlider("SCalMult",0,0,1000,2, "Subcaliber Size Multiplier", "")--Subcaliber Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
-	--acfmenupanel:CPanelText("RicoDisplay", "")	--estimated rico chance
+	acfmenupanel:CPanelText("RicoDisplay", "")	--estimated rico chance
 	acfmenupanel:CPanelText("PenetrationDisplay", "")	--Proj muzzle penetration (Name, Desc)
 	
 	Round.guiupdate( Panel, Table )
@@ -415,8 +403,8 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\\s")	--Proj muzzle velocity (Name, Desc)
 	
-	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
+	local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
+	acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
 
 	local R1V, R1P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 100 )	
 	local R2V, R2P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 200 )
@@ -427,7 +415,7 @@ function Round.guiupdate( Panel, Table )
 	local R7V, R7P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 700 )
 	local R8V, R8P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
 	
-	acfmenupanel:CPanelText("PenetrationDisplay", "Max pen: "..math.floor(Data.MaxPen).." mm\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R2P,0).."mm @ "..math.Round(R2V,0).." m\\s\n300m pen: "..math.Round(R3P,0).."mm @ "..math.Round(R3V,0).." m\\s\n400m pen: "..math.Round(R4P,0).."mm @ "..math.Round(R4V,0).." m\\s\n500m pen: "..math.Round(R5P,0).."mm @ "..math.Round(R5V,0).." m\\s\n600m pen: "..math.Round(R6P,0).."mm @ "..math.Round(R6V,0).." m\\s\n700m pen: "..math.Round(R7P,0).."mm @ "..math.Round(R7V,0).." m\\s\n800m pen: "..math.Round(R8P,0).."mm @ "..math.Round(R8V,0).." ..m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("PenetrationDisplay", "Max pen: "..math.floor(Data.MaxPen).." mm\n100m pen: "..math.floor(R1P,0).."mm @ "..math.floor(R1V,0).." m\\s\n200m pen: "..math.floor(R2P,0).."mm @ "..math.floor(R2V,0).." m\\s\n300m pen: "..math.floor(R3P,0).."mm @ "..math.floor(R3V,0).." m\\s\n400m pen: "..math.floor(R4P,0).."mm @ "..math.floor(R4V,0).." m\\s\n500m pen: "..math.floor(R5P,0).."mm @ "..math.floor(R5V,0).." m\\s\n600m pen: "..math.floor(R6P,0).."mm @ "..math.floor(R6V,0).." m\\s\n700m pen: "..math.floor(R7P,0).."mm @ "..math.floor(R7V,0).." m\\s\n800m pen: "..math.floor(R8P,0).."mm @ "..math.floor(R8V,0).." ..m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
 
 	
 end

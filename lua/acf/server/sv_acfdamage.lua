@@ -512,6 +512,7 @@ end
 ACF.Debris = {
 	acf_ammo = true,
 	acf_gun = true,
+	acf_rack = true,
 	acf_gearbox = true,
 	acf_fueltank = true,
 	acf_engine = true,
@@ -522,17 +523,19 @@ ACF.Debris = {
 -- things that should have scaledexplosion called on them instead of being turned into debris
 ACF.Splosive = {
 	acf_ammo = true,
-	acf_fueltank = true
+	acf_fueltank = true	
 }
 
 -- helper function to process children of an acf-destroyed prop
 -- AP will HE-kill children props like a detonation; looks better than a directional spray of unrelated debris from the AP kill
-local function ACF_KillChildProps( Entity, BlastPos, Energy )
+
+--[[
+local function ACF_KillChildProps( Entity, BlastPos, Energy )  
 
 	local count = 0
 	local boom = {}
 	local children = ACF_GetAllChildren(Entity)
-	
+
 	-- do an initial processing pass on children, separating out explodey things to handle last
 	for _, ent in pairs( children ) do
 		ent.ACF_Killed = true  -- mark that it's already processed
@@ -577,13 +580,13 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 	end
 	
 end
-
+]]--
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	-- if it hasn't been processed yet, check for children
-	if not Entity.ACF_Killed then
-		ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
-	end
+	--if not Entity.ACF_Killed then
+		--ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
+	--end
 
 	-- process this prop into debris
 	local entClass = Entity:GetClass()
@@ -604,7 +607,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 		return nil
 	end
 	
-	local Debris = ents.Create( "Debris" )
+	local Debris = ents.Create( "ace_debris" )
 		Debris:SetModel( Entity:GetModel() )
 		Debris:SetAngles( Entity:GetAngles() )
 		Debris:SetPos( Entity:GetPos() )
@@ -619,19 +622,26 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	local phys = Debris:GetPhysicsObject() 
 	if phys:IsValid() then
+	
 		phys:SetMass(mass)
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 10 , Debris:GetPos()+VectorRand()*20 ) 	-- previously energy*350
-		phys:EnableGravity( grav )
+		
+	    phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 10 , Debris:GetPos()+VectorRand()*20 ) 	-- previously energy*350
+		
+	    phys:EnableGravity( grav )
+	   
 	end
 
 	return Debris
 	
 end
 
+
 function ACF_APKill( Entity , HitVector , Power )
 
 	-- kill the children of this ent, instead of disappearing them from removing parent
-	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
+	--ACF_KillChildProps( Entity, Entity:GetPos(), Power )
+    
+	
 
 	constraint.RemoveAll( Entity )
 	Entity:Remove()
@@ -640,7 +650,7 @@ function ACF_APKill( Entity , HitVector , Power )
 		return nil
 	end
 
-	local Debris = ents.Create( "Debris" )
+	local Debris = ents.Create( "ace_debris" )
 		Debris:SetModel( Entity:GetModel() )
 		Debris:SetAngles( Entity:GetAngles() )
 		Debris:SetPos( Entity:GetPos() )

@@ -353,3 +353,18 @@ r100
 -Fixed some errors when joining to server
 -Fixed error when detonating missile by detonate input
 -removed HE restrictions on 20mm caliber guns or lower
+
+*r129
+-Fixed github version display. Now you can see the latest version of ACE.
+-Removed superior armor from racks. they are easy to destroy now.
+-Destroying gate parent wont make create debris from their children at the moment. Reason of why we had 2 debris variations from 1 prop. 
+-New overlay for missiles. Easy to read and simple.
+-Minor bug and error fixes.
+-Missile/bomb bug fixed.  FINALLY
+-Restored battle mode. Now it should appear on ACF permission mode.
+-Restricted APFSDS to be used on smoothbores only. Same as APDS that is unable to be fired from smoothbore now.
+-Ricochet probability display on ammo stats.
+-rebalanced damage of rounds (AP, APC, APBC, APCBC)
+-Code optimization.
+-Small FX improvements for HEAT bombs/missiles.
+-Restricted radar for particular missiles.

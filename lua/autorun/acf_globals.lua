@@ -2,81 +2,86 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 453  -- REMEMBER TO CHANGE THIS FOR GODS SAKE, OMFG!!!!!!! -wrex   Update the changelog too! -Ferv
-ACF.CurrentVersion = 0 -- just defining a variable, do not change
+ACF.Version = 454           --ACE current version
+ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
-ACF.Year = 2021
+ACF.Year = 2021             --Current Year
 
-ACF.EnableNewContent = true --If set to true this will enable new content like new guntypes, ammo, and composite armor
+ACF.EnableNewContent = true                    --If set to true this will enable new content like new guntypes, ammo, and composite armor
 
-ACF.Threshold = 264.7	--Health Divisor (don't forget to update cvar function down below)
-ACF.PartialPenPenalty = 5 --Exponent for the damage penalty for partial penetration
+ACF.Threshold = 264.7	                       --Health Divisor (don't forget to update cvar function down below)
+ACF.PartialPenPenalty = 5                      --Exponent for the damage penalty for partial penetration
 ACF.PenAreaMod = 0.85
-ACF.KinFudgeFactor = 2.1	--True kinetic would be 2, over that it's speed biaised, below it's mass biaised
-ACF.KEtoRHA = 0.25		--Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
-ACF.GroundtoRHA = 0.15		--How much mm of steel is a mm of ground worth (Real soil is about 0.15)
+ACF.KinFudgeFactor = 2.1	                   --True kinetic would be 2, over that it's speed biaised, below it's mass biaised
+ACF.KEtoRHA = 0.25		                       --Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
+ACF.GroundtoRHA = 0.15		                   --How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall = 1
-ACF.AmmoMod = 2.6		-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoMod = 2.6		                       -- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul = 1
 ACF.AmmoWidthMul = 1
 ACF.ArmorMod = 1 
-ACF.SlopeEffectFactor = 1.1	-- Sloped armor effectiveness: armor / cos(angle)^factor
+ACF.SlopeEffectFactor = 1.1	                   -- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling = 1
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 1 -- magic number that adjusts the efficiency of crate model volume to ammo capacity
+ACF.CrateVolEff = 1                            --magic number that adjusts the efficiency of crate model volume to ammo capacity
 
-ACF.BoomMult = 1.5 --How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult = 1.5                             --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
-ACF.AluminiumEffectiveness=0.34 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.AluminumResialiance = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.AluminumSpallResist=1.5  --Lower = less damage from spall
-ACF.AluminumSpallMult =  2  --Higher = spalls more
-ACF.AluminumHeatMul = 80  --Higher = More damage from HEAT
+ACF.AluminiumEffectiveness=0.34                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.AluminumResialiance = 0.8                  --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.AluminumSpallResist=1.5                    --Lower = less damage from spall
+ACF.AluminumSpallMult =  2                     --Higher = spalls more
+ACF.AluminumHeatMul = 80                       --Higher = More damage from HEAT
 
-ACF.CastEffectiveness=0.5 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CastResilianceFactor = 35 --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CastEffectiveness=0.5                      --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.CastResilianceFactor = 35                  --Higher = less damage, Lower = more damage. 2x = half damage.
 
-ACF.CeramicEffectiveness=2.4 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CeramicResilianceFactor = 0.8 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.CeramicPierceDamage = 5 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.CeramicEffectiveness=2.4                   --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.CeramicResilianceFactor = 0.8              --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.CeramicPierceDamage = 5                    --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 	
 ACF.RubberEffectiveness = 0.02
-ACF.RubberResilianceFactor = 0.1 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.RubberResilianceFactorCatch = 0.05 --Lower = more damage. If someone somehow catches a bullet with rubber use this.
-ACF.RubberSpecialEffect = 30 --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
-ACF.RubberEffectivenessSpecial = 3 --How effective rubber is versus projectiles that qualify for the above.
-ACF.RubberResilianceFactorSpecial = 0.15 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.RubberHEVulnerbility = 0.3 --Lower = more damage
+ACF.RubberResilianceFactor = 0.1               --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberResilianceFactorCatch = 0.05         --Lower = more damage. If someone somehow catches a bullet with rubber use this.
+ACF.RubberSpecialEffect = 30                   --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
+ACF.RubberEffectivenessSpecial = 3             --How effective rubber is versus projectiles that qualify for the above.
+ACF.RubberResilianceFactorSpecial = 0.15       --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.RubberHEVulnerbility = 0.3                 --Lower = more damage
 
-ACF.TextoliteEffectiveness=0.23 --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.TextoliteResilianceFactor = 0.005 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEATEffectiveness = 0.55 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-ACF.TextoliteHEATResilianceFactor = 2 --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEResistance = 1.3 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-ACF.TextoliteHEEffectiveness = 0.9 --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteEffectiveness=0.23                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+ACF.TextoliteResilianceFactor = 0.005          --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.TextoliteHEATEffectiveness = 0.55          --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteHEATResilianceFactor = 2          --Higher = less damage, Lower = more damage. 2x = half damage.
+ACF.TextoliteHEResistance = 1.3                --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+ACF.TextoliteHEEffectiveness = 0.9             --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 ACF.TextoliteSpallMult = 1.3
 
-ACF.ERAEffectivenessMultHEAT = 20 --How many more times is the detonating ERA than its currentarmor
-ACF.ERAEffectivenessMult = 5 --How many more times is the detonating ERA than its maxarmor
+ACF.ERAEffectivenessMultHEAT = 20              --How many more times is the detonating ERA than its currentarmor
+ACF.ERAEffectivenessMult = 5                   --How many more times is the detonating ERA than its maxarmor
+
+--ACF Damage Multipler.
+
+ACF.APDamageMult = 2            --AP Damage Multipler             -1.1
+ACF.APCDamageMult = 1.5           --APC Damage Multipler           -1.1
+ACF.APBCDamageMult = 1.5         --APBC Damage Multipler           -1.05
+ACF.APCBCDamageMult = 1.0        --APCBC Damage Multipler           -1.05
+ACF.APHEDamageMult = 1.0          --APHE Damage Multipler          
+ACF.APDSDamageMult = 1.5          --APDS Damage Multipler          
+ACF.APDSSDamageMult = 1.55        --APDSS Damage Multipler
+ACF.HVAPDamageMult = 1.65         --HVAP/APCR Damage Multipler
+ACF.FLDamageMult = 1.4            --FL Damage Multipler
+ACF.HEATDamageMult = 2            --HEAT Damage Multipler
+ACF.HEDamageMult = 2              --HE Damage Multipler
+ACF.HESHDamageMult = 1.2          --HESH Damage Multipler
+ACF.HPDamageMult = 4              --HP Damage Multipler
 
 
-ACF.APDamageMult = 1.1
-ACF.APCDamageMult = 1.1
-ACF.APBCDamageMult = 1.05
-ACF.APCBCDamageMult = 1.05
-ACF.APHEDamageMult = 1.0
-ACF.APDSDamageMult = 1.5
-ACF.APDSSDamageMult = 1.55
-ACF.HVAPDamageMult = 1.65
-ACF.FLDamageMult = 1.4
-ACF.HEATDamageMult = 2
-ACF.HEDamageMult = 2
-ACF.HESHDamageMult = 1.2
-ACF.HPDamageMult = 4
+--[[
+            Material thickness exponential curves, implemented to reduce high thickness memes.
+            Higher thickness plates take less damage. Enjoy balancing the two.
+]]--
 
---Material thickness exponential curves, implemented to reduce high thickness memes.
---Higher thickness plates take less damage. Enjoy balancing the two.
 ACF.CurveRHA = 0.99
 ACF.CurveCast = 0.97
 ACF.CurveCeram = 0.95
@@ -88,39 +93,39 @@ ACF.TextoliteCurve = 0.94
 
 ACF.HEDamageFactor = 50
 
-ACF.HEPower = 8000		--HE Filler power per KG in KJ
-ACF.HEDensity = 1.65	--HE Filler density (That's TNT density)
-ACF.HEFrag = 1500		--Mean fragment number for equal weight TNT and casing
-ACF.HEBlastPen = 0.4	--Blast penetration exponent based of HE power
-ACF.HEFeatherExp = 0.5 	--exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
-ACF.HEATMVScale = 0.75	--Filler KE to HEAT slug KE conversion expotential
-ACF.HEATMVScaleTan = 0.75	--Filler KE to HEAT slug KE conversion expotential
-ACF.HEATMulAmmo = 30 		--HEAT slug damage multiplier; 13.2x roughly equal to AP damage
-ACF.HEATMulFuel = 4		--needs less multiplier, much less health than ammo
-ACF.HEATMulEngine = 10	--likewise
-ACF.HEATPenLayerMul = 0.95	--HEAT base energy multiplier
-ACF.HEATBoomConvert = 1/3 -- percentage of filler that creates HE damage at detonation
+ACF.HEPower = 8000	        	     --HE Filler power per KG in KJ
+ACF.HEDensity = 1.65         	     --HE Filler density (That's TNT density)
+ACF.HEFrag = 1500	        	     --Mean fragment number for equal weight TNT and casing
+ACF.HEBlastPen = 0.4        	     --Blast penetration exponent based of HE power
+ACF.HEFeatherExp = 0.5      	     --exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
+ACF.HEATMVScale = 0.75	             --Filler KE to HEAT slug KE conversion expotential
+ACF.HEATMVScaleTan = 0.75        	 --Filler KE to HEAT slug KE conversion expotential
+ACF.HEATMulAmmo = 30 		         --HEAT slug damage multiplier; 13.2x roughly equal to AP damage
+ACF.HEATMulFuel = 4		             --needs less multiplier, much less health than ammo
+ACF.HEATMulEngine = 10	             --likewise
+ACF.HEATPenLayerMul = 0.95	         --HEAT base energy multiplier
+ACF.HEATBoomConvert = 1/3            -- percentage of filler that creates HE damage at detonation
 
-ACF.DragDiv = 80		--Drag fudge factor
-ACF.VelScale = 1		--Scale factor for the shell velocities in the game world
--- local PhysEnv = physenv.GetPerformanceSettings()
+ACF.DragDiv = 80		             --Drag fudge factor
+ACF.VelScale = 1		             --Scale factor for the shell velocities in the game world
+
 ACF.PhysMaxVel = 8000
 ACF.SmokeWind = 5 + math.random()*35 --affects the ability of smoke to be used for screening effect
 
-ACF.PBase = 1050		--1KG of propellant produces this much KE at the muzzle, in kj
-ACF.PScale = 1	--Gun Propellant power expotential
-ACF.MVScale = 0.5  --Propellant to MV convertion expotential
-ACF.PDensity = 1.6	--Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
+ACF.PBase = 1050		             --1KG of propellant produces this much KE at the muzzle, in kj
+ACF.PScale = 1                       --Gun Propellant power expotential
+ACF.MVScale = 0.5                    --Propellant to MV convertion expotential
+ACF.PDensity = 1.6	                 --Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
 
-ACF.TorqueBoost = 1.25 --torque multiplier from using fuel
-ACF.DriverTorqueBoost = 0.25 --torque multiplier from having a driver
-ACF.FuelRate = 10  --multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate = 3 --multiplier for electrics
-ACF.TankVolumeMul = 1 -- multiplier for fuel tank capacity, 1.0 is approx real world
+ACF.TorqueBoost = 1.25               --torque multiplier from using fuel
+ACF.DriverTorqueBoost = 0.25         --torque multiplier from having a driver
+ACF.FuelRate = 10                    --multiplier for fuel usage, 1.0 is approx real world
+ACF.ElecRate = 3                     --multiplier for electrics
+ACF.TankVolumeMul = 1                -- multiplier for fuel tank capacity, 1.0 is approx real world
 
-ACF.EnableKillicons = true -- Enable killicons overwriting.
+ACF.EnableKillicons = true           -- Enable killicons overwriting.
 
-ACF.NormalizationFactor = 0.15 --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
+ACF.NormalizationFactor = 0.15       --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ACF.AllowCSLua = 0
 
@@ -131,6 +136,7 @@ ACF.AllowCSLua = 0
 	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
 	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
 ]]
+
 ACF.LegalSettings = {
 	CanModelSwap = false,
 	Min = 5, 			-- min seconds between checks
@@ -204,7 +210,7 @@ if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 end
 --ace_translationpacksserver
 
-CreateConVar('sbox_max_acf_gun', 24)
+CreateConVar('sbox_max_acf_gun', 24) 
 CreateConVar('sbox_max_acf_rapidgun', 4) --Guns like RACs, MGs, and ACs
 CreateConVar('sbox_max_acf_largegun', 2) --Guns with a caliber above 100mm
 ACF.LargeCaliber = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
@@ -278,21 +284,30 @@ include("acf/shared/rounds/roundfl.lua")
 include("acf/shared/rounds/roundhp.lua")
 include("acf/shared/rounds/roundsmoke.lua")
 include("acf/shared/rounds/roundrefill.lua")
+
 if ACF.EnableNewContent then
+
 include("acf/shared/rounds/roundapc.lua")
+
 end
 if ACF.Year > 1920 and ACF.EnableNewContent then
+
 include("acf/shared/rounds/roundapbc.lua")
 include("acf/shared/rounds/roundapcbc.lua")
+
 end
 if ACF.Year > 1939 then --A surprising amount of things were made during WW2
+
 include("acf/shared/rounds/roundhesh.lua")
 include("acf/shared/rounds/roundheat.lua")
 include("acf/shared/rounds/roundaphe.lua")
 include("acf/shared/rounds/roundaphecbc.lua")
+
 if ACF.EnableNewContent then
+
 include("acf/shared/rounds/roundapdss.lua")
 include("acf/shared/rounds/roundhvap.lua")
+
 end
 end
 if ACF.Year > 1960 then
@@ -509,16 +524,19 @@ function ACF_CalcMassRatio( obj, pwr )
 	if pwr then return { Power = power, Fuel = fuel } end
 end
 
--- checks if an ent meets the given requirements for legality
--- MinInertia needs to be mass normalized (normalized=inertia/mass)
--- ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
+--[[
+   checks if an ent meets the given requirements for legality
+   MinInertia needs to be mass normalized (normalized=inertia/mass)
+   ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
+]]--
+
 function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip)
-	-- check it exists
-	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
 
 	local problems = {}
 	local physobj = Ent:GetPhysicsObject()
 
+	-- check it exists
+	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
 	
 	-- check if physics is valid
 	if not IsValid(physobj) then return {Legal=false, Problems={"Invalid Physics"}} end
@@ -567,36 +585,16 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 		end
 
 
-
-		--[[ --Obsolete, used weld input for parentcheck
-		-- legal if weld not required, otherwise check if parented with weld
-		if ParentRequiresWeld then
-			local welded = false
-			local rootparent = ACF_GetPhysicalParent(Ent)
-
-			--make sure it's welded to root parent
-			for k, v in pairs( constraint.FindConstraints( Ent, "Weld" ) ) do
-				if v.Ent1 == rootparent or v.Ent2 == rootparent then
-					welded = true
-					break
-				end
-			end
-
-			if not welded then 
-				table.insert(problems,"Parented without weld to root parent")
-			end
-		end
-		]]--
-
 		--Re-used requires wel parent, don't mind me being evil
 		if NeedsGateParent and (not IsValid( Ent:GetParent():GetParent()) ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
 			table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
 		end
 
 	end
-
+    	
 	-- legal if number of problems is 0
 	return (#problems == 0), table.concat(problems, ", ")
+	
 end
 
 
@@ -660,20 +658,33 @@ else
 end
 
 function ACF_UpdateChecking( )
-	http.Fetch("https://github.com/RedDeadlyCreeper/ArmoredCombatExtended",function(contents,size)
-		local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
+	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size)   --https://github.com/RedDeadlyCreeper/ArmoredCombatExtended
+		--local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
+		
+		str = tostring("String:"..contents)    --maybe not the best way to get git but well......
+		i,k = string.find(str,'ACF.Version =')
+				
+		local rev = tonumber(string.sub(str,k+2,k+4)) or 0
+		
 		if rev and ACF.Version >= rev then
-			print("[ACF] ACF Is Up To Date, Latest Version: "..rev)
+		    
+			print("[ACE] ACF Is Up To Date, Latest Version: "..rev)
+			
 		elseif !rev then
+		
 			print("[ACE] No Internet Connection Detected! ACE Update Check Failed")
+			
 		else
+		
 			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have Version: "..ACF.Version)
 			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
+			
 		end
 		ACF.CurrentVersion = rev
 		
 	end, function() end)
 end
+
 ACF_UpdateChecking( )
 
 local function OnInitialSpawn( ply )
@@ -766,10 +777,6 @@ include("autorun/acf_missile/folder.lua")
 AddCSLuaFile("acf/shared/acf_missileloader.lua")
 include("acf/shared/acf_missileloader.lua")
 
-AddCSLuaFile("acf/shared/acfm_globals.lua")
-include("acf/shared/acfm_globals.lua")
-
-AddCSLuaFile("autorun/client/cl_acfm_versioncheck.lua")
 AddCSLuaFile("autorun/client/cl_acfm_menuinject.lua")
 AddCSLuaFile("autorun/client/cl_acfm_effectsoverride.lua")
 AddCSLuaFile("autorun/printbyname.lua")

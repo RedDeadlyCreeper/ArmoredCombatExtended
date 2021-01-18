@@ -1,4 +1,4 @@
-function PANEL:Init( )
+function PANEL:Init( ) 
 
 	acfmenupanel = self.Panel
 	
@@ -40,7 +40,7 @@ function PANEL:Init( )
 		
 	end
 	
-	local HomeNode = self.WeaponSelect:AddNode( "ACE Information" )
+	local HomeNode = self.WeaponSelect:AddNode( "ACE Information" ) --Main Menu folder
 	HomeNode.mytable = {}
 		HomeNode.mytable.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
 		HomeNode.mytable.guiupdate = (function( Panel, Table ) ACFHomeGUIUpdate( Table ) end or nil)
@@ -57,7 +57,7 @@ function PANEL:Init( )
 	end
 	table.sort(self.RoundAttribs, function(a,b) return a.id < b.id end )
 	
-	local Guns = self.WeaponSelect:AddNode( "Guns" )
+	local Guns = self.WeaponSelect:AddNode( "Guns" ) --Guns folder
 	for ClassID,Class in pairs(self.Classes["GunClass"]) do
 	
 		local SubNode = Guns:AddNode( Class.name or "No Name" )
@@ -76,7 +76,7 @@ function PANEL:Init( )
 		
 	end
 
-	local Ammo = self.WeaponSelect:AddNode( "Ammo" )
+	local Ammo = self.WeaponSelect:AddNode( "Ammo" ) --Ammo folder
 	for AmmoID,AmmoTable in pairs(self.RoundAttribs) do
 		
 		local EndNode = Ammo:AddNode( AmmoTable.name or "No Name" )
@@ -88,7 +88,7 @@ function PANEL:Init( )
 		EndNode.Icon:SetImage( "icon16/newspaper.png" )
 		
 	end
-	
+	--Creating variables for mobility subfolders
 	local Mobility = self.WeaponSelect:AddNode( "Mobility" )	
 	local Gearboxes = Mobility:AddNode( "Gearboxes" )
 	local FuelTanks = Mobility:AddNode( "Fuel Tanks" )
@@ -132,10 +132,10 @@ function PANEL:Init( )
 		if MobilityTable.category and not Categories[MobilityTable.category] then
 			Categories[MobilityTable.category] = NodeAdd:AddNode(MobilityTable.category)
 		end
-	end
+	end --end mobility subfolders
                 
 	
-	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
+	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do   --Mobility folder
 		
 		local NodeAdd = Mobility
 		if MobilityTable.ent == "acf_engine" then
@@ -168,9 +168,9 @@ function PANEL:Init( )
 
 	end
 	
-	
+--[[	inactived stuff, could be used on future
 
-	/*local Missiles = self.WeaponSelect:AddNode( "Missiles" )
+	local Missiles = self.WeaponSelect:AddNode( "Missiles" )
 	for MisID, MisTable in pairs(self.WeaponDisplay["Missiles"]) do
 
 		local EndNode = Missiles:AddNode( MisTable.name or "No Name" )
@@ -183,20 +183,21 @@ function PANEL:Init( )
     
 		EndNode.Icon:SetImage( "icon16/newspaper.png")
     
-	end*/
-	-- local Sensors = self.WeaponSelect:AddNode( "Sensors" )
-	-- for SensorsID,SensorsTable in pairs(self.WeaponDisplay["Sensors"]) do
+	end
+    local Sensors = self.WeaponSelect:AddNode( "Sensors" )
+	for SensorsID,SensorsTable in pairs(self.WeaponDisplay["Sensors"]) do
 		
-		-- local EndNode = Sensors:AddNode( SensorsTable.name or "No Name" )
-		-- EndNode.mytable = SensorsTable
-		-- function EndNode:DoClick()
+		local EndNode = Sensors:AddNode( SensorsTable.name or "No Name" )
+		EndNode.mytable = SensorsTable
+		function EndNode:DoClick()
 			-- RunConsoleCommand( "acfmenu_type", self.mytable.type )
 			-- acfmenupanel:UpdateDisplay( self.mytable )
-		-- end
-		-- EndNode.Icon:SetImage( "icon16/newspaper.png" )
+		end
+		EndNode.Icon:SetImage( "icon16/newspaper.png" )
 		
-	-- end
+	end
 	
+	]]--
 end
 
 /*------------------------------------
@@ -270,7 +271,7 @@ function ACFHomeGUICreate( Table )
 	--start version
 	
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
-	versiontext = "Git Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+	versiontext = "GitHub Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
 	acfmenupanel["CData"]["VersionInit"]:SetDark( true )
 	acfmenupanel["CData"]["VersionInit"]:SizeToContents()

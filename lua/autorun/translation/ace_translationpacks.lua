@@ -81,15 +81,15 @@ ACFTranslation.ACFMenuTool = {
 	"Spawn the Armored Combat Extended weapons and ammo", -- Description 1 (3)
 	"Left click to spawn the entity of your choice, Right click to link an entity to another (+Use to unlink)", --Description 2 (4)
 	"Right click to link the selected sensor to a pod", --Description 3 (5)
-	"Undone ACF Entity",-- Undo entity (6)
-	"Undone ACF Engine",--Undo Engine (7)
-	"Undone ACF Gearbox",--Undo Gearbox (8)
-	"Undone ACF Ammo",--Undo Ammo (9)
-	"Undone ACF Gun",--Undo Gun (10)
-	"You've reached the ACF Guns limit!",--Gun limit (11)
-	"You've reached the ACF Launchers limit!",--Launcher Limit (12)
-	"You've reached the ACF Explosives limit!",--Explosive Limit (13)
-	"You've reached the ACF Sensors limit!",--Sensor Limit (14)
+	"Undone ACE Entity",-- Undo entity (6)
+	"Undone ACE Engine",--Undo Engine (7)
+	"Undone ACE Gearbox",--Undo Gearbox (8)
+	"Undone ACE Ammo",--Undo Ammo (9)
+	"Undone ACE Gun",--Undo Gun (10)
+	"You've reached the ACE Guns limit!",--Gun limit (11)
+	"You've reached the ACE Launchers limit!",--Launcher Limit (12)
+	"You've reached the ACE Explosives limit!",--Explosive Limit (13)
+	"You've reached the ACE Sensors limit!",--Sensor Limit (14)
 	"Couldn't create entity.",--Could not create entity error (15)
 	"Didn't find entity duplicator records", -- No duplicator record error (16)
 
@@ -195,26 +195,26 @@ ACFTranslation.ShellAPHECBC = {
 
 ACFTranslation.ShellAPDS = {
 	"Long Rod Armour Piercing Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Unlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)
+	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\n Unlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)
 
 }
 
 ACFTranslation.ShellAPDSS = {
 	"Slug Armour Piercing Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Uses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APDS is better than LRP APDS for defeating flatter armor." --Desc (2)
+	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APDS is better than LRP APDS for defeating flatter armor." --Desc (2)
 
 }
 
 
 ACFTranslation.ShellAPFSDS = {
 	"Long Rod Armour Piercing Fin-Stabilized Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUnlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)
+	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUnlike its slug counterpart, this APFSDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)
 
 }
 
 ACFTranslation.ShellAPFSDSS = {
 	"Slug Armour Piercing Fin-Stabilized Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nIf fired out a smoothbore cannon then the round is fin stabilized (Becomes APFSDS) and recieves an accuracy boost and richochets less. Uses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APDS is better than LRP APDS for defeating flatter armor." --Desc (2)
+	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APFSDS is better than LRP APFSDS for defeating flatter armor." --Desc (2)
 
 }
 
@@ -240,7 +240,7 @@ ACFTranslation.ShellGLGM = {
 
 ACFTranslation.ShellHE = {
 	"High Explosive", --AmmoName (1)
-	"A shell filled with explosives, fragments when detonating on impact. Better than pure explosive for dealing with armor and infantry that get hit by its fragments." --Desc (2)
+	"A shell filled with explosives, fragments when detonating on impact. " --Desc (2)
 
 }
 
@@ -258,7 +258,7 @@ ACFTranslation.ShellHEATFS = {
 
 ACFTranslation.ShellHEFS = {
 	"High Explosive Fin-Stabilized", --AmmoName (1)
-	"A shell filled with explosives, fragments when detonating on impact. Better than pure explosive for dealing with armor and infantry that get hit by its fragments." --Desc (2)
+	"A shell filled with explosives, fragments when detonating on impact.Uses fin stabilizers." --Desc (2)
 
 }
 
@@ -300,6 +300,6 @@ ACFTranslation.THEAT = {
 
 ACFTranslation.THEATFS = {
 	"Tandem High Explosive Anti-Tank Fin-Stabilized", --AmmoName (1)
-	"A shell with multiple shaped charges. Similar to HEAT the explosive charge accelerates a molten jet to penetrate armor, unlike typical HEAT when the jet fails to penetrate a second charge will detonate and finish the job. This makes this form of ammo exceptional against special armor types like ERA" --Desc (2)
+	"A shell with multiple shaped charges. Similar to HEAT the explosive charge accelerates a molten jet to penetrate armor, unlike typical HEAT when the jet fails to penetrate a second charge will detonate and finish the job. This makes this form of ammo exceptional against special armor types like ERA.Uses fin stabilizers." --Desc (2)
 
 }

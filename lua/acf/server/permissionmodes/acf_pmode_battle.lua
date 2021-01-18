@@ -34,22 +34,16 @@ local DefaultPermission = false
 		ent			Entity:	The entity which may be damaged.
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
-//*
+//*/
 local function modepermission(owner, attacker, ent)
 	local szs = perms.Safezones
 	
 	if szs then
 		local entpos = ent:GetPos()
 		local attpos = attacker:GetPos()
-		local godOwner = ent:HasGodMode()
-		local godInflictor = attacker:HasGodMode()
 
-		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) or godOwner or godInflictor then return false end
+		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) then return false end
 	end
-	
-	local godOwner = owner:HasGodMode()
-	local godInflictor = attacker:HasGodMode()
-	if  godOwner or godInflictor then  return false    end
 
 	return 
 end

@@ -253,18 +253,16 @@ function ENT:Detonate(overrideBData)
 		   bdata.Owner = 	bdata.Owner or self.Owner
 		   
 		   if bdata.Type == 'HEAT' or 'THEAT' then  --check if missile is HEAT based
-		     if not self.DetonateOffset then    --just cuz lua doesnt like me
-			  
+		     if not self.DetonateOffset then    --just cuz lua doesnt like me	  
 			  bdata.Pos = pos + bdata.Flight:GetNormalized()
 			  
 			  else
-		     --print('HEAT offset!')      
-		      bdata.Pos = pos + (self.DetonateOffset * 100 or bdata.Flight:GetNormalized())          --We define this new offset because HEAT/THEAT bullet is created in front of missile impact.
+		      --print('offset changed to be used with HEAT and THEAT')      
+		      bdata.Pos = pos + (self.DetonateOffset * 100 or bdata.Flight:GetNormalized())--We define this new offset because HEAT/THEAT bullets are created a little in front of missile detonation, causing some weird rico sounds.
 		      end
 		   else
-		     --print('HE')
-		      bdata.Pos = pos + (self.DetonateOffset or bdata.Flight:GetNormalized())        --Due to endflight, HE offset is ok.
-		   
+		      --print('offset changed to be used with HE')
+		      bdata.Pos = pos + (self.DetonateOffset or bdata.Flight:GetNormalized())--Due to endflight, HE offset is ok.   
 		   end
 		    
 		   bdata.NoOcc = 	self
@@ -281,7 +279,7 @@ function ENT:Detonate(overrideBData)
 		   bdata.HandlesOwnIteration = nil
 
 		   ACFM_BulletLaunch(bdata)
-		
+		   
 		
 
 		   self:SetSolid(SOLID_NONE)
@@ -401,46 +399,41 @@ function ENT:CreateShell()
 	--You overwrite this with your own function, defined in the ammo definition file
 end
 
+--[[
+The following function has been completely reworked, since we have tracehulls, the old one had stopped working for any reason, anyways that didnt look that it was necessary
+so i changed the way from getting Retry info from FlightRes to bullet.type
+]]--
 
-function ENT:DoReplicatedPropHit(Bullet)
+function ENT:DoReplicatedPropHit(Bullet)  
 
-	local FlightRes = { Entity = self, HitNormal = Bullet.Flight * 0.01, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC } --avoiding those bullets bouncing at yourself!
+	local FlightRes = { Entity = self, HitNormal = Bullet.Flight, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC } 
 	local Index = Bullet.Index
 	
-	--TODO: fix retry saying ricochet on any impact. adjustments were implemented anyways but its not the real fix for this.
+	local Retry = 'HE'  --defining Retry status
 	
-	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]	  
-	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup ) --If we hit stuff then send the resolution to the damage function
-	--If we should do the same trace again, then do so.
-	local isHEAT = 'not valid'
+	if Bullet.Type != 'HE' then --if that type is not HE, switch to penetrate mode
 	
-	--Once retry is fixed, restore the following condition:
+	     Retry = 'HEAT'
 	
-	--if Retry == "Penetrated" then		  --If retry gets fixed some day, HEAT will use THIS condition. Disabled atm
+	end
 	
-		--print("Missile Penetration!")
-		--print(FlightRes.HitNormal)
-		--[[
+	if Retry == "HEAT" then	--aka if Retry == 'Penetrated'
+        --print('HEAT')
+		
         ACFM_ResetVelocity(Bullet)
-		if Bullet.OnPenetrated then 
-		   Bullet.OnPenetrated(Index, Bullet, FlightRes) 	   
+		
+		if Bullet.OnPenetrated then 	
+		   Bullet.OnPenetrated(Index, Bullet, FlightRes) 	 	   
 		end	
-     	ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
-		ACF_CalcBulletFlight( Index, Bullet, true )
-	
-
-    --when the condition above is fixed, replace the following condition with ELSEIF!!!	]]--					
-	if Retry == "Ricochet" then    	--We dont need missiles ricocheting anymore. Everything is using THIS condition, the reason of why HE works PERFECTLY. i´ve made some adjustments so HEAT/THEAT was working on here.
-	    
-     	--print("Missile ricochet. Missile exploding")     --Debugging tools
-		--print('Type: '..Bullet.Type)
-		--print(FlightRes.HitNormal)
-		--print(isHEAT)
+		
+     	ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos )
+		--ACF_CalcBulletFlight( Index, Bullet, true )
+						
+	elseif Retry == "HE" then --aka else then. non penetration
+		--print('HE')
 		
 		ACFM_ResetVelocity(Bullet)
-		
-		if Bullet.Type == 'HE' then 
-			--print('HE!')
+		 
 		if Bullet.OnEndFlight then 	  --endflight code
 		   Bullet.OnEndFlight(Index, Bullet, FlightRes) 	   
 		end	
@@ -448,18 +441,9 @@ function ENT:DoReplicatedPropHit(Bullet)
 		ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )  --endflight code
 		ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 		ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )		
-		
-        end
-		
-		
-	else
-	    --In case of non penetration, endflight code should be put on here
-	    --print("Missile Non penetration. Missile exploding")
-		--print(FlightRes.HitNormal)
-	
+			
 	end
-	
-	
+	--Since they were missiles and missiles are fucked when impact irl, ricochet code can be scrapped at this moment, beside it was useless too
 	
 end
 
