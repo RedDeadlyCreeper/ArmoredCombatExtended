@@ -531,7 +531,7 @@ function ACF_Check ( Entity )
 	if not ( physobj:IsValid() and (physobj:GetMass() or 0)>0 and !Entity:IsWorld() and !Entity:IsWeapon() ) then return false end
 
 	local Class = Entity:GetClass()
-	if ( Class == "gmod_ghost" or Class == "debris" or Class == "prop_ragdoll" or string.find( Class , "func_" )  ) then return false end
+	if ( Class == "gmod_ghost" or Class == "ace_debris" or Class == "prop_ragdoll" or string.find( Class , "func_" )  ) then return false end
 
 	if !Entity.ACF then 
 		ACF_Activate( Entity )
