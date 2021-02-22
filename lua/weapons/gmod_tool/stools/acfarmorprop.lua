@@ -71,7 +71,7 @@ if CLIENT then
 		panel:NumSlider( ACFTranslation.ArmorPropertiesText[6], "acfarmorprop_ductility", -80, 80 )
 		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[7] )
 		if ACF.EnableNewContent and ACF.Year >= 1955 then		
-		panel:NumSlider( ACFTranslation.ArmorPropertiesText[8], "acfarmorprop_material", 0, 6 )
+		panel:NumSlider( ACFTranslation.ArmorPropertiesText[8], "acfarmorprop_material", 0, 6, 0 )
 		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[9] )
 		end
 	end
@@ -249,7 +249,7 @@ function TOOL:RightClick( trace )
 	
 	local ply = self:GetOwner()
 	
-	ply:ConCommand( "acfarmorprop_ductility " .. ent.ACF.Ductility * 100 )
+	ply:ConCommand( "acfarmorprop_ductility " .. (ent.ACF.Ductility or 0) * 100 )
 	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
 	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or 0) )
 	

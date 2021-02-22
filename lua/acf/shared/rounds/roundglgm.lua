@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.GLATGM = { "AC", "HMG", "MG", "RAC", "SA", "SAM", "AAM", "ASM"
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(GLATGM) "..ACFTranslation.ShellGLGM[1] --Human readable name
+Round.name = "[GLATGM] - "..ACFTranslation.ShellGLGM[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellGLGM[2]
 Round.netid = 9 --Unique ammotype ID for network transmission
@@ -374,7 +374,7 @@ function Round.guiupdate( Panel, Table )
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
 	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
 	
-	acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
 	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -397,9 +397,10 @@ function Round.guiupdate( Panel, Table )
 	local R2V, R2P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
 	R2P = (ACF_Kinetic( (Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
 	
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm RHA\n\n300m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n800m pen: "..math.Round(R2P,0).."mm @ "..math.Round(R2V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \nMax Penetration : "..math.floor(Data.MaxPen).." mm RHA\n\n300m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n800m pen: "..math.Round(R2P,0).."mm @ "..math.Round(R2V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
 	
 end
 
+list.Set("HERoundTypes", 'GLATGM', Round ) 
 list.Set( "ACFRoundTypes", "GLATGM", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "GLATGM" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

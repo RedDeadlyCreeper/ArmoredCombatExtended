@@ -2,7 +2,7 @@
 ACF_defineGunClass("BOMB", {
     type            = "missile",  -- i know i know
 	spread          = 1,
-	name            = "(Bomb) General Purpose Bomb",
+	name            = "[Bomb] - General Purpose Bomb",
 	desc            = ACFTranslation.MissileClasses[5],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.1,

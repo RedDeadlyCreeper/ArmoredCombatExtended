@@ -1,5 +1,6 @@
 --define the class
 ACF_defineGunClass("GL", {
+    type = "Gun",
 	spread = 0.4,
 	name = "Grenade Launcher",
 	desc = ACFTranslation.GunClasses[6],

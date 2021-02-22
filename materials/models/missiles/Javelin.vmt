@@ -1,6 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture" "models/missiles/Javelin"
-	"$surfaceprop" "Metal_Box"
-	"$translucent" 1
-}

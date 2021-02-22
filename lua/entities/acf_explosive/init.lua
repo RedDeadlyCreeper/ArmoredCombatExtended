@@ -296,9 +296,11 @@ function ENT:Detonate(overrideBData)
 	end
 end
 
-
+--Minor Adjustment just for avoiding the nan armor. Not real fix yet
+--Issues: its possible that bullets created from bomb are creating ricochets (or the bomb itself)
+--Once FillerMass is greater than 1, nan is presented. Idk why but it does.
 function ENT:ClusterNew(bdata)
-	local Bomblets = math.Clamp(math.Round(bdata.FillerMass/2),3,30)
+	local Bomblets = math.Clamp(math.Round(bdata.FillerMass*1.5),3,30)    --30 bomblets original
 	local MuzzlePos = self:LocalToWorld(Vector(10,0,0))
 	local MuzzleVec = self:GetForward()
 
@@ -313,7 +315,12 @@ function ENT:ClusterNew(bdata)
 	self.BulletData["Caliber"]			= math.Clamp(bdata.Caliber/Bomblets*10,0.05,bdata.Caliber*0.8) --Controls visual size, does nothing else
 	self.BulletData["Crate"]			= bdata.Crate
 	self.BulletData["DragCoef"]			= bdata.DragCoef/Bomblets/2
-	self.BulletData["FillerMass"]		= bdata.FillerMass/Bomblets --/2
+	self.BulletData["FillerMass"]		= bdata.FillerMass/Bomblets/2   --nan armor ocurrs when this value is > 1
+	
+	--print(bdata.FillerMass)
+	--print(Bomblets)
+	--print(self.BulletData["FillerMass"])
+	
 	self.BulletData["Filter"]			= self
 	self.BulletData["Flight"]			= bdata.Flight
 	self.BulletData["FlightTime"]		= 0
@@ -332,7 +339,10 @@ function ENT:ClusterNew(bdata)
 	self.BulletData["ProjMass"]			= bdata.ProjMass/Bomblets/2
 	self.BulletData["PropLength"]		= bdata.PropLength
 	self.BulletData["PropMass"]			= bdata.PropMass
-	self.BulletData["Ricochet"]			= bdata.Ricochet
+	self.BulletData["Ricochet"]			= 90--bdata.Ricochet
+	
+	--print(bdata.Ricochet)
+	
 	self.BulletData["RoundVolume"]		= bdata.RoundVolume
 	self.BulletData["ShovePower"]		= bdata.ShovePower
 	self.BulletData["Tracer"]			= 0
@@ -382,7 +392,7 @@ function ENT:ClusterNew(bdata)
 		
 		timer.Simple(0.01*I,function()
 		if(IsValid(self)) then
-			Spread = ((self:GetUp() * (2 * math.random() - 1)) + (self:GetRight() * (2 * math.random() - 1)))*(I-1)/40
+			Spread = ((self:GetUp() * (2 * math.random() - 1)) + (self:GetRight() * (2 * math.random() - 1)))*(I-1)/45
 			self.BulletData["Flight"] = (MuzzleVec+(Spread * 2)):GetNormalized() * self.BulletData["MuzzleVel"] * 39.37 + bdata.Flight
 			
 			local MuzzlePos = self:LocalToWorld(Vector(100-(I*20),((Bomblets/2)-I)*2,0)*0.5)

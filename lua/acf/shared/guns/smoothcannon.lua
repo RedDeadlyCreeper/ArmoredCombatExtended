@@ -2,6 +2,7 @@ if ACF.EnableNewContent then
 
 --define the class
 ACF_defineGunClass("SBC", {
+    type = "Gun",
 	spread = 0.3,
 	name = "Smooth-Bore Cannon",
 	desc = ACFTranslation.GunClasses[15],

@@ -2,7 +2,7 @@
 ACF_defineGunClass("SAM", {
     type            = "missile",  -- i know i know
 	spread          = 1,
-	name            = "(Missile) Surface-To-Air Missile",
+	name            = "[SAM] - Surface-To-Air Missile",
 	desc            = ACFTranslation.MissileClasses[8],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
@@ -179,7 +179,7 @@ ACF_defineGun("9M311", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Infrared","Antimissile"},
+    guidance    = {"Dumb", "Infrared", "Radar" ,"Antimissile"},
     fuses       = {"Contact", "Optical"},
 
     racks       = {["1x 9m311"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'

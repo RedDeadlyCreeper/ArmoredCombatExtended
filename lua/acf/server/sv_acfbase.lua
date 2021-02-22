@@ -288,7 +288,7 @@ if updateContraptionsTick > CurTime() then return end
 		if table.IsEmpty( cpscanproplist ) then --Jobs done
 			
 			table.Add( ACE.contraptionEnts, cpscanproplist3 )
-			print( "[ACE] Found ("..table.Count( ACE.contraptionEnts )..") contraptions in ("..math.Round(CurTime()-ScanTime-1)..") seconds." )	
+			--print( "[ACE] Found ("..table.Count( ACE.contraptionEnts )..") contraptions in ("..math.Round(CurTime()-ScanTime-1)..") seconds." )	
 			--PrintTable(ACE.contraptionEnts)
 
 			--[[
@@ -313,7 +313,7 @@ if updateContraptionsTick > CurTime() then return end
 
 		if not IsValid(ent) then
 			table.remove( ACE.contraptionEnts, id )
-			print("[ACE] Removed a contraption")
+			--print("[ACE] Removed a contraption")
 		end
 
 	end
@@ -336,7 +336,7 @@ function ACEdupeCategorizeContraptions(ArgTable)
 
 	ScanTime = CurTime()
 
-	print("[ACE] ContraptionScan")
+	print("[ACE] Including contraption to the list...")
 
 	ACE.ECMPods = ents.FindByClass( "ace_ecm" )
 
@@ -378,7 +378,7 @@ function ACEUpdateContraptions() --Used to update information like HEAT, Weight,
 			end		
 
 			if ScanEnt.THeat > 50 then
-				print(ScanEnt.THeat)
+				--print(ScanEnt.THeat)
 			end
 
 	--		print(table.Count(ScanEnt.HotEnts))
@@ -386,7 +386,7 @@ function ACEUpdateContraptions() --Used to update information like HEAT, Weight,
 
 		else
 			table.remove( ACE.contraptionEnts, CPPScanPro )
-			print("Remove")
+			--print("Remove")
 		end
 	end
 end

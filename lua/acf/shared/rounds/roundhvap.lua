@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.HVAP =  { "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APCR) "..ACFTranslation.ShellAPCR[1] --Human readable name
+Round.name = "[APCR / HVAP] - "..ACFTranslation.ShellAPCR[1] --Human readable name
 Round.model = "models/munitions/round_100mm_ap_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellAPCR[2]
 Round.netid = 11 --Unique ammotype ID for network transmission
@@ -39,7 +39,7 @@ function Round.convert( Crate, PlayerData )
     Data.MinCalMult = 0.25
     Data.MaxCalMult = 1
     Data.PenModifier = 1.7
-    Data.Ricochet = 60
+    Data.Ricochet = 50  --do u think im evil?, consider using FS instead  - Marty
 --    end
 	
 	Data.SCalMult = PlayerData["Data5"]
@@ -72,7 +72,7 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+	GUIData.MaxPen = ((Energy.Penetration/Data.PenAera)*ACF.KEtoRHA)*1.055
 	return GUIData
 end
 
@@ -256,7 +256,7 @@ function Round.guiupdate( Panel, Table )
 	local RoFMul = (vol > 46000) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1
 	local Cap = math.floor(CapMul * vol * 0.11 * ACF.AmmoMod * 16.38 / Data.RoundVolume)
 	
-	acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
 	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -286,5 +286,6 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
+list.Set( "APRoundTypes", "HVAP", Round )
 list.Set( "ACFRoundTypes", "HVAP", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HVAP" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

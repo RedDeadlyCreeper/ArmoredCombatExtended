@@ -1,7 +1,7 @@
 ACF_defineGunClass("ATGM", {
     type            = "missile",
 	spread          = 1,
-	name            = "(Missile) Anti-Tank Guided Missile",
+	name            = "[ATGM] - Anti-Tank Guided Missile",
 	desc            = ACFTranslation.MissileClasses[4],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
@@ -18,7 +18,7 @@ ACF_defineGunClass("ATGM", {
 
 -- The BGM-71E, a wire guided missile with medium anti-tank effectiveness.
 ACF_defineGun("BGM-71E ASM", { --id
-	name = "BGM-71 Missile",
+	name = "BGM-71E Missile",
 	desc = "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.",
 	model = "models/missiles/bgm_71e.mdl",
 	gunclass = "ATGM",
@@ -56,7 +56,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 } )
 
 ACF_defineGun("9M113 ASM", { --id
-	name = "9M133 Missile",
+	name = "9M133 Kornet Missile",
 	desc = "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
 	model = "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 	gunclass = "ATGM",
@@ -196,7 +196,7 @@ ACF_defineGun("AT-2 ASM", { --id
 		maxlength	= 55,
 		casing		= 0.1,			-- thickness of missile casing, cm
 		armour		= 5,			-- effective armour thickness of casing, in mm
-		propweight	= 1,			-- motor mass - motor casing
+		propweight	= 0.1,			-- motor mass - motor casing
 		thrust		= 1500,			-- average thrust - kg*in/s^2
 		burnrate	= 25,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.5,			-- percentage of the propellant consumed in the starter motor.
@@ -216,41 +216,44 @@ ACF_defineGun("AT-2 ASM", { --id
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
---[[
+--The Javelin, this missile is meant to attack low altitute aircraft and hit top of tanks. I know javelin is too light and its easy to reload in real life, but 
+--we should keep it as an "advanced missile" and adapt it to ACE requirements, otherwise it would become the "big tank buster mk3000". Unlike other missiles, this one is 
+--same as agile and faster than AT-2,but being heavy and with a glaciar reload time. Once you are locked on, it will be hard to lose it unless you use flares or you have luck.
 ACF_defineGun("FGM-148 ASM", { --id
-	name = "Javelin Missile",
-	desc = "A long range, hard hitting ATGM often used to top attack tanks. Extremely Agile and powerful. Long reload. Heavy.",
-	model = "models/missiles/fgm148.mdl",
+	name = "FGM-148 Javelin Missile",
+	desc = "A very powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its heavy and with a killer reload time.", 
+	model = "models/mcace/Jevelinemissile.mdl",    --model to spawn on menu
 	gunclass = "ATGM",
-    rack = "1xRK",  -- Which rack to spawn this missile on?
-	length = 52,		--Used for the physics calculations
-	caliber = 12.7, 
+    rack = "1x Javelin",  -- Which rack to spawn this missile on?
+	length = 60,		--Used for the physics calculations
+	caliber = 12.7,    --caliber
 	weight = 97.2,    -- Don't scale down the weight though!
-	year = 1989,
-	rofmod = 1.5,
+	year = 1989,      --year
+	rofmod = 1.45,     --Rate Of Fire
 	round = {
-		model		= "models/missiles/fgm148.mdl",
-		rackmdl		= "models/missiles/fgm148.mdl",
+		model		= "models/mcace/Jevelinemissile.mdl",       --models/mcace/Jevelinemissile.mdl    --model that will be fired out of tube
+		rackmdl		= "models/mcace/Jevelinemissile.mdl",       --model when its in tube
 		maxlength	= 60,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1,				-- motor mass - motor casing
-		thrust		= 1300,				-- average thrust - kg*in/s^2
-		burnrate	= 40,				-- cm^3/s at average chamber pressure
+		thrust		= 3000,				-- average thrust - kg*in/s^2
+		burnrate	= 100,				-- cm^3/s at average chamber pressure --100
 		starterpct	= 0.15,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 5,				-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.2,			-- drag coefficient while falling
+		dragcoef	= 0.02,			-- drag coefficient while falling
                 dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(3.2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1.75)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Laser"},
+    guidance    = {"Dumb", "Infrared","Laser"},  --here you have Laser for those top attacks, feel free to build one.
     fuses       = {"Contact", "Optical"},
+	
+	seekcone    = 45,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
-    racks       = {["1xRK_small"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-    agility     = 0.28,     -- multiplier for missile turn-rate.
-    armdelay    = 0.5     -- minimum fuse arming delay
+    racks       = {["1x Javelin"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+    agility     = 0.22,     -- multiplier for missile turn-rate.
+    armdelay    = 1     -- minimum fuse arming delay
 } )
-]]--

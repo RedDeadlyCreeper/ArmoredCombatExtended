@@ -73,10 +73,12 @@ function ACF_RemoveBullet( Index )
 	ACF.Bullet[Index] = nil
 	if Bullet and Bullet.OnRemoved then Bullet:OnRemoved() end
 end
-
---checks the visclips of an entity, to determine if round should pass through or not
--- ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
+--[[
+   checks the visclips of an entity, to determine if round should pass through or not.
+   ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
+]]--
 function ACF_CheckClips( Ent, HitPos )
+
 	if not IsValid(Ent) or (Ent.ClipData == nil)
 		or (not (Ent:GetClass() == "prop_physics"))
 		or (Ent:GetPhysicsObject():GetVolume() == nil) -- makesphere
@@ -85,13 +87,14 @@ function ACF_CheckClips( Ent, HitPos )
 	local normal
 	local origin
 	for i=1, #Ent.ClipData do
-		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward()
+		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward() 
 		origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
 		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
-		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end
+		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
 	end
 	
 	return false
+	
 end
 
 --handles non-terminal ballistics and fusing of bullets
@@ -162,7 +165,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
 	if Bullet.SkyLvL then
 		--We don't want to calculate bullets that will never come back to map
-		if (ACF.CurTime - Bullet.LifeTime) > 30 then
+		if (ACF.CurTime - Bullet.LifeTime) > 100 then
 			ACF_RemoveBullet( Index )
 			return
 		end
@@ -197,23 +200,43 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 	TROffset = 0.3937*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 	FlightTr.maxs = Vector( TROffset, TROffset, TROffset )
-	FlightTr.mins = -FlightTr.maxs
+	FlightTr.mins = -FlightTr.maxs	
 	
-	--perform the trace for damage
-	local RetryTrace = true
-	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
-		RetryTrace = false
-		FlightTr.start = Bullet.StartTrace
-		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation
-		--util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)
-		util.TraceHull(FlightTr)
+	--perform the trace for damage	
+		
+	local RetryTrace = true	
 
-		--We hit something that's not world, if it's visclipped, filter it out and retry		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
-		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
-			table.insert( Bullet.Filter , FlightRes.Entity )
-			RetryTrace = true
-		end
-	end
+	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
+	    
+		RetryTrace = false  --disabling....
+		FlightTr.start = Bullet.StartTrace
+		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation 		
+
+		
+		util.TraceHull(FlightTr)    --Defining tracehull at first instance
+		
+		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our shell hits visclips, convert the tracehull on traceline.
+		   --print('Traceline!')
+		   util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)	
+		  
+		    if not FlightRes.HitNonWorld then -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
+			
+		        --print('back to tracehull!')
+			    util.TraceHull(FlightTr)
+		   
+		    end
+		   
+		end  
+        
+		--We hit something that's not world, if it's visclipped, filter it out and retry	
+        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hit the visclip as traceline, no more double bounds.
+		    
+		    table.insert( Bullet.Filter , FlightRes.Entity )
+		    RetryTrace = true   --re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
+			
+	    end
+	
+	end	
 	
 	--bullet is told to ignore the next hit, so it does and resets flag
 	if Bullet.SkipNextHit then
@@ -223,6 +246,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--bullet hit something that isn't world and is allowed to hit
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 		--If we hit stuff then send the resolution to the bullets damage function
+		
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
 		
 		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
@@ -250,6 +274,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
 		local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
 		if Retry == "Penetrated" then		--If we should do the same trace again, then do so
+		    
 			if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 
 					Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
@@ -266,6 +291,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 				end
 
 		elseif Retry == "Ricochet"  then
+		
 			if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
 
 			Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
@@ -289,22 +315,32 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
 	--bullet hit the world
 	elseif FlightRes.HitWorld then
+	
 		if not FlightRes.HitSky then									--If we hit the world then try to see if it's thin enough to penetrate
+		
 			ACF_BulletWorldImpact = ACF.RoundTypes[Bullet.Type]["worldimpact"]
+			
 			local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
+			
 			if Retry == "Penetrated" then 								--if it is, we soldier on	
+			    --print('World-Pen')
 				if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 				ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
 				ACF_CalcBulletFlight( Index, Bullet, true )				--The world ain't going to move, so we say True for the backtrace override
+				
 			elseif Retry == "Ricochet"  then
+			    --print('World-Rico')
 				if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
 				ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
 				ACF_CalcBulletFlight( Index, Bullet, true )
+				
 			else														--If not, end of the line, boyo
+			    --print('World-NoPen')
 				if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
 				ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 				ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 				ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
+				
 			end
 		
 		else												--hit skybox

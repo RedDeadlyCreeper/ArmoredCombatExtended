@@ -7,20 +7,26 @@ ENT.PrintName = "Debris"
 
 if CLIENT then return end
 
--- todo: rename this to acf_debris
-
 function ENT:Initialize()
 	
-	self.Timer = CurTime() + 60
+	self.Timer = CurTime() + 30
 	self:PhysicsInit( SOLID_VPHYSICS )
 	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_VPHYSICS )
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 	
 	local phys = self:GetPhysicsObject()
+	local Mass = phys:GetVolume() * 0.005
+	
 	if IsValid( phys ) then
+	    
 		phys:Wake()
+		phys:SetMass(Mass)
+	    phys:SetMaterial('jeeptire')
+		
 	end
+	
+
 	
 end
 
@@ -30,7 +36,7 @@ function ENT:Think()
 		self:Remove()
 	end
 	
-	self:NextThink( CurTime() + 60 )
+	self:NextThink( CurTime() + 30 )
 	
 	return true
 	

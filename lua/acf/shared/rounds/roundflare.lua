@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.FLR = { "AC", "AL", "C", "HMG", "HW", "MG", "MO", "RAC", "SA",
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(FLR) "..ACFTranslation.ShellFLR[1] --Human readable name
+Round.name = "[FLR] - "..ACFTranslation.ShellFLR[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellFLR[2]
 Round.netid = 8 --Unique ammotype ID for network transmission
@@ -264,7 +264,7 @@ function Round.guiupdate( Panel, Table )
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
 	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
 	
-	acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
 	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -280,5 +280,6 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
+list.Set( "SPECSRoundTypes", "FLR", Round ) 
 list.Set( "ACFRoundTypes", "FLR", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "FLR" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

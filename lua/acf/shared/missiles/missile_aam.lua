@@ -3,7 +3,7 @@
 ACF_defineGunClass("AAM", {
     type            = "missile",
 	spread          = 1,
-	name            = "(Missile) Air-To-Air Missile",
+	name            = "[AAM] - Air-To-Air Missile",
 	desc            = ACFTranslation.MissileClasses[1],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,

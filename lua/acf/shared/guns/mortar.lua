@@ -1,5 +1,6 @@
 --define the class
 ACF_defineGunClass("MO", {
+    type = "Gun",
 	spread = 0.7,
 	name = "Mortar",
 	desc = ACFTranslation.GunClasses[10],

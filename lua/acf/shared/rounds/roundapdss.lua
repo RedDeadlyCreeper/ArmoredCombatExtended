@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.APDSS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APDS-Slug) "..ACFTranslation.ShellAPDSS[1] --Human readable name
+Round.name = "[APDS-Slug] - "..ACFTranslation.ShellAPDSS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellAPDSS[2]
 Round.netid = 9 --Unique ammotype ID for network transmission
@@ -302,7 +302,7 @@ function Round.guiupdate( Panel, Table )
 	local RoFMul = (vol > 46000) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1
 	local Cap = math.floor(CapMul * vol * 0.11 * ACF.AmmoMod * 16.38 / Data.RoundVolume)
 	
-	acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
 	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -320,17 +320,14 @@ function Round.guiupdate( Panel, Table )
 
 	local R1V, R1P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 100 )	
 	local R2V, R2P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 200 )
-	local R3V, R3P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 300 )
-	local R4V, R4P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 400 )
-	local R5V, R5P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 500 )
-	local R6V, R6P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 600 )
-	local R7V, R7P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 700 )
-	local R8V, R8P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
-	
-	acfmenupanel:CPanelText("PenetrationDisplay", "Max pen: "..math.floor(Data.MaxPen).." mm\n100m pen: "..math.floor(R1P,0).."mm @ "..math.floor(R1V,0).." m\\s\n200m pen: "..math.floor(R2P,0).."mm @ "..math.floor(R2V,0).." m\\s\n300m pen: "..math.floor(R3P,0).."mm @ "..math.floor(R3V,0).." m\\s\n400m pen: "..math.floor(R4P,0).."mm @ "..math.floor(R4V,0).." m\\s\n500m pen: "..math.floor(R5P,0).."mm @ "..math.floor(R5V,0).." m\\s\n600m pen: "..math.floor(R6P,0).."mm @ "..math.floor(R6V,0).." m\\s\n700m pen: "..math.floor(R7P,0).."mm @ "..math.floor(R7V,0).." m\\s\n800m pen: "..math.floor(R8P,0).."mm @ "..math.floor(R8V,0).." ..m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
+	local R3V, R3P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 400 )
+	local R4V, R4P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
+
+	acfmenupanel:CPanelText("PenetrationDisplay", "Max penetration: "..math.floor(Data.MaxPen).." mm RHA\n100m pen: "..math.floor(R1P,0).."mm @ "..math.floor(R1V,0).." m\\s\n200m pen: "..math.floor(R2P,0).."mm @ "..math.floor(R2V,0).." m\\s\n400m pen: "..math.floor(R3P,0).."mm @ "..math.floor(R3V,0).." m\\s\n800m pen: "..math.floor(R4P,0).."mm @ "..math.floor(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
 
 	
 end
 
+list.Set( "APRoundTypes", "APDSS", Round )
 list.Set( "ACFRoundTypes", "APDSS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "APDSS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

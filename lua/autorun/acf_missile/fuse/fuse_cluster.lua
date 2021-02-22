@@ -32,7 +32,7 @@ configs[#configs + 1] =
     CommandName = "Ds",         -- shorthand name used in console commands
     
     Type = "number",            -- lua type of the configurable variable
-    Min = 0,                    -- number specific: minimum value
+    Min = 1,                    -- number specific: minimum value
     Max = 10000                 -- number specific: maximum value
     
     -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?

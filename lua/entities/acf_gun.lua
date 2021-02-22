@@ -95,6 +95,7 @@ if CLIENT then
 		acfmenupanel:CPanelText("GunDesc", Table.desc)
 		acfmenupanel:CPanelText("Caliber", "Caliber : "..(Table.caliber*10).."mm")
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
+		acfmenupanel:CPanelText("Year", "Year : "..Table.year)
 		
 		--PrintTable(Table)
 		if not Table.rack then
@@ -160,10 +161,27 @@ function ENT:Initialize()
 end  
 
 function MakeACF_Gun(Owner, Pos, Angle, Id)
+   
 
 	local EID
 	local List = list.Get("ACFEnts")
-	if List.Guns[Id] then EID = Id else EID = "50mmC" end
+	if List.Guns[Id] then 
+	EID = Id 
+	elseif Id == '20mmHRAC' then    
+	EID = '20mmRAC' 
+	elseif Id == '30mmHRAC' then
+    EID = '30mmRAC'
+	elseif Id == '105mmSB' then  --ACF2 smoothbore compatibility / thanks old-ACF devs for creating another smoothbore ids
+	EID = '100mmSBC'
+	elseif Id == '120mmSB' then
+	EID = '120mmSBC'
+	elseif Id == '140mmSB' then
+	EID = '140mmSBC'
+	elseif Id == '170mmSB' then
+	EID = '170mmSBC'
+    else	
+	EID = "100mmC" --just cuz 50mmC was too small
+	end
 	local Lookup = List.Guns[EID]
 
 	
@@ -557,8 +575,10 @@ function ENT:TriggerInput( iname, value )
 	elseif ( iname == "Fuse Time" ) then
 	if value > 0 then
 		self.FuseTime = value
+		self:SetNWString("connected","wired")
 	else
 		self.FuseTime = 0
+		self:SetNWString("connected","unwired")
 	end
 	elseif (iname == "ROFLimit") then
 		self.ROFLimit = math.min(1/(value/60),10) --Clamped to 10 seconds because people are stupid and set this too low
@@ -833,8 +853,15 @@ function ENT:FireShell()
 					else
 					FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
 					end
-				
-					self.BulletData.FuseLength = self.FuseTime * FuseNoise
+				    
+					wired = self:GetNWString('connected')
+					
+					if wired == 'wired' then --using fusetime via wire will override the ammo fusetime!
+				        print(wired)
+					    self.BulletData.FuseLength = self.FuseTime * FuseNoise  
+									
+					end
+									
 				end
 			end
 

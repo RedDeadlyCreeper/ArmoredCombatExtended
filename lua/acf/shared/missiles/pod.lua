@@ -341,6 +341,7 @@ ACF_DefineRack("2x Strela-1", {
 	} 
 } )
 
+--strela-1 
 ACF_DefineRack("4x Strela-1", {
 	name = "Quad Munition 9M31 Rack",
 	desc = "An 9m31 rack designed to carry 4 missile.",
@@ -365,6 +366,7 @@ ACF_DefineRack("4x Strela-1", {
 	} 
 } )
 
+--ataka tube
 ACF_DefineRack("1x Ataka", {
 	name = "Single Munition 9M120 Rack",
 	desc = "An 9M120 rack designed to carry 1 missile.",
@@ -386,6 +388,7 @@ ACF_DefineRack("1x Ataka", {
 	}
 } )
 
+--spg9 tube
 ACF_DefineRack("1x SPG9", {
 	name = "SPG-9 Launch Tube",
 	desc = "Launch tube for SPG-9 recoilless rocket.",
@@ -454,6 +457,7 @@ ACF_DefineRack("127mm4xPOD", {
 	}
 } )
 
+--9m311 pod
 ACF_DefineRack("1x 9m311", {
 	name = "9m311 Round",
 	desc = "A single 9m311 round.",
@@ -472,5 +476,27 @@ ACF_DefineRack("1x 9m311", {
     mountpoints = 
 	{
 		["missile1"] = {["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+--Javelin pod
+ACF_DefineRack("1x Javelin", {
+	name = "FGM-148 Javelin Launch Tube",
+	desc = "A launch tube designed for the javelin.",
+	model = "models/mac/Javelin_straight.mdl",
+	gunclass = "POD",
+	weight = 10,
+	year = 1989,
+    magsize = 1,
+	armour  = 20,
+	caliber = 12.7,
+
+	protectmissile  = true,
+    hidemissile     = true,
+    whitelistonly   = true,
+	
+    mountpoints = 
+	{
+		["missile1"] = {["offset"] = Vector(0,-1.38,2.4), ["scaledir"] = Vector(0,0,0)}
 	}
 } )

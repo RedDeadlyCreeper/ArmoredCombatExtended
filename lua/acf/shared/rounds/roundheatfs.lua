@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.HEATFS =  { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR"
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(HEAT-FS) "..ACFTranslation.ShellHEATFS[1] --Human readable name
+Round.name = "[HEAT-FS] - "..ACFTranslation.ShellHEATFS[1] --Human readable name
 Round.model = "models/munitions/round_100mm_mortar_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellHEATFS[2]
 Round.netid = 18 --Unique ammotype ID for network transmission
@@ -364,7 +364,7 @@ function Round.guiupdate( Panel, Table )
 	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
 	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
 	
-	acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
 	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -377,14 +377,21 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
-	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\nAverage Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \nAverage Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 	
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
-		
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm \n")	--Proj muzzle penetration (Name, Desc)
+	local R1V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 100 ) 
+	local R2V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 200 )	
+	local R3V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 400 )	
+	local R4V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
 	
+	R1P = Data.MaxPen
+	
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.SlugMV).." m/s\n\nMax Penetration : "..math.Round(Data.MaxPen).." mm RHA\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R2V,0).." m\\s\n400m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R3V,0).." m\\s\n800m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
+
 end
 
+list.Set("HERoundTypes", 'HEATFS', Round )
 list.Set( "ACFRoundTypes", "HEATFS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HEATFS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

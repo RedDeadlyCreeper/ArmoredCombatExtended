@@ -253,18 +253,19 @@ function ModifyACFMenu(panel)
         
     end
     
-    
-    
-    
-    local rootNodes = acfmenupanel.WeaponSelect:Root().ChildNodes:GetChildren()
-    
+	local rootNodes = HomeNode.ChildNodes:GetChildren()  --lets find all our folder inside of Main menu
+	
     local gunsNode
     
-    for k, node in pairs(rootNodes) do
-        if node:GetText() == "Guns" then
-            gunsNode = node
-            break
-        end
+    for k, node in pairs(rootNodes) do -- iterating though found folders
+			
+			    if node:GetText() == "Missiles" then   --Missile folder is the one that we need
+				
+			        gunsNode = node
+			        break
+					
+			    end
+			
     end
     
     if gunsNode then
@@ -298,58 +299,8 @@ function ModifyACFMenu(panel)
     else
         ErrorNoHalt("ACFM: Unable to find the ACF Guns node.")
     end
-	
-	AddDetectionNode(acfmenupanel)
     
 end
-
-
-
-
-function AddDetectionNode(panel)
-	
-	local radarClasses = ACF.Classes.Radar
-	local radars = ACF.Weapons.Radar
-	
-	if radarClasses and radars then
-	
-		local radar = panel.WeaponSelect:AddNode("Radar")	
-	
-	
-		local nodes = {}
-		
-		for k, v in pairs(radarClasses) do
-			
-			nodes[k] = radar:AddNode( v.name or "No Name" )
-		
-		end
-	
-		
-			
-		for Type, Ent in pairs(radars) do	
-			
-			local curNode = nodes[Ent.class]
-			
-			if curNode then
-				local EndNode = curNode:AddNode( Ent.name or "No Name" )
-				EndNode.mytable = Ent
-				
-				function EndNode:DoClick()
-					RunConsoleCommand( "acfmenu_type", self.mytable.type )
-					acfmenupanel:UpdateDisplay( self.mytable )
-				end
-				
-				EndNode.Icon:SetImage( "icon16/newspaper.png" )
-			end
-		end
-			
-		
-	end
-
-end
-
-
-
 
 function FindACFMenuPanel()
     if acfmenupanel then

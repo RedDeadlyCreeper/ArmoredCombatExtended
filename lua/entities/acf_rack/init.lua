@@ -65,8 +65,9 @@ function ENT:Initialize()
 	self.NextFire = 1
 	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
-	--self.Legal = true
-	--self.LegalIssues = ""
+	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
 	self.LastSend = 0
 	self.Owner = self
 	
@@ -554,6 +555,10 @@ end
 
 
 function ENT:Think()
+
+    self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, false, true)
+	self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+
 
     local Ammo = table.Count(self.Missiles or {})
     
@@ -1185,6 +1190,11 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 		    end
 			
 	    end
+		
+		
+	--if not self.Legal then
+		--txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	--end
 		
 	--else
 	

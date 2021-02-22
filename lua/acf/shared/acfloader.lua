@@ -72,10 +72,10 @@ function ACF_DefineEngine( id, data )
 	data.id = id
 	table.Inherit( data, engine_base )
 	MobilityTable[ id ] = data
-	print("Loaded Engine: "..data.name)	
-	else
-	print("Did not load Engine: "..data.name)	
-	return false
+--	print("Loaded Engine: "..data.name)	
+--	else
+--	print("Did not load Engine: "..data.name)	
+--	return false
 	end
 end
 

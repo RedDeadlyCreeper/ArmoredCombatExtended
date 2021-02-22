@@ -2,7 +2,7 @@
 ACF_defineGunClass("GBU", {
     type            = "missile",  -- i know i know
 	spread          = 1,
-	name            = "(Bomb) Guided Bomb Unit",
+	name            = "[GBU] - Guided Bomb Unit",
 	desc            = ACFTranslation.MissileClasses[6],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.1,

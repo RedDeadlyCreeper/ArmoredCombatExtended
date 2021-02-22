@@ -3,7 +3,7 @@
 ACF_defineGunClass("UAR", {
     type            = "missile",
 	spread          = 0.2,
-	name            = "(Missile) Unguided Aerial Rockets",
+	name            = "[ASR] - Unguided Aerial Rockets",
 	desc            = ACFTranslation.MissileClasses[9],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.5,
@@ -186,7 +186,7 @@ ACF_defineGun("Zuni ASR", { --id
 	name		= "Zuni Rocket",
 	desc		= "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.",
 	model		= "models/ghosteh/zuni.mdl",
-	caliber		= 14,
+	caliber		= 12.7,
 	gunclass	= "UAR",
 	rack		= "127mm4xPOD",
 	weight		= 120,

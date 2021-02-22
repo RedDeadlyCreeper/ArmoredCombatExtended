@@ -3,7 +3,7 @@
 ACF_defineGunClass("FFAR", {
     type            = "missile",
 	spread          = 1,
-	name            = "(Missile) Folding-Fin Aerial Rockets",
+	name            = "[FFAR] - Folding-Fin Aerial Rockets",
 	desc            = ACFTranslation.MissileClasses[7],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,

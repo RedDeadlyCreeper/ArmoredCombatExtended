@@ -35,7 +35,6 @@ this.MinimumDistance = 200	-- ~5m
 this.desc = "This guidance package detects a target-position infront of itself, and guides the munition towards it. It has a larger seek cone than a radar seeker but a smaller range."
 
 
-
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
 	self.LastTargetPos = Vector()
@@ -139,6 +138,8 @@ function this:GetWhitelistedEntsInCone(missile)
 	for k, scanEnt in pairs(ScanArray) do
 
 		if(IsValid(scanEnt))then
+		    model = scanEnt:GetModel()
+			print(model)
 			local entpos = scanEnt:GetPos()
 			local difpos = entpos - missilePos
 			local dist = difpos:Length()
@@ -198,6 +199,7 @@ function this:AcquireLock(missile)
 	local bestent = nil
 
 	for k, classifyent in pairs(found) do
+	    if classifyent:GetParent():IsValid() or classifyent:IsConstrained() or classifyent:GetClass() == 'ace_flare' then    ---only flares, constrained props are allowed as targets.
 		local entpos = classifyent:GetPos()
 		local difpos = entpos - missilePos
 		local dist = difpos:Length()
@@ -205,10 +207,10 @@ function this:AcquireLock(missile)
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
-		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + 2*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1))
+		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + 8*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)) --Heat mechanic is dependant on target´s speed, so faster = hotter
 --dist
 --		print(testHeat)
-		if testHeat > 50 then --Hotter than 50 deg C
+		if testHeat > 0 then --Hotter than 50 deg C. Due to its easy to avoid by reducing speed that i´ll have this off (0 deg C.)
 
 			if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
 				local testang = testHeat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
@@ -221,6 +223,7 @@ function this:AcquireLock(missile)
 				end
 
 			end
+		end
 		end
 	end
 

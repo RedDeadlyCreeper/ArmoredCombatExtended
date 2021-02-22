@@ -119,7 +119,7 @@ function this:GetGuidance(missile)
 
 	self:CheckTarget(missile)
 	
-	if not IsValid(self.Target) then 
+	if not IsValid(self.Target) or self.Target:GetParent():IsValid() then 
 		return {} 
 	end
 
@@ -266,6 +266,9 @@ function this:GetWhitelistedEntsInCone(missile)
 		if foundDot < minDot then continue end
 		
 		table.insert(foundAnim, foundEnt)
+	    
+		model = foundEnt:GetModel()
+		print(model)
 		
 	end
     
@@ -325,8 +328,9 @@ function this:AcquireLock(missile)
 	-- Part 2: get a good seek target
 	local foundCt = table.Count(found)
 	if foundCt < 2 then 
-        --print("shortcircuited and found", found[1])
-        return found[1] 
+        --print("shortcircuited and found", found[1]) 
+		   return found[1]
+		 
     end
 	
     local missilePos = missile:GetPos()
@@ -343,7 +347,9 @@ function this:AcquireLock(missile)
 		if not ent then break end
 		
 		if self:HasLOSVisibility(ent, missile) then
+		   
 			mostCentralEnt = ent
+			
 		end
 		
 	end

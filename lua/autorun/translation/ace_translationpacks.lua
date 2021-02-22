@@ -16,7 +16,7 @@ ACFTranslation.ArmorPropertiesText = {
 	"Ductility",--Armor Ductility Slider Name (6)
 	"Set the desired armor ductility (thickness-vs-health bias).\n\nA ductile prop can survive more damage but is penetrated more easily (slider > 0).\n\nA non-ductile prop is brittle - hardened against penetration, but more easily shattered by bullets and explosions (slider < 0).",--Armor Ductility Slider Desc (7)
 	"Material",--Armor Material Slider Name (8)
-	"Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\nRolled Steel that does not have any special traits, your standard ACF armor\n(1)Cast\nHeavier and softer than RHA but takes less damage\n(2)Ceramic\nLight plate that is lighter and more resiliant to penetration but is very brittle and hates being penetrated\n(3)Rubber\nRubber is effective vs heat jets and spall but does almost nothing to kinetic rounds\n(4)ERA\nERA is heavier than RHA,when penetrated it explodes damaging nearby props and the shell that hit it\n(5)Aluminum\nLighter than steel but very vulnerable to HEAT and spalling\n(6)Textolite\nFiberglass like material that isn't effective vs kinetic but is good vs HEAT and HE\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivelent to 9 million mm of steel.\n", --Armor Material Description (9)
+	"Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\nRolled Steel that does not have any special traits, your standard ACF armor\n(1)Cast\nHeavier and softer than RHA but takes less damage\n(2)Ceramic\nLight plate that is lighter and more resiliant to penetration but is very brittle and hates being penetrated\n(3)Rubber\nRubber is effective vs heat jets and spall but does almost nothing to kinetic rounds\n(4)ERA\nERA is heavier than RHA,when penetrated it explodes damaging nearby props and the shell that hit it\n(5)Aluminum\nLighter than steel but very vulnerable to HEAT and spalling\n(6)Textolite\nFiberglass like material that isn't effective vs kinetic but is good vs HEAT and HE\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivalent to 9 million mm of steel.\n", --Armor Material Description (9)
 
 	--/////////Reload Information/////////--	
 	"with fuel", --Hp with fuel text (10)
@@ -143,13 +143,13 @@ ACFTranslation.FuelTanks = {
 
 ACFTranslation.Radar = {
 	--Directional
-	"A radar with unlimited range but a limited view cone.  Only detects launched missiles.\nThese can be parented to what they are welded to.",--DIR RadarClass (1)
+	"A radar with unlimited range but a limited view cone.  Only detects launched missiles.",--DIR RadarClass (1)
 	"A lightweight directional radar with a smaller view cone.", --SMDir (2)
 	"A directional radar with a regular view cone.", --MedDir (3)
 	"A heavy directional radar with a large view cone.",--LDir (4)
 
 	--Spherical
-	"A missile radar with full 360-degree detection but a limited range.  Only detects launched missiles.\nThese may be parented to what they are welded to.",--Spherical RadarClass (5)
+	"A missile radar with full 360-degree detection but a limited range.  Only detects launched missiles.",--Spherical RadarClass (5)
 	"A lightweight omni-directional radar with a smaller range.", --S (6)
 	"A omni-directional radar with a regular range.",--M (7)
 	"A heavy omni-directional radar with a large range." --L (8)
@@ -276,7 +276,7 @@ ACFTranslation.HP = {
 
 ACFTranslation.ShellAPCR = {
 	"Armor-Piercing Composite Rigid", --AmmoName (1)
-	"A soft projectile that contains a heavy tungsten core, penetrates and does a lot more damage than APDS or APFSDS, but has horrible drag characteristics" --Desc (2)
+	"A soft projectile that contains a heavy tungsten core, penetrates and does a lot more damage than APDS or APFSDS, but has horrible drag characteristics and is not meant against sloped armor." --Desc (2)
 
 }
 

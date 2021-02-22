@@ -437,7 +437,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	end	
 	
 	HitRes.Ricochet = false
-	if Ricochet > 0 and Bullet.Ricochets < 3 then
+	if Ricochet > 0 and Bullet.Ricochets < 3 and IsValid(Target) then
 		Bullet.Ricochets = Bullet.Ricochets + 1
 		Bullet["Pos"] = HitPos + HitNormal * 0.75
 		Bullet.FlightTime = 0
@@ -449,24 +449,33 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	return HitRes
 end
 
-function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
+function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull show again
+
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
-	local MaxDig = ((Energy.Penetration/Bullet.PenAera)*ACF.KEtoRHA/ACF.GroundtoRHA)/25.4
-	local HitRes = {Penetrated = false, Ricochet = false}
 	
-	local DigTr = { }
-		DigTr.start = HitPos + Bullet.Flight:GetNormalized()*0.1
-		DigTr.endpos = HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1)
-		DigTr.filter = Bullet.Filter
-		DigTr.mask = MASK_SOLID_BRUSHONLY
-		DigTr.mins = Vector( 0, 0, 0 )
-		DigTr.maxs = Vector( 0, 0, 0 ) 
-	local DigRes = util.TraceHull(DigTr)
+	local MaxDig = (( Energy.Penetration * 1.5 / Bullet.PenAera ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4  --adding 0.5x more energy pen cuz some low caliber guns like racs with 60mm pen are supposed to break though thin walls.
+	
+	--print('Max Dig: '..MaxDig..'\nEnergy Pen: '..Energy.Penetration..'\n')
+	
+	local HitRes = {Penetrated = false, Ricochet = false}
+			
+	local DigRes = util.TraceHull( { 
+	
+		start = HitPos + Bullet.Flight:GetNormalized()*0.1,
+		endpos = HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1),
+		filter = Bullet.Filter,
+		mins = Vector( -10, -10, -10 ),
+		maxs = Vector( 10, 10, 10 ), 
+		mask = MASK_SOLID_BRUSHONLY
+		
+		} )
 	--print(util.GetSurfacePropName(DigRes.SurfaceProps))
 	
 	local loss = DigRes.FractionLeftSolid
 	
 	if loss == 1 or loss == 0 then --couldn't penetrate
+	    --print('PenValid: '..loss)
+		--print(start)
 		local Ricochet = 0
 		local Speed = Bullet.Flight:Length() / ACF.VelScale
 		local Angle = ACF_GetHitAngle( HitNormal, Bullet.Flight )
@@ -529,76 +538,82 @@ ACF.Splosive = {
 -- helper function to process children of an acf-destroyed prop
 -- AP will HE-kill children props like a detonation; looks better than a directional spray of unrelated debris from the AP kill
 
---[[
+
 local function ACF_KillChildProps( Entity, BlastPos, Energy )  
 
 	local count = 0
 	local boom = {}
 	local children = ACF_GetAllChildren(Entity)
+	
+	--print('Children: '..table.Count(children))
+	
+	if table.Count(children) > 1 then  --checking if we have more props to process instead of one
+    
+	    -- do an initial processing pass on children, separating out explodey things to handle last
+	    for _, ent in pairs( children ) do
+		    ent.ACF_Killed = true  -- mark that it's already processed
+		    local class = ent:GetClass()
+		    if not ACF.Debris[class] then
+			    children[ent] = nil -- ignoring stuff like holos
+		    else
+			    ent:SetParent(nil)
+			    if ACF.Splosive[class] then
+				    table.insert(boom, ent) -- keep track of explosives to make them boom last
+				    children[ent] = nil
+			    else
+				    count = count+1  -- can't use #table or :count() because of ent indexing...
+			    end
+		    end
+	    end
+	
+	    -- HE kill the children of this ent, instead of disappearing them by removing parent
+	    if count > 0 then
+		    local DebrisChance = math.Clamp(ACF.ChildDebris/count, 0, 1)
+		    local power = Energy/math.min(count,3)
 
-	-- do an initial processing pass on children, separating out explodey things to handle last
-	for _, ent in pairs( children ) do
-		ent.ACF_Killed = true  -- mark that it's already processed
-		local class = ent:GetClass()
-		if not ACF.Debris[class] then
-			children[ent] = nil -- ignoring stuff like holos
-		else
-			ent:SetParent(nil)
-			if ACF.Splosive[class] then
-				table.insert(boom, ent) -- keep track of explosives to make them boom last
-				children[ent] = nil
-			else
-				count = count+1  -- can't use #table or :count() because of ent indexing...
-			end
-		end
-	end
+		    for _, child in pairs( children ) do
+			    if IsValid(child) then
+				    if math.random() < DebrisChance then -- ignore some of the debris props to save lag
+					    ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
+				    else
+					    constraint.RemoveAll( child )
+					    child:Remove()
+				    end
+			    end
+		    end
+	    end
 	
-	-- HE kill the children of this ent, instead of disappearing them by removing parent
-	if count > 0 then
-		local DebrisChance = math.Clamp(ACF.ChildDebris/count, 0, 1)
-		local power = Energy/math.min(count,3)
-
-		for _, child in pairs( children ) do
-			if IsValid(child) then
-				if math.random() < DebrisChance then -- ignore some of the debris props to save lag
-					ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
-				else
-					constraint.RemoveAll( child )
-					child:Remove()
-				end
-			end
-		end
-	end
-	
-	-- explode stuff last, so we don't re-process all that junk again in a new explosion
-	if #boom > 0 then
-		for _, child in pairs( boom ) do
-			if not IsValid(child) or child.Exploding then continue end
-			child.Exploding = true
-			ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
-		end
-	end
-	
+	    -- explode stuff last, so we don't re-process all that junk again in a new explosion
+	    if #boom > 0 then
+		    for _, child in pairs( boom ) do
+		    	if not IsValid(child) or child.Exploding then continue end
+		    	child.Exploding = true
+		    	ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
+		    end
+	    end
+	end	
 end
-]]--
+
+
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	-- if it hasn't been processed yet, check for children
-	--if not Entity.ACF_Killed then
-		--ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
-	--end
+	if not Entity.ACF_Killed then
+		ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
+	end
 
 	-- process this prop into debris
-	local entClass = Entity:GetClass()
-	local obj = Entity:GetPhysicsObject()
-	local grav = true
-	local mass = 50000 --Reduce odds of crazy physics
-	if obj:IsValid() then
-		mass = math.max(obj:GetMass(), mass)
-		if ISSITP then
-			grav = obj:IsGravityEnabled()
-		end
-	end
+	--local entClass = Entity:GetClass()
+	--local obj = Entity:GetPhysicsObject()
+	--local grav = true
+	--local mass = 2 --Reduce odds of crazy physics
+	
+	--if obj:IsValid() then
+		--mass = math.max(obj:GetMass(), mass)
+		--if ISSITP then
+			--grav = obj:IsGravityEnabled()
+		--end
+	--end
 	
 	constraint.RemoveAll( Entity )
 	Entity:Remove()
@@ -622,12 +637,11 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	local phys = Debris:GetPhysicsObject() 
 	if phys:IsValid() then
-	
-		phys:SetMass(mass)
+
 		
-	    phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 10 , Debris:GetPos()+VectorRand()*20 ) 	-- previously energy*350
+		phys:SetMaterial("jeeptire")
 		
-	    phys:EnableGravity( grav )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*1200 ) 	-- previously energy*350
 	   
 	end
 
@@ -639,10 +653,10 @@ end
 function ACF_APKill( Entity , HitVector , Power )
 
 	-- kill the children of this ent, instead of disappearing them from removing parent
-	--ACF_KillChildProps( Entity, Entity:GetPos(), Power )
+	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
     
 	
-
+   
 	constraint.RemoveAll( Entity )
 	Entity:Remove()
 	
@@ -663,10 +677,14 @@ function ACF_APKill( Entity , HitVector , Power )
 		BreakEffect:SetOrigin( Entity:GetPos() )
 		BreakEffect:SetScale( 20 )
 	util.Effect( "WheelDust", BreakEffect )	
-		
+	
 	local phys = Debris:GetPhysicsObject() 
 	if (phys:IsValid()) then	
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 350 ,  Debris:GetPos()+VectorRand()*20 )	
+	
+        phys:SetMaterial("jeeptire")
+		
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*20 )
+		
 	end
 
 	return Debris
