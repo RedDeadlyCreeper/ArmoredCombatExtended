@@ -1,6 +1,3 @@
-DONT INSTALL THIS. THIS IS AND WILL BE UNDER CONSTANTS UPDATES, UNWANTED CHANGES AND SO ON. IF YOU WANT A NON-CONSTANT UPDATED VERSION. USE THIS INSTEAD: https://github.com/RedDeadlyCreeper/ArmoredCombatExtended
-
-
 ------------------
 -- INSTALLATION --
 ------------------
