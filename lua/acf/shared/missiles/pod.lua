@@ -479,7 +479,7 @@ ACF_DefineRack("1x 9m311", {
 	}
 } )
 
---Javelin pod
+--Javelin pod. Using the unfixed model since in the new one, missile is created at 90° degrees from original direction. I wonder why.
 ACF_DefineRack("1x Javelin", {
 	name = "FGM-148 Javelin Launch Tube",
 	desc = "A launch tube designed for the javelin.",
@@ -498,5 +498,6 @@ ACF_DefineRack("1x Javelin", {
     mountpoints = 
 	{
 		["missile1"] = {["offset"] = Vector(0,-1.38,2.4), ["scaledir"] = Vector(0,0,0)}
+		--["missile1"] = {["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )

@@ -712,7 +712,7 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	Legal:SizeToContents()
 	
 	acfmenupanel.CustomDisplay:AddItem( Legal )
-	
+--[[	
 	local Damage = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
 	Damage:SetPos(50,200)
 	Damage:SetText("Enable ACE Damage permissions? (requires restart and CPPI to work)")
@@ -722,7 +722,7 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	Damage:SizeToContents()
 	
 	acfmenupanel.CustomDisplay:AddItem( Damage )
-	
+]]--
 end
 
 --[[=========================

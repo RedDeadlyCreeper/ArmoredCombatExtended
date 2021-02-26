@@ -7,22 +7,27 @@
   This walkthrough assumes you are using TortoiseSVN, and have it installed already.
  
   Go to your garrysmod addons folder ( \SteamApps\common\GarrysMod\garrysmod\addons ), create a new
-  folder named ACF, right click it and choose "SVN Checkout".  In the "URL of repository" box, put
+  folder named ACE, then right click it and choose "SVN Checkout".  In the "URL of repository" box, put
   "https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/trunk" (without the "") and click OK.  ACF is a fairly large addon,
   so it will take some time to download.
   
-  If you want to update the ACF SVN at some point, right click the ACF folder in your addons and choose
-  "SVN Update".
+  Once you have finished the download to your desired folder, just close the svn window and you can start using the addon. In case of
+  you want to update the ACE SVN to latest version, simply right click the ACE folder and choose "SVN Update", this works for restoring parts of addon
+  just if you miss some of them. This is recommended because updates generally updates some files of ACE and not 
+  the entire addon (meaning less time downloading than the not recommended way indicated below)
   
-- Last resort installation
-  If you're having problems with SVN, you can download a zip file directly from github.  However, this
-  is NOT RECOMMENDED as it's a large, slow download, has a LOT of extra unused stuff which bloats the zip,
-  and you have to redownload the entire thing if you want to update ACF.
+- NOT Recommended installation: Zip
+  If you're having problems with SVN, you can download a zip file directly from github and put its folder inside of addons folder.  However, this
+  is NOT RECOMMENDED since ACE is more than 1 gb addon and you will have to download it entirely for updates.
   
   Go to https://github.com/RedDeadlyCreeper/ArmoredCombatExtended and click the "Download Zip" button on the right side of the page.
   If you don't have an ACF folder inside your addons, create one.  Open the zip, go into the "ACF-Master"
   folder, and extract all the files into your ACF folder in addons.  The folder structure should look
   like "garrysmod\addons\ACF\lua" and NOT "garrysmod\addons\ACF\ACF-Master\lua".
+
+------------------------------
+-- NOTES ABOUT INSTALLATION --
+------------------------------
 
 - If you are updating a previous installation of ACF and you're having issues with 
   vanilla particles (fire, blood) not showing up, delete your garrysmod/particles/
@@ -30,13 +35,14 @@
 
 - It is not necessary to copy the scripts or particles directories anymore.
 
-- IF YOU ARE HAVING INSTALLATION PROBLEMS, PLEASE POST ON THE FACEPUNCH ACF THREAD, NOT ON GITHUB.
-  Please only create an issue on github if you've found a bug, or have a suggestion.  The FP forum thread
-  is a good place for general ACF conversation, suggestions, and help requests.
-  Forum thread: https://facepunch.com/showthread.php?t=1548397
+- KEEP IN MIND, IF YOU HAVE ISSUES DURING THE INSTALLATION OF THIS ADDON, VISIT US ON DISCORD, NOT ON GITHUB!
+  Our discord is a more active place for general conversations about ACE and things like that
+  You can join our discord here: https://discord.gg/Y8aEYU6
   
-- If you're into ACF combat, Knight Icy has an excellent extra sound pack for weapons on the GMod workshop.
-  Check it out at http://steamcommunity.com/sharedfiles/filedetails/?id=301482990
+- We have a wiki that contains information about ACE features, that you can visit using this link: https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki
+  
+- If you're into ACF combat, Knight Icy had an excellent extra sound pack for weapons on the GMod workshop. However that was taken down so twisted has uploaded it again
+  Check the upload out at https://steamcommunity.com/sharedfiles/filedetails/?id=1596532339&searchtext=acf+sounds
 
 
 ---------------------------------------------------------------
