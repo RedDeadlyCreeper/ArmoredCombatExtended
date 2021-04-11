@@ -30,8 +30,8 @@ function ENT:Initialize()
 	self.PhysObj:EnableGravity( false )
 	self.PhysObj:EnableMotion( false )
 
-	self.SpecialDamage = false	--If true needs a special ACF_OnDamage function
-	self.SpecialHealth = false	--If true needs a special ACF_Activate function
+	self.SpecialDamage = true	--If true needs a special ACF_OnDamage function
+	self.SpecialHealth = true	--If true needs a special ACF_Activate function
 
 	self:SetNWFloat("LightSize", 0)
 
@@ -169,9 +169,9 @@ function ENT:CalcFlight()
 		local DiffLength = AimDiff:Length()
 		if DiffLength >= 0.001 then
 			local Torque = DiffLength * self.TorqueMul
-			local AngVelDiff = Torque / self.Inertia * DeltaTime
+			local AngVelDiff = Torque / self.Inertia * DeltaTime 
 			local DiffAxis = AimDiff:Cross(Dir):GetNormalized()
-			self.RotAxis = self.RotAxis + DiffAxis * AngVelDiff
+			self.RotAxis = self.RotAxis + DiffAxis * AngVelDiff-- * 3.5
 		end
 
 		self.RotAxis = self.RotAxis * 0.99
@@ -194,9 +194,10 @@ function ENT:CalcFlight()
 	else
 		DragCoef = self.DragCoefFlight
 	end
-
+	
 	--Physics calculations
-	local Vel = LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity)) * ACF.VelScale * DeltaTime ^ 2
+		
+	local Vel = LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity )) * ACF.VelScale * DeltaTime ^ 2 
 	local Up = Dir:Cross(Vel):Cross(Dir):GetNormalized()
 	local Speed = Vel:Length()
 	local VelNorm = Vel / Speed
@@ -599,12 +600,13 @@ function ENT:OnRemove()
 	ACF_ActiveMissiles[self] = nil
 
 end
-
-
+------------------------------------------
+--SPECIAL damage
+------------------------------------------
 
 
 function ENT:ACF_Activate( Recalc )
---[[
+
 	local EmptyMass = self.RoundWeight or self.Mass or 10
 
 	self.ACF = self.ACF or {}
@@ -622,7 +624,7 @@ function ENT:ACF_Activate( Recalc )
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
 	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Aera / 0.78) --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
-	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop aera gone
+	local Health = self.ACF.Volume*0.01/ACF.Threshold							--Setting the threshold of the prop aera gone
 	local Percent = 1
 
 	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
@@ -637,17 +639,13 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.Mass = self.Mass
 	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
 	self.ACF.Type = "Prop"
-    
-	
- 
-	
-]]--
+   
 end
 
 
 
 
---[[
+
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 
 function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This function needs to return HitRes
@@ -670,14 +668,13 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 			self.Inflictor = Inflictor
 		end
 
-		self:ForceDetonate()
+		--self:ForceDetonate()
 
 	end
 
 	return HitRes
 
 end
-]]--
 
 
 

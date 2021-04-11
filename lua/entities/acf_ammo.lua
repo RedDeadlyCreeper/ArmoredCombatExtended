@@ -99,7 +99,7 @@ if CLIENT then
 		local EntFrom, EntTo, Weapon = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() ), msg:ReadString()
 		if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
 		//local List = list.Get( "ACFRoundTypes")	
-		-- local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl" --[Weapon] returns an invalid no
+		--local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl" --[Weapon] returns an invalid no
 		local Mdl = "models/munitions/round_100mm_shot.mdl"
 		EntFrom.RefillAmmoEffect = EntFrom.RefillAmmoEffect or {}
 		table.insert( EntFrom.RefillAmmoEffect, {EntFrom = EntFrom, EntTo = EntTo, Model = Mdl, StTime = SysTime()} )
@@ -158,7 +158,6 @@ function ENT:Initialize()
 	self.RoFMul = 1
 	self.LastMass = 1
 
-	--Lets see if this fixes some invalid ammo
 	self.RoundId = ( self.RoundId or "100mmC"	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
 	self.RoundType = ( self.RoundType or "AP"	) --Type of round, IE AP, HE, HEAT ...
 	self.RoundPropellant = ( self.RoundPropellant or 0 )--Lenght of propellant
@@ -174,7 +173,6 @@ function ENT:Initialize()
 	self.RoundData13 = ( self.RoundData13 or 0 )	
 	self.RoundData14 = ( self.RoundData14 or 0 )	
 	self.RoundData15 = ( self.RoundData15 or 0 )
-
 end
 
 function ENT:ACF_Activate( Recalc )
@@ -398,18 +396,35 @@ function ENT:UpdateOverlayText()
 end
 
 function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
+	
+	--Weapon this round loads into, ie 140mmC, 105mmH ...
+	if Data1 == '20mmHRAC' then                            --checking if its an old gun
+	    self.RoundId = '20mmRAC'                           --replacing it with the current one
+	elseif Data1 == '30mmHRAC' then
+	    self.RoundId = '30mmRAC'
+	elseif Data1 == '105mmSB' then
+	    self.RoundId = '100mmSBC'
+	elseif Data1 == '120mmSB' then
+	    self.RoundId = '120mmSBC'
+	elseif Data1 == '140mmSB' then
+	    self.RoundId = '140mmSBC'
+	elseif Data1 == '170mmSB' then
+	    self.RoundId = '170mmSBC'
+	else
+	    self.RoundId = ( Data1 or '100mmC'	)
+	end
 
-	local GunData = list.Get("ACFEnts").Guns[Data1]
-	if not GunData then 
+	local GunData = list.Get("ACFEnts").Guns[self.RoundId]
+    if not GunData then  
 		self:Remove()
 		return
 	end
-	
+
 	--Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
-	self.RoundId = ( Data1 or '100mmC'	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
-	self.RoundType = ( Data2 or "AP"	) --Type of round, IE AP, HE, HEAT ...
-	self.RoundPropellant = ( Data3 or 0 )--Lenght of propellant
-	self.RoundProjectile = ( Data4 or 0 )--Lenght of the projectile
+
+	self.RoundType = ( Data2 or "AP"	)   --Type of round, IE AP, HE, HEAT ...
+	self.RoundPropellant = ( Data3 or 0 )   --Lenght of propellant
+	self.RoundProjectile = ( Data4 or 0 )   --Lenght of the projectile
 	self.RoundData5 = ( Data5 or 0 )
 	self.RoundData6 = ( Data6 or 0 )
 	self.RoundData7 = ( Data7 or 0 )
@@ -422,28 +437,31 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.RoundData14 = ( Data14 or 0 )	
 	self.RoundData15 = ( Data15 or 0 )
 	
-	local PlayerData = {}
-		PlayerData.Id = self.RoundId or '100mmC'
-		PlayerData.Type = self.RoundType or "AP"
-		PlayerData.PropLength = self.RoundPropellant or 0
-		PlayerData.ProjLength = self.RoundProjectile or 0
-		PlayerData.Data5 = self.RoundData5 or 0
-		PlayerData.Data6 = self.RoundData6 or 0
-		PlayerData.Data7 = self.RoundData7 or 0
-		PlayerData.Data8 = self.RoundData8 or 0
-		PlayerData.Data9 = self.RoundData9 or 0
-		PlayerData.Data10 = self.RoundData10 or 0
-		PlayerData.Data11 = self.RoundData11 or 0	
-		PlayerData.Data12 = self.RoundData12 or 0	
-		PlayerData.Data13 = self.RoundData13 or 0	
-		PlayerData.Data14 = self.RoundData14 or 0	
-		PlayerData.Data15 = self.RoundData15 or 0
+	
+	local PlayerData = {}   --what a mess
+		PlayerData.Id           = self.RoundId 
+		PlayerData.Type         = self.RoundType 
+		PlayerData.PropLength   = self.RoundPropellant 
+		PlayerData.ProjLength   = self.RoundProjectile 
+		PlayerData.Data5        = self.RoundData5 
+		PlayerData.Data6        = self.RoundData6 
+		PlayerData.Data7        = self.RoundData7 
+		PlayerData.Data8        = self.RoundData8 
+		PlayerData.Data9        = self.RoundData9 
+		PlayerData.Data10       = self.RoundData10 
+		PlayerData.Data11       = self.RoundData11 	
+		PlayerData.Data12       = self.RoundData12 	
+		PlayerData.Data13       = self.RoundData13 	
+		PlayerData.Data14       = self.RoundData14 	
+		PlayerData.Data15       = self.RoundData15 
+		
+		
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
 	
-	local Min,Max = self:GetCollisionBounds()
+	local Min,Max = self:GetCollisionBounds()  --Getting entity´s dimensions
 	local Size = (Max - Min)
-
+    --print(Size)
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
 
@@ -459,8 +477,7 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	--	print(shellLength)
 	
 		self.Volume = vol*Efficiency
-	--	local CapMul = (vol > 40250) and ((math.log(vol*0.00066)/math.log(2)-4)*0.15+1) or 1
-	
+
 		--Vertical placement
 		local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
 		--Horizontal Placement 1
@@ -474,8 +491,6 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		--Horizontal 2 piece  placement 2
 		local cap6 = math.floor(math.floor(Size.y/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
 
-	
-	--	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
 
 	local tval1 = math.max(cap1,cap2,cap3)
 	local tval2 = math.max(cap4,cap5,cap6)

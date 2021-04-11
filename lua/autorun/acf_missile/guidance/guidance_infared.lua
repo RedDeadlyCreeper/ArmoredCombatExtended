@@ -87,6 +87,7 @@ function this:GetGuidance(missile)
 		return {}
 	else
         self.TargetPos = targetPos
+		print(self.TargetPos)
 		return {TargetPos = targetPos, ViewCone = self.ViewCone*1.3}
 	end
 	
@@ -130,21 +131,18 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	local missilePos = missile:GetPos()
 	local foundAnim = {}
-	
-
+	  
 	local ScanArray = ACE.contraptionEnts
-
 
 	for k, scanEnt in pairs(ScanArray) do
 
 		if(IsValid(scanEnt))then
-		    model = scanEnt:GetModel()
-			print(model)
+		
 			local entpos = scanEnt:GetPos()
 			local difpos = entpos - missilePos
 			local dist = difpos:Length()
 
-			if dist > self.MinimumDistance then -- Target is outside min seek cone
+			if dist > self.MinimumDistance then -- Target is in propper distance
 --					print("InDist")		
 
 					local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
@@ -153,20 +151,9 @@ function this:GetWhitelistedEntsInCone(missile)
 
 							table.insert(foundAnim, scanEnt)
 
-
-
-
-
-			
 					end
-
-			
 			end
-
-
-
 		end
-
 	end
     
     return foundAnim
@@ -192,44 +179,47 @@ function this:AcquireLock(missile)
     local missilePos = missile:GetPos()
 	local missileForward = missile:GetForward()
 
-
-
-
 	local bestAng = 0
 	local bestent = nil
 
 	for k, classifyent in pairs(found) do
-	    if classifyent:GetParent():IsValid() or classifyent:IsConstrained() or classifyent:GetClass() == 'ace_flare' then    ---only flares, constrained props are allowed as targets.
+	
 		local entpos = classifyent:GetPos()
 		local difpos = entpos - missilePos
 		local dist = difpos:Length()
 		local entvel = classifyent:GetVelocity()
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
-
-		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + 8*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)) --Heat mechanic is dependant on target´s speed, so faster = hotter
+        
+		local Heat
+		
+		if classifyent:GetClass() == 'ace_flare' then
+		
+		    Heat = 4000000000000
+			
+		else
+		
+		    Heat = self.SeekSensitivity*(((classifyent.THeat or 0) + 8*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)) --Heat mechanic is dependant on target´s speed, so faster = hotter
+		
+		end
 --dist
---		print(testHeat)
-		if testHeat > 0 then --Hotter than 50 deg C. Due to its easy to avoid by reducing speed that i´ll have this off (0 deg C.)
+--		print(Heat)
+		if Heat > 0 then --Hotter than 50 deg C. Due to its easy to avoid by reducing speed that i´ll have this off (0 deg C.)
 
 			if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
-				local testang = testHeat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
---				print(testHeat)
+				local testang = Heat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
+--				print(Heat)
 --				print((360-(absang.p + absang.y)))
 				if testang > bestAng then --Sorts targets as closest to being directly in front of radar
-					print("Locking")
+					--print("Locking")
 				bestAng = testang
 				bestent = classifyent
 				end
 
 			end
 		end
-		end
 	end
 
-	
-
-    
 --    print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
 	return bestent

@@ -485,7 +485,7 @@ ACF_DefineRack("1x Javelin", {
 	desc = "A launch tube designed for the javelin.",
 	model = "models/mac/Javelin_straight.mdl",
 	gunclass = "POD",
-	weight = 10,
+	weight = 6.4,
 	year = 1989,
     magsize = 1,
 	armour  = 20,

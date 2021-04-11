@@ -37,7 +37,7 @@ ACF_defineGun("40mmFFAR", { --id
 		rackmdl		= "models/missiles/ffar_40mm_closed.mdl",
 		maxlength	= 60,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 0.2,			-- motor mass - motor casing
 		thrust		= 10000,		-- average thrust - kg*in/s^2
 		burnrate	= 120,			-- cm^3/s at average chamber pressure
@@ -80,7 +80,7 @@ ACF_defineGun("70mmFFAR", { --id
 		rackmdl		= "models/missiles/ffar_70mm_closed.mdl",
 		maxlength	= 90,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
 		thrust		= 15000,		-- average thrust - kg*in/s^2
 		burnrate	= 300,			-- cm^3/s at average chamber pressure

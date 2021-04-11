@@ -3,6 +3,7 @@ AddCSLuaFile( "acf/shared/rounds/roundfunctions.lua" )
 function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
+		
 	GUIData["MaxTotalLength"] = BulletMax["maxlength"] * (Data["LengthAdj"] or 1)
 		
 	Data["Caliber"] = ACF.Weapons["Guns"][PlayerData["Id"]]["caliber"]
@@ -10,7 +11,7 @@ function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
 	Data["Tracer"] = 0
 	if PlayerData["Data10"]*1 > 0 then	--Check for tracer
-		Data["Tracer"] = math.min(5/Data["Caliber"],2.5) --Tracer space calcs
+		Data["Tracer"] = math.min(Data["Caliber"]/5,3) --Tracer space calcs
 	end
 	
 	local PropMax = (BulletMax["propweight"]*1000/ACF.PDensity) / Data["FrAera"]	--Current casing absolute max propellant capacity
@@ -40,9 +41,16 @@ function ACF_RoundShellCapacity( Momentum, FrAera, Caliber, ProjLength )
 	return  Volume, Length, Radius --Returning the cavity volume and the minimum wall thickness
 end
 
-function ACF_RicoProbability( Rico, Speed)
-	local MinAngle = math.min(Rico - Speed/15,89)
-	return { Min = math.Round(math.max(MinAngle,0.1),1), Mean = math.Round(math.max(MinAngle+(90-MinAngle)/2,0.1),1), Max = 90 }
+function ACF_RicoProbability( Rico, Speed )
+	
+	local RicoAngle = math.Round(math.min(Rico -  (( (Speed-800) / 39.37 ) /5),89))
+		
+    local None = math.max(RicoAngle-10,1) --0% chance to ricochet
+	local Mean = math.max(RicoAngle,1)   --50% chance to ricochet
+	local Max = math.max(RicoAngle+10,1)  --100% chance to ricochet
+	
+	return None, Mean, Max
+
 end
 
 --Formula from https://mathscinotes.wordpress.com/2013/10/03/parameter-determination-for-pejsa-velocity-model/
@@ -58,20 +66,57 @@ function ACF_PenRanging( MuzzleVel, DragCoef, ProjMass, PenAera, LimitVel, Range
 	return (Vel*0.0254), Pen
 end
 
-	
+--This function is not used by ACE anymore, but i´ll keep it just for those acf2 custom ammos dont break	
 function ACF_CalcCrateStats( CrateVol, RoundVol )
+
 	local CapMul = (CrateVol > 40250) and ((math.log(CrateVol*0.00066)/math.log(2)-4)*0.15+1) or 1
 	local RoFMul = (CrateVol > 40250) and (1-(math.log(CrateVol*0.00066)/math.log(2)-4)*0.05) or 1
+	
 	--local Cap = math.floor(CapMul * CrateVol * ACF.AmmoMod * ACF.CrateVolEff * 16.38 / RoundVol)
 	local Cap = 0
+	
 	return Cap, CapMul, RoFMul
 end
 
---[[
-function ACF_CalcCrateStats( CrateVol, RoundVol )
+--This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
+function AmmoCapacity( ProjLenght, PropLenght, Caliber )
+
+    local Cal = (Caliber)/ACF.AmmoWidthMul/1.6
+	local shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/3
+
+	local Lenght = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].Lenght
+	local Width = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].Width
+	local Height = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].Height
+	
+    local CrateVol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
+
 	local CapMul = (CrateVol > 40250) and ((math.log(CrateVol*0.00066)/math.log(2)-4)*0.15+1) or 1
 	local RoFMul = (CrateVol > 40250) and (1-(math.log(CrateVol*0.00066)/math.log(2)-4)*0.05) or 1
-	local Cap = math.floor(CapMul * CrateVol * ACF.AmmoMod * ACF.CrateVolEff * 16.38 / RoundVol)
-	return Cap, CapMul, RoFMul
+	
+	local cap1 = (math.floor(Height/shellLength) * math.floor(Lenght/Cal) * math.floor(Width/Cal)) or 1
+		--Horizontal Placement 1
+	local cap2 = (math.floor(Lenght/shellLength) * math.floor(Height/Cal) * math.floor(Width/Cal)) or 1
+		--Horizontal placement 2
+	local cap3 = (math.floor(Width/shellLength) * math.floor(Height/Cal) * math.floor(Lenght/Cal)) or 1
+		--Vertical 2 piece placement
+	local cap4 = math.floor(math.floor(Height/shellLength*2)/2 * math.floor(Lenght/Cal) * math.floor(Width/Cal)) or 1
+		--Horizontal 2 piece  Placement 1
+	local cap5 = math.floor(math.floor(Lenght/shellLength*2)/2 * math.floor(Height/Cal) * math.floor(Width/Cal)) or 1
+		--Horizontal 2 piece  placement 2
+	local cap6 = math.floor(math.floor(Width/shellLength*2)/2 * math.floor(Height/Cal) * math.floor(Lenght/Cal)) or 1
+	
+    local Cap
+	local TwoPiece
+	local tval1 = math.max(cap1,cap2,cap3)
+	local tval2 = math.max(cap4,cap5,cap6)
+
+	if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
+		Cap = tval2
+		TwoPiece = true
+	else
+		Cap = tval1
+		TwoPiece = false
+	end
+    
+    return Cap, CapMul, RoFMul, TwoPiece
 end
-]]--

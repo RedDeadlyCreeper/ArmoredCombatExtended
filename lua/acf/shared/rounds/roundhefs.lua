@@ -51,7 +51,7 @@ function Round.convert( Crate, PlayerData )
 	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
 	Data.LimitVel = 100										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
-	Data.Ricochet = 72										--Base ricochet angle
+	Data.Ricochet = 80										--Base ricochet angle
 	Data.DetonatorAngle = 80
 	
 	Data.BoomPower = Data.PropMass + Data.FillerMass
@@ -227,11 +227,25 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
-	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
-	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
+	---------------------------Ammo Capacity-------------------------------------
 	
-	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
 	
+	local plur = 'Contains '..Cap..' round'
+	
+	if Cap > 1 then
+	    plur = 'Contains '..Cap..' rounds'
+	end
+	
+	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
+	
+	if TwoPiece then	
+		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
+	end
+	
+	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
+	
+	-------------------------------------------------------------------------------	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -244,9 +258,11 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 	
-	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
+    ---------------------------Chance of Ricochet table----------------------------    
+ 	
+	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: '..Data.DetonatorAngle..'°')
 	
+	-------------------------------------------------------------------------------	
 end
 
 list.Set("HERoundTypes", 'HEFS', Round ) --Set the round on chemical folder

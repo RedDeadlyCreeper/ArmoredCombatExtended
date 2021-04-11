@@ -723,7 +723,7 @@ function ACF_ScaledExplosion( ent )
 	local Filter = {ent}
 	while Search do
 		for key,Found in pairs(ents.FindInSphere(Pos, Radius)) do
-			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms
+			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
 				local Hitat = Found:NearestPoint( Pos )
 				
 				local Occlusion = {}
@@ -796,7 +796,7 @@ function ACF_ScaledExplosion( ent )
 	HEWeight=HEWeight*ACF.BoomMult
 	Radius = (HEWeight)^0.33*8*39.37
 			
-	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )
+	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight*0.1 , HEWeight*0.25 , Inflictor , ent, ent )
 	
 	local Flash = EffectData()
 		Flash:SetOrigin( AvgPos )

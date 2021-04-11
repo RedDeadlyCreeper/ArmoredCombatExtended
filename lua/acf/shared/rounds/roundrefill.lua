@@ -57,7 +57,7 @@ end
 function Round.guicreate( Panel, Table )
 
 	acfmenupanel:AmmoSelect()
-	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)		
+	acfmenupanel:CPanelText("Desc", ACFTranslation.ShellRef[2])	--Description (Name, Desc)		
 	Round.guiupdate( Panel, Table )
 
 end

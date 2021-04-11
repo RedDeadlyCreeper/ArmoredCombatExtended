@@ -40,7 +40,7 @@ ACF_defineGun("WalleyeGBU", { --id
 		rackmdl		= "models/bombs/gbu/agm62.mdl",
 		maxlength	= 80,			-- real length is 3.45m, filler should be about 374kg
 		casing		= 0.3,	        -- thickness of missile casing, cm
-		armour		= 3,			-- effective armour thickness of casing, in mm
+		armour		= 13,			-- effective armour thickness of casing, in mm
 		propweight	= 1,	        -- motor mass - motor casing
 		thrust		= 1,
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -79,7 +79,7 @@ ACF_defineGun("227kgGBU", { --id
 		rackmdl		= "models/bombs/gbu/gbu12.mdl",
 		maxlength	= 250,
 		casing		= 0.5,	        -- thickness of missile casing, cm
-		armour		= 3,			-- effective armour thickness of casing, in mm
+		armour		= 12,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -122,7 +122,7 @@ ACF_defineGun("454kgGBU", { --id
 		rackmdl		= "models/bombs/gbu/gbu16.mdl",
 		maxlength	= 500,
 		casing		= 0.5,	        -- thickness of missile casing, cm
-		armour		= 3,			-- effective armour thickness of casing, in mm
+		armour		= 14,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -163,7 +163,7 @@ ACF_defineGun("909kgGBU", { --id
 		rackmdl		= "models/bombs/gbu/gbu10.mdl",
 		maxlength	= 510,
 		casing		= 0.5,	        -- thickness of missile casing, cm
-		armour		= 3,			-- effective armour thickness of casing, in mm
+		armour		= 28,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure

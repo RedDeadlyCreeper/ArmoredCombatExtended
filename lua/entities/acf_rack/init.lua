@@ -107,7 +107,7 @@ end
 
 
 function ENT:ACF_Activate( Recalc )
-	
+	--[[
 	local EmptyMass = self.RoundWeight or self.Mass or 10
 
 	self.ACF = self.ACF or {} 
@@ -116,7 +116,7 @@ function ENT:ACF_Activate( Recalc )
 	if not self.ACF.Aera then
 		self.ACF.Aera = PhysObj:GetSurfaceArea() * 6.45
 	end
-	--[[
+	
 	if not self.ACF.Volume then
 		self.ACF.Volume = PhysObj:GetVolume() * 16.38
 	end
@@ -136,49 +136,12 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.Armour = Armour * (0.5 + Percent/2)
 	self.ACF.MaxArmour = Armour
 	self.ACF.Type = nil
-	self.ACF.Mass = self.Mass
+	self.self.Mass
 	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
-	self.ACF.Type = "Prop"
+	self.ACF.Type = "Prop"ACF.Mass = 
 	]]--
 end
-
---Thanks sestze
-function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This function needs to return HitRes
-
-	local HitRes = ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor )	--Calling the standard damage prop function
-	
-	local curammo = table.Count(self.Missiles)
-	
-	-- Detonate rack if damage causes ammo rupture, or a penetrating shot hits some ammo.
-	if not HitRes.Kill then
-		local Ratio = (HitRes.Damage * (self.ACF.MaxHealth - self.ACF.Health) / self.ACF.MaxHealth)^0.2
-		local ammoRatio = curammo / self.MagSize	--Thanks, eagle-eyed sestze!
-		local chance = math.Rand(0,1)
-		--print(Ratio, ammoRatio, chance, ( Ratio * ammoRatio ) > chance, HitRes.Overkill > 0 and chance > (1 - ammoRatio))
-		if ( Ratio * ammoRatio ) > chance or HitRes.Overkill > 0 and chance > (1 - ammoRatio) then  
-			self.Inflictor = Inflictor
-			HitRes.Kill = true
-		end
-	end
-	
-	if HitRes.Kill then
-		local CanDo = hook.Run("ACF_AmmoExplode", self, nil ) --  which bulletdata to use?!  let's let them figure that out.
-		if CanDo == false then return HitRes end
-		self.Exploding = true
-		if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
-			self.Inflictor = Inflictor
-		end
-		if curammo > 0 then
-			self:DetonateAmmo(Inflictor)
-		else
-			ACF_HEKill( self , VectorRand() )
-		end
-	end
-	
-	return HitRes --This function needs to return HitRes
-end
-
-
+--[[
 function ENT:DetonateAmmo(inflictor)
     
     self:TrimNullMissiles()
@@ -228,8 +191,7 @@ function ENT:DetonateAmmo(inflictor)
     end
     
 end
-
-
+]]--
 
 
 function ENT:CanLoadCaliber(cal)
@@ -476,25 +438,6 @@ end
 
 
 
---[[
-function ENT:SetGuidanceString()
-    
-	local Missile = self:PeekMissile()
-	
-    local guidance  = Missile.Guidance
-	
-	if guidance == 'Dumb' then
-	    self:SetNWString("Guidance", "")
-		self:GetOverlayText()
-		return   
-	end
-    
-	self:SetNWString("Guidance", "")
-	self:GetOverlayText()
-	
-end
-]]--
-
 function ENT:TrimDistantCrates()
 
     for Key, Crate in pairs(self.AmmoLink) do
@@ -608,6 +551,7 @@ function ENT:Think()
 	self:NextThink(Time + 0.5)
     
     self.LastThink = Time
+	
 	
 	return true
 	
@@ -791,7 +735,7 @@ function ENT:AddMissile()
     
     
     if self.HideMissile then missile:SetNoDraw(true) end
-    if self.ProtectMissile then missile.DisableDamage = true end
+    if self.ProtectMissile then missile:SetNotSolid(true) end-- missile.DisableDamage = true end  --this caused some serious exploits when recieving damage.
     
     missile:Spawn()
     
@@ -1007,10 +951,11 @@ function ENT:FireMissile()
             filter[#filter+1] = missile
             
             missile.Filter = filter
-            missile.DisableDamage = false
+            --missile.DisableDamage = false
             
             missile:SetParent(nil)
             missile:SetNoDraw(false)
+			missile:SetNotSolid(false)
             --missile:SetPos(MuzzlePos)
             --missile:SetAngles(ShootVec:Angle())
             local bdata = missile.BulletData

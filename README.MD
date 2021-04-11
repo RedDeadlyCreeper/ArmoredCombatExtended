@@ -4,3 +4,4 @@ The Armoured Combat Framework is a Garry's Mod addon that brings you a balanced,
 
 for the older description, open the readme.txt - expect this content in wiki on future.
 
+Visit our wiki [Here!](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki)

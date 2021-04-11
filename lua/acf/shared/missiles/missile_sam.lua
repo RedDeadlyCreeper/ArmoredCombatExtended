@@ -36,15 +36,15 @@ ACF_defineGun("FIM-92 SAM", { --id
 		rackmdl		= "models/missiles/fim_92_folded.mdl",
 		maxlength	= 195,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 3,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1.5,	        -- motor mass - motor casing
 		thrust		= 6000,	    -- average thrust - kg*in/s^2			--was 120000
-		burnrate	= 1000,	        -- cm^3/s at average chamber pressure	
+		burnrate	= 700,	        -- cm^3/s at average chamber pressure	
 		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 3000,		-- minimum speed beyond which the fins work at 100% efficiency	--was 15000
-		dragcoef	= 0.001,		-- drag coefficient while falling
+		dragcoef	= 0.015,		-- drag coefficient while falling                           --was 0.001
                 dragcoefflight  = 0.0001,                 -- drag coefficient during flight
-		finmul		= 0.02		-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.03		-- fin multiplier (mostly used for unpropelled guidance)    --was 0.02
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -80,15 +80,15 @@ ACF_defineGun("Strela-1 SAM", { --id
 		rackmdl		= "models/missiles/9m31f.mdl",
 		maxlength	= 165,
 		casing		= 0.05,	        -- thickness of missile casing, cm
-		armour		= 5,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 1,	        -- motor mass - motor casing
-		thrust		= 3800,	    -- average thrust - kg*in/s^2		
-		burnrate	= 400,	        -- cm^3/s at average chamber pressure	
+		thrust		= 1750,	    -- average thrust - kg*in/s^2	                                   --was 3800	
+		burnrate	= 150,	        -- cm^3/s at average chamber pressure	                       --was 400
 		starterpct	= 0.05,         	-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency	
 		dragcoef	= 0.003,		-- drag coefficient while falling	
-                dragcoefflight  = 0,                 -- drag coefficient during flight
-		finmul		= 0.03				-- fin multiplier (mostly used for unpropelled guidance)
+                dragcoefflight  = 0.0025,                 -- drag coefficient during flight             --was 0
+		finmul		= 0.05				-- fin multiplier (mostly used for unpropelled guidance)        --was 0.03
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -98,9 +98,9 @@ ACF_defineGun("Strela-1 SAM", { --id
 	racks       = {["1x Strela-1"] = true,  ["2x Strela-1"] = true,  ["4x Strela-1"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
     seekcone    = 20,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.) 
-    viewcone    = 40,   -- getting outside this cone will break the lock.  Divided by 2.	
+    viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.	
 
-    agility     = 1.5,     -- multiplier for missile turn-rate.	
+    agility     = 2,     -- multiplier for missile turn-rate.	--was 1.5
 	armdelay    = 0.00,     -- minimum fuse arming delay	
 	SeekSensitivity = 2
 } )
@@ -126,7 +126,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 		rackmdl		= "models/missiles/fim_92_folded.mdl",
 		maxlength	= 195,
 		casing		= 0.01,	        -- thickness of missile casing, cm
-		armour		= 3,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1.5,	        -- motor mass - motor casing
 		thrust		= 22000,	    -- average thrust - kg*in/s^2			--was 120000
 		burnrate	= 500,	        -- cm^3/s at average chamber pressure	
@@ -152,7 +152,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 
 ACF_defineGun("9M311", { --id
 	name = "9M311 Missile",
-	desc = "The 9M311 missile is a hypersonic Anti Air missile that while agile is not agile enough to hit maneuvering planes but excels against helicopters.",
+	desc = "The 9M311 missile is a hypersonic Anti Air missile that while is not agile enough to hit maneuvering planes, excels against helicopters.",
 	model = "models/missiles/aim9.mdl",
 	gunclass = "SAM",
     rack = "1x 9m311",  -- Which rack to spawn this missile on?
@@ -166,7 +166,7 @@ ACF_defineGun("9M311", { --id
 		rackmdl		= "models/missiles/aim9.mdl",
 		maxlength	= 140,
 		casing		= 0.1,				-- thickness of missile casing, cm
-		armour		= 6,				-- effective armour thickness of casing, in mm
+		armour		= 5,				-- effective armour thickness of casing, in mm
 		propweight	= 0.8,				-- motor mass - motor casing
 		thrust		= 17000,				-- average thrust - kg*in/s^2
 		burnrate	= 800,				-- cm^3/s at average chamber pressure

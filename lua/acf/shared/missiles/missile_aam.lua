@@ -18,7 +18,7 @@ ACF_defineGunClass("AAM", {
 } )
 
 
--- The sidewinder analogue. we have to scale it down because acf is scaled down.
+-- The AIM-9 Sidewinder. The perfect choice for dogfights at short range. Although respectable payload, still tiny.
 ACF_defineGun("AIM-9 AAM", { --id
 	name = "AIM-9 Missile",
         desc = "The gold standard in airborne jousting sticks. Agile and reliable with a rather underwhelming effective range, this homing missile is the weapon of choice for dogfights.\nSeeks 20 degrees, so well suited to dogfights.",
@@ -35,14 +35,14 @@ ACF_defineGun("AIM-9 AAM", { --id
 		rackmdl		= "models/missiles/aim9m.mdl",
 		maxlength	= 160,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 15,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 1,	        -- motor mass - motor casing
 		thrust		= 25000,	    -- average thrust - kg*in/s^2		--was 100000
-		burnrate	= 650,	        -- cm^3/s at average chamber pressure	--was 350
+		burnrate	= 700,	        -- cm^3/s at average chamber pressure	--was 650
 		starterpct	= 0.1,          -- percentage of the propellant consumed in the starter motor.	--was 0.2
-		minspeed	= 3000,		-- minimum speed beyond which the fins work at 100% efficiency
+		minspeed	= 12000,		-- minimum speed beyond which the fins work at 100% efficiency  --was 3000
 		dragcoef	= 0.002,		-- drag coefficient while falling
-                dragcoefflight  = 0.03,                 -- drag coefficient during flight
+        dragcoefflight  = 0.03,                 -- drag coefficient during flight
 		finmul		= 0.025			-- fin multiplier (mostly used for unpropelled guidance)
 	},
 
@@ -55,13 +55,12 @@ ACF_defineGun("AIM-9 AAM", { --id
     seekcone    = 10,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
     viewcone    = 30,   -- getting outside this cone will break the lock.  Divided by 2.		--was 30
 
-    agility     = 5,  -- multiplier for missile turn-rate.
+    agility     = 5,  -- multiplier for missile turn-rate.      --was 5
 	armdelay    = 0.00,     -- minimum fuse arming delay		--was 0.4
 	SeekSensitivity = 3
 } )
 
--- Sparrow analog.  We have to scale it down because acf is scaled down.  It's also short-range due to AAM guidelines.
--- Balance the round in line with the 70mm pod rocket.
+--AIM-120 Sparrow. A medium-Range AAM missile, perfect for those who really need a decent boom in a single pass. Just remember that this is not an AIM-9 and is better to aim before.
 ACF_defineGun("AIM-120 AAM", { --id
 	name = "AIM-120 Missile",
 	desc = "Faster than the AIM-9, but also a lot heavier. Burns hot and fast, with a good reach, but harder to lock with.  This long-range missile is sure to deliver one heck of a blast upon impact.\nSeeks only 10 degrees and less agile than its smaller stablemate, so choose your shots carefully.",
@@ -79,14 +78,14 @@ ACF_defineGun("AIM-120 AAM", { --id
 		rackmdl		= "models/missiles/aim120c.mdl",
 		maxlength	= 220,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 20,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 2,	        -- motor mass - motor casing
-		thrust		= 25000,	    -- average thrust - kg*in/s^2		--was 200000
-		burnrate	= 450,	        -- cm^3/s at average chamber pressure	--was 800
+		thrust		= 50000,	    -- average thrust - kg*in/s^2		--was 25000
+		burnrate	= 700,	        -- cm^3/s at average chamber pressure	--was 450
 		starterpct	= 0.02,          -- percentage of the propellant consumed in the starter motor.
-		minspeed	= 3000,			-- minimum speed beyond which the fins work at 100% efficiency
+		minspeed	= 3000,			-- minimum speed beyond which the fins work at 100% efficiency   --was 3000
 		dragcoef	= 0.002,		-- drag coefficient while falling
-                dragcoefflight  = 0.05,                 -- drag coefficient during flight
+        dragcoefflight  = 0.05,                 -- drag coefficient during flight
 		finmul		= 0.01			-- fin multiplier (mostly used for unpropelled guidance)
 	},
 
@@ -96,20 +95,20 @@ ACF_defineGun("AIM-120 AAM", { --id
 
 	racks       = {["1xRK"] = true, ["2xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    seekcone    = 5,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+    seekcone    = 7.5,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
     viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.	--was 25
 
-    agility     = 2,    -- multiplier for missile turn-rate.
+    agility     = 3.5,    -- multiplier for missile turn-rate. -- was 2
 	armdelay    = 0.00,     -- minimum fuse arming delay --was 0.3
 	SeekSensitivity = 2.5
 } )
 
---Phoenix.  Since we've rebalanced missile, and since we're making this a SPECIALIST weapon and scaling it to gmod, we can do it.
---it's heavily based off the sparrow.  Since we made the aim-120 LESS of the "big dick of the air", we'll have this take the more specialized role
---basically split the old aim-120 into the enw one and this.  This is WAY SLOWER than the real Phoenix, to compensate for long flight times.
+--AIM-54 phoenix. Being faster and bigger than AIM-120, can deliver a single big blast against the target, however, this 300kgs piece of aerial destruction has a serious trouble 
+--with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", { --id
 	name = "AIM-54 Missile",
-	desc = "A BEEFY god-tier anti-bomber weapon, made with Jimmy Carter's repressed rage.  Getting hit with one of these is a significant emotional event that is hard to avoid if you're flying high, but with a very narrow 8 degree seeker, a thin casing, and a laughable speed, don't expect to be using it vs MIGs.",
+	desc = "A supersonic long-range air to air missile, a early generation to AIM-120. This 300kgs beast is decided to reduce your first opponent that it faces to ashes, of course, if its tiny seek cone is able to see it.",
+	--desc = "A BEEFY god-tier anti-bomber weapon, made with Jimmy Carter's repressed rage.  Getting hit with one of these is a significant emotional event that is hard to avoid if you're flying high, but with a very narrow 8 degree seeker, a thin casing, and a laughable speed, don't expect to be using it vs MIGs.",
 	model = "models/missiles/aim54.mdl",
 	gunclass = "AAM",
     rack = "1xRK",  -- Which rack to spawn this missile on?
@@ -124,14 +123,14 @@ ACF_defineGun("AIM-54 AAM", { --id
 		rackmdl		= "models/missiles/aim54.mdl",
 		maxlength	= 220,
 		casing		= 0.2,	        -- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 5,	        -- motor mass - motor casing
-		thrust		= 10000,	    -- average thrust - kg*in/s^2		--was 200000
+		thrust		= 140000,	    -- average thrust - kg*in/s^2		--was 10000
 		burnrate	= 200,	        -- cm^3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,          -- percentage of the propellant consumed in the starter motor.
-		minspeed	= 1000,			-- minimum speed beyond which the fins work at 100% efficiency
+		minspeed	= 1000,			-- minimum speed beyond which the fins work at 100% efficiency  --was 1000
 		dragcoef	= 0.01,		-- drag coefficient while falling
-                dragcoefflight  = 0.1,                 -- drag coefficient during flight
+        dragcoefflight  = 0.1,                 -- drag coefficient during flight
 		finmul		= 0.05			-- fin multiplier (mostly used for unpropelled guidance)
 	},
 
@@ -141,10 +140,10 @@ ACF_defineGun("AIM-54 AAM", { --id
 
 	racks       = {["1xRK"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    seekcone    = 4,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+    seekcone    = 6,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
     viewcone    = 60,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.7,    -- multiplier for missile turn-rate.
+    agility     = 0.1,    -- multiplier for missile turn-rate.  --was 0.7
 	armdelay    = 0.00,     -- minimum fuse arming delay --was 0.3
 	SeekSensitivity = 3
 } )

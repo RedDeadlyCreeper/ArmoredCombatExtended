@@ -37,8 +37,8 @@ function EFFECT:Init( data )
 
 		end
 		ACF_SimBulletFlight( Bullet, self.Index )
-		--self:Remove()	--This effect updated the old one, so it removes itself now
-		if IsValid(Bullet.Tracer) then Bullet.Tracer:Finish() end
+		self:Remove()	--This effect updated the old one, so it removes itself now
+		--if IsValid(Bullet.Tracer) then Bullet.Tracer:Finish() end
 		self.Alive = false
 
 	else
@@ -108,7 +108,7 @@ function EFFECT:Think()
 	end
 
 	--self:Remove()
-	if Bullet and IsValid(Bullet.Tracer) then Bullet.Tracer:Finish() end
+	--if Bullet and IsValid(Bullet.Tracer) then Bullet.Tracer:Finish()  end
 	return false
 
 end
@@ -118,7 +118,7 @@ function EFFECT:ApplyMovement( Bullet )
 	local setPos = Bullet.SimPos
 	if((math.abs(setPos.x) > 16380) or (math.abs(setPos.y) > 16380) or (setPos.z < -16380)) then
 		--self:Remove()
-		if Bullet and IsValid(Bullet.Tracer) then Bullet.Tracer:Finish() end
+		--if Bullet and IsValid(Bullet.Tracer) then Bullet.Tracer:Finish()  end
 		self.Alive = false
 		return
 	end
@@ -128,6 +128,8 @@ function EFFECT:ApplyMovement( Bullet )
 	end
 
 	if Bullet.Tracer and IsValid(Bullet.Tracer) then
+	
+	    --print('has tracer!')
 		local DeltaTime = ACF.CurTime - Bullet.LastThink
 		--local DeltaPos = Bullet.SimFlight*DeltaTime
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
@@ -146,6 +148,7 @@ function EFFECT:ApplyMovement( Bullet )
 			Light:SetStartLength( Length )
 			Light:SetEndLength( 1 ) --Length
 		end
+		
 		for i=1, MaxSprites do
 			local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000"..math.random(1,9), setPos - (DeltaPos*i/MaxSprites) )
 			if (Smoke) then
@@ -164,6 +167,9 @@ function EFFECT:ApplyMovement( Bullet )
 				--Smoke:SetLighting( 0 )
 			end
 		end
+	else
+	    --print('no tracer')
+	
 	end
 end
 

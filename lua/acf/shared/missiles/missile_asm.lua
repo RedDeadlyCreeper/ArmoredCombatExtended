@@ -36,11 +36,11 @@ ACF_defineGun("AGM-114 ASM", { --id
 		rackmdl		= "models/missiles/agm_114.mdl",
 		maxlength	= 150,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 8,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 12000,			-- average thrust - kg*in/s^2
+		thrust		= 15000,			-- average thrust - kg*in/s^2   --was 12000
 		burnrate	= 100,			-- cm^3/s at average chamber pressure
-		starterpct	= 0.25,			-- percentage of the propellant consumed in the starter motor.
+		starterpct	= 0.25,			-- percentage of the propellant consumed in the starter motor.   --was 0.25
 		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
         dragcoefflight  = 0.05,                 -- drag coefficient during flight
@@ -78,14 +78,14 @@ ACF_defineGun("AGM-45 ASM", { --id
 		rackmdl		= "models/missiles/aim120.mdl",
 		maxlength	= 150,
 		casing		= 0.15,			-- thickness of missile casing, cm
-		armour		= 8,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 3,			-- motor mass - motor casing
-		thrust		= 600,		-- average thrust - kg*in/s^2
+		thrust		= 2000,		-- average thrust - kg*in/s^2           --was 600
 		burnrate	= 300,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.05,			-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
-                dragcoefflight  = 0,                 -- drag coefficient during flight
+		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency   --was 4000
+		dragcoef	= 0.004,		-- drag coefficient while falling                                --was 0.001
+                dragcoefflight  = 0.004,                 -- drag coefficient during flight
 		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.18)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -99,7 +99,7 @@ ACF_defineGun("AGM-45 ASM", { --id
 	seekcone = 5,		--why do you need a big seeker cone if yuo're firing vs a SAM site?
 	viewcone = 10,		--I don't think a fucking SAM site should have to dodge much >_>
 	
-    agility     = 0.08,		-- multiplier for missile turn-rate.
+    agility     = 0.03,		-- multiplier for missile turn-rate.  --was 0.08
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
@@ -120,15 +120,15 @@ ACF_defineGun("AGM-122 ASM", { --id
 		rackmdl		= "models/missiles/aim9.mdl",
 		maxlength	= 140,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 7,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 4,	        -- motor mass - motor casing
-		thrust		= 4000,	    -- average thrust - kg*in/s^2		--was 100000
-		burnrate	= 1400,	        -- cm^3/s at average chamber pressure	--was 350
+		thrust		= 8500,	    -- average thrust - kg*in/s^2		--was 4000
+		burnrate	= 1600,	        -- cm^3/s at average chamber pressure	--was 1400
 		starterpct	= 0.4,          -- percentage of the propellant consumed in the starter motor.	--was 0.2
-		minspeed	= 5000,		-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
+		minspeed	= 12000,		-- minimum speed beyond which the fins work at 100% efficiency      --was 5000
+		dragcoef	= 0.005,		-- drag coefficient while falling                                   --0.001
                 dragcoefflight  = 0.001,                 -- drag coefficient during flight
-		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.02,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.1)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
@@ -138,10 +138,10 @@ ACF_defineGun("AGM-122 ASM", { --id
 
 	racks       = {["1xRK"] = true,  ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["1xRK_small"] = true},   -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    seekcone    = 10,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-    viewcone    = 20,   -- getting outside this cone will break the lock.  Divided by 2.
+    seekcone    = 7.5,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+    viewcone    = 14,   -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.3,  -- multiplier for missile turn-rate.
+    agility     = 0.3,  -- multiplier for missile turn-rate.  --was 0.3
     armdelay    = 0.00     -- minimum fuse arming delay		--was 0.4
 } )
 
@@ -162,9 +162,9 @@ ACF_defineGun("AGM-65 ASM", { --id
 		rackmdl		= "models/missiles/aim54.mdl",
 		maxlength	= 220,
 		casing		= 0.2,	        -- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 5,	        -- motor mass - motor casing
-		thrust		= 10000,	    -- average thrust - kg*in/s^2		--was 200000
+		thrust		= 18000,	    -- average thrust - kg*in/s^2		--was 10000
 		burnrate	= 200,	        -- cm^3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,          -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1000,			-- minimum speed beyond which the fins work at 100% efficiency

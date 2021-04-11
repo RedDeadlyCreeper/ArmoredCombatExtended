@@ -422,11 +422,25 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data14", Data.HEAllocation )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
-	local vol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
-	local Cap, CapMul, RoFMul = ACF_CalcCrateStats( vol, Data.RoundVolume )
+	---------------------------Ammo Capacity-------------------------------------
 	
-	--acfmenupanel:CPanelText("BonusDisplay", "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\nContains "..Cap.." rounds")
+	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
 	
+	local plur = 'Contains '..Cap..' round'
+	
+	if Cap > 1 then
+	    plur = 'Contains '..Cap..' rounds'
+	end
+	
+	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
+	
+	if TwoPiece then	
+		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
+	end
+	
+	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
+	
+	-------------------------------------------------------------------------------	
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle(1st)", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -446,7 +460,7 @@ function Round.guiupdate( Panel, Table )
 	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
 
-	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \nMax Penetration: "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \nMax Penetration: "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Max Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
 	
 end
 

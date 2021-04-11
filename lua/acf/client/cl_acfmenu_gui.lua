@@ -1,3 +1,11 @@
+--[[------------------------
+    1.- This is the file that displays the main menu, such as guns, ammo, mobility and subfolders.
+	
+    2.- Almost everything here has been documented, you should find the responsible function easily.
+
+    3.- If you are going to do changes, please not to be a shitnuckle and write a note alongside the code that you´ve changed/edited. This should avoid issues with future developers.
+
+]]--------------------------
 function PANEL:Init( ) 
 
 	acfmenupanel = self.Panel
@@ -111,7 +119,7 @@ function PANEL:Init( )
 
 print(table.Count(self.ModClasses))
 
-	if table.Count(self.ModClasses["GunClass"]) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder repectetively!!
+	if table.Count(self.ModClasses["GunClass"]) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder respectively!!
 	    
 	    local Mod = HomeNode:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
 	
@@ -712,7 +720,11 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	Legal:SizeToContents()
 	
 	acfmenupanel.CustomDisplay:AddItem( Legal )
---[[	
+	
+	
+--[[ Disabled atm. No idea why convar becomes dumb on dedicated servers
+
+
 	local Damage = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
 	Damage:SetPos(50,200)
 	Damage:SetText("Enable ACE Damage permissions? (requires restart and CPPI to work)")
@@ -722,7 +734,7 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	Damage:SizeToContents()
 	
 	acfmenupanel.CustomDisplay:AddItem( Damage )
-]]--
+]]--	
 end
 
 --[[=========================
@@ -761,6 +773,9 @@ function ContactGUICreate( Table )
 	
 end
 
+--[[=========================
+   Ammo & Gun selection content
+]]--=========================
 function PANEL:AmmoSelect( Blacklist )
 	
 	if not acfmenupanel.CustomDisplay then return end
@@ -768,42 +783,92 @@ function PANEL:AmmoSelect( Blacklist )
 	
 	if not acfmenupanel.AmmoData then
 		acfmenupanel.AmmoData = {}
-			acfmenupanel.AmmoData["Id"] = "Ammo2x4x4"
+			acfmenupanel.AmmoData["Id"] = "Ammo2x4x4"  --default Ammo dimension on list
 			acfmenupanel.AmmoData["Type"] = "Ammo"
 			acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"]["12.7mmMG"]["round"]
+			ModelDisplay = "models/ammocrates/ammocrate_2x4x4.mdl"
 	end
+--[[=========================
+   Creating the ammo crate selection
+]]--=========================	
+
+	acfmenupanel.CData.CrateSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type	
+	acfmenupanel.CData.CrateSelect:SetSize(100, 30)
 	
-	--Creating the ammo crate selection
-	acfmenupanel.CData.CrateSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
-		acfmenupanel.CData.CrateSelect:SetSize(100, 30)
 		for Key, Value in pairs( acfmenupanel.WeaponDisplay["Ammo"] ) do
-			acfmenupanel.CData.CrateSelect:AddChoice( Value.id , Key )
+		
+			acfmenupanel.CData.CrateSelect:AddChoice( Value.id , Key ) --Creates the list
+			
 		end
-		acfmenupanel.CData.CrateSelect.OnSelect = function( index , value , data )
+		
+	    acfmenupanel.CData.CrateSelect.OnSelect = function( index , value , data )   -- calls the ID of the list
 			RunConsoleCommand( "acfmenu_id", data )
 			acfmenupanel.AmmoData["Id"] = data
+			
+			if acfmenupanel.CData.CrateDisplay then
+			    
+				cratemodel = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].model
+				
+			    acfmenupanel.CData.CrateDisplay:SetModel(cratemodel)
+				acfmenupanel:CPanelText("CrateDesc", ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].desc)
+				DisEnt = acfmenupanel.CData.CrateDisplay:GetEntity()
+			
+			end
+			
+			
+			--acfmenupanel.AmmoData["Model"] = data
 			self:UpdateAttribs()
 		end
-		acfmenupanel.CData.CrateSelect:SetText(acfmenupanel.AmmoData["Id"])
-		RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
+		
+	acfmenupanel.CData.CrateSelect:SetText(acfmenupanel.AmmoData["Id"])
+	RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
+		
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CrateSelect )
 	
-	--Create the caliber selection display
+--[[=========================
+   Creating the caliber selection display
+]]--=========================	
+
 	acfmenupanel.CData.CaliberSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	
-		acfmenupanel.CData.CaliberSelect:SetSize(100, 30)
+	acfmenupanel.CData.CaliberSelect:SetSize(100, 30)
+	
 		for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
+		
 			if( !table.HasValue( Blacklist, Value.gunclass ) ) then
 				acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
 			end
+			
 		end
+		
 		acfmenupanel.CData.CaliberSelect.OnSelect = function( index , value , data )
 			acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]
 			self:UpdateAttribs()
 			self:UpdateAttribs()	--Note : this is intentional
 		end
-		acfmenupanel.CData.CaliberSelect:SetText(acfmenupanel.AmmoData["Data"]["id"])
+		
+	acfmenupanel.CData.CaliberSelect:SetText(acfmenupanel.AmmoData["Data"]["id"])
+		
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CaliberSelect )
 
+--[[=========================
+   Creating the Model display
+]]--=========================	
+   --Used to create the general model display
+   if not acfmenupanel.CData.CrateDisplay then
+   
+   acfmenupanel:CPanelText("CrateDesc", ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].desc)
+   
+   acfmenupanel.CData.CrateDisplay = vgui.Create( "DModelPanel" , acfmenupanel.CustomDisplay )
+   acfmenupanel.CData.CrateDisplay:SetSize(200,200)  
+   acfmenupanel.CData.CrateDisplay:SetCamPos( Vector( 250, 500, 250 ) )
+   acfmenupanel.CData.CrateDisplay:SetLookAt( Vector( 0, 0, 0 ) )
+   acfmenupanel.CData.CrateDisplay:SetFOV( 20 ) 
+   acfmenupanel.CData.CrateDisplay:SetModel(ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].model)   
+   acfmenupanel.CData.CrateDisplay.LayoutEntity = function( entity ) end
+   
+   acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CrateDisplay )
+   
+   end
 end
 
 function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variable name in the table, Value, Min value, Max Value, slider text title, slider decimeals, description text below slider 
@@ -881,6 +946,20 @@ function PANEL:AmmoCheckbox(Name, Title, Desc) --Variable name in the table, sli
 	
 end
 
+function PANEL:AmmoStats(RoundLenght, MaxTotalLenght ,MuzzleVel ,MaxPen)
+
+    acfmenupanel:CPanelText("AmmoStats", "Round Length : "..RoundLenght.."/"..MaxTotalLenght.." cms\n\nMuzzle Velocity : "..MuzzleVel.." m\\s\nMax penetration : "..MaxPen.." mm RHA")	--Total round length (Name, Desc)
+	
+end
+
+--[[-------------------------------------
+
+    PANEL:CPanelText(Name, Desc)
+	
+	1-Name: Identifier of this text
+	2-Desc: The content of this text
+
+]]---------------------------------------
 function PANEL:CPanelText(Name, Desc)
 
 	if not acfmenupanel["CData"][Name.."_text"] then

@@ -168,7 +168,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	if List.Guns[Id] then 
 	EID = Id 
 	elseif Id == '20mmHRAC' then    
-	EID = '20mmRAC' 
+	EID = '20mmRAC'	
 	elseif Id == '30mmHRAC' then
     EID = '30mmRAC'
 	elseif Id == '105mmSB' then  --ACF2 smoothbore compatibility / thanks old-ACF devs for creating another smoothbore ids
@@ -405,14 +405,24 @@ function ENT:Link( Target )
 	-----------------------------------------
 	elseif Target:GetClass() == "acf_ammo" then --Ammo Link
 	
-	-- Don't link if it's not an ammo crate
-
+	--We have to change the Id manually here
+	if self.Id == '20mmHRAC' then
+	    self.Id = '20mmRAC'
+	elseif self.Id == '30mmHRAC' then
+	    self.Id = '30mmRAC'	
+	elseif self.Id == '105mmSB' then
+	    self.Id = '100mmSBC'
+	elseif self.Id == '120mmSB' then
+	    self.Id = '120mmSBC'
+	elseif self.Id == '140mmSB' then
+	    self.Id = '140mmSBC'
+	elseif self.Id == '170mmSB' then
+	    self.Id = '170mmSBC'
+	end
 	
 	-- Don't link if it's not the right ammo type
-	if Target.BulletData.Id ~= self.Id then
-		--if not (self.Class == "AL" and string.find(Target.BulletData.Id, "mmC", 1, true)) then --allows AL to load cannon ammo
-			return false, "Wrong ammo type!"
-		--end
+	if Target.BulletData.Id ~= self.Id then 
+        return false, "Wrong ammo type!"
 	end
 	
 	-- Don't link if it's a refill crate
@@ -595,6 +605,9 @@ end
 
 function ENT:Think()
 	
+
+	
+	
 	if ACF.CurTime > self.NextLegalCheck then
 
 		-- check gun is legal
@@ -630,8 +643,10 @@ function ENT:Think()
 	self.Heat = math.max(self.Heat +(Energyloss/(Mass^0.5)*2/743.2),0)
 	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
 
-	local OverHeat = math.max(self.Heat/150,0)
-	if OverHeat > 1.0 then
+--TODO: instead of breaking the gun by heat, decrease accurancy and jam it
+
+	local OverHeat = math.max(self.Heat/150,0) --overheat will start affecting the gun at 150° celcius
+	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
 	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
 
 			if HitRes.Kill then

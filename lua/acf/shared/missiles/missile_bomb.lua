@@ -35,7 +35,7 @@ ACF_defineGun("50kgBOMB", { --id
 		rackmdl		= "models/bombs/fab50.mdl",
 		maxlength	= 120,
 		casing		= 0.05,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -77,7 +77,7 @@ ACF_defineGun("100kgBOMB", { --id
 		rackmdl		= "models/bombs/fab100.mdl",
 		maxlength	= 200,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -117,7 +117,7 @@ ACF_defineGun("250kgBOMB", { --id
 		rackmdl		= "models/bombs/fab250.mdl",
 		maxlength	= 400, --was 115, wtf!
 		casing		= 0.15,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 12.5,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -158,7 +158,7 @@ ACF_defineGun("500kgBOMB", { --id
 		rackmdl		= "models/bombs/fab500.mdl",
 		maxlength	= 400,
 		casing		= 0.2,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 15,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -198,7 +198,7 @@ ACF_defineGun("1000kgBOMB", { --id
 		rackmdl		= "models/bombs/an_m66.mdl",
 		maxlength	= 500,
 		casing		= 0.2,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 30,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -239,7 +239,7 @@ ACF_defineGun("100kgGBOMB", { --id
 		rackmdl		= "models/missiles/micro.mdl",
 		maxlength	= 200,
 		casing		= 0.1,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure
@@ -275,7 +275,7 @@ ACF_defineGun("250kgGBOMB", { --id
 		rackmdl		= "models/missiles/fab250.mdl",
 		maxlength	= 400, 
 		casing		= 0.2,	        -- thickness of missile casing, cm
-		armour		= 6,			-- effective armour thickness of casing, in mm
+		armour		= 13,			-- effective armour thickness of casing, in mm
 		propweight	= 0,	        -- motor mass - motor casing
 		thrust		= 1,	    	-- average thrust - kg*in/s^2
 		burnrate	= 1,	        -- cm^3/s at average chamber pressure

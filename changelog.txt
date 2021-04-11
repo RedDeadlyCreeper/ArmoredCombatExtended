@@ -387,3 +387,16 @@ r100
 -fixed bullets passing through visclip corners.
 -nerfed APCR/HVAP effectiveness vs slope armor.
 -Disabled ammo cap from menu temporally.
+
+*r131
+-Ammo capacity fix & some additions
+-Readjusted tracehull diameter, that should be equal to diameter of model bullet.
+-moving betty cockpit sound files to acf extras folder
+-Ricochet stats rework once again
+-Added more health for crewseats.
+-tracer volume usage readjusted.
+-bullet wont lose its tracer if ricochets/penetrates, etc. 
+-ACF2 smoothbores will be fully converted to ACE smoothbores (+ammo). Same for HRACs (converted to RACs + ammo)
+-Excluded large calibers being damaged by heat.
+-reduced ammo & fuel detonation blast.
+-rebalanced most of missiles (speed, agility, range, etc), tell us via discord if something should be changed yet.

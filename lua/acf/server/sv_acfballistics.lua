@@ -22,7 +22,7 @@ function ACF_CreateBullet( BulletData )
 
 	--Those are BulletData settings that are global and shouldn't change round to round	
 	local cvarGrav = GetConVar("sv_gravity")
-	BulletData["Accel"] = Vector(0,0,cvarGrav:GetInt()*-1)
+	BulletData["Accel"] =  Vector(0,0,cvarGrav:GetInt()*-1)--Vector(0,0,cvarGrav:GetInt()*-1)
 	BulletData["LastThink"] = ACF.SysTime
 	BulletData["FlightTime"] = 0
 	BulletData["TraceBackComp"] = 0
@@ -198,7 +198,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--FlightTr.mins = -FlightTr.maxs
 	FlightTr.mask = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
-	TROffset = 0.3937*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+	TROffset = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 	FlightTr.maxs = Vector( TROffset, TROffset, TROffset )
 	FlightTr.mins = -FlightTr.maxs	
 	
@@ -210,7 +210,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	    
 		RetryTrace = false  --disabling....
 		FlightTr.start = Bullet.StartTrace
-		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation 		
+		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) --compensation 		
 
 		
 		util.TraceHull(FlightTr)    --Defining tracehull at first instance
@@ -306,6 +306,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			--print(Bullet.Flight)
 			ACF_CalcBulletFlight( Index, Bullet, true )
 			end
+			
 		else						--Else end the flight here
 			if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
@@ -361,16 +362,19 @@ function ACF_DoBulletsFlight( Index, Bullet )
 end
 
 function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
-
+	
 	if Type == "Update" then
 		local Effect = EffectData()
+		    
 			Effect:SetAttachment( Index )		--Bulet Index
 			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
+			
 			if Hit > 0 then		-- If there is a hit then set the effect pos to the impact pos instead of the retry pos
 				Effect:SetOrigin( HitPos )		--Bullet Pos
 			else
 				Effect:SetOrigin( Bullet.Pos )
 			end
+			
 			Effect:SetScale( Hit )	--Hit Type 
 		util.Effect( "ACF_BulletEffect", Effect, true, true )
 
