@@ -400,3 +400,18 @@ r100
 -Excluded large calibers being damaged by heat.
 -reduced ammo & fuel detonation blast.
 -rebalanced most of missiles (speed, agility, range, etc), tell us via discord if something should be changed yet.
+
+*r132
+-Completely new contraptionscan.
+-made ace files easy to export ( for an acf3 transition in near future ). 
+-optimized infrared & radar guidances. 
+-infrared will target heat emitter ents now ( engines, guns, etc)
+-improved heat. Not radiators yet
+-ecm, tracking radar and irst will work inmediately once spawned via spawnmenu
+-rebalanced cast and ceramic health reduced
+-fixed "nil" material 
+-fixed ace sound replacer error
+-increased smoothbore accuracy 
+-added APHE for MGs
+-added ROF for almost every gun 
+-updated ace armor analyzer

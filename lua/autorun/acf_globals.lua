@@ -7,11 +7,16 @@ ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2021      --Current Year
 
---[[
+print('[ACE | INFO]- loading ACE. . .')
 
-   --- ServerSide Convars ---
+ACE = {}
+ACE.ArmorTypes = {}
 
-]]--
+
+--[[----------------------------
+       ServerSide Convars 
+]]------------------------------
+
 CreateConVar('sbox_max_acf_gun', 24)           -- Gun limit
 CreateConVar('sbox_max_acf_rapidgun', 4)       -- Guns like RACs, MGs, and ACs
 CreateConVar('sbox_max_acf_largegun', 2)       -- Guns with a caliber above 100mm
@@ -59,37 +64,37 @@ ACF.CrateVolEff = 1                            --magic number that adjusts the e
 
 ACF.BoomMult = 1.5                             --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
-ACF.AluminiumEffectiveness=0.34                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.AluminumResialiance = 0.8                  --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.AluminumSpallResist=1.5                    --Lower = less damage from spall
-ACF.AluminumSpallMult =  2                     --Higher = spalls more
-ACF.AluminumHeatMul = 80                       --Higher = More damage from HEAT
+--ACF.AluminiumEffectiveness=0.34                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+--ACF.AluminumResialiance = 0.8                  --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.AluminumSpallResist=1.5                    --Lower = less damage from spall
+--ACF.AluminumSpallMult =  2                     --Higher = spalls more
+--ACF.AluminumHeatMul = 80                       --Higher = More damage from HEAT
 
-ACF.CastEffectiveness=0.5                      --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CastResilianceFactor = 35                  --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.CastEffectiveness=0.5                      --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+--ACF.CastResilianceFactor = 35                  --Higher = less damage, Lower = more damage. 2x = half damage.
 
-ACF.CeramicEffectiveness=2.4                   --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.CeramicResilianceFactor = 0.8              --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.CeramicPierceDamage = 5                    --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+--ACF.CeramicEffectiveness=2.4                   --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+--ACF.CeramicResilianceFactor = 0.8              --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.CeramicPierceDamage = 5                    --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
 	
-ACF.RubberEffectiveness = 0.02
-ACF.RubberResilianceFactor = 0.1               --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.RubberResilianceFactorCatch = 0.05         --Lower = more damage. If someone somehow catches a bullet with rubber use this.
-ACF.RubberSpecialEffect = 30                   --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
-ACF.RubberEffectivenessSpecial = 3             --How effective rubber is versus projectiles that qualify for the above.
-ACF.RubberResilianceFactorSpecial = 0.15       --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.RubberHEVulnerbility = 0.3                 --Lower = more damage
+--ACF.RubberEffectiveness = 0.02
+--ACF.RubberResilianceFactor = 0.1               --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.RubberResilianceFactorCatch = 0.05         --Lower = more damage. If someone somehow catches a bullet with rubber use this.
+--ACF.RubberSpecialEffect = 30                   --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
+--ACF.RubberEffectivenessSpecial = 3             --How effective rubber is versus projectiles that qualify for the above.
+--ACF.RubberResilianceFactorSpecial = 0.15       --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.RubberHEVulnerbility = 0.3                 --Lower = more damage
 
-ACF.TextoliteEffectiveness=0.23                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
-ACF.TextoliteResilianceFactor = 0.005          --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEATEffectiveness = 0.55          --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-ACF.TextoliteHEATResilianceFactor = 2          --Higher = less damage, Lower = more damage. 2x = half damage.
-ACF.TextoliteHEResistance = 1.3                --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-ACF.TextoliteHEEffectiveness = 0.9             --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-ACF.TextoliteSpallMult = 1.3
+--ACF.TextoliteEffectiveness=0.23                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
+--ACF.TextoliteResilianceFactor = 0.005          --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.TextoliteHEATEffectiveness = 0.55          --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+--ACF.TextoliteHEATResilianceFactor = 2          --Higher = less damage, Lower = more damage. 2x = half damage.
+--ACF.TextoliteHEResistance = 1.3                --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+--ACF.TextoliteHEEffectiveness = 0.9             --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
+--ACF.TextoliteSpallMult = 1.3
 
-ACF.ERAEffectivenessMultHEAT = 20              --How many more times is the detonating ERA than its currentarmor
-ACF.ERAEffectivenessMult = 5                   --How many more times is the detonating ERA than its maxarmor
+--ACF.ERAEffectivenessMultHEAT = 20              --How many more times is the detonating ERA than its currentarmor
+--ACF.ERAEffectivenessMult = 5                   --How many more times is the detonating ERA than its maxarmor
 
 --ACF Damage Multipler.
 
@@ -106,19 +111,6 @@ ACF.HEATDamageMult = 2            --HEAT Damage Multipler
 ACF.HEDamageMult = 2              --HE Damage Multipler
 ACF.HESHDamageMult = 1.2          --HESH Damage Multipler
 ACF.HPDamageMult = 4              --HP Damage Multipler
-
-
---[[
-            Material thickness exponential curves, implemented to reduce high thickness memes.
-            Higher thickness plates take less damage. Enjoy balancing the two.
-]]--
-
-ACF.CurveRHA = 0.99
-ACF.CurveCast = 0.97
-ACF.CurveCeram = 0.95
-ACF.RubbCurve = 0.90
-ACF.AluminumCurve = 0.93
-ACF.TextoliteCurve = 0.94
 
 
 
@@ -179,6 +171,7 @@ ACF.EnableDefaultDP = true --GetConVar('acf_enable_dp'):GetBool()           -- E
 ACF.LegalChecks = GetConVar('acf_legalchecks'):GetInt()               --if true, legal checks will be done and it will disable any no legal ent.
 ACF.EnableKillicons = true           -- Enable killicons overwriting.
 
+
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
 	Petrol = 0.745,
@@ -226,29 +219,16 @@ else
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
 end
 
-if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
-	include("acf/shared/acf_userconfig.lua")
-end
-
-
-
 AddCSLuaFile()
 AddCSLuaFile( "acf/client/cl_acfballistics.lua" )
 AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 
-if SERVER and ACF.EnableDefaultDP then
-    print('Damage Protection is enabled!')
-	AddCSLuaFile( "acf/client/cl_acfpermission.lua" )
-	AddCSLuaFile( "acf/client/gui/cl_acfsetpermission.lua" )
-end
-
-game.AddParticles( "particles/flares_fx.pcf" )
-PrecacheParticleSystem( "ACFM_Flare" )
-
-include("autorun/acf_missile/folder.lua")
---include("autorun/sh_acfm_cvars.lua")
+include("acf/shared/acfloader.lua")
 include("acf/shared/acf_missileloader.lua")
+include("acf/shared/armor/ace_material.lua")
+include("autorun/acf_missile/folder.lua")
+
 
 if SERVER then
 
@@ -259,9 +239,16 @@ if SERVER then
 	include("acf/server/sv_acfbase.lua")
 	include("acf/server/sv_acfdamage.lua")
 	include("acf/server/sv_acfballistics.lua")
+	include("acf/server/sv_contraption.lua")
+	include("acf/server/sv_heat.lua")
 
 	if ACF.EnableDefaultDP then
+		
+	    AddCSLuaFile( "acf/client/cl_acfpermission.lua" )
+	    AddCSLuaFile( "acf/client/gui/cl_acfsetpermission.lua" )
+
 		include("acf/server/sv_acfpermission.lua")
+		 	
 	end
 
 elseif CLIENT then
@@ -270,8 +257,10 @@ elseif CLIENT then
 	include("acf/client/cl_acfrender.lua")
 	
 	if ACF.EnableDefaultDP then
+	
 		include("acf/client/cl_acfpermission.lua")
 		include("acf/client/gui/cl_acfsetpermission.lua")
+		
 	end
 	
 	
@@ -291,9 +280,13 @@ elseif CLIENT then
 	
 end
 
---[[
+
+
+--[[--------------------------------------
     RoundType Loader
-]]--
+]]----------------------------------------
+
+include("acf/shared/rounds/roundfunctions.lua")
 
 include("acf/shared/rounds/roundap.lua")
 include("acf/shared/rounds/roundhe.lua")
@@ -304,50 +297,45 @@ include("acf/shared/rounds/roundrefill.lua")
 
 if ACF.EnableNewContent then
 
-include("acf/shared/rounds/roundapc.lua")
-
+    include("acf/shared/rounds/roundapc.lua")
+	
 end
+
 if ACF.Year > 1920 and ACF.EnableNewContent then
 
-include("acf/shared/rounds/roundapbc.lua")
-include("acf/shared/rounds/roundapcbc.lua")
+    include("acf/shared/rounds/roundapbc.lua")
+    include("acf/shared/rounds/roundapcbc.lua")
 
 end
-if ACF.Year > 1939 then --A surprising amount of things were made during WW2
+if ACF.Year > 1939 and ACF.EnableNewContent then --A surprising amount of things were made during WW2
 
-include("acf/shared/rounds/roundhesh.lua")
-include("acf/shared/rounds/roundheat.lua")
-include("acf/shared/rounds/roundaphe.lua")
-include("acf/shared/rounds/roundaphecbc.lua")
-
-if ACF.EnableNewContent then
-
-include("acf/shared/rounds/roundapdss.lua")
-include("acf/shared/rounds/roundhvap.lua")
-
+    include("acf/shared/rounds/roundhesh.lua")
+    include("acf/shared/rounds/roundheat.lua")
+    include("acf/shared/rounds/roundaphe.lua")
+    include("acf/shared/rounds/roundaphecbc.lua")
+    include("acf/shared/rounds/roundapdss.lua")
+    include("acf/shared/rounds/roundhvap.lua")
+	
 end
-end
-if ACF.Year > 1960 then
-if ACF.EnableNewContent then
-include("acf/shared/rounds/roundapds.lua")
-include("acf/shared/rounds/roundapfsds.lua")
-include("acf/shared/rounds/roundapfsdss.lua")
-include("acf/shared/rounds/roundheatfs.lua")
-include("acf/shared/rounds/roundhefs.lua")
-end
-include("acf/shared/rounds/roundflare.lua")
-include("acf/shared/rounds/roundglgm.lua")
+if ACF.Year > 1960 and ACF.EnableNewContent then
+
+    include("acf/shared/rounds/roundapds.lua")
+    include("acf/shared/rounds/roundapfsds.lua")
+    include("acf/shared/rounds/roundapfsdss.lua")
+    include("acf/shared/rounds/roundheatfs.lua")
+    include("acf/shared/rounds/roundhefs.lua")
+    include("acf/shared/rounds/roundflare.lua")
+    include("acf/shared/rounds/roundglgm.lua")
+	
 end
 if ACF.Year > 1989 and ACF.EnableNewContent then
-include("acf/shared/rounds/roundtheat.lua")
-include("acf/shared/rounds/roundtheatfs.lua")
+
+    include("acf/shared/rounds/roundtheat.lua")
+    include("acf/shared/rounds/roundtheatfs.lua")
+	
 end
 
 
-include("acf/shared/rounds/roundfunctions.lua")
-include("acf/shared/acfloader.lua")
-include("acf/shared/acfcratelist.lua")
---include("acf/shared/acfmissilelist.lua")
 
 ACF.Weapons = list.Get("ACFEnts")
 	
@@ -357,17 +345,25 @@ ACF.RoundTypes = list.Get("ACFRoundTypes")
 
 ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
+
+--[[--------------------------------------
+            Particles loader
+]]----------------------------------------
+
+game.AddParticles( "particles/flares_fx.pcf" )
 game.AddParticles("particles/acf_muzzleflashes.pcf")
 game.AddParticles("particles/explosion1.pcf")
 game.AddParticles("particles/rocket_motor.pcf")
-
 game.AddParticles("particles/impact_fx.pcf")
---PrecacheParticleSystem( "APPen" )
+
+PrecacheParticleSystem( "ACFM_Flare" )
 PrecacheParticleSystem( "ACF_Explosion" )
 PrecacheParticleSystem( "ACF_BlastEmber" )
 PrecacheParticleSystem( "ACF_AirburstDebris" )
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")
+
+
 
 -- Add the ACF tool category
 if CLIENT then
@@ -432,55 +428,6 @@ function ACF_Kinetic( Speed , Mass, LimitVel )
 		--Energy.Penetration = math.max(Energy.Momentum^ACF.KinFudgeFactor - math.max(Speed-LimitVel,0)/(LimitVel*5) * Energy.Momentum , Energy.Momentum*0.1)
 	
 	return Energy
-end
-
--- returns last parent in chain, which has physics
-function ACF_GetPhysicalParent( obj )
-	if not IsValid(obj) then return nil end
-	
-	--check for fresh cached parent
-	if obj.acfphysparent and ACF.CurTime < obj.acfphysstale then
-		return obj.acfphysparent
-	end
-	
-	local Parent = obj
-	
-	while Parent:GetParent():IsValid() do
-		Parent = Parent:GetParent()
-	end
-	
-	--update cached parent
-	obj.acfphysparent = Parent
-	obj.acfphysstale = ACF.CurTime + 10 --when cached parent is considered stale and needs updating
-	
-	return Parent
-end
-
--- returns any wheels linked to this or child gearboxes
-function ACF_GetLinkedWheels( MobilityEnt )
-	if not IsValid( MobilityEnt ) then return {} end
-
-	local ToCheck = {}
-	local Wheels = {}
-
-	local links = MobilityEnt.GearLink or MobilityEnt.WheelLink -- handling for usage on engine or gearbox
-	for k,link in pairs( links ) do table.insert(ToCheck, link.Ent) end
-
-	-- use a stack to traverse the link tree looking for wheels at the end
-	while #ToCheck > 0 do
-		local Ent = table.remove(ToCheck,#ToCheck)
-		if IsValid(Ent) then
-			if Ent:GetClass() == "acf_gearbox" then
-				for k,v in pairs( Ent.WheelLink ) do
-					table.insert(ToCheck, v.Ent)
-				end
-			else
-				Wheels[Ent] = Ent -- indexing it same as ACF_GetAllPhysicalConstraints, for easy merge.  whoever indexed by entity in that function, uuuuuuggghhhhh
-			end
-		end
-	end
-
-	return Wheels
 end
 
 
@@ -577,7 +524,7 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 	-- check if physics is valid
 	if not IsValid(physobj) then return {Legal=false, Problems={"Invalid Physics"}} end
 	
-	--make sure traces can hit it (fade door, propnotsolid)
+	-- make sure traces can hit it (fade door, propnotsolid)
 	if not Ent:IsSolid() then
 		table.insert(problems,"Not solid")
 	end
@@ -705,15 +652,15 @@ function ACF_UpdateChecking( )
 		
 		if rev and ACF.Version >= rev  and rev ~= 0 then
 		    
-			print("[ACE] ACF Is Up To Date, Latest Version: "..rev)
+			print("[ACE | INFO]- You have the latest version! Current version: "..rev)
 			
 		elseif rev == 0 then
 		
-			print("[ACE] No Internet Connection Detected! ACE Update Check Failed")
+			print("[ACE | ERROR]- Unable to find the latest version! No internet available.")
 			
 		else
 		
-			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have the Version: "..ACF.Version)
+			print("[ACE | INFO]- A newer version of ACE is available! Latest Version: "..rev..", Your Current Version: "..ACF.Version)
 			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
 			
 		end
@@ -723,6 +670,7 @@ function ACF_UpdateChecking( )
 end
 
 ACF_UpdateChecking( )
+
 
 local function OnInitialSpawn( ply )
 	local Table = {}
@@ -824,5 +772,9 @@ AddCSLuaFile("includes/modules/markdown.lua")
 AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
 AddCSLuaFile("autorun/sh_acfm_roundinject.lua")
 
-game.AddParticles( "particles/flares_fx.pcf" )
-PrecacheParticleSystem( "ACFM_Flare" )
+
+
+
+
+
+print('[ACE | INFO]- Done!')

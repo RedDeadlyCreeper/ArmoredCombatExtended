@@ -24,9 +24,7 @@ function ENT:Initialize()
 		phys:SetMass(Mass)
 	    phys:SetMaterial('jeeptire')
 		
-	end
-	
-
+	end   
 	
 end
 

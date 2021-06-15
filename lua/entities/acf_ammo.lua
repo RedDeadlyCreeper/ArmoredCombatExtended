@@ -494,6 +494,23 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 
 	local tval1 = math.max(cap1,cap2,cap3)
 	local tval2 = math.max(cap4,cap5,cap6)
+	
+	local testtxt = '---------------------[ Ammo / Crate info ]------------------------\n'
+	testtxt = testtxt..'- ShellLenght: '..shellLength..'\n'
+	testtxt = testtxt..'- Size.X: '..Size.x..'\n'
+	testtxt = testtxt..'- Size.Y: '..Size.y..'\n'
+	testtxt = testtxt..'- Size.Z: '..Size.z..'\n'
+	testtxt = testtxt..'---------------------[ Vertical Ammo Stats ]------------------------\n'
+	testtxt = testtxt..'- Capacity 1: '..cap1..'\n'
+	testtxt = testtxt..'---------------------[ Horizontal Ammo Stats ]------------------------\n'
+	testtxt = testtxt..'- Capacity 2: '..cap2..'\n'
+	testtxt = testtxt..'- Capacity 3: '..cap3..'\n'
+	testtxt = testtxt..'---------------------[ 2 piece Ammo Stats ]------------------------\n'
+	testtxt = testtxt..'- Capacity 4: '..cap4..'\n'
+	testtxt = testtxt..'- Capacity 5: '..cap5..'\n'
+	testtxt = testtxt..'- Capacity 6: '..cap6..'\n'
+	
+	--print(testtxt)
 
 	if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
 		self.Capacity = tval2
@@ -587,24 +604,10 @@ end
 function ENT:Think()
 	
 	if ACF.CurTime > self.NextLegalCheck then
+	
 		--local minmass = math.floor(self.EmptyMass+self.AmmoMassMax*((self.Ammo-1)/math.max(self.Capacity,1)))-5  -- some possible weirdness with heavy shells, and refills.  just going to check above empty mass
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, false, true, true, true)
---[[
-		if self.Legal then --Low caliber HE check
-			
 
-			if self.Caliber < 3 then
-
-				CrateType = self.BulletData.Type or "Refill"
-				--if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
-				if CrateType == "HE" or CrateType == "APHE" or CrateType == "HEAT" or CrateType == "THEAT" or CrateType == "HEATFS" or CrateType == "THEATFS" or CrateType == "APHECBC" or CrateType == "HEFS" or CrateType == "HESH" then --If there was ever a reason to believe FS rounds are stupid this is it(They Are)
-					self.LegalIssues = self.LegalIssues.."Explosive rounds cannot be used on guns 30mm and below"
-					self.Legal = false
-				end
-			end
-
-		end
-]]--
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:UpdateOverlayText()
 
@@ -612,6 +615,7 @@ function ENT:Think()
 			--if self.Load then self:TriggerInput("Active",0) end
 			self.Load = false
 		end
+		
 	end
 	
 	self:UpdateMass()
@@ -626,6 +630,7 @@ function ENT:Think()
 	
 	local cvarGrav = GetConVar("sv_gravity")
 	local vec = Vector(0,0,cvarGrav:GetInt()*-1)
+	
 	if( self.sitp_inspace ) then
 		vec = Vector(0, 0, 0)
 	end
@@ -636,16 +641,22 @@ function ENT:Think()
 	
 	-- cookoff handling
 	if self.Damaged then
+	
 		CrateType = self.BulletData.Type or "Refill"
+		
 		if CrateType == "Refill" then
---			ACF_ScaledExplosion( self ) 
---			ACF_HEKill( self, VectorRand() )
+		
 			self:Remove()
---			print("HEKill") --:Remove()
+			
 		elseif self.Ammo <= 1 or self.Damaged < CurTime() then -- immediately detonate if there's 1 or 0 shells
+		
 			ACF_ScaledExplosion( self ) -- going to let empty crates harmlessly poot still, as an audio cue it died
+			
 		else
+		
 				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
+				
+				
 					self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
 					local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
@@ -660,21 +671,39 @@ function ENT:Think()
 					self.Ammo = self.Ammo - 1
 					
 				end
+				
 			self:NextThink( CurTime() + 0.01 + self.BulletData.RoundVolume^0.5/100 )
+					
 		end
 
 	-- Completely new, fresh, genius, beautiful, flawless refill system.
 	elseif self.RoundType == "Refill" and self.Load then
+	
+	
 		for _,Ammo in pairs( ACF.AmmoCrates ) do
+		
+		
 			if Ammo.RoundType ~= "Refill" then
+			
+			
 				local dist = self:GetPos():Distance(Ammo:GetPos())
+				
+				
 				if dist < ACF.RefillDistance then
 				
 					if Ammo.Capacity > Ammo.Ammo then
+					
+					
 						self.SupplyingTo = self.SupplyingTo or {}
+						
+						
 						if not table.HasValue( self.SupplyingTo, Ammo:EntIndex() ) then
+						
+						
 							table.insert(self.SupplyingTo, Ammo:EntIndex())
 							self:RefillEffect( Ammo )
+							
+							
 						end
 								
 						local Supply = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*5000))*self:GetPhysicsObject():GetMass()^1.2)
@@ -685,6 +714,7 @@ function ENT:Think()
 							
 						Ammo.Supplied = true
 						Ammo.Entity:EmitSound( "weapons/shotgun/shotgun_reload"..math.random(1,3)..".wav", 350, 100, 0.30 )
+						
 					end
 				end
 			end

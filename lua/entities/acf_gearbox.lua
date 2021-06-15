@@ -299,6 +299,8 @@ function ENT:Initialize()
 	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
 	self.LegalIssues = ""
 	
+	--self.Heat = ACE.AmbientTemp
+	
 end  
 
 function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
@@ -663,7 +665,7 @@ function ENT:TriggerInput( iname, value )
 end
 
 function ENT:Think()
-
+	
 	if ACF.CurTime > self.NextLegalCheck then
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, true, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
@@ -687,9 +689,12 @@ end
 
 function ENT:CheckRopes()
 
-	for Key, Link in pairs( self.WheelLink ) do
+	for Key, Link in pairs( self.WheelLink ) do	
 	
 		local Ent = Link.Ent
+		
+		--skips any invalid entity and remove from list
+		if not IsValid(Ent) then print('[ACE | WARN]- We found invalid ents linked to a gear, removing it. . .') table.remove(self.WheelLink, Key) goto cont end
 		
 		local OutPos = self:LocalToWorld( Link.Output )
 		local InPos = Ent:GetPos()
@@ -708,6 +713,7 @@ function ENT:CheckRopes()
 			self:Unlink( Ent )
 		end
 		
+		::cont::
 	end
 
 end
@@ -733,7 +739,7 @@ function ENT:CheckEnts()
 end
 
 function ENT:Calc( InputRPM, InputInertia )
-
+	
 	if not self.Legal then return 0 end
 
 	if self.LastActive == CurTime() then
@@ -814,6 +820,10 @@ function ENT:Calc( InputRPM, InputInertia )
 		end
 		self.TotalReqTq = self.TotalReqTq + math.abs( Link.ReqTq )
 	end
+	
+	--I would need to learn more about this, disabled atm
+	--self.Heat = ACE_HeatFromGearbox( self , InputRPM)
+	--Wire_TriggerOutput(self, "Heat", self.Heat)
 	
 	return math.min( self.TotalReqTq, self.MaxTorque )
 	

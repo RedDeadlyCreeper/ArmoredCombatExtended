@@ -3,7 +3,7 @@ if ACF.EnableNewContent then
 --define the class
 ACF_defineGunClass("SBC", {
     type = "Gun",
-	spread = 0.3,
+	spread = 0.095,
 	name = "Smooth-Bore Cannon",
 	desc = ACFTranslation.GunClasses[15],
 	muzzleflash = "120mm_muzzleflash_noscale",

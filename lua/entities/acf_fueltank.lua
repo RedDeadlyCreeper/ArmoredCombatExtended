@@ -239,7 +239,8 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 end
 
 function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
-
+    --print('created!')
+	
 	if IsValid(Owner) and not Owner:CheckLimit("_acf_misc") then return false end
 	
 	local SId = Data1
@@ -267,10 +268,21 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 
 	Tank:UpdateFuelTank(Id, SId, Data2)
 	
+	local name
+	
+	if Data2 == 'Electric' then
+	    name = 'Li-Ion Battery'
+	else
+	    name = Data2.." Fuel Tank"
+	end
+	
+	Tank:SetNWString( "WireName", name )
+	
 	if IsValid(Owner) then
 		Owner:AddCount( "_acf_misc", Tank )
 		Owner:AddCleanup( "acfmenu", Tank )
 	end
+	
 	
 	table.insert(ACF.FuelTanks, Tank)
 	
@@ -281,7 +293,8 @@ list.Set( "ACFCvars", "acf_fueltank", {"id", "data1", "data2"} )
 duplicator.RegisterEntityClass("acf_fueltank", MakeACF_FuelTank, "Pos", "Angle", "Id", "SizeId", "FuelType" )
 
 function ENT:UpdateFuelTank(Id, Data1, Data2)
-
+    --print('updated!')
+	
 	local lookup = list.Get("ACFEnts").FuelTanks
 	local pct = 1 --how full is the tank?
 	if self.Capacity and not (self.Capacity == 0) then --if updating existing tank, keep fuel level
@@ -308,6 +321,14 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 	end
 	
 	self:UpdateFuelMass()
+
+	if Data2 == 'Electric' then
+	    name = 'Li-Ion Battery'
+	else
+	    name = Data2.." Fuel Tank"
+	end
+	
+	self:SetNWString( "WireName", name )
 	
 	Wire_TriggerOutput( self, "Capacity", math.Round(self.Capacity,2) )
 	self:UpdateOverlayText()
@@ -316,12 +337,32 @@ end
 
 function ENT:UpdateOverlayText()
 	
-	local text = "Fuel Type: " .. self.FuelType
+
+	local Stats
+	
+	if self.Active then
+	    Stats = 'In use'	
+	else
+	    Stats = 'Not In use'
+	end
+
+	local text = '- ' .. Stats ..' -\n'
 	
 	if self.FuelType == "Electric" then
-		text = text .. "\nCharge Level: " .. math.Round( self.Fuel, 1 ) .. " kWh / " .. math.Round( self.Fuel * 3.6, 1 ) .. " MJ"
+	    	
+		text = text .. '\nCurrent Charge Levels:'
+        text = text	.. '\n-  ' .. math.Round( self.Fuel, 1 ) .. " / " ..math.Round( self.Capacity, 1 ) .. " kWh"	
+		text = text .. '\n-  ' .. math.Round( self.Fuel * 3.6, 1 ) ..' / ' .. math.Round( self.Capacity * 3.6, 1) .. ' MJ'	
+		
+		--text = text .. '\nMax Charge Level: ' ..math.Round( self.Capacity, 1 ) .. ' kWh / ' .. math.Round( self.Capacity * 3.6, 1) .. " MJ"
+		--text = text .. "\nCurrent Charge Level: " .. math.Round( self.Fuel, 1 ) .. " kWh / " .. math.Round( self.Fuel * 3.6, 1 ) .. " MJ"
 	else
-		text = text .. "\nFuel Remaining: " .. math.Round( self.Fuel, 1 ) .. " liters / " .. math.Round( self.Fuel * 0.264172, 1 ) .. " gallons"
+
+		text = text .. '\nCurrent Fuel Remaining:'
+        text = text	.. '\n-  ' .. math.Round( self.Fuel, 1 ) .. " / " ..math.Round( self.Capacity, 1 ) .. " liters"	
+		text = text .. '\n-  ' .. math.Round( self.Fuel * 0.264172, 1 ) ..' / ' .. math.Round( self.Capacity * 0.264172, 1 ) .. ' gallons'	
+
+		--text = text .. "\nFuel Remaining: " .. math.Round( self.Fuel, 1 ) .. " liters / " .. math.Round( self.Fuel * 0.264172, 1 ) .. " gallons"
 	end
 
 	if not self.Legal then
@@ -329,7 +370,7 @@ function ENT:UpdateOverlayText()
 	end
 	
 	self:SetOverlayText( text )
-	
+
 end
 
 function ENT:UpdateFuelMass()

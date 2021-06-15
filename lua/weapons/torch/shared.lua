@@ -173,8 +173,9 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				if ent.ACF.Material == 4 then     --ERA should detonate now
 				
 					if HitRes.Kill then
-					    ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour * 0.00075 , ent.ACF.Armour * 0.1, self.Owner , ent , ent )   --calling HE explosion function. Adjusted HE power, its possible to change on future.
-
+					    --ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour * 0.00075 , ent.ACF.Armour * 0.1, self.Owner , ent , ent )   --calling HE explosion function. Adjusted HE power, its possible to change on future.
+                        ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour * 0.075 , ent.ACF.Armour * 0.1, self.Owner , ent , ent ) 
+                      
 						ent:Remove()   --removing it because era simply is not removed after explosion
 					
 					end

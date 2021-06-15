@@ -91,183 +91,188 @@ end
 
 function ENT:Think()
 
+
 	local curTime = CurTime()	
 	self:NextThink(curTime + self.ThinkDelay)
 
-self.LegalTick = (self.LegalTick or 0) + 1
+    self.LegalTick = (self.LegalTick or 0) + 1
 
-if 	self.LegalTick >= (self.checkLegalIn or 0) then
+    if 	self.LegalTick >= (self.checkLegalIn or 0) then
 	
-self.LegalTick = 0
-self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
-self:isLegal()
+        self.LegalTick = 0
+        self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
+        self:isLegal()
 
-end
+    end
 
-if self.Active and self.IsLegal then
+    if self.Active and self.IsLegal then
 
+	    local radID = ACE.radarIDs[self]
+	    local beingjammed = 0
+	    for k, scanEnt in pairs(ACE.ECMPods) do
 
---	ACE.ECMPods
-	local radID = ACE.radarIDs[self]
-	local beingjammed = 0
-	for k, scanEnt in pairs(ACE.ECMPods) do
+		    if scanEnt.CurrentlyJamming == radID then
+		    	beingjammed = 1
+		    end
 
-		if scanEnt.CurrentlyJamming == radID then
-			beingjammed = 1
-		end
+	    end
 
-	end
+	    WireLib.TriggerOutput( self, "IsJammed", beingjammed )
 
-	WireLib.TriggerOutput( self, "IsJammed", beingjammed )
+        if beingjammed < 1 then
 
-if beingjammed < 1 then
+            --	local ScanArray = player.GetAll() --For testing
+            --	local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+	        local ScanArray = ACE.contraptionEnts
 
---	local ScanArray = player.GetAll() --For testing
---	local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
-	local ScanArray = ACE.contraptionEnts
+	        local thisPos = self:GetPos()
+	        local thisforward = self:GetForward()
+	        local randinac = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+	        local randinac2 = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) --Using one inaccuracy was boring
 
-	local thisPos = self:GetPos()
-	local thisforward = self:GetForward()
-	local randinac = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-	local randinac2 = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) --Using one inaccuracy was boring
+	        local ownArray = {}
+	        local posArray = {}
+	        local velArray = {}
 
-	local ownArray = {}
-	local posArray = {}
-	local velArray = {}
-
-	local testClosestToBeam = -1
-	local besterr = math.huge --Hugh mungus number
+	        local testClosestToBeam = -1
+	        local besterr = math.huge --Hugh mungus number
 
 
-	for k, scanEnt in pairs(ScanArray) do
+	        for k, scanEnt in pairs(ScanArray) do
 
-		if(IsValid(scanEnt))then
+		        if(IsValid(scanEnt))then
 
---			if (scanEnt.THeat or 0) > 0 then
---				print(scanEnt.THeat)
+			        --if (scanEnt.THeat or 0) > 0 then
+			        --print(scanEnt.THeat)
 
---			end
+			        --end
 
-			local entvel = scanEnt:GetVelocity() --Test on parented props
-			local velLength = entvel:Length()
+			        local entvel = scanEnt:GetVelocity() --Test on parented props
+			        local velLength = entvel:Length()
 
-			local entpos = scanEnt:WorldSpaceCenter()
+			        local entpos = scanEnt:WorldSpaceCenter()
 
-			local difpos = (entpos - thisPos)
-			local ang = self:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
-			local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+			        local difpos = (entpos - thisPos)
+			        local ang = self:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
+			        local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
-				--Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
-			local errorFromAng = Vector(0.05*(absang.y/self.Cone)^2,0.02*(absang.y/self.Cone)^2,0.02*(absang.p/self.Cone)^2)    
+				    --Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
+			        local errorFromAng = Vector(0.05*(absang.y/self.Cone)^2,0.02*(absang.y/self.Cone)^2,0.02*(absang.p/self.Cone)^2)    
 
-			if (absang.p < self.Cone and absang.y < self.Cone) then --Entity is within radar cone
+			        if (absang.p < self.Cone and absang.y < self.Cone) then --Entity is within radar cone
 
-				local LOStr = util.TraceHull( {
-					start = thisPos ,endpos = entpos,
-					collisiongroup = COLLISION_GROUP_WORLD, 
-					filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
-					mins = Vector( -0, -0, -0 ),
-					maxs = Vector( 0, 0, 0 )
-				}) --Hits anything in the world.
-
-				if not LOStr.Hit then --Trace did not hit world
+				        local LOStr = util.TraceHull( {
 					
-					local DPLR
-					local evlen = entvel:Length()
-					if evlen > 0.5 then
-						DPLR = self:WorldToLocal(thisPos+entvel*2)
-					else
-						evlen = 0
-						DPLR = Vector(0.001,0.001,0.001)
-					end
+					        start = thisPos ,endpos = entpos,
+					        collisiongroup = COLLISION_GROUP_WORLD, 
+					        filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
+					        mins = Vector( -0, -0, -0 ),
+					        maxs = Vector( 0, 0, 0 )
+						
+				        }) --Hits anything in the world.
+
+				        if not LOStr.Hit then --Trace did not hit world
 					
-					--print(evlen)
+					        local DPLR
+					        local evlen = entvel:Length()
+						
+					        if evlen > 0.5 then
+						        DPLR = self:WorldToLocal(thisPos+entvel*2)
+					        else
+						        evlen = 0
+						        DPLR = Vector(0.001,0.001,0.001)
+					        end
+					
+					        --print(evlen)
 
-					local Dopplertest = math.min(math.abs( evlen/math.abs(DPLR.Y))*100,10000)
-					local Dopplertest2 = math.min(math.abs( evlen/math.abs(DPLR.Z))*100,10000)
+					        local Dopplertest = math.min(math.abs( evlen/math.abs(DPLR.Y))*100,10000)
+					        local Dopplertest2 = math.min(math.abs( evlen/math.abs(DPLR.Z))*100,10000)
 
-				--Also objects not coming directly towards the radar create more error.
-					local DopplerERR = (((math.abs(DPLR.y)^2+math.abs(DPLR.z)^2)^0.5)/velLength/2)*0.1
+				            --Also objects not coming directly towards the radar create more error.
+					        local DopplerERR = (((math.abs(DPLR.y)^2+math.abs(DPLR.z)^2)^0.5)/velLength/2)*0.1
 
-					local GCtr = util.TraceHull( {
-						start = entpos,
-						endpos = entpos + difpos:GetNormalized() * 2000,
-						collisiongroup  = COLLISION_GROUP_DEBRIS,
-						filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
-						mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),
-						maxs = Vector( self.ConeInducedGCTRSize, self.ConeInducedGCTRSize, self.ConeInducedGCTRSize )
-					}) --Hits anything in the world.
+					        local GCtr = util.TraceHull( {
+						
+						        start = entpos,
+						        endpos = entpos + difpos:GetNormalized() * 2000,
+						        collisiongroup  = COLLISION_GROUP_DEBRIS,
+						        filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
+						        mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),
+						        maxs = Vector( self.ConeInducedGCTRSize, self.ConeInducedGCTRSize, self.ConeInducedGCTRSize )
+							
+					        }) --Hits anything in the world.
 
-					if not GCtr.HitSky then
-						GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
-						GCFr = GCtr.Fraction
-					else
-						GCdis = 0 --returns amount of ground clutter
-						GCFr = 1
-					end
+					        if not GCtr.HitSky then
+						        GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
+						        GCFr = GCtr.Fraction
+					        else
+						        GCdis = 0 --returns amount of ground clutter
+						        GCFr = 1
+					        end
 
---					print(GCdis)
---					if GCdis <= 0.5 then --Get canceled by ground clutter
+					        --print(GCdis)
+					        --if GCdis <= 0.5 then --Get canceled by ground clutter
 
-					if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.4) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
-						--1000 u = ~57 mph
+					        if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.4) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+						        --1000 u = ~57 mph
 
+							    local err = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
-							local err = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
+							    if err < besterr then --Sorts targets as closest to being directly in front of radar
+								    testClosestToBeam = table.getn( ownArray ) + 1
+								    besterr = err
+							    end
+						        --print((entpos - thisPos):Length())
+							
+						        table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+							
+						        table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
 
-							if err < besterr then --Sorts targets as closest to being directly in front of radar
-								testClosestToBeam = table.getn( ownArray ) + 1
-								besterr = err
-							end
-						--print((entpos - thisPos):Length())
-						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+							    local veltest
 
-						table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
+						        if evlen == 0 then --IDK if this is more intensive than length
+							        veltest = Vector(0,0,0)
+						        else
+							        veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.03) )
+							        veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
 
-							local veltest
+						        end
+							
+						        table.insert(velArray,veltest)
+					        else
+						        --print("DopplerFail")
+					        end
 
-						if evlen == 0 then --IDK if this is more intensive than length
-							veltest = Vector(0,0,0)
-						else
-							veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.03) )
-							veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
+				        else
+					        --print(LOStr.SurfaceFlags)
+					        --print(LOStr.Entity )
+				        end
 
-						end
-						table.insert(velArray,veltest)
-					else
---						print("DopplerFail")
-					end
+			        end
 
-				else
---					print(LOStr.SurfaceFlags)
---					print(LOStr.Entity )
-				end
+		        end
+	        end
 
-			end
+	        --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
 
-		end
-	end
+	        if testClosestToBeam != -1 then --Some entity passed the test to be valid
 
---	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
+		        WireLib.TriggerOutput( self, "Detected", 1 )
+		        WireLib.TriggerOutput( self, "Owner", ownArray )
+		        WireLib.TriggerOutput( self, "Position", posArray )
+		        WireLib.TriggerOutput( self, "Velocity", velArray )
+		        WireLib.TriggerOutput( self, "ClosestToBeam", testClosestToBeam )		
 
-	if testClosestToBeam != -1 then --Some entity passed the test to be valid
+	        else --Nothing detected
+		        WireLib.TriggerOutput( self, "Detected", 0 )
+		        WireLib.TriggerOutput( self, "Owner", {} )
+		        WireLib.TriggerOutput( self, "Position", {} )
+		        WireLib.TriggerOutput( self, "Velocity", {} )
+		        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )	
+	        end
 
-		WireLib.TriggerOutput( self, "Detected", 1 )
-		WireLib.TriggerOutput( self, "Owner", ownArray )
-		WireLib.TriggerOutput( self, "Position", posArray )
-		WireLib.TriggerOutput( self, "Velocity", velArray )
-		WireLib.TriggerOutput( self, "ClosestToBeam", testClosestToBeam )		
-
-	else --Nothing detected
-		WireLib.TriggerOutput( self, "Detected", 0 )
-		WireLib.TriggerOutput( self, "Owner", {} )
-		WireLib.TriggerOutput( self, "Position", {} )
-		WireLib.TriggerOutput( self, "Velocity", {} )
-		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )	
-	end
-
-	end
-end
+	    end
+    end
 
 end
 

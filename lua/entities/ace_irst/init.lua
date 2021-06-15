@@ -94,12 +94,9 @@ end
 
 if self.Active and self.IsLegal then
 
---	local ScanArray = player.GetAll() --For testing
---	local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
 	local ScanArray = ACE.contraptionEnts
 
 	local thisPos = self:GetPos()
-	local thisforward = self:GetForward()
 	local randinac = math.Rand(-2,2) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 	local ownArray = {}
@@ -114,10 +111,10 @@ if self.Active and self.IsLegal then
 
 		if(IsValid(scanEnt))then
 
---			if (scanEnt.THeat or 0) > 0 then
---				print(scanEnt.THeat)
+			--if (scanEnt.THeat or 0) > 0 then
+			--	print(scanEnt.THeat)
 
---			end
+			--end
 
 			local entpos = scanEnt:WorldSpaceCenter()
 
@@ -138,7 +135,7 @@ if self.Active and self.IsLegal then
 				if not LOStr.Hit then --Trace did not hit world
 
 					local testHeat = ((scanEnt.THeat or 0) + 2*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)
---					local testHeat = (scanEnt.THeat or 0)--
+					--local testHeat = (scanEnt.THeat or 0)--
 					local errorFromHeat = math.max((200-testHeat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
 				
 					if testHeat > 50 then --Hotter than 50 deg C
@@ -154,10 +151,10 @@ if self.Active and self.IsLegal then
 						--print((entpos - thisPos):Length())
 
 
---						ownArray[k] = scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or ""
+						--ownArray[k] = scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or ""
 						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
---						ownArray[k] = scanEnt:CPPIGetOwner():GetName()
---						print(scanEnt:CPPIGetOwner():GetName())
+						--ownArray[k] = scanEnt:CPPIGetOwner():GetName()
+						--print(scanEnt:CPPIGetOwner():GetName())
 
 						local angerr = 1 + randinac * (errorFromAng + errorFromHeat)
 						table.insert(effHeatArray, testHeat)
@@ -166,8 +163,8 @@ if self.Active and self.IsLegal then
 					end
 
 				else
---					print(LOStr.SurfaceFlags)
---					print(LOStr.Entity )
+					--print(LOStr.SurfaceFlags)
+					--print(LOStr.Entity )
 				end
 
 			end

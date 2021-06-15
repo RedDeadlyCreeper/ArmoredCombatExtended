@@ -186,7 +186,5 @@ timer.Simple(1, ACFM_ModifyRoundBaseGunpowder)
 timer.Simple(1, ACFM_ModifyRoundDisplayFuncs)
 timer.Simple(1, ACFM_ModifyCrateTextFuncs)
 
--- if CLIENT then
-    -- timer.Simple(1, ACFM_ModifyRoundGUIFuncs)
--- end
+
 

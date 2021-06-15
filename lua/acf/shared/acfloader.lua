@@ -37,45 +37,49 @@ local fueltank_base = {
 if CLIENT then
 	gun_base.guicreate = function( Panel, Table ) ACFGunGUICreate( Table ) end or nil
 	gun_base.guiupdate = function() return end
+	
 	engine_base.guicreate = function( panel, tbl ) ACFEngineGUICreate( tbl ) end or nil
 	engine_base.guiupdate = function() return end
+	
 	gearbox_base.guicreate = function( panel, tbl ) ACFGearboxGUICreate( tbl ) end or nil
 	gearbox_base.guiupdate = function() return end
+	
 	fueltank_base.guicreate = function( panel, tbl ) ACFFuelTankGUICreate( tbl ) end or nil
 	fueltank_base.guiupdate = function( panel, tbl ) ACFFuelTankGUIUpdate( tbl ) end or nil
 end
 
 -- some factory functions for defining ents
 function ACF_defineGunClass( id, data )
+
 	if (data.year or 0) < ACF.Year then
-	data.id = id
-	GunClasses[ id ] = data
+	
+	    data.id = id
+	    GunClasses[ id ] = data
+		
 	end
 end
 
 function ACF_defineGun( id, data )
+
 	if (data.year or 0) < ACF.Year then
-	data.id = id
-	data.round.id = id
-	table.Inherit( data, gun_base )
-	GunTable[ id ] = data
---	print("Loaded Gun: "..data.name)
---	print("YearDif: "..(ACF.Year-data.year))
---	else
---	print("Did not load Gun: "..data.name)
---	return false
+	
+	    data.id = id
+	    data.round.id = id
+	    table.Inherit( data, gun_base )
+		
+	    GunTable[ id ] = data
+
 	end
 end
 
 function ACF_DefineEngine( id, data )
+
 	if (data.year or 0) < ACF.Year then
-	data.id = id
-	table.Inherit( data, engine_base )
-	MobilityTable[ id ] = data
---	print("Loaded Engine: "..data.name)	
---	else
---	print("Did not load Engine: "..data.name)	
---	return false
+	
+	    data.id = id
+	    table.Inherit( data, engine_base )
+	    MobilityTable[ id ] = data
+
 	end
 end
 
@@ -97,11 +101,25 @@ function ACF_DefineFuelTankSize( id, data )
 	FuelTankTable[ id ] = data
 end
 
+function ACE_ConfigureMaterial( id, data )
+	
+	ACE.ArmorTypes[id] = data
+
+    --print( 'Loaded Material: '..ACE.ArmorTypes[id].name )
+
+end
+
 -- search for and load a bunch of files or whatever
 local guns = file.Find( "acf/shared/guns/*.lua", "LUA" )
 for k, v in pairs( guns ) do
 	AddCSLuaFile( "acf/shared/guns/" .. v )
 	include( "acf/shared/guns/" .. v )
+end
+
+local ammocrates = file.Find( "acf/shared/ammocrates/*.lua", "LUA" )
+for k, v in pairs( ammocrates ) do
+	AddCSLuaFile( "acf/shared/ammocrates/" .. v )
+	include( "acf/shared/ammocrates/" .. v )
 end
 
 local engines = file.Find( "acf/shared/engines/*.lua", "LUA" )
@@ -122,8 +140,10 @@ for k, v in pairs( fueltanks ) do
 	include( "acf/shared/fueltanks/" .. v )
 end
 
+
+
 -- now that the tables are populated, throw them in the acf ents list
 list.Set( "ACFClasses", "GunClass", GunClasses )
-list.Set( "ACFEnts", "Guns", GunTable )
+list.Set( "ACFEnts", "Guns", GunTable )            
 list.Set( "ACFEnts", "Mobility", MobilityTable )
 list.Set( "ACFEnts", "FuelTanks", FuelTankTable )

@@ -80,31 +80,32 @@ function ENT:Think()
 	local curTime = CurTime()	
 	self:NextThink(curTime + self.ThinkDelay)
 
-self.LegalTick = (self.LegalTick or 0) + 1
+    self.LegalTick = (self.LegalTick or 0) + 1
 
-if 	self.LegalTick >= (self.checkLegalIn or 0) then
+    if 	self.LegalTick >= (self.checkLegalIn or 0) then
 	
-self.LegalTick = 0
-self.checkLegalIn = 5+math.random(0,5) --Random checks every 5-10 seconds
-self:isLegal()
+        self.LegalTick = 0
+        self.checkLegalIn = 5+math.random(0,5) --Random checks every 5-10 seconds
+        self:isLegal()
 
-end
+    end
 
-self.CurrentlyJamming = 0
+    self.CurrentlyJamming = 0
 
-if self.Active and self.IsLegal and not self.OutOfEnergy then
+    if self.Active and self.IsLegal and not self.OutOfEnergy then
 
-	self.JamEnergy = math.max(self.JamEnergy - 2,0)
+	    self.JamEnergy = math.max(self.JamEnergy - 2,0)
 
-	if self.JamEnergy == 0 then
-		self.OutOfEnergy = true
-	end
+	    if self.JamEnergy == 0 then
+		    self.OutOfEnergy = true
+	    end
 
-	local thisPos = self:GetPos()
+	    local thisPos = self:GetPos()
 
-	scanEnt = ACE.radarEntities[self.JamID]
+	    scanEnt = ACE.radarEntities[self.JamID]
 
-		if(IsValid(scanEnt))then
+		if(IsValid(scanEnt)) then
+		
 			local radActive = scanEnt.Active 
 			local entpos = scanEnt:GetPos()
 
@@ -126,21 +127,24 @@ if self.Active and self.IsLegal and not self.OutOfEnergy then
 		
 
 
-else
+    else
+	
 		self.JamEnergy = math.min(self.JamEnergy + 1,100)
 
 		if self.JamEnergy == 100 then
 			self.OutOfEnergy = false
 		end
 
-end
+    end
 
 
-if self.OutOfEnergy then
-	WireLib.TriggerOutput( self, "Energy", 0 )
-else
-WireLib.TriggerOutput( self, "Energy", self.JamEnergy )
-end
+    if self.OutOfEnergy then
+	
+	    WireLib.TriggerOutput( self, "Energy", 0 )
+    else
+	
+        WireLib.TriggerOutput( self, "Energy", self.JamEnergy )
+    end
 
 end
 

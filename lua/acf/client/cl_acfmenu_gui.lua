@@ -80,6 +80,7 @@ function PANEL:Init( )
    ACE information folder
 ]]--=========================
 	HomeNode = self.WeaponSelect:AddNode( "ACE Main Menu" , "icon16/world.png" ) --Main Menu folder
+	HomeNode:SetExpanded(true)
 	HomeNode.mytable = {}
 		HomeNode.mytable.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
 		HomeNode.mytable.guiupdate = (function( Panel, Table ) ACFHomeGUIUpdate( Table ) end or nil)
@@ -117,7 +118,7 @@ function PANEL:Init( )
    Modded Guns folder   
 ]]--=========================	
 
-print(table.Count(self.ModClasses))
+--print(table.Count(self.ModClasses))
 
 	if table.Count(self.ModClasses["GunClass"]) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder respectively!!
 	    
@@ -233,31 +234,6 @@ print(table.Count(self.ModClasses))
 		
 	end
 
---[[=========================
-   Ammo subfolder HEAT                 --Unused. HEAT rounds are in HE folder.
-]]--=========================	   	
---[[	
-	local HEATAttribs = list.Get("HEATRoundTypes") 
-	self.HEATAttribs = {}
-	for ID,Table in pairs(HEATAttribs) do
-		Table.id = ID
-		table.insert(self.HEATAttribs, Table)
-	end
-	table.sort(self.HEATAttribs, function(a,b) return a.id < b.id end )	
-	
-	
-	for AmmoID,AmmoTable in pairs(self.HEATAttribs) do
-		
-		local EndNode = HEAT:AddNode( AmmoTable.name or "No Name" )
-		EndNode.mytable = AmmoTable
-		function EndNode:DoClick()
-			RunConsoleCommand( "acfmenu_type", self.mytable.type )
-			acfmenupanel:UpdateDisplay( self.mytable )
-		end
-		EndNode.Icon:SetImage( "icon16/newspaper.png" )
-		
-	end
-]]--
 --[[=========================
    Ammo subfolder SPECS
 ]]--=========================	   	

@@ -14,34 +14,12 @@ end
 CreateClientConVar( "acfarmorprop_area", 0, false, true ) -- we don't want this one to save
 
 -- Calculates mass, armor, and health given prop area and desired ductility and thickness.
-local function CalcArmor( Area, Ductility, Thickness, Material )
-	local testMaterial = 0
-	local massMod = 1
-	if ACF.EnableNewContent and ACF.Year >= 1955 then
-	testMaterial = math.floor(Material + 0.5)
-	massMod = 1
+local function CalcArmor( Area, Ductility, Thickness, MaterialID )
+
+	local MassMod = ACE.ArmorTypes[ MaterialID ].massMod
 	
-	if testMaterial == 0 then --RHA	
-		massMod = 1
-	elseif testMaterial == 1 then --Cast
-		massMod = 2
-	elseif testMaterial == 2 then --Ceramic
-		massMod = 0.8
-	elseif testMaterial == 3 then--Rubber
-		massMod = 0.2
-	elseif testMaterial == 4 then --ERA
-		massMod = 2
-	elseif testMaterial == 5 then --Aluminum
-		massMod = 0.221
-	elseif testMaterial == 6 then --Textolite
-	massMod = 0.35
-	else --Overflow
-		massMod = 1
-	end
-	end
-	
-	local mass =  Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * massMod
-	local armor = ACF_CalcArmor( Area, Ductility, mass / massMod )
+	local mass =  Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * MassMod
+	local armor = ACF_CalcArmor( Area, Ductility, mass / MassMod )
 	local health = ( Area + Area * Ductility ) / ACF.Threshold
 	
 	return mass, armor, health
@@ -202,34 +180,18 @@ function TOOL:LeftClick( trace )
 	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
 	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
 	
-	local material = 0
+	local MaterialID = 0
+	
 	if ACF.EnableNewContent and ACF.Year >= 1955 then
-	material = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 6 )
+	
+	    MaterialID = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 6 )
 	end
 	
-	local testMaterial = math.floor(material + 0.5)
-	local massMod = 1
-	if testMaterial == 0 then --RHA	
-		massMod = 1
-	elseif testMaterial == 1 then --Cast
-		massMod = 1.5
-	elseif testMaterial == 2 then --Ceramic
-		massMod = 0.75
-	elseif testMaterial == 3 then--Rubber
-		massMod = 0.2
-	elseif testMaterial == 4 then --ERA
-		massMod = 2
-	elseif testMaterial == 5 then --Aluminum
-		massMod = 0.35
-	elseif testMaterial == 5 then --Textolite
-		massMod = 0.2
-	else
-		massMod = 1.3
-	end
+	local massMod = ACE.ArmorTypes[ MaterialID ].massMod
 	
-	local mass = CalcArmor( ent.ACF.Aera, ductility / 100, thickness , material)
+	local mass = CalcArmor( ent.ACF.Aera, ductility / 100, thickness , MaterialID)
 	
-	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = material} )
+	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = MaterialID} )
 	
 	-- this invalidates the entity and forces a refresh of networked armor values
 	self.AimEntity = nil

@@ -392,7 +392,7 @@ function ENT:ConfigureFlight()
 	local BurnRate = Round.burnrate
 
     local Time = CurTime()
-	local noThrust = ACF_GetGunValue(self.BulletData, "nothrust")
+	local noThrust = ACF_GetGunValue(BulletData, "nothrust")
 
 	if noThrust then
 		self.MotorLength = 0
@@ -543,10 +543,12 @@ end
 
 
 function ENT:Think()
-	local Time = CurTime()
-    
-	if self.Launched and not self.MissileDetonated then
+	
 
+	if self.Launched and not self.MissileDetonated then
+        
+		local Time = CurTime()
+		
 		if self.Hit then
 			self:Detonate()
 			return false
@@ -554,12 +556,12 @@ function ENT:Think()
 
 		if self.FirstThink == true then
 			self.FirstThink = false
-			self.LastThink = CurTime() - self.ThinkDelay
+			self.LastThink = Time - self.ThinkDelay
 			self.LastVel = self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay
 		end
 		self:CalcFlight()
 
-        if self.CacheParticleEffect and (self.CacheParticleEffect <= CurTime()) and (CurTime() < self.CutoutTime) then
+        if self.CacheParticleEffect and (self.CacheParticleEffect <= Time) and (Time < self.CutoutTime) then
             local effect = ACF_GetGunValue(self.BulletData, "effect")
 
             if effect then

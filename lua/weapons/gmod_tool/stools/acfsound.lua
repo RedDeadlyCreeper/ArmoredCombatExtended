@@ -16,8 +16,7 @@ end
 
 
 
-ACF.SoundToolSupport = 
-{
+ACF.SoundToolSupport = {
 	acf_gun = 
 	{
 		GetSound = function(ent) return {Sound = ent.Sound} end,
@@ -38,8 +37,7 @@ ACF.SoundToolSupport =
 		end
 	},
 	
-	acf_engine = 
-	{
+	acf_engine = {
 		GetSound = function(ent) return {Sound = ent.SoundPath, Pitch = ent.SoundPitch} end,
 		
 		SetSound = function(ent, soundData) 

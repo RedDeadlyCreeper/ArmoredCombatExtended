@@ -59,9 +59,5 @@ local function modepermission(owner, attacker, ent)
 end
 
 
-if not CPPI then
-	print("WARNING: ACF protection mode \"" .. modename .. "\" works best with a CPPI-compliant prop protection script.  Try NADMOD!")
-end
-
 
 perms.RegisterMode(modepermission, modename, modedescription, false, nil, DefaultPermission)

@@ -76,7 +76,7 @@ function TOOL:LeftClick( trace )
 	if DupeClass then
 		local ArgTable = {}
 			ArgTable[2] = trace.HitNormal:Angle():Up():Angle()
-			ArgTable[1] = trace.HitPos + trace.HitNormal*32
+			ArgTable[1] = trace.HitPos + trace.HitNormal*33
 			
 		local ArgList = list.Get("ACFCvars")
 		

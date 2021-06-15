@@ -38,7 +38,7 @@ if ( IsValid( ent ) ) then
 
 	local phys = ent:GetPhysicsObject()
 	phys:SetVelocity( BulletData.Flight )
-	ent.Heat = (BulletData.FillerMass or 1) * 1000
+	ent.Heat = (BulletData.FillerMass or 1) * 10000
 
 --	Data.BurnRate = Data.FrAera * ACFM.FlareBurnMultiplier
 --	Data.DistractChance = (2 / math.pi) * math.atan(Data.FrAera * ACFM.FlareDistractMultiplier)

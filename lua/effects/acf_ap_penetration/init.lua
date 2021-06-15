@@ -1,5 +1,5 @@
 local ACFEnts = list.Get("ACFEnts")
-local GunTable = ACFEnts["Guns"]
+local GunTable = ACFEnts.Guns
    
  /*--------------------------------------------------------- 
     Initializes the effect. The data is a table of data  

@@ -12,16 +12,6 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
 
---	self:SetMoveType(MOVETYPE_VPHYSICS);
---	self:PhysicsInit(SOLID_NONE);
---	self:SetSolid(SOLID_NONE);
-
---	self:SetMoveType(MOVETYPE_VPHYSICS);
---	self:PhysicsInit(SOLID_VPHYSICS);
---	self:SetUseType(SIMPLE_USE);
---	self:SetSolid(SOLID_VPHYSICS);
-
-
 	self.Heat = self.Heat or 1
 	self.Life = self.Life or 0.1
 	self.DieTime = CurTime() + self.Life
@@ -35,9 +25,9 @@ function ENT:Initialize()
 	timer.Simple(0.1,function() 
 		ParticleEffectAttach("ACFM_Flare",4, self,1)  
 			self.HotEnts = {ent}
---				print(ent.Heat)
+
 			table.insert( ACE.contraptionEnts, self ) --Disgusting re-use of the contraption entity table. I like it.
-			print(table.Count( ACE.contraptionEnts ))
+			--print(table.Count( ACE.contraptionEnts ))
 	
 	end)
 

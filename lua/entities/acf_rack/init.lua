@@ -104,96 +104,6 @@ function ENT:Initialize()
 	
 end
 
-
-
-function ENT:ACF_Activate( Recalc )
-	--[[
-	local EmptyMass = self.RoundWeight or self.Mass or 10
-
-	self.ACF = self.ACF or {} 
-	
-	local PhysObj = self:GetPhysicsObject()
-	if not self.ACF.Aera then
-		self.ACF.Aera = PhysObj:GetSurfaceArea() * 6.45
-	end
-	
-	if not self.ACF.Volume then
-		self.ACF.Volume = PhysObj:GetVolume() * 16.38
-	end
-	
-	local ForceArmour = self.CustomArmour
-	
-	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Aera / 0.78) --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
-	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop aera gone 
-	local Percent = 1 
-	
-	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
-		Percent = self.ACF.Health/self.ACF.MaxHealth
-	end
-	
-	self.ACF.Health = Health * Percent
-	self.ACF.MaxHealth = Health
-	self.ACF.Armour = Armour * (0.5 + Percent/2)
-	self.ACF.MaxArmour = Armour
-	self.ACF.Type = nil
-	self.self.Mass
-	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
-	self.ACF.Type = "Prop"ACF.Mass = 
-	]]--
-end
---[[
-function ENT:DetonateAmmo(inflictor)
-    
-    self:TrimNullMissiles()
-    
-    local fillerMass = 0
-    local fragMass = 0
-    
-    while IsValid(self:PeekMissile()) do
-    
-        local missile = self:PopMissile()
-        
-        local bdata = missile.BulletData
-		
-        
-        if bdata.FillerMass then 
-            fillerMass = fillerMass + bdata.FillerMass
-        end
-        
-        if bdata.CasingMass then
-            fragMass = fragMass + bdata.CasingMass
-        elseif bdata.FillerMass and bdata.ProjMass then
-            fragMass = fragMass + (bdata.ProjMass - bdata.FillerMass)
-        end
-        
-        missile:Remove()
-        
-    end
-    
-    if fillerMass > 0 then
-    
-        if not IsValid(inflictor) then inflictor = nil end
-    
-        self.BulletData = {}
-        
-        self.BulletData["Id"]		= "203mmHW"
-        self.BulletData["ProjLength"]		= "162.39"
-        self.BulletData["PropLength"]		= "0.01"
-        self.BulletData["Type"]		= "HE"
-        self.BulletData["FillerMass"]		= fillerMass
-        
-        local bdata = ACFM_CompactBulletData(self.BulletData)
-        
-        self:SetBulletData(bdata)
-        
-        self:Detonate()
-        
-    end
-    
-end
-]]--
-
-
 function ENT:CanLoadCaliber(cal)
     
     return ACF_RackCanLoadCaliber(self.Id, cal)
@@ -213,18 +123,22 @@ function ENT:CanLinkCrate(crate)
 	end
     
 	
-    -- Don't link if it's a blacklisted round type for this gun
+    -- Don't link if it's a blacklisted round type for this rack
     local class = ACF_GetGunValue(bdata, "gunclass")
 	local Blacklist = ACF.AmmoBlacklist[ bdata.RoundType or bdata.Type ] or {}
 	
-	
 	if not class or table.HasValue( Blacklist, class ) then
-		return false, "That round type cannot be used with this gun!"
+		return false, "That round type cannot be used with this rack!"
 	end
     
+	
+    -- Dont't link if it's too far from this rack
+    if RetDist( self, crate ) >= 512 then	
+	    return false, "That crate is too far to be connected with this rack!"
+	end
+	
+	
     -- Don't link if it's not a missile.
-    
-    
     local ret, msg = ACF_CanLinkRack(self.Id, bdata.Id, bdata, self)
     if not ret then return ret, msg end
     
@@ -232,7 +146,7 @@ function ENT:CanLinkCrate(crate)
 	-- Don't link if it's already linked
 	for k, v in pairs( self.AmmoLink ) do
 		if v == crate then
-			return false, "That crate is already linked to this gun!"
+			return false, "That crate is already linked to this rack!"
 		end
 	end
     

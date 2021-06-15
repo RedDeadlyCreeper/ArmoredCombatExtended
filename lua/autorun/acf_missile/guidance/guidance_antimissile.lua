@@ -255,21 +255,20 @@ function this:GetWhitelistedEntsInCone(missile)
     local filter = self.Filter
 	for i, foundEnt in pairs(found) do
 	
-		--if not (IsValid(foundEnt) and self.Filter[foundEnt:GetClass()]) then continue end
-		if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then	continue end
-		local foundLocalPos = foundEnt:GetPos() - missilePos
-		
+		if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then goto cont end
+		local foundLocalPos = foundEnt:GetPos() - missilePos	
 		local foundDistSqr = foundLocalPos:LengthSqr()
-		if foundDistSqr < minDistSqr then continue end
 		
+		if foundDistSqr < minDistSqr then goto cont end		
 		local foundDot = foundLocalPos:GetNormalized():Dot(missileForward)
-		if foundDot < minDot then continue end
-		
+	
+		if foundDot < minDot then goto cont end
 		table.insert(foundAnim, foundEnt)
 	    
 		model = foundEnt:GetModel()
 		print(model)
 		
+		::cont::
 	end
     
     return foundAnim

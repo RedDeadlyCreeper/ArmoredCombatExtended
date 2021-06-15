@@ -2,9 +2,13 @@ ACF.Bullet = {}	--when ACF is loaded, this table holds bullets
 ACF.CurBulletIndex = 0	--used to track where to insert bullets
 ACF.BulletIndexLimt = 2000  --The maximum number of bullets in flight at any one time TODO: fix the typo
 ACF.TraceFilter = { --entities that cause issue with acf and should be not be processed at all
+
 	prop_vehicle_crane = true,
 	prop_dynamic = true
+	
 	}
+
+	
 ACF.SkyboxGraceZone = 100 --grace zone for the high angle fire
 
 -- optimization; reuse tables for ballistics traces
@@ -73,10 +77,11 @@ function ACF_RemoveBullet( Index )
 	ACF.Bullet[Index] = nil
 	if Bullet and Bullet.OnRemoved then Bullet:OnRemoved() end
 end
---[[
+
+--[[------------------------------------------------------------------------------------------------
    checks the visclips of an entity, to determine if round should pass through or not.
    ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
-]]--
+]]--------------------------------------------------------------------------------------------------
 function ACF_CheckClips( Ent, HitPos )
 
 	if not IsValid(Ent) or (Ent.ClipData == nil)
@@ -193,9 +198,6 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	-- possible fix: do a secondary traceline of flight through tracehull hitpos, as if the bullet was travelling through hitpos
 	--    worth the extra trace overhead? only run hulls for large shells? 3" (75mm)? 4" (100mm)? extra complexity for handling different cal traces
 
-	--local radius = 0.3937 * Bullet.Caliber / 2  -- caliber (shell diameter) is in cm. 
-	--FlightTr.maxs = Vector(radius, radius, radius) * 0.667 -- defining hullsize; reduced size to filter out glancing hits that would deal full damage
-	--FlightTr.mins = -FlightTr.maxs
 	FlightTr.mask = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 	TROffset = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
@@ -245,6 +247,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	
 	--bullet hit something that isn't world and is allowed to hit
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
+	
 		--If we hit stuff then send the resolution to the bullets damage function
 		
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]

@@ -1,5 +1,6 @@
 // This file defines damage permission with all ACF weaponry
 
+
 ACF = ACF or {}
 ACF.Permissions = {}
 local this = ACF.Permissions
@@ -128,7 +129,7 @@ end
 
 hook.Add( "Initialize", "ACF_LoadSafesForMap", function()
 	if not getMapSZs() then
-		print("!!!!!!!!!!!!!!!!!!\nWARNING: Safezone file " .. getMapFilename() .. " is missing, invalid or corrupt!  Safezones will not be restored this time.\n!!!!!!!!!!!!!!!!!!")
+		print("!!!!!!!!!!!!!!!!!!\n[ACE | WARNING]- Safezone file " .. getMapFilename() .. " is missing, invalid or corrupt!  Safezones will not be restored this time.\n!!!!!!!!!!!!!!!!!!")
 	end
 end )
 
@@ -442,21 +443,21 @@ function this.RegisterMode(mode, name, desc, default, think, defaultaction)
 	this.ModeDescs[name] = desc
 	this.ModeThinks[name] = think or function() end
 	this.DefaultCanDamage = defaultaction or false
-	print("ACF: Registered damage permission mode \"" .. name .. "\"!")
+	print("[ACE | INFO]- Registered damage permission mode \"" .. name .. "\"!")
 	
 	local DPM = LoadMapDPM()
 	
 	if DPM ~= nil then
 		if DPM == name then
-			print("ACF: Found default permission mode: " .. DPM)
-			print("ACF: Setting permission mode to: " .. name)
+			print("[ACE | INFO]- Found default permission mode: " .. DPM)
+			print("[ACE | INFO]- Setting permission mode to: " .. name)
 			this.DamagePermission = this.Modes[name]
 			this.DefaultPermission = name
 		end
 	else
 		if default then
-			print("ACF: Map does not have default permission set, using default")
-			print("ACF: Setting permission mode to: " .. name)
+			print("[ACE | WARNING]- Map does not have default permission set, using default")
+			print("[ACE | INFO]- Setting permission mode to: " .. name)
 			this.DamagePermission = this.Modes[name]
 			this.DefaultPermission = name
 		end
@@ -690,3 +691,5 @@ else
 		mode = "default"
 	end
 end
+
+

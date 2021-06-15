@@ -223,10 +223,10 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 						
 						BlastRes = ACF_Damage ( Tar    , Blast  , AreaAdjusted , 0     , Inflictor , 0    , Gun , "HE" )
 						FragRes = ACF_Damage ( Tar , FragKE , FragAera*FragHit , 0 , Inflictor , 0, Gun, "Frag" )
-						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
+						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then					
 							local Debris = ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 0.333 * (GetConVarNumber("acf_hepush") or 1) )
+							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 0.333 * (GetConVarNumber("acf_hepush") or 1) ) --0.333
 						end
 					end
 				end)
@@ -237,12 +237,17 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			else
 				BlastRes = ACF_Damage ( Tar , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
 				FragRes = ACF_Damage ( Tar , FragKE , FragAera*FragHit , 0 , Inflictor , 0, Gun, "Frag" )
+				
+				
 				if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
+				    --print('RIP') 
+					 
 					local Debris = ACF_HEKill( Tar , Table.Vec , PowerFraction , Hitpos )
 					table.insert( OccFilter , Debris )						--Add the debris created to the ignore so we don't hit it in other rounds
 					LoopKill = true --look for fresh targets since we blew a hole somewhere
 				else
-					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 0.1 * (GetConVarNumber("acf_hepush") or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
+				    --print('NO RIP')
+					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 15 * (GetConVarNumber("acf_hepush") or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
 				end
 			end
 			PowerSpent = PowerSpent + PowerFraction*BlastRes.Loss/2--Removing the energy spent killing props
@@ -260,22 +265,11 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 		return
 	end
 	
-	local SpallMul = 1 --If all else fails treat it like RHA
-	local ArmorMul = 1
-
-	if Material == 2 then 
-		SpallMul = 1.2 --Cast
-		ArmorMul = 1.8
-	elseif Material == 3 then 
-		SpallMul = 0 --Rubber does not spall
-	elseif Material == 5 then
-		SpallMul = ACF.AluminumSpallMult
-		ArmorMul = 0.334
-	elseif Material == 6 then
-		SpallMul = ACF.TextoliteSpallMult
-		ArmorMul = 0.23
-	end
+	local Mat = Material or 0
 	
+	local SpallMul = ACE.ArmorTypes[ Mat ].spallmult or 1
+	local ArmorMul = ACE.ArmorTypes[ Mat ].ArmorMul or 1
+
 		--	print("CMod: "..Caliber*4) 
 		--	print(Caliber) 
 	local UsedArmor = Armour*ArmorMul
@@ -305,7 +299,13 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 end
 
 function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor , Material)
+    
+    local Mat = Material or 0
 
+	local SpallMul = ACE.ArmorTypes[ Mat ].spallmult or 1
+	local ArmorMul = ACE.ArmorTypes[ Mat ].ArmorMul or 1
+
+--[[
 	local SpallMul = 1
 	local ArmorMul = 1
 
@@ -322,6 +322,8 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	SpallMul = ACF.TextoliteSpallMult
 	ArmorMul = 0.23
 	end
+	
+]]--
 --	print("CMod: "..Caliber*4) 
 
 --	print(HEFiller)
@@ -442,7 +444,13 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 		Bullet["Pos"] = HitPos + HitNormal * 0.75
 		Bullet.FlightTime = 0
 		Bullet.Flight = (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.025):GetNormalized() * Speed * Ricochet
-		Bullet.TraceBackComp = math.max(ACF_GetPhysicalParent(Target):GetPhysicsObject():GetVelocity():Dot(Bullet["Flight"]:GetNormalized()),0)
+		
+		if IsValid( ACF_GetPhysicalParent(Target):GetPhysicsObject() ) then
+		    Bullet.TraceBackComp = math.max(ACF_GetPhysicalParent(Target):GetPhysicsObject():GetVelocity():Dot(Bullet["Flight"]:GetNormalized()),0)
+		else 
+		    --print('holy crap, how this is possible??!?!')
+		end
+		
 		HitRes.Ricochet = true
 	end
 	
@@ -507,11 +515,18 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	local phys = parent:GetPhysicsObject()
 	
 	if (phys:IsValid()) then
+	
+	    --print('physics valid')
+	
 		if(!Target.acflastupdatemass) or ((Target.acflastupdatemass + 10) < CurTime()) then
 			ACF_CalcMassRatio(Target)
 		end
+		
 		if not Target.acfphystotal then return end --corner case error check
+		
 		local physratio = Target.acfphystotal / Target.acftotal
+		
+		--print('applying push:'..KE)
 		phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 	end
 end
@@ -627,6 +642,9 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 		Debris:SetAngles( Entity:GetAngles() )
 		Debris:SetPos( Entity:GetPos() )
 		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
+		--Debris:EmitSound( "physics/concrete/concrete_break"..math.Round(math.random(2,3))..".wav" )
+		--Debris:EmitSound( "acf_other/penetratingshots/0000029"..math.Round(math.random(2,4))..".wav" )
+		--2.wav
 		Debris:Spawn()
 		
 	if math.random() < ACF.DebrisIgniteChance then
@@ -670,6 +688,7 @@ function ACF_APKill( Entity , HitVector , Power )
 		Debris:SetPos( Entity:GetPos() )
 		Debris:SetMaterial(Entity:GetMaterial())
 		Debris:SetColor(Color(120,120,120,255))
+		--Debris:EmitSound( "physics/metal/metal_sheet_impact_hard"..math.Round(math.random(2,8))..".wav")
 		Debris:Spawn()
 		Debris:Activate()
 		
@@ -693,15 +712,16 @@ end
 
 --converts what would be multiple simultaneous cache detonations into one large explosion
 function ACF_ScaledExplosion( ent )
+  
 	local Inflictor = nil
-	local Owner = ent:CPPIGetOwner()
+	local Owner = ent:CPPIGetOwner() 
 	if( ent.Inflictor ) then
 		Inflictor = ent.Inflictor
 	end
 	
 	local HEWeight
 	if ent:GetClass() == "acf_fueltank" then
-		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 1
+		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 0.25
 	else
 		local HE, Propel
 		if ent.RoundType == "Refill" then
@@ -722,7 +742,11 @@ function ACF_ScaledExplosion( ent )
 	local Search = true
 	local Filter = {ent}
 	while Search do
+	
+
 		for key,Found in pairs(ents.FindInSphere(Pos, Radius)) do
+		    
+			
 			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
 				local Hitat = Found:NearestPoint( Pos )
 				
@@ -751,7 +775,7 @@ function ACF_ScaledExplosion( ent )
 				else
 					local FoundHEWeight
 					if Found:GetClass() == "acf_fueltank" then
-						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 10
+						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 0.25
 					else
 						local HE, Propel
 						if Found.RoundType == "Refill" then

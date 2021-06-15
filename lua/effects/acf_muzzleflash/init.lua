@@ -1,9 +1,9 @@
 
    
- /*--------------------------------------------------------- 
+--[[--------------------------------------------------------- 
     Initializes the effect. The data is a table of data  
     which was passed from the server. 
- ---------------------------------------------------------*/ 
+]]-----------------------------------------------------------
  function EFFECT:Init( data ) 
 	
 	local Gun = data:GetEntity()
@@ -15,10 +15,22 @@
 	local ReloadTime = data:GetMagnitude()
 	
 	local Class = Gun:GetNWString( "Class" )
-	local ClassData = list.Get("ACFClasses").GunClass[Class]
+
+	local ClassData = list.Get("ACFClasses").GunClass[Class] or {}
+	
+--[[	
+
+	longbarrel = {
+		index = 2, 
+		submodel = 4, 
+		newpos = "muzzle2"
+	}
+
+]]--
 	
 	local Attachment = "muzzle"
 	local longbarrel = ClassData.longbarrel
+	
 	if longbarrel ~= nil then
 		if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
 			Attachment = longbarrel.newpos

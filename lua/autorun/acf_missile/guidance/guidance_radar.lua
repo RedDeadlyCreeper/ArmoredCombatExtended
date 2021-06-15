@@ -73,11 +73,6 @@ function this:GetGuidance(missile)
 	local missileForward = missile:GetForward()
 	local targetPhysObj = self.Target:GetPhysicsObject()
 	local targetPos = self.Target:GetPos() + Vector(0,0,25)
-	
-	-- this was causing radar to break in certain conditions, usually on parented props.
-	--if IsValid(targetPhysObj) then
-		--targetPos = util.LocalToWorld( self.Target, targetPhysObj:GetMassCenter(), nil )
-	--end
 
 	local mfo       = missile:GetForward()
 	local mdir      = (targetPos - missilePos):GetNormalized()
@@ -130,66 +125,54 @@ end
 function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does not check angle
 
 	local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
 	local DPLRFAC = 65-((self.SeekCone)/2)
 	local foundAnim = {}
-	local foundEnt
-	
 
 	local ScanArray = ACE.contraptionEnts
 
-
 	for k, scanEnt in pairs(ScanArray) do
 
-		if(IsValid(scanEnt))then
-			local entpos = scanEnt:GetPos()
-			local difpos = entpos - missilePos
-			local dist = difpos:Length()
-			local entvel = scanEnt:GetVelocity()
+		if not IsValid(scanEnt) then goto cont end -- skip any invalid entity
+		
+		local entpos = scanEnt:GetPos()
+		local difpos = entpos - missilePos
+		local dist = difpos:Length()
 
-			if dist > self.MinimumDistance then -- Target is outside min seek cone
---					print("InDist")		
+		if dist < self.MinimumDistance then goto cont end -- skip any ent outside of minimun distance
 
-					local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
+			local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
 
-					if not LOStr.Hit then --Trace did not hit world
---					if true then
---						print("HasLOS")		 
-						local ConeInducedGCTRSize = dist/100 --2 meter wide tracehull for every 100m distance
-						local GCtr = util.TraceHull( {
-							 start = entpos,
-							 endpos = entpos + difpos:GetNormalized() * 1000 ,
-							 collisiongroup  = COLLISION_GROUP_WORLD,
-							 mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
-							 maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
-							 filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
-							}) --Hits anything in the world.
+			if not LOStr.Hit then --Trace did not hit world
+--			if true then
+--				print("HasLOS")		 
+				local ConeInducedGCTRSize = dist/100 --2 meter wide tracehull for every 100m distance
+				local GCtr = util.TraceHull( {
+					start = entpos,
+					endpos = entpos + difpos:GetNormalized() * 1000 ,
+					collisiongroup  = COLLISION_GROUP_WORLD,
+					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
+					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
+					filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
+					}) --Hits anything in the world.
 
-							--Doppler testing fun
-							local DPLR = missile:WorldToLocal(missilePos+entvel*2)
-							local Dopplertest = math.min(math.abs( entvel:Length()/math.max(math.abs(DPLR.Y),0.01))*100,10000)
-							local Dopplertest2 = math.min(math.abs(entvel:Length()/math.max(math.abs(DPLR.Z),0.01))*100,10000)
+					--Doppler testing fun
+					local entvel = scanEnt:GetVelocity()
+							
+					local DPLR = missile:WorldToLocal(missilePos+entvel*2)
+					local Dopplertest = math.min(math.abs( entvel:Length()/math.max(math.abs(DPLR.Y),0.01))*100,10000)
+					local Dopplertest2 = math.min(math.abs(entvel:Length()/math.max(math.abs(DPLR.Z),0.01))*100,10000)
 
-						if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/entvel:Length()) > 0.3) or (not GCtr.Hit) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
---							print("PassesDoppler")		
-							--Valid target
---							print(scanEnt)
-							table.insert(foundAnim, scanEnt)
+				if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/entvel:Length()) > 0.3) or (not GCtr.Hit) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+                    --print("PassesDoppler")		
+					--Valid target
+                    --print(scanEnt)
+					table.insert(foundAnim, scanEnt)
 
-						end
-
-
-
-			
-					end
-
+				end
 			
 			end
 
-
-
-		end
-
+        ::cont::
 	end
     
     return foundAnim
@@ -204,10 +187,10 @@ function this:AcquireLock(missile)
 
 	local curTime = CurTime()
     
-	if self.LastSeek + self.SeekDelay > curTime then 
+	if self.LastSeek + self.SeekDelay > curTime then return nil   end
         --print("tried seeking within timeout period")
-        return nil 
-    end
+         
+  
 	self.LastSeek = curTime
 
 	-- Part 1: get all whitelisted entities in seek-cone.
@@ -216,12 +199,12 @@ function this:AcquireLock(missile)
 	-- Part 2: get a good seek target
 	
     local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
 
 	local bestAng = math.huge
 	local bestent = nil
 
 	for k, classifyent in pairs(found) do
+	
 		local entpos = classifyent:GetPos()
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
@@ -231,8 +214,12 @@ function this:AcquireLock(missile)
 			local testang = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
 			if testang < bestAng then --Sorts targets as closest to being directly in front of radar
+			
+			
 				bestAng = testang
 				bestent = classifyent
+				
+				
 			end
 
 
