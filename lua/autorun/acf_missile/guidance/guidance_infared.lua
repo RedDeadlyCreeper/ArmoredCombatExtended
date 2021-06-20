@@ -200,19 +200,22 @@ function this:AcquireLock(missile)
 			    
 			    Heat = self.SeekSensitivity * classifyent.Heat 
 			
-----------------if not is a Heat Emitter, track the friction's heat			
+----------------if is not a Heat Emitter, track the friction's heat			
 		    else
 			
 			    local physEnt = classifyent:GetPhysicsObject()
 		
-----------------check if it's not frozen		
-	            if not physEnt:IsMoveable() then goto cont end
+----------------skip if it has not a valid physic object. It's amazing how gmod can break this. . .
+                if physEnt:IsValid() then  	
+---------------------check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
+                    if not physEnt:IsMoveable() then goto cont end
+                end
 				
 				Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
 			
 		    end
 		
-		    if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end --Hotter than AmbientTemp in deg C. 
+		    if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end --Skip if not Hotter than AmbientTemp in deg C. 
                
 		    local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		    local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
