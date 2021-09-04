@@ -138,25 +138,11 @@ ACF_DefineEngine( "Electric-Large-NoBatt", {
 	flywheeloverride = 6000
 } )
 
-ACF_DefineEngine( "Induction motor, Small, Standalone", {
-	name = "Induction motor, Small,Standalone",
-	desc = "A small electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy.\n\nStandalone electric motors don't have integrated batteries, saving on weight and volume, but require you to supply your own batteries.",
-	model = "models/engines/emotor-standalone-sml.mdl",
-	sound = "acf_engines/electric_small.wav",
-	category = "Electric",
-	fuel = "Electric",
-	enginetype = "Electric",
-	requiresfuel = true,
-	weight = 250, --250
-	torque = 500,
-	flywheelmass = 0.3,
-	idlerpm = 40,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
-	limitrpm = 6500,
-	iselec = true,
-	flywheeloverride = 4750
-} )
+--All of electric engines requires.
+--Weight rebalance only applies on induction motors just to have more time to think about it.
+
+--Note: Buff torque for every engine when radiators come, i think radiators will be mandatory for electric stuff
+--Needs another formula for induction motor as well
 ACF_DefineEngine( "Induction motor, Tiny", {
 	name = "Induction motor, Tiny,Standalone",
 	desc = "A pint-size electric motor, for the lightest of light utility work.  Can power electric razors, desk fans, or your hopes and dreams\n\nElectric motors provide huge amounts of torque, but are very heavy.\n\nStandalone electric motors don't have integrated batteries, saving on weight and volume, but require you to supply your own batteries.",
@@ -166,16 +152,37 @@ ACF_DefineEngine( "Induction motor, Tiny", {
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 35, --35
-	torque = 30,
+	weight = 10, --35
+	torque = 190, --30
 	flywheelmass = 0.3,
-	idlerpm = 40,
+	idlerpm = 1, --40
 	peakminrpm = 1,
 	peakmaxrpm = 1,
-	limitrpm = 8000,
+	limitrpm = 10000,
 	iselec = true,
 	flywheeloverride = 4750
 } )
+
+ACF_DefineEngine( "Induction motor, Small, Standalone", {
+	name = "Induction motor, Small,Standalone",
+	desc = "A small electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy.\n\nStandalone electric motors don't have integrated batteries, saving on weight and volume, but require you to supply your own batteries.",
+	model = "models/engines/emotor-standalone-sml.mdl",
+	sound = "acf_engines/electric_small.wav",
+	category = "Electric",
+	fuel = "Electric",
+	enginetype = "Electric",
+	requiresfuel = true,
+	weight = 25, --250
+	torque = 425,
+	flywheelmass = 0.3,
+	idlerpm = 1, --40
+	peakminrpm = 1,
+	peakmaxrpm = 1,
+	limitrpm = 10000,
+	iselec = true,
+	flywheeloverride = 4750
+} )
+
 ACF_DefineEngine( "Induction motor, Medium, Standalone", {
 	name = "Induction motor, Medium, Standalone",
 	desc = "Very nice engine for small cars.You need to have your own batteries.",
@@ -185,32 +192,33 @@ ACF_DefineEngine( "Induction motor, Medium, Standalone", {
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 520, --520
-	torque = 810,
-	flywheelmass = 0.3,
-	idlerpm = 40,
+	weight = 35, --520
+	torque = 910, --810
+	flywheelmass = 0.3, --0.3
+	idlerpm = 1, --40
 	peakminrpm = 1,
 	peakmaxrpm = 1,
-	limitrpm = 9500,
+	limitrpm = 13000, --9500
 	iselec = true,
-	flywheeloverride = 7500
+	flywheeloverride = 7500 --7500
 } )
+
 ACF_DefineEngine( "Induction motor, Large, Standalone", {
 	name = "Induction motor, Large, Standalone",
-	desc = "Super power wooooooof.Where is your fuel he-he",
+	desc = "Cool motor that gives you huge amount of torque.Requires batteries.",
 	model = "models/engines/emotor-standalone-big.mdl",
 	sound = "acf_engines/electric_medium.wav",
 	category = "Electric",
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 2000, --2000
-	torque = 2400,
-	flywheelmass = 0.35,
-	idlerpm = 40,
+	weight = 50, --2000
+	torque = 2125,
+	flywheelmass = 0.35, --0.35
+	idlerpm = 1, --40(?)
 	peakminrpm = 1,
 	peakmaxrpm = 1,
-	limitrpm = 12000,
+	limitrpm = 15000, --12000
 	iselec = true,
-	flywheeloverride = 8000
+	flywheeloverride = 8000 --8000
 } )

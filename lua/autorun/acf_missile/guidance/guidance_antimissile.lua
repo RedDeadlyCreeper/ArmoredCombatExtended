@@ -266,7 +266,7 @@ function this:GetWhitelistedEntsInCone(missile)
 		table.insert(foundAnim, foundEnt)
 	    
 		model = foundEnt:GetModel()
-		print(model)
+		--print(model)
 		
 		::cont::
 	end

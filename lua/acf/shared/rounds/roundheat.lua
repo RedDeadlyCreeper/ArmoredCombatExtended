@@ -3,6 +3,7 @@ AddCSLuaFile()
 
 ACF.AmmoBlacklist.HEAT = { "MG", "RAC", "SL", "ECM", "ATR" , "AC", "AAM", "SAM", "SBC"}
 
+
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
@@ -144,6 +145,9 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "SlugDragCoef", BulletData.SlugDragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
 	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+
+		--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 
 end
 

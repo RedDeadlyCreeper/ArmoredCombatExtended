@@ -8,10 +8,13 @@ hook.Add("PostDrawOpaqueRenderables", "ACF_RenderDamage", function()
 	if not ACF_HealthRenderList then return end
     cam.Start3D( EyePos(), EyeAngles() )
 		for k,ent in pairs( ACF_HealthRenderList ) do
-			--if ent:EntIndex() == 227 then print(  ent.ACF_Material ) end
+
+			--In case that this is missing
+			ent.ACF_HelathPercent = ent.ACF_HelathPercent or 1
+
 			if IsValid(ent) then
 				render.ModelMaterialOverride( ent.ACF_Material )
-				render.SetBlend(math.Clamp(1- ent.ACF_HelathPercent,0,0.8))
+				render.SetBlend( math.Clamp(1 - ent.ACF_HelathPercent,0,0.8) )
 				ent:DrawModel()
 			elseif ACF_HealthRenderList then
 				table.remove(ACF_HealthRenderList,k)
@@ -25,11 +28,13 @@ end)
 net.Receive("ACF_RenderDamage", function()
     
 	local Table = net.ReadTable()
-	
+
+		if not Table then return end
 	
     	for k,v in ipairs( Table ) do
+
+    		if not v.ID then break end
 	
-	        
     	 	local ent, Health, MaxHealth = ents.GetByIndex( v.ID ), v.Health, v.MaxHealth
     		if not IsValid(ent) then return end
     		if Health != MaxHealth then
@@ -60,6 +65,8 @@ net.Receive("ACF_RenderDamage", function()
     		end
     	end
 end)
+
+
 
 --[[
 usermessage.Hook("Atest", function(msg)

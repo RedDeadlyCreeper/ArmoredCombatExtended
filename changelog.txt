@@ -415,3 +415,16 @@ r100
 -added APHE for MGs
 -added ROF for almost every gun 
 -updated ace armor analyzer
+
+*r133
+-Improved Explosion effects. Restored/improved dynamic dust according to terrain. Added water splashes for underwater explosions.
+-Done some changes to ERA.
+-Changed/improved most of sounds for pen, rico & explosions. Special thanks for Arend.
+-Spall totally reworked. Improved HESH mechanics, stacked props are not a barrier.
+-Added Delectros's smoothbore cannons. Glory
+-buffed rubber resiliance vs kinetic rounds. For Shaped rounds was buffed too but slightly.
+-buffed HEFS & T/HEATFS speed greatly.
+-radar will not track flares anymore.
+-Restricted certain material types for ace ents.
+-Changed some values for Electric stuff.
+-A LOT of bugfixes & optimizations, specially for the effects.

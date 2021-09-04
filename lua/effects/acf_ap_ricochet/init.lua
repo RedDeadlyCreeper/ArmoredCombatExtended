@@ -25,11 +25,16 @@
 		BulletEffect.Force = 0
 		BulletEffect.Damage = 0	 
 	LocalPlayer():FireBullets(BulletEffect) 
-	
-	sound.Play( "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(self.Mass*200,65,500), math.Clamp(self.Velocity*0.01,25,255), 1 )
-	
+
+	local soundlvl = self.Mass*10
+	print('rico sound level: '..soundlvl)
+
+	sound.Play(  "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(soundlvl, 80,180), math.Clamp(self.Velocity*0.01,25,125), 0.5)
+	--sound.Play( "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(self.Mass*200,65,90), math.Clamp(self.Velocity*0.01,25,150), 1 )
+
 	util.Decal("ExplosiveGunshot", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
 	
+	if self.Emitter then self.Emitter:Finish() end
  end   
    
 /*---------------------------------------------------------

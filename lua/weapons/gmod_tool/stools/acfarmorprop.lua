@@ -117,7 +117,7 @@ if CLIENT then
 	end )
 	
 	cvars.AddChangeCallback( "acfarmorprop_material", function( cvar, oldvalue, value )
-		
+
 		local area = GetConVarNumber( "acfarmorprop_area" )
 		
 		-- don't bother recalculating if we don't have a valid ent

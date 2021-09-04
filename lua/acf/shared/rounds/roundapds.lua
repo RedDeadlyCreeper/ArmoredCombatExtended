@@ -133,7 +133,9 @@ function Round.convert( Crate, PlayerData )
 	end
 	
 	end
-	
+
+	--Used for adapting acf2 apds/apfsds to the new format
+	PlayerData["Data5"] = math.Clamp(PlayerData["Data5"],Data.MinCalMult,Data.MaxCalMult)	
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
@@ -181,6 +183,9 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
 	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+
+		--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 	
 end
 

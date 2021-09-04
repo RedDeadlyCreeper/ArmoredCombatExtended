@@ -22,9 +22,16 @@ local GunTable = ACFEnts.Guns
 		ImpactTr.endpos = self.Origin + self.DirVec*20
 	local Impact = util.TraceLine(ImpactTr)					--Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
-	
-	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,5)..".wav", Impact.HitPos, math.Clamp(self.Mass*200,65,500), math.Clamp(self.Velocity*0.01,25,255), 1 )
-	
+
+	local soundlvl = self.Mass*100
+	--print('penetration sound level: '..soundlvl)
+	--print('velocity: '..self.Velocity)
+
+	sound.Play( "/acf_other/penetratingshots/pen"..math.random(1,6)..".wav", Impact.HitPos, math.Clamp( soundlvl ,70,85), math.Clamp(self.Velocity*1,90,150), 0.65 )
+	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,4)..".wav", Impact.HitPos, math.Clamp( soundlvl ,70,85), math.Clamp(self.Velocity*0.01,90,150), 1 )
+
+
+
 	--self.Entity:EmitSound( "ambient/explosions/explode_1.wav" , 100 + self.Radius*10, 200 - self.Radius*10 )
 	
 	-- Material Enum
@@ -48,16 +55,29 @@ local GunTable = ACFEnts.Guns
 	-- 89 GLASS
 
 	local Mat = Impact.MatType
+	--print(Mat)
 	if Mat == 71 or Mat == 73 or Mat == 77 or Mat == 80 then -- Metal
 		self:Metal()
 	else -- Nonspecific
-		self:Concrete()
+		self:Prop()
 	end
 
+	if self.Emitter then self.Emitter:Finish() end
  end   
 
 function EFFECT:Metal()
-	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
+	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10, self.Ent)
+
+	local BulletEffect = {}
+		BulletEffect.Num = 1
+		BulletEffect.Src = self.Origin - self.DirVec
+		BulletEffect.Dir = self.DirVec
+		BulletEffect.Spread = Vector(0,0,0)
+		BulletEffect.Tracer = 0
+		BulletEffect.Force = 0
+		BulletEffect.Damage = 0	 
+	LocalPlayer():FireBullets(BulletEffect) 
+
 	
 	for i=0, 4*self.Scale do
 	
@@ -102,7 +122,7 @@ function EFFECT:Metal()
 
 	local Sparks = EffectData()
 		Sparks:SetOrigin( self.Origin )
-		Sparks:SetNormal( self.Normal )
+		Sparks:SetNormal( self.Normal+VectorRand()*1.5 )
 		Sparks:SetMagnitude( self.Scale )
 		Sparks:SetScale( self.Scale )
 		Sparks:SetRadius( self.Scale )
@@ -111,9 +131,20 @@ function EFFECT:Metal()
 end
 
 
-function EFFECT:Concrete()
+function EFFECT:Prop()
   
-	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
+	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10, self.Ent )
+
+	local BulletEffect = {}
+		BulletEffect.Num = 1
+		BulletEffect.Src = self.Origin - self.DirVec
+		BulletEffect.Dir = self.DirVec
+		BulletEffect.Spread = Vector(0,0,0)
+		BulletEffect.Tracer = 0
+		BulletEffect.Force = 0
+		BulletEffect.Damage = 0	 
+	LocalPlayer():FireBullets(BulletEffect) 
+
 	
 	for i=0, 4*self.Scale do
 	
@@ -177,14 +208,13 @@ function EFFECT:Concrete()
 
 	local Sparks = EffectData()
 		Sparks:SetOrigin( self.Origin )
-		Sparks:SetNormal( self.Normal )
+		Sparks:SetNormal( self.Normal+VectorRand()*1.5)
 		Sparks:SetMagnitude( self.Scale )
 		Sparks:SetScale( self.Scale )
 		Sparks:SetRadius( self.Scale )
 	util.Effect( "Sparks", Sparks )
 	
 end
-
 
 --[[
 function EFFECT:Concrete()
@@ -203,13 +233,13 @@ function EFFECT:Concrete()
 	end
 
 
-	local Sparks = EffectData()
-		Sparks:SetOrigin( self.Origin )
-		Sparks:SetNormal( self.Normal )
-		Sparks:SetMagnitude( self.Scale )
-		Sparks:SetScale( self.Scale )
-		Sparks:SetRadius( self.Scale )
-	util.Effect( "Sparks", Sparks )
+	--local Sparks = EffectData()
+		--Sparks:SetOrigin( self.Origin )
+		--Sparks:SetNormal( self.Normal )
+		--Sparks:SetMagnitude( self.Scale )
+		--Sparks:SetScale( self.Scale )
+		--Sparks:SetRadius( self.Scale )
+	--util.Effect( "Sparks", Sparks )
 	
 end
 ]]--

@@ -18,8 +18,8 @@ ACF_defineGunClass("SBC", {
 
 ACF_defineGun("50mmSBC", {
 	name = "50mm Smoothbore Cannon",
-	desc = "50mm Smoothbore, a very smoll gun for a light tank or tank destroyer",
-	model = "models/tankgun_old/tankgun_50mm.mdl",
+	desc = "A small, 50mm Smoothbore cannon, being able to be fitted into a very light tank, it's a decent weapon if you want to create a hole on those ww2 tonks.",
+	model = "models/tankgun_new/tankgun_50mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 5.0,
@@ -33,8 +33,8 @@ ACF_defineGun("50mmSBC", {
 
 ACF_defineGun("75mmSBC", {
 	name = "75mm Smoothbore Cannon",
-	desc = "75mm Smoothbore, a great cannon for a light tank or tank destroyer",
-	model = "models/tankgun_old/tankgun_75mm.mdl",
+	desc = "75mm Smoothbore cannon. The nightmare for those who think they are well armored.",
+	model = "models/tankgun_new/tankgun_75mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 7.5,
@@ -48,8 +48,8 @@ ACF_defineGun("75mmSBC", {
 	
 ACF_defineGun("100mmSBC", {
 	name = "100mm Smoothbore Cannon",
-	desc = "100mm Smoothbore, a great cannon for a light tank or tank destroyer",
-	model = "models/tankgun_old/tankgun_100mm.mdl",
+	desc = "100mm Smoothbore cannon, with good penetration performance, can perform a deadly strike in one single pass. Seen on those modern tank destroyers.",
+	model = "models/tankgun_new/tankgun_100mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 10.0,
@@ -63,8 +63,8 @@ ACF_defineGun("100mmSBC", {
 	
 ACF_defineGun("120mmSBC", {
 	name = "120mm Smoothbore Cannon",
-	desc = "120mm Smoothbore, powerful general purpose main battle tank cannon",
-	model = "models/tankgun_old/tankgun_120mm.mdl",
+	desc = "120mm Smoothbore cannon, powerful general purpose main battle tank cannon",
+	model = "models/tankgun_new/tankgun_120mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 12.0,
@@ -78,8 +78,8 @@ ACF_defineGun("120mmSBC", {
 	
 ACF_defineGun("140mmSBC", {
 	name = "140mm Smoothbore Cannon",
-	desc = "140mm Smoothbore, heavy railgun like cannon spawned out of a hatred of 60 tons. 'Your litterly removing the armor tool' -Anon",
-	model = "models/tankgun_old/tankgun_140mm.mdl",
+	desc = "140mm Smoothbore cannon, heavy railgun like cannon spawned out of a hatred of 60 tons. 'Your litterly removing the armor tool' -Anon",
+	model = "models/tankgun_new/tankgun_140mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 14.0,
@@ -95,7 +95,7 @@ ACF_defineGun("140mmSBC", {
 ACF_defineGun("170mmSBC", {
 	name = "170mm Smoothbore Cannon",
 	desc = "Some might laugh at those who choose to forego armor. The 170mm laughs at anyone as it casually tears all tanks alike to shreds.",
-	model = "models/tankgun/tankgun_170mmsb.mdl",
+	model = "models/tankgun_new/tankgun_170mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
 	caliber = 17.0,

@@ -29,46 +29,17 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
 	if not PlayerData.SCalMult then PlayerData.SCalMult = 0.5 end
-	if not PlayerData["Data5"] then PlayerData["Data5"] = 0.5 end --caliber in mm count
+	if not PlayerData["Data5"] then PlayerData["Data5"] = 0.23 end --caliber in mm count
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
-	
+
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
 	if ACF.Year > 2000 then
 	
-	if GunClass == "AC" then
-	Data.MinCalMult = 0.35
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 2 -- Autocannons are puny anyways
-	Data.VelModifier = 1.6
-	Data.Ricochet = 70
-	elseif GunClass == "RAC" then
-	Data.MinCalMult = 0.5
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.8
-	Data.VelModifier = 1.7
-	Data.Ricochet = 70
-	elseif GunClass == "HRAC" then
-	Data.MinCalMult = 0.5
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.9
-	Data.VelModifier = 1.7
-	Data.Ricochet = 70
-	elseif GunClass == "MG" then
-	Data.MinCalMult = 0.45
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.7
-	Data.VelModifier = 1.8
-	Data.Ricochet = 70
-	elseif GunClass == "SA" then
-	Data.MinCalMult = 0.3
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 2
-	Data.VelModifier = 1.6
-	Data.Ricochet = 70
-	elseif GunClass == "C" then
+
+	if GunClass == "C" then
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 0.8
@@ -96,37 +67,7 @@ function Round.convert( Crate, PlayerData )
 	
 	else
 
-	if GunClass == "AC" then
-	Data.MinCalMult = 0.35
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 2 -- Autocannons are puny anyways
-	Data.VelModifier = 1.6
-	Data.Ricochet = 55
-	elseif GunClass == "RAC" then
-	Data.MinCalMult = 0.5
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.8
-	Data.VelModifier = 1.7
-	Data.Ricochet = 50
-	elseif GunClass == "HRAC" then
-	Data.MinCalMult = 0.5
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.9
-	Data.VelModifier = 1.7
-	Data.Ricochet = 50
-	elseif GunClass == "MG" then
-	Data.MinCalMult = 0.5
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.7
-	Data.VelModifier = 1.8
-	Data.Ricochet = 50
-	elseif GunClass == "SA" then
-	Data.MinCalMult = 0.3
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 2
-	Data.VelModifier = 1.6
-	Data.Ricochet = 60
-	elseif GunClass == "C" then
+	if GunClass == "C" then
 	Data.MinCalMult = 0.25
 	Data.MaxCalMult = 1.0
 	Data.PenModifier = 1
@@ -148,6 +89,8 @@ function Round.convert( Crate, PlayerData )
 	
 	end
 	
+	--Used for adapting acf2 apds/apfsds to the new format
+	PlayerData["Data5"] = math.Clamp(PlayerData["Data5"],Data.MinCalMult,Data.MaxCalMult)
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
@@ -195,6 +138,9 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
 	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+
+	--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 	
 end
 

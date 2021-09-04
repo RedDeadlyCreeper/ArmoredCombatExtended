@@ -7,7 +7,7 @@ local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "[APCR / HVAP] - "..ACFTranslation.ShellAPCR[1] --Human readable name
-Round.model = "models/munitions/round_100mm_ap_shot.mdl" --Shell flight model
+Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellAPCR[2]
 Round.netid = 11 --Unique ammotype ID for network transmission
 
@@ -88,6 +88,9 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
 	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+
+		--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 	
 end
 

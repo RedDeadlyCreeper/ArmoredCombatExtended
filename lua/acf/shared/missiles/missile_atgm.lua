@@ -75,12 +75,12 @@ ACF_defineGun("9M113 ASM", { --id
 		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
 		thrust		= 3500,			-- average thrust - kg*in/s^2                                    --was 7000
-		burnrate	= 100,			-- cm^3/s at average chamber pressure                            --was 40
+		burnrate	= 125,			-- cm^3/s at average chamber pressure                            --was 40
 		starterpct	= 0.2,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.005,		-- drag coefficient while falling                                --was 0.001
+		dragcoef	= 0.0075,		-- drag coefficient while falling                                --was 0.001
         dragcoefflight  = 0.03,                 -- drag coefficient during flight
-		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.4,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(1.2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 

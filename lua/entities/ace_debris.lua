@@ -16,34 +16,19 @@ function ENT:Initialize()
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 	
 	local phys = self:GetPhysicsObject()
-	local Mass = phys:GetVolume() * 0.005
 	
 	if IsValid( phys ) then
 	    
 		phys:Wake()
-		phys:SetMass(Mass)
 	    phys:SetMaterial('jeeptire')
 		
 	end   
-	
 end
 
 function ENT:Think()
 	
-	if self.Timer < CurTime() then
-		self:Remove()
-	end
+	if self.Timer < CurTime() then self:Remove() end
 	
-	self:NextThink( CurTime() + 30 )
-	
-	return true
-	
-end
-
-function ENT:OnTakeDamage( dmginfo )
-	
-	-- React physically when shot/getting blown
-	-- not sure if this is actually necessary
-	self:TakePhysicsDamage( dmginfo )
-	
+	self:NextThink( CurTime() + 30 )	
+	return true	
 end

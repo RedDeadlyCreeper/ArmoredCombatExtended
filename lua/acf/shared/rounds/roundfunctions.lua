@@ -1,6 +1,8 @@
 AddCSLuaFile( "acf/shared/rounds/roundfunctions.lua" )
 
+
 function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
+
 
 	local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
 		
@@ -13,9 +15,44 @@ function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	if PlayerData["Data10"]*1 > 0 then	--Check for tracer
 		Data["Tracer"] = math.min(Data["Caliber"]/5,3) --Tracer space calcs
 	end
-	
+
+	--print('Prop Before: '..PlayerData["PropLength"])
+	--print('Proj Before: '..PlayerData["ProjLength"])
+
+	local Type = PlayerData.Type or ''
+
+	--created to adapt old ammos to the new heatfs speed
+	if Type == 'HEATFS' or Type == 'THEATFS' then
+		PlayerData["PropLength"] = math.max(0.01 + Data["Caliber"]*3.9, PlayerData["PropLength"] )
+
+		--check if current lenght exceeds the max lenght available
+		if PlayerData["PropLength"] + PlayerData["ProjLength"] > GUIData["MaxTotalLength"] then
+
+			PlayerData["ProjLength"] = GUIData["MaxTotalLength"] - PlayerData["PropLength"]
+
+		end
+
+	--same as above, but for hefs
+	elseif Type == 'HEFS' then
+		PlayerData["PropLength"] = math.max(0.01 + Data["Caliber"]*4.5, PlayerData["PropLength"] )
+
+		--check if current lenght exceeds the max lenght available
+		if PlayerData["PropLength"] + PlayerData["ProjLength"] + 1 > GUIData["MaxTotalLength"] then
+
+			PlayerData["ProjLength"] = GUIData["MaxTotalLength"] - PlayerData["PropLength"]
+
+		end
+	end
+
+		--print('MaxLenght: '..GUIData["MaxTotalLength"])
+		--print('Remain for Proj: '..GUIData["MaxTotalLength"] - PlayerData["PropLength"])
+		--print('Prop After: '..PlayerData["PropLength"])
+		--print('Proj After: '..PlayerData["ProjLength"])
+
 	local PropMax = (BulletMax["propweight"]*1000/ACF.PDensity) / Data["FrAera"]	--Current casing absolute max propellant capacity
 	local CurLength = (PlayerData["ProjLength"] + math.min(PlayerData["PropLength"],PropMax) + Data["Tracer"])
+
+
 	GUIData["MinPropLength"] = 0.01
 	GUIData["MaxPropLength"] = math.max(math.min(GUIData["MaxTotalLength"]-CurLength+PlayerData["PropLength"], PropMax),GUIData["MinPropLength"]) --Check if the desired prop lenght fits in the case and doesn't exceed the gun max
 	

@@ -474,6 +474,8 @@ end
 
 
 function this.CanDamage(Type, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gun)
+
+
 	local owner = (CPPI and Entity:CPPIGetOwner()) or Entity:GetOwner()
 	
 	if not (IsValid(owner) and owner:IsPlayer()) then
@@ -490,6 +492,7 @@ function this.CanDamage(Type, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gu
 		else return this.DefaultCanDamage end
 	end
 	
+	print(this.DamagePermission(owner, Inflictor, Entity))
 	return this.DamagePermission(owner, Inflictor, Entity)
 end
 hook.Add("ACF_BulletDamage", "ACF_DamagePermissionCore", this.CanDamage)

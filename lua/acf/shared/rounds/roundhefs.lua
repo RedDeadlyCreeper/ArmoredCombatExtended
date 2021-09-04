@@ -28,6 +28,8 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+
+	PlayerData.Type = 'HEFS'
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
@@ -40,7 +42,7 @@ function Round.convert( Crate, PlayerData )
 	GUIData.MinFillerVol = 0
 	GUIData.MaxFillerVol = math.min(GUIData.ProjVolume,MaxVol)
 	GUIData.FillerVol = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
-	Data.FillerMass = GUIData.FillerVol * ACF.HEDensity/1000
+	Data.FillerMass = 1.75 *GUIData.FillerVol * ACF.HEDensity/1000
 	
 	Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol,0)*7.9/1000 + Data.FillerMass
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
@@ -92,6 +94,9 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
 	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+
+		--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 
 end
 
@@ -246,7 +251,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
 	
 	-------------------------------------------------------------------------------	
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength+(Data.Caliber*4.5),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	

@@ -30,6 +30,7 @@
 	
 	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
 	
+	if self.Emitter then self.Emitter:Finish() end
  end   
    
 /*---------------------------------------------------------

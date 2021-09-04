@@ -96,7 +96,7 @@ function SWEP:PrimaryAttack()
 		if ( tr.HitWorld ) then return end	
 		if CLIENT then return end
 	local ent = tr.Entity
-	if ent:IsValid() then
+	if ent:IsValid() and ent:GetClass() ~= 'ace_debris' then
 		if ent:IsPlayer() || ent:IsNPC() then
 			local PlayerHealth = ent:Health() --get the health
 			local PlayerMaxHealth = ent:GetMaxHealth()--and max health too
@@ -144,50 +144,63 @@ end
 
 function SWEP:SecondaryAttack()
 
-self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
+	self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
+
 	local userid = self.Owner
 	local userid = self.Owner
 	local trace = {}
+
 	trace.start = userid:GetShootPos()
 	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 	trace.filter = userid
+
 	local tr = util.TraceLine( trace )
-		if ( tr.HitWorld ) then return end	
-		if CLIENT then return end
+
+	if ( tr.HitWorld ) then return end	
+	if CLIENT then return end
+
 	local ent = tr.Entity
+
 	if ent:IsValid() then
 		local Valid = ACF_Check ( ent )
 		if Valid then
+
 			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
 			self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 			self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
+
 			local HitRes = {}
-			if(ent:IsPlayer()) then
+
+			if ent:IsPlayer() then
 				HitRes = ACF_Damage ( ent , {Kinetic = 0.2,Momentum = 0,Penetration = 0.2} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			else
+
 				if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 				
 				HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 				
 				if ent.ACF.Material == 4 then     --ERA should detonate now
 				
+						local HEWeight = ent.ACF.Armour*0.01			
+						local Radius =( HEWeight*0.0001 )^0.33*8*39.37
+						local Owner = ent:CPPIGetOwner()
+
 					if HitRes.Kill then
-					    --ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour * 0.00075 , ent.ACF.Armour * 0.1, self.Owner , ent , ent )   --calling HE explosion function. Adjusted HE power, its possible to change on future.
-                        ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour * 0.075 , ent.ACF.Armour * 0.1, self.Owner , ent , ent ) 
+
+						--calling HE explosion function. Adjusted HE power, its possible to change on future.
+                        ACF_HE( ent:GetPos(), Vector(0,0,1), HEWeight , HEWeight, Owner , ent , ent ) 
                       
-						ent:Remove()   --removing it because era simply is not removed after explosion
+                    	--removing it because era simply is not removed after explosion
+						ent:Remove()   
 					
 					end
 				end
---[[	this part will destroy the prop once its health is almost 0. Disabled atm			
-				if ent.ACF.Health < 2 then
-				
-				    ACF_APKill( ent, VectorRand() , 0)
-				    ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )  --Sound is no correct
-					
-				end
-]]--				
+				--this part will destroy the prop once its health is almost 0. Disabled atm			
+				--if ent.ACF.Health < 2 then		
+				    --ACF_APKill( ent, VectorRand() , 0)
+				    --ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )  --Sound is no correct
+				--end				
 			end
 			if HitRes.Kill then
 				constraint.RemoveAll( ent )

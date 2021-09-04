@@ -146,6 +146,9 @@ function Round.network( Crate, BulletData )
 	--Crate:SetNWFloat("Caliber",BulletData["Caliber"])
 	--Crate:SetNWFloat("ProjMass",BulletData["ProjMass"])
 	--Crate:SetNWFloat("DragCoef",BulletData["DragCoef"])
+
+		--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 	
 end
 

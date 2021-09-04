@@ -449,7 +449,7 @@ function ENT:Think()
 	Wire_TriggerOutput(self, "EngineHeat", self.Heat)
 	
 	if ACF.CurTime > self.NextLegalCheck then
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, false, true, true, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, true, true)
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:CheckRopes()
 		self:CheckFuel()

@@ -637,14 +637,14 @@ function ENT:Think()
 	if ACF.CurTime > self.NextLegalCheck then
 
 		-- check gun is legal
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, false, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true)
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 
 		-- check the seat is legal
 		local seat = IsValid(self.User) and self.User:GetVehicle() or nil
 
 		if IsValid(seat) then
-			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, false, true, false, false)
+			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, false, false)
 			if not legal then
 				self.Legal = false
 				self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues
@@ -892,12 +892,12 @@ function ENT:FireShell()
 			self:CreateShell( self.BulletData )
 			
 			local PhysObj = self:GetPhysicsObject()
-			local HasPhys = constraint.FindConstraintEntity(self, "Weld"):IsValid() or not self:GetParent():IsValid()
+			local HasPhys = not self:GetParent():IsValid()
 			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
-			
-			--local Mass = PhysObj:GetMass()			
-			--self.Heat = self.Heat +(((0.2+self.BulletData.PropMass)^1.05 * 180000)/(Mass^0.5)/743.2)
---			print(self.Heat)
+
+			--todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this
+			--ACF_KEShove(self, nil, -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
+
 			
 			self.Ready = false
 			self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)

@@ -73,6 +73,9 @@ function Round.network( Crate, BulletData )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
 	Crate:SetNWFloat( "Tracer", BulletData.Tracer )
+
+		--For propper bullet model
+	Crate:SetNWFloat( "BulletModel", Round.model )
 	
 end
 

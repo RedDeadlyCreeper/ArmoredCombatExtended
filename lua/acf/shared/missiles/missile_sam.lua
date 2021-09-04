@@ -43,7 +43,7 @@ ACF_defineGun("FIM-92 SAM", { --id
 		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 3000,		-- minimum speed beyond which the fins work at 100% efficiency	--was 15000
 		dragcoef	= 0.015,		-- drag coefficient while falling                           --was 0.001
-                dragcoefflight  = 0.0001,                 -- drag coefficient during flight
+		dragcoefflight  = 0.0001,                 -- drag coefficient during flight
 		finmul		= 0.03		-- fin multiplier (mostly used for unpropelled guidance)    --was 0.02
 	},
 
@@ -87,7 +87,7 @@ ACF_defineGun("Strela-1 SAM", { --id
 		starterpct	= 0.05,         	-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency	
 		dragcoef	= 0.003,		-- drag coefficient while falling	
-                dragcoefflight  = 0.0025,                 -- drag coefficient during flight             --was 0
+		dragcoefflight  = 0.0025,                 -- drag coefficient during flight             --was 0
 		finmul		= 0.05				-- fin multiplier (mostly used for unpropelled guidance)        --was 0.03
 	},
 
@@ -133,7 +133,7 @@ ACF_defineGun("SIMBAD-RC SAM", { --id
 		starterpct	= 0.1,         	-- percentage of the propellant consumed in the starter motor.	--was 0.2
 		minspeed	= 2500,		-- minimum speed beyond which the fins work at 100% efficiency	--was 15000
 		dragcoef	= 0.01,		-- drag coefficient while falling
-                dragcoefflight  = 0,                 -- drag coefficient during flight
+		dragcoefflight  = 0,                 -- drag coefficient during flight
 		finmul		= 0.02			-- fin multiplier (mostly used for unpropelled guidance)
 	},
 

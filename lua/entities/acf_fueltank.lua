@@ -88,6 +88,9 @@ if CLIENT then
 		local FuelID = acfmenupanel.FuelTankData.FuelID
 		local Dims = Tanks[TankID].dims
 		
+		print(Dims.V)
+		print(Dims.S)
+
 		local Wall = 0.03937 --wall thickness in inches (1mm)
 		local Volume = Dims.V - (Dims.S * Wall) -- total volume of tank (cu in), reduced by wall thickness
 		local Capacity = Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
@@ -440,7 +443,7 @@ function ENT:Think()
 
 	if ACF.CurTime > self.NextLegalCheck then
 		--local minmass = math.floor(self.Mass-6)  -- fuel is light, may as well save complexity and just check it's above empty mass
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, false, true, true, true) -- mass-6, as mass update is granular to 5 kg
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true) -- mass-6, as mass update is granular to 5 kg
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:UpdateOverlayText()
 	end

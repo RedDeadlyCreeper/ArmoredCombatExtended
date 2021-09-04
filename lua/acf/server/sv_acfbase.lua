@@ -24,14 +24,16 @@ function ACF_GetPhysicalParent( obj )
 end
 
 function ACF_UpdateVisualHealth(Entity)
+
 	if Entity.ACF.PrHealth == Entity.ACF.Health then return end
-	if not ACF_HealthUpdateList then
+
+	if not ACF_HealthUpdateList  then
 		ACF_HealthUpdateList = {}
 		timer.Create("ACF_HealthUpdateList", 1, 1, function() // We should send things slowly to not overload traffic.
 			local Table = {}
 			for k,v in pairs(ACF_HealthUpdateList) do
 				if IsValid( v ) then
-					table.insert(Table,{ID = v:EntIndex(), Health = v.ACF.Health, MaxHealth = v.ACF.MaxHealth})
+					table.insert(Table, {ID = v:EntIndex(), Health = v.ACF.Health, MaxHealth = v.ACF.MaxHealth} )
 				end
 			end
 			net.Start("ACF_RenderDamage")
@@ -39,8 +41,11 @@ function ACF_UpdateVisualHealth(Entity)
 			net.Broadcast()
 			ACF_HealthUpdateList = nil
 		end)
+	end 
+	if #ACF_HealthUpdateList < 1000 then
+		table.insert(ACF_HealthUpdateList, Entity)
 	end
-	table.insert(ACF_HealthUpdateList, Entity)
+
 end
 
 function ACF_Activate ( Entity , Recalc )
@@ -101,7 +106,7 @@ function ACF_Activate ( Entity , Recalc )
 	Entity.ACF.Mass = PhysObj:GetMass()
 	--Entity.ACF.Density = (PhysObj:GetMass()*1000)/Entity.ACF.Volume
 	
-	if Entity:IsPlayer() || Entity:IsNPC() then
+	if Entity:IsPlayer() or Entity:IsNPC() then
 		Entity.ACF.Type = "Squishy"
 	elseif Entity:IsVehicle() then
 		Entity.ACF.Type = "Vehicle"
@@ -202,11 +207,18 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
 --	print("Damage mult from type: "..damageMult)	
 
+	local HitRes = {}
+
 	local curve         = ACE.ArmorTypes[ MaterialID ].curve
     local effectiveness = ACE.ArmorTypes[ MaterialID ].effectiveness
     local resiliance    = ACE.ArmorTypes[ MaterialID ].resiliance
-    
-	--print('resiliance: '..resiliance)
+
+    --RHA Penetration
+	local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	
+
+	-- Projectile caliber. Messy, function signature	
+    local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
+
 
 --im really disagreed with this format.
 	--------------------------------------------------------------------------------------------------------------------------------	
@@ -217,13 +229,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 		
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-
-		local HitRes = {}
-
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -269,13 +274,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 		
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -324,23 +322,14 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 			
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-	    
 		local slopeDmg = ( losArmor / armor ) --Angled ceramic takes more damage. Fully angled ceramic takes up to 7x the damage
 		
 		if Type == 'HE' or Type == 'HESH' then
-		
-		    slopeDmg = slopeDmg * 5
-			
+		    slopeDmg = slopeDmg * 5	
 		end
 			
         local dmul = slopeDmg 	
         
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -386,22 +375,22 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 			
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		
     --=========================================================================================================\
     --------------------------------------------------------- For HEAT shells & Spall -------------------------->
     --=========================================================================================================/
 		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" or Type == "Spall") then
-		
+			--print('spalling!!!')
+			--print(Type)
 		    local specialeffect = ACE.ArmorTypes[ MaterialID ].specialeffect
 			local specialeffectiveness = ACE.ArmorTypes[ MaterialID ].specialeffectiveness
 			local specialresiliance = ACE.ArmorTypes[ MaterialID ].specialresiliance
-			
+
+			local spallresist = ACE.ArmorTypes[ MaterialID ].spallresist
+
+			if Type == 'Spall' then
+				specialeffectiveness = specialeffectiveness*spallresist
+			end
+
 		    local DmgResist = 0.01+math.min(caliber*10/specialeffect,5)*6
 		
 		    -- Breach probability
@@ -445,7 +434,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For HE shells -------------------------->	
     --===============================================================================================/
 		elseif Type == "HE" then
-
+			--print('spalling2!!!')
+			--print(Type)
             local specialeffectiveness = ACE.ArmorTypes[ MaterialID ].specialeffectiveness
 		    local HEresiliance = ACE.ArmorTypes[ MaterialID ].HEresiliance
 			
@@ -490,7 +480,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For AP shells -------------------------->
 	--===============================================================================================/
 		else
-	    
+			--print('spalling3!!!')
+			--print(Type)	    
 			local Catchresiliance = ACE.ArmorTypes[ MaterialID ].Catchresiliance
 		
 			-- Breach probability
@@ -515,7 +506,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 				HitRes.Damage   = ( Penetration / losArmorHealth * effectiveness )^2 * FrAera / resiliance * damageMult	
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
-	
+				
+				--print('Damage applied: '..HitRes.Damage)
 				return HitRes
 						
 			end
@@ -533,36 +525,41 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	--------------------------------------------------------------------------------------------------------------------------------	
 		                                                  ------ERA-------
 	--------------------------------------------------------------------------------------------------------------------------------		
-	elseif MaterialID == 4 then --ERA	
-		    --print('ERA')		
+	elseif MaterialID == 4 then --ERA		
 	
 		local blastArmor = effectiveness * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
-			
-		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
-		
+
+		--ERA is more effective vs HEAT than vs kinetic	
+		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then		
 		    blastArmor = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness * armor
+		elseif Type == 'HE' or Type == 'HESH' or Type == 'Frag' then
+			blastArmor = ACE.ArmorTypes[ MaterialID ].HEeffectiveness * armor
+			resiliance = ACE.ArmorTypes[ MaterialID ].HEresiliance
 		end
-		
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		
-		if maxPenetration > losArmor then --ERA was penetrated
-		    
-			--print('Detonating. . .')
-			
-			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
-			HitRes.Damage   = 9999999										-- I have yet to meet one who can survive this Edit: NVM
-			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
+
+		--print(( Type and 'Type: '..Type) or 'No type')
+		--print('ERA Max pen: '..maxPenetration)
+		--print('Blast Armor: '..blastArmor)
+
+		--ERA detonates and shell is completely stopped
+		if maxPenetration > blastArmor/2 or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated
+			--print('Detonated by:'..(Type or 'No type'))			
+
+			--Importart to remove the ent before the explosions begin
+			Entity:Remove()
+
+			HitRes.Damage 	= 9999999999999	
+			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)						-- Remaining penetration
 			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)		
-				
-			local HEWeight = armor*0.1			
-			local Radius = (HEWeight*0.0001)^0.33*8*39.37
+
+			--print('Remaining Pen:'..HitRes.Overkill)
+			local HEWeight = armor*0.01			
+			local Radius =( HEWeight*0.0001 )^0.33*8*39.37
 			
-			ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*1 , Inflictor , Entity, Entity ) --ERABOOM
+			local Owner = (CPPI and Entity:CPPIGetOwner()) or NULL
+
+			ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
+			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
 			
 			local Flash = EffectData()
 				Flash:SetOrigin( Entity:GetPos() )
@@ -570,18 +567,13 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 				Flash:SetRadius( math.max( Radius, 1 ) )
 			util.Effect( "ACF_Scaled_Explosion", Flash )
 			
-			Entity:Remove()
-			
 			return HitRes
-				
 		else	
-			
+
+			-- Projectile did not breach nor penetrate armor			
 			local Penetration = math.min( maxPenetration , losArmor)
-			-- Projectile did not breach nor penetrate armor
---			local Penetration = math.min( maxPenetration , losArmor )
 
 			HitRes.Damage 	= ( Penetration / losArmorHealth)^2 * FrAera / resiliance * damageMult	
---			HitRes.Damage 	= 1
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
 	
@@ -597,8 +589,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
 		local DamageModifier = 1
 			
 		if Type == "Spall" then
@@ -611,11 +601,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
 		end
 					
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -659,14 +644,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		    --print('Textolite')		
 		armor = armor^curve
 		losArmor = losArmor^curve
-	
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-				
+
 		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") then
 			
 			local HEATeffectiveness = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness
@@ -805,6 +783,7 @@ function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , T
 	if HitRes.Damage >= Entity.ACF.Health then
 		HitRes.Kill = true 
 	else
+
 		Entity.ACF.Health = Entity.ACF.Health - HitRes.Damage
 		Entity.ACF.Armour = Entity.ACF.MaxArmour * (0.5 + Entity.ACF.Health/Entity.ACF.MaxHealth/2) --Simulating the plate weakening after a hit
 		
@@ -824,14 +803,15 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 	local Driver = Entity:GetDriver()
 	local validd = Driver:IsValid()
 	if validd then
-		--if Ammo == true then
-		--	Driver.KilledByAmmo = true
-		--end
-		Driver:TakeDamage( HitRes.Damage*40 , Inflictor, Gun )
-		--if Ammo == true then
-		--	Driver.KilledByAmmo = false
-		--end
-		
+
+		local dmg = 40
+
+		if Type == 'Spall' then
+			dmg = 40
+			--print(HitRes.Damage*dmg)
+		end
+
+		Driver:TakeDamage( HitRes.Damage*dmg , Inflictor, Gun )
 	end
 
 	HitRes.Kill = false
@@ -917,37 +897,15 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 	
 	end
 	
-	local dmul = 2.5
-	
-	--BNK stuff
-	if (ISBNK) then
-		if(Entity.freq and Inflictor.freq) then
-			if (Entity != Inflictor) and (Entity.freq == Inflictor.freq) then
-				dmul = 0
-			end
-		end
+	local dmg = 2.5
+
+	if Type == 'Spall' then
+		dmg = 0.03
+		--print(Damage * dmg)
 	end
-	
-	--SITP stuff
-	local var = 1
-	if(!Entity.sitp_spacetype) then
-		Entity.sitp_spacetype = "space"
-	end
-	if(Entity.sitp_spacetype == "homeworld") then
-		var = 0
-	end
-	
-	--if Ammo == true then
-	--	Entity.KilledByAmmo = true
-	--end
-	Entity:TakeDamage( Damage * dmul * var, Inflictor, Gun )
-	--if Ammo == true then
-	--	Entity.KilledByAmmo = false
-	--end
-	
+	Entity:TakeDamage( Damage * dmg, Inflictor, Gun )
+
 	HitRes.Kill = false
-	--print(Damage)
-	--print(Bone)
 		
 	return HitRes
 end

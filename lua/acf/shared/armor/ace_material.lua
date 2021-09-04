@@ -13,16 +13,17 @@ ACE_ConfigureMaterial( 0 , {                 -- Unique ID
       --General config
 
       massMod       = 1,                   -- Mass Multipler. 1x is the mass equivalent to rha
-      curve         = 0.99,                -- Thickness exponential value, used to avoid high thickness
+      curve         = 1,                -- Thickness exponential value, used to avoid high thickness
 
       effectiveness = 1,                   -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       resiliance    = 1,                   -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
 
       --Spalling config
 
+      spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1,                   -- resistance multipler to spall damage
       spallmult	  = 1,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1
+      ArmorMul      = 1                    -- how many spalling will be created from this material
       
    }
    )
@@ -40,16 +41,17 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       --General config
 
       massMod       = 1.25,                -- Mass Multipler. 1x is the mass equivalent to rha
-      curve         = 0.97,                -- Thickness exponential value, used to avoid high thickness
+      curve         = 1,                -- Thickness exponential value, used to avoid high thickness
 
       effectiveness = 0.98,                -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       resiliance    = 2.25,                -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
 
       --Spalling config
 
+      spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 0.5,                 -- resistance multipler to spall damage
       spallmult	  = 2,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1
+      ArmorMul      = 1                    -- how many spalling will be created from this material
 
    }
    )
@@ -71,9 +73,10 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
 
       --Spalling config
 
+      spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1,                   -- resistance multipler to spall damage
       spallmult	  = 2.5,                 -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1.8
+      ArmorMul      = 1.8                    -- how many spalling will be created from this material
 
    }
    )
@@ -97,16 +100,17 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       effectiveness         = 0.02,        -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       specialeffectiveness  = 3,
 
-      resiliance            = 0.1,         -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
+      resiliance            = 0.25,        -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
       specialresiliance     = 0.15,        -- same as above, this is special vs HEAT ammunition
       HEresiliance          = 0.3,         -- resiliance vs HE
-      Catchresiliance       = 0.05,        -- resiliance from catched AP based bullets. applies when not penetrated
+      Catchresiliance       = 0.25,        -- resiliance from catched AP based bullets. applies when not penetrated
 
       --Spalling config
 
-      spallresist   = 1,                   -- resistance multipler to spall damage
-      spallmult	  = 0.1,                 -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 0.01
+      spallarmor    = 2,                 -- penetration resistance multipler vs spalling
+      spallresist   = 3.5,                   -- resistance multipler to spall damage. How many times this will increase specialeffectiveness?
+      spallmult	  = 0.01,                 -- spalling multipler. Higher => causes more spalling
+      ArmorMul      = 0.01                    -- how many spalling will be created from this material
 
    }
    )
@@ -125,13 +129,16 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
 
       effectiveness = 5,                   -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       HEATeffectiveness = 20,
+      HEeffectiveness = 3,
       resiliance    = 0.25,                -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
+      HEresiliance = 0.1,
 
       --Spalling config
 
+      spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1,                   -- resistance multipler to spall damage
-      spallmult	  = 1,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1
+      spallmult	  = 0,                   -- spalling multipler. Higher => causes more spalling
+      ArmorMul      = 1                    -- how many spalling will be created from this material
 
    }
    )
@@ -154,9 +161,10 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
 
       --Spalling config
 
+      spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1.5,                 -- resistance multipler to spall damage
       spallmult	  = 2,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 0.334
+      ArmorMul      = 0.334                    -- how many spalling will be created from this material
 
    }
    )
@@ -183,9 +191,10 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
 
       --Spalling config
 
+      spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1.5,                 -- resistance multipler to spall damage
       spallmult	  = 1.3,                 -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 0.23
+      ArmorMul      = 0.23                    -- how many spalling will be created from this material
 
    }
    )

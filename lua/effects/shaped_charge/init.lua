@@ -83,7 +83,7 @@
 		end
 	end
 
-	Emitter:Finish() 
+	if Emitter then Emitter:Finish() end
  end 
    
    

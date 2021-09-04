@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 457           --ACE current version
+ACF.Version = 458           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2021      --Current Year
@@ -31,11 +31,9 @@ CreateConVar( "acf_legalchecks", 1 , FCVAR_ARCHIVE)         -- If true, legal ch
 --CreateConVar( "acf_enable_dp", 'false' , FCVAR_ARCHIVE )          -- Enable the inbuilt damage protection system.     
 
 if CLIENT then
---[[
-
-   --- Client Convars
-
-]]--
+--[[-----------------------------
+		Client Convars
+]]-------------------------------
 
 	CreateClientConVar( "ACFM_MissileLights", 0 ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
 	
@@ -63,38 +61,6 @@ ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 1                            --magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 1.5                             --How much more do ammocrates blow up, useful since crates detonate all at once now.
-
---ACF.AluminiumEffectiveness=0.34                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.AluminumResialiance = 0.8                  --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.AluminumSpallResist=1.5                    --Lower = less damage from spall
---ACF.AluminumSpallMult =  2                     --Higher = spalls more
---ACF.AluminumHeatMul = 80                       --Higher = More damage from HEAT
-
---ACF.CastEffectiveness=0.5                      --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.CastResilianceFactor = 35                  --Higher = less damage, Lower = more damage. 2x = half damage.
-
---ACF.CeramicEffectiveness=2.4                   --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.CeramicResilianceFactor = 0.8              --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.CeramicPierceDamage = 5                    --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-	
---ACF.RubberEffectiveness = 0.02
---ACF.RubberResilianceFactor = 0.1               --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.RubberResilianceFactorCatch = 0.05         --Lower = more damage. If someone somehow catches a bullet with rubber use this.
---ACF.RubberSpecialEffect = 30                   --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
---ACF.RubberEffectivenessSpecial = 3             --How effective rubber is versus projectiles that qualify for the above.
---ACF.RubberResilianceFactorSpecial = 0.15       --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.RubberHEVulnerbility = 0.3                 --Lower = more damage
-
---ACF.TextoliteEffectiveness=0.23                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.TextoliteResilianceFactor = 0.005          --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.TextoliteHEATEffectiveness = 0.55          --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
---ACF.TextoliteHEATResilianceFactor = 2          --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.TextoliteHEResistance = 1.3                --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
---ACF.TextoliteHEEffectiveness = 0.9             --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
---ACF.TextoliteSpallMult = 1.3
-
---ACF.ERAEffectivenessMultHEAT = 20              --How many more times is the detonating ERA than its currentarmor
---ACF.ERAEffectivenessMult = 5                   --How many more times is the detonating ERA than its maxarmor
 
 --ACF Damage Multipler.
 
@@ -143,7 +109,7 @@ ACF.PDensity = 1.6	                 --Gun propellant density (Real powders go fr
 ACF.TorqueBoost = 1.25               --torque multiplier from using fuel
 ACF.DriverTorqueBoost = 0.25         --torque multiplier from having a driver
 ACF.FuelRate = 10                    --multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate = 3                     --multiplier for electrics
+ACF.ElecRate = 2                      --multiplier for electrics                                   --BEFORE to balance: 0.458
 ACF.TankVolumeMul = 1                -- multiplier for fuel tank capacity, 1.0 is approx real world
 
 
@@ -154,7 +120,7 @@ ACF.AllowCSLua = 0
 
 
 
-ACF.LiIonED = 0.458                  --li-ion energy density: kw hours / liter
+ACF.LiIonED = 0.27                --li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
 ACF.CuIToLiter = 0.0163871           -- cubic inches to liters
 
 ACF.RefillDistance = 400             --Distance in which ammo crate starts refilling.
@@ -175,7 +141,7 @@ ACF.EnableKillicons = true           -- Enable killicons overwriting.
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
 	Petrol = 0.745,
-	Electric = 3.89 -- li-ion
+	Electric = 3.1 -- li-ion --WAS 3.89
 }
 
 ACF.Efficiency = { --how efficient various engine types are, higher is worse
@@ -184,7 +150,7 @@ ACF.Efficiency = { --how efficient various engine types are, higher is worse
 	Turbine = 0.375, -- previously 0.231
 	Wankel = 0.335,
 	Radial = 0.4, -- 0.38 to 0.53
-	Electric = 0.85 --percent efficiency converting chemical kw into mechanical kw
+	Electric = 0.9 --percent efficiency converting chemical kw into mechanical kw WAS 0.85
 }
 
 ACF.TorqueScale = { --how fast damage drops torque, lower loses more % torque
@@ -193,7 +159,7 @@ ACF.TorqueScale = { --how fast damage drops torque, lower loses more % torque
 	Turbine = 0.2,
 	Wankel = 0.2,
 	Radial = 0.3,
-	Electric = 0.5
+	Electric = 0.3 --WAS 0.5
 }
 
 ACF.EngineHPMult = { --health multiplier for engines
@@ -241,6 +207,7 @@ if SERVER then
 	include("acf/server/sv_acfballistics.lua")
 	include("acf/server/sv_contraption.lua")
 	include("acf/server/sv_heat.lua")
+	include("acf/server/sv_legality.lua")
 
 	if ACF.EnableDefaultDP then
 		
@@ -488,109 +455,16 @@ function ACF_CalcMassRatio( obj, pwr )
 	if pwr then return { Power = power, Fuel = fuel } end
 end
 
---[[
-	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
-	with a hard to predict check time and punishing lockout time
-	usage:
-	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
-	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
-]]
-
-ACF.LegalSettings = {
-	CanModelSwap = false,
-	Min = 5, 			-- min seconds between checks
-	Max = 25, 			-- max seconds between checks
-	Lockout = 35,		-- lockout time on not legal
-	NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(self.Min, self.Max) or self.Lockout) end
-}
-
---[[
-   checks if an ent meets the given requirements for legality
-   MinInertia needs to be mass normalized (normalized=inertia/mass)
-   ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
-]]--
-
-function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip)
-    
-	
-	local problems = {} --problems table definition
-	local physobj = Ent:GetPhysicsObject()
-    
-	if ACF.LegalChecks > 0 then   --checking if admin has allowed legal checks first
-	
-	-- check it exists
-	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
-	
-	-- check if physics is valid
-	if not IsValid(physobj) then return {Legal=false, Problems={"Invalid Physics"}} end
-	
-	-- make sure traces can hit it (fade door, propnotsolid)
-	if not Ent:IsSolid() then
-		table.insert(problems,"Not solid")
-	end
-
-	-- check if the model matches
-	if Model != nil and not ACF.LegalSettings.CanModelSwap then
-		if Ent:GetModel() != Model then
-			table.insert(problems,"Wrong model")
-		end
-	end
-
-	-- check mass
-	if MinMass != nil and (physobj:GetMass() < MinMass) then
-		table.insert(problems,"Under min mass")
-	end
-
-	-- check inertia components
-	if MinInertia != nil then
-		local inertia = physobj:GetInertia()/physobj:GetMass()
-		if (inertia.x < MinInertia.x) or (inertia.y < MinInertia.y) or (inertia.z < MinInertia.z) then
-			table.insert(problems,"Under min inertia")
-		end
-	end
-
-	-- check makesphere
-	if not CanMakesphere and (physobj:GetVolume() == nil) then
-		table.insert(problems,"Makesphere")
-	end
-
-	-- check for clips
-	if not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
-		table.insert(problems,"Visclip")
-	end
-
-	-- if it has a parent, check if legally parented
-	if IsValid( Ent:GetParent() ) then
-
-		-- if no parenting allowed
-		if not (Parentable) then
-			table.insert(problems,"Parented")
-		end
-
-
-		--Re-used requires wel parent, don't mind me being evil
-		if NeedsGateParent and (not IsValid( Ent:GetParent():GetParent()) ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
-			table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
-		end
-
-	end
-    end
-     	
-	-- legal if number of problems is 0
-	return (#problems == 0), table.concat(problems, ", ")
-	
-end
-
 
 -- Cvars for recoil/he push
-CreateConVar("acf_hepush", 1)
+CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_recoilpush", 1)
 
 -- New healthmod/armormod/ammomod cvars
 CreateConVar("acf_healthmod", 1)
 CreateConVar("acf_armormod", 1)
 CreateConVar("acf_ammomod", 1)
-CreateConVar("acf_spalling", 1)
+CreateConVar("acf_spalling", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_gunfire", 1)
 CreateConVar("acf_modelswap_legal", 0)
 
@@ -610,7 +484,7 @@ function ACF_CVarChangeCallback(CVar, Prev, New)
 		if(ACF.Spalling > 0) then
 			text = "on"
 		end
-		print ("ACF Spalling is now " .. text)
+		--print ("ACF Spalling is now " .. text)
 	elseif( CVar == "acf_gunfire" ) then
 		ACF.GunfireEnabled = tobool( New )
 		local text = "disabled"

@@ -2,7 +2,6 @@
 function EFFECT:Init( data )
 
 	self.Index = data:GetAttachment()
-	self:SetModel("models/munitions/round_100mm_shot.mdl")
 	if not ( self.Index ) then
 		--self:Remove()
 		self.Alive = false
@@ -19,18 +18,21 @@ function EFFECT:Init( data )
 		Bullet.SimFlight = data:GetStart()*10		--Updating old effect with new values
 		Bullet.SimPos = data:GetOrigin()
 
-		if (Hit == 1) then		--Bullet has reached end of flight, remove old effect
+		--Bullet has reached end of flight, remove old effect
+		if (Hit == 1) then		
 
 			self.HitEnd = ACF.RoundTypes[Bullet.AmmoType]["endeffect"]
 			self:HitEnd( Bullet )
 			ACF.BulletEffect[self.Index] = nil			--This is crucial, to effectively remove the bullet flight model from the client
 
-		elseif (Hit == 2) then		--Bullet penetrated, don't remove old effect
+		--Bullet penetrated, don't remove old effect
+		elseif (Hit == 2) then		
 
 			self.HitPierce = ACF.RoundTypes[Bullet.AmmoType]["pierceeffect"]
 			self:HitPierce( Bullet )
 
-		elseif (Hit == 3) then		--Bullet ricocheted, don't remove old effect
+		--Bullet ricocheted, don't remove old effect
+		elseif (Hit == 3) then		
 
 			self.HitRicochet = ACF.RoundTypes[Bullet.AmmoType]["ricocheteffect"]
 			self:HitRicochet( Bullet )
@@ -61,6 +63,8 @@ function EFFECT:Init( data )
 		BulletData.DragCoef = BulletData.Crate:GetNWFloat( "DragCoef", 1 )
 		BulletData.AmmoType = BulletData.Crate:GetNWString( "AmmoType", "AP" )
 
+		BulletData.BulletModel = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" ) 
+
 		if BulletData.Crate:GetNWFloat( "Tracer" ) > 0 then
 			BulletData.Tracer = ParticleEmitter( BulletData.SimPos )
 			BulletData.TracerColour = BulletData.Crate:GetNWVector( "TracerColour", BulletData.Crate:GetColor() ) or Vector(255,255,255)
@@ -76,6 +80,7 @@ function EFFECT:Init( data )
 
 		self:SetPos( BulletData.SimPos )									--Moving the effect to the calculated position
 		self:SetAngles( BulletData.SimFlight:Angle() )
+		self:SetModel( BulletData.BulletModel )
 		self.Alive = true
 
 		ACF_SimBulletFlight( ACF.BulletEffect[self.Index], self.Index )

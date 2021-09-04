@@ -26,6 +26,8 @@
 	
 ]]---------------------------------------------------------------------------------------
 function ACE_InfraredHeatFromProp( guidance, Target , dist ) 
+
+	if not guidance.SeekSensitivity then print('[ACE | WARN]- Unable to track Heat. SeekSensitivity not found!') return 0 end
     
 	local Speed = Target:GetVelocity():Length()
     --local Heat = (  guidance.SeekSensitivity * ( Speed / dist * 0.001 / ACE.HeatDistanceLoss )  )  + ACE.AmbientTemp

@@ -186,7 +186,7 @@ function this:AcquireLock(missile)
     
 	    for k, classifyent in pairs(found) do
 				
-		    local entpos = classifyent:GetPos()
+		    local entpos = classifyent:WorldSpaceCenter()
 		    local difpos = entpos - missilePos
 		    local dist = difpos:Length()
 		    local entvel = classifyent:GetVelocity()

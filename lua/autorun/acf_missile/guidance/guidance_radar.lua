@@ -132,7 +132,11 @@ function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does n
 
 	for k, scanEnt in pairs(ScanArray) do
 
-		if not IsValid(scanEnt) then goto cont end -- skip any invalid entity
+		-- skip any invalid entity
+		if not scanEnt:IsValid() then goto cont end 
+
+		-- skip any flare from vision
+		if scanEnt:GetClass() == 'ace_flare' then goto cont end
 		
 		local entpos = scanEnt:GetPos()
 		local difpos = entpos - missilePos
@@ -189,15 +193,13 @@ function this:AcquireLock(missile)
     
 	if self.LastSeek + self.SeekDelay > curTime then return nil   end
         --print("tried seeking within timeout period")
-         
-  
+
 	self.LastSeek = curTime
 
 	-- Part 1: get all whitelisted entities in seek-cone.
 	local found = self:GetWhitelistedEntsInCone(missile)
     	
 	-- Part 2: get a good seek target
-	
     local missilePos = missile:GetPos()
 
 	local bestAng = math.huge
@@ -211,15 +213,15 @@ function this:AcquireLock(missile)
 
 		if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
 
-			local testang = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
+			--Could do pythagorean stuff but meh, works 98% of time
+			local testang = absang.p + absang.y 
 
-			if testang < bestAng then --Sorts targets as closest to being directly in front of radar
-			
+			--Sorts targets as closest to being directly in front of radar
+			if testang < bestAng then 
 			
 				bestAng = testang
 				bestent = classifyent
-				
-				
+					
 			end
 
 
