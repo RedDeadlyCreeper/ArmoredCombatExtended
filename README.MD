@@ -21,8 +21,6 @@ We have a **[workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=25
 
 For a latest method to install it, we recommend to use tortoiseGIT, which you can download [here!](https://tortoisegit.org/). Also you'll need [GIT](https://git-scm.com/downloads)
 
-Instructions are as following:
-
 ## Additional info
 
 As note: At the moment, ACE uses a modified version of ACF2 as base, however, it's possible that ACE uses ACF-3 as its base in a near future.
