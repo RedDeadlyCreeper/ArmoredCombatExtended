@@ -26,11 +26,12 @@
 		BulletEffect.Damage = 0	 
 	LocalPlayer():FireBullets(BulletEffect) 
 
-	local soundlvl = self.Mass*10
-	print('rico sound level: '..soundlvl)
+	local soundlvl = self.Mass*2.6
+	--print('rico sound level: '..soundlvl)
 
-	sound.Play(  "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(soundlvl, 80,180), math.Clamp(self.Velocity*0.01,25,125), 0.5)
-	--sound.Play( "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(self.Mass*200,65,90), math.Clamp(self.Velocity*0.01,25,150), 1 )
+	--how i love the sound level.....
+	--TODO: Other sounds for small weapons, since the current is for >100mm cannons
+	sound.Play(  "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(soundlvl, 80,150), math.Clamp(self.Velocity*0.01,25,125), 1)
 
 	util.Decal("ExplosiveGunshot", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
 	
