@@ -88,8 +88,8 @@ if CLIENT then
 		local FuelID = acfmenupanel.FuelTankData.FuelID
 		local Dims = Tanks[TankID].dims
 		
-		print(Dims.V)
-		print(Dims.S)
+		--print(Dims.V)
+		--print(Dims.S)
 
 		local Wall = 0.03937 --wall thickness in inches (1mm)
 		local Volume = Dims.V - (Dims.S * Wall) -- total volume of tank (cu in), reduced by wall thickness
@@ -155,7 +155,7 @@ function ENT:Initialize()
 	self.Active = false
 	self.SupplyFuel = false
 	self.Leaking = 0
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
 	
@@ -357,8 +357,6 @@ function ENT:UpdateOverlayText()
         text = text	.. '\n-  ' .. math.Round( self.Fuel, 1 ) .. " / " ..math.Round( self.Capacity, 1 ) .. " kWh"	
 		text = text .. '\n-  ' .. math.Round( self.Fuel * 3.6, 1 ) ..' / ' .. math.Round( self.Capacity * 3.6, 1) .. ' MJ'	
 		
-		--text = text .. '\nMax Charge Level: ' ..math.Round( self.Capacity, 1 ) .. ' kWh / ' .. math.Round( self.Capacity * 3.6, 1) .. " MJ"
-		--text = text .. "\nCurrent Charge Level: " .. math.Round( self.Fuel, 1 ) .. " kWh / " .. math.Round( self.Fuel * 3.6, 1 ) .. " MJ"
 	else
 
 		text = text .. '\nCurrent Fuel Remaining:'
@@ -444,7 +442,7 @@ function ENT:Think()
 	if ACF.CurTime > self.NextLegalCheck then
 		--local minmass = math.floor(self.Mass-6)  -- fuel is light, may as well save complexity and just check it's above empty mass
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true) -- mass-6, as mass update is granular to 5 kg
-		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 		self:UpdateOverlayText()
 	end
 

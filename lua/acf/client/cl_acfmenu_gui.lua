@@ -18,8 +18,8 @@ function PANEL:Init( )
 
     -- //Tables definition
 	self.WeaponData = ACF.Weapons
-	radarClasses = ACF.Classes.Radar
-	radars = ACF.Weapons.Radar
+	radarClasses = list.Get("ACFClasses").Radar
+	radars = list.Get( "ACFEnts").Radar
 	
 --[[=========================
    Table distribution
@@ -354,23 +354,25 @@ function PANEL:Init( )
 	
 	local nods = {}
 	
-	for k, v in pairs(radarClasses) do  --calls subfolders		
-		nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
-	end
-    
-	for Type, Ent in pairs(radars) do --calls subfolders content	
-		local curNode = nods[Ent.class]		
-		if curNode then
-			local EndNode = curNode:AddNode( Ent.name or "No Name" )
-			EndNode.mytable = Ent
-				
-			function EndNode:DoClick()
-				RunConsoleCommand( "acfmenu_type", self.mytable.type )
-				acfmenupanel:UpdateDisplay( self.mytable )
-			end	
-				EndNode.Icon:SetImage( "icon16/newspaper.png" )
+	if radarClasses then
+		for k, v in pairs(radarClasses) do  --calls subfolders		
+			nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
 		end
-	end --end radar folder
+    
+		for Type, Ent in pairs(radars) do --calls subfolders content	
+			local curNode = nods[Ent.class]		
+			if curNode then
+				local EndNode = curNode:AddNode( Ent.name or "No Name" )
+				EndNode.mytable = Ent
+				
+				function EndNode:DoClick()
+					RunConsoleCommand( "acfmenu_type", self.mytable.type )
+					acfmenupanel:UpdateDisplay( self.mytable )
+				end	
+					EndNode.Icon:SetImage( "icon16/newspaper.png" )
+			end
+		end --end radar folder
+	end
 
 --[[=========================
    Settings folder
@@ -482,11 +484,10 @@ end
 function ACFHomeGUICreate( Table )
 
 	if not acfmenupanel.CustomDisplay then return end
-	--start version
---Trebuchet18
 
 	local color
 	local versionstring
+
 	if ACF.CurrentVersion > 0 then
 	if ACF.Version >= ACF.CurrentVersion then
 		versionstring = "Up To Date"
@@ -501,9 +502,9 @@ function ACFHomeGUICreate( Table )
 		color = Color(225,0,0,255)
 	end
 
-	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
-	
 	versiontext = "GitHub Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+
+	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
 	acfmenupanel["CData"]["VersionInit"]:SetTextColor( Color( 0, 0, 0) )
 	acfmenupanel["CData"]["VersionInit"]:SizeToContents()
@@ -629,13 +630,15 @@ http.Fetch("http://raw.github.com/RedDeadlyCreeper/ArmoredCombatExtended/master/
 ]]--=========================
 function ACFCLGUICreate( Table )  
 
-    acfmenupanel["CData"]["Options"] = vgui.Create( "DLabel" )
-	acfmenupanel["CData"]["Options"]:SetPos( 0, 0 )
-	acfmenupanel["CData"]["Options"]:SetColor( Color(10,10,10) ) 
-	acfmenupanel["CData"]["Options"]:SetText("ACE - Client Side Control Panel")
-	acfmenupanel["CData"]["Options"]:SetFont("DermaDefaultBold")
-	acfmenupanel["CData"]["Options"]:SizeToContents()  
-	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Options"] )
+	local Client = acfmenupanel["CData"]["Options"]
+
+	Client = vgui.Create( "DLabel" )
+	Client:SetPos( 0, 0 )
+	Client:SetColor( Color(10,10,10) ) 
+	Client:SetText("ACE - Client Side Control Panel")
+	Client:SetFont("DermaDefaultBold")
+	Client:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( Client )
 	
 	local Sub = vgui.Create( "DLabel" )
 	Sub:SetPos( 0, 0 )
@@ -643,25 +646,21 @@ function ACFCLGUICreate( Table )
 	Sub:SetText("Client Side parameters can be adjusted here.")
 	Sub:SizeToContents()  
 	acfmenupanel.CustomDisplay:AddItem( Sub )
-	
-	local MisLight = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
-	MisLight:SetPos(50,200)
-	MisLight:SetText("Enable missiles emit light while their motors are burning? (Impact on performance!)")
-	MisLight:SetTextColor( Color(10,10,10) )
-	MisLight:SetConVar("ACFM_MissileLights")
-	MisLight:SetValue( false )
-	MisLight:SizeToContents()
-	acfmenupanel.CustomDisplay:AddItem( MisLight )
-	
-	local Rope = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
-	Rope:SetPos(50,200)
-	Rope:SetText("Draw Mobility rope links? (requires dupe respawn!)")
-	Rope:SetTextColor( Color(10,10,10) )
-	Rope:SetConVar("ACF_MobilityRopeLinks")
-	Rope:SetValue( false )
-	Rope:SizeToContents()
-	acfmenupanel.CustomDisplay:AddItem( Rope )
-		
+
+	local Effects = vgui.Create( "DForm" )
+	Effects:SetName("Rendering")
+
+	Effects:CheckBox("Allow missile motor lighting", "ACFM_MissileLights")
+	Effects:ControlHelp( "Enable dynamic lights to be emitted from missile motors (impacts performance!)" )
+
+	Effects:CheckBox("Draw Mobility rope links", "ACF_MobilityRopeLinks")
+	Effects:ControlHelp( "Allow you to see the links between engines and gearboxes (requires dupe restart)" )
+
+	Effects:NumSlider( "Particle Multipler", "acf_cl_particlemul", 1, 5, 0 )
+	Effects:ControlHelp( "Adjusts the particles that will be created by ACE. Keep this low for better performance." )
+
+	acfmenupanel.CustomDisplay:AddItem( Effects )	
+
 end
 
 --[[=========================
@@ -669,66 +668,124 @@ end
 ]]--=========================
 function ACFSVGUICreate( Table )   --Serverside folder content
 
-    acfmenupanel["CData"]["Options"] = vgui.Create( "DLabel" )
-	acfmenupanel["CData"]["Options"]:SetPos( 0, 0 )
-	acfmenupanel["CData"]["Options"]:SetColor( Color(10,10,10) ) 
-	acfmenupanel["CData"]["Options"]:SetText("ACE - Server Side Control Panel")
-	acfmenupanel["CData"]["Options"]:SetFont("DermaDefaultBold")
-	acfmenupanel["CData"]["Options"]:SizeToContents()  
-	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Options"] )
+	local ply = LocalPlayer()
+	if not IsValid(ply) then return end
+	if not ply:IsSuperAdmin() then return end
+
+	local Server = acfmenupanel["CData"]["Options"]
+
+	Server = vgui.Create( "DLabel" )
+	Server:SetPos( 0, 0 )
+	Server:SetColor( Color(10,10,10) ) 
+	Server:SetText("ACE - Server Side Control Panel")
+	Server:SetFont("DermaDefaultBold")
+	Server:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( Server )
 	
 	local Sub = vgui.Create( "DLabel" )
 	Sub:SetPos( 0, 0 )
 	Sub:SetColor( Color(10,10,10) ) 
-	Sub:SetText("Server Side parameters can be adjusted here (admin only!)")
+	Sub:SetText("Server Side parameters can be adjusted here")
 	Sub:SizeToContents()  
 	acfmenupanel.CustomDisplay:AddItem( Sub )
-	
-   
-	local Legal = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
-	Legal:SetPos(50,200)
-	Legal:SetText("Enable Legality checks? (requires restart!)")
-	Legal:SetTextColor( Color(10,10,10) )
-	Legal:SetConVar("acf_legalchecks")
-	Legal:SetValue( false )
-	Legal:SizeToContents()
-	
-	acfmenupanel.CustomDisplay:AddItem( Legal )
-	
-	local Spall = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
-	Spall:SetPos(50,200)
-	Spall:SetText("Enable Spalling")
-	Spall:SetTextColor( Color(10,10,10) )
-	Spall:SetConVar("acf_spalling")
-	Spall:SetValue( false )
-	Spall:SizeToContents()
-	
+
+	if ACE.IsDedicated then ACFSVGUIERROR() return end --For dedicated servers, change the values directly in code. Weird
+
+	local General = vgui.Create( "DForm" )
+	General:SetName("General")
+
+	General:CheckBox("Enable HE push", "acf_hepush")
+	General:ControlHelp( "Allow HE to push contraptions away" )
+
+	General:CheckBox("Enable Recoil force", "acf_recoilpush")
+	General:ControlHelp( "Gun's recoil will push the contraption back when firing" )
+
+	General:NumSlider( "Debris Life Time", "acf_debris_lifetime", 0, 60, 2 )
+	General:ControlHelp( "How many seconds debris will stand on the map before being deleted (0 means never)." )
+
+	General:NumSlider( "Child debris chance", "acf_debris_children", 0, 1, 2 )
+	General:ControlHelp( "Adjusts the chance of create debris when a contraption's gate have been destroyed" )
+
+	--General:NumSlider( "Year", "acf_year", 1900, 2021, 0 )
+	--General:ControlHelp( "Changes the year. This will affect the available weaponry (requires restart)." )
+
+	acfmenupanel.CustomDisplay:AddItem( General )
+
+	local Spall = vgui.Create( "DForm" )
+	Spall:SetName("Spalling")
+
+	Spall:CheckBox("Enable Spalling", "acf_spalling")
+	Spall:ControlHelp( "Enable additional spalling to be created during penetrations. Disable this to have better performance." )
+
+	Spall:NumSlider( "Spalling Multipler", "acf_spalling_multipler", 1, 5, 0 )
+	Spall:ControlHelp( "How much Spalling will be created during impacts? Applies for spalling created by impacts" )
+
 	acfmenupanel.CustomDisplay:AddItem( Spall )
-	
-	local HEPush = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
-	HEPush:SetPos(50,200)
-	HEPush:SetText("Enable HE push")
-	HEPush:SetTextColor( Color(10,10,10) )
-	HEPush:SetConVar("acf_hepush")
-	HEPush:SetValue( false )
-	HEPush:SizeToContents()
-	
-	acfmenupanel.CustomDisplay:AddItem( HEPush )
-	
---[[ Disabled atm. No idea why convar becomes dumb on dedicated servers
 
+	local Legal = vgui.Create( "DForm" )
+	Legal:SetName("Legality")
 
-	local Damage = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
-	Damage:SetPos(50,200)
-	Damage:SetText("Enable ACE Damage permissions? (requires restart and CPPI to work)")
-	Damage:SetTextColor( Color(10,10,10) )
-	Damage:SetConVar("acf_enable_dp")
-	Damage:SetValue( false )
-	Damage:SizeToContents()
-	
-	acfmenupanel.CustomDisplay:AddItem( Damage )
-]]--	
+	Legal:CheckBox("Enable Legality checks", "acf_legalcheck")
+	Legal:ControlHelp( "Enable the legality checks, which will punish with a lock time any stuff considered illegal." )
+
+	Legal:CheckBox( "Allow not solid", "acf_legal_ignore_solid" )
+	Legal:ControlHelp( "allow to use not solid" )
+
+	Legal:CheckBox( "Allow any model", "acf_legal_ignore_model" )
+	Legal:ControlHelp( "Allow ace ents to use any model" )
+
+	Legal:CheckBox( "Allow any mass", "acf_legal_ignore_mass" )
+	Legal:ControlHelp( "Allow ace ents to use any weight" )
+
+	Legal:CheckBox( "Allow any material", "acf_legal_ignore_material" )
+	Legal:ControlHelp( "Allow ace ents to use any material type" )
+
+	Legal:CheckBox( "Allow any inertia", "acf_legal_ignore_inertia" )
+	Legal:ControlHelp( "Allow ace ents to have any inertia in it" )
+
+	Legal:CheckBox("Allow makesphere", "acf_legal_ignore_makesphere")
+	Legal:ControlHelp( "Allow ace ents to have makesphere" )
+
+	Legal:CheckBox( "Allow visclip", "acf_legal_ignore_visclip" )
+	Legal:ControlHelp( "ace ents can have visclip at any case" )
+
+	Legal:CheckBox( "Allow any parent", "acf_legal_ignore_parent" )
+	Legal:ControlHelp( "Allow to bypass gate requirement" )
+
+	acfmenupanel.CustomDisplay:AddItem( Legal )	
+
+--[[
+	local Sound = vgui.Create( "DForm" )
+	Sound:SetName("Sound Extension placeholder name")
+
+	Spall:CheckBox("Enable Spalling", "acf_spalling")
+	Spall:ControlHelp( "Enable additional spalling to be created during penetrations. Disable this to have better performance." )
+
+	acfmenupanel.CustomDisplay:AddItem( Sound )	
+
+	local PP = vgui.Create( "DForm" )
+	PP:SetName("Damage protection - DOESNT WORK")
+
+	PP:CheckBox("Enable ACE damage permissions", "acf_enable_dp")
+	PP:ControlHelp( "Sets a damage protection system into the server (requires CPPI and restart)" )
+
+	PP:CheckBox("Enable ACE protection if in godmode", "TEST")
+	PP:ControlHelp( "if enabled, users will not deal any damage if they have godmode." )	
+
+	acfmenupanel.CustomDisplay:AddItem( PP )
+]]--
 end
+function ACFSVGUIERROR()
+
+	local Note = vgui.Create( "DLabel" )
+	Note:SetPos( 0, 0 )
+	Note:SetColor( Color(10,10,10) ) 
+	Note:SetText("Not available in this moment")
+	Note:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( Note )
+
+end
+
 
 --[[=========================
    Contact folder content
@@ -743,8 +800,8 @@ function ContactGUICreate( Table )
 	acfmenupanel["CData"]["Contact"]:SizeToContents()  
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Contact"] )
 	
-	acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about what stuff and why we should include it, our discord is a good place for that.')
-	acfmenupanel:CPanelText('desc2','Don´t forget to check out our wiki, contains valuable information about how to use this addon. Its on WIP, but expect more content on future.')
+	acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about new stuff to be added, our discord is a good place.')
+	acfmenupanel:CPanelText("desc2","Don't forget to check out our wiki, contains valuable information about how to use this addon. It's on WIP, but expect more content in future.")
 	
 	local Discord = vgui.Create("DButton")
 	Discord:SetText( "Join our Discord!" )
@@ -764,6 +821,15 @@ function ContactGUICreate( Table )
 	end
 	acfmenupanel.CustomDisplay:AddItem( Wiki )
 	
+	local Guide = vgui.Create("DButton")
+	Guide:SetText( "ACE guidelines" )
+	Guide:SetPos(0,0)
+	Guide:SetSize(250,30)
+	Guide.DoClick = function()
+	    gui.OpenURL( 'https://docs.google.com/document/d/1yaHq4Lfjad4KKa0Jg9s-5lCpPVjV7FE4HXoGaKpi4Fs/edit' )
+	end
+	acfmenupanel.CustomDisplay:AddItem( Guide )
+
 end
 
 --[[=========================

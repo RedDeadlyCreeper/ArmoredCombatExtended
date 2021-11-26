@@ -56,6 +56,8 @@ function this:GetDetonate(missile, guidance)
     }
 	local trace = util.TraceLine(tracedata)
 
+    if IsValid(trace.Entity) and trace.Entity:GetClass() == 'acf_missile' then return false end
+
 	return trace.Hit
     
 end

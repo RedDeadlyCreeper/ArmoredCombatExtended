@@ -3,13 +3,25 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+function ENT:SpawnFunction( ply, trace )
+
+	if not trace.Hit then return end
+
+	local SPos = (trace.HitPos + Vector(0,0,1))
+
+	local ent = ents.Create( "ace_irst" )
+	ent:SetPos( SPos )
+	ent:Spawn()
+	ent:Activate()
+
+	return ent
+end
 
 function ENT:Initialize()
 
 	self.ThinkDelay = 0.1
 
 	self.Active = false
-	curTime = 0
 
 	self:SetModel( "models/props_lab/monitor01b.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
@@ -219,13 +231,3 @@ function ENT:Think()
 		end
 	end
 end
-
-
-
-
-
-
-
-
-
-

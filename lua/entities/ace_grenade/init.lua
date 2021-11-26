@@ -17,9 +17,13 @@ function ENT:Initialize()
 	self.FuseTime = 4
 	self.phys = phys
 	self.LastTime = CurTime()
-	if ( IsValid( phys ) ) then phys:Wake() end
+	if ( IsValid( phys ) ) then 
+		phys:Wake() 
+		phys:SetBuoyancyRatio( 5 ) 
+		phys:SetDragCoefficient( 1 )
+		phys:SetDamping( 0.75, 0.75 )
+	end
 end
-
 
 function ENT:Think()
 
@@ -28,6 +32,8 @@ function ENT:Think()
 	self.LastTime = CurTime()
 
 	if self.FuseTime < 0 then
+		
+		self:Remove()
 		
 		local HEWeight=4	
 		local Radius = (HEWeight)^0.33*8*39.37
@@ -39,22 +45,5 @@ function ENT:Think()
 		Flash:SetNormal( Vector(0,0,-1) )
 		Flash:SetRadius( math.max( Radius, 1 ) )
 		util.Effect( "ACF_Scaled_Explosion", Flash )
-
-		self:Remove()
 	end
-
-
 end
-
-
-function ENT:OnRemove()
-end
-
-
-
-
-
-
-
-
-

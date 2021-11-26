@@ -82,70 +82,33 @@ end
 
 function Round.cratetxt( BulletData )
 	
-	--local FrAera = BulletData.FrAera
 	local DData = Round.getDisplayData(BulletData)
-	
-	--fakeent.ACF.Armour = DData.MaxPen or 0
-	--fakepen.Penetration = (DData.MaxPen * FrAera) / ACF.KEtoRHA	
-	--local fakepen = ACF_Kinetic( BulletData.SlugMV*39.37 , BulletData.SlugMass, 9999999 )
-	--local MaxHP = ACF_CalcDamage( fakeent , fakepen , FrAera , 0 )
-	
-	--[[
-	local TotalMass = BulletData.ProjMass + BulletData.PropMass
-	local MassUnit
-	
-	if TotalMass < 0.1 then
-		TotalMass = TotalMass * 1000
-		MassUnit = " g"
-	else
-		MassUnit = " kg"
-	end
-	]]--
-	
 	local str = 
 	{
-		--"Cartridge Mass: ", math.Round(TotalMass, 2), MassUnit, "\n",
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm"
-		--"Max Pen. Damage: ", math.Round(MaxHP.Damage, 1), " HP\n",
 	}
 	
 	return table.concat(str)
 	
 end
 
-
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
---	print("Testb")
-local NormieMult = 1
-local Mat = Target.ACF.Material or 0
-if Mat == 1 then
-	NormieMult = 0.8
-elseif Mat == 2 then
-	NormieMult = 1.5
-elseif Mat == 3 then
-	NormieMult = 0.05
-elseif Mat == 5 then
-	NormieMult = 0.7	
-elseif Mat == 6 then
-	NormieMult=0.5
-end
 
-Bullet.Normalize = true
-Bullet.Pos = HitPos
+	local MaterialID = Target.ACF.Material or 0
+	NormieMult = ACE.ArmorTypes[ MaterialID ].NormMult or 1
 
-local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized()--Guess it doesnt need localization
---	local FlightNormal = Bullet.Flight:GetNormalized() + (-HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult
---	local FlightNormal = -HitNormal
+	Bullet.Normalize = true
+	Bullet.Pos = HitPos
 
-local Speed = Bullet.Flight:Length()
+	local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized()--Guess it doesnt need localization
+	local Speed = Bullet.Flight:Length()
 
---	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
-Bullet.Flight = FlightNormal * Speed
+	Bullet.Flight = FlightNormal * Speed
 
-local DeltaTime = SysTime() - Bullet.LastThink
-Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
-Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
+	local DeltaTime = SysTime() - Bullet.LastThink
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 
 end
 

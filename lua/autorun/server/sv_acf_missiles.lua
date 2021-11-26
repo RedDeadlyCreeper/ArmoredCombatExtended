@@ -103,8 +103,8 @@ function ACFM_ExpandBulletData(bullet)
     ret.Flight = bullet.Flight or Vector(0,0,0)
     ret.Type = ret.Type or bullet.Type
     
-    --local cvarGrav = GetConVar("sv_gravity")
-    ret.Accel = Vector(0,0,-600)
+    local cvarGrav = GetConVar("sv_gravity")
+    ret.Accel = cvarGrav
     if ret.Tracer == 0 and bullet["Tracer"] and bullet["Tracer"] > 0 then ret.Tracer = bullet["Tracer"] end
     ret.Colour = toconvert["Colour"]
     

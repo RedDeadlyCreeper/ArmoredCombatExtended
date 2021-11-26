@@ -428,3 +428,25 @@ r100
 -Restricted certain material types for ace ents.
 -Changed some values for Electric stuff.
 -A LOT of bugfixes & optimizations, specially for the effects.
+
+*r134
+-Added Sound Extension like system. New Explosion sounds, distant gunfire, cracks, etc. Thanks to Arend
+-Added ear ringing effect if you stay close to an explosion.
+-Added new convars for serverside.
+-Added new effects when bullets hit the ground or objects.
+-Reworked client/server settings. Server interface disabled for dedicated servers atm.
+-Reworked effects once again. Smoke duration reduced and water splashes more reliable now.
+-Rebalanced gearboxes once again. Yeah
+-Restored smoke shells for cannons.
+-Added APHE/HE to RACs.
+-Fixed a lot of effects again. No more static bullets.
+-Fixed exploit where you could disable effects completely.
+-Gearbox loop workaround. No more crashes related to this.
+-ACE entities will not spawn underground.
+-Deleted a lot of unused stuff.
+-Tracer fixes. They had several problems that were fixed.
+-Avoided that cluster bomb detonates when another bomb is detected in front of it.
+-ACE_grenade will not go to saturn this time (crazy physic issue solved)
+-Added another electric rebalance.
+-Fixed null entity from sound tool if you despawn the vehicle quickly.
+-Disabled flare burn out sound.

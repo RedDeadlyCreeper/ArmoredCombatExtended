@@ -65,7 +65,7 @@ function ENT:Initialize()
 	self.NextFire = 1
 	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
 	self.LastSend = 0
@@ -77,9 +77,9 @@ function ENT:Initialize()
     self.LastThink = CurTime()
 	
     self.BulletData = {}
-		self.BulletData.Type = "Empty"
-		self.BulletData.PropMass = 0
-		self.BulletData.ProjMass = 0
+	self.BulletData.Type = "Empty"
+	self.BulletData.PropMass = 0
+	self.BulletData.ProjMass = 0
 	
 	self.Inaccuracy 	= 1
 	
@@ -263,7 +263,7 @@ end
 
 function ENT:TriggerInput( iname , value )
 	
-	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled ) then
+	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
 			self.User = self:GetUser(self.Inputs["Fire"].Src)
 			if not IsValid(self.User) then self.User = self.Owner end
@@ -304,22 +304,6 @@ end
 
 
 function ENT:SetStatusString()
---[[
-	local phys = self:GetPhysicsObject()
-	
-	if(!IsValid(phys)) then
-		self:SetNWString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
-		self:GetOverlayText()
-		return
-	end
-	
-    if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)-1) then
-        self:SetNWString("Status", "Underweight! (should be " .. tostring((self.LegalWeight or self.Mass)-1) .. " kg)")
-		self:GetOverlayText()
-        return
-    end
-]]--    
-
     
 	local Missile = self:PeekMissile()
 	
@@ -344,10 +328,6 @@ function ENT:SetStatusString()
     self:SetNWString("Status", "")
 	self:GetOverlayText()
     
-
-    
-	
-	
 end
 
 
@@ -365,9 +345,6 @@ function ENT:TrimDistantCrates()
     end
     
 end
-
-
-
 
 function ENT:UpdateRefillBonus()
     
@@ -413,9 +390,15 @@ end
 
 function ENT:Think()
 
-    self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, false, true)
-	self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+	if ACF.CurTime > self.NextLegalCheck then
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, nil, self.Mass, self.ModelInertia, nil, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
+		--self:SetOverlayText(txt)
 
+		if not self.Legal and self.Firing then
+			self.Firing = false
+		end
+	end
 
     local Ammo = table.Count(self.Missiles or {})
     
@@ -597,6 +580,8 @@ end
 
 function ENT:AddMissile()
 
+    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
+
     self:TrimNullMissiles()
     
     local Ammo = table.Count(self.Missiles)
@@ -604,8 +589,6 @@ function ENT:AddMissile()
     
     local Crate = self:FindNextCrate(true)
     if not IsValid(Crate) then return false end
-    
-    local NextIdx = #self.Missiles
     
     local ply = self.Owner
     
@@ -615,46 +598,50 @@ function ENT:AddMissile()
     missile.Launcher = self
     
     local BulletData = ACFM_CompactBulletData(Crate)
-    
     BulletData.IsShortForm = true    
     BulletData.Owner = ply
     missile:SetBulletData(BulletData)
     
+    --For pod based launchers
     local rackmodel = ACF_GetRackValue(self.Id, "rackmdl") or ACF_GetGunValue(BulletData.Id, "rackmdl")
     if rackmodel then 
         missile:SetModelEasy( rackmodel ) 
         missile.RackModelApplied = true
     end
     
-    missile:SetParent(self)
-	missile:SetParentPhysNum(0)
-	
-	timer.Simple(0.02,	
-		function() 
-			if IsValid(missile) then 
-				local attach, muzzle = self:GetMuzzle(NextIdx, missile)
-			
-				if(IsValid(self:GetParent())) then
-					if table.Count(self:GetAttachments()) == 0 then
-						muzzle.Pos = Vector(0,0,0)
-					end
-					missile:SetPos(muzzle.Pos)
-					missile:SetAngles(self:GetAngles())
-				else
-					missile:SetPos(self:WorldToLocal(muzzle.Pos))
-					missile:SetAngles(muzzle.Ang)
+    local NextIdx = #self.Missiles
+	timer.Simple(0.02, function() 
+		if IsValid(missile) then 
+			local attach, muzzle = self:GetMuzzle( NextIdx , missile )
+				
+			--print(muzzle.Pos)
+
+			if IsValid(self:GetParent()) then
+
+				if table.Count(self:GetAttachments()) == 0 then
+
+					muzzle.Pos = Vector(0,0,0)
 				end
-			end 
-		end)
-    
+
+				missile:SetPos( muzzle.Pos )
+				missile:SetAngles(self:GetAngles())
+
+			else
+
+				missile:SetPos(self:WorldToLocal(muzzle.Pos))
+				missile:SetAngles(muzzle.Ang)
+
+			end
+		end 
+	end)
+
+    missile:SetParent(self)
+	missile:SetParentPhysNum(0) 
     
     if self.HideMissile then missile:SetNoDraw(true) end
-    if self.ProtectMissile then missile:SetNotSolid(true) end-- missile.DisableDamage = true end  --this caused some serious exploits when recieving damage.
+    if self.ProtectMissile then missile:SetNotSolid(true) end
     
     missile:Spawn()
-    
-    
-    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
     
     self.Missiles[NextIdx+1] = missile
     
@@ -865,13 +852,11 @@ function ENT:FireMissile()
             filter[#filter+1] = missile
             
             missile.Filter = filter
-            --missile.DisableDamage = false
             
             missile:SetParent(nil)
             missile:SetNoDraw(false)
 			missile:SetNotSolid(false)
-            --missile:SetPos(MuzzlePos)
-            --missile:SetAngles(ShootVec:Angle())
+
             local bdata = missile.BulletData
             
             if !IsValid(self:GetParent()) then
@@ -994,9 +979,6 @@ end
 
 hook.Add("PhysgunDrop", "ACF_Rack_OnPhysgunDrop", ACF_Rack_OnPhysgunDrop)
 
-
-
-
 function ENT:OnRemove()
 	Wire_Remove(self.Entity)
 end
@@ -1007,8 +989,8 @@ end
 
 function ENT:GetOverlayText()   --New Overlay text that is shown when you are looking at the rack. 
 
-	local name          = self:GetNWString("WireName")   
-	local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
+	--local name          = self:GetNWString("WireName")   
+	--local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
 	local Ammo          = self:GetNWInt("Ammo")          --Ammo count
 	local FireRate      = self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
     local Reload        = self:GetNWFloat("Reload")      --reload time. in secs
@@ -1049,20 +1031,11 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 		    end
 			
 	    end
-		
-		
+	
 	--if not self.Legal then
 		--txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	--end
-		
-	--else
-	
-	--   local txt = '- Empty -'
-		
-	--end
-	
-	
+
     self:SetOverlayText(txt)
 	
-
 end

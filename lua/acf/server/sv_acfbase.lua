@@ -48,7 +48,7 @@ function ACF_UpdateVisualHealth(Entity)
 
 end
 
-function ACF_Activate ( Entity , Recalc )
+function ACF_Activate( Entity , Recalc )
 
 	--Density of steel = 7.8g cm3 so 7.8kg for a 1mx1m plate 1m thick
 	if Entity.SpecialHealth then
@@ -971,13 +971,29 @@ function ACF_GetLinkedWheels( MobilityEnt )
 	local ToCheck = {}
 	local Wheels = {}
 
+	local iteration = 0
+
 	local links = MobilityEnt.GearLink or MobilityEnt.WheelLink -- handling for usage on engine or gearbox
-	for k,link in pairs( links ) do table.insert(ToCheck, link.Ent) end
+
+	--print('total links: '..#links)
+	--print(MobilityEnt:GetClass())
+
+	for k,link in pairs( links ) do 
+		--print(link.Ent:GetClass())
+		table.insert(ToCheck, link.Ent)
+	end
+
+	--print('total ents to check: '..#ToCheck)
 
 	-- use a stack to traverse the link tree looking for wheels at the end
 	while #ToCheck > 0 do
+
+		iteration = iteration + 1
+		if iteration > 500 then break end
+
 		local Ent = table.remove(ToCheck,#ToCheck)
 		if IsValid(Ent) then
+
 			if Ent:GetClass() == "acf_gearbox" then
 				for k,v in pairs( Ent.WheelLink ) do
 					table.insert(ToCheck, v.Ent)
@@ -987,6 +1003,8 @@ function ACF_GetLinkedWheels( MobilityEnt )
 			end
 		end
 	end
+
+	--print('Wheels found: '..table.Count(Wheels))
 
 	return Wheels
 end

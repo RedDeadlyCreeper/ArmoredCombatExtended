@@ -283,7 +283,7 @@ ACF_DefineEngine( "(+)Turbine-Small-SuperAero", {
 
 ACF_DefineEngine( "AGT 1500 Large Turbine", {
 	name = "AGT 1500 Large Turbine",
-	desc = "A large gas turbine, powerful with a wide powerband\n\nThese turbines are optimized for aero use, but can be used in other specialized roles, being powerful but suffering from poor throttle response and fuel consumption.",
+	desc = "A large gas turbine, powerful with a wide powerband.\n\nThese turbines are optimized for aero use, but can be used in other specialized roles, being powerful but suffering from poor throttle response and fuel consumption.",
 	model = "models/engines/gasturbine_l.mdl",
 	sound = "acf_extra/vehiclefx/engines/abrams.wav",
 	category = "Turbine",

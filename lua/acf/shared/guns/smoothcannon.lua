@@ -1,5 +1,3 @@
-if ACF.EnableNewContent then
-
 --define the class
 ACF_defineGunClass("SBC", {
     type = "Gun",
@@ -106,6 +104,3 @@ ACF_defineGun("170mmSBC", {
 		propweight = 34
 	}
 } )
-	
-
-end

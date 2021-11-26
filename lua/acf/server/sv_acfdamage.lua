@@ -4,6 +4,7 @@
 local TraceRes = { }
 local TraceInit = { output = TraceRes }
 
+--Used for filter certain undesired ents inside of HE processing
 ACF.HEFilter = {
 	gmod_wire_hologram = true,
 	prop_vehicle_crane, true,
@@ -12,6 +13,19 @@ ACF.HEFilter = {
 	gmod_ent_ttc = true,
 	gmod_ent_ttc_auto = true,
 	ace_flares = true
+}
+
+--Used for tracebug HE workaround
+ACE.CritEnts = {
+	acf_gun = true,
+	acf_ammo = true,
+	acf_engine = true,
+	acf_gearbox = true,
+	acf_fueltank = true,
+	acf_rack = true,
+	acf_missile = true,
+	prop_vehicle_prisoner_pod = true,
+	gmod_wire_gate = true
 }
 
 --I don't want HE processing every ent that it has in range
@@ -50,7 +64,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	local Amp = math.min(Power/2000,50)
 	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )
 
-	--debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
+	debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1   in console to see
 	
 	--Will give tiny HE just a pinch of radius to help it hit the player
 	local Targets = ACF_HEFind( Hitpos, Radius )
@@ -79,27 +93,31 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 				local Type = ACF_Check(Tar)
 
-				if ( Type ) then
+				if Type then
 
 					local Hitat = nil
 
-					if Type == "Squishy" then 	--A little hack so it doesn't check occlusion at the feet of players
+					--Done for dealing damage vs players and npcs
+					if Type == "Squishy" then 	
+
+						local hugenumber = 99999999999
 
 						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
-						Hitat = Tar:NearestPoint( Hitpos )					
-						local cldist = Hitpos:Distance( Hitat ) or 99999999999
+						--This is for scanning potential victims, damage goes later.
+						Hitat = Tar:NearestPoint( Hitpos )
+
+						local cldist = Hitpos:Distance( Hitat ) or hugenumber
 						local Tpos
-						local Tdis = 99999999999
+						local Tdis = hugenumber
 						
 						local Eyes = Tar:LookupAttachment("eyes")
-
 						if Eyes then
 
 							local Eyeat = Tar:GetAttachment( Eyes )
 							if Eyeat then
 								--Msg("Hitting Eyes\n")
 								Tpos = Eyeat.Pos
-								Tdis = Hitpos:Distance( Tpos ) or 99999999999
+								Tdis = Hitpos:Distance( Tpos ) or hugenumber
 								if Tdis < cldist then
 									Hitat = Tpos
 									cldist = cldist
@@ -108,7 +126,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 						end
 
 						Tpos = Tar:WorldSpaceCenter()
-						Tdis = Hitpos:Distance( Tpos ) or 99999999999
+						Tdis = Hitpos:Distance( Tpos ) or hugenumber
 						if Tdis < cldist then
 							Hitat = Tpos
 							cldist = cldist
@@ -117,20 +135,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					else
 						Hitat = Tar:NearestPoint( Hitpos )
 					end
-					
+
 					--if hitpos inside hitbox of victim prop, nearest point doesn't work as intended
 					if Hitat == Hitpos then Hitat = Tar:GetPos() end
 					
-					--[[see if we have a clean view to victim prop
-					local Occlusion = {}
-						Occlusion.start = Hitpos
-						Occlusion.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
-						Occlusion.filter = OccFilter
-						Occlusion.mask = MASK_SOLID
-					local Occ = util.TraceLine( Occlusion )	
-					]]--
-
-
+					--see if we have a clean view to victim prop. Updates TraceRes
 					TraceInit.start = Hitpos
 					TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
 					TraceInit.filter = OccFilter
@@ -138,34 +147,17 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					TraceInit.mins = Vector( 0, 0, 0 )
 					TraceInit.maxs = Vector( 0, 0, 0 ) 
 
-					--util.TraceLine( TraceInit ) -- automatically stored in output table: TraceRes
 					util.TraceHull( TraceInit )
-
-					--[[
-					--retry for prop center if no hits at all, might have whiffed through bounding box and missed phys hull
-					--nearestpoint uses intersect of bbox from source point to origin (getpos), this is effectively just redoing the same thing
-					if ( !Occ.Hit and Hitpos != Hitat ) then
-						local Hitat = Tar:GetPos()
-						local Occlusion = {}
-							Occlusion.start = Hitpos
-							Occlusion.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
-							Occlusion.filter = OccFilter
-							Occlusion.mask = MASK_SOLID
-						Occ = util.TraceLine( Occlusion )	
-					end
-					--]]
 					
-					if ( !TraceRes.Hit ) then
-						--no hit
-					elseif ( TraceRes.Hit and TraceRes.Entity:EntIndex() != Tar:EntIndex() ) then
-						--occluded, no hit
-					else
-						Targets[i] = nil	--Remove the thing we just hit from the table so we don't hit it again in the next round
+					--HE has direct view with the prop, so lets damage it
+					if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
+
+						Targets[i] = NULL	--Remove the thing we just hit from the table so we don't hit it again in the next round
 						local Table = {}
 							
 						Table.Ent = Tar
 
-						if Tar:GetClass() == "acf_engine" or Tar:GetClass() == "acf_ammo" or Tar:GetClass() == "acf_fueltank" then
+						if ACE.CritEnts[Tar:GetClass()] then
 							Table.LocalHitpos = WorldToLocal(Hitpos, Angle(0,0,0), Tar:GetPos(), Tar:GetAngles())
 						end
 
@@ -185,13 +177,14 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 				else
 
-					Targets[i] = nil	--Target was invalid, so let's ignore it
+					Targets[i] = NULL	--Target was invalid, so let's ignore it
 					table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 				end	
 			end
 			::cont::
 		end
 		
+		--Now that we have the props to damage, apply it here
 		for i,Table in pairs(Damage) do
 			
 			local Tar = Table.Ent
@@ -199,10 +192,9 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			local AeraFraction = Table.Aera/TotalAera
 			local PowerFraction = Power * AeraFraction	--How much of the total power goes to that prop
 			local AreaAdjusted = (Tar.ACF.Aera / ACF.Threshold) * Feathering
-			
+
 			local BlastRes
 			local Blast = {
-				--Momentum = PowerFraction/(math.max(1,Table.Dist/200)^0.05), --not used for anything
 				Penetration = PowerFraction^ACF.HEBlastPen*AreaAdjusted
 			}
 			
@@ -217,8 +209,9 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			-- erroneous HE penetration bug workaround; retries trace on crit ents after a short delay to ensure a hit.
 			-- we only care about hits on critical ents, saves on processing power
 			-- not going to re-use tables in the timer, shouldn't make too much difference
-			if Tar:GetClass() == "acf_engine" or Tar:GetClass() == "acf_ammo" or Tar:GetClass() == "acf_fueltank" then
-				timer.Simple(0.015*2, function() 
+
+			if ACE.CritEnts[Tar:GetClass()] then
+				timer.Simple(0.03, function() 
 					if not IsValid(Tar) then return end
 					
 					--recreate the hitpos and hitat, add slight jitter to hitpos and move it away some
@@ -292,14 +285,13 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 				
 				if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
 
-				    --print('RIP') 
 					--Add the debris created to the ignore so we don't hit it in other rounds
 					local Debris = ACF_HEKill( Tar , Table.Vec , PowerFraction , Hitpos )
 					table.insert( OccFilter , Debris )						
 					LoopKill = true --look for fresh targets since we blew a hole somewhere
 
 				else
-				    --print('NO RIP')
+
 				    --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
 					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 15 * (GetConVarNumber("acf_hepush") or 1) ) 
 
@@ -307,6 +299,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			end
 
 			PowerSpent = PowerSpent + PowerFraction*BlastRes.Loss/2--Removing the energy spent killing props
+
+			local min,max = Tar:GetCollisionBounds()
+			--This is to see what props are inside of explosion radius.
+			debugoverlay.BoxAngles(Tar:GetPos(), min, max, Tar:GetAngles(), 5, Color(255,255,0,100))
+
 		end
 
 		Power = math.max(Power - PowerSpent,0)	
@@ -333,7 +330,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 
 		-- Normal spalling core
 		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 150
-		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),24)
+		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33)*ACF.SpallMult,100)
 		local SpallWeight = TotalWeight/Spall*SpallMul
 		local SpallVel = (KE*16/SpallWeight)^0.5/Spall*SpallMul
 		local SpallAera = (SpallWeight/7.8)^0.33 
@@ -358,7 +355,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	end
 end
 
---ents that should recieve the spall instead of being used as shockwave transfer
+--ents that should receive the spall instead of being used as shockwave transfer
 ACF.VulnerableEnts = {
 
 	acf_gun = true,
@@ -411,7 +408,7 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 	TrBack.start = HitPos + HitVec:GetNormalized()*Caliber*1.5
 	TrBack.endpos = HitPos
 	TrBack.ignoreworld = true
-	TrBack.filter = function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then print(ent:GetClass()) return true end end
+	TrBack.filter = function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then return true end end
 
 
 	while FindEnd do
@@ -456,7 +453,6 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 				--print('distToFront: '..distToFront)
 				--print('BackDists[iteration - 1]: '..BackDists[iteration - 1])
 				--print('DISTS DIFF: '..distToFront - BackDists[iteration - 1])
-				--print('ESTA OVERLAPEADO SI ES +, NO LO ESTA SI ES NEGATIVO')
 
 				--check if we have void
 				if space > 1 then
@@ -520,9 +516,9 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 		end
 
 		--for red traceback
-		debugoverlay.Line( traceback.StartPos+Vector(0,0,#EntsToHit*0.1), traceback.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(math.random(100,255),0,0) )
+		--debugoverlay.Line( traceback.StartPos+Vector(0,0,#EntsToHit*0.1), traceback.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(math.random(100,255),0,0) )
 		--for green tracefront
-		debugoverlay.Line( tracefront.StartPos+Vector(0,0,#EntsToHit*0.1), tracefront.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(0,math.random(100,255),0) )
+		--debugoverlay.Line( tracefront.StartPos+Vector(0,0,#EntsToHit*0.1), tracefront.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(0,math.random(100,255),0) )
 	end
 
 	local ArmorSum = 0
@@ -724,28 +720,34 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
 	
-	local MaxDig = (( Energy.Penetration * 1.5 / Bullet.PenAera ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4  --adding 0.5x more energy pen cuz some low caliber guns like racs with 60mm pen are supposed to break though thin walls.
+	local MaxDig = (( Energy.Penetration * 1 / Bullet.PenAera ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4
 	
 	--print('Max Dig: '..MaxDig..'\nEnergy Pen: '..Energy.Penetration..'\n')
 	
 	local HitRes = {Penetrated = false, Ricochet = false}
-			
+	local TROffset = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+
 	local DigRes = util.TraceHull( { 
 
-	
 		start = HitPos + Bullet.Flight:GetNormalized()*0.1,
 		endpos = HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1),
 		filter = Bullet.Filter,
-		mins = Vector( -10, -10, -10 ),
-		maxs = Vector( 10, 10, 10 ), 
+		mins = Vector( -TROffset, -TROffset, -TROffset ),
+		maxs = Vector( TROffset, TROffset, TROffset ), 
 		mask = MASK_SOLID_BRUSHONLY
 		
 		} )
+
+	debugoverlay.Box( DigRes.StartPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
+  	debugoverlay.Box( DigRes.HitPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
+
+	debugoverlay.Line( DigRes.StartPos, HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1), 5 , Color(0,math.random(100,255),0) )
 	--print(util.GetSurfacePropName(DigRes.SurfaceProps))
 	
 	local loss = DigRes.FractionLeftSolid
 	
-	if loss == 1 or loss == 0 then --couldn't penetrate
+	--couldn't penetrate
+	if loss == 1 or loss == 0 then 
 	    --print('Non Penetration! PenValid: '..loss)
 		--print(start)
 		local Ricochet = 0
@@ -762,7 +764,8 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 			Bullet.Flight = (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.05):GetNormalized() * Speed * Ricochet
 			HitRes.Ricochet = true
 		end
-	else --penetrated
+	--penetrated
+	else 
 	    --print('Penetrated! PenValid: '..loss)
 		Bullet.Flight = Bullet.Flight * (1 - loss)
 		Bullet.Pos = DigRes.StartPos + Bullet.Flight:GetNormalized() * 0.25 --this is actually where trace left brush
@@ -794,6 +797,12 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	--todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this
 	phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 
+	debugoverlay.Cross( Pos, 10, 5, Color(0,255,0) )
+	debugoverlay.Text(Pos, 'Pos', 5)
+
+	debugoverlay.Cross( Pos, 10, 5, Color(0,255,0) )
+	debugoverlay.Text(Pos, 'Pos', 5)
+
 end
 
 
@@ -817,6 +826,7 @@ ACF.Splosive = {
 -- AP will HE-kill children props like a detonation; looks better than a directional spray of unrelated debris from the AP kill
 local function ACF_KillChildProps( Entity, BlastPos, Energy )  
 
+	if ACF.DebrisChance <= 0 then return end
 	local children = ACF_GetAllChildren(Entity)
 	
 	--why should we make use of this for ONE prop?
@@ -826,7 +836,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		local boom = {}
 
 	    -- do an initial processing pass on children, separating out explodey things to handle last
-	    for k, ent in pairs( children ) do
+	    for k, ent in pairs( children ) do --print('table children: '..table.Count( children ))
 
 		    --Removes the first impacted entity. This should avoid debris being duplicated there.
 		    if Entity:EntIndex() == ent:EntIndex() then children[ent] = nil goto cont end	    	
@@ -837,8 +847,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		    local class = ent:GetClass()
 
 		    -- exclude any entity that is not part of debris ents whitelist
-		    if not ACF.Debris[class] then
-
+		    if not ACF.Debris[class] then --print('removing not valid class')
 		    	children[ent] = nil goto cont
 		    else
 
@@ -863,18 +872,19 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 	    -- HE kill the children of this ent, instead of disappearing them by removing parent
 	    if count > 0 then
 
-	    	--Some props will not be processed into debris to save performance
-		    local DebrisChance = math.Clamp(ACF.ChildDebris/count, 0, 1)
 		    local power = Energy/math.min(count,3)
 
-		    for k, child in pairs( children ) do
+		    for k, child in pairs( children ) do --print('table children#2: '..table.Count( children ))
 
 		    	--Skip any invalid entity
 			    if not IsValid(child) then goto cont end
 
-			    -- ignore some of the debris props to save lag
-				if math.random() < DebrisChance then 
+			    local rand = math.random(0,100)/100 print(rand) print(ACF.DebrisChance)
 
+			    print( rand < ACF.DebrisChance )
+
+			    -- ignore some of the debris props to save lag
+				if rand < ACF.DebrisChance then 
 					ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
 				else
 
@@ -912,8 +922,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if not Entity.ACF_Killed then ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy ) end
 
 	--ERA props should not create debris
-	if not Entity.ACF then return end
-	local Mat = Entity.ACF.Material or 0
+	local Mat = (Entity.ACF and Entity.ACF.Material) or 0
 	if Mat == 4 then return end
 	
 	constraint.RemoveAll( Entity )
@@ -922,15 +931,13 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if(Entity:BoundingRadius() < ACF.DebrisScale) then return nil end
 	
 	local Debris = ents.Create( "ace_debris" )
-		Debris:SetModel( Entity:GetModel() )
-		Debris:SetAngles( Entity:GetAngles() )
-		Debris:SetPos( Entity:GetPos() )
-		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
-		Debris:Spawn()
+	Debris:SetModel( Entity:GetModel() )
+	Debris:SetAngles( Entity:GetAngles() )
+	Debris:SetPos( Entity:GetPos() )
+	Debris:SetMaterial("models/props_wasteland/metal_tram001a")
+	Debris:Spawn()
 		
-	if math.random() < ACF.DebrisIgniteChance then
-		Debris:Ignite(math.Rand(5,45),0)
-	end
+	if math.random() < ACF.DebrisIgniteChance then Debris:Ignite(math.Rand(5,45),0) end
 	
 	Debris:Activate()
 
@@ -938,9 +945,10 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local phys = Debris:GetPhysicsObject() 
 	local physent = Entity:GetPhysicsObject()
 
-	if phys:IsValid() and physent:IsValid() then	
-		phys:SetMass(physent:GetMass())
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*600 ) 		   
+	if phys:IsValid() and physent:IsValid() then
+		phys:SetDragCoefficient( -50 )	
+		phys:SetMass( physent:GetMass() )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:GetPos()+VectorRand()*10 ) 		   
 	end
 
 	return Debris
@@ -954,8 +962,7 @@ function ACF_APKill( Entity , HitVector , Power )
 	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
 
 	--ERA props should not create debris
-	if not Entity.ACF then return end
-	local Mat = Entity.ACF.Material or 0
+	local Mat = (Entity.ACF and Entity.ACF.Material) or 0
 	if Mat == 4 then return end
       
 	constraint.RemoveAll( Entity )
@@ -971,19 +978,15 @@ function ACF_APKill( Entity , HitVector , Power )
 		Debris:SetColor(Color(120,120,120,255))
 		Debris:Spawn()
 		Debris:Activate()
-		
-	local BreakEffect = EffectData()				
-		BreakEffect:SetOrigin( Entity:GetPos() )
-		BreakEffect:SetScale( 20 )
-	util.Effect( "WheelDust", BreakEffect )	
 
 	--Applies force to this debris	
 	local phys = Debris:GetPhysicsObject() 
 	local physent = Entity:GetPhysicsObject()
 
-	if phys:IsValid() and physent:IsValid() then	
-		phys:SetMass(physent:GetMass())
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*20 )		
+	if phys:IsValid() and physent:IsValid() then
+		phys:SetDragCoefficient( -50 )	
+		phys:SetMass( physent:GetMass() )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*10)		
 	end
 
 	return Debris

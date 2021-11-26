@@ -3,6 +3,19 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+function ENT:SpawnFunction( ply, trace )
+
+	if not trace.Hit then return end
+
+	local SPos = (trace.HitPos + Vector(0,0,1))
+
+	local ent = ents.Create( "ace_crewseat_driver" )
+	ent:SetPos( SPos )
+	ent:Spawn()
+	ent:Activate()
+
+	return ent
+end
 
 function ENT:Initialize()
 

@@ -224,31 +224,16 @@ function Round.cratetxt( BulletData )
 end
 
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
---	print("Testb")
-	local NormieMult = 1
-	local Mat = Target.ACF.Material or 0
-	if Mat == 1 then
-		NormieMult = 0.8
-	elseif Mat == 2 then
-		NormieMult = 1.5
-	elseif Mat == 3 then
-		NormieMult = 0.05
-	elseif Mat == 5 then
-		NormieMult = 0.7	
-	elseif Mat == 6 then
-		NormieMult=0.5
-	end
+
+	local MaterialID = Target.ACF.Material or 0
+	NormieMult = ACE.ArmorTypes[ MaterialID ].NormMult or 1
 	
 	Bullet.Normalize = true
 	Bullet.Pos = HitPos
 
 	local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized()--Guess it doesnt need localization
---	local FlightNormal = Bullet.Flight:GetNormalized() + (-HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult
---	local FlightNormal = -HitNormal
-
 	local Speed = Bullet.Flight:Length()
 
---	Bullet.Flight = Bullet.Flight + Bullet.Flight:GetNormalized()
 	Bullet.Flight = FlightNormal * Speed
 	
 	local DeltaTime = SysTime() - Bullet.LastThink

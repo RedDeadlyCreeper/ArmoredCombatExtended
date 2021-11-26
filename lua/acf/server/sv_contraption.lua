@@ -9,6 +9,8 @@ ACE.radarEntities = {}  --for tracking radar usage
 ACE.radarIDs = {}       --ID radar purpose
 ACE.ECMPods = {}        --ECM usage
 
+ACE.Debris = {}         --Debris count
+
 --list of classname ents which should be added to the contraption ents. 
 local AllowedEnts = {
     
@@ -38,75 +40,66 @@ local AllowedEnts = {
 -- insert any new entity to the Contraption List
 hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 	
-	if Ent:IsValid() then 
-	    
+	if not IsValid(Ent) then return end
 
-	    -- check if ent class is in whitelist
-        if AllowedEnts[ Ent:GetClass() ] then  
-			    
-			-- include any ECM to this table	
-		    if Ent:GetClass() == 'ace_ecm' then 
-			    table.insert( ACE.ECMPods , Ent)
-				
-			    --print('[ACE | INFO]- the entity '..Ent:GetClass()..' is an ECM!')
-				--print('ECM registered count: '..table.Count( ACE.ECMPods ))
-			
-			
+	-- check if ent class is in whitelist
+	if AllowedEnts[ Ent:GetClass() ] then  
+
+		-- include any ECM to this table	
+		if Ent:GetClass() == 'ace_ecm' then 
+
+			table.insert( ACE.ECMPods , Ent) --print('[ACE | INFO]- ECM registered count: '..table.Count( ACE.ECMPods ))
 			-- include any Tracking Radar to this table
-			elseif Ent:GetClass() == 'ace_trackingradar' then 
-			    table.insert( ACE.radarEntities , Ent)
+
+		elseif Ent:GetClass() == 'ace_trackingradar' then 
+			table.insert( ACE.radarEntities , Ent) --print('[ACE | INFO]Tracking radar registered count: '..table.Count( ACE.radarEntities ))	
 				
-			    --print('[ACE | INFO]- the entity '..Ent:GetClass()..' is a tracking radar!')
-                --print('Tracking radar registered count: '..table.Count( ACE.radarEntities ))				
-			    
-				for id, ent in pairs(ACE.radarEntities) do
+			for id, ent in pairs(ACE.radarEntities) do
 		        ACE.radarIDs[ent] = id
-	            end
-				
-			end
-			
-			-- Finally, include the whitelisted entity to the main table ( contraptionEnts )
-			if not Ent:GetParent():IsValid() then  			    
-				table.insert( ACE.contraptionEnts , Ent)   
-				
-				--print('[ACE | INFO]- an entity '..Ent:GetClass()..' has been registered!')
-				--print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
-		        	
-			end
+		    end
 		end
-    end
+
+		-- Finally, include the whitelisted entity to the main table ( contraptionEnts )
+		if not Ent:GetParent():IsValid() then  			    
+			table.insert( ACE.contraptionEnts , Ent)   
+
+			--print('[ACE | INFO]- an entity '..Ent:GetClass()..' has been registered!')
+			--print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
+		end
+	elseif Ent:GetClass() == 'ace_debris' then 
+		table.insert( ACE.Debris , Ent ) --print('Adding - Count: '..#ACE.Debris)
+	end
+
 end
 )
 
 -- Remove any entity of the Contraption List that has been removed from map
 hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
-	
+
+	--Assuming that our table has whitelisted ents
+	if AllowedEnts[Ent:GetClass()] then
+		for i = 1, #ACE.contraptionEnts do
 		
-		
-	for i = 1, table.Count( ACE.contraptionEnts ) do
-		
-        --check if it's valid		
-		if ACE.contraptionEnts[i]:IsValid() and Ent:IsValid() then 	
-			
-			
+        	--check if it's valid		
+			if not IsValid(ACE.contraptionEnts[i]) or not IsValid(Ent) then goto cont end
+
 			local MEnt = ACE.contraptionEnts[i]
 			
 			-- Remove this ECM from list if deleted
 			if Ent:GetClass() == 'ace_ecm' then
-			    for i = 1, table.Count( ACE.ECMPods ) do
-				    if ACE.ECMPods[i]:IsValid() and Ent:IsValid() then
-					
-					    local ECM = ACE.ECMPods[i]
-						
+				for i = 1, table.Count( ACE.ECMPods ) do
+					if ACE.ECMPods[i]:IsValid() and Ent:IsValid() then
+
+						local ECM = ACE.ECMPods[i]
+
 						if ECM:EntIndex() == Ent:EntIndex() then						
-						    table.remove( ACE.ECMPods , i)
-							
-						    --print('[ACE | INFO]- the ECM '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+							table.remove( ACE.ECMPods , i)
+
+							--print('[ACE | INFO]- the ECM '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
 							--print('ECM registered count: '..table.Count( ACE.ECMPods ))
-							
 							break
 						end					
-				    end
+					end
 				end	
 			
             -- Remove this Tracking Radar from list if deleted			
@@ -117,7 +110,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 					    local TrRadar = ACE.radarEntities[i]
 						
 						if TrRadar:EntIndex() == Ent:EntIndex() then						
-						    table.remove( ACE.radarEntities , i)
+							table.remove( ACE.radarEntities , i)
 							
 						    --print('[ACE | INFO]- the TrRadar '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
 							--print('Tracking radar registered count: '..table.Count( ACE.radarEntities ))				
@@ -129,14 +122,27 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 			end
 			
             -- Finally, remove this Entity from the main list			
-		    if MEnt:EntIndex() == Ent:EntIndex() then   --check if we are taking same ent 
-                table.remove( ACE.contraptionEnts , i)                     --if same, remove it
+            if MEnt:EntIndex() == Ent:EntIndex() then   --check if we are taking same ent 
+            	table.remove( ACE.contraptionEnts , i)                     --if same, remove it
 				
 				--print('[ACE | INFO]- the entity '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
-				--print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
+				--print('Total Ents registered count: '..#ACE.contraptionEnts)
 				
                 return                                            --code has ended its work, return
-            end					    	
+           	end	
+
+           	::cont::				    	
+		end
+
+	elseif Ent:GetClass() == 'ace_debris' then
+		for i = 1, #ACE.Debris do
+			if not IsValid(ACE.Debris[i]) then goto cont end
+
+			if ACE.Debris[i]:EntIndex() == Ent:EntIndex() then
+				table.remove( ACE.Debris, i ) --print('Removing - Count: '..#ACE.Debris)
+				return
+			end
+			::cont::
 		end
 	end
 end
@@ -188,7 +194,6 @@ function ACE_refreshdata()
 			goto cont
 		end
 		
-		--if i > table.Count( ACE.contraptionEnts ) then break end
 		::cont::
 	end
     

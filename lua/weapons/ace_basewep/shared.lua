@@ -93,7 +93,7 @@ function SWEP:Think()
 --	end
 	local val = CurTime() + 0.25 
 	if (!(self.Owner:IsOnGround())) and (self:GetNextPrimaryFire() < val ) then --If owner leaves ground cause 0.25 second penalty to firing
-	self:SetNextPrimaryFire( val )
+		self:SetNextPrimaryFire( val )
 	end
 
 	if self.ThinkAfter then self:ThinkAfter() end
@@ -261,7 +261,7 @@ end
 
 
 function SWEP:DoImpactEffect( tr, nDamageType )
-return true
+	return true
 end
 
 
@@ -313,7 +313,7 @@ function SWEP:DoDrawCrosshair( x, y )
 	Zoom = self:GetNWBool("Zoomed") 
 
 
-self:DrawScope(Zoom)
+	self:DrawScope(Zoom)
 
 	ReticleSize = 1 + (self.Owner:KeyDown(IN_SPEED) and 0.5 or 0) + (self.Owner:Crouching() and -0.5 or 0) + (Zoom and -0.5 or 0) 
 --	ReticleSize = 1
@@ -327,17 +327,17 @@ self:DrawScope(Zoom)
 	surface.DrawLine(x, y - 30, x, y - 15*ReticleSize)
 --	surface.DrawOutlinedRect( x - 32, y - 32, 64, 64 )
 
-local scale = Vector( 15*ReticleSize, 15*ReticleSize, 0 )
-local segmentdist = 360 / ( 2 * math.pi * math.max( scale.x, scale.y ) / 2 )
+	local scale = Vector( 15*ReticleSize, 15*ReticleSize, 0 )
+	local segmentdist = 360 / ( 2 * math.pi * math.max( scale.x, scale.y ) / 2 )
 
-if ReticleSize > 0 then
+	if ReticleSize > 0 then
 
-	surface.DrawRect( x - 1, y - 1, 2, 2 )
-for a = 0, 360 - segmentdist, segmentdist do
-	surface.DrawLine( x + math.cos( math.rad( a ) ) * scale.x, y - math.sin( math.rad( a ) ) * scale.y, x + math.cos( math.rad( a + segmentdist ) ) * scale.x, y - math.sin( math.rad( a + segmentdist ) ) * scale.y )
-end
+		surface.DrawRect( x - 1, y - 1, 2, 2 )
+		for a = 0, 360 - segmentdist, segmentdist do
+			surface.DrawLine( x + math.cos( math.rad( a ) ) * scale.x, y - math.sin( math.rad( a ) ) * scale.y, x + math.cos( math.rad( a + segmentdist ) ) * scale.x, y - math.sin( math.rad( a + segmentdist ) ) * scale.y )
+		end
 
-end
+	end
 
 	return true
 

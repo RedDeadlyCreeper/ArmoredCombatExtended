@@ -7,13 +7,55 @@
 	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
 ]]
 
-ACF.LegalSettings = {
-	CanModelSwap = false,
-	Min = 5, 			-- min seconds between checks
-	Max = 25, 			-- max seconds between checks
-	Lockout = 35,		-- lockout time on not legal
-	NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(self.Min, self.Max) or self.Lockout) end
-}
+ACF = ACF or {}
+
+ACF.Legal = {}
+ACF.Legal.Ignore = {}
+
+ACF.Legal.IsActivated        = math.max(GetConVar('acf_legalcheck'):GetInt(), 0)
+
+ACF.Legal.Ignore.Solid       = math.max(GetConVar('acf_legal_ignore_solid'):GetInt(), 0)
+ACF.Legal.Ignore.Model       = math.max(GetConVar('acf_legal_ignore_model'):GetInt(), 0)
+ACF.Legal.Ignore.Mass        = math.max(GetConVar('acf_legal_ignore_mass'):GetInt(), 0)
+ACF.Legal.Ignore.Material    = math.max(GetConVar('acf_legal_ignore_material'):GetInt(), 0)
+ACF.Legal.Ignore.Inertia     = math.max(GetConVar('acf_legal_ignore_inertia'):GetInt(), 0)
+ACF.Legal.Ignore.makesphere  = math.max(GetConVar('acf_legal_ignore_makesphere'):GetInt(), 0)
+ACF.Legal.Ignore.visclip     = math.max(GetConVar('acf_legal_ignore_visclip'):GetInt(), 0)
+ACF.Legal.Ignore.Parent      = math.max(GetConVar('acf_legal_ignore_parent'):GetInt(), 0)
+
+function ACF_LegalityCallBack()
+
+	ACF.Legal.IsActivated        = math.max(GetConVar('acf_legalcheck'):GetInt(), 0)
+
+	ACF.Legal.Ignore.Solid       = math.max(GetConVar('acf_legal_ignore_solid'):GetInt(), 0)
+	ACF.Legal.Ignore.Model       = math.max(GetConVar('acf_legal_ignore_model'):GetInt(), 0)
+	ACF.Legal.Ignore.Mass        = math.max(GetConVar('acf_legal_ignore_mass'):GetInt(), 0)
+	ACF.Legal.Ignore.Material    = math.max(GetConVar('acf_legal_ignore_material'):GetInt(), 0)
+	ACF.Legal.Ignore.Inertia     = math.max(GetConVar('acf_legal_ignore_inertia'):GetInt(), 0)
+	ACF.Legal.Ignore.makesphere  = math.max(GetConVar('acf_legal_ignore_makesphere'):GetInt(), 0)
+	ACF.Legal.Ignore.visclip     = math.max(GetConVar('acf_legal_ignore_visclip'):GetInt(), 0)
+	ACF.Legal.Ignore.Parent      = math.max(GetConVar('acf_legal_ignore_parent'):GetInt(), 0)
+
+end
+
+cvars.AddChangeCallback('acf_legalcheck',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_solid',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_model',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_mass',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_material',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_inertia',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_makesphere',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_visclip',ACF_LegalityCallBack)
+cvars.AddChangeCallback('acf_legal_ignore_parent',ACF_LegalityCallBack)
+
+
+
+
+ACF.Legal.Min = 5 			-- min seconds between checks --5
+ACF.Legal.Max = 25 			-- max seconds between checks --25
+ACF.Legal.Lockout = 35		-- lockout time on not legal  --35
+ACF.Legal.NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(ACF.Legal.Min, ACF.Legal.Max) or ACF.Legal.Lockout) end
+
 
 --[[
    checks if an ent meets the given requirements for legality
@@ -22,12 +64,12 @@ ACF.LegalSettings = {
 ]]--
 
 function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
-    
-	
+
 	local problems = {} --problems table definition
+
+	if ACF.Legal.IsActivated == 0 then return (#problems == 0), table.concat(problems, ", ") end
+
 	local physobj = Ent:GetPhysicsObject()
-    
-	if ACF.LegalChecks == 0 then return  (#problems == 0), table.concat(problems, ", ") end   --checking if admin has allowed legal checks first
 	
 	-- check it exists
 	if not IsValid(Ent) then return { Legal=false, Problems ={"Invalid Ent"} } end
@@ -36,31 +78,33 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
 	if not IsValid(physobj) then return { Legal=false, Problems ={"Invalid Physics"} } end
 	
 	-- make sure traces can hit it (fade door, propnotsolid)
-	if not Ent:IsSolid() then
+	if ACF.Legal.Ignore.Solid <= 0  and not Ent:IsSolid() then
 		table.insert(problems,"Not solid")
 	end
 
 	-- check if the model matches
-	if Model != nil and not ACF.LegalSettings.CanModelSwap then
-		if Ent:GetModel() != Model then
+	if Model != nil then
+		if ACF.Legal.Ignore.Model <= 0 and Ent:GetModel() != Model then
 			table.insert(problems,"Wrong model")
 		end
 	end
 
 	-- check mass
-	if MinMass != nil and (physobj:GetMass() < MinMass) then
+	if ACF.Legal.Ignore.Mass <= 0 and MinMass != nil and (physobj:GetMass() < MinMass) then
 		table.insert(problems,"Under min mass")
 	end
 
 	-- check material
 	-- Allowed materials: rha, cast and aluminum
-	local material = Ent.ACF and Ent.ACF.Material or 0
-	if material > 1 then
-		if material ~= 5 then table.insert(problems,"Material not legal") end
+	if ACF.Legal.Ignore.Material <= 0 then
+		local material = Ent.ACF and Ent.ACF.Material or 0
+		if material > 1 then
+			if material ~= 5 then table.insert(problems,"Material not legal") end
+		end
 	end
 
 	-- check inertia components
-	if MinInertia != nil then
+	if ACF.Legal.Ignore.Inertia <= 0 and MinInertia != nil then
 		local inertia = physobj:GetInertia()/physobj:GetMass()
 		if (inertia.x < MinInertia.x) or (inertia.y < MinInertia.y) or (inertia.z < MinInertia.z) then
 			table.insert(problems,"Under min inertia")
@@ -68,24 +112,18 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
 	end
 
 	-- check makesphere
-	if physobj:GetVolume() == nil then
+	if ACF.Legal.Ignore.makesphere <= 0 and physobj:GetVolume() == nil then
 		table.insert(problems,"Has makesphere")
 	end
 
 	-- check for clips
-	if not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
+	if ACF.Legal.Ignore.visclip <= 0 and not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
 		table.insert(problems,"Has visclip")
 	end
 
 	-- if it has a parent, check if legally parented
-	if Ent:GetParent():IsValid() then
-		--Re-used requires wel parent, don't mind me being evil
-		--if NeedsGateParent and not IsValid( Ent:GetParent():GetParent() ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
-		--	table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
-		--end
+	if ACF.Legal.Ignore.Parent <= 0 and Ent:GetParent():IsValid() then
 
-		-- dev note: parent really requires a gate since not using it will lead to other ways of bypassing. As proof, test the code above vs missiles. They will hit nothing...
-		-- Also, you just need a gate for it, no required to validate the parent of the parent.
 		-- check if you have parented to a gate since this will avoid to bypass traces
 		if NeedsGateParent and Ent:GetParent():GetClass() ~= 'gmod_wire_gate' then
 			table.insert(problems,"Not gate parented")

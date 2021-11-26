@@ -88,10 +88,7 @@ ACF_defineGun("200mmM", {
 	}
 } )
 
-if ACF.EnableNewContent then
-
-
-	ACF_defineGun("50mmM", { --id
+ACF_defineGun("50mmM", { --id
 	name = "50mm Mortar",
 	desc = "The 50mm is an uncommon light mortar often seen at or before the begening of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
 	model = "models/mortar/mortar_50mm.mdl",
@@ -136,4 +133,3 @@ ACF_defineGun("380mmM", {
 		propweight = 0.562 
 	}
 } )
-end

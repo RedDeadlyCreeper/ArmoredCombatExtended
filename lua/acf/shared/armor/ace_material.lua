@@ -23,13 +23,17 @@ ACE_ConfigureMaterial( 0 , {                 -- Unique ID
       spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1,                   -- resistance multipler to spall damage
       spallmult	  = 1,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1                    -- how many spalling will be created from this material
-      
+      ArmorMul      = 1,                    -- how many spalling will be created from this material
+
+      --Normalization config
+
+      NormMult      = 1
+
    }
    )
 
 
-if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go below this
+if ACF.Year >= 1955 then  --Any other material must go below this
 
       ACE_ConfigureMaterial( 1 , {             -- Unique ID
 
@@ -51,7 +55,12 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 0.5,                 -- resistance multipler to spall damage
       spallmult	  = 2,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1                    -- how many spalling will be created from this material
+      ArmorMul      = 1,                    -- how many spalling will be created from this material
+
+      --Normalization config
+
+      NormMult      = 0.8
+      
 
    }
    )
@@ -76,7 +85,11 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1,                   -- resistance multipler to spall damage
       spallmult	  = 2.5,                 -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1.8                    -- how many spalling will be created from this material
+      ArmorMul      = 1.8,                    -- how many spalling will be created from this material
+
+      --Normalization config
+
+      NormMult      = 1.5
 
    }
    )
@@ -110,7 +123,11 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       spallarmor    = 2,                 -- penetration resistance multipler vs spalling
       spallresist   = 3.5,                   -- resistance multipler to spall damage. How many times this will increase specialeffectiveness?
       spallmult	  = 0.01,                 -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 0.01                    -- how many spalling will be created from this material
+      ArmorMul      = 0.01,                    -- how many spalling will be created from this material
+
+      --Normalization config
+
+      NormMult      = 0.05
 
    }
    )
@@ -138,8 +155,11 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1,                   -- resistance multipler to spall damage
       spallmult	  = 0,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 1                    -- how many spalling will be created from this material
+      ArmorMul      = 1,                    -- how many spalling will be created from this material
 
+      --Normalization config
+
+      NormMult      = 1
    }
    )
 
@@ -164,7 +184,11 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1.5,                 -- resistance multipler to spall damage
       spallmult	  = 2,                   -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 0.334                    -- how many spalling will be created from this material
+      ArmorMul      = 0.334,                    -- how many spalling will be created from this material
+
+      --Normalization config
+
+      NormMult      = 0.7
 
    }
    )
@@ -194,7 +218,11 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       spallarmor    = 1,                    -- penetration resistance multipler vs spalling
       spallresist   = 1.5,                 -- resistance multipler to spall damage
       spallmult	  = 1.3,                 -- spalling multipler. Higher => causes more spalling
-      ArmorMul      = 0.23                    -- how many spalling will be created from this material
+      ArmorMul      = 0.23,                    -- how many spalling will be created from this material
+
+      --Normalization config
+
+      NormMult      = 0.5
 
    }
    )

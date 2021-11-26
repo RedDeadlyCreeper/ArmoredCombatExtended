@@ -1,8 +1,9 @@
 ACF = {}
+
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 458           --ACE current version
+ACF.Version = 459           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2021      --Current Year
@@ -12,6 +13,10 @@ print('[ACE | INFO]- loading ACE. . .')
 ACE = {}
 ACE.ArmorTypes = {}
 
+ACF.Weapons = {}
+ACF.Classes = {}
+ACF.RoundTypes = {}
+ACF.IdRounds = {}	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 --[[----------------------------
        ServerSide Convars 
@@ -26,9 +31,43 @@ CreateConVar('sbox_max_acf_misc', 50)          -- misc ents limit
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)       -- 0=any, 1=owned
 ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )         -- Should flares light players and NPCs on fire?  Does not affect godded players.
-ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )        -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities.
-CreateConVar( "acf_legalchecks", 1 , FCVAR_ARCHIVE)         -- If true, legal checks will be done and it will disable any no legal ent.
---CreateConVar( "acf_enable_dp", 'false' , FCVAR_ARCHIVE )          -- Enable the inbuilt damage protection system.     
+ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )        -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities. 
+
+-- Cvars for legality checking
+CreateConVar( "acf_legalcheck", 1 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_model", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_solid", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_mass", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_material", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_inertia", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_makesphere", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_visclip", 0 , FCVAR_ARCHIVE)
+CreateConVar( "acf_legal_ignore_parent", 0 , FCVAR_ARCHIVE)
+
+-- Prop Protection system
+--CreateConVar( "acf_enable_dp", 'false' , FCVAR_ARCHIVE )    -- Enable the inbuilt damage protection system.    
+
+-- Cvars for recoil/he push
+CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
+CreateConVar("acf_recoilpush", 1, FCVAR_ARCHIVE)
+
+-- New healthmod/armormod/ammomod cvars
+CreateConVar("acf_healthmod", 1, FCVAR_ARCHIVE)
+CreateConVar("acf_armormod", 1, FCVAR_ARCHIVE)
+CreateConVar("acf_ammomod", 1, FCVAR_ARCHIVE)
+CreateConVar("acf_gunfire", 1, FCVAR_ARCHIVE)
+--CreateConVar("acf_year", ACF.Year, FCVAR_ARCHIVE)
+
+-- Debris
+CreateConVar("acf_debris_lifetime", 15, FCVAR_ARCHIVE)
+CreateConVar("acf_debris_children", 1, FCVAR_ARCHIVE)
+
+-- Spalling
+CreateConVar("acf_spalling", 1, FCVAR_ARCHIVE)
+CreateConVar("acf_spalling_multipler", 1, FCVAR_ARCHIVE)
+--concommand.Add( "acf_debris_clear", function()
+
+--end )
 
 if CLIENT then
 --[[-----------------------------
@@ -36,12 +75,18 @@ if CLIENT then
 ]]-------------------------------
 
 	CreateClientConVar( "ACFM_MissileLights", 0 ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
-	
+
 end
 
+ACFM = ACFM or {}
+
+ACFM.FlareBurnMultiplier = 0.5
+ACFM.FlareDistractMultiplier = 1 / 35
+
+ACF.DebrisChance = GetConVar('acf_debris_children'):GetFloat()
+ACF.DebrisLifeTime = GetConVar('acf_debris_lifetime'):GetInt()
 
 ACF.LargeCaliber = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
-ACF.EnableNewContent = true                    --If set to true this will enable new content like new guntypes, ammo, and composite armor
 
 ACF.Threshold = 264.7	                       --Health Divisor (don't forget to update cvar function down below)
 ACF.PartialPenPenalty = 5                      --Exponent for the damage penalty for partial penetration
@@ -55,7 +100,8 @@ ACF.AmmoLengthMul = 1
 ACF.AmmoWidthMul = 1
 ACF.ArmorMod = 1 
 ACF.SlopeEffectFactor = 1.1	                   -- Sloped armor effectiveness: armor / cos(angle)^factor
-ACF.Spalling = 1
+ACF.Spalling = GetConVar('acf_spalling'):GetInt()
+ACF.SpallMult = GetConVar('acf_spalling_multipler'):GetInt()
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 1                            --magic number that adjusts the efficiency of crate model volume to ammo capacity
@@ -65,20 +111,20 @@ ACF.BoomMult = 1.5                             --How much more do ammocrates blo
 --ACF Damage Multipler.
 
 ACF.APDamageMult = 2            --AP Damage Multipler             -1.1
-ACF.APCDamageMult = 1.5           --APC Damage Multipler           -1.1
-ACF.APBCDamageMult = 1.5         --APBC Damage Multipler           -1.05
-ACF.APCBCDamageMult = 1.0        --APCBC Damage Multipler           -1.05
-ACF.APHEDamageMult = 1.0          --APHE Damage Multipler          
-ACF.APDSDamageMult = 1.5          --APDS Damage Multipler          
-ACF.APDSSDamageMult = 1.55        --APDSS Damage Multipler
-ACF.HVAPDamageMult = 1.65         --HVAP/APCR Damage Multipler
-ACF.FLDamageMult = 1.4            --FL Damage Multipler
-ACF.HEATDamageMult = 2            --HEAT Damage Multipler
-ACF.HEDamageMult = 2              --HE Damage Multipler
-ACF.HESHDamageMult = 1.2          --HESH Damage Multipler
-ACF.HPDamageMult = 4              --HP Damage Multipler
+ACF.APCDamageMult = 1.5         --APC Damage Multipler           -1.1
+ACF.APBCDamageMult = 1.5        --APBC Damage Multipler           -1.05
+ACF.APCBCDamageMult = 1.0       --APCBC Damage Multipler           -1.05
+ACF.APHEDamageMult = 1.0        --APHE Damage Multipler          
+ACF.APDSDamageMult = 1.5        --APDS Damage Multipler          
+ACF.APDSSDamageMult = 1.55      --APDSS Damage Multipler
+ACF.HVAPDamageMult = 1.65       --HVAP/APCR Damage Multipler
+ACF.FLDamageMult = 1.4          --FL Damage Multipler
+ACF.HEATDamageMult = 2          --HEAT Damage Multipler
+ACF.HEDamageMult = 2            --HE Damage Multipler
+ACF.HESHDamageMult = 1.2        --HESH Damage Multipler
+ACF.HPDamageMult = 8            --HP Damage Multipler
 
-
+--ACF HE
 
 ACF.HEDamageFactor = 50
 
@@ -109,24 +155,21 @@ ACF.PDensity = 1.6	                 --Gun propellant density (Real powders go fr
 ACF.TorqueBoost = 1.25               --torque multiplier from using fuel
 ACF.DriverTorqueBoost = 0.25         --torque multiplier from having a driver
 ACF.FuelRate = 10                    --multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate = 2                      --multiplier for electrics                                   --BEFORE to balance: 0.458
+ACF.ElecRate = 2                     --multiplier for electrics                                   --BEFORE to balance: 0.458
 ACF.TankVolumeMul = 1                -- multiplier for fuel tank capacity, 1.0 is approx real world
-
 
 
 ACF.NormalizationFactor = 0.15       --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ACF.AllowCSLua = 0
 
-
-
-ACF.LiIonED = 0.27                --li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
+ACF.LiIonED = 0.27                   --li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
 ACF.CuIToLiter = 0.0163871           -- cubic inches to liters
 
 ACF.RefillDistance = 400             --Distance in which ammo crate starts refilling.
 ACF.RefillSpeed = 250                -- (ACF.RefillSpeed / RoundMass) / Distance 
 
-ACF.ChildDebris = 50                 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
+--ACF.ChildDebris = 50               -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
 ACF.DebrisIgniteChance = 0.25
 ACF.DebrisScale = 20                 -- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale = 16		         -- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
@@ -134,10 +177,9 @@ ACF.GunInaccuracyScale = 1           -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2            -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
 ACF.EnableDefaultDP = true --GetConVar('acf_enable_dp'):GetBool()           -- Enable the inbuilt damage protection system.
-ACF.LegalChecks = GetConVar('acf_legalchecks'):GetInt()               --if true, legal checks will be done and it will disable any no legal ent.
 ACF.EnableKillicons = true           -- Enable killicons overwriting.
 
-
+--Fuel Density
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
 	Petrol = 0.745,
@@ -189,12 +231,11 @@ AddCSLuaFile()
 AddCSLuaFile( "acf/client/cl_acfballistics.lua" )
 AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
+AddCSLuaFile( "acf/client/cl_extension.lua" )
 
 include("acf/shared/acfloader.lua")
-include("acf/shared/acf_missileloader.lua")
 include("acf/shared/armor/ace_material.lua")
 include("autorun/acf_missile/folder.lua")
-
 
 if SERVER then
 
@@ -222,6 +263,7 @@ elseif CLIENT then
 
 	include("acf/client/cl_acfballistics.lua")
 	include("acf/client/cl_acfrender.lua")
+	include("acf/client/cl_extension.lua")
 	
 	if ACF.EnableDefaultDP then
 	
@@ -261,20 +303,18 @@ include("acf/shared/rounds/roundfl.lua")
 include("acf/shared/rounds/roundhp.lua")
 include("acf/shared/rounds/roundsmoke.lua")
 include("acf/shared/rounds/roundrefill.lua")
-
-if ACF.EnableNewContent then
-
-    include("acf/shared/rounds/roundapc.lua")
+include("acf/shared/rounds/roundapc.lua")
 	
-end
 
-if ACF.Year > 1920 and ACF.EnableNewContent then
+--interwar period
+if ACF.Year > 1920 then
 
     include("acf/shared/rounds/roundapbc.lua")
     include("acf/shared/rounds/roundapcbc.lua")
 
 end
-if ACF.Year > 1939 and ACF.EnableNewContent then --A surprising amount of things were made during WW2
+--A surprising amount of things were made during WW2
+if ACF.Year > 1939 then 
 
     include("acf/shared/rounds/roundhesh.lua")
     include("acf/shared/rounds/roundheat.lua")
@@ -284,7 +324,8 @@ if ACF.Year > 1939 and ACF.EnableNewContent then --A surprising amount of things
     include("acf/shared/rounds/roundhvap.lua")
 	
 end
-if ACF.Year > 1960 and ACF.EnableNewContent then
+--Cold war
+if ACF.Year > 1960 then
 
     include("acf/shared/rounds/roundapds.lua")
     include("acf/shared/rounds/roundapfsds.lua")
@@ -295,7 +336,8 @@ if ACF.Year > 1960 and ACF.EnableNewContent then
     include("acf/shared/rounds/roundglgm.lua")
 	
 end
-if ACF.Year > 1989 and ACF.EnableNewContent then
+--almost finishing cold war
+if ACF.Year > 1989 then
 
     include("acf/shared/rounds/roundtheat.lua")
     include("acf/shared/rounds/roundtheatfs.lua")
@@ -303,13 +345,9 @@ if ACF.Year > 1989 and ACF.EnableNewContent then
 end
 
 
-
 ACF.Weapons = list.Get("ACFEnts")
-	
 ACF.Classes = list.Get("ACFClasses")
-
 ACF.RoundTypes = list.Get("ACFRoundTypes")
-
 ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 
@@ -329,8 +367,6 @@ PrecacheParticleSystem( "ACF_BlastEmber" )
 PrecacheParticleSystem( "ACF_AirburstDebris" )
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")
-
-
 
 -- Add the ACF tool category
 if CLIENT then
@@ -455,54 +491,43 @@ function ACF_CalcMassRatio( obj, pwr )
 	if pwr then return { Power = power, Fuel = fuel } end
 end
 
-
--- Cvars for recoil/he push
-CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
-CreateConVar("acf_recoilpush", 1)
-
--- New healthmod/armormod/ammomod cvars
-CreateConVar("acf_healthmod", 1)
-CreateConVar("acf_armormod", 1)
-CreateConVar("acf_ammomod", 1)
-CreateConVar("acf_spalling", 1, FCVAR_ARCHIVE)
-CreateConVar("acf_gunfire", 1)
-CreateConVar("acf_modelswap_legal", 0)
-
 function ACF_CVarChangeCallback(CVar, Prev, New)
+	--if( Cvar == "acf_year" ) then
+		--ACF.Year = math.Clamp(New,1900,2021)
 	if( CVar == "acf_healthmod" ) then
 		ACF.Threshold = 264.7 / math.max(New, 0.01)
-		print ("Health Mod changed to a factor of " .. New)
 	elseif( CVar == "acf_armormod" ) then
 		ACF.ArmorMod = 1 * math.max(New, 0)
-		print ("Armor Mod changed to a factor of " .. New)
 	elseif( CVar == "acf_ammomod" ) then
 		ACF.AmmoMod = 1 * math.max(New, 0.01)
-		print ("Ammo Mod changed to a factor of " .. New)
 	elseif( CVar == "acf_spalling" ) then
 		ACF.Spalling = math.floor(math.Clamp(New, 0, 1))
-		local text = "off"
-		if(ACF.Spalling > 0) then
-			text = "on"
-		end
-		--print ("ACF Spalling is now " .. text)
+	elseif( CVar == "acf_spalling_multipler" ) then
+		ACF.SpallMult = math.Clamp(New, 1, 5)
 	elseif( CVar == "acf_gunfire" ) then
 		ACF.GunfireEnabled = tobool( New )
-		local text = "disabled"
-		if ACF.GunfireEnabled then 
-			text = "enabled" 
-		end
-		print ("ACF Gunfire has been " .. text)
-		elseif CVar == "acf_modelswap_legal" then
-		ACF.LegalSettings.CanModelSwap = tobool( New )
-		print("ACF model swapping is set to " .. (ACF.LegalSettings.CanModelSwap and "legal" or "not legal"))
+	elseif( CVar == "acf_debris_lifetime" ) then
+		ACF.DebrisLifeTime = math.max( New,0)
+	elseif( CVar == "acf_debris_children" ) then
+		ACF.DebrisChance = math.Clamp(New,0,1)
 	end
 end
+
+--cvars.AddChangeCallback("acf_year", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_healthmod", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_armormod", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_ammomod", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_spalling", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_spalling_multipler", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_gunfire", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_debris_lifetime", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_debris_children", ACF_CVarChangeCallback)
 
 if SERVER then
 	function ACF_SendNotify( ply, success, msg )
 		net.Start( "ACF_Notify" )
-			net.WriteBit( success )
-			net.WriteString( msg or "" )
+		net.WriteBit( success )
+		net.WriteString( msg or "" )
 		net.Send( ply )
 	end
 else
@@ -517,9 +542,9 @@ end
 
 function ACF_UpdateChecking( )
 	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size) 
-		--local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
-		
-		str = tostring("String:"..contents)    --maybe not the best way to get git but well......
+
+		--maybe not the best way to get git but well......
+		str = tostring("String:"..contents)    
 		i,k = string.find(str,'ACF.Version =')
 				
 		local rev = tonumber(string.sub(str,k+2,k+4)) or 0
@@ -559,14 +584,8 @@ local function OnInitialSpawn( ply )
 		net.Send(ply)
 	end
 end
-
 hook.Add( "PlayerInitialSpawn", "renderdamage", OnInitialSpawn )
 
-cvars.AddChangeCallback("acf_healthmod", ACF_CVarChangeCallback)
-cvars.AddChangeCallback("acf_armormod", ACF_CVarChangeCallback)
-cvars.AddChangeCallback("acf_ammomod", ACF_CVarChangeCallback)
-cvars.AddChangeCallback("acf_spalling", ACF_CVarChangeCallback)
-cvars.AddChangeCallback("acf_gunfire", ACF_CVarChangeCallback)
 
 -- smoke-wind cvar handling
 if SERVER then
@@ -601,7 +620,7 @@ if SERVER then
 					ACF.SmokeWind = wind
 					
 					net.Start("acf_smokewind")
-							net.WriteFloat(wind)
+					net.WriteFloat(wind)
 					net.Broadcast()
 					
 					printmsg(HUD_PRINTCONSOLE, "Command SUCCESSFUL: set smoke-wind to " .. wind .. "!")
@@ -623,32 +642,17 @@ else
 end
 cleanup.Register( "aceexplosives" )
 
-ACFM = ACFM or {}
-
-ACFM.FlareBurnMultiplier = 0.5
-ACFM.FlareDistractMultiplier = 1 / 35
-
 AddCSLuaFile()
 
 AddCSLuaFile("autorun/acf_missile/folder.lua")
 include("autorun/acf_missile/folder.lua")
-
-AddCSLuaFile("acf/shared/acf_missileloader.lua")
-include("acf/shared/acf_missileloader.lua")
 
 AddCSLuaFile("autorun/client/cl_acfm_menuinject.lua")
 AddCSLuaFile("autorun/client/cl_acfm_effectsoverride.lua")
 AddCSLuaFile("autorun/printbyname.lua")
 AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
-AddCSLuaFile("includes/modules/markdown.lua")
-
 AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
 AddCSLuaFile("autorun/sh_acfm_roundinject.lua")
-
-
-
-
-
 
 print('[ACE | INFO]- Done!')

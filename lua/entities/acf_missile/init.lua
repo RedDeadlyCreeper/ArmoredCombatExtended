@@ -37,9 +37,6 @@ function ENT:Initialize()
 
 end
 
-
-
-
 function ENT:SetBulletData(bdata)
 
     self.BaseClass.SetBulletData(self, bdata)
@@ -63,9 +60,6 @@ function ENT:SetBulletData(bdata)
 
 end
 
-
-
-
 function ENT:ParseBulletData(bdata)
 
     local guidance  = bdata.Data7
@@ -82,9 +76,6 @@ function ENT:ParseBulletData(bdata)
     end
 
 end
-
-
-
 
 function ENT:CalcFlight()
 
@@ -211,7 +202,7 @@ function ENT:CalcFlight()
 	local EndPos = Pos + Vel
 
 	--Hit detection
-	local tracedata={}
+	local tracedata= {}
 	tracedata.start = Pos
 	tracedata.endpos = EndPos
 	tracedata.filter = self.Filter
@@ -250,9 +241,6 @@ function ENT:CalcFlight()
 	self:DoFlight()
 end
 
-
-
-
 function ENT:SetGuidance(guidance)
 
 	self.Guidance = guidance
@@ -262,9 +250,6 @@ function ENT:SetGuidance(guidance)
 
 end
 
-
-
-
 function ENT:SetFuse(fuse)
 
 	self.Fuse = fuse
@@ -273,9 +258,6 @@ function ENT:SetFuse(fuse)
     return fuse
 
 end
-
-
-
 
 function ENT:UpdateBodygroups()
 
@@ -302,9 +284,6 @@ function ENT:UpdateBodygroups()
 
 end
 
-
-
-
 function ENT:ApplyBodySubgroup(group, targetname)
 
 	local name = string.lower(targetname) .. ".smd"
@@ -317,9 +296,6 @@ function ENT:ApplyBodySubgroup(group, targetname)
 	end
 
 end
-
-
-
 
 function ENT:Launch()
 
@@ -359,9 +335,6 @@ function ENT:Launch()
 	self:Think()
 end
 
-
-
-
 function ENT:LaunchEffect()
 
     local guns = list.Get("ACFEnts").Guns
@@ -378,9 +351,6 @@ function ENT:LaunchEffect()
     end
 
 end
-
-
-
 
 function ENT:ConfigureFlight()
 
@@ -430,9 +400,6 @@ function ENT:ConfigureFlight()
 
 end
 
-
-
-
 function ENT:UpdateSkin()
 
 	if self.BulletData then
@@ -450,9 +417,6 @@ function ENT:UpdateSkin()
 
 end
 
-
-
-
 function ENT:DoFlight(ToPos, ToDir)
 	--if !IsValid(self.Entity) or self.MissileDetonated then return end
 
@@ -466,15 +430,13 @@ function ENT:DoFlight(ToPos, ToDir)
     --self.BulletData.Flight = self.LastVel
 end
 
-
-
-
 function ENT:Detonate()
 
 	self.Entity:StopParticles()
 	self.Motor = 0
 	self:SetNWFloat("LightSize", 0)
 
+	--Missile is below min arming time, so it becomes physical and useless
     if self.Fuse and (CurTime() - self.Fuse.TimeStarted < self.MinArmingDelay or not self.Fuse:IsArmed()) then
         self:Dud()
         return
@@ -487,28 +449,19 @@ function ENT:Detonate()
 
 end
 
-
-
-
 function ENT:ForceDetonate()
 
 	self.MissileDetonated = true    -- careful not to conflict with base class's self.Detonated
 
 	ACF_ActiveMissiles[self] = nil
 
-    if self.LastVel != nil then   
-	
+    if self.LastVel then   
 	   self.DetonateOffset = self.LastVel:GetNormalized() * -1 
-	   
 	end
-
-
+	
     self.BaseClass.Detonate(self, self.BulletData)
 
 end
-
-
-
 
 function ENT:Dud()
 
@@ -539,11 +492,7 @@ function ENT:Dud()
 	timer.Simple(30, function() if IsValid(self) then self:Remove() end end)
 end
 
-
-
-
 function ENT:Think()
-	
 
 	if self.Launched and not self.MissileDetonated then
         
@@ -576,9 +525,6 @@ function ENT:Think()
 	return self.BaseClass.Think(self)
 end
 
-
-
-
 function ENT:PhysicsCollide()
 
 	if self.Launched then
@@ -592,21 +538,9 @@ function ENT:PhysicsCollide()
 
 end
 
-
-
-
-function ENT:OnRemove()
-
-	self.BaseClass.OnRemove(self)
-
-	ACF_ActiveMissiles[self] = nil
-
-end
 ------------------------------------------
 --SPECIAL damage
 ------------------------------------------
-
-
 function ENT:ACF_Activate( Recalc )
 
 	local EmptyMass = self.RoundWeight or self.Mass or 10
@@ -644,10 +578,6 @@ function ENT:ACF_Activate( Recalc )
    
 end
 
-
-
-
-
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 
 function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This function needs to return HitRes
@@ -678,9 +608,14 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 
 end
 
-
-
-
 hook.Add("CanDrive", "acf_missile_CanDrive", function(ply, ent)
     if ent:GetClass() == "acf_missile" then return false end
 end)
+
+function ENT:OnRemove()
+
+	self.BaseClass.OnRemove(self)
+
+	ACF_ActiveMissiles[self] = nil
+
+end

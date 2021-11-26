@@ -29,7 +29,7 @@ ACF_defineGun("40mmGL", { --id
 		propweight = 0.01
 	}
 } )
-if ACF.EnableNewContent then
+
 ACF_defineGun("20mmGL", { --id
 	name = "20mm Grenade Launcher",
 	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak                            using 40mm GL as placeholder bc the 20mm mini is borked",
@@ -62,4 +62,3 @@ ACF_defineGun("40mmGLSingle", { --id
 		propweight = 0.02
 	}
 } )
-end

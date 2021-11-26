@@ -36,57 +36,23 @@ function Round.convert( Crate, PlayerData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
+	--Config for SBC
 	if ACF.Year > 2000 then
 	
+		Data.MinCalMult = 0.23
+		Data.MaxCalMult = 1.0
+		Data.PenModifier = 0.8
+		Data.VelModifier = 1.1
+		Data.Ricochet = 70
 
-	if GunClass == "C" then
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 0.9
-	Data.Ricochet = 70
-	elseif GunClass == "AL" then
-	Data.MinCalMult = 0.28
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 0.9
-	Data.Ricochet = 70
-	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 1.1
-	Data.Ricochet = 70
-	else
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.35
-	Data.VelModifier = 1
-	Data.Ricochet = 70	
-	end
-	
 	else
 
-	if GunClass == "C" then
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1
-	Data.VelModifier = 1
-	Data.Ricochet = 62
-	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.85
-	Data.VelModifier = 1.1
-	Data.Ricochet = 68
-	else
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.35
-	Data.VelModifier = 1
-	Data.Ricochet = 62	
-	end
-	
+		Data.MinCalMult = 0.23
+		Data.MaxCalMult = 1.0
+		Data.PenModifier = 0.85
+		Data.VelModifier = 1.1
+		Data.Ricochet = 68
+
 	end
 	
 	--Used for adapting acf2 apds/apfsds to the new format
@@ -146,32 +112,11 @@ end
 
 function Round.cratetxt( BulletData )
 	
-	--local FrAera = BulletData.FrAera
 	local DData = Round.getDisplayData(BulletData)
-	
-	--fakeent.ACF.Armour = DData.MaxPen or 0
-	--fakepen.Penetration = (DData.MaxPen * FrAera) / ACF.KEtoRHA	
-	--local fakepen = ACF_Kinetic( BulletData.SlugMV*39.37 , BulletData.SlugMass, 9999999 )
-	--local MaxHP = ACF_CalcDamage( fakeent , fakepen , FrAera , 0 )
-	
-	--[[
-	local TotalMass = BulletData.ProjMass + BulletData.PropMass
-	local MassUnit
-	
-	if TotalMass < 0.1 then
-		TotalMass = TotalMass * 1000
-		MassUnit = " g"
-	else
-		MassUnit = " kg"
-	end
-	]]--
-	
 	local str = 
 	{
-		--"Cartridge Mass: ", math.Round(TotalMass, 2), MassUnit, "\n",
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm"
-		--"Max Pen. Damage: ", math.Round(MaxHP.Damage, 1), " HP\n",
 	}
 	
 	return table.concat(str)
@@ -180,28 +125,14 @@ end
 
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 
-	local NormieMult = 1
-	local Mat = Target.ACF.Material or 0
-	if Mat == 1 then
-	NormieMult = 0.8
-	elseif Mat == 2 then
-	NormieMult = 1.5
-	elseif Mat == 3 then
-	NormieMult = 0.05
-	elseif Mat == 5 then
-	NormieMult = 0.7	
-	elseif Mat == 6 then
-	NormieMult=0.5
-	end
+	local MaterialID = Target.ACF.Material or 0
+	NormieMult = ACE.ArmorTypes[ MaterialID ].NormMult or 1
 	
 	Bullet.Normalize = true
 	Bullet.Pos = HitPos
+	
 	local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized() --Guess it doesnt need localization
 	local Speed = Bullet.Flight:Length()
-
-
---	local FlightNormal = Bullet.Flight:GetNormalized() + (HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult * 2
---	local FlightNormal = HitNormal
 
 	Bullet.Flight = FlightNormal * Speed
 	

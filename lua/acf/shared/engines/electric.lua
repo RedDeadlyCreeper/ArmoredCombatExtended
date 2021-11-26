@@ -9,7 +9,7 @@ ACF_DefineEngine( "Electric-Small", {
 	category = "Electric",
 	fuel = "Electric",
 	enginetype = "Electric",
-	weight = 250,
+	weight = 60,
 	torque = 384,
 	flywheelmass = 0.3,
 	idlerpm = 10,
@@ -28,7 +28,7 @@ ACF_DefineEngine( "Electric-Medium", {
 	category = "Electric",
 	fuel = "Electric",
 	enginetype = "Electric",
-	weight = 850,
+	weight = 120,
 	torque = 1152,
 	flywheelmass = 1.5,
 	idlerpm = 10,
@@ -47,7 +47,7 @@ ACF_DefineEngine( "Electric-Large", {
 	category = "Electric",
 	fuel = "Electric",
 	enginetype = "Electric",
-	weight = 1900,
+	weight = 400,
 	torque = 3360,
 	flywheelmass = 11.2,
 	idlerpm = 10,
@@ -67,7 +67,7 @@ ACF_DefineEngine( "Electric-Tiny-NoBatt", {
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 50, --250
+	weight = 10, --250
 	torque = 40,
 	flywheelmass = 0.025,
 	idlerpm = 10,
@@ -87,7 +87,7 @@ ACF_DefineEngine( "Electric-Small-NoBatt", {
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 125, --250
+	weight = 15, --250
 	torque = 384,
 	flywheelmass = 0.3,
 	idlerpm = 10,
@@ -107,7 +107,7 @@ ACF_DefineEngine( "Electric-Medium-NoBatt", {
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 575, --800
+	weight = 25, --800
 	torque = 1152,
 	flywheelmass = 1.5,
 	idlerpm = 10,
@@ -127,7 +127,7 @@ ACF_DefineEngine( "Electric-Large-NoBatt", {
 	fuel = "Electric",
 	enginetype = "Electric",
 	requiresfuel = true,
-	weight = 1500, --1900
+	weight = 60, --1900
 	torque = 3360,
 	flywheelmass = 11.2,
 	idlerpm = 10,
@@ -138,11 +138,12 @@ ACF_DefineEngine( "Electric-Large-NoBatt", {
 	flywheeloverride = 6000
 } )
 
---All of electric engines requires.
---Weight rebalance only applies on induction motors just to have more time to think about it.
+--All of electric engines requires another formula.
 
 --Note: Buff torque for every engine when radiators come, i think radiators will be mandatory for electric stuff
 --Needs another formula for induction motor as well
+
+
 ACF_DefineEngine( "Induction motor, Tiny", {
 	name = "Induction motor, Tiny,Standalone",
 	desc = "A pint-size electric motor, for the lightest of light utility work.  Can power electric razors, desk fans, or your hopes and dreams\n\nElectric motors provide huge amounts of torque, but are very heavy.\n\nStandalone electric motors don't have integrated batteries, saving on weight and volume, but require you to supply your own batteries.",

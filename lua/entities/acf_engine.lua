@@ -117,9 +117,10 @@ function ENT:Initialize()
 	self.Legal = true
 	self.CanUpdate = true
 	self.RequiresFuel = false
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
+	self.LockOnActive = false --used to turn on the engine in case of being lockdown by not legal
 	self.CrewLink = {}
 	self.HasDriver = 0
 	
@@ -450,7 +451,7 @@ function ENT:Think()
 	
 	if ACF.CurTime > self.NextLegalCheck then
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, true, true)
-		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 		self:CheckRopes()
 		self:CheckFuel()
 		self:CalcMassRatio()
@@ -460,6 +461,13 @@ function ENT:Think()
 
 		if not self.Legal and self.Active then
 			self:TriggerInput("Active",0) -- disable if not legal and active
+			self.LockOnActive = true
+		else
+			--turn on the engine back as it was before the lockdown. IK that then engine could turn on when the user turned off by himself after of flagged illegal, i prefer that it turns on though
+			if self.LockOnActive then
+				self.LockOnActive = false
+				self:TriggerInput("Active",1)
+			end
 		end
 	end
 

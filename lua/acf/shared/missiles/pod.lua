@@ -223,7 +223,6 @@ ACF_DefineRack("6xUARRK", {
 		["missile1"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile2"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile3"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
-		["missile3"] = {["offset"] = Vector(-3.075,-.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile4"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile5"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile6"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},

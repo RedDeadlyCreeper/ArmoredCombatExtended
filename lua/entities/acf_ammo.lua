@@ -138,10 +138,13 @@ function ENT:Initialize()
 	self.NextMassUpdate = 0
 	self.Ammo = 0
 	self.IsTwoPiece = false
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
+	self.Active = false
 	
+	--print(self.NextLegalCheck)
+
 	self.Master = {}
 	self.Sequence = 0
 	
@@ -241,18 +244,18 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 
 	local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
 	if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
-	Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
-	CMul = 6
+		Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
+		CMul = 6
 	elseif Type == "HE" then
-	CMul = 3	
+		CMul = 3	
 	end	
 
 	local DetRand = 0	
 
 	if (self.BulletData.Type == "Refill") then
-	DetRand = 0.75
+		DetRand = 0.75
 	else
-	DetRand = math.Rand(0,1) * CMul
+		DetRand = math.Rand(0,1) * CMul
 	end
 	
 	if DetRand >= 0.95 then --Tests if cooks off
@@ -556,10 +559,15 @@ end
 function ENT:TriggerInput( iname, value )
 
 	if (iname == "Active") then
-		if value > 0 and self.Legal then
-			self.Load = true
-			self:FirstLoad()
+		if value > 0 then
+			self.Active = true
+
+			if self.Legal then
+				self.Load = true
+				self:FirstLoad()
+			end
 		else
+			self.Active = false
 			self.Load = false
 		end
 	elseif (iname == "Fuse Length" and value > 0 and (self.BulletData.RoundType == "HE" or self.BulletData.RoundType == "APHE")) then
@@ -581,14 +589,19 @@ end
 function ENT:Think()
 	
 	if ACF.CurTime > self.NextLegalCheck then
-	
+		--print('time passed!')
+
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true)
 
-		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
+
 		self:UpdateOverlayText()
 
 		if not self.Legal then
 			self.Load = false
+		else
+			--if legal, go back to the action
+			if self.Active then self.Load = true end
 		end
 		
 	end
