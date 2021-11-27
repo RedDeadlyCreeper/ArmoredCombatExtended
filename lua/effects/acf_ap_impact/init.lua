@@ -80,7 +80,7 @@
 
 		if SurfaceTr.HitWorld or (IsValid(SurfaceTr.Entity) and self.Ignore[SurfaceTr.Entity:GetClass()]) then
 
-			local Mat = SurfaceTr.MatType print(Mat)
+			local Mat = SurfaceTr.MatType --print(Mat)
 
 			--concrete
 			local SmokeColor = Color(100,100,100,150)

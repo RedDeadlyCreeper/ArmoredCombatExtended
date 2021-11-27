@@ -16,7 +16,7 @@
 	
 	local Sound = Gun:GetNWString( "Sound", "" )
 	local Class = Gun:GetNWString( "Class", "C" )
-	local Caliber = Gun:GetNWInt( "Caliber", 1 ) * 10 print('Caliber: '..Caliber)
+	local Caliber = Gun:GetNWInt( "Caliber", 1 ) * 10 --print('Caliber: '..Caliber)
 
 	--This tends to fail
 	local ClassData = list.Get("ACFClasses").GunClass[Class] or {}
