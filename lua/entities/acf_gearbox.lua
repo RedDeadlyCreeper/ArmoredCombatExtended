@@ -322,7 +322,7 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 	Gearbox.Mass = List.Mobility[Id].weight
 	Gearbox.SwitchTime = List.Mobility[Id].switch
 	Gearbox.MaxTorque = List.Mobility[Id].maxtq
-	Gearbox.Gears = List.Mobility[Id].gears
+	Gearbox.Gears = List.Mobility[Id].gears or 2 --hmmmmmm ok? just if everything fails
 	Gearbox.Dual = List.Mobility[Id].doubleclutch or false
     Gearbox.CVT = List.Mobility[Id].cvt or false
 	Gearbox.DoubleDiff = List.Mobility[Id].doublediff or false

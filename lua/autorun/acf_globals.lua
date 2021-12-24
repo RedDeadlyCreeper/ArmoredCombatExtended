@@ -568,8 +568,9 @@ function ACF_UpdateChecking( )
 	end, function() end)
 end
 
-ACF_UpdateChecking( )
-
+timer.Simple(2, function()
+	ACF_UpdateChecking()
+end )
 
 local function OnInitialSpawn( ply )
 	local Table = {}
