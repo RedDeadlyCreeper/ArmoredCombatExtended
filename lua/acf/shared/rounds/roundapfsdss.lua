@@ -34,7 +34,7 @@ function Round.convert( Crate, PlayerData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
-	elseif GunClass == "SBC" then
+	if GunClass == "SBC" then
 		Data.MinCalMult = 0.17
 		Data.MaxCalMult = 1.0
 		Data.PenModifier = 0.72
