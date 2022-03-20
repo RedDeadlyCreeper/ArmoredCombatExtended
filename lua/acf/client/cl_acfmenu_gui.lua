@@ -20,7 +20,7 @@ function PANEL:Init( )
 	self.WeaponData = ACF.Weapons
 	radarClasses = list.Get("ACFClasses").Radar
 	radars = list.Get( "ACFEnts").Radar
-	
+
 --[[=========================
    Table distribution
 ]]--=========================
@@ -348,20 +348,28 @@ function PANEL:Init( )
 --[[=========================
    Sensor folder
 ]]--=========================
-	local sensors = HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
-	local radar = sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
+	local sensors 		= HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
+	local radar 		= sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
 	local antimissile = radar:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
+	local tracking 	= radar:AddNode("Tracking Radar", "icon16/brick.png")
 	
 	local nods = {}
 	
 	if radarClasses then
-		for k, v in pairs(radarClasses) do  --calls subfolders		
-			nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
+		for k, v in pairs(radarClasses) do  --calls subfolders
+			if v.type == "Tracking-Radar" then
+				nods[k] = tracking:AddNode( v.name or "No Name" , "icon16/brick.png"   )
+			elseif v.type == "Anti-missile" then
+				nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )
+			end
 		end
-    
-		for Type, Ent in pairs(radars) do --calls subfolders content	
-			local curNode = nods[Ent.class]		
+
+		for _, Ent in pairs(radars) do --calls subfolders content	
+
+			local curNode = nods[Ent.class]		--print(Ent.class)
+
 			if curNode then
+
 				local EndNode = curNode:AddNode( Ent.name or "No Name" )
 				EndNode.mytable = Ent
 				
@@ -372,6 +380,7 @@ function PANEL:Init( )
 					EndNode.Icon:SetImage( "icon16/newspaper.png" )
 			end
 		end --end radar folder
+  
 	end
 
 --[[=========================
@@ -874,7 +883,7 @@ function PANEL:AmmoSelect( Blacklist )
 		acfmenupanel.CData.CrateDisplay:SetModel(cratemodel)
 		acfmenupanel:CPanelText("CrateDesc", ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].desc)
 
-		DisEnt = acfmenupanel.CData.CrateDisplay:GetEntity()
+		--DisEnt = acfmenupanel.CData.CrateDisplay:GetEntity()
 
 	end
 
@@ -990,7 +999,8 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 	
 end
 
-function PANEL:AmmoCheckbox(Name, Title, Desc) --Variable name in the table, slider text title, slider decimeals, description text below slider 
+-- Variable name in the table, slider text title, slider decimeals, description text below slider 
+function PANEL:AmmoCheckbox(Name, Title, Desc) 
 
 	if not acfmenupanel["CData"][Name] then
 
@@ -1006,11 +1016,11 @@ function PANEL:AmmoCheckbox(Name, Title, Desc) --Variable name in the table, sli
 		end
 
 		acfmenupanel["CData"][Name].OnChange = function( check, bval )
-		acfmenupanel.AmmoData[Name] = bval
+			acfmenupanel.AmmoData[Name] = bval
 
-		self:UpdateAttribs( {Name, bval} )
+			self:UpdateAttribs( {Name, bval} )
 
-	end
+		end
 
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name] )
 
@@ -1041,22 +1051,26 @@ function PANEL:AmmoStats(RoundLenght, MaxTotalLenght ,MuzzleVel ,MaxPen)
 end
 
 --[[-------------------------------------
-
-    PANEL:CPanelText(Name, Desc)
+    PANEL:CPanelText(Name, Desc, Font)
 	
 	1-Name: Identifier of this text
 	2-Desc: The content of this text
-
+	3-Font: The Font to be used in this text. Leave it empty or nil to use the default one
 ]]---------------------------------------
-function PANEL:CPanelText(Name, Desc)
+function PANEL:CPanelText(Name, Desc, Font)
 
 	if not acfmenupanel["CData"][Name.."_text"] then
 
 		acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
+
 		acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
 		acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )
+
+		if Font then acfmenupanel["CData"][Name.."_text"]:SetFont( Font ) end
+
 		acfmenupanel["CData"][Name.."_text"]:SetWrap(true)
 		acfmenupanel["CData"][Name.."_text"]:SetAutoStretchVertical( true )
+
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
 
 	end
@@ -1066,3 +1080,4 @@ function PANEL:CPanelText(Name, Desc)
 	acfmenupanel["CData"][Name.."_text"]:SizeToContentsY()
 
 end
+

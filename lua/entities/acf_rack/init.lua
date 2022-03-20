@@ -29,7 +29,7 @@ end
 function ENT:GetFireDelay(nextMsl)
 
     if not IsValid(nextMsl) then 
-        self:SetNWFloat(	"Interval",		self.LastValidFireDelay or 1)
+        --self:SetNWFloat(	"Interval",		self.LastValidFireDelay or 1)
         return self.LastValidFireDelay or 1 
     end
 
@@ -51,7 +51,15 @@ function ENT:GetFireDelay(nextMsl)
 end
 
 
+local RackWireDescs = {
+	--Inputs
+	["Reload"]	  = "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
+	["TargetPos"] = "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
 
+	--Outputs
+	["Ready"]	  = "Returns if the rack is ready to fire."
+
+}
 
 function ENT:Initialize()
 
@@ -60,6 +68,7 @@ function ENT:Initialize()
 	self.SpecialHealth = false	    --If true needs a special ACF_Activate function
 	self.SpecialDamage = false   	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
 	self.ReloadTime = 1
+	self.RackStatus = "Empty"
 	self.Ready = true
 	self.Firing = nil
 	self.NextFire = 1
@@ -83,10 +92,10 @@ function ENT:Initialize()
 	
 	self.Inaccuracy 	= 1
 	
-	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",      "Reload",   "Target Pos" },
+	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",      "Reload ("..RackWireDescs["Reload"]..")",   "Target Pos ("..RackWireDescs["TargetPos"]..")" },
                                                      { "NORMAL",    "NORMAL",   "VECTOR"    } )
                                                      
-	self.Outputs = WireLib.CreateSpecialOutputs( self, 	{ "Ready",	"Entity",	"Shots Left",  "Position" },
+	self.Outputs = WireLib.CreateSpecialOutputs( self, 	{ "Ready ("..RackWireDescs["Ready"]..")",	"Entity",	"Shots Left",  "Position" },
 														{ "NORMAL",	"ENTITY",	"NORMAL",      "VECTOR" } )
                                                         
 	Wire_TriggerOutput(self, "Entity", self)
@@ -308,18 +317,21 @@ function ENT:SetStatusString()
 	local Missile = self:PeekMissile()
 	
 	if not IsValid(Missile) then
-	    self:SetNWString("Status", "Empty")
+		self.RackStatus = "Empty"
+	    --self:SetNWString("Status", "Empty")
 		self:GetOverlayText()
 		return
 	else
 	    if not self.Ready then
 		
-	    self:SetNWString("Status", "Loading")
+		self.RackStatus = "Loading"
+	    --self:SetNWString("Status", "Loading")
 		self:GetOverlayText()	
 		return
 		else
 		
-	    self:SetNWString("Status", "Ready")
+		self.RackStatus = "Ready"
+	    --self:SetNWString("Status", "Ready")
 		self:GetOverlayText()
 		return	
 		end
@@ -379,7 +391,7 @@ function ENT:UpdateRefillBonus()
     
     
     self.ReloadMultiplierBonus = math.min(totalBonus, 1)
-    self:SetNWFloat(	"ReloadBonus", self.ReloadMultiplierBonus)
+    --self:SetNWFloat(	"ReloadBonus", self.ReloadMultiplierBonus)
     
     return self.ReloadMultiplierBonus
     
@@ -690,7 +702,7 @@ end
 
 function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
-	if not Owner:CheckLimit("_acf_gun") then return false end
+	if not Owner:CheckLimit("_acf_rack") then return false end
 	
 	local Rack = UpdateRack or ents.Create("acf_rack")
 	local List = ACF.Weapons.Rack
@@ -701,9 +713,9 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	Rack:SetAngles(Angle)
 	Rack:SetPos(Pos)
     
-	if not UpdateRack then 
+	if not UpdateRack then --print("no update")
 		Rack:Spawn()
-		Owner:AddCount("_acf_gun", Rack)
+		Owner:AddCount("_acf_rack", Rack)
 		Owner:AddCleanup( "acfmenu", Rack )
 	end
 	
@@ -716,13 +728,14 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	
 	local gundef = List[Id] or error("Couldn't find the " .. tostring(Id) .. " gun-definition!")
 	
-    Rack.MinCaliber = gundef.mincaliber
-    Rack.MaxCaliber = gundef.maxcaliber
-	Rack.Caliber	= gundef["caliber"]
-	Rack.Model      = gundef["model"]
-	Rack.Mass       = gundef["weight"]
-    Rack.LegalWeight = Rack.Mass
-	Rack.Class      = gundef["gunclass"]
+    Rack.MinCaliber 	= gundef.mincaliber
+    Rack.MaxCaliber 	= gundef.maxcaliber
+	Rack.Caliber		= gundef["caliber"]
+	Rack.Model      	= gundef["model"]
+	Rack.Mass       	= gundef["weight"]
+    Rack.LegalWeight 	= Rack.Mass
+    Rack.name 			= gundef["name"]
+	Rack.Class      	= gundef["gunclass"]
     
 	-- Custom BS for karbine. Per Rack ROF.
 	Rack.PGRoFmod = 1
@@ -755,6 +768,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack.ReloadMultiplier   = ACF_GetRackValue(Id, "reloadmul")
     Rack.WhitelistOnly      = ACF_GetRackValue(Id, "whitelistonly")
     
+    Rack:SetNWString("WireName",Rack.name)
 	Rack:SetNWString( "Class",  Rack.Class )
 	Rack:SetNWString( "ID",     Rack.Id )
 	Rack:SetNWString( "Sound",  Rack.Sound )
@@ -991,11 +1005,11 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 
 	--local name          = self:GetNWString("WireName")   
 	--local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
-	local Ammo          = self:GetNWInt("Ammo")          --Ammo count
-	local FireRate      = self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
+	local Ammo          = table.Count(self.Missiles)--self:GetNWInt("Ammo")          --Ammo count
+	local FireRate      = self.LastValidFireDelay or 1--self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
     local Reload        = self:GetNWFloat("Reload")      --reload time. in secs
-    local ReloadBonus   = self:GetNWFloat("ReloadBonus") --the word explains by itself
-    local Status        = self:GetNWString("Status")     --this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
+    local ReloadBonus   = self.ReloadMultiplierBonus or 0--self:GetNWFloat("ReloadBonus") --the word explains by itself
+    local Status        = self.RackStatus --self:GetNWString("Status")     --this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
 	
 	--if not Status == '' then
 	

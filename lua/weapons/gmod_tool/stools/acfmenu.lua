@@ -75,8 +75,10 @@ function TOOL:LeftClick( trace )
 	
 	if DupeClass then
 		local ArgTable = {}
-			ArgTable[2] = trace.HitNormal:Angle():Up():Angle()
-			ArgTable[1] = trace.HitPos + trace.HitNormal*33
+			ArgTable[2] = trace.HitNormal:Angle():Up():Angle() 
+			ArgTable[1] = trace.HitPos + trace.HitNormal*50
+			debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
+			debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
 			
 		local ArgList = list.Get("ACFCvars")
 		

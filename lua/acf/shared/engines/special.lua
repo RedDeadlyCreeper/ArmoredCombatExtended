@@ -14,8 +14,6 @@ ACF_DefineEngine( "0.9L-I2", {
 	torque = 116,
 	flywheelmass = 0.085,
 	idlerpm = 750,
-	peakminrpm = 3125,
-	peakmaxrpm = 5100,
 	limitrpm = 6000
 } )
 
@@ -33,8 +31,6 @@ ACF_DefineEngine( "1.0L-I4", {
 	torque = 68,
 	flywheelmass = 0.031,
 	idlerpm = 1200,
-	peakminrpm = 7500,
-	peakmaxrpm = 11500,
 	limitrpm = 12000
 } )
 
@@ -51,8 +47,6 @@ ACF_DefineEngine( "1.8L-V4", {
 	torque = 124.8,
 	flywheelmass = 0.04,
 	idlerpm = 900,
-	peakminrpm = 4600,
-	peakmaxrpm = 7000,
 	limitrpm = 7500
 } )
 
@@ -69,8 +63,6 @@ ACF_DefineEngine( "2.4L-V6", {
 	torque = 172,
 	flywheelmass = 0.075,
 	idlerpm = 950,
-	peakminrpm = 4500,
-	peakmaxrpm = 7100,
 	limitrpm = 8000
 } )
 
@@ -87,8 +79,6 @@ ACF_DefineEngine( "1.9L-I4", {
 	torque = 176,
 	flywheelmass = 0.06,
 	idlerpm = 950,
-	peakminrpm = 5200,
-	peakmaxrpm = 8500,
 	limitrpm = 9000
 } )
 
@@ -105,8 +95,6 @@ ACF_DefineEngine( "2.6L-Wankel", {
 	torque = 250,
 	flywheelmass = 0.11,
 	idlerpm = 1200,
-	peakminrpm = 4500,
-	peakmaxrpm = 9000,
 	limitrpm = 9500
 } )
 
@@ -123,8 +111,6 @@ ACF_DefineEngine( "2.9-V8", {
 	torque = 200,
 	flywheelmass = 0.075,
 	idlerpm = 1000,
-	peakminrpm = 5500,
-	peakmaxrpm = 9000,
 	limitrpm = 10000
 } )
 
@@ -141,8 +127,6 @@ ACF_DefineEngine( "3.8-I6", {
 	torque = 224,
 	flywheelmass = 0.1,
 	idlerpm = 1100,
-	peakminrpm = 5200,
-	peakmaxrpm = 8500,
 	limitrpm = 9000
 } )
 
@@ -159,8 +143,6 @@ ACF_DefineEngine( "5.3-V10", {
 	requiresfuel = true,
 	flywheelmass = 0.15,
 	idlerpm = 1100,
-	peakminrpm = 5750,
-	peakmaxrpm = 8000,
 	limitrpm = 9000
 } )
 
@@ -177,8 +159,6 @@ ACF_DefineEngine( "7.2-V8", {
 	torque = 340,
 	flywheelmass = 0.15,
 	idlerpm = 1000,
-	peakminrpm = 5000,
-	peakmaxrpm = 8000,
 	limitrpm = 8500
 } )
 
@@ -196,8 +176,6 @@ ACF_DefineEngine( "3.0-V12", {
 	torque = 248,
 	flywheelmass = 0.1,
 	idlerpm = 1200,
-	peakminrpm = 6875,
-	peakmaxrpm = 11000,
 	limitrpm = 12500
 } )
 

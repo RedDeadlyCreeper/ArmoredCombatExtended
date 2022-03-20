@@ -3,10 +3,10 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 459           --ACE current version
+ACF.Version = 460           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
-ACF.Year = 2021      --Current Year
+ACF.Year = 2022      --Current Year
 
 print('[ACE | INFO]- loading ACE. . .')
 
@@ -22,12 +22,14 @@ ACF.IdRounds = {}	--Lookup tables so i can get rounds classes from clientside wi
        ServerSide Convars 
 ]]------------------------------
 
-CreateConVar('sbox_max_acf_gun', 24)           -- Gun limit
-CreateConVar('sbox_max_acf_rapidgun', 4)       -- Guns like RACs, MGs, and ACs
-CreateConVar('sbox_max_acf_largegun', 2)       -- Guns with a caliber above 100mm
-CreateConVar('sbox_max_acf_smokelauncher', 20) -- smoke launcher limit
-CreateConVar('sbox_max_acf_ammo', 50)          -- ammo limit
-CreateConVar('sbox_max_acf_misc', 50)          -- misc ents limit
+CreateConVar('sbox_max_acf_gun', 24)			-- Gun limit
+CreateConVar('sbox_max_acf_rapidgun', 4)		-- Guns like RACs, MGs, and ACs
+CreateConVar('sbox_max_acf_largegun', 2)		-- Guns with a caliber above 100mm
+CreateConVar('sbox_max_acf_smokelauncher', 20)	-- smoke launcher limit
+CreateConVar('sbox_max_acf_ammo', 50)			-- ammo limit
+CreateConVar('sbox_max_acf_misc', 50)			-- misc ents limit
+CreateConVar('sbox_max_acf_rack', 12) 			-- Racks limit
+--CreateConVar('sbox_max_acf_mines', 5)			-- mines. Experimental
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)       -- 0=any, 1=owned
 ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )         -- Should flares light players and NPCs on fire?  Does not affect godded players.
@@ -59,7 +61,7 @@ CreateConVar("acf_gunfire", 1, FCVAR_ARCHIVE)
 --CreateConVar("acf_year", ACF.Year, FCVAR_ARCHIVE)
 
 -- Debris
-CreateConVar("acf_debris_lifetime", 15, FCVAR_ARCHIVE)
+CreateConVar("acf_debris_lifetime", 30, FCVAR_ARCHIVE)
 CreateConVar("acf_debris_children", 1, FCVAR_ARCHIVE)
 
 -- Spalling
@@ -104,25 +106,24 @@ ACF.Spalling = GetConVar('acf_spalling'):GetInt()
 ACF.SpallMult = GetConVar('acf_spalling_multipler'):GetInt()
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 1                            --magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 1.5                             --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 --ACF Damage Multipler.
 
-ACF.APDamageMult = 2            --AP Damage Multipler             -1.1
-ACF.APCDamageMult = 1.5         --APC Damage Multipler           -1.1
-ACF.APBCDamageMult = 1.5        --APBC Damage Multipler           -1.05
-ACF.APCBCDamageMult = 1.0       --APCBC Damage Multipler           -1.05
-ACF.APHEDamageMult = 1.0        --APHE Damage Multipler          
-ACF.APDSDamageMult = 1.5        --APDS Damage Multipler          
-ACF.APDSSDamageMult = 1.55      --APDSS Damage Multipler
-ACF.HVAPDamageMult = 1.65       --HVAP/APCR Damage Multipler
-ACF.FLDamageMult = 1.4          --FL Damage Multipler
-ACF.HEATDamageMult = 2          --HEAT Damage Multipler
-ACF.HEDamageMult = 2            --HE Damage Multipler
-ACF.HESHDamageMult = 1.2        --HESH Damage Multipler
-ACF.HPDamageMult = 8            --HP Damage Multipler
+ACF.APDamageMult 		= 2            --AP Damage Multipler             -1.1
+ACF.APCDamageMult 		= 1.5         --APC Damage Multipler           -1.1
+ACF.APBCDamageMult 		= 1.5        --APBC Damage Multipler           -1.05
+ACF.APCBCDamageMult 	= 1.0       --APCBC Damage Multipler           -1.05
+ACF.APHEDamageMult 		= 1.5        --APHE Damage Multipler          
+ACF.APDSDamageMult 		= 1.5        --APDS Damage Multipler          
+ACF.APDSSDamageMult 	= 1.55      --APDSS Damage Multipler
+ACF.HVAPDamageMult 		= 1.65       --HVAP/APCR Damage Multipler
+ACF.FLDamageMult 		= 1.4          --FL Damage Multipler
+ACF.HEATDamageMult 		= 2          --HEAT Damage Multipler
+ACF.HEDamageMult 		= 2            --HE Damage Multipler
+ACF.HESHDamageMult 		= 1.2        --HESH Damage Multipler
+ACF.HPDamageMult 		= 8            --HP Damage Multipler
 
 --ACF HE
 
@@ -179,39 +180,100 @@ ACF.GunInaccuracyBias = 2            -- Higher numbers make shots more likely to
 ACF.EnableDefaultDP = true --GetConVar('acf_enable_dp'):GetBool()           -- Enable the inbuilt damage protection system.
 ACF.EnableKillicons = true           -- Enable killicons overwriting.
 
---Fuel Density
-ACF.FuelDensity = { --kg/liter
-	Diesel = 0.832,  
-	Petrol = 0.745,
-	Electric = 3.1 -- li-ion --WAS 3.89
-}
+--Calculates a position along a catmull-rom spline (as defined on https://www.mvps.org/directx/articles/catmull/)
+--This is used for calculating engine torque curves
+function ACF_CalcCurve(Points, Pos)
+	if #Points < 3 then
+		return 0
+	end
 
-ACF.Efficiency = { --how efficient various engine types are, higher is worse
-	GenericPetrol = 0.304, --kg per kw hr
-	GenericDiesel = 0.243, --up to 0.274
-	Turbine = 0.375, -- previously 0.231
-	Wankel = 0.335,
-	Radial = 0.4, -- 0.38 to 0.53
-	Electric = 0.9 --percent efficiency converting chemical kw into mechanical kw WAS 0.85
-}
+	local T = 0
+	if Pos <= 0 then
+		T = 0
+	elseif Pos >= 1 then
+		T = 1
+	else
+		T = Pos * (#Points - 1)
+		T = T % 1
+	end
 
-ACF.TorqueScale = { --how fast damage drops torque, lower loses more % torque
-	GenericPetrol = 0.25,
-	GenericDiesel = 0.35,
-	Turbine = 0.2,
-	Wankel = 0.2,
-	Radial = 0.3,
-	Electric = 0.3 --WAS 0.5
-}
+	local CurrentPoint = math.floor(Pos * (#Points - 1) + 1)
+	local P0 = Points[math.Clamp(CurrentPoint - 1, 1, #Points - 2)]
+	local P1 = Points[math.Clamp(CurrentPoint, 1, #Points - 1)]
+	local P2 = Points[math.Clamp(CurrentPoint + 1, 2, #Points)]
+	local P3 = Points[math.Clamp(CurrentPoint + 2, 3, #Points)]
 
-ACF.EngineHPMult = { --health multiplier for engines
-	GenericPetrol = 0.2,
-	GenericDiesel = 0.5,
-	Turbine = 0.125,
-	Wankel = 0.125,
-	Radial = 0.3,
-	Electric = 0.75
-}
+	return 0.5 * ((2 * P1) +
+		(P2 - P0) * T +
+		(2 * P0 - 5 * P1 + 4 * P2 - P3) * T ^ 2 +
+		(3 * P1 - P0 - 3 * P2 + P3) * T ^ 3)
+end
+
+--Calculates the performance characteristics of an engine, given a torque curve, max torque (in nm), idle, and redline rpm
+function ACF_CalcEnginePerformanceData(curve, maxTq, idle, redline)
+	local peakTq = 0
+	local peakTqRPM
+	local peakPower = 0
+	local powerbandMinRPM
+	local powerbandMaxRPM
+	local powerTable = {} --Power at each point on the curve for use in powerband calc
+	local powerbandTable = {} --(torque + power) / 2 at each point on the curve
+	local powerbandPeak = 0 --Highest value of (torque + power) / 2
+	local res = 32 --Iterations for use in calculating the curve, higher is more accurate
+	local curveFactor = (redline - idle) / redline --Torque curves all start after idle RPM is reached
+
+	--Calculate peak torque/power rpm.
+	for i = 0, res do
+		local rpm = i / res * redline
+		local perc = (rpm - idle) / curveFactor / redline
+		local curTq = ACF_CalcCurve(curve, perc)
+		local power = maxTq * curTq * rpm / 9548.8
+		powerTable[i] = power
+		if power > peakPower then
+			peakPower = power
+			peakPowerRPM = rpm
+		end
+
+		if math.Clamp(curTq, 0, 1) > peakTq then
+			peakTq = curTq
+			peakTqRPM = rpm
+		end
+	end
+
+	--Loop two, to calculate the powerband's peak.
+	for i = 0, res do
+		local power = powerTable[i] / peakPower
+		local tq = ACF_CalcCurve(curve, i / res)
+		local powerband = power + tq --This seems like the best way I was given to calculate the powerband range - maybe improve eventually?
+		powerbandTable[i] = powerband
+
+		if powerband > powerbandPeak then
+			powerbandPeak = powerband
+		end
+	end
+
+	--Loop three, to actually figure out where the bounds of the powerband are (within 10% of max).
+	for i = 0, res do
+		local powerband = powerbandTable[i] / powerbandPeak
+		local rpm = i / res * redline
+
+		if powerband > 0.9 and not powerbandMinRPM then
+			powerbandMinRPM = rpm
+		end
+
+		if (powerbandMinRPM and powerband < 0.9 and not powerbandMaxRPM) or (i == res and not powerbandMaxRPM) then
+			powerbandMaxRPM = rpm
+		end
+	end
+
+	return {
+		peakTqRPM = peakTqRPM,
+		peakPower = peakPower,
+		peakPowerRPM = peakPowerRPM,
+		powerbandMinRPM = powerbandMinRPM,
+		powerbandMaxRPM = powerbandMaxRPM
+	}
+end
 
 --[[
     ACE translations section
@@ -233,8 +295,7 @@ AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 AddCSLuaFile( "acf/client/cl_extension.lua" )
 
-include("acf/shared/acfloader.lua")
-include("acf/shared/armor/ace_material.lua")
+include("acf/shared/ace_loader.lua")
 include("autorun/acf_missile/folder.lua")
 
 if SERVER then
@@ -242,6 +303,7 @@ if SERVER then
 	util.AddNetworkString( "ACF_KilledByACF" )
 	util.AddNetworkString( "ACF_RenderDamage" )
 	util.AddNetworkString( "ACF_Notify" )
+	util.AddNetworkString( "ACE_ArmorSummary" )
 
 	include("acf/server/sv_acfbase.lua")
 	include("acf/server/sv_acfdamage.lua")
@@ -290,12 +352,14 @@ elseif CLIENT then
 end
 
 
+include("acf/shared/ace_sound_loader.lua")
+AddCSLuaFile( "acf/shared/ace_sound_loader.lua" )
 
 --[[--------------------------------------
     RoundType Loader
 ]]----------------------------------------
 
-include("acf/shared/rounds/roundfunctions.lua")
+include("acf/shared/rounds/ace_roundfunctions.lua")
 
 include("acf/shared/rounds/roundap.lua")
 include("acf/shared/rounds/roundhe.lua")
@@ -345,12 +409,12 @@ if ACF.Year > 1989 then
 end
 
 
-ACF.Weapons = list.Get("ACFEnts")
-ACF.Classes = list.Get("ACFClasses")
-ACF.RoundTypes = list.Get("ACFRoundTypes")
-ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
-
-
+ACF.Weapons 	= list.Get("ACFEnts")
+ACF.Classes 	= list.Get("ACFClasses")
+ACF.RoundTypes 	= list.Get("ACFRoundTypes")
+ACF.IdRounds 	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
+ACE.Armors 		= list.Get("ACE_MaterialTypes")
+ACE.GSounds 	= list.Get("ACESounds")
 --[[--------------------------------------
             Particles loader
 ]]----------------------------------------
@@ -433,15 +497,28 @@ function ACF_Kinetic( Speed , Mass, LimitVel )
 	return Energy
 end
 
+--Convert old numeric IDs to the new string IDs
+local BackCompMat = {
+	"RHA",
+	"CHA",
+	"Cer",
+	"Rub",
+	"ERA",
+	"Alum",
+	"Texto"
+}
 
 -- Global Ratio Setting Function
 function ACF_CalcMassRatio( obj, pwr )
 	if not IsValid(obj) then return end
-	local Mass = 0
-	local PhysMass = 0
-	local power = 0
-	local fuel = 0
-	
+	local Mass 			= 0
+	local PhysMass 		= 0
+	local power 		= 0
+	local fuel 			= 0
+	local Compositions 	= {}
+	local MatSums 		= {}
+	local PercentMat    = {}
+
 	-- find the physical parent highest up the chain
 	local Parent = ACF_GetPhysicalParent(obj)
 	
@@ -459,7 +536,7 @@ function ACF_CalcMassRatio( obj, pwr )
 	for k, v in pairs( AllEnts ) do
 		
 		if IsValid( v ) then
-		
+
 			if v:GetClass() == "acf_engine" then
 				power = power + (v.peakkw * 1.34)
 				fuel = v.RequiresFuel and 2 or fuel
@@ -470,25 +547,62 @@ function ACF_CalcMassRatio( obj, pwr )
 			local phys = v:GetPhysicsObject()
 			if IsValid( phys ) then		
 			
-				Mass = Mass + phys:GetMass()
+				Mass = Mass + phys:GetMass() --print("total mass of contraption: "..Mass)
 				
 				if PhysEnts[ v ] then
 					PhysMass = PhysMass + phys:GetMass()
 				end
 				
 			end
-		
+
+			if pwr then
+				local PhysObj = v:GetPhysicsObject()
+
+				if IsValid(PhysObj) then
+
+					local material 			= v.ACF and v.ACF.Material or "RHA"
+
+					--ACE doesnt update their material stats actively, so we need to update it manually here.
+					if not isstring(material) then
+						local Mat_ID = material + 1
+						material = BackCompMat[Mat_ID]
+					end
+
+					Compositions[material] 	= Compositions[material] or {}
+
+					table.insert(Compositions[material], PhysObj:GetMass() )
+
+				end
+			end
+
 		end
-		
 	end
-	
+
+	--Build the ratios here
 	for k, v in pairs( AllEnts ) do
-		v.acfphystotal = PhysMass
-		v.acftotal = Mass
-		v.acflastupdatemass = ACF.CurTime
+		v.acfphystotal 		= PhysMass
+		v.acftotal 			= Mass
+		v.acflastupdatemass = ACF.CurTime	
+	end 
+
+	if pwr then
+		--Get mass Material composition here
+		for material, tablemass in pairs(Compositions) do
+
+			MatSums[material] = 0
+
+			for i,mass in pairs(tablemass) do
+
+				MatSums[material] = MatSums[material] + mass 
+
+			end 
+
+			--Gets the actual material percent of the contraption
+			PercentMat[material] = ( MatSums[material] / obj.acftotal ) or 0
+
+		end
 	end
-	
-	if pwr then return { Power = power, Fuel = fuel } end
+	if pwr then return { Power = power, Fuel = fuel, MaterialPercent = PercentMat, MaterialMass = MatSums } end
 end
 
 function ACF_CVarChangeCallback(CVar, Prev, New)

@@ -255,24 +255,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	---------------------------Ammo Capacity-------------------------------------
-	
-	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
-	
-	local plur = 'Contains '..Cap..' round'
-	
-	if Cap > 1 then
-	    plur = 'Contains '..Cap..' rounds'
-	end
-	
-	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
-	
-	if TwoPiece then	
-		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
-	end
-	
-	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
-	
-	-------------------------------------------------------------------------------	
+	ACE_AmmoCapacityDisplay( Data )
+	-------------------------------------------------------------------------------
 	
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	

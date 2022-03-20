@@ -15,8 +15,6 @@ ACF_DefineEngine( "1.9L-V4", {
 	torque = 165,
 	flywheelmass = 0.3,
 	idlerpm = 650,
-	peakminrpm = 950,
-	peakmaxrpm = 3000,
 	limitrpm = 4000
 } )
 
@@ -32,7 +30,5 @@ ACF_DefineEngine( "3.3L-V4", {
 	torque = 480,
 	flywheelmass = 1.05,
 	idlerpm = 600,
-	peakminrpm = 1050,
-	peakmaxrpm = 3100,
 	limitrpm = 3900
 } )

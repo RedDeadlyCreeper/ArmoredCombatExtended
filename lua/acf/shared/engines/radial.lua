@@ -13,8 +13,6 @@ ACF_DefineEngine( "3.8-R7", {
 	torque = 310,
 	flywheelmass = 0.22,
 	idlerpm = 700,
-	peakminrpm = 2600,
-	peakmaxrpm = 4350,
 	limitrpm = 4800
 } )
 
@@ -30,8 +28,6 @@ ACF_DefineEngine( "11.0-R7", {
 	torque = 560,
 	flywheelmass = 0.45,
 	idlerpm = 600,
-	peakminrpm = 2300,
-	peakmaxrpm = 3850,
 	limitrpm = 4400
 } )
 
@@ -47,8 +43,6 @@ ACF_DefineEngine( "24.0-R7", {
 	torque = 1615,
 	flywheelmass = 3.4,
 	idlerpm = 750,
-	peakminrpm = 1900,
-	peakmaxrpm = 3150,
 	limitrpm = 3500
 } )
 
@@ -65,7 +59,5 @@ ACF_DefineEngine( "8.0-R7", {
 	torque = 800,
 	flywheelmass = 1.0,
 	idlerpm = 400,
-	peakminrpm = 2200,
-	peakmaxrpm = 2500,
 	limitrpm = 2800
 } )

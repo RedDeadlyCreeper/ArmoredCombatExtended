@@ -450,3 +450,18 @@ r100
 -Added another electric rebalance.
 -Fixed null entity from sound tool if you despawn the vehicle quickly.
 -Disabled flare burn out sound.
+
+*r135
+-Added new torque curves. In collaboration with Twisted, Cheezus and freedom
+-Reworked armor system. Features new armor selection providing more information about the chosen material. Also no more numbers when looking using armor tool
+-Redone R armor tool to be more modern than old one. Provides material composition of a contraption. Future additions are expected.
+-rebalanced AAM missiles. They will have same cone but different agility. AIM120 not insta turn anymore.
+-improved HE when applying damage.
+-Anti-missile guidance is a thing now.
+-GLATGM is interceptable via radar and destroyable
+-tracking radar is in ace menu. Added overlay
+-Added multi-sound per gun system. Allowing more realistic fire sounds. Experimental
+-HE push and recoil will be more consistent with parented weight. 
+-Alot of new changes, among new overlays and new info displayed. Quality of life moment
+-another electric engines rebalance. Removed induction engines (replaced by closest counterparts)
+-more optimizations done to code

@@ -428,24 +428,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	---------------------------Ammo Capacity-------------------------------------
-	
-	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
-	
-	local plur = 'Contains '..Cap..' round'
-	
-	if Cap > 1 then
-	    plur = 'Contains '..Cap..' rounds'
-	end
-	
-	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
-	
-	if TwoPiece then	
-		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
-	end
-	
-	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
-	
-	-------------------------------------------------------------------------------	
+	ACE_AmmoCapacityDisplay( Data )
+	-------------------------------------------------------------------------------
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength+(Data.Caliber*3.9),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle(1st)", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)

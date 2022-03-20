@@ -15,8 +15,6 @@ ACF_DefineEngine( "4.6-V12", {
 	torque = 235,
 	flywheelmass = 0.2,
 	idlerpm = 1000,
-	peakminrpm = 4500,
-	peakmaxrpm = 7500,
 	limitrpm = 8000
 } )
 
@@ -32,8 +30,6 @@ ACF_DefineEngine( "7.0-V12", {
 	torque = 300,
 	flywheelmass = 0.45,
 	idlerpm = 800,
-	peakminrpm = 3600,
-	peakmaxrpm = 6000,
 	limitrpm = 7500
 } )
 
@@ -49,8 +45,6 @@ ACF_DefineEngine( "23.0-V12", {
 	torque = 1925,
 	flywheelmass = 5,
 	idlerpm = 600,
-	peakminrpm = 1500,
-	peakmaxrpm = 3000,
 	limitrpm = 3250
 } )
 
@@ -66,8 +60,6 @@ ACF_DefineEngine( "25.0-V12", {
 	torque = 2050,
 	flywheelmass = 5.2,
 	idlerpm = 500,
-	peakminrpm = 1800,
-	peakmaxrpm = 3900,
 	limitrpm = 5000
 } )
 
@@ -85,8 +77,6 @@ ACF_DefineEngine( "4.0-V12", {
 	torque = 375,
 	flywheelmass = 0.475,
 	idlerpm = 650,
-	peakminrpm = 1200,
-	peakmaxrpm = 3800,
 	limitrpm = 4000
 } )
 
@@ -102,8 +92,6 @@ ACF_DefineEngine( "9.2-V12", {
 	torque = 750,
 	flywheelmass = 2.5,
 	idlerpm = 675,
-	peakminrpm = 1100,
-	peakmaxrpm = 3300,
 	limitrpm = 3500
 } )
 
@@ -119,8 +107,6 @@ ACF_DefineEngine( "21.0-V12", {
 	torque = 3560,
 	flywheelmass = 7,
 	idlerpm = 400,
-	peakminrpm = 500,
-	peakmaxrpm = 1500,
 	limitrpm = 2500
 } )
 
@@ -136,8 +122,6 @@ ACF_DefineEngine( "13.0-V12", {
 	torque = 660,
 	flywheelmass = 1,
 	idlerpm = 700,
-	peakminrpm = 2500,
-	peakmaxrpm = 4000,
 	limitrpm = 4250
 } )
 
@@ -150,11 +134,9 @@ ACF_DefineEngine( "16.5-V12", {
 	fuel = "Diesel",
 	enginetype = "GenericDiesel",
 	weight = 1050,
-	torque = 870,
+	torque = 1100,
 	flywheelmass = 2,
 	idlerpm = 675,
-	peakminrpm = 1100,
-	peakmaxrpm = 3300,
 	limitrpm = 3500
 } )
 
@@ -170,8 +152,6 @@ ACF_DefineEngine( "24.8-V12", {
 	torque = 3600,
 	flywheelmass = 7,
 	idlerpm = 500,
-	peakminrpm = 650,
-	peakmaxrpm = 1900,
 	limitrpm = 2800
 } )
 
@@ -184,10 +164,8 @@ ACF_DefineEngine( "27.0-V12", {
 	fuel = "Diesel",
 	enginetype = "GenericDiesel",
 	weight = 3150,
-	torque = 4073,
+	torque = 4420,
 	flywheelmass = 6.6,
 	idlerpm = 500,
-	peakminrpm = 650,
-	peakmaxrpm = 2100,
 	limitrpm = 2800
 } )

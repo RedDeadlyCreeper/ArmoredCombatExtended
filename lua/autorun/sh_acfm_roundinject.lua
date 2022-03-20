@@ -123,6 +123,8 @@ function ACFM_ModifyCrateTextFuncs()
 				
 				local str = { origCrateTxt }
 				
+				local Type = IsValid(crate) and crate.RoundId or data.RoundId
+
 				local guidance  = IsValid(crate) and crate.RoundData7 or data.Data7
 				local fuse      = IsValid(crate) and crate.RoundData8 or data.Data8
 				
@@ -132,7 +134,7 @@ function ACFM_ModifyCrateTextFuncs()
 						str[#str+1] = "\n\n"
 						str[#str+1] = guidance.Name
 						str[#str+1] = " guidance\n("
-						str[#str+1] = configConcat(guidance:GetDisplayConfig(), ", ")
+						str[#str+1] = configConcat(guidance:GetDisplayConfig(Type), ", ")
 						str[#str+1] = ")"
 					end
 				end

@@ -35,20 +35,20 @@ function Round.convert( Crate, PlayerData )
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
-	Data.ProjMass = Data.FrAera * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
-	Data.ShovePower = 0.2
-	Data.PenAera = Data.FrAera^ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)*1.2
-	Data.LimitVel = 750										--Most efficient penetration speed in m/s
-	Data.KETransfert = 0.3									--Kinetic energy transfert to the target for movement purposes
-	Data.Ricochet = 53										--Base ricochet angle
-	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
+	Data.ProjMass 		= Data.FrAera * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
+	Data.ShovePower 	= 0.2
+	Data.PenAera 		= Data.FrAera^ACF.PenAreaMod
+	Data.DragCoef 		= ((Data.FrAera/10000)/Data.ProjMass)*1.2
+	Data.LimitVel 		= 750										--Most efficient penetration speed in m/s
+	Data.KETransfert 	= 0.3										--Kinetic energy transfert to the target for movement purposes
+	Data.Ricochet 		= 53										--Base ricochet angle
+	Data.MuzzleVel 		= ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	
 	Data.BoomPower = Data.PropMass
 
 	if SERVER then --Only the crates need this part
-		ServerData.Id = PlayerData.Id
-		ServerData.Type = PlayerData.Type
+		ServerData.Id 		= PlayerData.Id
+		ServerData.Type 	= PlayerData.Type
 		return table.Merge(Data,ServerData)
 	end
 	
@@ -62,8 +62,8 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+	local Energy 	= ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+	GUIData.MaxPen 	= (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
 	return GUIData
 end
 
@@ -207,10 +207,11 @@ end
 function Round.guiupdate( Panel, Table )
 	
 	local PlayerData = {}
-		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "AP"										--Hardcoded, match ACFRoundTypes table index
-		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
-		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
+		PlayerData.Id 			= acfmenupanel.AmmoData.Data.id				-- AmmoSelect GUI
+		PlayerData.Type 		= "AP"										-- Hardcoded, match ACFRoundTypes table index
+		PlayerData.PropLength 	= acfmenupanel.AmmoData.PropLength	-- PropLength slider
+		PlayerData.ProjLength 	= acfmenupanel.AmmoData.ProjLength	-- ProjLength slider
+
 		local Tracer = 0
 		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
 		PlayerData.Data10 = Tracer				--Tracer
@@ -223,23 +224,9 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )		--And Data4 total round mass
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
-	---------------------------Ammo Capacity-------------------------------------
+	---------------------------Ammo Capacity---------------------------------------
 	
-	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
-	
-	local plur = 'Contains '..Cap..' round'
-	
-	if Cap > 1 then
-	    plur = 'Contains '..Cap..' rounds'
-	end
-	
-	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
-	
-	if TwoPiece then	
-		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
-	end
-	
-	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
+	ACE_AmmoCapacityDisplay( Data )
 	
 	-------------------------------------------------------------------------------
 	

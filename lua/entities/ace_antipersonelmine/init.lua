@@ -24,58 +24,62 @@ end
 
 function ENT:Think()
 
-		self.TimeVar = self.TimeVar + 1
+	self.TimeVar = self.TimeVar + 1
 
-			if self.TimeVar >= 4 then
-				self.TimeVar = 0
+	if self.TimeVar >= 4 then
+		self.TimeVar = 0
 
-				if self.MineState == 0 then --Mine not buried in ground. Mine will look for ground.
+		--Mine not buried in ground. Mine will look for ground.
+		if self.MineState == 0 then 
 
-					local groundRanger = util.TraceLine( {
-						start = self:GetPos() + Vector(0,0,20),
-						endpos = self:GetPos() + Vector(0,0,-50),
-						collisiongroup = COLLISION_GROUP_WORLD,
-						filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
-					} )	
+			local groundRanger = util.TraceLine( {
+				start = self:GetPos() + Vector(0,0,20),
+				endpos = self:GetPos() + Vector(0,0,-50),
+				collisiongroup = COLLISION_GROUP_WORLD,
+				filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
+			} )	
 					
-					if groundRanger.Hit and groundRanger.HitWorld then
-					self:SetPos(groundRanger.HitPos+Vector(0,0,-1.7))
-					self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
-					self.MineState = 1
-					self.phys:EnableMotion(false)
-					end
-					--print(groundRanger.Hit)
-					
-				elseif self.MineState == 1 then --Mine activated and searching for enemy
+			if groundRanger.Hit and groundRanger.HitWorld then
 
-					local triggerRanger = util.TraceHull( {
-						start = self:GetPos() + Vector(0,0,52),
-						endpos = self:GetPos() + Vector(0,0,87.1),
-						ignoreworld  = true,
-						mins = Vector( -60, -60, -20 ),
-						maxs = Vector( 60, 60, 20 ),
-						mask = MASK_SHOT_HULL
-					} )
+				self:SetPos(groundRanger.HitPos+Vector(0,0,-1.7))
+				self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
+				self.MineState = 1
+				self.phys:EnableMotion(false)
+			end
+			--print(groundRanger.Hit)
 
-					if triggerRanger.Hit then
-						self:SetPos(self:GetPos() + self:GetUp()*10)
-						ACF_HE( self:GetPos() , Vector(0,0,1) , 2 , 25 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+		--Mine activated and searching for enemy
+		elseif self.MineState == 1 then 
 
-						local Flash = EffectData()
-						Flash:SetOrigin( self:GetPos() + self:GetUp()*10 )
-						Flash:SetNormal( Vector(0,0,-1) )
-						Flash:SetRadius( 2 )
-						util.Effect( "ACF_Scaled_Explosion", Flash )
+			local triggerRanger = util.TraceHull( {
+				start = self:GetPos() + Vector(0,0,52),
+				endpos = self:GetPos() + Vector(0,0,87.1),
+				ignoreworld  = true,
+				mins = Vector( -60, -60, -20 ),
+				maxs = Vector( 60, 60, 20 ),
+				mask = MASK_SHOT_HULL
+			} )
+
+			if triggerRanger.Hit then
+
+				self:SetPos(self:GetPos() + self:GetUp()*10)
+				self:Remove()
+
+				local HEWeight=2	
+				local Radius = (HEWeight)^0.33*8*39.37
+
+				ACF_HE( self:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+
+				local Flash = EffectData()
+					Flash:SetOrigin( self:GetPos() + self:GetUp()*10 )
+					Flash:SetNormal( Vector(0,0,-1) )
+					Flash:SetRadius( Radius )
+				util.Effect( "ACF_Scaled_Explosion", Flash )
 				
-						self:Remove()
-					end
-				end
-
-else
-
-
-end
-
+				
+			end
+		end
+	end
 end
 
 

@@ -13,8 +13,6 @@ ACF_DefineEngine( "1.4-B4", {
 	torque = 105,
 	flywheelmass = 0.06,
 	idlerpm = 600,
-	peakminrpm = 2600,
-	peakmaxrpm = 4200,
 	limitrpm = 4500
 } )
 
@@ -30,8 +28,6 @@ ACF_DefineEngine( "2.1-B4", {
 	torque = 180,
 	flywheelmass = 0.15,
 	idlerpm = 700,
-	peakminrpm = 3000,
-	peakmaxrpm = 4800,
 	limitrpm = 5000
 } )
 
@@ -47,8 +43,6 @@ ACF_DefineEngine( "3.2-B4", {
 	torque = 252,
 	flywheelmass = 0.15,
 	idlerpm = 900,
-	peakminrpm = 3400,
-	peakmaxrpm = 5500,
 	limitrpm = 6500
 } )
 
@@ -64,7 +58,5 @@ ACF_DefineEngine( "2.4-B4", {
 	torque = 248,
 	flywheelmass = 0.4,
 	idlerpm = 550,
-	peakminrpm = 1250,
-	peakmaxrpm = 2650,
 	limitrpm = 2800
 } )

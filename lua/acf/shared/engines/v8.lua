@@ -15,8 +15,6 @@ ACF_DefineEngine( "5.7-V8", {
 	torque = 320,
 	flywheelmass = 0.15,
 	idlerpm = 800,
-	peakminrpm = 3000,
-	peakmaxrpm = 5000,
 	limitrpm = 6500
 } )
 
@@ -32,8 +30,6 @@ ACF_DefineEngine( "9.0-V8", {
 	torque = 460,
 	flywheelmass = 0.25,
 	idlerpm = 700,
-	peakminrpm = 3100,
-	peakmaxrpm = 5000,
 	limitrpm = 5500
 } )
 
@@ -49,8 +45,6 @@ ACF_DefineEngine( "18.0-V8", {
 	torque = 1458,
 	flywheelmass = 2.8,
 	idlerpm = 600,
-	peakminrpm = 2000,
-	peakmaxrpm = 3300,
 	limitrpm = 3800
 } )
 
@@ -68,8 +62,6 @@ ACF_DefineEngine( "4.5-V8", {
 	torque = 415,
 	flywheelmass = 0.75,
 	idlerpm = 800,
-	peakminrpm = 1000,
-	peakmaxrpm = 3000,
 	limitrpm = 5000
 } )
 
@@ -85,8 +77,6 @@ ACF_DefineEngine( "7.8-V8", {
 	torque = 700,
 	flywheelmass = 1.6,
 	idlerpm = 650,
-	peakminrpm = 1000,
-	peakmaxrpm = 3000,
 	limitrpm = 4000
 } )
 
@@ -102,7 +92,5 @@ ACF_DefineEngine( "19.0-V8", {
 	torque = 2300,
 	flywheelmass = 4.5,
 	idlerpm = 500,
-	peakminrpm = 600,
-	peakmaxrpm = 1800,
 	limitrpm = 2500
 } )

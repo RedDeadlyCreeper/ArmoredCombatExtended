@@ -55,13 +55,8 @@ end
 
 local function getMaxPower(ent)
 	if not isEngine(ent) then return 0 end
-	local peakpower
-	if ent.iselec then
-		peakpower = math.floor(ent.PeakTorque * ent.LimitRPM / (38195.2)) --(4*9548.8)
-	else
-		peakpower = math.floor(ent.PeakTorque * ent.PeakMaxRPM / 9548.8)
-	end
-	return peakpower or 0
+
+	return ent.peakkw or 0
 end
 
 local function isLinkableACFEnt(ent)
@@ -325,21 +320,13 @@ end
 -- Returns the powerband min of an ACF engine
 e2function number entity:acfPowerbandMin()
 	if not isEngine(this) then return 0 end
-	if ( this.iselec == true ) then
-		return math.max(this.IdleRPM, this.PeakMinRPM) 
-	else
-		return this.PeakMinRPM or 0
-	end
+	return (math.Round(this.PeakMinRPM / 10) * 10) or 0
 end
 
 -- Returns the powerband max of an ACF engine
 e2function number entity:acfPowerbandMax()
 	if not isEngine(this) then return 0 end
-	if ( this.iselec == true ) then
-		return math.floor(this.LimitRPM / 2) 
-	else
-		return this.PeakMaxRPM or 0
-	end
+	return (math.Round(this.PeakMaxRPM / 10) * 10) or 0
 end
 
 -- Returns the redline rpm of an ACF engine
@@ -388,17 +375,9 @@ e2function number entity:acfInPowerband()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	
-	local pbmin
-	local pbmax
-	
-	if (this.iselec == true )then
-		pbmin = this.IdleRPM
-		pbmax = math.floor(this.LimitRPM / 2)
-	else
-		pbmin = this.PeakMinRPM
-		pbmax = this.PeakMaxRPM
-	end
-	
+	pbmin = this.PeakMinRPM
+	pbmax = this.PeakMaxRPM
+
 	if (this.FlyRPM < pbmin) then return 0 end
 	if (this.FlyRPM > pbmax) then return 0 end
 	
@@ -915,14 +894,43 @@ e2function number ranger:acfEffectiveArmor()
 	return math.Round(this.Entity.ACF.Armour/math.abs( math.cos(math.rad(ACF_GetHitAngle( this.HitNormal , this.HitPos-this.StartPos )))),1)
 end
 
--- Returns the material of an entity
-e2function number entity:acfPropMaterial()
-	if not validPhysics(this) then return 0 end
-	if restrictInfo(self, this) then return 0 end
-	if not ACF_Check(this) then return 0 end
-	return (this.ACF.Material or 0)
+-- Returns the material of an entity. 
+e2function string entity:acfPropMaterial()
+	if not validPhysics(this) then return "RHA" end
+	if restrictInfo(self, this) then return "RHA" end
+	if not ACF_Check(this) then return "RHA" end
+	return (this.ACF.Material or "RHA")
 end
 
+--Meant mainly for the armor analyzer. It doesnt work though.
+--[[
+-- Returns the material of an entity
+e2function table entity:acfPropMaterialData(number Type)
+	if not validPhysics(this) then return {} end
+	if restrictInfo(self, this) then return {} end
+	if not ACF_Check(this) then return {} end
+
+	local material = this.ACF.Material or "RHA"
+	local MatData = ACE.Armors[material]
+	if not MatData then return {} end
+
+	local curve, effectiveness, massMod
+
+	curve = MatData.curve
+	massMod = MatData.massMod
+
+	if Type > 0 then
+
+		effectiveness = MatData.HEATeffectiveness or MatData.effectiveness
+
+	else
+
+		effectiveness = MatData.effectiveness
+	end
+
+	return { Curve = curve , Effectiveness = effectiveness, Material = material }
+end
+]]
 -- [ Fuel Functions ] --
 
 

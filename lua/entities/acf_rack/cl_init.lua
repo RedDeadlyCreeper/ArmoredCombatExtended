@@ -6,23 +6,23 @@ ENT.RenderGroup 		= RENDERGROUP_OPAQUE
 
 local ACF_GunInfoWhileSeated = CreateClientConVar("ACF_GunInfoWhileSeated", 0, true, false)
 
-	function ENT:Initialize()
+function ENT:Initialize()
 		
-		self.BaseClass.Initialize( self )
+	self.BaseClass.Initialize( self )
 	
-	end
+end
 
-	function ENT:Draw() 
+function ENT:Draw() 
 	
-		local lply = LocalPlayer()
-		local hideBubble = not ACF_GunInfoWhileSeated:GetBool() and IsValid(lply) and lply:InVehicle()
+	local lply = LocalPlayer()
+	local hideBubble = not ACF_GunInfoWhileSeated:GetBool() and IsValid(lply) and lply:InVehicle()
 		
-		self.BaseClass.DoNormalDraw(self, false, hideBubble)
-		Wire_Render(self)
+	self.BaseClass.DoNormalDraw(self, false, hideBubble)
+	Wire_Render(self)
 		
-		if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then 
-			-- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
-			Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false ) 
-		end
-		
+	if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then 
+		-- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
+		Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false ) 
 	end
+		
+end

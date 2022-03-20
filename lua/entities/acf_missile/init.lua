@@ -11,8 +11,6 @@ DEFINE_BASECLASS("acf_explosive")
 
 function ENT:Initialize()
 
-
-
 	self.BaseClass.Initialize(self)
 
 	if !IsValid(self.Entity.Owner) then
@@ -90,8 +88,8 @@ function ENT:CalcFlight()
 	local Speed = LastVel:Length()
 	local Flight = self.FlightTime
 
-    	local Time = CurTime()
-    	local DeltaTime = Time - self.LastThink
+    local Time = CurTime()
+    local DeltaTime = Time - self.LastThink
 
 	if DeltaTime <= 0 then return end
 
@@ -114,10 +112,6 @@ function ENT:CalcFlight()
 		local LastLOS = self.LastLOS
 		local NewDir = Dir
 		local DirDiff = 0
-
---		if self.Fuse and (CurTime() - self.Fuse.TimeStarted < self.MinArmingDelay or not self.Fuse:IsArmed()) then
-
-
 
 		if LastLOS then
 			local AGMult = 1
@@ -202,11 +196,18 @@ function ENT:CalcFlight()
 	local EndPos = Pos + Vel
 
 	--Hit detection
+	--local MRadius = (self.BulletData.Caliber/2)*0.5
+
 	local tracedata= {}
 	tracedata.start = Pos
 	tracedata.endpos = EndPos
 	tracedata.filter = self.Filter
-	local trace = util.TraceLine(tracedata)
+	tracedata.mins = Vector(0,0,0)
+	tracedata.maxs = Vector(0,0,0)
+
+	--tracedata.mins = Vector(-MRadius,-MRadius,-MRadius)
+	--tracedata.maxs = Vector(MRadius,MRadius,MRadius)
+	local trace = util.TraceHull(tracedata)
 
 	if trace.Hit then
 
@@ -423,6 +424,9 @@ function ENT:DoFlight(ToPos, ToDir)
 	local setPos = ToPos or self.CurPos
 	local setDir = ToDir or self.CurDir
 
+	--print(ToDir)
+	--print(self.CurDir)
+
 	self:SetPos(setPos)
 	self:SetAngles(setDir:Angle())
 
@@ -442,8 +446,10 @@ function ENT:Detonate()
         return
     end
 
-    self.BulletData.Flight = self:GetForward() * (self.BulletData.MuzzleVel or 10)
-    --debugoverlay.Line(self.BulletData.Pos, self.BulletData.Pos + self.BulletData.Flight, 10, Color(255, 0, 0))
+    --print('MuzzleVel')
+    --print(self.BulletData.MuzzleVel)
+    self.BulletData.Flight = self:GetForward() * (self.BulletData.MuzzleVel or 10) 
+    debugoverlay.Line(self.BulletData.Pos, self.BulletData.Pos + self.BulletData.Flight, 10, Color(255, 0, 0))
 
     self:ForceDetonate()
 
@@ -559,22 +565,22 @@ function ENT:ACF_Activate( Recalc )
 
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
-	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Aera / 0.78) --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
-	local Health = self.ACF.Volume*0.01/ACF.Threshold							--Setting the threshold of the prop aera gone
+	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Aera / 0.78) 	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop aera gone
 	local Percent = 1
 
 	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
 		Percent = self.ACF.Health/self.ACF.MaxHealth
 	end
 
-	self.ACF.Health = Health * Percent
-	self.ACF.MaxHealth = Health
-	self.ACF.Armour = Armour * (0.5 + Percent/2)
-	self.ACF.MaxArmour = Armour
-	self.ACF.Type = nil
-	self.ACF.Mass = self.Mass
-	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
-	self.ACF.Type = "Prop"
+	self.ACF.Health 	= Health * Percent
+	self.ACF.MaxHealth 	= Health
+	self.ACF.Armour 	= Armour * (0.5 + Percent/2)
+	self.ACF.MaxArmour 	= Armour
+	self.ACF.Type 		= nil
+	self.ACF.Mass 		= self.Mass
+	self.ACF.Density 	= (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
+	self.ACF.Type 		= "Prop"
    
 end
 

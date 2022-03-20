@@ -1,14 +1,19 @@
-ACF.Bullet = {}	--when ACF is loaded, this table holds bullets
-ACF.CurBulletIndex = 0	--used to track where to insert bullets
-ACF.BulletIndexLimt = 5000  --The maximum number of bullets in flight at any one time TODO: fix the typo
-ACF.TraceFilter = { --entities that cause issue with acf and should be not be processed at all
+--[[------------------------------------------------------------------------------------------------
+	SV_BALLISTICS.LUA
+]]--------------------------------------------------------------------------------------------------
+
+
+ACF.Bullet 				= {}		-- when ACF is loaded, this table holds bullets
+ACF.CurBulletIndex 	= 0		-- used to track where to insert bullets
+ACF.BulletIndexLimt 	= 5000  	-- The maximum number of bullets in flight at any one time TODO: fix the typo
+ACF.SkyboxGraceZone 	= 100 	-- grace zone for the high angle fire
+
+ACF.TraceFilter = { 				-- entities that cause issue with acf and should be not be processed at all
 
 	prop_vehicle_crane = true,
 	prop_dynamic = true
 	
-	}
-
-ACF.SkyboxGraceZone = 100 --grace zone for the high angle fire
+}
 
 -- optimization; reuse tables for ballistics traces
 local FlightRes = { }
@@ -20,25 +25,26 @@ local FlightTr = { output = FlightRes, 	mins = Vector( 0, 0, 0 ), maxs = Vector(
 ]]--------------------------------------------------------------------------------------------------
 function ACF_CreateBullet( BulletData )
 	
-	ACF.CurBulletIndex = ACF.CurBulletIndex + 1		--Increment the index
-	--print(ACF.CurBulletIndex)
+	-- Increment the index
+	ACF.CurBulletIndex = ACF.CurBulletIndex + 1		
+
 	if ACF.CurBulletIndex > ACF.BulletIndexLimt then
 		ACF.CurBulletIndex = 1
 	end
 
 	--Those are BulletData settings that are global and shouldn't change round to round	
 	local cvarGrav = GetConVar("sv_gravity")
-	BulletData["Accel"] =  Vector(0,0,cvarGrav:GetInt()*-1)
-	BulletData["LastThink"] = ACF.SysTime
-	BulletData["FlightTime"] = 0
-	BulletData["TraceBackComp"] = 0
+
+	BulletData["Accel"]		 		= Vector(0,0,cvarGrav:GetInt()*-1)
+	BulletData["LastThink"]		 	= ACF.SysTime
+	BulletData["FlightTime"] 		= 0
+	BulletData["TraceBackComp"] 	= 0
 
 	if type(BulletData["FuseLength"]) ~= "number" then
-		BulletData["FuseLength"] = 0
+		BulletData["FuseLength"] 	= 0
 	else
-		--print("Has fuse")
 		if BulletData["FuseLength"] > 0 then
-			BulletData["InitTime"] = ACF.SysTime
+			BulletData["InitTime"] 	= ACF.SysTime
 		end
 	end
 
@@ -49,8 +55,8 @@ function ACF_CreateBullet( BulletData )
 		--print(BulletData["TraceBackComp"])
 
 	end
-	BulletData["Filter"] = { BulletData["Gun"] }
-	BulletData["Index"] = ACF.CurBulletIndex
+	BulletData["Filter"] 	= { BulletData["Gun"] }
+	BulletData["Index"] 		= ACF.CurBulletIndex
 
 	ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)		--Place the bullet at the current index pos
 	ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
@@ -119,10 +125,10 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 	local DeltaTime = ACF.SysTime - Bullet.LastThink
 	
 	--actual motion of the bullet
-	local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
-	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
-	Bullet.Flight = Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime				--Calculates the next shell vector
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet.TraceBackComp*DeltaTime))) --Originally limited to 5m backtrace. Disabled due to reports of it breaking things.
+	local Drag 			= Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+	Bullet.NextPos 	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)																																-- Calculates the next shell position
+	Bullet.Flight 		= Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime																																			-- Calculates the next shell vector
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet["TraceBackComp"]*DeltaTime))) 	-- Originally limited to 5m backtrace. Disabled due to reports of it breaking things.
 
 	--0.035 seconds of max backtrace of shell velocity, a bit more than 1 tick at 33 ticks/second
 
@@ -156,11 +162,11 @@ end
 function ACF_DoBulletsFlight( Index, Bullet )
 
 	local CanDo = hook.Run("ACF_BulletsFlight", Index, Bullet )
-
 	if CanDo == false then return end
 
 	if Bullet.FuseLength and Bullet.FuseLength > 0 then
 
+		-- TODO: This way will not work, we need another way for fuse
 		local Time = ACF.SysTime - Bullet.InitTime
 		if Time > Bullet.FuseLength then
 
@@ -194,9 +200,9 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
 		--We do want rounds outside of the world but not skybox top to be deleted
 		elseif not util.IsInWorld(Bullet.NextPos) then
+
 			ACF_RemoveBullet( Index )
 			return
-
 		--We fall back to this default
 		else
 			Bullet.SkyLvL = nil
@@ -207,23 +213,26 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		end
 	end
 
-	FlightTr.mask = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
-	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
-	TROffset = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
-	FlightTr.maxs = Vector( TROffset, TROffset, TROffset )
-	FlightTr.mins = -FlightTr.maxs	
+	FlightTr.mask 		= Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
+	FlightTr.filter 	= Bullet.Filter -- any changes to bullet filter will be reflected in the trace
+	TROffset 			= 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+	FlightTr.maxs 		= Vector( TROffset, TROffset, TROffset )
+	FlightTr.mins 		= -FlightTr.maxs	
 	
 	--perform the trace for damage	
 	local RetryTrace = true	
 
 	--if trace hits clipped part of prop, add prop to trace filter and retry
 	while RetryTrace do			
-	    
-		RetryTrace = false  --disabling....
-		FlightTr.start = Bullet.StartTrace
-		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) --compensation 		
 
-		--Defining tracehull at first instance
+		-- Disables so we dont overloop it again
+		RetryTrace		 	= false
+
+		--compensation
+		FlightTr.start 	= Bullet.StartTrace
+		FlightTr.endpos 	= Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) 	
+
+		-- Defining tracehull at first instance
 		util.TraceHull(FlightTr)    
 		
 		--if our shell hits visclips, convert the tracehull on traceline.
@@ -235,7 +244,6 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
  			if not FlightRes.HitNonWorld then
 
- 				--print('back to tracehull!')
  				util.TraceHull(FlightTr)
 
  			end
@@ -254,19 +262,15 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--bullet is told to ignore the next hit, so it does and resets flag
 	if Bullet.SkipNextHit then
 
-
 		if not FlightRes.StartSolid and not FlightRes.HitNoDraw then Bullet.SkipNextHit = nil end
 		Bullet.Pos = Bullet.NextPos
 	
-
 	--bullet hit something that isn't world and is allowed to hit
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 	
-
 		--If we hit stuff then send the resolution to the bullets damage function
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
 		
-
 		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
 		local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
 
@@ -282,10 +286,10 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		    
 			if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 
-					Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
+				Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
 
 				--A bullet has impacted more than 50 props. But why though?	
-				if Bullet.ImpactCount > 50 then 	
+				if Bullet.ImpactCount > 100 then 	
 
 					ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 					ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
@@ -303,7 +307,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 				Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
 
 			--A bullet has impacted more than 50 props. But why though?	
-			if Bullet.ImpactCount > 50 then 
+			if Bullet.ImpactCount > 100 then 
 
 				ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 				ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
@@ -325,7 +329,6 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 			ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
 		end
-
 
 	--bullet hit the world
 	elseif FlightRes.HitWorld then
@@ -391,6 +394,8 @@ end
 ]]--------------------------------------------------------------------------------------------------
 function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 
+	--Uncheck this to disable effects
+	--if Index then return end
 	if Type == "Update" then
 		local Effect = EffectData()
 		   
@@ -411,8 +416,8 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 		local Effect = EffectData()
 			local Filler = 0
 			if Bullet["FillerMass"] then Filler = Bullet["FillerMass"]*15 end	
-			Effect:SetMaterialIndex( Index ) --Bullet Index
-			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
+			Effect:SetMaterialIndex( Index )			--Bullet Index
+			Effect:SetStart( Bullet.Flight/10 )		--Bullet Direction
 			Effect:SetOrigin( Bullet.Pos )
 			Effect:SetEntity( Entity(Bullet["Crate"]) )
 			Effect:SetScale( 0 )

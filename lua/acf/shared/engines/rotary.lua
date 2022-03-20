@@ -13,8 +13,6 @@ ACF_DefineEngine( "900cc-R", {
 	torque = 78,
 	flywheelmass = 0.06,
 	idlerpm = 950,
-	peakminrpm = 4500,
-	peakmaxrpm = 9000,
 	limitrpm = 9200
 } )
 
@@ -30,8 +28,6 @@ ACF_DefineEngine( "1.3L-R", {
 	torque = 124,
 	flywheelmass = 0.06,
 	idlerpm = 950,
-	peakminrpm = 4100,
-	peakmaxrpm = 8500,
 	limitrpm = 9000
 } )
 
@@ -47,7 +43,5 @@ ACF_DefineEngine( "2.0L-R", {
 	torque = 188,
 	flywheelmass = 0.1,
 	idlerpm = 950,
-	peakminrpm = 4100,
-	peakmaxrpm = 8500,
 	limitrpm = 9500
 } )

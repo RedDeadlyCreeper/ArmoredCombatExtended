@@ -29,7 +29,12 @@ ACF.SoundToolSupport = {
 			local Class = ent.Class
 			local Classes = list.Get("ACFClasses")
 			
-			local soundData = {Sound = Classes["GunClass"][Class]["sound"]}
+			local List = list.Get("ACFEnts")
+			local lookup = List.Guns[ent.Id]
+
+			local sound = lookup.sound or Classes["GunClass"][Class]["sound"]
+
+			local soundData = {Sound = sound}
 			
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )

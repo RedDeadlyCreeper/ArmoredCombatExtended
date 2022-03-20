@@ -151,7 +151,7 @@ function EFFECT:ApplyMovement( Bullet )
 
 		--sonic crack sound
 		if not Bullet.CrackCreated then
-			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,500) ) and not ACE_SInDistance( Bullet.InitialPos, 500 ) then
+			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
 				if Speed > 100 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
 					--print(Bullet.Caliber*10*ACE.CrackDistanceMultipler)
 					--print('Bullet Speed: '..Speed)

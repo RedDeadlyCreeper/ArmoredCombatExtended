@@ -14,7 +14,7 @@ ACF_DefineRackClass("RK", {
 
 --add a gun to the class
 ACF_DefineRack("1xRK", {
-	name = "Single Munitions Rack",
+	name = "Single Universal Rack",
 	desc = "A lightweight rack for rockets and bombs which is vulnerable to shots and explosions.",
 	model		= "models/missiles/rkx1.mdl",
 	gunclass = "RK",
@@ -32,7 +32,7 @@ ACF_DefineRack("1xRK", {
 
 --add a gun to the class
 ACF_DefineRack("1xRK_small", {
-	name = "Single Munitions Rack",
+	name = "Single Small Universal Rack",
 	desc = "A lightweight rack for rockets and bombs which is vulnerable to shots and explosions.",
 	model		= "models/missiles/rkx1_sml.mdl",
 	gunclass = "RK",
@@ -51,7 +51,7 @@ ACF_DefineRack("1xRK_small", {
 
 
 ACF_DefineRack("2xRK", {
-	name = "Dual Munitions Rack",
+	name = "Dual Universal Rack",
 	desc = "A lightweight rack for rockets and bombs which is vulnerable to shots and explosions.",
 	model		= "models/missiles/rack_double.mdl",
 	gunclass = "RK",
@@ -87,7 +87,7 @@ ACF_DefineRack("3xRK", {
 } )
 
 ACF_DefineRack("4xRK", {
-	name = "Quad Munitions Rack",
+	name = "Quad Universal Rack",
 	desc = "A lightweight rack for rockets and bombs which is vulnerable to shots and explosions.",
 	model		= "models/missiles/rack_quad.mdl",
 	gunclass = "RK",
@@ -106,7 +106,7 @@ ACF_DefineRack("4xRK", {
 } )
 
 ACF_DefineRack("2x AGM-114", {
-	name = "Dual Munitions AGM-114 Rack",
+	name = "Dual AGM-114 Rack",
 	desc = "An AGM-114 rack designed to carry 2 missiles.",
 	model		= "models/missiles/agm_114_2xrk.mdl",
 	gunclass = "RK",
@@ -124,7 +124,7 @@ ACF_DefineRack("2x AGM-114", {
 } )
 
 ACF_DefineRack("4x AGM-114", {
-	name = "Quad Munitions AGM-114 Rack",
+	name = "Quad AGM-114 Rack",
 	desc = "An AGM-114 rack designed to carry 4 missiles.",
 	model		= "models/missiles/agm_114_4xrk.mdl",
 	gunclass = "RK",

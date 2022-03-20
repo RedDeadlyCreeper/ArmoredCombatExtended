@@ -80,7 +80,7 @@ if CLIENT then
 
 	function ACFGunGUICreate( Table )
 			
-		acfmenupanel:CPanelText("Name", Table.name)
+		acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 		
 		local GunDisplay = acfmenupanel.CData.DisplayModel
 
@@ -100,14 +100,43 @@ if CLIENT then
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
 		acfmenupanel:CPanelText("Year", "Year : "..Table.year)
 		
-		if not Table.rack then
+		if Table.rack then
+			if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
+			if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
+
+			if Table.guidance and #Table.guidance > 0 then
+
+				local guitxt = ""
+				for k, guidance in ipairs(Table.guidance) do
+					if guidance ~= "Dumb" then
+						guitxt = guitxt.."- "..guidance.."\n"
+					end
+				end
+
+				if guitxt ~= "" then
+					acfmenupanel:CPanelText("Guidances", "\nAvailable guidances : \n"..guitxt )
+				end
+			end
+
+			if Table.fuses and #Table.fuses > 0 then
+
+				local guitxt = ""
+				for k, fuses in ipairs(Table.fuses) do
+					guitxt = guitxt.."- "..fuses.."\n"
+				end
+
+				acfmenupanel:CPanelText("Fuses", "Available fuses : \n"..guitxt )
+			end
+
+		else
 			local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
 			local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
 			acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
 			if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :   "..Table.magreload.." s") end
-			acfmenupanel:CPanelText("Spread", "Spread : "..GunClass.spread.." degrees")
+			acfmenupanel:CPanelText("Spread", "Spread : "..(GunClass.spread * 1.5).." degrees")
+			acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : "..GunClass.spread.." degrees")
 
-			acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.")
+			acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
 		end
 		
 		acfmenupanel.CustomDisplay:PerformLayout()
@@ -117,74 +146,88 @@ if CLIENT then
 	return
 end
 
+
+local GunWireDescs = {
+	--Inputs
+	["Unload"]	 = "Unloads the current shell from the gun. Leaving the gun empty",
+	["FuseTime"] = "Defines the required time for shell self-detonation in seconds. \nThis only work with SM and HE rounds. \nNote that this is not exact and detonation can take more time than it should for larger guns",
+	["ROFLimit"] = "Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.",
+
+	--Outputs
+	["Ready"]	 = "Returns if the gun is ready to fire.",
+	["Heat"]	 = "Returns the gun's temperature.",
+	["OverHeat"] = "Is the gun being overheated?"
+}
+
+
 function ENT:Initialize()
 		
-	self.ReloadTime = 1
+	self.ReloadTime 		= 1
 	
-	self.FirstLoad = true
-	self.Ready = true
-	self.Firing = nil
-	self.Reloading = nil
-	self.CrateBonus = 1
-	self.NextFire = 0
-	self.LastSend = 0
-	self.LastLoadDuration = 0
-	self.Owner = self
-	self.Parentable = false
-	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal = true
-	self.LegalIssues = ""
-	self.FuseTime = 0
-	self.ROFLimit = 0 --Used for selecting firerate
+	self.FirstLoad 			= true
+	self.Ready 				= true
+	self.Firing 			= nil
+	self.Reloading 			= nil
+	self.CrateBonus 		= 1
+	self.NextFire 			= 0
+	self.LastSend 			= 0
+	self.LastLoadDuration 	= 0
+	self.Owner 				= self
+	self.NextLegalCheck 	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal 				= true
+	self.LegalIssues 		= ""
+	self.FuseTime 			= 0
+	self.OverrideFuse 		= false 	-- Override disabled by default
+	self.ROFLimit 			= 0 			-- Used for selecting firerate
 	
-	self.IsMaster = true --needed?
-	self.AmmoLink = {}
-	self.CrewLink = {}
-	self.HasGunner = 0
-	self.LoaderCount = 0
-	self.CurAmmo = 1
-	self.Sequence = 1
-	self.GunClass = "MG"
+	self.IsMaster 			= true 		-- needed?
+	self.AmmoLink 			= {}
+	self.CrewLink 			= {}
+	self.HasGunner 			= 0
+	self.LoaderCount 		= 0
+	self.CurAmmo 			= 1
+	self.Sequence 			= 1
+	self.GunClass 			= "MG"
 	
-	self.Heat = ACE.AmbientTemp
+	self.Heat 				= ACE.AmbientTemp
+	self.IsOverheated 		= false
 	
-	self.BulletData = {}
-		self.BulletData.Type = "Empty"
-		self.BulletData.PropMass = 0
-		self.BulletData.ProjMass = 0
+	self.BulletData 				= {}
+		self.BulletData.Type 		= "Empty"
+		self.BulletData.PropMass 	= 0
+		self.BulletData.ProjMass 	= 0
 	
-	self.Inaccuracy 	= 1
-	self.LastThink = 0	
-	self.Inputs = Wire_CreateInputs( self, { "Fire", "Unload", "Reload", "Fuse Time" } )
-	self.Outputs = WireLib.CreateSpecialOutputs( self, { "Ready", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat"}, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL"} )
+	self.Inaccuracy 		= 1
+	self.LastThink 			= 0	
+	self.Inputs 			= Wire_CreateInputs( self, { "Fire", "Unload ("..GunWireDescs["Unload"]..")", "Reload", "Fuse Time ("..GunWireDescs["FuseTime"]..")" } )
+	self.Outputs 			= WireLib.CreateSpecialOutputs( self, { "Ready ("..GunWireDescs["Ready"]..")", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat ("..GunWireDescs["Heat"]..")"}, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL"} )
 	Wire_TriggerOutput(self, "Entity", self)
 
 end  
 
 function MakeACF_Gun(Owner, Pos, Angle, Id)
-   
 
 	local EID
 	local List = list.Get("ACFEnts")
+
 	if List.Guns[Id] then 
-	EID = Id 
+		EID = Id 
 	elseif Id == '20mmHRAC' then    
-	EID = '20mmRAC'	
+		EID = '20mmRAC'	
 	elseif Id == '30mmHRAC' then
-    EID = '30mmRAC'
+    	EID = '30mmRAC'
 	elseif Id == '105mmSB' then  --ACF2 smoothbore compatibility / thanks old-ACF devs for creating another smoothbore ids
-	EID = '100mmSBC'
+		EID = '100mmSBC'
 	elseif Id == '120mmSB' then
-	EID = '120mmSBC'
+		EID = '120mmSBC'
 	elseif Id == '140mmSB' then
-	EID = '140mmSBC'
+		EID = '140mmSBC'
 	elseif Id == '170mmSB' then
-	EID = '170mmSBC'
+		EID = '170mmSBC'
     else	
-	EID = "100mmC" --just cuz 50mmC was too small
+		EID = "100mmC" --just cuz 50mmC was too small
 	end
 	local Lookup = List.Guns[EID]
-
 	
 	if Lookup.gunclass == "SL" then
 		if not Owner:CheckLimit("_acf_smokelauncher") then return false end
@@ -195,7 +238,6 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	elseif Lookup.caliber >= ACF.LargeCaliber then
 		if not Owner:CheckLimit("_acf_largegun") then return false end
 	end	
-	
 		if not Owner:CheckLimit("_acf_gun") then return false end
 	end
 	
@@ -207,15 +249,14 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:Spawn()
 	
 	Gun:SetPlayer(Owner)
-	Gun.Owner = Owner
-	Gun.Id = Id
-	Gun.Caliber	= Lookup.caliber
-	Gun.Model = Lookup.model
-	Gun.Mass = Lookup.weight
-	Gun.Class = Lookup.gunclass
-	Gun.Parentable = Lookup.canparent
-	Gun.Heat = ACE.AmbientTemp
-	Gun.LinkRangeMul = math.max(Gun.Caliber / 10,1)^1.2
+	Gun.Owner 			= Owner
+	Gun.Id 				= Id
+	Gun.Caliber			= Lookup.caliber
+	Gun.Model 			= Lookup.model
+	Gun.Mass 			= Lookup.weight
+	Gun.Class 			= Lookup.gunclass
+	Gun.Heat 			= ACE.AmbientTemp
+	Gun.LinkRangeMul 	= math.max(Gun.Caliber / 10,1)^1.2
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
 	end
@@ -233,9 +274,9 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 		local Cal = Gun.Caliber
 	
 		if Cal>=3 and Cal<=12 then  
-		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload", "Fuse Time", "ROFLimit"} )
+		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload ("..GunWireDescs["Unload"]..")", "Reload", "Fuse Time ("..GunWireDescs["FuseTime"]..")", "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
 		else 
-            Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload", "ROFLimit"} )
+            Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload ("..GunWireDescs["Unload"]..")", "Reload", "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
         end		
 		
 	--to cover guns that get its ammo directly from the crate
@@ -243,9 +284,9 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 		local Cal = Gun.Caliber
 
 		if Cal>=3 and Cal<=12 then
-		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload" , "Fuse Time", "ROFLimit"} )
+		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload ("..GunWireDescs["Unload"]..")" , "Fuse Time ("..GunWireDescs["FuseTime"]..")", "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
 		else
-		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "ROFLimit"} )
+		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload ("..GunWireDescs["Unload"]..")", "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
 		end
 	end
 	
@@ -259,10 +300,13 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:SetNWString( "Class", Gun.Class )
 	Gun:SetNWInt( "Caliber", Gun.Caliber )
 	Gun:SetNWString( "ID", Gun.Id )
-	Gun.Muzzleflash = ClassData.muzzleflash
-	Gun.RoFmod = ClassData.rofmod
-	Gun.RateOfFire = 1 --updated when gun is linked to ammo
-	Gun.Sound = ClassData.sound
+
+	Gun.Muzzleflash 	= ClassData.muzzleflash
+	Gun.RoFmod 			= ClassData.rofmod
+	Gun.RateOfFire 		= 1 --updated when gun is linked to ammo
+	Gun.Sound 			= Lookup.sound or ClassData.sound
+	Gun.AutoSound 		= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
+
 	Gun:SetNWString( "Sound", Gun.Sound )
 	Gun.Inaccuracy = ClassData.spread
 	Gun:SetModel( Gun.Model )	
@@ -325,15 +369,24 @@ function ENT:UpdateOverlayText()
 	
 	local isEmpty = self.BulletData.Type == "Empty"
 	
-	local clipLeft = isEmpty and 0 or (self.MagSize - self.CurrentShot)
-	local ammoLeft = (self.Ammo or 0) + clipLeft
-	local isReloading = not isEmpty and CurTime() < self.NextFire and (self.MagSize == 1 or (self.LastLoadDuration > self.ReloadTime))
-	local gunStatus = isReloading and "reloading" or (clipLeft .. " in gun")
+	local clipLeft 		= isEmpty and 0 or (self.MagSize - self.CurrentShot)
+	local ammoLeft 		= (self.Ammo or 0) + clipLeft
+	local isReloading 	= not isEmpty and CurTime() < self.NextFire and (self.MagSize == 1 or (self.LastLoadDuration > self.ReloadTime))
+	local gunStatus 	= isReloading and "reloading" or (clipLeft .. " in gun")
 	
 	local text = roundType .. " - " .. ammoLeft .. (ammoLeft == 1 and " shot left" or " shots left ( " .. gunStatus .. " )")
 
 	text = text .. "\nRounds Per Minute: " .. math.Round( self.RateOfFire or 0, 2 )
-	
+
+	if #self.CrewLink > 0 then
+		text = text .. "\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
+		text = text .. "\nTotal Loaders: "..self.LoaderCount
+	end
+
+	if self.IsOverheated then
+		text = text .. "\nWarning: Overheated"
+	end
+
 	if not self.Legal then
 		text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	end
@@ -471,6 +524,7 @@ function ENT:Link( Target )
 			ReloadBuff = 1.25-(self.LoaderCount*0.25)
 		end
 	
+
 		self.ReloadTime = math.max(( ( math.max(Target.BulletData.RoundVolume,self.MinLengthBonus) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * ReloadBuff, self.ROFLimit)
 		self.RateOfFire = 60 / self.ReloadTime
 
@@ -498,12 +552,11 @@ function ENT:Unlink( Target )
 	for Key,Value in pairs(self.CrewLink) do
 		if Value == Target then
 			if Target:GetClass() == "ace_crewseat_gunner" then
-			self.HasGunner = 0			
+				self.HasGunner = 0			
 			elseif Target:GetClass() == "ace_crewseat_loader" then
-			self.LoaderCount = self.LoaderCount - 1			
-
-			
+				self.LoaderCount = self.LoaderCount - 1			
 			end
+
 			table.remove(self.CrewLink,Key)
 			Success = true
 		end
@@ -598,16 +651,19 @@ function ENT:TriggerInput( iname, value )
 	elseif ( iname == "Reload" and value ~= 0 ) then
 		self.Reloading = true
 	elseif ( iname == "Fuse Time" ) then
-	if value > 0 then
-		self.FuseTime = value
-		self:SetNWString("connected","wired")
-	else
-		self.FuseTime = 0
-		self:SetNWString("connected","unwired")
-	end
+		if value > 0 then
+			self.FuseTime = value
+			self.OverrideFuse = true
+		else
+			self.FuseTime = 0
+			self.OverrideFuse = false
+		end
 	elseif (iname == "ROFLimit") then
-		self.ROFLimit = math.min(1/(value/60),10) --Clamped to 10 seconds because people are stupid and set this too low
---		print("Test")
+		if value > 0 then
+			self.ROFLimit = math.min(1/(value/60),600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
+		else
+			self.ROFLimit = 0
+		end
 	end		
 end
 
@@ -616,6 +672,34 @@ local function RetDist( enta, entb )
 	disp = enta:GetPos() - entb:GetPos()
 	dist = math.sqrt( disp.x * disp.x + disp.y * disp.y + disp.z * disp.z )
 	return dist
+end
+
+function ENT:Heat_Function()
+	
+	--print(DeltaTime)
+	
+	self.Heat = ACE_HeatFromGun( self , self.Heat, self.DeltaTime )
+	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
+
+	-- TODO: instead of breaking the gun by heat, decrease accurancy and jam it
+	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
+	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
+
+		self.IsOverheated = true
+
+        local phys = self:GetPhysicsObject()
+	    local Mass = phys:GetMass()
+	
+	    HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
+
+		if HitRes.Kill then
+			ACF_HEKill( self, VectorRand() , 0)
+		end
+			
+	else
+		self.IsOverheated = false
+	end
+
 end
 
 function ENT:Think()
@@ -646,44 +730,21 @@ function ENT:Think()
 
 	end
 
-
-
+	-- IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
 	local PhysObj = self:GetPhysicsObject()
-	if not IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
+	if not IsValid(PhysObj) then return	end 
 
+	self.DeltaTime = CurTime() - self.LastThink	
 
-----Heat function
-	DeltaTime = CurTime() - self.LastThink	
-	
-	--print(DeltaTime)
-	
-	self.Heat = ACE_HeatFromGun( self , self.Heat, DeltaTime )
-	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
-
- 
-
-----TODO: instead of breaking the gun by heat, decrease accurancy and jam it
-	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
-	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
-
-        local phys = self:GetPhysicsObject()
-	    local Mass = phys:GetMass()
-	
-	    HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
-
-		if HitRes.Kill then
-			ACF_HEKill( self, VectorRand() , 0)
-		end
-			
-	end
-
+	self:Heat_Function()
 	
 	local Time = CurTime()
 	if self.LastSend+1 <= Time then
-		local Ammo = 0
-		local CrateBonus = {}
-		local rofbonus = 0
-		local totalcap = 0
+
+		local Ammo 			= 0
+		local CrateBonus 	= {}
+		local rofbonus 		= 0
+		local totalcap 		= 0
 		
 		for Key, Crate in pairs(self.AmmoLink) do --UnlinkDistance
 			if IsValid( Crate ) and Crate.Load and Crate.Legal then
@@ -756,8 +817,10 @@ function ENT:Think()
 			self.Reloading = false
 		end
 	end
-		self.LastThink = ACF.CurTime
+
+	self.LastThink = ACF.CurTime
 	self:NextThink(Time)
+
 	return true
 end
 
@@ -792,7 +855,7 @@ function ENT:GetInaccuracy()
 	end
 	
 	if self.HasGunner == 0 then 
-	IaccMult = 1.5
+		IaccMult = 1.5
 --	print("Cannon less accurate bc of lack of gunner")
 	end
 	
@@ -804,10 +867,9 @@ end
 
 
 function ENT:FireShell()
-    
-	--print('FireShell')
 	
 	local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
+	if CanDo == false then return end
 
 	if(self.IsUnderWeight == nil) then
 		self.IsUnderWeight = true
@@ -819,7 +881,7 @@ function ENT:FireShell()
 
 	--print('FireShell2')	
 		
-		Blacklist = {}
+		local Blacklist = {}
 		if not ACF.AmmoBlacklist[self.BulletData.Type] then
 			Blacklist = {}
 		else
@@ -827,53 +889,45 @@ function ENT:FireShell()
 		end
 		if ( ACF.RoundTypes[self.BulletData.Type] and !table.HasValue( Blacklist, self.Class ) ) then		--Check if the roundtype loaded actually exists
 		
-		   	--print('FireShell3')
-			--print('Fire!')
-		    
             self.HeatFire = true  --Used by Heat			
 
-			local MuzzlePos = self:LocalToWorld(self.Muzzle)
-			local MuzzleVec = self:GetForward()
+			local MuzzlePos 		= self:LocalToWorld(self.Muzzle)
+			local MuzzleVec 		= self:GetForward()
 			
-			local coneAng = math.tan(math.rad(self:GetInaccuracy())) 
-			local randUnitSquare = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
-			local spread = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
-			local ShootVec = (MuzzleVec + spread):GetNormalized()
+			local coneAng 			= math.tan(math.rad(self:GetInaccuracy())) 
+			local randUnitSquare 	= (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
+			local spread 			= randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+			local ShootVec 			= (MuzzleVec + spread):GetNormalized()
 			
 			self:MuzzleEffect( MuzzlePos, MuzzleVec )
-			
-			--local TestVel = ACF_GetPhysicalParent(self):GetVelocity()
 		
 			local GPos = self:GetPos()
 			local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity()+GPos)
+
+			--Traceback component
 			TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
 
-			self.BulletData.Pos = MuzzlePos + TestVel * DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
+			self.BulletData.Pos = MuzzlePos + TestVel * self.DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
 			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
 			self.BulletData.Owner = self.User
 			self.BulletData.Gun = self
 
 			local Cal = self.Caliber
 
---			print("BooletType: "..self.BulletData.Type)
-
+			if Cal < 12 then
 				local FuseNoise = 1
-			if Cal<12 then
+
 				if (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") then
 					if self.FuseTime < (0.28^math.max(Cal-3,1)) then
-					FuseNoise = 1
+						FuseNoise = 1
 					else
-					FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
+						FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
 					end
-				    
-					wired = self:GetNWString('connected')
 					
-					if wired == 'wired' then --using fusetime via wire will override the ammo fusetime!
+					if self.OverrideFuse then --using fusetime via wire will override the ammo fusetime!
 				        --print(wired)
-					    self.BulletData.FuseLength = self.FuseTime * FuseNoise  
-									
-					end
-									
+					    self.BulletData.FuseLength = self.FuseTime * FuseNoise  		
+					end	
 				end
 			end
 
@@ -881,12 +935,16 @@ function ENT:FireShell()
 			self:CreateShell( self.BulletData )
 			
 			local PhysObj = self:GetPhysicsObject()
-			local HasPhys = not self:GetParent():IsValid()
-			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
+			local HasPhys = not self:GetParent():IsValid()	--No parented
 
-			--todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this
-			--ACF_KEShove(self, nil, -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
+			--nil is due to using applyforcecenter in KEShove function, so masscenter no longer required.
 
+			--local LocalPos = HasPhys and nil or self:GetPos()
+			local LocalPos = not HasPhys and self:GetPos() or nil
+			local Dir = -self:GetForward()
+			local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
+
+			ACF_KEShove(self, LocalPos , Dir , KE )
 			
 			self.Ready = false
 			self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
@@ -1033,6 +1091,11 @@ function ENT:MuzzleEffect()
 		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData.Type].netid  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 
+	if self.AutoSound and self.Sound ~= "" then
+		timer.Simple(0.6, function()
+			self:EmitSound(self.AutoSound, 73, math.random(84,86))
+		end )
+	end
 end
 
 function ENT:ReloadEffect()

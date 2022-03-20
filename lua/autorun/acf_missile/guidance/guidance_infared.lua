@@ -37,7 +37,7 @@ this.MinimumDistance = 200	-- ~5m
 -- Maximum distance for a target to be considered.
 this.MaximumDistance = 20000
 
-this.desc = "This guidance package detects a target-position infront of itself, and guides the munition towards it. It has a larger seek cone than a radar seeker but a smaller range."
+this.desc = "This guidance package detects hot targets infront of itself, and guides the munition towards it."
 
 
 function this:Init()
@@ -45,20 +45,16 @@ function this:Init()
 	self.LastTargetPos = Vector()
 end
 
-
-
-
 function this:Configure(missile)
-    
+
     self:super().Configure(self, missile)
 	
-    self.ViewCone = (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
-	self.ViewConeCos = (math.cos(math.rad(self.ViewCone)))*1.2
-    self.SeekCone = (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
-    self.SeekSensitivity = ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
+    self.ViewCone 			= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
+	self.ViewConeCos 		= (math.cos(math.rad(self.ViewCone)))*1.2
+    self.SeekCone 			= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
+    self.SeekSensitivity 	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 	
 end
-
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
@@ -94,9 +90,6 @@ function this:GetGuidance(missile)
 	
 end
 
-
-
-
 function this:ApplyOverride(missile)
 	
 	if self.Override then
@@ -112,9 +105,6 @@ function this:ApplyOverride(missile)
 	end
 
 end
-
-
-
 
 function this:CheckTarget(missile)
 
@@ -242,10 +232,15 @@ function this:AcquireLock(missile)
 	end
 end
 
-function this:GetDisplayConfig()
+--Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
+function this:GetDisplayConfig(Type)
+
+	local seekCone =  (ACF.Weapons.Guns[Type].seekcone or 0 ) * 2
+	local ViewCone = (ACF.Weapons.Guns[Type].viewcone or 0 ) * 2
+
 	return 
 	{
-		["Seeking"] = math.Round(self.SeekCone * 2*1.3, 1) .. " deg",
-		["Tracking"] = math.Round(self.ViewCone * 2*1.3, 1) .. " deg"
+		["Seeking"] = math.Round(seekCone, 1) .. " deg",
+		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
 	}
 end

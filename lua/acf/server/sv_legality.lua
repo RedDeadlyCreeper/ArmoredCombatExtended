@@ -63,6 +63,23 @@ ACF.Legal.NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math
    ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
 ]]--
 
+local AllowedMaterials = {
+	RHA = true,
+	CHA = true,
+	Alum = true
+}
+
+--Convert old numeric IDs to the new string IDs
+local BackCompMat = {
+	"RHA",
+	"CHA",
+	"Cer",
+	"Rub",
+	"ERA",
+	"Alum",
+	"Texto"
+}
+
 function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
 
 	local problems = {} --problems table definition
@@ -97,9 +114,19 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
 	-- check material
 	-- Allowed materials: rha, cast and aluminum
 	if ACF.Legal.Ignore.Material <= 0 then
-		local material = Ent.ACF and Ent.ACF.Material or 0
-		if material > 1 then
-			if material ~= 5 then table.insert(problems,"Material not legal") end
+
+		local material = Ent.ACF and Ent.ACF.Material or "RHA"
+
+		-- Change numeric ids from old material to the new string material ids. Yeah, because ACF is no updating props when being spawned from a old dupe on spawn.
+		if not isstring(material) then
+
+			local Mat_ID = material + 1
+			material = BackCompMat[Mat_ID]
+
+		end
+
+		if not AllowedMaterials[material] then
+			table.insert(problems,"Material not legal")
 		end
 	end
 

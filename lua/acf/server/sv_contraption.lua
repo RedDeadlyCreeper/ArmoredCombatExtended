@@ -3,41 +3,63 @@
 
 --ACE = ACE or {}
 
-ACE.contraptionEnts = {}   --table which will have all registered ents
+ACE.contraptionEnts = {}	--table which will have all registered ents
 
-ACE.radarEntities = {}  --for tracking radar usage
-ACE.radarIDs = {}       --ID radar purpose
-ACE.ECMPods = {}        --ECM usage
+ACE.radarEntities 	= {}	--for tracking radar usage
+ACE.radarIDs 		= {}	--ID radar purpose
+ACE.ECMPods 		= {}	--ECM usage
+ACE.Opticals 		= {}	--GLATGM optical computers
+ACE.Explosives		= {}	--Explosive entities like ammocrates & fueltanks go here
 
-ACE.Debris = {}         --Debris count
+ACE.Debris 			= {}	--Debris count
 
 --list of classname ents which should be added to the contraption ents. 
 local AllowedEnts = {
     
-	[ "acf_rack" ] = true,
+	[ "acf_rack" ] 					= true,
     [ "prop_vehicle_prisoner_pod" ] = true,
-	[ "ace_crewseat_gunner" ] = true,
-	[ "ace_crewseat_loader" ] = true,
-	[ "ace_crewseat_driver" ] = true,
-	[ "ace_rwr_dir" ] = true,
-	[ "ace_rwr_sphere" ] = true,
-	[ "acf_missileradar" ] = true,
-	[ "acf_opticalcomputer" ] = true,
-	[ "gmod_wire_expression2" ] = true,
-	[ "gmod_wire_gate" ] = true,          
-    [ "prop_physics" ] = true,
-	[ "ace_ecm" ] = true,
-	[ "ace_trackingradar" ] = true,
-	[ "ace_irst" ] = true,
-	[ "acf_gun" ] = true,
-	[ "acf_ammo" ] = true,
-	[ "acf_engine" ] = true,
-	[ "acf_fueltank" ] = true,
-	[ "acf_gearbox" ] = true
+	[ "ace_crewseat_gunner" ] 		= true,
+	[ "ace_crewseat_loader" ] 		= true,
+	[ "ace_crewseat_driver" ] 		= true,
+	[ "ace_rwr_dir" ] 				= true,
+	[ "ace_rwr_sphere" ] 			= true,
+	[ "acf_missileradar" ] 			= true,
+	[ "acf_opticalcomputer" ] 		= true,
+	[ "gmod_wire_expression2" ] 	= true,
+	[ "gmod_wire_gate" ] 			= true,          
+    [ "prop_physics" ] 				= true,
+	[ "ace_ecm" ] 					= true,
+	[ "ace_trackingradar" ] 		= true,
+	[ "ace_irst" ] 					= true,
+	[ "acf_gun" ] 					= true,
+	[ "acf_ammo" ] 					= true,
+	[ "acf_engine" ] 				= true,
+	[ "acf_fueltank" ] 				= true,
+	[ "acf_gearbox" ] 				= true
 
 }
 
+--used mostly by contraption. Put here any entity which contains IsExplosive boolean
+ACE.ExplosiveEnts = {
+
+	[ "acf_ammo" ] 					= true,
+	[ "acf_fueltank" ] 				= true
+
+}
+
+-- whitelist for things that can be turned into debris
+ACF.Debris = {
+	["acf_gun"] 					= true,
+	["acf_rack"] 					= true,
+	["acf_gearbox"] 				= true,
+	["acf_engine"] 					= true,
+	["prop_physics"] 				= true,
+	["prop_vehicle_prisoner_pod"] 	= true
+}
+
+
 -- insert any new entity to the Contraption List
+-- Maybe in a future: Change if-else chains by tables
 hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 	
 	if not IsValid(Ent) then return end
@@ -48,15 +70,27 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 		-- include any ECM to this table	
 		if Ent:GetClass() == 'ace_ecm' then 
 
-			table.insert( ACE.ECMPods , Ent) --print('[ACE | INFO]- ECM registered count: '..table.Count( ACE.ECMPods ))
-			-- include any Tracking Radar to this table
-
+			table.insert( ACE.ECMPods , Ent) 					--print('[ACE | INFO]- ECM registered count: '..table.Count( ACE.ECMPods ))
+			
+		-- include any Tracking Radar to this table
 		elseif Ent:GetClass() == 'ace_trackingradar' then 
-			table.insert( ACE.radarEntities , Ent) --print('[ACE | INFO]Tracking radar registered count: '..table.Count( ACE.radarEntities ))	
+
+			table.insert( ACE.radarEntities , Ent) 				--print('[ACE | INFO]- Tracking radar registered count: '..table.Count( ACE.radarEntities ))	
 				
 			for id, ent in pairs(ACE.radarEntities) do
 		        ACE.radarIDs[ent] = id
 		    end
+
+		--Optical Computers go here
+		elseif Ent:GetClass() == 'acf_opticalcomputer' then
+
+			table.insert( ACE.Opticals, Ent )  					--print('[ACE | INFO]- GLATGM optical computer registered count: '..table.Count( ACE.Opticals ))	
+
+		--Insert Ammocrates and other explosive stuff here
+		elseif ACE.ExplosiveEnts[ Ent:GetClass() ] then
+
+			table.insert(ACE.Explosives, Ent)				--print('[ACE | INFO]- Explosive registered count: '..table.Count( ACE.Explosives ))
+
 		end
 
 		-- Finally, include the whitelisted entity to the main table ( contraptionEnts )
@@ -66,6 +100,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 			--print('[ACE | INFO]- an entity '..Ent:GetClass()..' has been registered!')
 			--print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
 		end
+
 	elseif Ent:GetClass() == 'ace_debris' then 
 		table.insert( ACE.Debris , Ent ) --print('Adding - Count: '..#ACE.Debris)
 	end
@@ -114,6 +149,39 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 							
 						    --print('[ACE | INFO]- the TrRadar '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
 							--print('Tracking radar registered count: '..table.Count( ACE.radarEntities ))				
+							
+							break
+						end						
+				    end		
+                end					
+            -- Remove this GLATGM optical Computer from list if deleted			
+			elseif Ent:GetClass() == 'acf_opticalcomputer' then
+			    for i = 1, table.Count( ACE.Opticals ) do
+				    if ACE.Opticals[i]:IsValid() and Ent:IsValid() then
+					
+					    local Optical = ACE.Opticals[i]
+						
+						if Optical:EntIndex() == Ent:EntIndex() then						
+							table.remove( ACE.Opticals , i)
+							
+						    --print('[ACE | INFO]- the Optical '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+							--print('GLATGM optical computer registered count: '..table.Count( ACE.Opticals ))				
+							
+							break
+						end						
+				    end		
+                end					
+			elseif ACE.ExplosiveEnts[ Ent:GetClass() ] then
+			    for i = 1, table.Count( ACE.Explosives ) do
+				    if ACE.Explosives[i]:IsValid() and Ent:IsValid() then
+					
+					    local Explosive = ACE.Explosives[i]
+						
+						if Explosive:EntIndex() == Ent:EntIndex() then						
+							table.remove( ACE.Explosives , i)
+							
+						    --print('[ACE | INFO]- the Explosive '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+							--print('[ACE | INFO]- Explosive registered count: '..table.Count( ACE.Explosives ))			
 							
 							break
 						end						

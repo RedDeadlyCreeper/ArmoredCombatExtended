@@ -41,7 +41,7 @@ if CLIENT then
 		for n in pairs(Tanks) do table.insert(SortedTanks,n) end
 		table.sort(SortedTanks)
 		
-		acfmenupanel:CPanelText("Name", Table.name)
+		acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 		acfmenupanel:CPanelText("Desc", Table.desc)
 		
 		-- tank size dropbox
@@ -84,18 +84,15 @@ if CLIENT then
 		
 		local Tanks = list.Get("ACFEnts").FuelTanks
 		
-		local TankID = acfmenupanel.FuelTankData.Id
-		local FuelID = acfmenupanel.FuelTankData.FuelID
-		local Dims = Tanks[TankID].dims
-		
-		--print(Dims.V)
-		--print(Dims.S)
+		local TankID 	= acfmenupanel.FuelTankData.Id
+		local FuelID 	= acfmenupanel.FuelTankData.FuelID
+		local Dims 		= Tanks[TankID].dims
 
-		local Wall = 0.03937 --wall thickness in inches (1mm)
-		local Volume = Dims.V - (Dims.S * Wall) -- total volume of tank (cu in), reduced by wall thickness
-		local Capacity = Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
-		local EmptyMass = ((Dims.S * Wall)*16.387)*(7.9/1000) -- total wall volume * cu in to cc * density of steel (kg/cc)
-		local Mass = EmptyMass + Capacity * ACF.FuelDensity[FuelID] -- weight of tank + weight of fuel
+		local Wall 		= 0.03937 												-- wall thickness in inches (1mm)
+		local Volume 	= Dims.V - (Dims.S * Wall) 								-- total volume of tank (cu in), reduced by wall thickness
+		local Capacity 	= Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 	-- internal volume available for fuel in liters, with magic realism number
+		local EmptyMass = ((Dims.S * Wall)*16.387)*(7.9/1000) 					-- total wall volume * cu in to cc * density of steel (kg/cc)
+		local Mass 		= EmptyMass + Capacity * ACF.FuelDensity[FuelID] 		-- weight of tank + weight of fuel
 			
 		--fuel and tank info
 		if FuelID == "Electric" then
@@ -129,39 +126,50 @@ if CLIENT then
 			acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
 		end
 		acfmenupanel.CData.DisplayModel:SetModel( Tanks[TankID].model )
-		
+		acfmenupanel:CPanelText("FuelTankParentable", "\nThis entity can be parented.\n", "DermaDefaultBold")
+
 	end
 	
 	return
 	
 end
 
+local FueltankWireDescs = {
+	--Inputs
+	["Refuel"]	 	= "Allows to this tank to supply other fuel tanks.\n Fuel type must be equal to the tank which you want to supply.",
+
+	--Outputs
+	["Fuel"]	 	= "Returns the current fuel level.",
+	["Capacity"]	= "Returns the max capacity of this fuel tank.",
+	["Leaking"]	 	= "Is the fuel tank leaking?"
+}
+
 function ENT:Initialize()
 	
-	self.CanUpdate = true
-	self.SpecialHealth = true	--If true, use the ACF_Activate function defined by this ent
-	self.SpecialDamage = true	--If true, use the ACF_OnDamage function defined by this ent
-	self.IsExplosive = true		
-	self.Exploding = false
+	self.CanUpdate 		= true
+	self.SpecialHealth 	= true	--If true, use the ACF_Activate function defined by this ent
+	self.SpecialDamage 	= true	--If true, use the ACF_OnDamage function defined by this ent
+	self.IsExplosive 	= true		
+	self.Exploding 		= false
 	
-	self.Size = 0 --outer dimensions
-	self.Volume = 0 --total internal volume in cubic inches
-	self.Capacity = 0  --max fuel capacity in liters
-	self.Fuel = 0  --current fuel level in liters
-	self.FuelType = nil
-	self.EmptyMass = 0 --mass of tank only
+	self.Size 			= 0 	--outer dimensions
+	self.Volume 		= 0 	--total internal volume in cubic inches
+	self.Capacity 		= 0  	--max fuel capacity in liters
+	self.Fuel 			= 0  	--current fuel level in liters
+	self.FuelType 		= nil
+	self.EmptyMass 		= 0 	--mass of tank only
 	self.NextMassUpdate = 0
-	self.Id = nil --model id
-	self.Active = false
-	self.SupplyFuel = false
-	self.Leaking = 0
+	self.Id 			= nil 	--model id
+	self.Active 		= false
+	self.SupplyFuel 	= false
+	self.Leaking 		= 0
 	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal = true
-	self.LegalIssues = ""
+	self.Legal 			= true
+	self.LegalIssues 	= ""
 	
-	self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty" } )
+	self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty ("..FueltankWireDescs["Refuel"]..")" } )
 	self.Outputs = WireLib.CreateSpecialOutputs( self,
-		{ "Fuel", "Capacity", "Leaking", "Entity" }, 
+		{ "Fuel ("..FueltankWireDescs["Fuel"]..")", "Capacity ("..FueltankWireDescs["Capacity"]..")", "Leaking ("..FueltankWireDescs["Leaking"]..")", "Entity" }, 
 		{ "NORMAL", "NORMAL", "NORMAL", "ENTITY" }
 	)
 	Wire_TriggerOutput( self, "Leaking", 0 )

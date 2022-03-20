@@ -37,7 +37,7 @@ function ENT:Think()
 
 	if self.ACF.Health < self.ACF.MaxHealth*0.989 then
 		ACF_HEKill( self, VectorRand() , 0)	
-		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav",500,100)
+		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav")
 	end
 
 end

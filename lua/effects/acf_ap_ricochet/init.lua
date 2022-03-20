@@ -26,7 +26,7 @@
 	--debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
 	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin - self.DirVec*2000, 2 , Color(math.random(100,255),0,0) )
 
-	self.Cal = self.Entity:GetNWString("Caliber", 2 )
+	self.Cal = self.Ent:GetNWFloat("Caliber", 2 )
 	ACEE_SRico( self.Origin, self.Cal, self.Velocity, SurfaceTr.HitWorld )
 
 	--this is crucial for subcaliber, this will boost the dust's size.
@@ -103,7 +103,7 @@ function EFFECT:Dust( SmokeColor )
 	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
 
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.0075 * Boost ,2)
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.0075 * Boost ,5)/2.5
 
 	for i=0, math.max(self.Cal/3,1) do
 

@@ -26,8 +26,7 @@ this.ViewCone = 25
 this.SeekTolerance = math.cos( math.rad( 2 ) )
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 100000 -- The re-seek cycle is expensive, let's disable it until we figure out some optimization.
---note that we halved this, making anti-missiles expensive relatively
+this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
 
 -- Delay between re-seeks if an entity is provided via wiremod.
 this.WireSeekDelay = 0.1
@@ -39,7 +38,8 @@ this.MinimumDistance = 196.85	--a scant 5m
 -- thanks to Sestze for the listing.
 this.DefaultFilter = 
 {
-	acf_missile					= true
+	acf_missile					= true,
+	acf_glatgm					= true
 }
 
 
@@ -216,28 +216,23 @@ function this:GetWireTarget(missile)
     
 end
 
-
-
---ents.findincone not working? weird.
---TODO: add a check on the allents table to ignore if parent is valid
 function JankCone (init, forward, range, cone)
-	local allents = ents.GetAll()
+	local Missiles = ACF_ActiveMissiles
 	local tblout = {}
-	
-	for k, v in pairs (allents) do
-		if not IsValid(v) then continue end
-		local dist = (v:GetPos() - init):Length()
-		local ang = math.deg(math.acos(math.Clamp(((v:GetPos() - init):GetNormalized()):Dot(forward), -1, 1)))
-		if (dist > range) then continue end
-		if (ang > cone) then continue end
+
+	if table.Count(Missiles) > 0 then
+		for v, _ in pairs (Missiles) do
+			if not IsValid(v) then continue end
+			local dist = (v:GetPos() - init):Length()
+			local ang = math.deg(math.acos(math.Clamp(((v:GetPos() - init):GetNormalized()):Dot(forward), -1, 1)))
+			if (dist > range) then continue end
+			if (ang > cone) then continue end
 		
-		table.insert(tblout, v)
+			table.insert(tblout, v)
+		end
 	end
 	return tblout
 end
-
-
-
 
 function this:GetWhitelistedEntsInCone(missile)
 
@@ -383,10 +378,16 @@ end
 
 
 
-function this:GetDisplayConfig()
+--Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
+function this:GetDisplayConfig(Type)
+
+	local seekCone = ACF.Weapons.Guns[Type].seekcone * 2 or 0
+	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
+
 	return 
 	{
-		["Seeking"] = math.Round(self.SeekCone * 2, 1) .. " deg",
-		["Tracking"] = math.Round(self.ViewCone * 2, 1) .. " deg"
+		["Seeking"] = math.Round(seekCone, 1) .. " deg",
+		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
 	}
 end
+

@@ -466,7 +466,7 @@ Component:AddFunctionHelper( "acfPropArmorMax", "e:", "Returns the current max a
 Component:AddInlineFunction( "acfPropDuctility", "e:", "n", "(@value 1:IsValid() and !EXPADV.Components.acf.restrictInfo(Context.player, @value 1) and $ACF_Check(@value 1) and (@value 1.ACF.Ductility or 0) * 100 or 0)" )
 Component:AddFunctionHelper( "acfPropDuctility", "e:", "Returns the ductility of an entity." )
 
-Component:AddInlineFunction( "acfPropMaterial", "e:", "n", "(@value 1:IsValid() and !EXPADV.Components.acf.restrictInfo(Context.player, @value 1) and $ACF_Check(@value 1) and (@value 1.ACF.Material or 0) or 0)" )
+Component:AddInlineFunction( "acfPropMaterial", "e:", "s", "(@value 1:IsValid() and !EXPADV.Components.acf.restrictInfo(Context.player, @value 1) and $ACF_Check(@value 1) and (@value 1.ACF.Material or 'RHA') or 'RHA')" )
 Component:AddFunctionHelper( "acfPropMaterial", "e:", "Returns the material of an entity." )
 
 -- [ Fuel Functions ] --
