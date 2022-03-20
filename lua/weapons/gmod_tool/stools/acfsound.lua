@@ -29,7 +29,12 @@ ACF.SoundToolSupport = {
 			local Class = ent.Class
 			local Classes = list.Get("ACFClasses")
 			
-			local soundData = {Sound = Classes["GunClass"][Class]["sound"]}
+			local List = list.Get("ACFEnts")
+			local lookup = List.Guns[ent.Id]
+
+			local sound = lookup.sound or Classes["GunClass"][Class]["sound"]
+
+			local soundData = {Sound = sound}
 			
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
@@ -57,15 +62,13 @@ ACF.SoundToolSupport = {
 	},
 }
 
-
-
-
 local function ReplaceSound( ply , Entity , data)
 	if !IsValid( Entity ) then return end
 	local sound = data[1]
 	local pitch = data[2] or 1
 	
 	timer.Simple(1, function()
+		if not IsValid( Entity ) then return end --Caused by insta removal of the dupe
 		local class = Entity:GetClass()
 		
 		local support = ACF.SoundToolSupport[class]
@@ -78,8 +81,6 @@ local function ReplaceSound( ply , Entity , data)
 end
 
 duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound )
-
-
 
 
 local function IsReallyValid(trace, ply)
@@ -107,9 +108,6 @@ local function IsReallyValid(trace, ply)
 	
 end
 
-
-
-
 function TOOL:LeftClick( trace )
 	if CLIENT then return true end
 	if not IsReallyValid( trace, self:GetOwner() ) then return false end
@@ -119,9 +117,6 @@ function TOOL:LeftClick( trace )
 	ReplaceSound( self:GetOwner(), trace.Entity, {sound, pitch} )
 	return true
 end
-
-
-
 
 function TOOL:RightClick( trace )
 	if CLIENT then return true end
@@ -142,9 +137,6 @@ function TOOL:RightClick( trace )
 	return true
 end
 
-
-
-
 function TOOL:Reload( trace )
 	if CLIENT then return true end
 	if not IsReallyValid( trace, self:GetOwner() ) then return false end
@@ -157,9 +149,6 @@ function TOOL:Reload( trace )
 	
 	return true
 end
-
-
-
 
 function TOOL.BuildCPanel(panel)
 	local wide = panel:GetWide()

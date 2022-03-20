@@ -1,77 +1,45 @@
 include ("shared.lua")
 
+ENT.RenderGroup 		= RENDERGROUP_OPAQUE
 
 
-function ENT:Draw()
-	self:DoNormalDraw()
-	self:DrawModel()	
-    Wire_Render(self)
+local ACF_GunInfoWhileSeated = CreateClientConVar("ACF_GunInfoWhileSeated", 0, true, false)
+
+function ENT:Initialize()
+		
+	self.BaseClass.Initialize( self )
+	
 end
 
-
-
-function ENT:DoNormalDraw()
-
-	local drawbubble = self:GetNWBool("VisInfo", false)
+function ENT:Draw() 
 	
-	if not drawbubble then return end
-	if not (LocalPlayer():GetEyeTrace().Entity == self and EyePos():Distance(self:GetPos()) < 256) then return end
-	
-	local tooltip = self:GetOverlayText()
-	
-	if (tooltip ~= "") then
-		AddWorldTip(self:EntIndex(), tooltip, 0.5, self:GetPos(), self)
+	local lply = LocalPlayer()
+	local hideBubble = not ACF_GunInfoWhileSeated:GetBool() and IsValid(lply) and lply:InVehicle()
+		
+	self.BaseClass.DoNormalDraw(self, false, hideBubble)
+	Wire_Render(self)
+		
+	if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then 
+		-- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
+		Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false ) 
 	end
 		
 end
-
-
-
-function ENT:GetOverlayText()
-	
-	local cone 	 = self:GetNWFloat("ConeDegs", 0)
-	local range	 = self:GetNWFloat("Range", 0)
-	local id 	 = self:GetNWString("Id", "")
-	local status = self:GetNWString("Status", "")
-	
-	local ret = {}
-	ret[#ret+1] = id
-	
-	if cone > 0 then
-		ret[#ret+1] = "\nScanning angle: "
-		ret[#ret+1] = math.Round(cone * 2, 2)
-		ret[#ret+1] = " deg"
-	end
-	
-	if range > 0 then
-		ret[#ret+1] = "\nDetection range: "
-		ret[#ret+1] = math.Round(range / 39.37 , 2)
-		ret[#ret+1] = " m"
-	end
-	
-	if status ~= "" then
-		ret[#ret+1] = "\n("
-		ret[#ret+1] = status
-		ret[#ret+1] = ")"
-	end
-	
-	return table.concat(ret)
-end
-
-
 
 function ACFRadarGUICreate( Table )
-		
-	acfmenupanel:CPanelText("Name", Table.name)
 	
-	acfmenupanel.CData.DisplayModel = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
-		acfmenupanel.CData.DisplayModel:SetModel( Table.model )
-		acfmenupanel.CData.DisplayModel:SetCamPos( Vector( 250, 500, 250 ) )
-		acfmenupanel.CData.DisplayModel:SetLookAt( Vector( 0, 0, 0 ) )
-		acfmenupanel.CData.DisplayModel:SetFOV( 20 )
-		acfmenupanel.CData.DisplayModel:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-		acfmenupanel.CData.DisplayModel.LayoutEntity = function( panel, entity ) end
-	acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
+	acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
+	
+	local RadarMenu = acfmenupanel.CData.DisplayModel
+
+	RadarMenu = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
+		RadarMenu:SetModel( Table.model )
+		RadarMenu:SetCamPos( Vector( 250, 500, 250 ) )
+		RadarMenu:SetLookAt( Vector( 0, 0, 0 ) )
+		RadarMenu:SetFOV( 20 )
+		RadarMenu:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
+		RadarMenu.LayoutEntity = function( panel, entity ) end
+	acfmenupanel.CustomDisplay:AddItem( RadarMenu )
 	
 	acfmenupanel:CPanelText("ClassDesc", ACF.Classes.Radar[Table.class].desc)	
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
@@ -79,11 +47,8 @@ function ACFRadarGUICreate( Table )
 	acfmenupanel:CPanelText("ViewRange", "View range : ".. (Table.range and (math.Round(Table.range / 39.37, 1) .. " m") or "unlimited"))
 	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.." kg")
 	
-	if Table.canparent then
-		acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented.")
-	end
-	
+	acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n", "DermaDefaultBold")
+
 	acfmenupanel.CustomDisplay:PerformLayout()
 	
 end
-

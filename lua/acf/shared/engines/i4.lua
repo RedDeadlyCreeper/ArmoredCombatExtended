@@ -15,8 +15,6 @@ ACF_DefineEngine( "1.5-I4", {
 	torque = 90,
 	flywheelmass = 0.06,
 	idlerpm = 900,
-	peakminrpm = 4000,
-	peakmaxrpm = 6500,
 	limitrpm = 7500
 } )
 
@@ -32,8 +30,6 @@ ACF_DefineEngine( "3.7-I4", {
 	torque = 240,
 	flywheelmass = 0.2,
 	idlerpm = 900,
-	peakminrpm = 3700,
-	peakmaxrpm = 6000,
 	limitrpm = 6500
 } )
 
@@ -49,8 +45,6 @@ ACF_DefineEngine( "16.0-I4", {
 	torque = 850,
 	flywheelmass = 4,
 	idlerpm = 500,
-	peakminrpm = 1750,
-	peakmaxrpm = 3250,
 	limitrpm = 3500
 } )
 
@@ -68,8 +62,6 @@ ACF_DefineEngine( "1.6-I4", {
 	torque = 150,
 	flywheelmass = 0.2,
 	idlerpm = 650,
-	peakminrpm = 1000,
-	peakmaxrpm = 3000,
 	limitrpm = 5000
 } )
 
@@ -85,8 +77,6 @@ ACF_DefineEngine( "3.1-I4", {
 	torque = 320,
 	flywheelmass = 1,
 	idlerpm = 500,
-	peakminrpm = 1150,
-	peakmaxrpm = 3500,
 	limitrpm = 4000
 } )
 
@@ -102,7 +92,5 @@ ACF_DefineEngine( "15.0-I4", {
 	torque = 1400,
 	flywheelmass = 5,
 	idlerpm = 450,
-	peakminrpm = 500,
-	peakmaxrpm = 1800,
 	limitrpm = 2100
 } )

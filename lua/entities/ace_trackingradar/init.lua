@@ -3,38 +3,94 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+DEFINE_BASECLASS( "base_wire_entity" )
 
 function ENT:Initialize()
 
-	self.ThinkDelay = 0.1
+	self.ThinkDelay 			= 0.1
+	self.StatusUpdateDelay 		= 0.5
+	self.LastStatusUpdate 		= CurTime()
+	self.Active 				= false
+	
+	self.Heat 					= 21
+	self.IsJammed				= 0
 
-	self.Active = false
-	curTime = 0
-
-	self:SetModel( "models/missiles/radar_big.mdl" )
-	self:PhysicsInit(SOLID_VPHYSICS)
-
-	self:GetPhysicsObject():SetMass(600)
+	self.LegalTick 				= 0
+	self.checkLegalIn 			= 50 + math.random(0,50) -- Random checks every 5-10 seconds
+	self.IsLegal 				= true
+	self.ClosestToBeam			= -1
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
 	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam","IsJammed"} )
 
-	self:SetActive(false)
+end
 
-	self.Cone = 15 --30 degree default cone
-	self.InaccuracyMul = (0.035 * (self.Cone/15)^2)*0.2 
-	self.DPLRFAC = 65-(self.Cone/2)
+function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
+
+	if not Owner:CheckLimit("_acf_missileradar") then return false end
+
+	Id = Id or "Large-TRACK"
+
+	local radar = ACF.Weapons.Radar[Id]
 	
-	self.Heat = 21
+	if not radar then return false end
+	
+	local Radar = ents.Create("ace_trackingradar")
+	if not Radar:IsValid() then return false end
 
-	self.LegalTick = 0
-	self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
-	self.IsLegal = true
-	self.ConeInducedGCTRSize = self.Cone * 10
+	Radar:SetAngles(Angle)
+	Radar:SetPos(Pos)
+	
+	Radar.Model 				= radar.model
+	Radar.Weight 				= radar.weight
+	Radar.ACFName 				= radar.name		
+	Radar.ICone 				= radar.viewcone	--Note: intentional. --Recorded initial cone
+	Radar.Cone 					= Radar.ICone
+	Radar.InaccuracyMul 		= (0.035 * (Radar.Cone/15)^2)*0.2 
+	Radar.DPLRFAC 				= 65-(Radar.Cone/2)
+	Radar.ConeInducedGCTRSize 	= Radar.Cone * 10
+
+	Radar.Id 					= Id
+	Radar.Class 				= radar.class
+	
+	Radar:Spawn()
+	
+	Radar.Owner = CPPI and Radar:CPPISetOwner(Owner) or Radar:SetPlayer(Owner)
+	
+	Radar:SetModelEasy(radar.model)
+
+	Radar:SetNWString( "WireName", Radar.ACFName )
+
+	Radar:UpdateOverlayText()
+
+	Owner:AddCount( "_acf_missileradar", Radar )
+	Owner:AddCleanup( "acfmenu", Radar )
+
+	return Radar
+	
+end
+list.Set( "ACFCvars", "ace_trackingradar", {"id"} )
+duplicator.RegisterEntityClass("ace_trackingradar", MakeACE_TrackingRadar, "Pos", "Angle", "Id" )
+
+function ENT:SetModelEasy(mdl)
+
+	local Rack = self
+	
+	Rack:SetModel( mdl )	
+	Rack.Model = mdl
+	
+	Rack:PhysicsInit( SOLID_VPHYSICS )      	
+	Rack:SetMoveType( MOVETYPE_VPHYSICS )     	
+	Rack:SetSolid( SOLID_VPHYSICS )
+	
+	local phys = Rack:GetPhysicsObject()  	
+	if (phys:IsValid()) then 
+		phys:SetMass(Rack.Weight)
+	end 	
+	
 end
 
 --ATGMs tracked
-
 function ENT:isLegal()
 
 	if self:GetPhysicsObject():GetMass() < 600 then return false end
@@ -48,19 +104,24 @@ function ENT:isLegal()
 
 end
 
-
-
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
 		self:SetActive((value ~= 0) and self:isLegal())
 	end
 	if inp == "Cone" then
-		self.Cone = math.Clamp(value/2,3,45)
-		local curTime = CurTime()	
-		self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
-		self.InaccuracyMul = (0.035 * (self.Cone/15)^2)*0.2     -- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
-		self.DPLRFAC = 90-(self.Cone/2)
-		self.ConeInducedGCTRSize = self.Cone * 10
+		if value > 0 then
+
+			self.Cone = math.Clamp(value/2,3,45)
+			local curTime = CurTime()	
+			self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
+			self.InaccuracyMul = (0.035 * (self.Cone/15)^2)*0.2     -- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
+			self.DPLRFAC = 90-(self.Cone/2)
+			self.ConeInducedGCTRSize = self.Cone * 10
+		else
+			self.Cone = self.ICone
+		end
+
+		self:UpdateOverlayText()
 	end
 end
 
@@ -108,32 +169,32 @@ function ENT:Think()
     if self.Active and self.IsLegal then
 
 	    local radID = ACE.radarIDs[self]
-	    local beingjammed = 0
+	    self.IsJammed = 0
 	    for k, scanEnt in pairs(ACE.ECMPods) do
 
 		    if scanEnt.CurrentlyJamming == radID then
-		    	beingjammed = 1
+		    	self.IsJammed = 1
 		    end
 
 	    end
 
-	    WireLib.TriggerOutput( self, "IsJammed", beingjammed )
+	    WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
 
-        if beingjammed < 1 then
+        if self.IsJammed <= 0 then
 
         	--Get all ents collected by contraptionScan
 	        local ScanArray = ACE.contraptionEnts
 
-	        local thisPos = self:GetPos()
-	        local thisforward = self:GetForward()
-	        local randinac = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-	        local randinac2 = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) --Using one inaccuracy was boring
+	        local thisPos 		= self:GetPos()
+	        local thisforward 	= self:GetForward()
+	        local randinac 		= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) 	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
+	        local randinac2 	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) 	--Using one inaccuracy was boring
 
-	        local ownArray = {}
-	        local posArray = {}
-	        local velArray = {}
+	        local ownArray 		= {}
+	        local posArray 		= {}
+	        local velArray 		= {}
 
-	        local testClosestToBeam = -1
+	        self.ClosestToBeam 	= -1
 	        local besterr = math.huge --Hugh mungus number
 
 
@@ -151,13 +212,13 @@ function ENT:Think()
 		        	--skip any parented entity
 		        	if scanEnt:GetParent():IsValid() then goto cont end
 
-			        local entvel = scanEnt:GetVelocity()
+			        local entvel 	= scanEnt:GetVelocity()
 			        local velLength = entvel:Length()
-			        local entpos = scanEnt:WorldSpaceCenter()
+			        local entpos 	= scanEnt:WorldSpaceCenter()
 
-			        local difpos = (entpos - thisPos)
-			        local ang = self:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
-			        local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+			        local difpos 	= (entpos - thisPos)
+			        local ang 		= self:WorldToLocalAngles(difpos:Angle())		--Used for testing if inrange
+			        local absang 	= Angle(math.abs(ang.p),math.abs(ang.y),0)	--Since I like ABS so much
 
 				    --Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
 			        local errorFromAng = Vector(0.05*(absang.y/self.Cone)^2,0.02*(absang.y/self.Cone)^2,0.02*(absang.p/self.Cone)^2)    
@@ -229,7 +290,7 @@ function ENT:Think()
 
 							    --Sorts targets as closest to being directly in front of radar
 							    if err < besterr then 
-								    testClosestToBeam = table.getn( ownArray ) + 1
+								    self.ClosestToBeam = table.getn( ownArray ) + 1
 								    besterr = err
 							    end
 						        --print((entpos - thisPos):Length())
@@ -265,13 +326,13 @@ function ENT:Think()
 	        --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
 
 			--Some entity passed the test to be valid
-	        if testClosestToBeam != -1 then 
+	        if self.ClosestToBeam != -1 then 
 
 		        WireLib.TriggerOutput( self, "Detected", 1 )
 		        WireLib.TriggerOutput( self, "Owner", ownArray )
 		        WireLib.TriggerOutput( self, "Position", posArray )
 		        WireLib.TriggerOutput( self, "Velocity", velArray )
-		        WireLib.TriggerOutput( self, "ClosestToBeam", testClosestToBeam )		
+		        WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )		
 
 	        else --Nothing detected
 		        WireLib.TriggerOutput( self, "Detected", 0 )
@@ -280,22 +341,52 @@ function ENT:Think()
 		        WireLib.TriggerOutput( self, "Velocity", {} )
 		        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )	
 	        end
-
 	    end
     end
 
+    if (self.LastStatusUpdate + self.StatusUpdateDelay < curTime) then
+		self:UpdateStatus()
+		self.LastStatusUpdate = curTime
+	end
+
+    self:UpdateOverlayText()
+
 end
 
+function ENT:UpdateStatus()
 
-function ENT:OnRemove()
-
+	if self.Active then
+		self.Status = "On"
+	else
+		self.Status = "Off"
+	end
 end
 
+function ENT:UpdateOverlayText()
+	
+	local cone 	 	= self.Cone
+	local status 	= self.Status or "Off"
+	local detected 	= (self.ClosestToBeam != -1)
+	local Jammed 	= self.IsJammed
 
+	local txt = "Status: "..status
 
+	txt = txt.."\n\nView Cone: "..math.Round(cone * 2, 2).." deg"
 
+	--txt = txt.."\nMax Range: "..(isnumber(range) and math.Round(range / 39.37 , 2).." m" or "Unlimited" )
 
+	if detected then
+		txt = txt.."\n\nTarget Detected!"
+	end
 
+	if Jammed > 0 then
+		txt = txt.."\n\nWarning: Jammed"
+	end
 
+	--if not self.Legal then
+	--	txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	--end
 
+    self:SetOverlayText(txt)
 
+end

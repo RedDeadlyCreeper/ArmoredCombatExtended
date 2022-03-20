@@ -25,88 +25,71 @@ end
 
 function ENT:Think()
 
-if self.MineState < 2 then --Mine actively jumping should have more tickrate for some reason. Imagine that.
-
+	if self.MineState < 2 then --Mine actively jumping should have more tickrate for some reason. Imagine that.
 
 		self.TimeVar = self.TimeVar + 1
 
-			if self.TimeVar >= 4 then
-				self.TimeVar = 0
+		if self.TimeVar >= 4 then
+			self.TimeVar = 0
 
-				if self.MineState == 0 then --Mine not buried in ground. Mine will look for ground.
+			if self.MineState == 0 then --Mine not buried in ground. Mine will look for ground.
 
-					local groundRanger = util.TraceLine( {
-						start = self:GetPos() + Vector(0,0,20),
-						endpos = self:GetPos() + Vector(0,0,-50),
-						collisiongroup = COLLISION_GROUP_WORLD,
-						filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
-					} )	
+				local groundRanger = util.TraceLine( {
+					start = self:GetPos() + Vector(0,0,20),
+					endpos = self:GetPos() + Vector(0,0,-50),
+					collisiongroup = COLLISION_GROUP_WORLD,
+					filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
+				} )	
 					
-					if groundRanger.Hit and groundRanger.HitWorld then
+				if groundRanger.Hit and groundRanger.HitWorld then
+
 					self:SetPos(groundRanger.HitPos+Vector(0,0,7.1))
 					self:SetAngles(groundRanger.HitNormal:Angle()-Angle(90,0,0))
 					self.MineState = 1
 					self.phys:EnableMotion(false)
-					end
+				end
 					--print(groundRanger.Hit)
 					
-				elseif self.MineState == 1 then --Mine activated and searching for enemy
+			elseif self.MineState == 1 then --Mine activated and searching for enemy
 
-					local triggerRanger = util.TraceHull( {
-						start = self:GetPos() + Vector(0,0,52),
-						endpos = self:GetPos() + Vector(0,0,87.1),
-						ignoreworld  = true,
-						mins = Vector( -120, -120, -20 ),
-						maxs = Vector( 120, 120, 20 ),
-						mask = MASK_SHOT_HULL
-					} )
+				local triggerRanger = util.TraceHull( {
+					start = self:GetPos() + Vector(0,0,52),
+					endpos = self:GetPos() + Vector(0,0,87.1),
+					ignoreworld  = true,
+					mins = Vector( -120, -120, -20 ),
+					maxs = Vector( 120, 120, 20 ),
+					mask = MASK_SHOT_HULL
+				} )
 
-					if triggerRanger.Hit then
-						self:SetPos(self:GetPos() + self:GetUp()*-20)
-						self.MineState = 2
-						self.phys:EnableMotion(true)
-						self.phys:ApplyForceCenter(self:GetUp()*self.phys:GetMass()*-230)
-						self.LastTime = CurTime()
-						self:EmitSound("acf_extra/tankfx/guns/m60_fire_1.wav")
-					end
+				if triggerRanger.Hit then
+					self:SetPos(self:GetPos() + self:GetUp()*-20)
+					self.MineState = 2
+					self.phys:EnableMotion(true)
+					self.phys:ApplyForceCenter(self:GetUp()*self.phys:GetMass()*-230)
+					self.LastTime = CurTime()
+					self:EmitSound("acf_extra/tankfx/guns/m60_fire_1.wav")
 				end
-
 			end
+		end
 
-else
+	else
 	
-	local curtime = CurTime()
-	self.FuseTime = self.FuseTime-(curtime-self.LastTime)
-	self.LastTime = CurTime()
+		local curtime = CurTime()
+		self.FuseTime = self.FuseTime-(curtime-self.LastTime)
+		self.LastTime = CurTime()
 
-	if self.FuseTime < 0 then
+		if self.FuseTime < 0 then
 		
-		print(self:GetOwner())
-		ACF_HE( self:GetPos() , Vector(0,0,1) , 4 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+			--print(self:GetOwner())
+			ACF_HE( self:GetPos() , Vector(0,0,1) , 4 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 
-		local Flash = EffectData()
-		Flash:SetOrigin( self:GetPos() - self:GetUp()*6 )
-		Flash:SetNormal( Vector(0,0,-1) )
-		Flash:SetRadius( math.max( 0.2, 1 ) )
-		util.Effect( "ACF_Scaled_Explosion", Flash )
+			local Flash = EffectData()
+				Flash:SetOrigin( self:GetPos() - self:GetUp()*6 )
+				Flash:SetNormal( Vector(0,0,-1) )
+				Flash:SetRadius( math.max( 0.2, 1 ) )
+			util.Effect( "ACF_Scaled_Explosion", Flash )
 
-		self:Remove()
+			self:Remove()
+		end
 	end
-
-
 end
-
-end
-
-
-function ENT:OnRemove()
-end
-
-
-
-
-
-
-
-
-

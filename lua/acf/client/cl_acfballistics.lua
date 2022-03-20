@@ -2,14 +2,17 @@ ACF.BulletEffect = {}
 
 function ACF_ManageBulletEffects()
 	
-	for Index,Bullet in pairs(ACF.BulletEffect) do
-		ACF_SimBulletFlight( Bullet, Index )			--This is the bullet entry in the table, the omnipresent Index var refers to this
+	if ACF.BulletEffect then 
+		for Index,Bullet in pairs(ACF.BulletEffect) do
+			ACF_SimBulletFlight( Bullet, Index )			--This is the bullet entry in the table, the omnipresent Index var refers to this
+		end
 	end
-	
 end
 hook.Add("Think", "ACF_ManageBulletEffects", ACF_ManageBulletEffects)
 
 function ACF_SimBulletFlight( Bullet, Index )
+
+	if not Bullet or not Index then return end
 
 	--local DeltaTime = ACF.CurTime - Bullet.LastThink
 	local DeltaTime = CurTime() - Bullet.LastThink --intentionally not using cached curtime value
@@ -20,7 +23,10 @@ function ACF_SimBulletFlight( Bullet, Index )
 	Bullet.SimPosLast = Bullet.SimPos
 	Bullet.SimPos = Bullet.SimPos + (Bullet.SimFlight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 	Bullet.SimFlight = Bullet.SimFlight + (Bullet.Accel - Drag)*DeltaTime			--Calculates the next shell vector
+
+
 --	print(Bullet.SimFlight:Length()/39.37)
+
 	if Bullet and Bullet.Effect:IsValid() then
 		Bullet.Effect:ApplyMovement( Bullet )
 	end

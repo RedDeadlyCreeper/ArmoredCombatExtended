@@ -7,24 +7,23 @@ ACF.AmmoBlacklist.APFSDS = { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR" 
 
 local Round = {}
 
-Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "[APFSDS-LRP] - "..ACFTranslation.ShellAPFSDS[1] --Human readable name
+Round.type 	= "Ammo" --Tells the spawn menu what entity to spawn
+Round.name 	= "[APFSDS-LRP] - "..ACFTranslation.ShellAPFSDS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
-Round.desc = ACFTranslation.ShellAPFSDS[2]
+Round.desc 	= ACFTranslation.ShellAPFSDS[2]
 Round.netid = 16 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
 
-			ACF_CreateBullet( BulletData )
-			
+	ACF_CreateBullet( BulletData )
 end
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )
 	
-	local Data = {}
-	local ServerData = {}
-	local GUIData = {}
+	local Data 			= {}
+	local ServerData 	= {}
+	local GUIData 		= {}
 	
 	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
@@ -36,82 +35,50 @@ function Round.convert( Crate, PlayerData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
+	--Config for SBC
 	if ACF.Year > 2000 then
 	
+		Data.MinCalMult 	= 0.23
+		Data.MaxCalMult 	= 1.0
+		Data.PenModifier 	= 0.8
+		Data.VelModifier 	= 1.1
+		Data.Ricochet 		= 70
 
-	if GunClass == "C" then
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 0.9
-	Data.Ricochet = 70
-	elseif GunClass == "AL" then
-	Data.MinCalMult = 0.28
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 0.9
-	Data.Ricochet = 70
-	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.8
-	Data.VelModifier = 1.1
-	Data.Ricochet = 70
-	else
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.35
-	Data.VelModifier = 1
-	Data.Ricochet = 70	
-	end
-	
 	else
 
-	if GunClass == "C" then
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1
-	Data.VelModifier = 1
-	Data.Ricochet = 62
-	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.85
-	Data.VelModifier = 1.1
-	Data.Ricochet = 68
-	else
-	Data.MinCalMult = 0.25
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.35
-	Data.VelModifier = 1
-	Data.Ricochet = 62	
-	end
-	
+		Data.MinCalMult 	= 0.23
+		Data.MaxCalMult 	= 1.0
+		Data.PenModifier 	= 0.85
+		Data.VelModifier 	= 1.1
+		Data.Ricochet 		= 68
+
 	end
 	
 	--Used for adapting acf2 apds/apfsds to the new format
 	PlayerData["Data5"] = math.Clamp(PlayerData["Data5"],Data.MinCalMult,Data.MaxCalMult)
 	
-	Data.SCalMult = PlayerData["Data5"]
-	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-	Data.ProjMass = Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 * 0.95 --Volume of the projectile as a cylinder * density of steel
-	Data.ShovePower = 0.2
-	Data.PenAera = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod	
+	Data.SCalMult 		= PlayerData["Data5"]
+	Data.SubFrAera 		= Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
+	Data.ProjMass 		= Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 * 0.95 --Volume of the projectile as a cylinder * density of steel
+	Data.ShovePower 	= 0.2
+	Data.PenAera 		= (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod	
 	
-	Data.DragCoef = ((Data.SubFrAera/10000)/Data.ProjMass)
-	Data.CaliberMod = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
-	Data.LimitVel = 1000										--Most efficient penetration speed in m/s
-	Data.KETransfert = 0.2									--Kinetic energy transfert to the target for movement purposes										
-	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass*2.5, Data.Caliber )* Data.VelModifier
-	Data.BoomPower = Data.PropMass
+	Data.DragCoef 		= ((Data.SubFrAera/10000)/Data.ProjMass)
+	Data.CaliberMod 	= Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
+	Data.LimitVel 		= 1000										--Most efficient penetration speed in m/s
+	Data.KETransfert 	= 0.2									--Kinetic energy transfert to the target for movement purposes										
+	Data.MuzzleVel 		= ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass*2.5, Data.Caliber )* Data.VelModifier
+	Data.BoomPower 		= Data.PropMass
 
-	if SERVER then --Only the crates need this part
-		ServerData.Id = PlayerData.Id
+	--Only the crates need this part
+	if SERVER then 
+		ServerData.Id 	= PlayerData.Id
 		ServerData.Type = PlayerData.Type
 		return table.Merge(Data,ServerData)
 	end
 	
-	if CLIENT then --Only tthe GUI needs this part
+	--Only tthe GUI needs this part
+	if CLIENT then 
 		GUIData = table.Merge(GUIData, Round.getDisplayData(Data))
 		return table.Merge(Data,GUIData)
 	end
@@ -146,32 +113,11 @@ end
 
 function Round.cratetxt( BulletData )
 	
-	--local FrAera = BulletData.FrAera
 	local DData = Round.getDisplayData(BulletData)
-	
-	--fakeent.ACF.Armour = DData.MaxPen or 0
-	--fakepen.Penetration = (DData.MaxPen * FrAera) / ACF.KEtoRHA	
-	--local fakepen = ACF_Kinetic( BulletData.SlugMV*39.37 , BulletData.SlugMass, 9999999 )
-	--local MaxHP = ACF_CalcDamage( fakeent , fakepen , FrAera , 0 )
-	
-	--[[
-	local TotalMass = BulletData.ProjMass + BulletData.PropMass
-	local MassUnit
-	
-	if TotalMass < 0.1 then
-		TotalMass = TotalMass * 1000
-		MassUnit = " g"
-	else
-		MassUnit = " kg"
-	end
-	]]--
-	
 	local str = 
 	{
-		--"Cartridge Mass: ", math.Round(TotalMass, 2), MassUnit, "\n",
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm"
-		--"Max Pen. Damage: ", math.Round(MaxHP.Damage, 1), " HP\n",
 	}
 	
 	return table.concat(str)
@@ -180,28 +126,14 @@ end
 
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 
-	local NormieMult = 1
-	local Mat = Target.ACF.Material or 0
-	if Mat == 1 then
-	NormieMult = 0.8
-	elseif Mat == 2 then
-	NormieMult = 1.5
-	elseif Mat == 3 then
-	NormieMult = 0.05
-	elseif Mat == 5 then
-	NormieMult = 0.7	
-	elseif Mat == 6 then
-	NormieMult=0.5
-	end
+	local Mat = Target.ACF.Material or "RHA"
+	local NormieMult = ACE.Armors[ Mat ].NormMult or 1
 	
 	Bullet.Normalize = true
 	Bullet.Pos = HitPos
+	
 	local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized() --Guess it doesnt need localization
 	local Speed = Bullet.Flight:Length()
-
-
---	local FlightNormal = Bullet.Flight:GetNormalized() + (HitNormal-Bullet.Flight:GetNormalized()) * ACF.NormalizationFactor * NormieMult * 2
---	local FlightNormal = HitNormal
 
 	Bullet.Flight = FlightNormal * Speed
 	
@@ -347,24 +279,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	---------------------------Ammo Capacity-------------------------------------
-	
-	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
-	
-	local plur = 'Contains '..Cap..' round'
-	
-	if Cap > 1 then
-	    plur = 'Contains '..Cap..' rounds'
-	end
-	
-	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
-	
-	if TwoPiece then	
-		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
-	end
-	
-	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
-	
-	-------------------------------------------------------------------------------	
+	ACE_AmmoCapacityDisplay( Data )
+	-------------------------------------------------------------------------------
 	
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	

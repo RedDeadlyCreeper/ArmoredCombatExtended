@@ -34,62 +34,20 @@ function Round.convert( Crate, PlayerData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
 	
-	if GunClass == "AC" then
-	Data.MinCalMult = 0.27
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.8 -- Autocannons are puny anyways
-	Data.VelModifier = 1.6
-	Data.Ricochet = 61
-	elseif GunClass == "RAC" then
-	Data.MinCalMult = 0.45
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.7
-	Data.VelModifier = 1.7
-	Data.Ricochet = 61
-	elseif GunClass == "HRAC" then
-	Data.MinCalMult = 0.45
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.8
-	Data.VelModifier = 1.7
-	Data.Ricochet = 61
-	elseif GunClass == "MG" then
-	Data.MinCalMult = 0.35
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.6
-	Data.VelModifier = 1.8
-	Data.Ricochet = 61
-	elseif GunClass == "SA" then
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.8
-	Data.VelModifier = 1.6
-	Data.Ricochet = 61
-	elseif GunClass == "C" then
-	Data.MinCalMult = 0.2
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.75
-	Data.VelModifier = 1
-	Data.Ricochet = 61
-	elseif GunClass == "C" then
-	Data.MinCalMult = 0.24
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.75
-	Data.VelModifier = 1
-	Data.Ricochet = 61
 	elseif GunClass == "SBC" then
-	Data.MinCalMult = 0.17
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 0.72
-	Data.VelModifier = 1.1
-	Data.Ricochet = 61
+		Data.MinCalMult = 0.17
+		Data.MaxCalMult = 1.0
+		Data.PenModifier = 0.72
+		Data.VelModifier = 1.1
+		Data.Ricochet = 70
 	else
-	Data.MinCalMult = 0.23
-	Data.MaxCalMult = 1.0
-	Data.PenModifier = 1.35
-	Data.VelModifier = 1
-	Data.Ricochet = 61	
+		Data.MinCalMult = 0.24
+		Data.MaxCalMult = 1.0
+		Data.PenModifier = 0.75
+		Data.VelModifier = 1
+		Data.Ricochet = 68
 	end
-	
+
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * (math.min(PlayerData.Data5,Data.MaxCalMult))^2
 	Data.ProjMass = Data.SubFrAera * ((Data.ProjLength*7.9/1000*0.75) * 0.95 +(Data.ProjLength*7.9/1000*0.25) * 2.5 * 0.95) --Volume of the projectile as a cylinder * density of steel, the first part is the steel projectile holder mass and the second is the subcaliber mass.
@@ -303,24 +261,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	---------------------------Ammo Capacity-------------------------------------
-	
-	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
-	
-	local plur = 'Contains '..Cap..' round'
-	
-	if Cap > 1 then
-	    plur = 'Contains '..Cap..' rounds'
-	end
-	
-	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
-	
-	if TwoPiece then	
-		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
-	end
-	
-	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
-	
-	-------------------------------------------------------------------------------	
+	ACE_AmmoCapacityDisplay( Data )
+	-------------------------------------------------------------------------------
 	
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	

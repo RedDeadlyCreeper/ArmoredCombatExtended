@@ -1,6 +1,7 @@
 
 ACF_DefineRadarClass("DIR-AM", {
 	name = "Directional Anti-missile Radar",
+	type = "Anti-missile",
 	desc = ACFTranslation.Radar[1],
 } )
 

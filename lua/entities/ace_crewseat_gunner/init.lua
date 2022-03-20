@@ -3,6 +3,19 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+function ENT:SpawnFunction( ply, trace )
+
+	if not trace.Hit then return end
+
+	local SPos = (trace.HitPos + Vector(0,0,1))
+
+	local ent = ents.Create( "ace_crewseat_gunner" )
+	ent:SetPos( SPos )
+	ent:Spawn()
+	ent:Activate()
+
+	return ent
+end
 
 function ENT:Initialize()
 
@@ -24,7 +37,7 @@ function ENT:Think()
 
 	if self.ACF.Health < self.ACF.MaxHealth*0.989 then
 		ACF_HEKill( self, VectorRand() , 0)	
-		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav",500,100)
+		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav")
 	end
 
 end

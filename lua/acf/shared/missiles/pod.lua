@@ -22,7 +22,7 @@ ACF_DefineRackClass("POD", {
 
 -- MAKE SURE THE CALIBER MATCHES THE ROCKETS YOU WANT TO LOAD!
 ACF_DefineRack("40mm7xPOD", {
-	name        = "7x FFAR Pod (40mm)",
+	name        = "7x 40mm FFAR Pod",
 	desc        = "A lightweight pod for small rockets which is vulnerable to shots and explosions.",
 	model		= "models/missiles/launcher7_40mm.mdl",
 	gunclass    = "POD",
@@ -52,7 +52,7 @@ ACF_DefineRack("40mm7xPOD", {
 
 -- MAKE SURE THE CALIBER MATCHES THE ROCKETS YOU WANT TO LOAD!
 ACF_DefineRack("70mm7xPOD", {
-	name        = "7x FFAR Pod (70mm)",
+	name        = "7x 70mm FFAR Pod",
 	desc        = "A lightweight pod for rockets which is vulnerable to shots and explosions.",
 	model		= "models/missiles/launcher7_70mm.mdl",
 	gunclass    = "POD",
@@ -82,7 +82,7 @@ ACF_DefineRack("70mm7xPOD", {
 
 -- MAKE SURE THE CALIBER MATCHES THE ROCKETS YOU WANT TO LOAD!
 ACF_DefineRack("1x BGM-71E", {
-	name = "BGM-71E Round",
+	name = "BGM-71E Single Tube",
 	desc = "A single BGM-71E round.",
 	model = "models/missiles/bgm_71e_round.mdl",
 	gunclass = "POD",
@@ -156,7 +156,7 @@ ACF_DefineRack("4x BGM-71E", {
 
 -- MAKE SURE THE CALIBER MATCHES THE yeah yeah I know I can read the code mate whitelist only mmkay?
 ACF_DefineRack("380mmRW61", {
-	name        = "1x 380mm Pod",
+	name        = "380mm rocket asisted mortar",
 	desc        = "A lightweight pod for rocket-asisted mortars which is vulnerable to shots and explosions.",
 	model		= "models/launcher/RW61.mdl",
 	gunclass    = "POD",
@@ -182,7 +182,7 @@ ACF_DefineRack("380mmRW61", {
 
 
 ACF_DefineRack("3xUARRK", {
-	name = "A-20 3xHVAR Rack",
+	name = "A-20 3x HVAR Rocket pod",
 	desc = "A lightweight rack for bombs which is vulnerable to shots and explosions.",
 	model		= "models/missiles/rk3uar.mdl",
 	gunclass = "POD",
@@ -204,7 +204,7 @@ ACF_DefineRack("3xUARRK", {
 } )
 
 ACF_DefineRack("6xUARRK", {
-	name = "M27 6xS24 Rack",
+	name = "M27 6x Artillery Launcher",
 	desc = "6-pack of death, used to efficiently carry artillery rockets",
 	model		= "models/missiles/6pod_rk.mdl",
 	rackmdl		= "models/missiles/6pod_cover.mdl",
@@ -223,7 +223,6 @@ ACF_DefineRack("6xUARRK", {
 		["missile1"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile2"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile3"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
-		["missile3"] = {["offset"] = Vector(-3.075,-.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile4"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile5"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
 		["missile6"] = {["offset"] = Vector(-3.075,0.1,0), ["scaledir"] = Vector(0,0,0)},
@@ -321,7 +320,7 @@ ACF_DefineRack("1x Strela-1", {
 
 ACF_DefineRack("2x Strela-1", {
 	name = "Double Munition 9M31 Rack",
-	desc = "An 9M31 rack designed to carry 1 missile.",
+	desc = "An 9M31 rack designed to carry 2 missiles.",
 	model		= "models/missiles/9m31_rk2.mdl",
 	gunclass = "POD",
 	weight = 30,
@@ -344,7 +343,7 @@ ACF_DefineRack("2x Strela-1", {
 --strela-1 
 ACF_DefineRack("4x Strela-1", {
 	name = "Quad Munition 9M31 Rack",
-	desc = "An 9m31 rack designed to carry 4 missile.",
+	desc = "An 9m31 rack designed to carry until 4 missiles.",
 	model		= "models/missiles/9m31_rk4.mdl",
 	gunclass = "POD",
 	weight = 50,
@@ -498,6 +497,5 @@ ACF_DefineRack("1x Javelin", {
     mountpoints = 
 	{
 		["missile1"] = {["offset"] = Vector(0,-1.38,2.4), ["scaledir"] = Vector(0,0,0)}
-		--["missile1"] = {["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )

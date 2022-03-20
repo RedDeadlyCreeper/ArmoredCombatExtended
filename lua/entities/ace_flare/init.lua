@@ -42,7 +42,7 @@ function ENT:Think()
 
 	if self.DieTime < CTime then
 		ACF_HEKill( self, VectorRand() , 0)	
-		self:EmitSound("npc/barnacle/barnacle_pull2.wav",500,100)
+		--self:EmitSound("npc/barnacle/barnacle_pull2.wav",500,100)
 		self:Remove()
 	end
 

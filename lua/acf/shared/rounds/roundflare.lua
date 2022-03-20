@@ -12,39 +12,22 @@ Round.desc = ACFTranslation.ShellFLR[2]
 Round.netid = 8 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
+
+	local ent = ents.Create( "ace_flare" )
 	
---	ACF_CreateBullet( BulletData )
-	
---	local bdata = ACF.Bullet[BulletData.Index] or {}
+	if ( IsValid( ent ) ) then
 
+		ent:SetPos( BulletData.Pos )
+		ent:SetAngles( BulletData.Flight:Angle() )
+		ent.Life = (BulletData.FillerMass or 1) / (0.4*ACFM.FlareBurnMultiplier)
+		ent:Spawn()
+		ent:SetOwner( Gun.Owner )
 
---	if table.IsEmpty( bdata ) then return false end
-	
---	bdata.CreateTime = SysTime()
-	
---	ACFM_RegisterFlare(bdata)
+		local phys = ent:GetPhysicsObject()
+		phys:SetVelocity( BulletData.Flight )
+		ent.Heat = (BulletData.FillerMass or 1) * 10000
 
-
-local ent = ents.Create( "ace_flare" )
-	
-if ( IsValid( ent ) ) then
-
-
-	ent:SetPos( BulletData.Pos )
-	ent:SetAngles( BulletData.Flight:Angle() )
-	ent.Life = (BulletData.FillerMass or 1) / (0.4*ACFM.FlareBurnMultiplier)
-	ent:Spawn()
-	ent:SetOwner( Gun.Owner )
-
-	local phys = ent:GetPhysicsObject()
-	phys:SetVelocity( BulletData.Flight )
-	ent.Heat = (BulletData.FillerMass or 1) * 10000
-
---	Data.BurnRate = Data.FrAera * ACFM.FlareBurnMultiplier
---	Data.DistractChance = (2 / math.pi) * math.atan(Data.FrAera * ACFM.FlareDistractMultiplier)
---	Data.BurnTime = Data.FillerMass / Data.BurnRate
-
-end
+	end
 
 end
 
@@ -139,8 +122,8 @@ function Round.cratetxt( BulletData )
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Burn Rate: ", math.Round(DData.BurnRate, 1), " kg/s\n",
-		"Burn Duration: ", math.Round(DData.BurnTime, 1), " s\n",
-		"Distract Chance: ", math.floor(DData.DistractChance * 100), " %"
+		"Burn Duration: ", math.Round(DData.BurnTime, 1), " s\n"--,
+		--"Distract Chance: ", math.floor(DData.DistractChance * 100), " %"
 	}
 	
 	return table.concat(str)
@@ -184,14 +167,7 @@ function Round.endflight( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endeffect( Effect, Bullet )
-	
-	-- local Radius = (Bullet.FillerMass)^0.33*8*39.37
-	-- local Flash = EffectData()
-		-- Flash:SetOrigin( Bullet.SimPos )
-		-- Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
-		-- Flash:SetRadius( math.max( Radius, 1 ) )
-	-- util.Effect( "ACF_Scaled_Explosion", Flash )
-	
+
 end
 
 function Round.pierceeffect( Effect, Bullet )
@@ -234,7 +210,7 @@ function Round.guicreate( Panel, Table )
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BurnRateDisplay", "")	--Proj muzzle penetration (Name, Desc)
 	acfmenupanel:CPanelText("BurnDurationDisplay", "")	--HE Blast data (Name, Desc)
-	acfmenupanel:CPanelText("DistractChanceDisplay", "")	--HE Fragmentation data (Name, Desc)
+	--acfmenupanel:CPanelText("DistractChanceDisplay", "")	--HE Fragmentation data (Name, Desc)
 	
 	Round.guiupdate( Panel, Table )
 	
@@ -262,24 +238,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	
 	---------------------------Ammo Capacity-------------------------------------
-	
-	local Cap, CapMul, RoFMul, TwoPiece = AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
-	
-	local plur = 'Contains '..Cap..' round'
-	
-	if Cap > 1 then
-	    plur = 'Contains '..Cap..' rounds'
-	end
-	
-	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
-	
-	if TwoPiece then	
-		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
-	end
-	
-	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
-	
-	-------------------------------------------------------------------------------	
+	ACE_AmmoCapacityDisplay( Data )
+	-------------------------------------------------------------------------------
 	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Dual Spectrum Filler", "Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -290,7 +250,7 @@ function Round.guiupdate( Panel, Table )
 	
 	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
 	acfmenupanel:CPanelText("BurnDurationDisplay", "Burn Duration : " .. math.Round(Data.BurnTime, 1) .. " s")
-	acfmenupanel:CPanelText("DistractChanceDisplay", "Distraction Chance : " .. math.floor(Data.DistractChance * 100) .. " %")
+	--acfmenupanel:CPanelText("DistractChanceDisplay", "Distraction Chance : " .. math.floor(Data.DistractChance * 100) .. " %")
 	
 end
 

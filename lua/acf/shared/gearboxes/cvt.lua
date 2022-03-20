@@ -8,8 +8,8 @@ local GearCVTLW = 500
 local StWB = 0.75 --straight weight bonus mulitplier
 
 -- Torque Rating
-local GearCVTST = 175
-local GearCVTMT = 650 
+local GearCVTST = 500
+local GearCVTMT = 780 
 local GearCVTLT = 6000
 local StTB = 1.25 --straight torque bonus multiplier
 

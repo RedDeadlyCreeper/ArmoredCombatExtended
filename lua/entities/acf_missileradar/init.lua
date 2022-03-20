@@ -7,15 +7,25 @@ include('radar_types_support.lua')
 
 CreateConVar('sbox_max_acf_missileradar', 6)
 
+DEFINE_BASECLASS( "base_wire_entity" )
 
 
+local RadarWireDescs = {
+
+	--Outputs
+	["Detected"]  = "Returns the amount of missiles that this radar is currently detecting.",
+	["Entities"]  = "Returns all the detected missiles into an array.",
+	["Position"]  = "Returns the current position of all the flying missiles of this radar",
+	["Velocity"]  = "Returns the velocity of all the active missiles into an array.",
+
+}
 
 function ENT:Initialize()
 	
 	self.BaseClass.Initialize(self)
 	
 	self.Inputs = WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "ClosestDistance", "Entities [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]"} )
+	self.Outputs = WireLib.CreateOutputs( self, {"Detected ("..RadarWireDescs["Detected"]..")", "ClosestDistance", "Entities ("..RadarWireDescs["Entities"]..") [ARRAY]", "Position ("..RadarWireDescs["Position"]..") [ARRAY]", "Velocity ("..RadarWireDescs["Velocity"]..") [ARRAY]"} )
 	
 	self.ThinkDelay = 0.1
 	self.StatusUpdateDelay = 0.5
@@ -25,11 +35,13 @@ function ENT:Initialize()
 	
 	self.Active = false
 	
-	self:CreateRadar((self.ACFName or "Missile Radar"), (self.ConeDegs or 0))
+	self:CreateRadar((self.ACFName or "Missile Radar"), (self.ConeDegs or 180))
 	
 	self:EnableClientInfo(true)
 	
 	self:ConfigureForClass()
+
+	self:GetOverlayText()
 	
 	self:SetActive(false)
 	
@@ -97,8 +109,8 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Radar.Model 	= radar.model
 	Radar.Weight 	= radar.weight
 	Radar.ACFName 	= radar.name
-	Radar.ConeDegs 	= radar.viewcone
-	Radar.Range 	= radar.range
+	Radar.ConeDegs 	= radar.viewcone		
+	Radar.Range 	= radar.range 			
 	Radar.Id 		= Id
 	Radar.Class 	= radar.class
 	
@@ -116,6 +128,8 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Owner:AddCount( "_acf_missileradar", Radar )
 	Owner:AddCleanup( "acfmenu", Radar )
 	
+	Radar:SetNWString( "WireName", Radar.ACFName )
+
 	return Radar
 	
 end
@@ -186,7 +200,9 @@ function ENT:Think()
 		self:UpdateStatus()
 		self.LastStatusUpdate = curTime
 	end
-	
+
+	self:GetOverlayText()
+
 	return true
 		
 end
@@ -194,25 +210,11 @@ end
 
 function ENT:UpdateStatus()
 
-	local phys = self.Entity:GetPhysicsObject()  	
-	if not IsValid(phys) then 
-		self:SetNWBool("Status", "Physics error, please respawn this") 
-		return 
-	end
-
-	if phys:GetMass() < self.LegalMass then
-		self:SetNWBool("Status", "Illegal mass, should be " .. self.LegalMass .. " kg") 
-		return 
-	end
-	
-	if not self.Active then
-		self:SetNWBool("Status", "Inactive")
-	elseif self.Outputs.Detected.Value > 0 then
-		self:SetNWBool("Status", self.Outputs.Detected.Value .. " objects detected!")
+	if self.Active then
+		self.Status = "On"
 	else
-		self:SetNWBool("Status", "Active")
+		self.Status = "Off"
 	end
-
 end
 
 
@@ -229,19 +231,11 @@ function ENT:AllowedToScan()
 
 end
 
-
-
-
-
 function ENT:GetDetectedEnts()
 
 	print("reached base GetDetectedEnts")
 
 end
-
-
-
-
 
 function ENT:ScanForMissiles()
 
@@ -290,9 +284,6 @@ function ENT:ScanForMissiles()
 	
 end
 
-
-
-
 function ENT:ClearOutputs()
 
 	if #self.Outputs.Entities.Value > 0 then
@@ -310,9 +301,6 @@ function ENT:ClearOutputs()
 
 end
 
-
-
-
 function ENT:EnableClientInfo(bool)
 	self.ClientInfo = bool
 	self:SetNWBool("VisInfo", bool)
@@ -322,3 +310,31 @@ function ENT:EnableClientInfo(bool)
 	end
 end
 
+--New Overlay text that is shown when you are looking at the radar
+function ENT:GetOverlayText()   
+	
+	local cone 	 = self.ConeDegs
+	local range	 = self.Range
+	local status = self.Status or "Off"
+	local detected = self.Outputs.Detected.Value
+	
+	
+	local ret = {}
+
+	local txt = "Status: "..status
+
+	txt = txt.."\n\nView Cone: "..math.Round(cone * 2, 2).." deg"
+
+	txt = txt.."\nMax Range: "..(isnumber(range) and math.Round(range / 39.37 , 2).." m" or "Unlimited" )
+
+	if detected and detected > 0 then
+		txt = txt.."\n\nMissiles detected: "..detected
+	end
+
+	--if not self.Legal then
+	--	txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	--end
+
+    self:SetOverlayText(txt)
+
+end

@@ -1,5 +1,3 @@
-print("radar type support loaded")
-
 
 ACFM.RadarBehaviour = ACFM.RadarBehaviour or {}
 ACFM.DefaultRadarSound = ACFM.DefaultRadarSound or "buttons/button16.wav"

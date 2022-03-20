@@ -8,9 +8,9 @@ local Gear6LW = 320
 local StWB = 0.75 --straight weight bonus mulitplier
 
 -- Torque Rating
-local Gear6ST = 440
-local Gear6MT = 2040
-local Gear6LT = 7500
+local Gear6ST = 800
+local Gear6MT = 1780
+local Gear6LT = 8170
 local StTB = 1.25 --straight torque bonus multiplier
 
 -- Inline

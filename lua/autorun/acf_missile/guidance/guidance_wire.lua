@@ -1,16 +1,11 @@
 
 local ClassName = "Wire"
 
-
 ACF = ACF or {}
 ACF.Guidance = ACF.Guidance or {}
 
 local this = ACF.Guidance[ClassName] or inherit.NewSubOf(ACF.Guidance.Dumb)
 ACF.Guidance[ClassName] = this
-
----
-
-
 
 this.Name = ClassName
 
@@ -23,17 +18,11 @@ this.WireLength = 19685			-- about 500m
 -- Disables guidance when true
 this.WireSnapped = false
 
-
-
-this.desc = "This guidance package is controlled by the launcher, which reads a target-position and steers the munition towards it."
-
-
+this.desc = "This guidance package is controlled by the launcher, which reads a target-position and steers the munition towards it. Has a limited guidance distance."
 
 function this:Init()
 	
 end
-
-
 
 -- Use this to make sure you don't alter the shared default filter unintentionally
 function this:GetSeekFilter(class)
@@ -43,9 +32,6 @@ function this:GetSeekFilter(class)
     
     return self.Filter
 end
-
-
-
 
 function this:Configure(missile)
 
@@ -79,9 +65,6 @@ function this:Configure(missile)
 
 end
 
-
-
-
 function this:GetNamedWireInputs(missile)
     
     local launcher = missile.Launcher
@@ -108,9 +91,6 @@ function this:GetNamedWireInputs(missile)
     
 end
 
-
-
-
 function this:GetFallbackWireInputs(missile)
 
     local launcher = missile.Launcher
@@ -135,9 +115,6 @@ function this:GetFallbackWireInputs(missile)
     end
 
 end
-
-
-
 
 function this:GetGuidance(missile)
 
@@ -172,9 +149,6 @@ function this:GetGuidance(missile)
 	return {TargetPos = posVec}
 	
 end
-
-
-
 
 function this:GetWireTarget()
 	
@@ -214,8 +188,6 @@ function this:GetWireTarget()
     
 end
 
-
-
-function this:GetDisplayConfig()
+function this:GetDisplayConfig(Type)
 	return {["Wire Length"] = math.Round(self.WireLength / 39.37, 1) .. " m"}
 end

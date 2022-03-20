@@ -13,8 +13,6 @@ ACF_DefineEngine( "0.6-V2", {
 	torque = 50,
 	flywheelmass = 0.01,
 	idlerpm = 900,
-	peakminrpm = 4000,
-	peakmaxrpm = 6500,
 	limitrpm = 7000
 } )
 
@@ -30,8 +28,6 @@ ACF_DefineEngine( "1.2-V2", {
 	torque = 85,
 	flywheelmass = 0.02,
 	idlerpm = 725,
-	peakminrpm = 3300,
-	peakmaxrpm = 5500,
 	limitrpm = 6250
 } )
 
@@ -47,7 +43,5 @@ ACF_DefineEngine( "2.4-V2", {
 	torque = 160,
 	flywheelmass = 0.075,
 	idlerpm = 900,
-	peakminrpm = 3300,
-	peakmaxrpm = 5500,
 	limitrpm = 6000
 } )

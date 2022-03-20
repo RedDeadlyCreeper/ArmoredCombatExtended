@@ -50,7 +50,7 @@ if CLIENT then
 			acfmenupanel.GearboxData[Table.id].ShiftTable = {10,20,30,40,50,60,70}
 		end
 
-		acfmenupanel:CPanelText("Name", Table.name)
+		acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 		
 		acfmenupanel.CData.DisplayModel = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
 			acfmenupanel.CData.DisplayModel:SetModel( Table.model )
@@ -105,7 +105,7 @@ if CLIENT then
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
 		
 		if Table.parentable then
-			acfmenupanel:CPanelText("Parentable", "\nThis gearbox can be parented without welding.")
+			acfmenupanel:CPanelText("Parentable", "\nThis gearbox can be parented without welding.\n","DermaDefaultBold")
 		end
 		
 		if Table.auto then
@@ -264,42 +264,50 @@ if CLIENT then
 	
 end
 
+local GearboxWireDescs = {
+	["Gear"]	 	= "Sets the gear of this gearbox.",
+	["GearUp"] 		= "Increases one gear above the current one.",
+	["GearDown"] 	= "Decreases one gear below the current one.",
+	["Clutch"] 		= "Applies Clutch to gearbox. Values from 0 to 1.",
+	["Brake"] 		= "Applies Brake to gearbox. The value you put, the strenght of the brake."
+}
+
 function ENT:Initialize()
 	
-	self.IsGeartrain = true
-	self.Master = {}
-	self.IsMaster = true
+	self.IsGeartrain 	= true
+	self.Master 		= {}
+	self.IsMaster 		= true
 	
-	self.WheelLink = {} -- a "Link" has these components: Ent, Side, Axis, Rope, RopeLen, Output, ReqTq, Vel
+	self.WheelLink 		= {} -- a "Link" has these components: Ent, Side, Axis, Rope, RopeLen, Output, ReqTq, Vel
 	
-	self.TotalReqTq = 0
-	self.RClutch = 0
-	self.LClutch = 0
-	self.LBrake = 0
-	self.RBrake = 0
-	self.SteerRate = 0
+	self.TotalReqTq 	= 0
+	self.RClutch 		= 0
+	self.LClutch 		= 0
+	self.LBrake 		= 0
+	self.RBrake 		= 0
+	self.SteerRate 		= 0
 
-	self.Gear = 0
-	self.GearRatio = 0
+	self.Gear 			= 0
+	self.GearRatio 		= 0
 	self.ChangeFinished = 0
 	
-	self.LegalThink = 0
+	self.LegalThink 	= 0
 	
-	self.RPM = {}
-	self.CurRPM = 0
-    self.CVT = false
-	self.DoubleDiff = false
-	self.Auto = false
-	self.InGear = false
-	self.CanUpdate = true
-	self.LastActive = 0
-	self.Legal = true
-	self.Parentable = false
-	self.RootParent = nil
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
-	self.LegalIssues = ""
+	self.RPM 			= {}
+	self.CurRPM 		= 0
+    self.CVT 			= false
+	self.DoubleDiff 	= false
+	self.Auto 			= false
+	self.InGear 		= false
+	self.CanUpdate 		= true
+	self.LastActive 	= 0
+	self.Legal 			= true
+	self.Parentable 	= false
+	self.RootParent 	= nil
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.LegalIssues 	= ""
 	
-	--self.Heat = ACE.AmbientTemp
+	--self.Heat 		= ACE.AmbientTemp
 	
 end  
 
@@ -307,27 +315,29 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 
 	if not Owner:CheckLimit("_acf_misc") then return false end
 	
-	local Gearbox = ents.Create("acf_gearbox")
-	local List = list.Get("ACFEnts")
-	local Classes = list.Get("ACFClasses")
+	local Gearbox 	= ents.Create("acf_gearbox")
+	local List 		= list.Get("ACFEnts")
+	local Classes 	= list.Get("ACFClasses")
+
 	if not IsValid( Gearbox ) then return false end
+
 	Gearbox:SetAngles(Angle)
 	Gearbox:SetPos(Pos)
 	Gearbox:Spawn()
 
 	Gearbox:SetPlayer(Owner)
-	Gearbox.Owner = Owner
-	Gearbox.Id = Id
-	Gearbox.Model = List.Mobility[Id].model
-	Gearbox.Mass = List.Mobility[Id].weight
-	Gearbox.SwitchTime = List.Mobility[Id].switch
-	Gearbox.MaxTorque = List.Mobility[Id].maxtq
-	Gearbox.Gears = List.Mobility[Id].gears
-	Gearbox.Dual = List.Mobility[Id].doubleclutch or false
-    Gearbox.CVT = List.Mobility[Id].cvt or false
-	Gearbox.DoubleDiff = List.Mobility[Id].doublediff or false
-	Gearbox.Auto = List.Mobility[Id].auto or false
-	Gearbox.Parentable = List.Mobility[Id].parentable or false
+	Gearbox.Owner 		= Owner
+	Gearbox.Id 			= Id
+	Gearbox.Model 		= List.Mobility[Id].model
+	Gearbox.Mass 		= List.Mobility[Id].weight
+	Gearbox.SwitchTime 	= List.Mobility[Id].switch
+	Gearbox.MaxTorque 	= List.Mobility[Id].maxtq
+	Gearbox.Gears 		= List.Mobility[Id].gears 			or 2 --hmmmmmm ok? just if everything fails
+	Gearbox.Dual 		= List.Mobility[Id].doubleclutch 	or false
+    Gearbox.CVT 		= List.Mobility[Id].cvt 			or false
+	Gearbox.DoubleDiff 	= List.Mobility[Id].doublediff 		or false
+	Gearbox.Auto 		= List.Mobility[Id].auto 			or false
+	Gearbox.Parentable 	= List.Mobility[Id].parentable 		or false
 	
     if Gearbox.CVT then
 		Gearbox.TargetMinRPM = Data3
@@ -373,7 +383,7 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 	
 	Gearbox:SetModel( Gearbox.Model )	
 		
-	local Inputs = {"Gear","Gear Up","Gear Down"}
+	local Inputs = {"Gear ("..GearboxWireDescs["Gear"]..")","Gear Up ("..GearboxWireDescs["GearUp"]..")","Gear Down ("..GearboxWireDescs["GearDown"]..")"}
 	if Gearbox.CVT then
 		table.insert(Inputs,"CVT Ratio")
 	elseif Gearbox.DoubleDiff then
@@ -390,8 +400,8 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 		table.insert(Inputs, "Left Brake")
 		table.insert(Inputs, "Right Brake")
 	else
-		table.insert(Inputs, "Clutch")
-		table.insert(Inputs, "Brake")
+		table.insert(Inputs, "Clutch ("..GearboxWireDescs["Clutch"]..")")
+		table.insert(Inputs, "Brake ("..GearboxWireDescs["Brake"]..")")
 	end
 	
     local Outputs = { "Ratio", "Entity", "Current Gear" }
@@ -668,7 +678,7 @@ function ENT:Think()
 	
 	if ACF.CurTime > self.NextLegalCheck then
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, true, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
-		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 		self:UpdateOverlayText()
 
 		if self.Legal then

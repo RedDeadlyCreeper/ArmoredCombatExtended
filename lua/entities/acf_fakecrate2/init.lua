@@ -9,7 +9,7 @@ function ENT:Initialize()
 	self.SpecialDamage = true
 	self.Owner = self:GetOwner()
 	
-	print("hi from fakecrate")
+	--print("hi from fakecrate")
 	
 end
 

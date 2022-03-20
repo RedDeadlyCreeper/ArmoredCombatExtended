@@ -1,6 +1,7 @@
 
 ACF_DefineRadarClass("OMNI-AM", {
 	name = "Spherical Anti-missile Radar",
+	type = "Anti-missile",
 	desc = ACFTranslation.Radar[5],
 } )
 

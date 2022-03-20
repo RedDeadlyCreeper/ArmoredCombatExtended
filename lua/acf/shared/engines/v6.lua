@@ -10,8 +10,6 @@ ACF_DefineEngine( "3.6-V6", {
 	torque = 253,
 	flywheelmass = 0.25,
 	idlerpm = 700,
-	peakminrpm = 2200,
-	peakmaxrpm = 3500,
 	limitrpm = 5000
 } )
 
@@ -27,8 +25,6 @@ ACF_DefineEngine( "6.2-V6", {
 	torque = 472,
 	flywheelmass = 0.45,
 	idlerpm = 800,
-	peakminrpm = 2200,
-	peakmaxrpm = 3600,
 	limitrpm = 5000
 } )
 
@@ -44,8 +40,6 @@ ACF_DefineEngine( "5.2-V6", {
 	torque = 485,
 	flywheelmass = 0.8,
 	idlerpm = 650,
-	peakminrpm = 1800,
-	peakmaxrpm = 4200,
 	limitrpm = 4300
 } )
 
@@ -61,8 +55,6 @@ ACF_DefineEngine( "12.0-V6", {
 	torque = 1445,
 	flywheelmass = 4,
 	idlerpm = 600,
-	peakminrpm = 1575,
-	peakmaxrpm = 2650,
 	limitrpm = 3800
 } )
 
@@ -78,7 +70,5 @@ ACF_DefineEngine( "15.0-V6", {
 	torque = 1767,
 	flywheelmass = 6.4,
 	idlerpm = 400,
-	peakminrpm = 1150,
-	peakmaxrpm = 1950,
 	limitrpm = 3100
 } )

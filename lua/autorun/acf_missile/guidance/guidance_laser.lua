@@ -8,10 +8,6 @@ ACF.Guidance = ACF.Guidance or {}
 local this = ACF.Guidance[ClassName] or inherit.NewSubOf(ACF.Guidance.Wire)
 ACF.Guidance[ClassName] = this
 
----
-
-
-
 this.Name = ClassName
 
 -- Cone to retain targets within.
@@ -83,9 +79,13 @@ function this:GetGuidance(missile)
 	
 end
 
+--Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
+function this:GetDisplayConfig(Type)
 
+	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
 
-
-function this:GetDisplayConfig()
-	return {["Tracking"] = math.Round(self.ViewCone * 2, 1) .. " deg"}
+	return 
+	{
+		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
+	}
 end

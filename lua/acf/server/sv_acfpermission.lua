@@ -23,7 +23,7 @@ file.CreateDir(mapDPMDir)
 
 
 local function msgtoconsole(hud, msg)
-	print(msg)
+	--print(msg)
 end
 
 
@@ -492,7 +492,7 @@ function this.CanDamage(Type, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gu
 		else return this.DefaultCanDamage end
 	end
 	
-	print(this.DamagePermission(owner, Inflictor, Entity))
+	--print(this.DamagePermission(owner, Inflictor, Entity))
 	return this.DamagePermission(owner, Inflictor, Entity)
 end
 hook.Add("ACF_BulletDamage", "ACF_DamagePermissionCore", this.CanDamage)

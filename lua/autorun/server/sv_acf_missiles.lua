@@ -29,6 +29,9 @@ include("acf/shared/sh_acfm_getters.lua")
 
 function ACFM_BulletLaunch(BData)
 
+    debugoverlay.Text(BData.Pos, "Here its spawning", 10)
+
+
     ACF.CurBulletIndex = ACF.CurBulletIndex + 1        --Increment the index
     if ACF.CurBulletIndex > ACF.BulletIndexLimt then
         ACF.CurBulletIndex = 1
@@ -54,17 +57,11 @@ function ACFM_BulletLaunch(BData)
     end
     
     BData.Filter = BData.Filter or { BData["Gun"] }
-        
-    if XCF and XCF.Ballistics then
-        BData = XCF.Ballistics.Launch(BData)
-        --XCF.Ballistics.CalcFlight( BulletData.Index, BulletData )
-    else
-        BData.Index = ACF.CurBulletIndex
-        ACF.Bullet[ACF.CurBulletIndex] = BData        --Place the bullet at the current index pos
-        ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
-        --ACF_CalcBulletFlight( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex] )
-    end
     
+    BData.Index = ACF.CurBulletIndex
+    ACF.Bullet[ACF.CurBulletIndex] = BData        --Place the bullet at the current index pos
+    ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
+
 end
 
 
@@ -103,16 +100,12 @@ function ACFM_ExpandBulletData(bullet)
     ret.Flight = bullet.Flight or Vector(0,0,0)
     ret.Type = ret.Type or bullet.Type
     
-    --local cvarGrav = GetConVar("sv_gravity")
-    ret.Accel = Vector(0,0,-600)
+    local cvarGrav = GetConVar("sv_gravity")
+    ret.Accel = cvarGrav
     if ret.Tracer == 0 and bullet["Tracer"] and bullet["Tracer"] > 0 then ret.Tracer = bullet["Tracer"] end
     ret.Colour = toconvert["Colour"]
     
     ret.Sound = bullet.Sound
-    
-    -- print("---- ACFM_ExpandBulletData OUTPUT")
-    -- pbn(ret)
-    -- print("==== end ACFM_ExpandBulletData")
     
     return ret
 

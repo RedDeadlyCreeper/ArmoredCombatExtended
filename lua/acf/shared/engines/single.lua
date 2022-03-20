@@ -13,8 +13,6 @@ ACF_DefineEngine( "0.25-I1", {
 	torque = 20,
 	flywheelmass = 0.005,
 	idlerpm = 1200,
-	peakminrpm = 4000,
-	peakmaxrpm = 6500,
 	limitrpm = 7500
 } )
 
@@ -30,8 +28,6 @@ ACF_DefineEngine( "0.5-I1", {
 	torque = 40,
 	flywheelmass = 0.005,
 	idlerpm = 900,
-	peakminrpm = 4300,
-	peakmaxrpm = 7000,
 	limitrpm = 8000
 } )
 
@@ -47,7 +43,5 @@ ACF_DefineEngine( "1.3-I1", {
 	torque = 90,
 	flywheelmass = 0.1,
 	idlerpm = 600,
-	peakminrpm = 3600,
-	peakmaxrpm = 6000,
 	limitrpm = 6700
 } )

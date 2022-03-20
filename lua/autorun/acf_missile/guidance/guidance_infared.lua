@@ -37,7 +37,7 @@ this.MinimumDistance = 200	-- ~5m
 -- Maximum distance for a target to be considered.
 this.MaximumDistance = 20000
 
-this.desc = "This guidance package detects a target-position infront of itself, and guides the munition towards it. It has a larger seek cone than a radar seeker but a smaller range."
+this.desc = "This guidance package detects hot targets infront of itself, and guides the munition towards it."
 
 
 function this:Init()
@@ -45,20 +45,16 @@ function this:Init()
 	self.LastTargetPos = Vector()
 end
 
-
-
-
 function this:Configure(missile)
-    
+
     self:super().Configure(self, missile)
 	
-    self.ViewCone = (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
-	self.ViewConeCos = (math.cos(math.rad(self.ViewCone)))*1.2
-    self.SeekCone = (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
-    self.SeekSensitivity = ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
+    self.ViewCone 			= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
+	self.ViewConeCos 		= (math.cos(math.rad(self.ViewCone)))*1.2
+    self.SeekCone 			= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
+    self.SeekSensitivity 	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 	
 end
-
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
@@ -94,9 +90,6 @@ function this:GetGuidance(missile)
 	
 end
 
-
-
-
 function this:ApplyOverride(missile)
 	
 	if self.Override then
@@ -112,9 +105,6 @@ function this:ApplyOverride(missile)
 	end
 
 end
-
-
-
 
 function this:CheckTarget(missile)
 
@@ -137,19 +127,23 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	for k, scanEnt in pairs(ScanArray) do
 
-		if not IsValid(scanEnt) then goto cont end -- skip any invalid entity
+		-- skip any invalid entity
+		if not IsValid(scanEnt) then goto cont end 
 		    
 		local entpos = scanEnt:GetPos()
 		local difpos = entpos - missilePos
 		local dist = difpos:Length()
-            
-		if dist < self.MinimumDistance then goto cont end -- skip any ent outside of minimun distance
-					
-        if dist > self.MaximumDistance then goto cont end -- skip any ent far than maximum distance
-        --print("InDist")
+
+		-- skip any ent outside of minimun distance
+		if dist < self.MinimumDistance then goto cont end 
+		
+		-- skip any ent far than maximum distance
+        if dist > self.MaximumDistance then goto cont end
+
 		local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
 
-		if not LOStr.Hit then --Trace did not hit world	
+		--Trace did not hit world	
+		if not LOStr.Hit then 
 
 			table.insert(foundAnim, scanEnt)
 
@@ -168,46 +162,42 @@ function this:AcquireLock(missile)
 	local curTime = CurTime()
     
 	if self.LastSeek + self.SeekDelay > curTime then return nil end
-        --print("tried seeking within timeout period")
   
 	self.LastSeek = curTime
 
-----Part 1: get all ents in cone
-
-	local found = self:GetWhitelistedEntsInCone(missile) or {}
+	--Part 1: get all ents in cone
+	local found = self:GetWhitelistedEntsInCone(missile)
     	
-----Part 2: get a good seek target
-	if table.Count( found ) > 0 then
+	--Part 2: get a good seek target
+	if found and table.Count( found ) > 0 then
 	
         local missilePos = missile:GetPos()
 
 	    local bestAng = 0
-	    local bestent = nil
+	    local bestent = NULL
     
 	    for k, classifyent in pairs(found) do
-				
+
+		    local Heat			
 		    local entpos = classifyent:WorldSpaceCenter()
 		    local difpos = entpos - missilePos
 		    local dist = difpos:Length()
 		    local entvel = classifyent:GetVelocity()
 
-		    local Heat
-		
-		
-----------------if the target is a Heat Emitter, track its heat		
-	    
+			--if the target is a Heat Emitter, track its heat		
 		    if classifyent.Heat then 
 			    
 			    Heat = self.SeekSensitivity * classifyent.Heat 
 			
-----------------if is not a Heat Emitter, track the friction's heat			
+			--if is not a Heat Emitter, track the friction's heat			
 		    else
 			
 			    local physEnt = classifyent:GetPhysicsObject()
 		
-----------------skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-                if physEnt:IsValid() then  	
----------------------check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
+				--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
+                if IsValid(physEnt) then
+
+					--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
                     if not physEnt:IsMoveable() then goto cont end
                 end
 				
@@ -237,16 +227,20 @@ function this:AcquireLock(missile)
 			::cont::
 	    end
         
-	    if not bestent then return nil end
 	    return bestent
 		
 	end
 end
 
-function this:GetDisplayConfig()
+--Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
+function this:GetDisplayConfig(Type)
+
+	local seekCone =  (ACF.Weapons.Guns[Type].seekcone or 0 ) * 2
+	local ViewCone = (ACF.Weapons.Guns[Type].viewcone or 0 ) * 2
+
 	return 
 	{
-		["Seeking"] = math.Round(self.SeekCone * 2*1.3, 1) .. " deg",
-		["Tracking"] = math.Round(self.ViewCone * 2*1.3, 1) .. " deg"
+		["Seeking"] = math.Round(seekCone, 1) .. " deg",
+		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
 	}
 end

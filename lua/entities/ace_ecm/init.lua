@@ -3,6 +3,19 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+function ENT:SpawnFunction( ply, trace )
+
+	if not trace.Hit then return end
+
+	local SPos = (trace.HitPos + Vector(0,0,1))
+
+	local ent = ents.Create( "ace_ecm" )
+	ent:SetPos( SPos )
+	ent:Spawn()
+	ent:Activate()
+
+	return ent
+end
 
 function ENT:Initialize()
 
@@ -17,7 +30,7 @@ function ENT:Initialize()
 	self:GetPhysicsObject():SetMass(1000)
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "Radar ID" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Energy"} )
+	self.Outputs = WireLib.CreateOutputs( self, { "Energy" } )
 
 	self:SetActive(false)
 
@@ -33,7 +46,6 @@ function ENT:Initialize()
 end
 
 --ATGMs tracked
-
 function ENT:isLegal()
 
 	if self:GetPhysicsObject():GetMass() < 1000 then return false end
@@ -46,8 +58,6 @@ function ENT:isLegal()
 	return self.IsLegal
 
 end
-
-
 
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
@@ -104,29 +114,22 @@ function ENT:Think()
 
 	    scanEnt = ACE.radarEntities[self.JamID]
 
-		if(IsValid(scanEnt)) then
+		if(IsValid( scanEnt )) then
 		
 			local radActive = scanEnt.Active 
 			local entpos = scanEnt:GetPos()
 
-			local LOStr = util.TraceLine( {start = thisPos ,endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
+			local LOStr = util.TraceLine( { 
+				start = thisPos ,
+				endpos = entpos,
+				collisiongroup = COLLISION_GROUP_WORLD,
+				filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything in the world.
+				} ) 
 
 			if not LOStr.Hit then --Trace did not hit world
-
-				self.CurrentlyJamming = self.JamID
-
-
-					
+				self.CurrentlyJamming = self.JamID	
 			end
-
-
-
-
-
 		end
-		
-
-
     else
 	
 		self.JamEnergy = math.min(self.JamEnergy + 1,100)
@@ -134,20 +137,14 @@ function ENT:Think()
 		if self.JamEnergy == 100 then
 			self.OutOfEnergy = false
 		end
-
     end
-
 
     if self.OutOfEnergy then
-	
 	    WireLib.TriggerOutput( self, "Energy", 0 )
     else
-	
         WireLib.TriggerOutput( self, "Energy", self.JamEnergy )
     end
-
 end
-
 
 function ENT:OnRemove()
 

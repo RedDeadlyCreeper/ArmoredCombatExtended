@@ -12,8 +12,6 @@ ACF_DefineEngine( "4.3-V10", {
 	torque = 288,
 	flywheelmass = 0.2,
 	idlerpm = 900,
-	peakminrpm = 3500,
-	peakmaxrpm = 5800,
 	limitrpm = 6250
 } )
 
@@ -29,8 +27,6 @@ ACF_DefineEngine( "8.0-V10", {
 	torque = 490,
 	flywheelmass = 0.5,
 	idlerpm = 750,
-	peakminrpm = 3400,
-	peakmaxrpm = 5500,
 	limitrpm = 6500
 } )
 
@@ -46,8 +42,6 @@ ACF_DefineEngine( "22.0-V10", {
 	torque = 2605,
 	flywheelmass = 5,
 	idlerpm = 525,
-	peakminrpm = 750,
-	peakmaxrpm = 1900,
 	limitrpm = 2500
 } )
 ACF_DefineEngine( "23.0-V10", {
@@ -62,7 +56,5 @@ ACF_DefineEngine( "23.0-V10", {
 	torque = 1200,
 	flywheelmass = 0.45,
 	idlerpm = 1000,
-	peakminrpm = 3850,
-	peakmaxrpm = 6000,
 	limitrpm = 9000
 } )

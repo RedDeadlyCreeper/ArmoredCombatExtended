@@ -30,19 +30,12 @@ this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m
 
-
-
 this.desc = "This guidance package detects a target-position infront of itself, and guides the munition towards it."
-
-
 
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
 	self.LastTargetPos = Vector()
 end
-
-
-
 
 function this:Configure(missile)
     
@@ -53,7 +46,6 @@ function this:Configure(missile)
     self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
     
 end
-
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
@@ -88,9 +80,6 @@ function this:GetGuidance(missile)
 	
 end
 
-
-
-
 function this:ApplyOverride(missile)
 	
 	if self.Override then
@@ -107,9 +96,6 @@ function this:ApplyOverride(missile)
 
 end
 
-
-
-
 function this:CheckTarget(missile)
 
 	if not (self.Target or self.Override) then	
@@ -122,7 +108,8 @@ function this:CheckTarget(missile)
 	
 end
 
-function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does not check angle
+ --Gets all valid targets, does not check angle
+function this:GetWhitelistedEntsInCone(missile)
 
 	local missilePos = missile:GetPos()
 	local DPLRFAC = 65-((self.SeekCone)/2)
@@ -142,13 +129,19 @@ function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does n
 		local difpos = entpos - missilePos
 		local dist = difpos:Length()
 
-		if dist < self.MinimumDistance then goto cont end -- skip any ent outside of minimun distance
+		-- skip any ent outside of minimun distance
+		if dist < self.MinimumDistance then goto cont end 
 
-			local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
+			local LOSdata = {}
+			LOSdata.start 			= missilePos
+			LOSdata.endpos 			= entpos
+			LOSdata.collisiongroup 	= COLLISION_GROUP_WORLD
+			LOSdata.filter 			= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything world related.	
+			local LOStr = util.TraceLine( LOSdata ) 		
 
-			if not LOStr.Hit then --Trace did not hit world
---			if true then
---				print("HasLOS")		 
+			--Trace did not hit world
+			if not LOStr.Hit then 
+	 
 				local ConeInducedGCTRSize = dist/100 --2 meter wide tracehull for every 100m distance
 				local GCtr = util.TraceHull( {
 					start = entpos,
@@ -183,16 +176,13 @@ function this:GetWhitelistedEntsInCone(missile) --Gets all valid targets, does n
     
 end
 
-
-
-
 -- Return the first entity found within the seek-tolerance, or the entity within the seek-cone closest to the seek-tolerance.
 function this:AcquireLock(missile)
 
 	local curTime = CurTime()
     
-	if self.LastSeek + self.SeekDelay > curTime then return nil   end
-        --print("tried seeking within timeout period")
+    --We make sure that its seeking between the defined delay
+	if self.LastSeek + self.SeekDelay > curTime then return nil end
 
 	self.LastSeek = curTime
 
@@ -206,12 +196,21 @@ function this:AcquireLock(missile)
 	local bestent = nil
 
 	for k, classifyent in pairs(found) do
+
+
 	
 		local entpos = classifyent:GetPos()
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
+		debugoverlay.Sphere(entpos, 100, 5, Color(255,255,0,100))
+
+		--print(absang.p)
+		--print(absang.y)
+
 		if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
+
+			debugoverlay.Sphere(entpos, 100, 5, Color(255,100,0,255))
 
 			--Could do pythagorean stuff but meh, works 98% of time
 			local testang = absang.p + absang.y 
@@ -223,27 +222,24 @@ function this:AcquireLock(missile)
 				bestent = classifyent
 					
 			end
-
-
-		end
-
+		end 
 	end
 
-	
-
-    
 --    print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
 
 	return bestent
 end
 
+--Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
+function this:GetDisplayConfig(Type)
 
+	local seekCone = ACF.Weapons.Guns[Type].seekcone * 2 or 0
+	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
 
-function this:GetDisplayConfig()
 	return 
 	{
-		["Seeking"] = math.Round(self.SeekCone * 2, 1) .. " deg",
-		["Tracking"] = math.Round(self.ViewCone * 2, 1) .. " deg"
+		["Seeking"] = math.Round(seekCone, 1) .. " deg",
+		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
 	}
 end

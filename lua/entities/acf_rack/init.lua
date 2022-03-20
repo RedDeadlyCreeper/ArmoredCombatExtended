@@ -29,7 +29,7 @@ end
 function ENT:GetFireDelay(nextMsl)
 
     if not IsValid(nextMsl) then 
-        self:SetNWFloat(	"Interval",		self.LastValidFireDelay or 1)
+        --self:SetNWFloat(	"Interval",		self.LastValidFireDelay or 1)
         return self.LastValidFireDelay or 1 
     end
 
@@ -51,7 +51,15 @@ function ENT:GetFireDelay(nextMsl)
 end
 
 
+local RackWireDescs = {
+	--Inputs
+	["Reload"]	  = "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
+	["TargetPos"] = "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
 
+	--Outputs
+	["Ready"]	  = "Returns if the rack is ready to fire."
+
+}
 
 function ENT:Initialize()
 
@@ -60,12 +68,13 @@ function ENT:Initialize()
 	self.SpecialHealth = false	    --If true needs a special ACF_Activate function
 	self.SpecialDamage = false   	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
 	self.ReloadTime = 1
+	self.RackStatus = "Empty"
 	self.Ready = true
 	self.Firing = nil
 	self.NextFire = 1
 	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
 	self.LastSend = 0
@@ -77,16 +86,16 @@ function ENT:Initialize()
     self.LastThink = CurTime()
 	
     self.BulletData = {}
-		self.BulletData.Type = "Empty"
-		self.BulletData.PropMass = 0
-		self.BulletData.ProjMass = 0
+	self.BulletData.Type = "Empty"
+	self.BulletData.PropMass = 0
+	self.BulletData.ProjMass = 0
 	
 	self.Inaccuracy 	= 1
 	
-	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",      "Reload",   "Target Pos" },
+	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",      "Reload ("..RackWireDescs["Reload"]..")",   "Target Pos ("..RackWireDescs["TargetPos"]..")" },
                                                      { "NORMAL",    "NORMAL",   "VECTOR"    } )
                                                      
-	self.Outputs = WireLib.CreateSpecialOutputs( self, 	{ "Ready",	"Entity",	"Shots Left",  "Position" },
+	self.Outputs = WireLib.CreateSpecialOutputs( self, 	{ "Ready ("..RackWireDescs["Ready"]..")",	"Entity",	"Shots Left",  "Position" },
 														{ "NORMAL",	"ENTITY",	"NORMAL",      "VECTOR" } )
                                                         
 	Wire_TriggerOutput(self, "Entity", self)
@@ -263,7 +272,7 @@ end
 
 function ENT:TriggerInput( iname , value )
 	
-	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled ) then
+	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
 			self.User = self:GetUser(self.Inputs["Fire"].Src)
 			if not IsValid(self.User) then self.User = self.Owner end
@@ -304,38 +313,25 @@ end
 
 
 function ENT:SetStatusString()
---[[
-	local phys = self:GetPhysicsObject()
-	
-	if(!IsValid(phys)) then
-		self:SetNWString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
-		self:GetOverlayText()
-		return
-	end
-	
-    if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)-1) then
-        self:SetNWString("Status", "Underweight! (should be " .. tostring((self.LegalWeight or self.Mass)-1) .. " kg)")
-		self:GetOverlayText()
-        return
-    end
-]]--    
-
     
 	local Missile = self:PeekMissile()
 	
 	if not IsValid(Missile) then
-	    self:SetNWString("Status", "Empty")
+		self.RackStatus = "Empty"
+	    --self:SetNWString("Status", "Empty")
 		self:GetOverlayText()
 		return
 	else
 	    if not self.Ready then
 		
-	    self:SetNWString("Status", "Loading")
+		self.RackStatus = "Loading"
+	    --self:SetNWString("Status", "Loading")
 		self:GetOverlayText()	
 		return
 		else
 		
-	    self:SetNWString("Status", "Ready")
+		self.RackStatus = "Ready"
+	    --self:SetNWString("Status", "Ready")
 		self:GetOverlayText()
 		return	
 		end
@@ -344,10 +340,6 @@ function ENT:SetStatusString()
     self:SetNWString("Status", "")
 	self:GetOverlayText()
     
-
-    
-	
-	
 end
 
 
@@ -365,9 +357,6 @@ function ENT:TrimDistantCrates()
     end
     
 end
-
-
-
 
 function ENT:UpdateRefillBonus()
     
@@ -402,7 +391,7 @@ function ENT:UpdateRefillBonus()
     
     
     self.ReloadMultiplierBonus = math.min(totalBonus, 1)
-    self:SetNWFloat(	"ReloadBonus", self.ReloadMultiplierBonus)
+    --self:SetNWFloat(	"ReloadBonus", self.ReloadMultiplierBonus)
     
     return self.ReloadMultiplierBonus
     
@@ -413,9 +402,15 @@ end
 
 function ENT:Think()
 
-    self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, false, true)
-	self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+	if ACF.CurTime > self.NextLegalCheck then
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, nil, self.Mass, self.ModelInertia, nil, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
+		--self:SetOverlayText(txt)
 
+		if not self.Legal and self.Firing then
+			self.Firing = false
+		end
+	end
 
     local Ammo = table.Count(self.Missiles or {})
     
@@ -597,6 +592,8 @@ end
 
 function ENT:AddMissile()
 
+    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
+
     self:TrimNullMissiles()
     
     local Ammo = table.Count(self.Missiles)
@@ -604,8 +601,6 @@ function ENT:AddMissile()
     
     local Crate = self:FindNextCrate(true)
     if not IsValid(Crate) then return false end
-    
-    local NextIdx = #self.Missiles
     
     local ply = self.Owner
     
@@ -615,46 +610,50 @@ function ENT:AddMissile()
     missile.Launcher = self
     
     local BulletData = ACFM_CompactBulletData(Crate)
-    
     BulletData.IsShortForm = true    
     BulletData.Owner = ply
     missile:SetBulletData(BulletData)
     
+    --For pod based launchers
     local rackmodel = ACF_GetRackValue(self.Id, "rackmdl") or ACF_GetGunValue(BulletData.Id, "rackmdl")
     if rackmodel then 
         missile:SetModelEasy( rackmodel ) 
         missile.RackModelApplied = true
     end
     
-    missile:SetParent(self)
-	missile:SetParentPhysNum(0)
-	
-	timer.Simple(0.02,	
-		function() 
-			if IsValid(missile) then 
-				local attach, muzzle = self:GetMuzzle(NextIdx, missile)
-			
-				if(IsValid(self:GetParent())) then
-					if table.Count(self:GetAttachments()) == 0 then
-						muzzle.Pos = Vector(0,0,0)
-					end
-					missile:SetPos(muzzle.Pos)
-					missile:SetAngles(self:GetAngles())
-				else
-					missile:SetPos(self:WorldToLocal(muzzle.Pos))
-					missile:SetAngles(muzzle.Ang)
+    local NextIdx = #self.Missiles
+	timer.Simple(0.02, function() 
+		if IsValid(missile) then 
+			local attach, muzzle = self:GetMuzzle( NextIdx , missile )
+				
+			--print(muzzle.Pos)
+
+			if IsValid(self:GetParent()) then
+
+				if table.Count(self:GetAttachments()) == 0 then
+
+					muzzle.Pos = Vector(0,0,0)
 				end
-			end 
-		end)
-    
+
+				missile:SetPos( muzzle.Pos )
+				missile:SetAngles(self:GetAngles())
+
+			else
+
+				missile:SetPos(self:WorldToLocal(muzzle.Pos))
+				missile:SetAngles(muzzle.Ang)
+
+			end
+		end 
+	end)
+
+    missile:SetParent(self)
+	missile:SetParentPhysNum(0) 
     
     if self.HideMissile then missile:SetNoDraw(true) end
-    if self.ProtectMissile then missile:SetNotSolid(true) end-- missile.DisableDamage = true end  --this caused some serious exploits when recieving damage.
+    if self.ProtectMissile then missile:SetNotSolid(true) end
     
     missile:Spawn()
-    
-    
-    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
     
     self.Missiles[NextIdx+1] = missile
     
@@ -703,7 +702,7 @@ end
 
 function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
-	if not Owner:CheckLimit("_acf_gun") then return false end
+	if not Owner:CheckLimit("_acf_rack") then return false end
 	
 	local Rack = UpdateRack or ents.Create("acf_rack")
 	local List = ACF.Weapons.Rack
@@ -714,9 +713,9 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	Rack:SetAngles(Angle)
 	Rack:SetPos(Pos)
     
-	if not UpdateRack then 
+	if not UpdateRack then --print("no update")
 		Rack:Spawn()
-		Owner:AddCount("_acf_gun", Rack)
+		Owner:AddCount("_acf_rack", Rack)
 		Owner:AddCleanup( "acfmenu", Rack )
 	end
 	
@@ -729,13 +728,14 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	
 	local gundef = List[Id] or error("Couldn't find the " .. tostring(Id) .. " gun-definition!")
 	
-    Rack.MinCaliber = gundef.mincaliber
-    Rack.MaxCaliber = gundef.maxcaliber
-	Rack.Caliber	= gundef["caliber"]
-	Rack.Model      = gundef["model"]
-	Rack.Mass       = gundef["weight"]
-    Rack.LegalWeight = Rack.Mass
-	Rack.Class      = gundef["gunclass"]
+    Rack.MinCaliber 	= gundef.mincaliber
+    Rack.MaxCaliber 	= gundef.maxcaliber
+	Rack.Caliber		= gundef["caliber"]
+	Rack.Model      	= gundef["model"]
+	Rack.Mass       	= gundef["weight"]
+    Rack.LegalWeight 	= Rack.Mass
+    Rack.name 			= gundef["name"]
+	Rack.Class      	= gundef["gunclass"]
     
 	-- Custom BS for karbine. Per Rack ROF.
 	Rack.PGRoFmod = 1
@@ -768,6 +768,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack.ReloadMultiplier   = ACF_GetRackValue(Id, "reloadmul")
     Rack.WhitelistOnly      = ACF_GetRackValue(Id, "whitelistonly")
     
+    Rack:SetNWString("WireName",Rack.name)
 	Rack:SetNWString( "Class",  Rack.Class )
 	Rack:SetNWString( "ID",     Rack.Id )
 	Rack:SetNWString( "Sound",  Rack.Sound )
@@ -865,13 +866,11 @@ function ENT:FireMissile()
             filter[#filter+1] = missile
             
             missile.Filter = filter
-            --missile.DisableDamage = false
             
             missile:SetParent(nil)
             missile:SetNoDraw(false)
 			missile:SetNotSolid(false)
-            --missile:SetPos(MuzzlePos)
-            --missile:SetAngles(ShootVec:Angle())
+
             local bdata = missile.BulletData
             
             if !IsValid(self:GetParent()) then
@@ -994,9 +993,6 @@ end
 
 hook.Add("PhysgunDrop", "ACF_Rack_OnPhysgunDrop", ACF_Rack_OnPhysgunDrop)
 
-
-
-
 function ENT:OnRemove()
 	Wire_Remove(self.Entity)
 end
@@ -1007,13 +1003,13 @@ end
 
 function ENT:GetOverlayText()   --New Overlay text that is shown when you are looking at the rack. 
 
-	local name          = self:GetNWString("WireName")   
-	local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
-	local Ammo          = self:GetNWInt("Ammo")          --Ammo count
-	local FireRate      = self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
+	--local name          = self:GetNWString("WireName")   
+	--local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
+	local Ammo          = table.Count(self.Missiles)--self:GetNWInt("Ammo")          --Ammo count
+	local FireRate      = self.LastValidFireDelay or 1--self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
     local Reload        = self:GetNWFloat("Reload")      --reload time. in secs
-    local ReloadBonus   = self:GetNWFloat("ReloadBonus") --the word explains by itself
-    local Status        = self:GetNWString("Status")     --this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
+    local ReloadBonus   = self.ReloadMultiplierBonus or 0--self:GetNWFloat("ReloadBonus") --the word explains by itself
+    local Status        = self.RackStatus --self:GetNWString("Status")     --this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
 	
 	--if not Status == '' then
 	
@@ -1049,20 +1045,11 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 		    end
 			
 	    end
-		
-		
+	
 	--if not self.Legal then
 		--txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	--end
-		
-	--else
-	
-	--   local txt = '- Empty -'
-		
-	--end
-	
-	
+
     self:SetOverlayText(txt)
 	
-
 end

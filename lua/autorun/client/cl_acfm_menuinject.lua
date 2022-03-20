@@ -176,35 +176,50 @@ function CreateRackSelectGUI(node)
         acfmenupanel.CustomDisplay:AddItem(spacer)
     end
 
-    
-    if not acfmenupanel.CData.RackSelect or IsValid(acfmenupanel.CData.RackSelect) then
-        acfmenupanel.CData.RackSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
+    if not acfmenupanel.CData.RackSelect then
+
+        acfmenupanel:CPanelText("RackChooseMsg", "Choose the desired rack below")
+
+        --Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
+        acfmenupanel.CData.RackSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	
         acfmenupanel.CData.RackSelect:SetSize(100, 30)        
         
         acfmenupanel.CData.RackSelect.OnSelect = function( index , value , data )
             RunConsoleCommand( "acfmenu_data9", data )
-            
+
             local rack = ACF.Weapons.Rack[data]
-            if rack and rack.desc then
-                acfmenupanel:CPanelText("RackDesc", rack.desc .. "\n")
-                
-                --local configPanel = ACFMissiles_CreateMenuConfiguration(rack, acfmenupanel.CData.RackSelect, "acfmenu_data1", acfmenupanel.CData.RackSelect.ConfigPanel)
-                --acfmenupanel.CData.RackSelect.ConfigPanel = configPanel
-            else
-                acfmenupanel:CPanelText("RackDesc", "Select a compatible rack from the list above.\n")
+
+            if rack then
+
+                if not acfmenupanel.CData.RackModel then
+                    acfmenupanel.CData.RackModel = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
+                    acfmenupanel.CData.RackModel:SetModel( rack.model or "models/props_c17/FurnitureToilet001a.mdl" )
+                    acfmenupanel.CData.RackModel:SetCamPos( Vector( 250, 500, 250 ) )
+                    acfmenupanel.CData.RackModel:SetLookAt( Vector( 0, 0, 0 ) )
+                    acfmenupanel.CData.RackModel:SetFOV( 20 )
+                    acfmenupanel.CData.RackModel:SetSize(acfmenupanel:GetWide()/3,acfmenupanel:GetWide()/3)
+                    acfmenupanel.CData.RackModel.LayoutEntity = function( panel, entity ) end
+                    acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.RackModel )
+                else
+                    acfmenupanel.CData.RackModel:SetModel( rack.model )
+                end
+
+                acfmenupanel:CPanelText("RackTitle", (rack.name or "Missing Name"),"DermaDefaultBold")
+                acfmenupanel:CPanelText("RackDesc", (rack.desc or "Missing Desc") .. "\n")
+
+                acfmenupanel:CPanelText("RackEweight", "Weight when empty : "..(rack.weight or "Missing weight").. "kg")
+                acfmenupanel:CPanelText("RackFweight", "Weight when fully loaded : "..( (rack.weight or 0) + (table.Count(rack.mountpoints)*node.mytable.weight) ).. "kg")
+                acfmenupanel:CPanelText("Rack_Year", "Year : "..rack.year.."\n")
             end
         end
             
         acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.RackSelect )
-        
-        acfmenupanel:CPanelText("RackDesc", "Select a compatible rack from the list above.\n")
         
         local configPanel = vgui.Create("DScrollPanel")
         acfmenupanel.CData.RackSelect.ConfigPanel = configPanel
         acfmenupanel.CustomDisplay:AddItem( configPanel )
         
     else        
-        --acfmenupanel.CData.RackSelect:SetSize(100, 30)
         default = acfmenupanel.CData.RackSelect:GetValue()
         acfmenupanel.CData.RackSelect:SetVisible(true)
     end
