@@ -378,6 +378,8 @@ function ENT:UpdateOverlayText()
 
 	text = text .. "\nRounds Per Minute: " .. math.Round( self.RateOfFire or 0, 2 )
 
+	text = text .. "Temp: " .. math.Round(self.Heat) .. " °C / 200 °C\n"
+
 	if #self.CrewLink > 0 then
 		text = text .. "\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
 		text = text .. "\nTotal Loaders: "..self.LoaderCount

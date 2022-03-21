@@ -463,7 +463,7 @@ function ENT:Update( ArgsTable )
 	-- That table is the player data, as sorted in the ACFCvars above, with player who shot, 
 	-- and pos and angle of the tool trace inserted at the start
 	
-	if ArgsTable[1] ~= self.Owner then -- Argtable[1] is the player that shot the tool
+	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self.Owner) then -- Argtable[1] is the player that shot the tool
 		return false, "You don't own that gearbox!"
 	end
 	

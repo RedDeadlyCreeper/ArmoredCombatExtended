@@ -409,7 +409,7 @@ function ENT:Update( ArgsTable )
 
 	local Feedback = ""
 	
-	if ( ArgsTable[1] != self.Owner ) then --Argtable[1] is the player that shot the tool
+	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self.Owner) then --Argtable[1] is the player that shot the tool
 		return false, "You don't own that fuel tank!"
 	end
 	
