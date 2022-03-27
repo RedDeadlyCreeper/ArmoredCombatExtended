@@ -465,3 +465,8 @@ r100
 -Alot of new changes, among new overlays and new info displayed. Quality of life moment
 -another electric engines rebalance. Removed induction engines (replaced by closest counterparts)
 -more optimizations done to code
+
+*r136
+-Fixed nan armor caused to props by nearest HE detonations
+-Added check for CameraPos if available. It should avoid the issue with being nil
+.Added check to see if the matdata is valid, if not, deal as RHA instead.
