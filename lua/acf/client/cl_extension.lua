@@ -11,607 +11,606 @@
 ACE = ACE or {}
 
 --Defines the delay time caused by the distance between the event and you. Increasing it will increment the required time to hear a distant event
-ACE.DelayMultipler = 1
+ACE.DelayMultipler          = 1
 
 --Defines the distance range for close, mid and far sounds. Incrementing it will increase the distances between sounds
-ACE.DistanceMultipler = 1
+ACE.DistanceMultipler       = 1
 
 --Defines the distance range which sonic cracks will be heard by the player
-ACE.CrackDistanceMultipler = 1
+ACE.CrackDistanceMultipler  = 1
 
 --Enables/Disables Ear ringing effect. Done for those cases where ringing could be annoying
-ACE.EnableTinnitus = 1
+ACE.EnableTinnitus          = 1
 
 --Defines the distance where ring ears start to affect to player
-ACE.TinnitusZoneMultipler = 1
+ACE.TinnitusZoneMultipler   = 1
 
 
-ACE.Sounds = ACE.Sounds or {}
-
-ACE.Sounds.GunTb = {}
+ACE.Sounds          = ACE.Sounds or {}
+ACE.Sounds.GunTb    = {}
 
 --Entities which should be the only thing to block the sight
 ACE.Sounds.LOSWhitelist = {
-	prop_dynamic = true,
-	prop_physics = true
+    prop_dynamic = true,
+    prop_physics = true
 }
 
 
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
-	if not IsValid(ply) then return false, ply end
-	local ent = ply
+    if not IsValid(ply) then return false, ply end
+    local ent = ply
 
-	--Gmod camera POV
-	if ply:GetViewEntity() ~= ply then
-		ent = ply:GetViewEntity()
-		return ent
-	end
+    --Gmod camera POV
+    if ply:GetViewEntity() ~= ply then
+        ent = ply:GetViewEntity()
+        return ent
+    end
 
-	ACE.Sounds.HookTable = ACE.Sounds.HookTable or hook.GetTable()
+    ACE.Sounds.HookTable = ACE.Sounds.HookTable or hook.GetTable()
 
-	-- wire cam controller support. I would wish not to have a really hardcoded way to make everything consistent but well...
-	local CameraPos 		= ACE.Sounds.HookTable["CalcView"]["wire_camera_controller_calcview"]
-	local ThirdPersonPos 	= CameraPos()
+    -- wire cam controller support. I would wish not to have a really hardcoded way to make everything consistent but well...
+    local CameraPos         = ACE.Sounds.HookTable["CalcView"]["wire_camera_controller_calcview"]
+    local ThirdPersonPos    = CameraPos and CameraPos()
 
-	ent.aceposoverride 		= nil
+    ent.aceposoverride      = nil
 
-	if ThirdPersonPos and ThirdPersonPos.origin then
-		ent.aceposoverride = ThirdPersonPos.origin
-		return ent
-	end
+    if ThirdPersonPos and ThirdPersonPos.origin then
+        ent.aceposoverride = ThirdPersonPos.origin
+        return ent
+    end
 
-	return NULL
+    return NULL
 end
 
 --Used for those extremely quiet sounds, which should be heard close to the player
 function ACE_SInDistance( Pos, Mdist )
 
-	--Don't start this without a player
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    --Don't start this without a player
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local entply 	= ply
+    local entply    = ply
 
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+    if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-	local plyPos 	= entply:GetPos()
+    local plyPos    = entply:GetPos()
 
-	local Dist 		= math.abs((plyPos - Pos):Length())
+    local Dist      = math.abs((plyPos - Pos):Length())
 
-	--return true if the distance is lower than the maximum distance
-	if Dist <= Mdist then return true end
-	return false
+    --return true if the distance is lower than the maximum distance
+    if Dist <= Mdist then return true end
+    return false
 
 end
 
 --Used to see if the player has line of sight with the event
 function ACE_SHasLOS( EventPos )
 
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local plyPos = ply.aceposoverride or ply:GetPos()
-	local headPos = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
+    local plyPos    = ply.aceposoverride or ply:GetPos()
+    local headPos   = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
 
-	local LOSTr 	= {}
-	LOSTr.start 	= EventPos + Vector(0,0,10)
-	LOSTr.endpos 	= headPos
-	LOSTr.filter 	= function( ent ) if ( ACE.Sounds.LOSWhitelist[ent:GetClass()] ) then return true end end --Only hits the whitelisted ents
-	local LOS 		= util.TraceLine(LOSTr)
+    local LOSTr     = {}
+    LOSTr.start     = EventPos + Vector(0,0,10)
+    LOSTr.endpos    = headPos
+    LOSTr.filter    = function( ent ) if ( ACE.Sounds.LOSWhitelist[ent:GetClass()] ) then return true end end --Only hits the whitelisted ents
+    local LOS       = util.TraceLine(LOSTr)
 
-	debugoverlay.Line(EventPos, LOS.HitPos , 5, Color(0,255,255))
+    --debugoverlay.Line(EventPos, LOS.HitPos , 5, Color(0,255,255))
 
-	if not LOS.Hit then return true end
-	return false
+    if not LOS.Hit then return true end
+    return false
 end
 
 function ACE_SIsInDoor()
-	local ply = LocalPlayer()
-	if not IsValid(ply) then return end
+    local ply = LocalPlayer()
+    if not IsValid(ply) then return end
 
-	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+    local entply = ply
+    if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-	local plyPos = entply.aceposoverride or entply:GetPos()
+    local plyPos    = entply.aceposoverride or entply:GetPos()
 
-	local CeilTr 	= {}
-	CeilTr.start 	= plyPos
-	CeilTr.endpos 	= plyPos + Vector(0,0,2000)
-	CeilTr.filter 	= {}
-	CeilTr.mask 	= MASK_SOLID_BRUSHONLY
-	local Ceil 		= util.TraceLine(CeilTr)
+    local CeilTr    = {}
+    CeilTr.start    = plyPos
+    CeilTr.endpos   = plyPos + Vector(0,0,2000)
+    CeilTr.filter   = {}
+    CeilTr.mask     = MASK_SOLID_BRUSHONLY
+    local Ceil      = util.TraceLine(CeilTr)
 
-	if Ceil.Hit and Ceil.HitWorld then return true end
-	return false
+    if Ceil.Hit and Ceil.HitWorld then return true end
+    return false
 end
 
 --Handles Explosion sounds
 function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
-	--Don't start this without a player
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    --Don't start this without a player
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local entply = ply
+    local entply        = ply
 
-	local count 		= 1
-	local countToFinish = nil
-	local Emitted 		= false --Was the sound played?
-	local ide 			= 'ACE_Explosion#'..math.random(1,100000)
+    local count         = 1
+    local countToFinish = nil
+    local Emitted       = false --Was the sound played?
+    local ide           = 'ACE_Explosion#'..math.random(1,100000)
 
-	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then return end
-	timer.Create( ide , 0.1, 0, function()
+    --Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+    if timer.Exists( ide ) then return end
+    timer.Create( ide , 0.1, 0, function()
 
-		count = count + 1
+        count = count + 1
 
-		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+        if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos 	= entply.aceposoverride or  entply:GetPos() 
-		local Dist 		= math.abs((plyPos - HitPos):Length()) 	
-		local Volume 	= ( 1/(Dist/500)*Radius*0.2 ) 			
-		local Pitch 	=  math.Clamp(1000/Radius,25,130) 		
-		local Delay 	= ( Dist/1500 ) * ACE.DelayMultipler
-		
-		if count > Delay then
+        local plyPos    = entply.aceposoverride or  entply:GetPos() 
+        local Dist      = math.abs((plyPos - HitPos):Length())  
+        local Volume    = ( 1/(Dist/500)*Radius*0.2 )           
+        local Pitch     =  math.Clamp(1000/Radius,25,130)       
+        local Delay     = ( Dist/1500 ) * ACE.DelayMultipler
+        
+        if count > Delay then
 
-			--if its not already emitted
-			if not Emitted then
+            --if its not already emitted
+            if not Emitted then
 
-				Emitted = true --print('timer has emitted the sound in the time: '..count)
+                Emitted = true --print('timer has emitted the sound in the time: '..count)
 
-				--Ground explosions
-				if not HitWater then
+                --Ground explosions
+                if not HitWater then
 
-					--the sound definition. Strings are below
-					local Sound
+                    --the sound definition. Strings are below
+                    local Sound
 
-					--This defines the distance between areas for close, mid and far sounds
-					local CloseDist = Radius * 275 * ACE.DistanceMultipler
+                    --This defines the distance between areas for close, mid and far sounds
+                    local CloseDist = Radius * 275 * ACE.DistanceMultipler
 
-					--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
-					local MediumDist = CloseDist*4.25 
+                    --Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
+                    local MediumDist = CloseDist*4.25 
 
-					--this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
-					local VolFix
-					local PitchFix
+                    --this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
+                    local VolFix
+                    local PitchFix
 
-					--Required radius to be considered a small explosion. Less than this the explosion will be considered tiny
-					local SmallEx 	= 5 
+                    --Required radius to be considered a small explosion. Less than this the explosion will be considered tiny
+                    local SmallEx   = 5 
 
-					--Required radius to be considered a medium explosion
-					local MediumEx 	= 10
+                    --Required radius to be considered a medium explosion
+                    local MediumEx  = 10
 
-					--Required radius to be considered a large explosion
-					local LargeEx 	= 20
+                    --Required radius to be considered a large explosion
+                    local LargeEx   = 20
 
-					--Required radius to be considered a huge explosion. IDK what thing could pass this, but there is it :)
-					local HugeEx 	= 150
+                    --Required radius to be considered a huge explosion. IDK what thing could pass this, but there is it :)
+                    local HugeEx    = 150
 
-					--TODO: Make a way to use tables instead
-					--Close distance
-					if Dist < CloseDist then --NOTE: I KNOW ABOUT THIS CANCEROUS LONG NAME FOR THE STRING, JUST IGNORE FOR THIS TIME.
+                    --TODO: Make a way to use tables instead
+                    --Close distance
+                    if Dist < CloseDist then --NOTE: I KNOW ABOUT THIS CANCEROUS LONG NAME FOR THE STRING, JUST IGNORE FOR THIS TIME.
 
-						VolFix = 8
-						PitchFix = 1
-						Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
+                        VolFix = 8
+                        PitchFix = 1
+                        Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
 
-						if Radius >= SmallEx then
-							VolFix = 8
-							PitchFix = 1
-							Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
+                        if Radius >= SmallEx then
+                            VolFix = 8
+                            PitchFix = 1
+                            Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
 
-							if Radius >= MediumEx then
-								VolFix = 8
-								PitchFix = 1
-								Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
+                            if Radius >= MediumEx then
+                                VolFix = 8
+                                PitchFix = 1
+                                Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
 
-								if Radius >= LargeEx then
-									VolFix = 8
-									PitchFix = 1
-									Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
+                                if Radius >= LargeEx then
+                                    VolFix = 8
+                                    PitchFix = 1
+                                    Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
 
-									if Radius >= HugeEx then
-										VolFix = 2000000  -- rip your ears
-										PitchFix = 3
-										Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
-									end
-								end
-							end
-						end
+                                    if Radius >= HugeEx then
+                                        VolFix = 2000000  -- rip your ears
+                                        PitchFix = 3
+                                        Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
+                                    end
+                                end
+                            end
+                        end
 
-					--Medium distance
-					elseif Dist >= CloseDist and Dist < MediumDist then
+                    --Medium distance
+                    elseif Dist >= CloseDist and Dist < MediumDist then
 
-						VolFix = 8
-						PitchFix = 1
-						Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
+                        VolFix = 8
+                        PitchFix = 1
+                        Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
 
-						if Radius >= SmallEx then
-							VolFix = 8
-							PitchFix = 1
-							Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
+                        if Radius >= SmallEx then
+                            VolFix = 8
+                            PitchFix = 1
+                            Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
 
-							if Radius >= MediumEx then
-								VolFix = 8
-								PitchFix = 1
-								Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
+                            if Radius >= MediumEx then
+                                VolFix = 8
+                                PitchFix = 1
+                                Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
 
-								if Radius >= LargeEx then
-									VolFix = 8
-									PitchFix = 1
-									Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
+                                if Radius >= LargeEx then
+                                    VolFix = 8
+                                    PitchFix = 1
+                                    Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
 
-								end
-							end
-						end
+                                end
+                            end
+                        end
 
-					--Far distance				
-					elseif Dist >= MediumDist then
+                    --Far distance              
+                    elseif Dist >= MediumDist then
 
-						VolFix = 17
-						PitchFix = 1
-						Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
+                        VolFix = 17
+                        PitchFix = 1
+                        Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
 
-						if Radius >= SmallEx then
-							VolFix = 17
-							PitchFix = 1
-							Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
+                        if Radius >= SmallEx then
+                            VolFix = 17
+                            PitchFix = 1
+                            Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
 
-							if Radius >= MediumEx then
-								VolFix = 17
-								PitchFix = 1
-								Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
+                            if Radius >= MediumEx then
+                                VolFix = 17
+                                PitchFix = 1
+                                Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
 
-								if Radius >= LargeEx then
-									VolFix = 17
-									PitchFix = 1
-									Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
+                                if Radius >= LargeEx then
+                                    VolFix = 17
+                                    PitchFix = 1
+                                    Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
 
-								end
-							end
-						end
+                                end
+                            end
+                        end
 
-					end
+                    end
 
-					--Tinnitus function
-					if ACE.EnableTinnitus then
-						local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
-						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
-							timer.Simple(0.01, function()
-								entply:SetDSP( 32, true )
-								entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
-							end)
-						end
+                    --Tinnitus function
+                    if ACE.EnableTinnitus then
+                        local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
+                        if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
+                            timer.Simple(0.01, function()
+                                entply:SetDSP( 32, true )
+                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )        
+                            end)
+                        end
 
-						debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
-					end
+                        --debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
+                    end
 
-					--If a wall is in front of the player and is indoor, reduces its vol
-					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-						--print('Inside of building')
-						VolFix = VolFix*0.05
-					end
+                    --If a wall is in front of the player and is indoor, reduces its vol
+                    if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+                        --print('Inside of building')
+                        VolFix = VolFix*0.05
+                    end
 
-					
+                    
 
-					entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch * PitchFix, Volume * VolFix )
+                    entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch * PitchFix, Volume * VolFix )
 
-					--play dirt sounds
-					if Radius >= SmallEx and HitWorld then
-						sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
-						sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
-					end
+                    --play dirt sounds
+                    if Radius >= SmallEx and HitWorld then
+                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
+                    end
 
-					--Underwater Explosions
-				else
-					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
-					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
-				end
-			end
+                    --Underwater Explosions
+                else
+                    entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+                    entply:EmitSound( "^weapons/underwater_explode3.wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+                end
+            end
 
-			timer.Stop( ide )
-			timer.Remove( ide )
-		end
-	end )
+            timer.Stop( ide )
+            timer.Remove( ide )
+        end
+    end )
 
 end
 
 --Handles penetration sounds
 function ACE_SPen( HitPos, Velocity, Mass )
 
-	--Don't start this without a player
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    --Don't start this without a player
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local entply = ply
+    local entply    = ply
 
-	local count 	= 1
-	local Emitted 	= false --Was the sound played?
-	local ide 		= 'ACE_Penetration#'..math.random(1,100000)
+    local count     = 1
+    local Emitted   = false --Was the sound played?
+    local ide       = 'ACE_Penetration#'..math.random(1,100000)
 
-	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then return end
-	timer.Create( ide , 0.1, 0, function()
+    --Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+    if timer.Exists( ide ) then return end
+    timer.Create( ide , 0.1, 0, function()
 
-		count = count + 1
+        count = count + 1
 
-		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+        if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos 	= entply.aceposoverride or  entply:GetPos()
-		local Dist 		= math.abs((plyPos - HitPos):Length())
-		local Volume 	= ( 1/(Dist/500)*Mass/17.5 )
-		local Pitch 	=  math.Clamp(Velocity*1,90,150)
-		local Delay 	= ( Dist/1500 ) * ACE.DelayMultipler
+        local plyPos    = entply.aceposoverride or  entply:GetPos()
+        local Dist      = math.abs((plyPos - HitPos):Length())
+        local Volume    = ( 1/(Dist/500)*Mass/17.5 )
+        local Pitch     =  math.Clamp(Velocity*1,90,150)
+        local Delay     = ( Dist/1500 ) * ACE.DelayMultipler
 
-		if count > Delay then
+        if count > Delay then
 
-			if not Emitted then
+            if not Emitted then
 
-				Emitted = true
+                Emitted = true
 
-				local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])] or ""
-				local VolFix = 0.5
+                local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])] or ""
+                local VolFix = 0.5
 
-				--If a wall is in front of the player and is indoor, reduces its vol at 50%
-				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-					--print('Inside of building')
-					VolFix = VolFix*0.5
-				end
+                --If a wall is in front of the player and is indoor, reduces its vol at 50%
+                if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+                    --print('Inside of building')
+                    VolFix = VolFix*0.5
+                end
 
-				entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch, Volume * VolFix)
+                entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch, Volume * VolFix)
 
-			end
+            end
 
-			timer.Stop( ide )
-			timer.Remove( ide )	
-		end
-	end )
+            timer.Stop( ide )
+            timer.Remove( ide ) 
+        end
+    end )
 end
 
 --Handles ricochet sounds
 function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
-	--Don't start this without a player
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    --Don't start this without a player
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local entply 	= ply
-	local count 	= 1
-	local Emitted 	= false --Was the sound played?
+    local entply    = ply
+    local count     = 1
+    local Emitted   = false --Was the sound played?
 
-	local ide 		= 'ACE_Ricochet#'..math.random(1,100000)
+    local ide       = 'ACE_Ricochet#'..math.random(1,100000)
 
-	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then return end
-	timer.Create( ide , 0.1, 0, function()
+    --Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+    if timer.Exists( ide ) then return end
+    timer.Create( ide , 0.1, 0, function()
 
-		count = count + 1
+        count = count + 1
 
-		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+        if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos 	= entply.aceposoverride or  entply:GetPos()
-		local Dist 		= math.abs((plyPos - HitPos):Length())
-		local Volume 	= ( 1/(Dist/500)*Velocity/130000 )
-		local Pitch 	=  math.Clamp(Velocity*0.001,90,150)
-		local Delay 	= ( Dist/1500 ) * ACE.DelayMultipler
+        local plyPos    = entply.aceposoverride or  entply:GetPos()
+        local Dist      = math.abs((plyPos - HitPos):Length())
+        local Volume    = ( 1/(Dist/500)*Velocity/130000 )
+        local Pitch     =  math.Clamp(Velocity*0.001,90,150)
+        local Delay     = ( Dist/1500 ) * ACE.DelayMultipler
 
-		if count > Delay then
+        if count > Delay then
 
-			if not Emitted then --print('timer has emitted the sound in the time: '..count)
+            if not Emitted then --print('timer has emitted the sound in the time: '..count)
 
-				Emitted = true
+                Emitted = true
 
-				local Sound = ""
-				local VolFix = 0
+                local Sound = ""
+                local VolFix = 0
 
-				if not HitWorld then
+                if not HitWorld then
 
-					--any big gun above 50mm
-					Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
-					VolFix = 4
+                    --any big gun above 50mm
+                    Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
+                    VolFix = 4
 
-					--50mm guns and below
-					if Caliber <= 5 then
-						Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
-						VolFix = 1
+                    --50mm guns and below
+                    if Caliber <= 5 then
+                        Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
+                        VolFix = 1
 
-						--lower than 20mm
-						if Caliber <= 2 then
-							Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
-							VolFix = 1.25
-						end
-					end
+                        --lower than 20mm
+                        if Caliber <= 2 then
+                            Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
+                            VolFix = 1.25
+                        end
+                    end
 
-				else
-					--Small weapons sound
-					if Caliber <=2 then
-						Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
-						VolFix = 1.25
-	
-					end
-				end
+                else
+                    --Small weapons sound
+                    if Caliber <=2 then
+                        Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
+                        VolFix = 1.25
+    
+                    end
+                end
 
-				--If a wall is in front of the player and is indoor, reduces its vol at 50%
-				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-					--print('Inside of building')
-					VolFix = VolFix*0.5
-				end
+                --If a wall is in front of the player and is indoor, reduces its vol at 50%
+                if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+                    --print('Inside of building')
+                    VolFix = VolFix*0.5
+                end
 
-				if Sound ~= "" then
-					entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, Pitch, Volume * VolFix )
-				end
-			end
+                if Sound ~= "" then
+                    entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, Pitch, Volume * VolFix )
+                end
+            end
 
-			timer.Stop( ide )
-			timer.Remove( ide )	
-		end
-	end )
+            timer.Stop( ide )
+            timer.Remove( ide ) 
+        end
+    end )
 end
 
 function ACE_SGunFire( Gun, Sound ,Class, Caliber, Propellant )
 
-	Propellant = math.max(Propellant,50)
+    Propellant = math.max(Propellant,50)
 
-	--Don't start this without a player
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    --Don't start this without a player
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local entply 	= ply
+    local entply    = ply
 
-	local count 	= 1
-	local Emitted 	= false
-	local ide 		= 'ACEFire#'..math.random(1,100000)
+    local count     = 1
+    local Emitted   = false
+    local ide       = 'ACEFire#'..math.random(1,100000)
 
-	local Pos  		= Gun:GetPos()
-	local GunId 	= Gun:EntIndex() -- Using Ids to ensure that code doesnt fuck up if the gun is removed from the map during sound late report. 
+    local Pos       = Gun:GetPos()
+    local GunId     = Gun:EntIndex() -- Using Ids to ensure that code doesnt fuck up if the gun is removed from the map during sound late report. 
 
-	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then return end
-	timer.Create( ide , 0.1, 0, function()
+    --Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+    if timer.Exists( ide ) then return end
+    timer.Create( ide , 0.1, 0, function()
 
-		count = count + 1
+        count = count + 1
 
-		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+        if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos 	= entply.aceposoverride or  entply:GetPos()
-		local Dist 		= math.abs((plyPos - Pos):Length())
-		local Volume 	= ( 1/(Dist/500)*Propellant/18 )
-		local Delay 	= ( Dist/1500 ) * ACE.DelayMultipler
+        local plyPos    = entply.aceposoverride or  entply:GetPos()
+        local Dist      = math.abs((plyPos - Pos):Length())
+        local Volume    = ( 1/(Dist/500)*Propellant/18 )
+        local Delay     = ( Dist/1500 ) * ACE.DelayMultipler
 
-		if count > Delay then
+        if count > Delay then
 
-			if not Emitted then
+            if not Emitted then
 
-				Emitted = true
-				local RSound = Sound
+                Emitted = true
+                local RSound = Sound
 
-				--This defines the distance between areas for close, mid and far sounds
-				local CloseDist 	= Propellant * 40 * ACE.DistanceMultipler
+                --This defines the distance between areas for close, mid and far sounds
+                local CloseDist     = Propellant * 40 * ACE.DistanceMultipler
 
-				--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
-				local MediumDist 	= CloseDist*4.25
+                --Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
+                local MediumDist    = CloseDist*4.25
 
-				local FarDist 		= MediumDist*2
+                local FarDist       = MediumDist*2
 
-				--this variable fixes the vol for a better volume scale. Overrided normally
-				local VolFix 		= 1
+                --this variable fixes the vol for a better volume scale. Overrided normally
+                local VolFix        = 1
 
-				--Adjustable Pitch. Overrided normally
-				local Pitch 		= 100
+                --Adjustable Pitch. Overrided normally
+                local Pitch         = 100
 
-				local SoundData 	= ACE.GSounds["GunFire"][Sound]
+                local SoundData     = ACE.GSounds["GunFire"][Sound]
 
-				if SoundData then 
-					
-					local State = "main"
-					if Dist >= CloseDist and Dist < MediumDist then 
-						State = "mid"
-					elseif Dist >= MediumDist then 
-						State = "far"
-					end
+                if SoundData then 
+                    
+                    local State = "main"
+                    if Dist >= CloseDist and Dist < MediumDist then 
+                        State = "mid"
+                    elseif Dist >= MediumDist then 
+                        State = "far"
+                    end
 
-					ACE.Sounds.GunTb[GunId] = (ACE.Sounds.GunTb[GunId] or 0) + 1
-					if ACE.Sounds.GunTb[GunId] > #SoundData[State]["Package"] then ACE.Sounds.GunTb[GunId] = 1 end
+                    ACE.Sounds.GunTb[GunId] = (ACE.Sounds.GunTb[GunId] or 0) + 1
+                    if ACE.Sounds.GunTb[GunId] > #SoundData[State]["Package"] then ACE.Sounds.GunTb[GunId] = 1 end
 
-					--print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
+                    --print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
 
-					Sound 	= SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]] 
+                    Sound   = SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]] 
 
-					VolFix 	= SoundData[State]["Volume"]
-					Pitch  	= SoundData[State]["Pitch"]
-					
-				end
+                    VolFix  = SoundData[State]["Volume"]
+                    Pitch   = SoundData[State]["Pitch"]
+                    
+                end
 
-				--If a wall is in front of the player and is indoor, reduces its vol at 50%
-				if not ACE_SHasLOS( Pos ) and ACE_SIsInDoor() then
-					--print('Inside of building')
-					VolFix = VolFix*0.5
-				end
+                --If a wall is in front of the player and is indoor, reduces its vol at 50%
+                if not ACE_SHasLOS( Pos ) and ACE_SIsInDoor() then
+                    --print('Inside of building')
+                    VolFix = VolFix*0.5
+                end
 
-				sound.Play(Sound or "common/bugreporter_failed.wav", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
+                sound.Play(Sound or "common/bugreporter_failed.wav", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
 
-			end
+            end
 
-			timer.Stop( ide )
-			timer.Remove( ide )	
-		end
-	end )
+            timer.Stop( ide )
+            timer.Remove( ide ) 
+        end
+    end )
 end
 
 --TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
 function ACE_SBulletCrack( BulletData, Caliber )
 
-	--Don't start this without a player
-	local ply = LocalPlayer()
-	if not IsValid( ply ) then return end
+    --Don't start this without a player
+    local ply = LocalPlayer()
+    if not IsValid( ply ) then return end
 
-	local entply = ply
+    local entply = ply
 
-	--flag this, so we are not playing this sound for this bullet next time
-	BulletData.CrackCreated = true
+    --flag this, so we are not playing this sound for this bullet next time
+    BulletData.CrackCreated = true
 
-	debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
+    debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
 
-	local count 	= 1
-	local Emitted 	= false --Was the sound played?
+    local count     = 1
+    local Emitted   = false --Was the sound played?
 
-	local ide 		= 'ACECrack#'..math.random(1,100000)
+    local ide       = 'ACECrack#'..math.random(1,100000)
 
-	if timer.Exists( ide ) then return end
-	timer.Create( ide , 0.1, 0, function()
+    if timer.Exists( ide ) then return end
+    timer.Create( ide , 0.1, 0, function()
 
-		count = count + 1
+        count = count + 1
 
-		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+        if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
+        local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
 
-		--Delayed event report.
-		local CrackPos 	= BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
-		local Dist 		= math.abs((plyPos - CrackPos):Length()) 							--print('distance from bullet: '..Dist)
-		local Volume 	= ( 10000/Dist) 													--print('Vol: '..Volume)
-		local Delay 	= ( Dist/1500 ) * ACE.DelayMultipler 								--print('amount to match: '..Delay)
+        --Delayed event report.
+        local CrackPos  = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
+        local Dist      = math.abs((plyPos - CrackPos):Length())                            --print('distance from bullet: '..Dist)
+        local Volume    = ( 10000/Dist)                                                     --print('Vol: '..Volume)
+        local Delay     = ( Dist/1500 ) * ACE.DelayMultipler                                --print('amount to match: '..Delay)
 
-		if count > Delay then
-			if not Emitted then
-				Emitted = true
+        if count > Delay then
+            if not Emitted then
+                Emitted = true
 
-				local VolFix = 1
+                local VolFix = 1
 
-				--Small arm guns
-				local Sound = ACE.Sounds["Cracks"]["small"]["close"][math.random(1,#ACE.Sounds["Cracks"]["small"]["close"])]
+                --Small arm guns
+                local Sound = ACE.Sounds["Cracks"]["small"]["close"][math.random(1,#ACE.Sounds["Cracks"]["small"]["close"])]
 
-				--30mm gun and above
-				if Caliber >= 3 then
-					Sound = ACE.Sounds["Cracks"]["medium"]["close"][math.random(1,#ACE.Sounds["Cracks"]["medium"]["close"])]
+                --30mm gun and above
+                if Caliber >= 3 then
+                    Sound = ACE.Sounds["Cracks"]["medium"]["close"][math.random(1,#ACE.Sounds["Cracks"]["medium"]["close"])]
 
-					--above 100mm cannons
-					if Caliber >= 10 then
-						Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+                    --above 100mm cannons
+                    if Caliber >= 10 then
+                        Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
 
-						--Some fly sounds don´t fit really well. Special case here.
-						if Caliber >= 20 then
-							Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
-							VolFix = 0.5
-						end
-					end
-				end
+                        --Some fly sounds don´t fit really well. Special case here.
+                        if Caliber >= 20 then
+                            Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+                            VolFix = 0.5
+                        end
+                    end
+                end
 
-				--If a wall is in front of the player and is indoor, reduces its vol
-				if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
-					--print('Inside of building')
-					VolFix = VolFix*0.025
-				end
+                --If a wall is in front of the player and is indoor, reduces its vol
+                if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
+                    --print('Inside of building')
+                    VolFix = VolFix*0.025
+                end
 
-				entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, 100, Volume * VolFix )
+                entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, 100, Volume * VolFix )
 
-			end
-			timer.Stop( ide )
-			timer.Remove( ide )	
-		end
-	end )
+            end
+            timer.Stop( ide )
+            timer.Remove( ide ) 
+        end
+    end )
 end
 
 --Coming soon
