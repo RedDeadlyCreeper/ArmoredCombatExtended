@@ -15,9 +15,10 @@ function ENT:Initialize()
     self.Heat                   = 21
     self.IsJammed               = 0
 
-    self.LegalTick              = 0
-    self.checkLegalIn           = 50 + math.random(0,50) -- Random checks every 5-10 seconds
-    self.IsLegal                = true
+    self.NextLegalCheck         = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+    self.Legal                  = true
+    self.LegalIssues            = ""
+
     self.ClosestToBeam          = -1
 
     self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
@@ -36,7 +37,7 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
     if not radar then return false end
     
     local Radar = ents.Create("ace_trackingradar")
-    if not Radar:IsValid() then return false end
+    if not IsValid(Radar) then return false end
 
     Radar:SetAngles(Angle)
     Radar:SetPos(Pos)
@@ -90,23 +91,9 @@ function ENT:SetModelEasy(mdl)
     
 end
 
---ATGMs tracked
-function ENT:isLegal()
-
-    if self:GetPhysicsObject():GetMass() < 600 then return false end
-    if not self:IsSolid() then return false end
-
-    ACF_GetPhysicalParent(self)
-    
-    self.IsLegal = self.acfphysparent:IsSolid()
-
-    return self.IsLegal
-
-end
-
 function ENT:TriggerInput( inp, value )
     if inp == "Active" then
-        self:SetActive((value ~= 0) and self:isLegal())
+        self:SetActive((value ~= 0) and self.Legal)
     end
     if inp == "Cone" then
         if value > 0 then
@@ -152,21 +139,22 @@ end
 
 function ENT:Think()
 
-
     local curTime = CurTime()   
     self:NextThink(curTime + self.ThinkDelay)
 
-    self.LegalTick = (self.LegalTick or 0) + 1
+    if ACF.CurTime > self.NextLegalCheck then
 
-    if  self.LegalTick >= (self.checkLegalIn or 0) then
-    
-        self.LegalTick = 0
-        self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
-        self:isLegal()
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, nil, true, true)
+        self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
+        if not self.Legal then
+            self.Active = false
+            self:SetActive(false)            
+        end
+        
     end
 
-    if self.Active and self.IsLegal then
+    if self.Active and self.Legal then
 
         local radID = ACE.radarIDs[self]
         self.IsJammed = 0
@@ -295,8 +283,8 @@ function ENT:Think()
                                 end
                                 --print((entpos - thisPos):Length())
                             
-                                table.insert(ownArray, CPPI and scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
-                                table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
+                                table.insert(ownArray , CPPI and scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+                                table.insert(posArray ,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
 
                                 --IDK if this is more intensive than length
                                 local finalvel = Vector(0,0,0)
@@ -307,17 +295,10 @@ function ENT:Think()
                                 end
                             
                                 table.insert(velArray,finalvel)
-                            else
-                                --print("DopplerFail")
+                                
                             end
-
-                        else
-                            --print(LOStr.SurfaceFlags)
-                            --print(LOStr.Entity )
                         end
-
                     end
-
                 end
 
                 ::cont::
@@ -326,7 +307,7 @@ function ENT:Think()
             --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
 
             --Some entity passed the test to be valid
-            if self.ClosestToBeam != -1 then 
+            if self.ClosestToBeam ~= -1 then 
 
                 WireLib.TriggerOutput( self, "Detected", 1 )
                 WireLib.TriggerOutput( self, "Owner", ownArray )
@@ -354,19 +335,14 @@ function ENT:Think()
 end
 
 function ENT:UpdateStatus()
-
-    if self.Active then
-        self.Status = "On"
-    else
-        self.Status = "Off"
-    end
+        self.Status = self.Active and "On" or "Off"
 end
 
 function ENT:UpdateOverlayText()
     
     local cone      = self.Cone
     local status    = self.Status or "Off"
-    local detected  = (self.ClosestToBeam != -1)
+    local detected  = status ~= "Off" and self.ClosestToBeam != -1 or false
     local Jammed    = self.IsJammed
 
     local txt = "Status: "..status
@@ -383,9 +359,9 @@ function ENT:UpdateOverlayText()
         txt = txt.."\n\nWarning: Jammed"
     end
 
-    --if not self.Legal then
-    --  txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-    --end
+    if not self.Legal then
+      txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+    end
 
     self:SetOverlayText(txt)
 

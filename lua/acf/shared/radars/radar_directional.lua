@@ -9,7 +9,7 @@ ACF_DefineRadarClass("DIR-AM", {
 
 
 ACF_DefineRadar("SmallDIR-AM", {
-	name 		= "Small Directional Radar",
+	name 		= "Small Directional Anti-Missile Radar",
 	ent			= "acf_missileradar",
 	desc 		= ACFTranslation.Radar[2],
 	model		= "models/radar/radar_sml.mdl",
@@ -20,7 +20,7 @@ ACF_DefineRadar("SmallDIR-AM", {
 
 
 ACF_DefineRadar("MediumDIR-AM", {
-	name 		= "Medium Directional Radar",
+	name 		= "Medium Directional Anti-Missile Radar",
 	ent			= "acf_missileradar",
 	desc 		= ACFTranslation.Radar[3],
 	model		= "models/radar/radar_mid.mdl", -- medium one is for now scalled big one - will be changed
@@ -31,7 +31,7 @@ ACF_DefineRadar("MediumDIR-AM", {
 
 
 ACF_DefineRadar("LargeDIR-AM", {
-	name 		= "Large Directional Radar",
+	name 		= "Large Directional Anti-Missile Radar",
 	ent			= "acf_missileradar",
 	desc 		= ACFTranslation.Radar[4],
 	model		= "models/radar/radar_big.mdl",

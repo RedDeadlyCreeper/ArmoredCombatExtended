@@ -282,7 +282,7 @@ ACFTranslation.ShellAPCR = {
 
 ACFTranslation.ShellRef = {
 	"Refill", --AmmoName (1)
-	"Ammo Refill" --Desc (2)
+	"Refills other ammo crates. Ignore the gun type since this crate can refill any weapon. Not linkeable" --Desc (2)
 
 }
 

@@ -743,7 +743,7 @@ ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav",
  )
 
 --Generic SL gunfire
-ACE_DefineGunFireSound( "multi_sound/smoke_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/multi_sound/smoke_multi.mp3", 
 	{
 		main = {
 			Volume 	= 1,

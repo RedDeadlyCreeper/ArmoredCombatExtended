@@ -1,7 +1,6 @@
 -- Code modified from the NADMOD client permissions menu, by Nebual
 -- http://www.facepunch.com/showthread.php?t=1221183
 
-
 ACF = ACF or {}
 ACF.Permissions = ACF.Permissions or {}
 local this = ACF.Permissions

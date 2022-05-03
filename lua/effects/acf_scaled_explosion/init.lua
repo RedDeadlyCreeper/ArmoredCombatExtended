@@ -17,7 +17,10 @@ function EFFECT:Init( data )
 		GroundTr.start = self.Origin + Vector(0,0,1)*self.Radius
 		GroundTr.endpos = self.Origin - Vector(0,0,1)*self.Radius*10
 		GroundTr.mask = MASK_NPCWORLDSTATIC
-	local Ground = util.TraceLine( GroundTr )
+		GroundTr.mins = Vector(0,0,0)
+		GroundTr.maxs = Vector(0,0,0)
+
+	local Ground = util.TraceHull( GroundTr )
 
 	local WaterTr = { }
 
@@ -27,7 +30,9 @@ function EFFECT:Init( data )
 		WaterTr.start = startposition
 		WaterTr.endpos = endposition
 		WaterTr.mask = MASK_WATER
-	local Water = util.TraceLine( WaterTr )
+		WaterTr.mins = Vector(0,0,0)
+		WaterTr.maxs = Vector(0,0,0)
+	local Water = util.TraceHull( WaterTr )
 
 	debugoverlay.Line( startposition, endposition, 10, Color(255,0,0))
 	debugoverlay.Cross( Water.HitPos, 10, 10, Color( 0, 0, 255 ))

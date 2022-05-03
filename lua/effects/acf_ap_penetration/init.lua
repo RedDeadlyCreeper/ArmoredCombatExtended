@@ -18,10 +18,12 @@ local GunTable = ACFEnts.Guns
 	
 	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
 
-	local ImpactTr = { }
-		ImpactTr.start = self.Origin - self.DirVec*20
-		ImpactTr.endpos = self.Origin + self.DirVec*100
-	local Impact = util.TraceLine(ImpactTr)					--Trace to see if it will hit anything
+	local Tr = { }
+		Tr.start = self.Origin - self.DirVec*20
+		Tr.endpos = self.Origin + self.DirVec*100
+		Tr.mins = Vector(0,0,0)
+		Tr.maxs = Vector(0,0,0)
+	local Impact = util.TraceHull(Tr)					--Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
 
 	if IsValid(Impact.Entity) then

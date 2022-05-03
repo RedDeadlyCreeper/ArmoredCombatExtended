@@ -80,7 +80,8 @@ local BackCompMat = {
    "Texto"
 }
 
-function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
+--TODO: remove unused functions
+function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, _, CanVisclip )
 
    local problems = {} --problems table definition
 
@@ -147,16 +148,7 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
    if ACF.Legal.Ignore.visclip <= 0 and not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
       table.insert(problems,"Has visclip")
    end
-
-   -- if it has a parent, check if legally parented
-   if ACF.Legal.Ignore.Parent <= 0 and Ent:GetParent():IsValid() then
-
-      -- check if you have parented to a gate since this will avoid to bypass traces
-      if NeedsGateParent and Ent:GetParent():GetClass() ~= 'gmod_wire_gate' then
-         table.insert(problems,"Not gate parented")
-      end
-   end
-      
+    
    -- legal if number of problems is 0
    return (#problems == 0), table.concat(problems, ", ")
    

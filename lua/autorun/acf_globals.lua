@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 461           -- ACE current version
+ACF.Version = 462           -- ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
@@ -19,7 +19,7 @@ ACF.RoundTypes      = {}
 ACF.IdRounds        = {}    --Lookup tables so i can get rounds classes from clientside with just an integer
 
 --[[----------------------------
-       ServerSide Convars 
+       Entity Limits
 ]]------------------------------
 
 CreateConVar('sbox_max_acf_gun', 24)                            -- Gun limit
@@ -29,9 +29,12 @@ CreateConVar('sbox_max_acf_smokelauncher', 20)                  -- smoke launche
 CreateConVar('sbox_max_acf_ammo', 50)                           -- ammo limit
 CreateConVar('sbox_max_acf_misc', 50)                           -- misc ents limit
 CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
+
+
 --CreateConVar('sbox_max_acf_mines', 5)                         -- mines. Experimental
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
+
 ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )      -- Should flares light players and NPCs on fire?  Does not affect godded players.
 ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )      -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities. 
 
@@ -67,7 +70,6 @@ CreateConVar("acf_debris_children", 1, FCVAR_ARCHIVE)
 -- Spalling
 CreateConVar("acf_spalling", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_spalling_multipler", 1, FCVAR_ARCHIVE)
---concommand.Add( "acf_debris_clear", function()
 
 --end )
 
@@ -180,105 +182,6 @@ ACF.GunInaccuracyBias   = 2                         -- Higher numbers make shots
 ACF.EnableDefaultDP     = true                      -- GetConVar('acf_enable_dp'):GetBool()           -- Enable the inbuilt damage protection system.
 ACF.EnableKillicons     = true                      -- Enable killicons overwriting.
 
---Calculates a position along a catmull-rom spline (as defined on https://www.mvps.org/directx/articles/catmull/)
---This is used for calculating engine torque curves
-function ACF_CalcCurve(Points, Pos)
-    if #Points < 3 then
-        return 0
-    end
-
-    local T = 0
-    if Pos <= 0 then
-        T = 0
-    elseif Pos >= 1 then
-        T = 1
-    else
-        T = Pos * (#Points - 1)
-        T = T % 1
-    end
-
-    local CurrentPoint = math.floor(Pos * (#Points - 1) + 1)
-    local P0 = Points[math.Clamp(CurrentPoint - 1, 1, #Points - 2)]
-    local P1 = Points[math.Clamp(CurrentPoint, 1, #Points - 1)]
-    local P2 = Points[math.Clamp(CurrentPoint + 1, 2, #Points)]
-    local P3 = Points[math.Clamp(CurrentPoint + 2, 3, #Points)]
-
-    return 0.5 * ((2 * P1) +
-        (P2 - P0) * T +
-        (2 * P0 - 5 * P1 + 4 * P2 - P3) * T ^ 2 +
-        (3 * P1 - P0 - 3 * P2 + P3) * T ^ 3)
-end
-
---Calculates the performance characteristics of an engine, given a torque curve, max torque (in nm), idle, and redline rpm
-function ACF_CalcEnginePerformanceData(curve, maxTq, idle, redline)
-    local peakTq = 0
-    local peakTqRPM
-    local peakPower = 0
-    local powerbandMinRPM
-    local powerbandMaxRPM
-    local powerTable = {} --Power at each point on the curve for use in powerband calc
-    local powerbandTable = {} --(torque + power) / 2 at each point on the curve
-    local powerbandPeak = 0 --Highest value of (torque + power) / 2
-    local res = 32 --Iterations for use in calculating the curve, higher is more accurate
-    local curveFactor = (redline - idle) / redline --Torque curves all start after idle RPM is reached
-
-    --Calculate peak torque/power rpm.
-    for i = 0, res do
-        local rpm = i / res * redline
-        local perc = (rpm - idle) / curveFactor / redline
-        local curTq = ACF_CalcCurve(curve, perc)
-        local power = maxTq * curTq * rpm / 9548.8
-        powerTable[i] = power
-        if power > peakPower then
-            peakPower = power
-            peakPowerRPM = rpm
-        end
-
-        if math.Clamp(curTq, 0, 1) > peakTq then
-            peakTq = curTq
-            peakTqRPM = rpm
-        end
-    end
-
-    --Loop two, to calculate the powerband's peak.
-    for i = 0, res do
-        local power = powerTable[i] / peakPower
-        local tq = ACF_CalcCurve(curve, i / res)
-        local powerband = power + tq --This seems like the best way I was given to calculate the powerband range - maybe improve eventually?
-        powerbandTable[i] = powerband
-
-        if powerband > powerbandPeak then
-            powerbandPeak = powerband
-        end
-    end
-
-    --Loop three, to actually figure out where the bounds of the powerband are (within 10% of max).
-    for i = 0, res do
-        local powerband = powerbandTable[i] / powerbandPeak
-        local rpm = i / res * redline
-
-        if powerband > 0.9 and not powerbandMinRPM then
-            powerbandMinRPM = rpm
-        end
-
-        if (powerbandMinRPM and powerband < 0.9 and not powerbandMaxRPM) or (i == res and not powerbandMaxRPM) then
-            powerbandMaxRPM = rpm
-        end
-    end
-
-    return {
-        peakTqRPM = peakTqRPM,
-        peakPower = peakPower,
-        peakPowerRPM = peakPowerRPM,
-        powerbandMinRPM = powerbandMinRPM,
-        powerbandMaxRPM = powerbandMaxRPM
-    }
-end
-
---[[
-    ACE translations section
-]]--
-
 if ACF.AllowCSLua > 0 then
     AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
     RunConsoleCommand( "sv_allowcslua", 1 )
@@ -289,21 +192,16 @@ else
     AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
 end
 
-AddCSLuaFile()
-AddCSLuaFile( "acf/client/cl_acfballistics.lua" )
-AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
-AddCSLuaFile( "acf/client/cl_acfrender.lua" )
-AddCSLuaFile( "acf/client/cl_extension.lua" )
-
-include("acf/shared/ace_loader.lua")
+include("acf/shared/sh_ace_particles.lua")
+include("acf/shared/sh_ace_sound_loader.lua")
 include("autorun/acf_missile/folder.lua")
+include("acf/shared/sh_ace_functions.lua")
+include("acf/shared/sh_ace_loader.lua")
+include("acf/shared/sh_ace_concommands.lua")
 
 if SERVER then
 
-    util.AddNetworkString( "ACF_KilledByACF" )
-    util.AddNetworkString( "ACF_RenderDamage" )
-    util.AddNetworkString( "ACF_Notify" )
-    util.AddNetworkString( "ACE_ArmorSummary" )
+    include("acf/shared/sv_ace_networking.lua")
 
     include("acf/server/sv_acfbase.lua")
     include("acf/server/sv_acfdamage.lua")
@@ -313,20 +211,32 @@ if SERVER then
     include("acf/server/sv_legality.lua")
 
     if ACF.EnableDefaultDP then
-        
-        AddCSLuaFile( "acf/client/cl_acfpermission.lua" )
-        AddCSLuaFile( "acf/client/gui/cl_acfsetpermission.lua" )
-
         include("acf/server/sv_acfpermission.lua")
-            
+    end
+
+    AddCSLuaFile("acf/client/cl_acfballistics.lua")
+    AddCSLuaFile("acf/client/cl_acfmenu_gui.lua")
+    AddCSLuaFile("acf/client/cl_acfrender.lua")
+    AddCSLuaFile("acf/client/cl_extension.lua")
+
+    AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
+
+    if ACF.EnableDefaultDP then
+
+        AddCSLuaFile("acf/client/cl_acfpermission.lua")
+        AddCSLuaFile("acf/client/gui/cl_acfsetpermission.lua")
+
     end
 
 elseif CLIENT then
 
     include("acf/client/cl_acfballistics.lua")
+    --include("acf/client/cl_acfmenu_gui.lua")
     include("acf/client/cl_acfrender.lua")
     include("acf/client/cl_extension.lua")
     
+    --include("acf/client/cl_acfmenu_missileui.lua")
+
     if ACF.EnableDefaultDP then
     
         include("acf/client/cl_acfpermission.lua")
@@ -351,9 +261,6 @@ elseif CLIENT then
     
 end
 
-
-include("acf/shared/ace_sound_loader.lua")
-AddCSLuaFile( "acf/shared/ace_sound_loader.lua" )
 
 --[[--------------------------------------
     RoundType Loader
@@ -415,20 +322,7 @@ ACF.RoundTypes  = list.Get("ACFRoundTypes")
 ACF.IdRounds    = list.Get("ACFIdRounds")   --Lookup tables so i can get rounds classes from clientside with just an integer
 ACE.Armors      = list.Get("ACE_MaterialTypes")
 ACE.GSounds     = list.Get("ACESounds")
---[[--------------------------------------
-            Particles loader
-]]----------------------------------------
 
-game.AddParticles( "particles/flares_fx.pcf" )
-game.AddParticles("particles/acf_muzzleflashes.pcf")
-game.AddParticles("particles/explosion1.pcf")
-game.AddParticles("particles/rocket_motor.pcf")
-game.AddParticles("particles/impact_fx.pcf")
-
-PrecacheParticleSystem( "ACFM_Flare" )
-PrecacheParticleSystem( "ACF_Explosion" )
-PrecacheParticleSystem( "ACF_BlastEmber" )
-PrecacheParticleSystem( "ACF_AirburstDebris" )
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")
 
@@ -464,150 +358,7 @@ hook.Add( "Think", "Update ACF Internal Clock", function()
     ACF.SysTime = SysTime()
 end )
 
--- changes here will be automatically reflected in the armor properties tool
-function ACF_CalcArmor( Area, Ductility, Mass )
-    
-    return ( Mass * 1000 / Area / 0.78 ) / ( 1 + Ductility ) ^ 0.5 * ACF.ArmorMod
-    
-end
 
-function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
-
-    local PEnergy = ACF.PBase * ((1+Propellant)^ACF.PScale-1)
-    local Speed = ((PEnergy*2000/Mass)^ACF.MVScale)
-    local Final = Speed -- - Speed * math.Clamp(Speed/2000,0,0.5)
-
-    return Final
-end
-
-function ACF_Kinetic( Speed , Mass, LimitVel )
-    
-    LimitVel = LimitVel or 99999
-    Speed = Speed/39.37
-    
-    local Energy = {}
-        Energy.Kinetic = ((Mass) * ((Speed)^2))/2000 --Energy in KiloJoules
-        Energy.Momentum = (Speed * Mass)
-        
-        local KE = (Mass * (Speed^ACF.KinFudgeFactor))/2000 + Energy.Momentum
-        Energy.Penetration = math.max( KE - (math.max(Speed-LimitVel,0)^2)/(LimitVel*5) * (KE/200)^0.95 , KE*0.1 )
-        --Energy.Penetration = math.max( KE - (math.max(Speed-LimitVel,0)^2)/(LimitVel*5) * (KE/200)^0.95 , KE*0.1 )
-        --Energy.Penetration = math.max(Energy.Momentum^ACF.KinFudgeFactor - math.max(Speed-LimitVel,0)/(LimitVel*5) * Energy.Momentum , Energy.Momentum*0.1)
-    
-    return Energy
-end
-
-do
-
-    --Convert old numeric IDs to the new string IDs
-    local BackCompMat = {
-        "RHA",
-        "CHA",
-        "Cer",
-        "Rub",
-        "ERA",
-        "Alum",
-        "Texto"
-    }
-
-    -- Global Ratio Setting Function
-    function ACF_CalcMassRatio( obj, pwr )
-        if not IsValid(obj) then return end
-        local Mass          = 0
-        local PhysMass      = 0
-        local power         = 0
-        local fuel          = 0
-        local Compositions  = {}
-        local MatSums       = {}
-        local PercentMat    = {}
-
-        -- find the physical parent highest up the chain
-        local Parent = ACF_GetPhysicalParent(obj)
-    
-        -- get the shit that is physically attached to the vehicle
-        local PhysEnts = ACF_GetAllPhysicalConstraints( Parent )
-    
-        -- add any parented but not constrained props you sneaky bastards
-        local AllEnts = table.Copy( PhysEnts )
-        for k, v in pairs( AllEnts ) do
-        
-            table.Merge( AllEnts, ACF_GetAllChildren( v ) )
-    
-        end
-    
-        for k, v in pairs( AllEnts ) do
-        
-            if IsValid( v ) then
-
-                if v:GetClass() == "acf_engine" then
-                    power = power + (v.peakkw * 1.34)
-                    fuel = v.RequiresFuel and 2 or fuel
-                elseif v:GetClass() == "acf_fueltank" then
-                    fuel = math.max(fuel,1)
-                end
-            
-                local phys = v:GetPhysicsObject()
-                if IsValid( phys ) then     
-            
-                    Mass = Mass + phys:GetMass() --print("total mass of contraption: "..Mass)
-                
-                    if PhysEnts[ v ] then
-                        PhysMass = PhysMass + phys:GetMass()
-                    end
-                
-                end
-
-                if pwr then
-                    local PhysObj = v:GetPhysicsObject()
-
-                    if IsValid(PhysObj) then
-
-                        local material          = v.ACF and v.ACF.Material or "RHA"
-
-                        --ACE doesnt update their material stats actively, so we need to update it manually here.
-                        if not isstring(material) then
-                            local Mat_ID = material + 1
-                            material = BackCompMat[Mat_ID]
-                        end
-
-                        Compositions[material]  = Compositions[material] or {}
-
-                        table.insert(Compositions[material], PhysObj:GetMass() )
-
-                    end
-                end
-
-            end
-        end
-
-        --Build the ratios here
-        for k, v in pairs( AllEnts ) do
-            v.acfphystotal      = PhysMass
-            v.acftotal          = Mass
-            v.acflastupdatemass = ACF.CurTime   
-        end 
-
-        if pwr then
-            --Get mass Material composition here
-            for material, tablemass in pairs(Compositions) do
-
-                MatSums[material] = 0
-
-                for i,mass in pairs(tablemass) do
-
-                    MatSums[material] = MatSums[material] + mass 
-
-                end 
-
-                --Gets the actual material percent of the contraption
-                PercentMat[material] = ( MatSums[material] / obj.acftotal ) or 0
-
-            end
-        end
-        if pwr then return { Power = power, Fuel = fuel, MaterialPercent = PercentMat, MaterialMass = MatSums } end
-    end
-
-end
 
 function ACF_CVarChangeCallback(CVar, Prev, New)
     --if( Cvar == "acf_year" ) then
@@ -658,122 +409,30 @@ else
     net.Receive( "ACF_Notify", ACF_Notify )
 end
 
-function ACF_UpdateChecking( )
-    http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size) 
-
-        --maybe not the best way to get git but well......
-        str = tostring("String:"..contents)    
-        i,k = string.find(str,'ACF.Version =')
-                
-        local rev = tonumber(string.sub(str,k+2,k+4)) or 0
-        
-        if rev and ACF.Version >= rev  and rev ~= 0 then
-            
-            print("[ACE | INFO]- You have the latest version! Current version: "..rev)
-            
-        elseif rev == 0 then
-        
-            print("[ACE | ERROR]- Unable to find the latest version! No internet available.")
-            
-        else
-        
-            print("[ACE | INFO]- A newer version of ACE is available! Latest Version: "..rev..", Your Current Version: "..ACF.Version)
-            if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
-            
-        end
-        ACF.CurrentVersion = rev
-        
-    end, function() end)
-end
-
-timer.Simple(2, function()
-    ACF_UpdateChecking()
-end )
-
-local function OnInitialSpawn( ply )
-    local Table = {}
-    for k,v in pairs( ents.GetAll() ) do
-        if v.ACF and v.ACF.PrHealth then
-            table.insert(Table,{ID = v:EntIndex(), Health = v.ACF.Health, v.ACF.MaxHealth})
-        end
-    end
-    if Table ~= {} then
-        net.Start("ACF_RenderDamage")
-            net.WriteTable(Table)
-        net.Send(ply)
-    end
-end
-hook.Add( "PlayerInitialSpawn", "renderdamage", OnInitialSpawn )
 
 
--- smoke-wind cvar handling
-if SERVER then
-    local function msgtoconsole(hud, msg)
-            print(msg)
-    end
+do
 
-    util.AddNetworkString("acf_smokewind")
-    concommand.Add( "acf_smokewind", function(ply, cmd, args, str)
-            local validply = IsValid(ply)
-            local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
-            
-            if not args[1] then printmsg(HUD_PRINTCONSOLE,
-                    "Set the wind intensity upon all smoke munitions." ..
-                    "\n   This affects the ability of smoke to be used for screening effect." ..
-                    "\n   Example; acf_smokewind 300")
-                    return false
+    local function OnInitialSpawn( ply )
+        local Table = {}
+        for k,v in pairs( ents.GetAll() ) do
+            if v.ACF and v.ACF.PrHealth then
+                table.insert(Table,{ID = v:EntIndex(), Health = v.ACF.Health, v.ACF.MaxHealth})
             end
-            
-            if validply and not ply:IsAdmin() then
-                    printmsg(HUD_PRINTCONSOLE, "You can't use this because you are not an admin.")
-                    return false
-                    
-            else
-                    local wind = tonumber(args[1])
-
-                    if not wind then
-                            printmsg(HUD_PRINTCONSOLE, "Command unsuccessful: that wind value could not be interpreted as a number!")
-                            return false
-                    end
-                    
-                    ACF.SmokeWind = wind
-                    
-                    net.Start("acf_smokewind")
-                    net.WriteFloat(wind)
-                    net.Broadcast()
-                    
-                    printmsg(HUD_PRINTCONSOLE, "Command SUCCESSFUL: set smoke-wind to " .. wind .. "!")
-                    return true        
-            end
-    end)
-
-    local function sendSmokeWind(ply)
-            net.Start("acf_smokewind")
-                    net.WriteFloat(ACF.SmokeWind)
+        end
+        if Table ~= {} then
+            net.Start("ACF_RenderDamage")
+                net.WriteTable(Table)
             net.Send(ply)
+        end
     end
-    hook.Add( "PlayerInitialSpawn", "ACF_SendSmokeWind", sendSmokeWind )
-else
-    local function recvSmokeWind(len)
-        ACF.SmokeWind = net.ReadFloat()
-    end
-    net.Receive("acf_smokewind", recvSmokeWind)
-end
-cleanup.Register( "aceexplosives" )
+    hook.Add( "PlayerInitialSpawn", "renderdamage", OnInitialSpawn )
 
-AddCSLuaFile()
+end
+
+cleanup.Register( "aceexplosives" )
 
 AddCSLuaFile("autorun/acf_missile/folder.lua")
 include("autorun/acf_missile/folder.lua")
-
-AddCSLuaFile("autorun/client/cl_acfm_menuinject.lua")
-AddCSLuaFile("autorun/client/cl_acfm_effectsoverride.lua")
-AddCSLuaFile("autorun/printbyname.lua")
-AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
-
-AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
-AddCSLuaFile("autorun/sh_acfm_roundinject.lua")
-
---if not file.Exists( "data/ace/*", "GAME")
 
 print('[ACE | INFO]- Done!')

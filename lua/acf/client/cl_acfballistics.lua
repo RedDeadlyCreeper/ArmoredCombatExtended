@@ -1,3 +1,4 @@
+
 ACF.BulletEffect = {}
 
 function ACF_ManageBulletEffects()

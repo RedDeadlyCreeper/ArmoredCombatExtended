@@ -16,14 +16,18 @@ function EFFECT:Init( data )
 	local ImpactTr = { }
 		ImpactTr.start = self.Origin - self.DirVec*20
 		ImpactTr.endpos = self.Origin + self.DirVec*20
-	local Impact = util.TraceLine(ImpactTr)                                        --Trace to see if it will hit anything
+		ImpactTr.mins = Vector(0,0,0)
+		ImpactTr.maxs = Vector(0,0,0)
+	local Impact = util.TraceHull(ImpactTr)                                        --Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
 	
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)
 		GroundTr.endpos = self.Origin - Vector(0,0,1)*self.Radius
 		GroundTr.mask = 131083
-	local Ground = util.TraceLine(GroundTr)                                
+		GroundTr.mins = Vector(0,0,0)
+		GroundTr.maxs = Vector(0,0,0)
+	local Ground = util.TraceHull(GroundTr)                                
 	
 	local SmokeColor = self.Colour or Vector(255,255,255)
 	if not Ground.HitWorld then Ground.HitNormal = Vector(0,0,1) end

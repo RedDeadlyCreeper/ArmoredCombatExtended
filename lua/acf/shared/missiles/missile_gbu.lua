@@ -46,7 +46,7 @@ ACF_defineGun("WalleyeGBU", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 0.005,        				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.00001,						-- drag coefficient of the missile
+		dragcoef	= 0.001,						-- drag coefficient of the missile
 		finmul		= 0.02,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.2)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},

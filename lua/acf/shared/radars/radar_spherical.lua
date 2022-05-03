@@ -9,7 +9,7 @@ ACF_DefineRadarClass("OMNI-AM", {
 
 
 ACF_DefineRadar("SmallOMNI-AM", {
-	name 		= "Small Spherical Radar",
+	name 		= "Small Spherical Anti-Missile Radar",
 	ent			= "acf_missileradar",
 	desc 		= ACFTranslation.Radar[6],
 	model		= "models/radar/radar_sp_sml.mdl",
@@ -20,7 +20,7 @@ ACF_DefineRadar("SmallOMNI-AM", {
 
 
 ACF_DefineRadar("MediumOMNI-AM", {
-	name 		= "Medium Spherical Radar",
+	name 		= "Medium Spherical Anti-Missile Radar",
 	ent			= "acf_missileradar",
 	desc 		= ACFTranslation.Radar[7],
 	model		= "models/radar/radar_sp_mid.mdl", -- medium one is for now scalled big one - will be changed
@@ -31,7 +31,7 @@ ACF_DefineRadar("MediumOMNI-AM", {
 
 
 ACF_DefineRadar("LargeOMNI-AM", {
-	name 		= "Large Spherical Radar",
+	name 		= "Large Spherical Anti-Missile Radar",
 	ent			= "acf_missileradar",
 	desc 		= ACFTranslation.Radar[8],
 	model		= "models/radar/radar_sp_big.mdl",

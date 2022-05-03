@@ -1,3 +1,4 @@
+
 --[[------------------------
     1.- This is the file that displays the main menu, such as guns, ammo, mobility and subfolders.
    
@@ -350,9 +351,10 @@ function PANEL:Init( )
    Sensor folder
 ]]--=========================
    local sensors     = HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
-   local radar       = sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
-   local antimissile = radar:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
-   local tracking    = radar:AddNode("Tracking Radar", "icon16/brick.png")
+
+   local antimissile = sensors:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
+   local tracking    = sensors:AddNode("Tracking Radar", "icon16/brick.png")
+   local irst        = sensors:AddNode("IRST", "icon16/brick.png")
    
    local nods = {}
    
@@ -362,6 +364,8 @@ function PANEL:Init( )
             nods[k] = tracking:AddNode( v.name or "No Name" , "icon16/brick.png"   )
          elseif v.type == "Anti-missile" then
             nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )
+         elseif v.type == "IRST" then
+            nods[k] = irst:AddNode( v.name or "No Name" , "icon16/brick.png"   )
          end
       end
 
@@ -390,7 +394,7 @@ function PANEL:Init( )
    local OptionsNode = self.WeaponSelect:AddNode( "Settings" ) --Options folder
    
    local CLNod    = OptionsNode:AddNode("Client" , "icon16/user.png")--Client folder
-   local SVNod    = OptionsNode:AddNode("Server", "icon16/cog.png")--Server folder
+   local SVNod    = OptionsNode:AddNode("Server", "icon16/cog.png")  --Server folder
    
    CLNod.mytable  = {}
    SVNod.mytable  = {}
@@ -679,6 +683,7 @@ function ACFSVGUICreate( Table )   --Serverside folder content
    local ply = LocalPlayer()
    if not IsValid(ply) then return end
    if not ply:IsSuperAdmin() then return end
+   if game.IsDedicated() then ACFSVGUIERROR() return end
 
    local Server = acfmenupanel["CData"]["Options"]
 
@@ -696,8 +701,6 @@ function ACFSVGUICreate( Table )   --Serverside folder content
    Sub:SetText("Server Side parameters can be adjusted here")
    Sub:SizeToContents()  
    acfmenupanel.CustomDisplay:AddItem( Sub )
-
-   if ACE.IsDedicated then ACFSVGUIERROR() return end --For dedicated servers, change the values directly in code. Weird
 
    local General = vgui.Create( "DForm" )
    General:SetName("General")
@@ -757,8 +760,8 @@ function ACFSVGUICreate( Table )   --Serverside folder content
    Legal:CheckBox( "Allow visclip", "acf_legal_ignore_visclip" )
    Legal:ControlHelp( "ace ents can have visclip at any case" )
 
-   Legal:CheckBox( "Allow any parent", "acf_legal_ignore_parent" )
-   Legal:ControlHelp( "Allow to bypass gate requirement" )
+   --Legal:CheckBox( "Allow any parent", "acf_legal_ignore_parent" )
+   --Legal:ControlHelp( "Allow to bypass gate requirement" )
 
    acfmenupanel.CustomDisplay:AddItem( Legal )  
 

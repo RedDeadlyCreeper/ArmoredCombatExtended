@@ -128,54 +128,60 @@ end
 
 function ENT:Initialize()
     
-    self.SpecialHealth  = true  --If true needs a special ACF_Activate function
-    self.SpecialDamage  = true  --If true needs a special ACF_OnDamage function
-    self.IsExplosive    = true
-    self.Exploding      = false
-    self.Damaged        = false
-    self.CanUpdate      = true
-    self.Load           = false
-    self.EmptyMass      = 1
-    self.AmmoMassMax    = 0
-    self.NextMassUpdate = 0
-    self.Ammo           = 0
-    self.IsTwoPiece     = false
-    self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-    self.Legal          = true
-    self.LegalIssues    = ""
-    self.Active         = false
+    self.SpecialHealth      = true  --If true needs a special ACF_Activate function
+    self.SpecialDamage      = true  --If true needs a special ACF_OnDamage function
 
-    self.Master         = {}
-    self.Sequence       = 0
-    
-    self.Inputs         = Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
-    self.Outputs        = Wire_CreateOutputs( self, { "Munitions" } )
+    self.IsExplosive        = true
+    self.Exploding          = false
+    self.Damaged            = false
+
+    self.CanUpdate          = true
+    self.Load               = false
+    self.EmptyMass          = 1
+    self.AmmoMassMax        = 0
+    self.NextMassUpdate     = 0
+
+    self.Ammo               = 0
+    self.IsTwoPiece         = false
+
+    self.NextLegalCheck     = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+    self.Legal              = true
+    self.LegalIssues        = ""
+
+    self.Active             = false
+    self.Master             = {}
+    self.Sequence           = 0
         
-    self.NextThink      = CurTime() +  1
-    
-    ACF.AmmoCrates      = ACF.AmmoCrates or {}
+    self.Interval           = 1         -- Think Interval when its not damaged
+    self.ExplosionInterval  = 0.01      -- Base Think Interval when its damaged and its about to explode
 
-    self.Capacity       = 1
-    self.AmmoMassMax    = 1
-    self.Caliber        = 1
-    self.RoFMul         = 1
-    self.LastMass       = 1
+    self.Capacity           = 1         
+    self.AmmoMassMax        = 1
+    self.Caliber            = 1
+    self.RoFMul             = 1
+    self.LastMass           = 1
+--[[
+    self.RoundId            = ""        -- Weapon this round loads into, ie 140mmC, 105mmH ...
+    self.RoundType          = 0         -- Type of round, IE AP, HE, HEAT ...
+    self.RoundPropellant    = 0         -- Lenght of propellant
+    self.RoundProjectile    = 0         -- Lenght of the projectile
+    self.RoundData5         = 0
+    self.RoundData6         = 0
+    self.RoundData7         = 0
+    self.RoundData8         = 0
+    self.RoundData9         = 0
+    self.RoundData10        = 0
+    self.RoundData11        = 0
+    self.RoundData12        = 0
+    self.RoundData13        = 0
+    self.RoundData14        = 0
+    self.RoundData15        = 0
+]]
+    self.Inputs             = Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
+    self.Outputs            = Wire_CreateOutputs( self, { "Munitions" } )
 
-    self.RoundId            = ( self.RoundId or "100mmC"    )   -- Weapon this round loads into, ie 140mmC, 105mmH ...
-    self.RoundType          = ( self.RoundType or "AP"  )       -- Type of round, IE AP, HE, HEAT ...
-    self.RoundPropellant    = ( self.RoundPropellant or 0 )     -- Lenght of propellant
-    self.RoundProjectile    = ( self.RoundProjectile or 0 )     -- Lenght of the projectile
-    self.RoundData5         = ( self.RoundData5 or 0 )
-    self.RoundData6         = ( self.RoundData6 or 0 )
-    self.RoundData7         = ( self.RoundData7 or 0 )
-    self.RoundData8         = ( self.RoundData8 or 0 )
-    self.RoundData9         = ( self.RoundData9 or 0 )
-    self.RoundData10        = ( self.RoundData10 or 0 )
-    self.RoundData11        = ( self.RoundData11 or 0 ) 
-    self.RoundData12        = ( self.RoundData12 or 0 ) 
-    self.RoundData13        = ( self.RoundData13 or 0 ) 
-    self.RoundData14        = ( self.RoundData14 or 0 ) 
-    self.RoundData15        = ( self.RoundData15 or 0 )
+    ACF.AmmoCrates          = ACF.AmmoCrates or {}
+
 end
 
 function ENT:ACF_Activate( Recalc )
@@ -314,8 +320,10 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
     
     return Ammo
 end
+
 list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
 duplicator.RegisterEntityClass("acf_ammo", MakeACF_Ammo, "Pos", "Angle", "Id", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10" , "RoundData11", "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
+
 function ENT:Update( ArgsTable )
     
     -- That table is the player data, as sorted in the ACFCvars above, with player who shot, 
@@ -366,80 +374,87 @@ function ENT:UpdateOverlayText()
     
     local roundType = self.RoundType
     
-    
     if table.IsEmpty( self.BulletData or {} ) then  return end
 
-    if self.BulletData.Tracer and self.BulletData.Tracer > 0 then 
-        roundType = roundType .. "-T"
-    end
+    local text = ""
+
+    if self.BulletData.Type == "Refill" then
+
+        text = " - "..roundType.." - "
+
+        if self.SupplyingTo and not table.IsEmpty(self.SupplyingTo) then
+            text = text.."\nSupplying "..#self.SupplyingTo.." Ammo Crates"
+        end
+
+    else
+        if self.BulletData.Tracer and self.BulletData.Tracer > 0 then 
+            roundType = roundType .. "-T"
+        end
     
-    local text = roundType .. " - " .. self.Ammo .. " / " .. self.Capacity
+        text = roundType .. " - " .. self.Ammo .. " / " .. self.Capacity
 
-    local RoundData = ACF.RoundTypes[ self.RoundType ]
+        local RoundData = ACF.RoundTypes[ self.RoundType ]
     
-    if RoundData and RoundData.cratetxt then
-        text = text .. "\n" .. RoundData.cratetxt( self.BulletData, self )
-    end
+        if RoundData and RoundData.cratetxt then
+            text = text .. "\n" .. RoundData.cratetxt( self.BulletData, self )
+        end
 
-    if self.IsTwoPiece then
-        text = text .. "\nUses 2 piece ammo\n30% reload penalty"
+        if self.IsTwoPiece then
+            text = text .. "\nUses 2 piece ammo\n30% reload penalty"
+        end
     end
-
 
     if not self.Legal then
-        text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+        text = text .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
     end
-
-
 
     self:SetOverlayText( text )
     
 end
 
-function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
-    
-    --Weapon this round loads into, ie 140mmC, 105mmH ...
-    if Data1 == '20mmHRAC' then                            --checking if its an old gun
-        self.RoundId = '20mmRAC'                           --replacing it with the current one
-    elseif Data1 == '30mmHRAC' then
-        self.RoundId = '30mmRAC'
-    elseif Data1 == '105mmSB' then
-        self.RoundId = '100mmSBC'
-    elseif Data1 == '120mmSB' then
-        self.RoundId = '120mmSBC'
-    elseif Data1 == '140mmSB' then
-        self.RoundId = '140mmSBC'
-    elseif Data1 == '170mmSB' then
-        self.RoundId = '170mmSBC'
-    else
-        self.RoundId = ( Data1 or '100mmC'  )
-    end
+do
 
-    local GunData = list.Get("ACFEnts").Guns[self.RoundId]
-    if not GunData then  
-        self:Remove()
-        return
-    end
+    --List of ids which no longer stay on ACE. Useful to replace them with the closest counterparts
+    local BackComp = {
+        ["20mmHRAC"]        = "20mmRAC",
+        ["30mmHRAC"]        = "30mmRAC",
+        ["105mmSB"]         = "100mmSBC",
+        ["120mmSB"]         = "120mmSBC",
+        ["140mmSB"]         = "140mmSBC",
+        ["170mmSB"]         = "170mmSBC",
+        ["70mmFFARDAGR"]    = "70mmFFAR"
+    }
 
-    --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
+    function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
 
-    self.RoundType          = ( Data2 or "AP"   )   --Type of round, IE AP, HE, HEAT ...
-    self.RoundPropellant    = ( Data3 or 0 )   --Lenght of propellant
-    self.RoundProjectile    = ( Data4 or 0 )   --Lenght of the projectile
-    self.RoundData5         = ( Data5 or 0 )
-    self.RoundData6         = ( Data6 or 0 )
-    self.RoundData7         = ( Data7 or 0 )
-    self.RoundData8         = ( Data8 or 0 )
-    self.RoundData9         = ( Data9 or 0 )
-    self.RoundData10        = ( Data10 or 0 )
-    self.RoundData11        = ( Data11 or 0 )   
-    self.RoundData12        = ( Data12 or 0 )   
-    self.RoundData13        = ( Data13 or 0 )   
-    self.RoundData14        = ( Data14 or 0 )   
-    self.RoundData15        = ( Data15 or 0 )
+        --Replaces id if its old
+        self.RoundId = BackComp[Data1] or Data1 or "100mmC"
+
+        local GunData = list.Get("ACFEnts").Guns[self.RoundId]
+        if not GunData then  
+            self:Remove()
+            return
+        end
+
+        --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
+
+        self.RoundType          = Data2 or "AP"   -- Type of round, IE AP, HE, HEAT ...
+        self.RoundPropellant    = Data3 or 0      -- Lenght of propellant
+        self.RoundProjectile    = Data4 or 0      -- Lenght of the projectile
+        self.RoundData5         = Data5 or 0
+        self.RoundData6         = Data6 or 0
+        self.RoundData7         = Data7 or 0
+        self.RoundData8         = Data8 or 0
+        self.RoundData9         = Data9 or 0
+        self.RoundData10        = Data10 or 0
+        self.RoundData11        = Data11 or 0   
+        self.RoundData12        = Data12 or 0   
+        self.RoundData13        = Data13 or 0   
+        self.RoundData14        = Data14 or 0   
+        self.RoundData15        = Data15 or 0
     
     
-    local PlayerData = {}   --what a mess
+        local PlayerData = {}   --what a mess
         PlayerData.Id           = self.RoundId 
         PlayerData.Type         = self.RoundType 
         PlayerData.PropLength   = self.RoundPropellant 
@@ -456,74 +471,76 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
         PlayerData.Data14       = self.RoundData14  
         PlayerData.Data15       = self.RoundData15 
         
+        self.ConvertData        = ACF.RoundTypes[self.RoundType].convert
+        self.BulletData         = self:ConvertData( PlayerData )
+    
+        local Efficiency    = 0.1576 * ACF.AmmoMod
+        local vol           = math.floor(self:GetPhysicsObject():GetVolume())
+
+        self.Volume = vol*Efficiency
+
+        --ammo capacity start code
+        if self.BulletData.Type ~= "Refill" then   
+
+            --Getting entity´s dimensions
+            local Min,Max = self:GetCollisionBounds()  
+            local Size = (Max - Min)
+
+            local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
+            local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
+
+            --Vertical placement
+            local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
+            --Horizontal Placement 1
+            local cap2 = (math.floor(Size.x/shellLength) * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
+            --Horizontal placement 2
+            local cap3 = (math.floor(Size.y/shellLength) * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
+            --Vertical 2 piece placement
+            local cap4 = math.floor(math.floor(Size.z/shellLength*2)/2 * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
+            --Horizontal 2 piece  Placement 1
+            local cap5 = math.floor(math.floor(Size.x/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
+            --Horizontal 2 piece  placement 2
+            local cap6 = math.floor(math.floor(Size.y/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
+
+            local tval1 = math.max(cap1,cap2,cap3)
+            local tval2 = math.max(cap4,cap5,cap6)
+
+            if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
+                self.Capacity = tval2
+                self.IsTwoPiece = true
+            else
+                self.Capacity = tval1
+                self.IsTwoPiece = false
+            end
+
+            self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
+
+            debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
+            debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
+
+        -- for refill ammocrates Calculations 
+        else 
         
-    self.ConvertData = ACF.RoundTypes[self.RoundType].convert
-    self.BulletData = self:ConvertData( PlayerData )
+            self.Capacity = 99999999
+            self.AmmoMassMax = vol*1    
+
+        -- end capacity calculations
+        end 
     
-    local Efficiency = 0.1576 * ACF.AmmoMod
-    local vol = math.floor(self:GetPhysicsObject():GetVolume())
-    self.Volume = vol*Efficiency
+        self.Caliber    = GunData.caliber or 1
+        self.RoFMul     = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
+        self.RoFMul     = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0) --30% ROF penalty for 2 piece
 
-    --ammo capacity start code
-    if self.BulletData.Type ~= "Refill" then   
-
-        --Getting entity´s dimensions
-        local Min,Max = self:GetCollisionBounds()  
-        local Size = (Max - Min)
-
-        local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
-        local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
-
-        --Vertical placement
-        local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
-        --Horizontal Placement 1
-        local cap2 = (math.floor(Size.x/shellLength) * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
-        --Horizontal placement 2
-        local cap3 = (math.floor(Size.y/shellLength) * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
-        --Vertical 2 piece placement
-        local cap4 = math.floor(math.floor(Size.z/shellLength*2)/2 * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
-        --Horizontal 2 piece  Placement 1
-        local cap5 = math.floor(math.floor(Size.x/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
-        --Horizontal 2 piece  placement 2
-        local cap6 = math.floor(math.floor(Size.y/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
-
-        local tval1 = math.max(cap1,cap2,cap3)
-        local tval2 = math.max(cap4,cap5,cap6)
-
-        if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
-            self.Capacity = tval2
-            self.IsTwoPiece = true
-        else
-            self.Capacity = tval1
-            self.IsTwoPiece = false
-        end
-
-        self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
-
-        debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
-        debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
-
-    -- for refill ammocrates Calculations 
-    else 
-        
-        self.Capacity = 99999999
-        self.AmmoMassMax = vol*1    
-
-    -- end capacity calculations
-    end 
+        self:SetNWString( "Ammo", self.Ammo )
+        self:SetNWString( "WireName", self.BulletData.Type ~= "Refill" and (GunData.name .. " Ammo") or "ACE Universal Supply Crate" )
     
-    self.Caliber = GunData.caliber or 1
-    self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
-    self.RoFMul = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0) --30% ROF penalty for 2 piece
+        self.NetworkData = ACF.RoundTypes[self.RoundType].network
+        self:NetworkData( self.BulletData )
+    
+        self:UpdateOverlayText()
+    
+    end
 
-    self:SetNWString( "Ammo", self.Ammo )
-    self:SetNWString( "WireName", GunData.name .. " Ammo" )
-    
-    self.NetworkData = ACF.RoundTypes[self.RoundType].network
-    self:NetworkData( self.BulletData )
-    
-    self:UpdateOverlayText()
-    
 end
 
 function ENT:UpdateMass()
@@ -587,12 +604,9 @@ end
 function ENT:Think()
     
     if ACF.CurTime > self.NextLegalCheck then
-        --print('time passed!')
 
         self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true)
-
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
-
         self:UpdateOverlayText()
 
         if not self.Legal then
@@ -604,13 +618,18 @@ function ENT:Think()
         
     end
     
-    self:UpdateMass()
-    
-    if self.Ammo ~= self.AmmoLast or not self.Legal then
+    if self.BulletData.Type == "Refill" then
         self:UpdateOverlayText()
-        self.AmmoLast = self.Ammo
-    end
+    else
+        
+        self:UpdateMass()
     
+        if self.Ammo ~= self.AmmoLast or not self.Legal then
+            self:UpdateOverlayText()
+            self.AmmoLast = self.Ammo
+        end
+    end
+
     local color = self:GetColor()
     self:SetNWVector("TracerColour", Vector( color.r, color.g, color.b ) )
     
@@ -619,7 +638,7 @@ function ENT:Think()
         
     self:SetNWVector("Accel", vec)
         
-    self:NextThink( CurTime() +  1 )
+    self:NextThink( CurTime() +  self.Interval )
     
     -- cookoff handling
     if self.Damaged then
@@ -655,7 +674,7 @@ function ENT:Think()
                     
             end
                 
-            self:NextThink( CurTime() + 0.01 + self.BulletData.RoundVolume^0.5/100 )
+            self:NextThink( CurTime() + self.ExplosionInterval + self.BulletData.RoundVolume^0.5/100 )
                     
         end
 
@@ -681,11 +700,9 @@ function ENT:Think()
                                 
                         end
                                 
-                        local Supply = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*5000))*self:GetPhysicsObject():GetMass()^1.2)
-                        --Msg(tostring(50000).."/"..((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*1000).."/"..dist.."="..Supply.."\n")
+                        local Supply    = math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*5000))*self:GetPhysicsObject():GetMass()^1.2)
                         local Transfert = math.min(Supply, Ammo.Capacity - Ammo.Ammo)
-                        Ammo.Ammo = Ammo.Ammo + Transfert
---                      self.Ammo = self.Ammo - Transfert
+                        Ammo.Ammo       = Ammo.Ammo + Transfert
                             
                         Ammo.Supplied = true
                         Ammo.Entity:EmitSound( "weapons/shotgun/shotgun_reload"..math.random(1,3)..".wav", 350, 100, 0.30 )

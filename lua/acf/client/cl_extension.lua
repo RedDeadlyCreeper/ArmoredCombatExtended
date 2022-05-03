@@ -1,3 +1,4 @@
+
 --Featuring functions which manage the current built in ace sound extension system
 --TODO: Refactor all this, making ONE function for every sound event. Using tables here fit better than this
 
@@ -280,7 +281,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                         if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
                             timer.Simple(0.01, function()
                                 entply:SetDSP( 32, true )
-                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )        
+                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )        
                             end)
                         end
 
@@ -295,12 +296,12 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
                     
 
-                    entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch * PitchFix, Volume * VolFix )
+                    entply:EmitSound( Sound or "", 75, Pitch * PitchFix, Volume * VolFix )
 
                     --play dirt sounds
                     if Radius >= SmallEx and HitWorld then
-                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
-                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
                     end
 
                     --Underwater Explosions
@@ -359,7 +360,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
                     VolFix = VolFix*0.5
                 end
 
-                entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch, Volume * VolFix)
+                entply:EmitSound( Sound or "", 75, Pitch, Volume * VolFix)
 
             end
 
@@ -439,7 +440,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
                 end
 
                 if Sound ~= "" then
-                    entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, Pitch, Volume * VolFix )
+                    entply:EmitSound( Sound or "" , 75, Pitch, Volume * VolFix )
                 end
             end
 
@@ -529,7 +530,7 @@ function ACE_SGunFire( Gun, Sound ,Class, Caliber, Propellant )
                     VolFix = VolFix*0.5
                 end
 
-                sound.Play(Sound or "common/bugreporter_failed.wav", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
+                sound.Play(Sound or "", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
 
             end
 
@@ -604,7 +605,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
                     VolFix = VolFix*0.025
                 end
 
-                entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, 100, Volume * VolFix )
+                entply:EmitSound( Sound or "" , 75, 100, Volume * VolFix )
 
             end
             timer.Stop( ide )

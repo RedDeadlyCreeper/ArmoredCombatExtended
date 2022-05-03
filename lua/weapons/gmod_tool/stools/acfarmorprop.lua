@@ -404,8 +404,14 @@ function TOOL:Think()
 
     if CLIENT then return end
     
-    local ply = self:GetOwner()
-    local ent = ply:GetEyeTrace().Entity
+    local ply   = self:GetOwner()
+
+    local tr    = util.GetPlayerTrace(ply)
+    tr.mins     = Vector(0,0,0)
+    tr.maxs     = tr.mins
+    local trace = util.TraceHull(tr)
+    
+    local ent = trace.Entity
     if ent == self.AimEntity then return end
     
     if ACF_Check( ent ) then

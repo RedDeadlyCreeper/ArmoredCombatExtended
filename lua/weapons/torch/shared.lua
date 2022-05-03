@@ -62,7 +62,9 @@ function SWEP:Think()
 		trace.start = userid:GetShootPos()
 		trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 		trace.filter = userid --Not hitting the owner's feet when aiming down
-		local tr = util.TraceLine( trace )
+		trace.mins = Vector(0,0,0)
+		trace.maxs = Vector(0,0,0)
+		local tr = util.TraceHull( trace )
 		local ent = tr.Entity
 		if ent:IsValid() and self.LastSend < CurTime() then
 			if not ent:IsPlayer() and not ent:IsNPC() then	
@@ -92,7 +94,9 @@ function SWEP:PrimaryAttack()
 	trace.start = userid:GetShootPos()
 	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 	trace.filter = userid --Not hitting the owner's feet when aiming down
-	local tr = util.TraceLine( trace )
+	trace.mins = Vector(0,0,0)
+	trace.maxs = Vector(0,0,0)
+	local tr = util.TraceHull( trace )
 		if ( tr.HitWorld ) then return end	
 		if CLIENT then return end
 	local ent = tr.Entity
@@ -153,8 +157,10 @@ function SWEP:SecondaryAttack()
 	trace.start = userid:GetShootPos()
 	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 	trace.filter = userid
+	trace.mins = Vector(0,0,0)
+	trace.maxs = Vector(0,0,0)
 
-	local tr = util.TraceLine( trace )
+	local tr = util.TraceHull( trace )
 
 	if ( tr.HitWorld ) then return end	
 	if CLIENT then return end
@@ -180,7 +186,12 @@ function SWEP:SecondaryAttack()
 				
 				HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 				
-				if ent.ACF.Material == 4 then     --ERA should detonate now
+				local Mat 		= ent.ACF.Material or "RHA"
+				local MatData 	= ACE.Armors[Mat]
+
+				if not MatData then MatData = ACE.Armors["RHA"] end
+
+				if MatData.IsExplosive then     --ERA should detonate now
 				
 						local HEWeight = ent.ACF.Armour*0.01			
 						local Radius =( HEWeight*0.0001 )^0.33*8*39.37
@@ -197,10 +208,10 @@ function SWEP:SecondaryAttack()
 					end
 				end
 				--this part will destroy the prop once its health is almost 0. Disabled atm			
-				--if ent.ACF.Health < 2 then		
-				    --ACF_APKill( ent, VectorRand() , 0)
-				    --ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )  --Sound is no correct
-				--end				
+				if ent.ACF.Health < 2 then		
+				    ACF_APKill( ent, VectorRand() , 0)
+				    ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )  --Sound is no correct
+				end				
 			end
 			if HitRes.Kill then
 				constraint.RemoveAll( ent )

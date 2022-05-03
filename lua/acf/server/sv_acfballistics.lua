@@ -92,11 +92,11 @@ end
 ]]--------------------------------------------------------------------------------------------------
 function ACF_CheckClips( Ent, HitPos )
 
-   if not IsValid(Ent) or (Ent.ClipData == nil) --only valid visclipped ents
-      or (not (Ent:GetClass() == "prop_physics"))  --only props
-      or (Ent:GetPhysicsObject():GetVolume() == nil) -- makesphere
-      then return false end
-   
+   if not IsValid(Ent) or Ent.ClipData == nil then return false end        -- only valid visclipped ents                                    
+   if Ent:GetClass() ~= "prop_physics" then return false end               -- only props
+   local phys = Ent:GetPhysicsObject()                                         
+   if not IsValid(phys) or phys:GetVolume() == nil then return false end   -- makesphere
+
    local normal
    local origin
 
@@ -215,10 +215,12 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
    FlightTr.mask     = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
    FlightTr.filter   = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
+
    TROffset          = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
    FlightTr.maxs     = Vector( TROffset, TROffset, TROffset )
    FlightTr.mins     = -FlightTr.maxs  
-   
+
+
    --perform the trace for damage   
    local RetryTrace = true 
 
@@ -238,8 +240,11 @@ function ACF_DoBulletsFlight( Index, Bullet )
       --if our shell hits visclips, convert the tracehull on traceline.
       if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   
 
+         FlightTr.maxs     = Vector( 0, 0, 0 )
+         FlightTr.mins     = -FlightTr.maxs  
+
          -- trace result is stored in supplied output FlightRes (at top of file)
-         util.TraceLine(FlightTr)   
+         util.TraceHull(FlightTr)   
 
          -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
          if not FlightRes.HitNonWorld then

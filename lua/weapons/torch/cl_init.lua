@@ -30,6 +30,8 @@ function SWEP:ViewModelDrawn()
 	
 		cam.Start2D()
 
+			render.Clear( 0, 0, 0, 0 )
+
 			local Flicker = math.random(100,200)
 			surface.SetDrawColor(255,255,255,Flicker)
 			
@@ -40,14 +42,17 @@ function SWEP:ViewModelDrawn()
 			--surface.SetFont("TorchFont")			-- this was unused, no reason to call it
 			--local w, h = surface.GetTextSize(" ")	-- this was unused, no reason to call it
 			
-			draw.SimpleTextOutlined("ACF Stats", "torchfont", 128, 30, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
+			draw.SimpleTextOutlined("ACE Stats", "torchfont", 128, 30, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
 			
 			draw.RoundedBox( 5, 10, 83, 236, 64, Color(200, 200, 200, Flicker))
-			draw.RoundedBox( 5, 15, 88, ArmourPercent*226, 54, Color(0, 0, 200, Flicker))
-			
+			if Armour ~= 0 and MaxArmour ~= 0 then
+				draw.RoundedBox( 5, 15, 88, ArmourPercent*226, 54, Color(0, 0, 200, Flicker))
+			end
+
 			draw.RoundedBox( 5, 10, 183, 236, 64, Color(200, 200, 200, Flicker))
-			draw.RoundedBox( 5, 15, 188, HealthPercent*226, 54, Color(200, 0, 0, Flicker))
-			
+			if Health ~= 0 and MaxHealth ~= 0 then
+				draw.RoundedBox( 5, 15, 188, HealthPercent*226, 54, Color(200, 0, 0, Flicker))
+			end
 			draw.SimpleTextOutlined("Armour", "torchfont", 128, 100, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
 			draw.SimpleTextOutlined(ArmourTxt, "torchfont", 128, 150, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
 			

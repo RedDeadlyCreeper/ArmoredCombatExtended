@@ -31,6 +31,9 @@ function ENT:Initialize()
     self.SpecialDamage = true   --If true needs a special ACF_OnDamage function
     self.SpecialHealth = true   --If true needs a special ACF_Activate function
 
+    self.CanTrack   = false       --Used when the missile has waited the required time to guide
+    self.Timer      = false
+
     self:SetNWFloat("LightSize", 0)
 
 end
@@ -56,6 +59,8 @@ function ENT:SetBulletData(bdata)
 
     self:ConfigureFlight()
 
+    self.TrackDelay = gun.guidelay or 0
+
 end
 
 function ENT:ParseBulletData(bdata)
@@ -79,16 +84,16 @@ function ENT:CalcFlight()
 
     if self.MissileDetonated then return end
 
-    local Ent = self.Entity
-    local Pos = self.CurPos
-    local Dir = self.CurDir
+    local Ent       = self.Entity
+    local Pos       = self.CurPos
+    local Dir       = self.CurDir
 
-    local LastPos = self.LastPos
-    local LastVel = self.LastVel
-    local Speed = LastVel:Length()
-    local Flight = self.FlightTime
+    local LastPos   = self.LastPos
+    local LastVel   = self.LastVel
+    local Speed     = LastVel:Length()
+    local Flight    = self.FlightTime
 
-    local Time = CurTime()
+    local Time      = CurTime()
     local DeltaTime = Time - self.LastThink
 
     if DeltaTime <= 0 then return end
@@ -102,9 +107,26 @@ function ENT:CalcFlight()
     end
 
     --Guidance calculations
-    local Guidance = self.Guidance:GetGuidance(self)
-    local TargetPos = Guidance.TargetPos
+    local Guidance  = self.Guidance:GetGuidance(self)
+    local TargetPos = self.CanTrack and Guidance.TargetPos or nil
+    local Tdelay    = self.ForceTdelay >= self.TrackDelay and self.ForceTdelay or self.TrackDelay
 
+    if Guidance.TargetPos then
+        if Tdelay > self.TrackDelay then
+            if not self.Timer then
+                self.Timer = true
+
+                timer.Simple(Tdelay, function()
+                    if not IsValid(self) then return end
+                        self.CanTrack = true
+                end )
+            end
+        else
+            self.CanTrack = true
+        end
+    end
+
+    --If the missile is able to turn by guidance
     if TargetPos then
         local Dist = Pos:Distance(TargetPos)
         TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000))
@@ -148,15 +170,17 @@ function ENT:CalcFlight()
         end
         self.LastLOS = LOS
     else
-        local DirAng = Dir:Angle()
-        local VelNorm = LastVel / Speed
-        local AimDiff = Dir - VelNorm
-        local DiffLength = AimDiff:Length()
+        local DirAng        = Dir:Angle()
+        local VelNorm       = LastVel / Speed
+        local AimDiff       = Dir - VelNorm
+        local DiffLength    = AimDiff:Length()
+
         if DiffLength >= 0.001 then
-            local Torque = DiffLength * self.TorqueMul
-            local AngVelDiff = Torque / self.Inertia * DeltaTime 
-            local DiffAxis = AimDiff:Cross(Dir):GetNormalized()
-            self.RotAxis = self.RotAxis + DiffAxis * AngVelDiff-- * 3.5
+            local Torque        = DiffLength * self.TorqueMul * Speed
+            local AngVelDiff    = Torque / self.Inertia * DeltaTime 
+            local DiffAxis      = AimDiff:Cross(Dir):GetNormalized()
+
+            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff-- * 3.5
         end
 
         self.RotAxis = self.RotAxis * 0.99
@@ -182,31 +206,34 @@ function ENT:CalcFlight()
     
     --Physics calculations
         
-    local Vel = LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity )) * ACF.VelScale * DeltaTime ^ 2 
-    local Up = Dir:Cross(Vel):Cross(Dir):GetNormalized()
-    local Speed = Vel:Length()
-    local VelNorm = Vel / Speed
-    local DotSimple = Up.x * VelNorm.x + Up.y * VelNorm.y + Up.z * VelNorm.z
+    local Vel           = LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity )) * ACF.VelScale * DeltaTime ^ 2 
+    local Up            = Dir:Cross(Vel):Cross(Dir):GetNormalized()
+    local Speed         = Vel:Length()
+    local VelNorm       = Vel / Speed
+    local DotSimple     = Up.x * VelNorm.x + Up.y * VelNorm.y + Up.z * VelNorm.z
 
     Vel = Vel - Up * Speed * DotSimple * self.FinMultiplier
 
-    local SpeedSq = Vel:LengthSqr()
-    local Drag = Vel:GetNormalized() * (DragCoef * SpeedSq) / ACF.DragDiv * ACF.VelScale
-    Vel = Vel - Drag
-    local EndPos = Pos + Vel
+    local SpeedSq       = Vel:LengthSqr()
+    local Drag          = Vel:GetNormalized() * (DragCoef * SpeedSq) / ACF.DragDiv * ACF.VelScale
+
+    Vel                 = Vel - Drag
+
+    local EndPos        = Pos + Vel
 
     --Hit detection
     --local MRadius = (self.BulletData.Caliber/2)*0.5
-
-    local tracedata= {}
-    tracedata.start = Pos
-    tracedata.endpos = EndPos
-    tracedata.filter = self.Filter
-    tracedata.mins = Vector(0,0,0)
-    tracedata.maxs = Vector(0,0,0)
-
     --tracedata.mins = Vector(-MRadius,-MRadius,-MRadius)
     --tracedata.maxs = Vector(MRadius,MRadius,MRadius)
+
+    -- Hit detection
+    local tracedata     = {}
+    tracedata.start     = Pos
+    tracedata.endpos    = EndPos
+    tracedata.filter    = self.Filter
+    tracedata.mins      = vector_origin
+    tracedata.maxs      = tracedata.mins
+
     local trace = util.TraceHull(tracedata)
 
     if trace.Hit then
@@ -229,10 +256,10 @@ function ENT:CalcFlight()
         return
     end
 
-    self.LastVel = Vel
-    self.LastPos = Pos
-    self.CurPos = EndPos
-    self.CurDir = Dir
+    self.LastVel    = Vel
+    self.LastPos    = Pos
+    self.CurPos     = EndPos
+    self.CurDir     = Dir
     self.FlightTime = Flight
 
     --Missile trajectory debugging
@@ -373,28 +400,29 @@ function ENT:ConfigureFlight()
         self.Motor = Round.thrust
     end
 
-    self.Gravity = GetConVar("sv_gravity"):GetFloat()
-    self.DragCoef = Round.dragcoef
+    self.Gravity        = GetConVar("sv_gravity"):GetFloat()
+    self.DragCoef       = Round.dragcoef
     self.DragCoefFlight = (Round.dragcoefflight or Round.dragcoef)
-    self.MinimumSpeed = Round.minspeed
-    self.FlightTime = 0
-    self.FinMultiplier = Round.finmul
-    self.Agility = GunData.agility or 1
-    self.CutoutTime = Time + self.MotorLength
-    self.CurPos = BulletData.Pos
-    self.CurDir = BulletData.Flight:GetNormalized()
-    self.LastPos = self.CurPos
-    self.Hit = false
-    self.HitNorm = Vector(0,0,0)
-    self.FirstThink = true
+    self.MinimumSpeed   = Round.minspeed
+    self.FlightTime     = 0
+    self.FinMultiplier  = Round.finmul
+    self.Agility        = GunData.agility or 1
+    self.CutoutTime     = Time + self.MotorLength
+    self.CurPos         = BulletData.Pos
+    self.CurDir         = BulletData.Flight:GetNormalized()
+    self.LastPos        = self.CurPos
+    self.Hit            = false
+    self.HitNorm        = vector_origin
+    self.FirstThink     = true
     self.MinArmingDelay = math.max(Round.armdelay or GunData.armdelay, GunData.armdelay)
 
-    local Mass = GunData.weight
-    local Length = GunData.length
-    local Width = GunData.caliber
-    self.Inertia = 0.08333 * Mass * (3.1416 * (Width / 2) ^ 2 + Length)
-    self.TorqueMul = Length * 25
-    self.RotAxis = Vector(0,0,0)
+    local Mass          = GunData.weight
+    local Length        = GunData.length
+    local Width         = GunData.caliber
+
+    self.Inertia        = 0.08333 * Mass * (3.1416 * (Width / 2) ^ 2 + Length)
+    self.TorqueMul      = Length * 3
+    self.RotAxis        = vector_origin
 
     self:UpdateBodygroups()
     self:UpdateSkin()
@@ -419,19 +447,15 @@ function ENT:UpdateSkin()
 end
 
 function ENT:DoFlight(ToPos, ToDir)
-    --if !IsValid(self.Entity) or self.MissileDetonated then return end
 
     local setPos = ToPos or self.CurPos
     local setDir = ToDir or self.CurDir
-
-    --print(ToDir)
-    --print(self.CurDir)
 
     self:SetPos(setPos)
     self:SetAngles(setDir:Angle())
 
     self.BulletData.Pos = setPos
-    --self.BulletData.Flight = self.LastVel
+
 end
 
 function ENT:Detonate()

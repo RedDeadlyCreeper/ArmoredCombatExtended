@@ -406,7 +406,7 @@ function Round.guiupdate( Panel, Table )
 	local R4V, R4P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
 	R4P = (ACF_Kinetic( (Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
 	
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \nMax Penetration : "..math.floor(Data.MaxPen).." mm RHA\n\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R2P,0).."mm @ "..math.Round(R2V,0).." m\\s\n400m pen: "..math.Round(R3P,0).."mm @ "..math.Round(R3V,0).." m\\s\n800m pen: "..math.Round(R4P,0).."mm @ "..math.Round(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.\n")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \nMax Penetration : "..math.floor(Data.MaxPen).." mm RHA\n\n100m pen: "..math.floor(R1P,0).."mm @ "..math.floor(R1V,0).." m\\s\n200m pen: "..math.floor(R2P,0).."mm @ "..math.floor(R2V,0).." m\\s\n400m pen: "..math.floor(R3P,0).."mm @ "..math.floor(R3V,0).." m\\s\n800m pen: "..math.floor(R4P,0).."mm @ "..math.floor(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.\n")	--Proj muzzle penetration (Name, Desc)
 
 end
 

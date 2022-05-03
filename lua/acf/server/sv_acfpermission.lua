@@ -384,12 +384,12 @@ concommand.Add( "ACF_ReloadPermissionModes", function(ply, cmd, args, str)
 		return false
 		
 	else
-		if not aaa_IncludeHere then
-			printmsg(HUD_PRINTCONSOLE, "Command unsuccessful: folder-loading function is not available.")
-			return false
-		end
-		
-		aaa_IncludeHere("ACF/server/permissionmodes")
+
+    	local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
+    	for k, data in pairs( files ) do
+        	include( "acf/server/permissionmodes/"..data )
+    	end
+
 		
 		local mode = table.KeyFromValue(this.Modes, this.DamagePermission)
 		
@@ -679,12 +679,12 @@ hook.Add("ACF_ProtectionModeChanged", "ACF_ResendPermissionsOnChanged", this.Res
 
 -- -- -- -- -- Initial DP mode load -- -- -- -- --
 
-if not aaa_IncludeHere then
-	this.DamagePermission = function() end
-	hook.Call("ACF_ProtectionModeChanged", GAMEMODE, "default", nil)
-	mode = "default"
-else
-	aaa_IncludeHere("ACF/server/permissionmodes")
+do
+
+    local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
+   	for k, data in pairs( files ) do
+        include( "acf/server/permissionmodes/"..data )
+    end
 
 	local mode = table.KeyFromValue(this.Modes, this.DamagePermission)
 
@@ -693,6 +693,7 @@ else
 		hook.Call("ACF_ProtectionModeChanged", GAMEMODE, "default", nil)
 		mode = "default"
 	end
+
 end
 
 

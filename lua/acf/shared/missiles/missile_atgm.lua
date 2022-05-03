@@ -260,8 +260,8 @@ ACF_defineGun("FGM-148 ASM", {
 		casing			= 0.1,									-- thickness of missile casing, cm
 		armour			= 5,									-- effective armour thickness of casing, in mm
 		propweight		= 1,									-- motor mass - motor casing
-		thrust			= 2000,									-- average thrust - kg*in/s^2         --was 3000
-		burnrate		= 200,									-- cm^3/s at average chamber pressure --100
+		thrust			= 2500,									-- average thrust - kg*in/s^2         --was 3000
+		burnrate		= 160,									-- cm^3/s at average chamber pressure --100
 		starterpct		= 0.15,									-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 1000,									-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.02,									-- drag coefficient while falling               --was 0.01

@@ -1,4 +1,3 @@
-AddCSLuaFile()
 
 function ACFMissiles_MenuSlider(config, controlGroup, combo, conCmd, min, max)
 

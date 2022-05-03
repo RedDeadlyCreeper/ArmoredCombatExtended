@@ -446,9 +446,6 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 	
-	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
-
 	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \nMax Penetration: "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Max Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
 	
 end

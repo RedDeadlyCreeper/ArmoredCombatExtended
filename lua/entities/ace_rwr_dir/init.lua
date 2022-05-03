@@ -129,7 +129,9 @@ function ENT:Think()
 							local LOStr = util.TraceLine( { 
 								start = thisPos ,
 								endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD,
-								filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything in the world.
+								filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end, --Hits anything in the world.
+								mins = Vector(0,0,0),
+								maxs = Vector(0,0,0)
 								} ) 
 
 							if not LOStr.Hit then --Trace did not hit world

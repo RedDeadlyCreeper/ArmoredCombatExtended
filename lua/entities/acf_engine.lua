@@ -114,6 +114,7 @@ function ENT:Initialize()
     self.MassRatio      = 1
     self.FuelTank       = 0
     self.Heat           = ACE.AmbientTemp
+    self.TotalFuel      = 0
     self.Efficiency     = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
     self.Legal          = true
     self.CanUpdate      = true
@@ -128,7 +129,8 @@ function ENT:Initialize()
     self.LastDamageTime=CurTime()
     
     self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle ("..EngineWireDescs["Throttle"]..")" } ) --use fuel input?
-    self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"}, { "NORMAL","NORMAL","NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
+    self.Outputs = WireLib.CreateSpecialOutputs( self,  { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"},  
+                                                        { "NORMAL","NORMAL","NORMAL", "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
     
     Wire_TriggerOutput( self, "Entity", self )
     Wire_TriggerOutput(self, "EngineHeat", self.Heat)
@@ -451,9 +453,6 @@ end
 
 function ENT:Think()
 
-    self.Heat = ACE_HeatFromEngine( self )
-    Wire_TriggerOutput(self, "EngineHeat", self.Heat)
-    
     if ACF.CurTime > self.NextLegalCheck then
         self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
@@ -482,9 +481,17 @@ function ENT:Think()
         self.NextUpdate = ACF.CurTime + 1
     end
 
+    self.Heat = ACE_HeatFromEngine( self )
+    Wire_TriggerOutput(self, "EngineHeat", self.Heat)
+
     if ACF.CurTime > self.NextUpdate then
+    
+        self.TotalFuel = self:GetMaxFuel()
+        Wire_TriggerOutput(self, "Total Fuel", self.TotalFuel)
+
         self:UpdateOverlayText()
-        self.NextUpdate = ACF.CurTime + 1
+        self.NextUpdate = ACF.CurTime + 0.5
+
     end
 
     if self.Active then
@@ -561,6 +568,21 @@ function ENT:ACFInit()
     self.Torque = self.PeakTorque
     self.FlyRPM = self.IdleRPM * 1.5
 
+end
+
+function ENT:GetMaxFuel()
+
+    local TFuel = 0
+
+    for _, Tank in pairs(self.FuelLink) do
+        if not IsValid(Tank) then goto cont end
+        if not Tank.Active then goto cont end
+
+        TFuel = TFuel + Tank.Fuel
+        ::cont::
+    end
+
+    return TFuel
 end
 
 function ENT:CalcRPM()
@@ -665,13 +687,6 @@ function ENT:CalcRPM()
     if HealthRatio < 0.95 then
 
         if HealthRatio > 0.025 then
-            --[[
-            if (CurTime()-self.LastDamageTime) > 0.6 then
-                self.LastDamageTime=CurTime()
-
-                self:EmitSound(Sound("acf_extra/tankfx/guns/20mm_0"..math.random(1,5)..".wav"),100, 70+math.random(-10,10)) 
-            end
-            ]]
             HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100,Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100} , 2 , 0 , self.Owner )
         else
 
@@ -680,14 +695,6 @@ function ENT:CalcRPM()
         end
 
     end
-
-
---  self.Heat = self.FuelUse 
---  self.Heat = Energy/(PhysObj:GetMass()*743.2)
---   HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )
-    --0.0026 coef used
-    --q=0.0026*(Ts-K)
-    --q=coef*(Ts-K)
     
 --  743.2 Estimate for engine material, 35% weight steel, 65% weight aluminum
     
@@ -704,7 +711,7 @@ function ENT:CalcRPM()
     Wire_TriggerOutput(self, "Torque", math.floor(self.Torque))
     Wire_TriggerOutput(self, "Power", math.floor(Power))
     Wire_TriggerOutput(self, "RPM", self.FlyRPM)
-    Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
+    --Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
     
     if self.Sound then
         self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * self.SoundPitch) / 50, 255 ), 0 )

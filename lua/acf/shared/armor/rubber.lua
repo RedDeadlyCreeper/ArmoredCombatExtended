@@ -15,7 +15,7 @@ Material.specialeffect  = 30
 Material.effectiveness  = 0.02
 Material.HEATeffectiveness = 3
 Material.resiliance     = 0.25
-Material.HEATresiliance = 0.15
+Material.HEATresiliance = 0.3
 Material.HEresiliance   = 0.3
 Material.Catchresiliance = 0.25
 

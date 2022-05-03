@@ -31,17 +31,16 @@ function ACFM_BulletLaunch(BData)
 
     debugoverlay.Text(BData.Pos, "Here its spawning", 10)
 
-
     ACF.CurBulletIndex = ACF.CurBulletIndex + 1        --Increment the index
     if ACF.CurBulletIndex > ACF.BulletIndexLimt then
         ACF.CurBulletIndex = 1
     end
 
-    local cvarGrav = GetConVar("sv_gravity")  --gravity
-    BData.Accel = Vector(0,0,-600)            --Those are BData settings that are global and shouldn't change round to round
-    BData.LastThink = BData.LastThink or SysTime()
+    local cvarGrav      = GetConVar("sv_gravity")  --gravity
+    BData.Accel         = Vector(0,0,-600)            --Those are BData settings that are global and shouldn't change round to round
+    BData.LastThink     = BData.LastThink or SysTime()
     BData["FlightTime"] = 0
-    --BData["TraceBackComp"] = 0
+
     local Owner = BData.Owner  --owner of bullet
     
     if BData["FuseLength"] then
@@ -73,37 +72,36 @@ function ACFM_ExpandBulletData(bullet)
     -- pbn(bullet)
     
 
-    local toconvert = {}
-    toconvert["Id"] =             bullet["Id"] or "12.7mmMG"
-    toconvert["Type"] =         bullet["Type"] or "AP"
-    toconvert["PropLength"] =     bullet["PropLength"] or 0
-    toconvert["ProjLength"] =     bullet["ProjLength"] or 0
-    toconvert["Data5"] =         bullet["FillerVol"] or bullet["Flechettes"] or bullet["Data5"] or 0
-    toconvert["Data6"] =         bullet["ConeAng"] or bullet["FlechetteSpread"] or bullet["Data6"] or 0
-    toconvert["Data7"] =         bullet["Data7"] or 0
-    toconvert["Data8"] =         bullet["Data8"] or 0
-    toconvert["Data9"] =         bullet["Data9"] or 0
-    toconvert["Data10"] =         bullet["Tracer"] or bullet["Data10"] or 0
-    toconvert["Colour"] =         bullet["Colour"] or Color(255, 255, 255)
---11 and 12
-    toconvert["Data13"] =        bullet["ConeAng2"] or bullet["Data13"] or 0
-    toconvert["Data14"] =        bullet["HEAllocation"] or bullet["Data14"] or 0
-    toconvert["Data15"] =        bullet["Data15"] or 0            
+    local toconvert         = {}
+    toconvert["Id"]         = bullet["Id"]              or "12.7mmMG"
+    toconvert["Type"]       = bullet["Type"]            or "AP"
+    toconvert["PropLength"] = bullet["PropLength"]      or 0
+    toconvert["ProjLength"] = bullet["ProjLength"]      or 0
+    toconvert["Data5"]      = bullet["FillerVol"]       or bullet["Flechettes"] or bullet["Data5"]      or 0
+    toconvert["Data6"]      = bullet["ConeAng"]         or bullet["FlechetteSpread"] or bullet["Data6"] or 0
+    toconvert["Data7"]      = bullet["Data7"]           or 0
+    toconvert["Data8"]      = bullet["Data8"]           or 0
+    toconvert["Data9"]      = bullet["Data9"]           or 0
+    toconvert["Data10"]     = bullet["Tracer"]          or bullet["Data10"]         or 0
+    toconvert["Colour"]     = bullet["Colour"]          or Color(255, 255, 255)
+    toconvert["Data13"]     = bullet["ConeAng2"]        or bullet["Data13"]         or 0
+    toconvert["Data14"]     = bullet["HEAllocation"]    or bullet["Data14"]         or 0
+    toconvert["Data15"]     = bullet["Data15"]          or 0            
         
-    local rounddef = ACF.RoundTypes[bullet.Type] or error("No definition for the shell-type", bullet.Type)
-    local conversion = rounddef.convert
+    local rounddef      = ACF.RoundTypes[bullet.Type] or error("No definition for the shell-type", bullet.Type)
+    local conversion    = rounddef.convert
     
     if not conversion then error("No conversion available for this shell!") end
     local ret = conversion( nil, toconvert )
     
-    ret.Pos = bullet.Pos or Vector(0,0,0)
-    ret.Flight = bullet.Flight or Vector(0,0,0)
-    ret.Type = ret.Type or bullet.Type
+    ret.Pos         = bullet.Pos    or Vector(0,0,0)
+    ret.Flight      = bullet.Flight or Vector(0,0,0)
+    ret.Type        = ret.Type      or bullet.Type
     
-    local cvarGrav = GetConVar("sv_gravity")
-    ret.Accel = cvarGrav
+    local cvarGrav  = GetConVar("sv_gravity")
+    ret.Accel       = cvarGrav
     if ret.Tracer == 0 and bullet["Tracer"] and bullet["Tracer"] > 0 then ret.Tracer = bullet["Tracer"] end
-    ret.Colour = toconvert["Colour"]
+    ret.Colour      = toconvert["Colour"]
     
     ret.Sound = bullet.Sound
     
@@ -155,9 +153,6 @@ ACF.FillerDensity =
 
 
 function ACFM_CompactBulletData(crate)
-
-    -- print("==== ACFM_CompactBulletData")
-    -- pbn(crate)
     
     local compact = {}
 
@@ -189,10 +184,6 @@ function ACFM_CompactBulletData(crate)
         end
     end
     
-    -- print("---- ACFM_CompactBulletData OUTPUT")
-    -- pbn(compact)
-    -- print("==== end ACFM_CompactBulletData")
-    
     return compact
 end
 
@@ -215,8 +206,6 @@ ResetVelocity.SM = ResetVelocity.AP
  
          
 function ResetVelocity.HEAT(bdata)    
-  
-    --if not bdata.Detonated then return ResetVelocity.AP(bdata) end
       
     if not (bdata.MuzzleVel and bdata.SlugMV) then return end
     
@@ -232,7 +221,6 @@ end
 function ResetVelocity.THEAT(bdata)    
 
 	DetCount = bdata.Detonated or 0
-    --if DetCount == 0 then return ResetVelocity.AP(bdata)	end    --print("APMode")
     
     if not (bdata.MuzzleVel and bdata.SlugMV and bdata.SlugMV1 and bdata.SlugMV2) then return end
     
@@ -240,21 +228,16 @@ function ResetVelocity.THEAT(bdata)
     
     local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
     
-	
-	
---	print(DetCount)	
 	if DetCount==1 then 
---	print("Detonation1")
-    bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
-    bdata.NotFirstPen = false
+        --print("Detonation1")
+        bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
+        bdata.NotFirstPen = false
     elseif DetCount == 2 then
---	print("Detonation2")
-    bdata.Flight = bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 
-    bdata.NotFirstPen = false	
+        --print("Detonation2")
+        bdata.Flight = bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 
+        bdata.NotFirstPen = false	
 	end
 end     
-
-
 
 -- Resets the velocity of the bullet based on its current state on the serverside only.
 -- This will de-sync the clientside effect!
@@ -267,10 +250,6 @@ function ACFM_ResetVelocity(bdata)
     return resetFunc(bdata)
 
 end
-
-
-
-
 
 include("autorun/server/duplicatorDeny.lua")
 

@@ -29,7 +29,7 @@ ACF_defineGun("50kgBOMB", { 						-- id
 	caliber 		= 5.0,
 	weight 			= 50,    						-- Don't scale down the weight though!
 	year 			= 1915,
-    modeldiameter 	= 2.4 * 2.7, 					-- in cm
+    modeldiameter 	= 8, 					-- in cm
 	round = {
 		model		= "models/bombs/fab50.mdl",
 		rackmdl		= "models/bombs/fab50.mdl",
@@ -41,8 +41,8 @@ ACF_defineGun("50kgBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,         					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,						-- drag coefficient of the missile
-		finmul		= 0.008,						-- fin multiplier (mostly used for unpropelled guidance)
+		dragcoef	= 0.003,						-- drag coefficient of the missile
+		finmul		= 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
@@ -88,8 +88,8 @@ ACF_defineGun("100kgBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,        					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,						-- drag coefficient of the missile
-		finmul		= 0.007,						-- fin multiplier (mostly used for unpropelled guidance)
+		dragcoef	= 0.003,						-- drag coefficient of the missile
+		finmul		= 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
@@ -133,8 +133,8 @@ ACF_defineGun("250kgBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,        					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,						-- drag coefficient of the missile
-		finmul		= 0.005,						-- fin multiplier (mostly used for unpropelled guidance)
+		dragcoef	= 0.003,						-- drag coefficient of the missile
+		finmul		= 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
    
@@ -143,8 +143,11 @@ ACF_defineGun("250kgBOMB", { 						-- id
     fuses       = {"Contact", "Optical", "Cluster"},
  
 	racks       = {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,  
-					["2xRK"] = true
+					["1xRK_small"] = true,  
+					["1xRK"] = true, 
+					["2xRK"] = true,  
+					["3xRK"] = true, 
+					["4xRK"] = true
 				},   
 
     seekcone    = 40,   							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -175,7 +178,7 @@ ACF_defineGun("500kgBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,        					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,						-- drag coefficient of the missile
+		dragcoef	= 0.003,						-- drag coefficient of the missile
 		finmul		= 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -217,7 +220,7 @@ ACF_defineGun("1000kgBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,        					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.002,						-- drag coefficient of the missile
+		dragcoef	= 0.003,						-- drag coefficient of the missile
 		finmul		= 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.08)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -259,7 +262,7 @@ ACF_defineGun("100kgGBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,        					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.0001,						-- drag coefficient of the missile
+		dragcoef	= 0.002,						-- drag coefficient of the missile
 		finmul		= 0.05,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -302,7 +305,7 @@ ACF_defineGun("250kgGBOMB", { 						-- id
 		burnrate	= 1,	        				-- cm^3/s at average chamber pressure
 		starterpct	= 1,        					-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,						-- drag coefficient of the missile
+		dragcoef	= 0.002,						-- drag coefficient of the missile
 		finmul		= 0.05,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
