@@ -78,16 +78,16 @@ function this:GetGuidance(missile)
     local mfo       = missile:GetForward()
     local mdir      = (targetPos - missilePos):GetNormalized()
     local dot       = mfo:Dot(mdir)
-    
+
     if dot < self.ViewConeCos then
         self.Target = nil
         return {}
     else
         self.TargetPos = targetPos
-        --print(self.TargetPos)
+        print(self.TargetPos)
         return {TargetPos = targetPos, ViewCone = self.ViewCone*1.3}
     end
-    
+
 end
 
 function this:ApplyOverride(missile)

@@ -490,3 +490,10 @@ r100
 -Removed "Oh fiddlesticks" sound
 -Removed DAGR FFAR and added guidance to closest counterpart. Backwards done.
 -Removed gate parent requirement from legality checks
+
+*r138
+-Added a workaround for ace entities hitting the 3rd camera when seated
+-Fixed ataka not guiding properly
+-Fixed error caused when the irst detects flares in front
+-Updated armor analyzer. Courtesy of KemGus
+-Corrected some grammar mistakes on some missiles

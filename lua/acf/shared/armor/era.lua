@@ -65,7 +65,6 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
         local Owner = (CPPI and Entity:CPPIGetOwner()) or NULL
 
         ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
-        Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
             
         local Flash = EffectData()
             Flash:SetOrigin( Entity:GetPos() )

@@ -241,8 +241,11 @@ function ENT:Detonate(overrideBData)
 		self:DoReplicatedPropHit(bdata)
 		self:SetNoDraw(true)
 
-		debugoverlay.Line(pos, bdata.Pos, 10, Color(255, 128, 0))
-		debugoverlay.Cross(pos, 5, 5, Color(255,255,0))
+		debugoverlay.Text(pos, "Missile Pos", 10 )
+
+		--debugoverlay.Line(pos, bdata.Pos, 10, Color(255, 0, 0))
+		--debugoverlay.Cross(pos, 5, 5, Color(255,255,0))
+		--debugoverlay.Cross(bdata.Pos, 5, 5, Color(255,255,255))
 
 	else
 		self:SetNoDraw(true)
@@ -364,7 +367,7 @@ function ENT:DoReplicatedPropHit(Bullet)
 	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
 	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity ,  FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
 
-	debugoverlay.Line(FlightRes.HitPos, FlightRes.HitPos+Bullet.Flight:GetNormalized(), 5, Color(255,255,0))
+	--debugoverlay.Line(FlightRes.HitPos, FlightRes.HitPos+Bullet.Flight:GetNormalized(), 5, Color(255,255,0))
 
 	--Internally used in case of HEAT hitting world, penetrating or not
 	if Retry == "Penetrated" then

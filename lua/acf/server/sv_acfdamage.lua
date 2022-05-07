@@ -341,7 +341,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
     end
 
     util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )
-    debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1   in console to see
+    --debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1   in console to see
     
 end
 
@@ -700,11 +700,11 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
             return
         end
 ]]
-        debugoverlay.Line( SpallRes.StartPos + Vector(1,0,0), SpallRes.HitPos + Vector(1,0,0), 10 , Color(255,0,0), true )
+        --debugoverlay.Line( SpallRes.StartPos + Vector(1,0,0), SpallRes.HitPos + Vector(1,0,0), 10 , Color(255,0,0), true )
 
     end
 
-    debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 10 , Color(0,255,0), true )
+    --debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 10 , Color(0,255,0), true )
 end
 
 --Calculates the vector of the ricochet of a round upon impact at a set angle
@@ -800,9 +800,9 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
         
         } )
 
-    debugoverlay.Box( DigRes.StartPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
-    debugoverlay.Box( DigRes.HitPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
-    debugoverlay.Line( DigRes.StartPos, HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1), 5 , Color(0,math.random(100,255),0) )
+    --debugoverlay.Box( DigRes.StartPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
+    --debugoverlay.Box( DigRes.HitPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
+    --debugoverlay.Line( DigRes.StartPos, HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1), 5 , Color(0,math.random(100,255),0) )
     
     local loss = DigRes.FractionLeftSolid
     

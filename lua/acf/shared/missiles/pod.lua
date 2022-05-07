@@ -239,7 +239,7 @@ ACF_DefineRack("6xUARRK", {
 
 ACF_DefineRack("1x FIM-92", {
     name = "Single Munition FIM-92 Rack",
-    desc = "An FIM-92 rack designed to carry 1 missile.",
+    desc = "A FIM-92 rack designed to carry 1 missile.",
     model       = "models/missiles/fim_92_1xrk.mdl",
     gunclass = "POD",
     weight = 10,
@@ -259,7 +259,7 @@ ACF_DefineRack("1x FIM-92", {
 
 ACF_DefineRack("2x FIM-92", {
     name = "Double Munition FIM-92 Rack",
-    desc = "An FIM-92 rack designed to carry 2 missiles.",
+    desc = "A FIM-92 rack designed to carry 2 missiles.",
     model       = "models/missiles/fim_92_2xrk.mdl",
     gunclass = "POD",
     weight = 30,
@@ -281,8 +281,8 @@ ACF_DefineRack("2x FIM-92", {
 } )
 
 ACF_DefineRack("4x FIM-92", {
-    name = "Double Munition FIM-92 Rack",
-    desc = "An FIM-92 rack designed to carry 4 missile.",
+    name = "Quad Munition FIM-92 Rack",
+    desc = "A FIM-92 rack designed to carry 4 missile.",
     model       = "models/missiles/fim_92_4xrk.mdl",
     gunclass = "POD",
     weight = 30,

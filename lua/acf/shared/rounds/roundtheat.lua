@@ -211,6 +211,12 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
     Bullet.Detonated    = Bullet.Detonated + 1
     DetCount            = Bullet.Detonated or 0
 
+    --debugoverlay.Text(Bullet.Pos, "THEAT pos: "..DetCount, 10 )
+    --debugoverlay.Cross(Bullet.Pos, 5, 10, Color( 255, 255, 255 ), true )
+
+    --debugoverlay.Text(HitPos, "THEAT pos using HitPos: "..DetCount, 10 )
+    --debugoverlay.Cross(HitPos, 5, 10, Color( 255, 255, 255 ), true )
+
     --First Detonation
     if DetCount == 1 then 
 
@@ -274,6 +280,8 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
             
             if HitRes.Overkill > 0 then
+
+                --print("Filtering prop due to HEAT #"..DetCount)
 
                 table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
                 ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling

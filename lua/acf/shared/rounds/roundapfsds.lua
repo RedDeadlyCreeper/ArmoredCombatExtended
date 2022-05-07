@@ -23,11 +23,11 @@ function Round.convert( Crate, PlayerData )
     local ServerData    = {}
     local GUIData       = {}
     
-    if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-    if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-    if not PlayerData.SCalMult then PlayerData.SCalMult = 0.5 end
-    if not PlayerData["Data5"] then PlayerData["Data5"] = 0.23 end --caliber in mm count
-    if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+    PlayerData.PropLength  = PlayerData.PropLength or 0
+    PlayerData.ProjLength  = PlayerData.ProjLength or 0
+    PlayerData.SCalMult    = PlayerData.SCalMult   or 0.5
+    PlayerData["Data5"]    = PlayerData["Data5"]   or 0.23  --caliber in mm count
+    PlayerData.Data10      = PlayerData.Data10     or 0
 
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
@@ -124,21 +124,23 @@ end
 
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 
-    local Mat = Target.ACF.Material or "RHA"
-    local NormieMult = ACE.Armors[ Mat ].NormMult or 1
+    local Mat           = Target.ACF.Material or "RHA"
+    local NormieMult    = ACE.Armors[ Mat ].NormMult or 1
     
-    Bullet.Normalize = true
-    Bullet.Pos = HitPos
+    Bullet.Normalize    = true
+    Bullet.Pos          = HitPos
     
-    local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized() --Guess it doesnt need localization
-    local Speed = Bullet.Flight:Length()
+    local FlightNormal  = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized() --Guess it doesnt need localization
+    local Speed         = Bullet.Flight:Length()
 
     Bullet.Flight = FlightNormal * Speed
     
-    local DeltaTime = SysTime() - Bullet.LastThink
-    Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
-    Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)        --Calculates the next shell position
+    local DeltaTime     = SysTime() - Bullet.LastThink
+    Bullet.StartTrace   = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+    Bullet.NextPos      = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)        --Calculates the next shell position
     
+    debugoverlay.Line(Bullet.Pos, Bullet.NextPos + Bullet.Flight*100, 5, Color(255,0,0), true )
+
 end
 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
@@ -147,15 +149,18 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
     
         if Bullet.Normalize then
 --      print("PropHit")
-            local Speed = Bullet.Flight:Length() / ACF.VelScale
-            local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-            local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+            local Speed     = Bullet.Flight:Length() / ACF.VelScale
+            local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+            local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
         
             if HitRes.Overkill > 0 then
                 table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
+
                 ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-                Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-                Bullet.Normalize = false
+                
+                Bullet.Flight       = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+                Bullet.Normalize    = false
+
                 return "Penetrated"
             elseif HitRes.Ricochet then
                 Bullet.Normalize = false
@@ -164,9 +169,9 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
                 return false
             end
         else
-        Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
---      print("Normalize")
-        return "Penetrated"
+            Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
+
+            return "Penetrated"
         end
     else 
         table.insert( Bullet.Filter , Target )

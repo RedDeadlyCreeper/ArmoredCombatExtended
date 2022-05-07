@@ -189,10 +189,10 @@ ACF_defineGun("Ataka ASM", { --id
     				["3xRK"] = true
     			},    
 
-    seekcone    = 40,   										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone    = 20,   										-- getting outside this cone will break the lock.  Divided by 2.
+    seekcone    = 20,   										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone    = 40,   										-- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.045,										-- multiplier for missile turn-rate.
+    agility     = 0.05,										-- multiplier for missile turn-rate.
     armdelay    = 0.00     										-- minimum fuse arming delay
 } )
 

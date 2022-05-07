@@ -7,14 +7,18 @@ include("shared.lua")
 function ENT:Initialize()
 
 	self:SetModel( "models/Items/AR2_Grenade.mdl" )
-	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:PhysicsInit(SOLID_VPHYSICS);
-	self:SetUseType(SIMPLE_USE);
-	self:SetSolid(SOLID_VPHYSICS);
+	self:SetMoveType(MOVETYPE_VPHYSICS)
+	self:PhysicsInit(SOLID_VPHYSICS)
+	self:SetSolid(SOLID_VPHYSICS)
 
-	self.Heat = self.Heat or 1
-	self.Life = self.Life or 0.1
-	self.DieTime = CurTime() + self.Life
+	self.Heat 		= self.Heat or 1
+	self.Life 		= self.Life or 0.1
+
+	self.Owner 		= self:GetOwner() print(self.Owner)
+
+	if CPPI then
+		--self:CPPISetOwner(self:GetOwner())
+	end
 
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(5) --4.1 kg mine, round down.
@@ -23,41 +27,30 @@ function ENT:Initialize()
 	self:SetGravity( 0.01 )
 
 	timer.Simple(0.1,function() 
-		ParticleEffectAttach("ACFM_Flare",4, self,1)  
-			self.HotEnts = {ent}
+		if not IsValid(self) then return end
 
-			table.insert( ACE.contraptionEnts, self ) --Disgusting re-use of the contraption entity table. I like it.
-			--print(table.Count( ACE.contraptionEnts ))
-	
+		table.insert( ACE.contraptionEnts, self )
+
+		ParticleEffectAttach("ACFM_Flare",4, self,1)  
 	end)
 
-	self.phys = phys
+	timer.Simple(self.Life, function()
+		if IsValid(self) then
+			self:Remove()
+		end
+	end)
+
 	if ( IsValid( phys ) ) then phys:Wake() end
 
 end
 
+function ENT:PhysicsCollide( Table , PhysObj )
 
-function ENT:Think()
-	local CTime = CurTime()
+	local HitEnt = Table.HitEntity
 
-	if self.DieTime < CTime then
-		ACF_HEKill( self, VectorRand() , 0)	
-		--self:EmitSound("npc/barnacle/barnacle_pull2.wav",500,100)
-		self:Remove()
-	end
+	if not IsValid(HitEnt) then return end
+	if not HitEnt:IsPlayer() or HitEnt:IsNPC() then return end
+
+	HitEnt:Ignite( self.Heat, 1 )
 
 end
-
-
-function ENT:OnRemove()
-	
-end
-
-
-
-
-
-
-
-
-
