@@ -497,3 +497,22 @@ r100
 -Fixed error caused when the irst detects flares in front
 -Updated armor analyzer. Courtesy of KemGus
 -Corrected some grammar mistakes on some missiles
+
+*r139
+- Major ERA changes. The bricks will be deadly for props around of it with possibility to chain reactions.
+- Scaled explosions are now adjustable via menu. Allowing proper chain reactions.
+- Improved ammo gun selection menu.
+- Improved dupe loader. Can load different dupes.
+- Little change to fueltank naming
+- updated crack sounds for autocannons/small cal - courtesy of Arend
+- Updated logo
+- Included HEAT(FS), HEFS & HESH to be able to use fusetime
+- Added 85mm caliber for cannons and shortcannons. Ported from ACF2
+- Added Gas pump model for fueltanks. Re-supply only
+- added acfDragCoef() e2 function - courtesy of cheezus
+- added Aversion's seats. StandPos Edited slightly
+- corrected kornet id
+- Fixed minmass random report
+- Fixed theat bypassing armor. 
+- many minor bugs to several things
+- Removed Slug and LRP variants. merged into one apfsds/apds with no normalization
