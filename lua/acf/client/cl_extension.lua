@@ -36,9 +36,9 @@ ACE.Sounds.LOSWhitelist = {
     prop_physics = true
 }
 
-
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
+    
     if not IsValid(ply) then return false, ply end
     local ent = ply
 
@@ -69,7 +69,6 @@ function ACE_SInDistance( Pos, Mdist )
 
     --Don't start this without a player
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local entply    = ply
 
@@ -89,7 +88,6 @@ end
 function ACE_SHasLOS( EventPos )
 
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local plyPos    = ply.aceposoverride or ply:GetPos()
     local headPos   = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
@@ -98,7 +96,9 @@ function ACE_SHasLOS( EventPos )
     LOSTr.start     = EventPos + Vector(0,0,10)
     LOSTr.endpos    = headPos
     LOSTr.filter    = function( ent ) if ( ACE.Sounds.LOSWhitelist[ent:GetClass()] ) then return true end end --Only hits the whitelisted ents
-    local LOS       = util.TraceLine(LOSTr)
+    LOSTr.mins      = vector_origin
+    LOSTr.maxs      = LOSTr.mins
+    local LOS       = util.TraceHull(LOSTr)
 
     --debugoverlay.Line(EventPos, LOS.HitPos , 5, Color(0,255,255))
 
@@ -107,8 +107,8 @@ function ACE_SHasLOS( EventPos )
 end
 
 function ACE_SIsInDoor()
+
     local ply = LocalPlayer()
-    if not IsValid(ply) then return end
 
     local entply = ply
     if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
@@ -120,7 +120,9 @@ function ACE_SIsInDoor()
     CeilTr.endpos   = plyPos + Vector(0,0,2000)
     CeilTr.filter   = {}
     CeilTr.mask     = MASK_SOLID_BRUSHONLY
-    local Ceil      = util.TraceLine(CeilTr)
+    CeilTr.mins     = vector_origin
+    CeilTr.maxs     = CeilTr.mins
+    local Ceil      = util.TraceHull(CeilTr)
 
     if Ceil.Hit and Ceil.HitWorld then return true end
     return false
@@ -129,9 +131,7 @@ end
 --Handles Explosion sounds
 function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
-    --Don't start this without a player
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local entply        = ply
 
@@ -279,10 +279,17 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                     if ACE.EnableTinnitus then
                         local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
                         if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
-                            timer.Simple(0.01, function()
-                                entply:SetDSP( 32, true )
-                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )        
-                            end)
+                            if not entply.OnTinnitus then
+                                entply.OnTinnitus = true
+                                timer.Simple(0.01, function()
+                                    entply:SetDSP( 32, true )
+                                    entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )   
+
+                                    timer.Simple(2, function()
+                                        entply.OnTinnitus = nil     
+                                    end)
+                                end)
+                            end
                         end
 
                         --debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
@@ -300,8 +307,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
                     --play dirt sounds
                     if Radius >= SmallEx and HitWorld then
-                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
-                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix), Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
                     end
 
                     --Underwater Explosions
@@ -323,7 +330,6 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
     --Don't start this without a player
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local entply    = ply
 
@@ -373,9 +379,7 @@ end
 --Handles ricochet sounds
 function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
-    --Don't start this without a player
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local entply    = ply
     local count     = 1
@@ -450,13 +454,13 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
     end )
 end
 
-function ACE_SGunFire( Gun, Sound ,Class, Caliber, Propellant )
+function ACE_SGunFire( Gun, Sound, Propellant )
+
+    if not Sound or Sound == "" then return end
 
     Propellant = math.max(Propellant,50)
 
-    --Don't start this without a player
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local entply    = ply
 
@@ -507,9 +511,11 @@ function ACE_SGunFire( Gun, Sound ,Class, Caliber, Propellant )
                     
                     local State = "main"
                     if Dist >= CloseDist and Dist < MediumDist then 
-                        State = "mid"
+
+                        State   = "mid"
                     elseif Dist >= MediumDist then 
-                        State = "far"
+
+                        State   = "far"
                     end
 
                     ACE.Sounds.GunTb[GunId] = (ACE.Sounds.GunTb[GunId] or 0) + 1
@@ -543,9 +549,7 @@ end
 --TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
 function ACE_SBulletCrack( BulletData, Caliber )
 
-    --Don't start this without a player
     local ply = LocalPlayer()
-    if not IsValid( ply ) then return end
 
     local entply = ply
 

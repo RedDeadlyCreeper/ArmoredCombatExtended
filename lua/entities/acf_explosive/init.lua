@@ -364,8 +364,11 @@ function ENT:DoReplicatedPropHit(Bullet)
 	local FlightRes = { Entity = self, HitNormal = self.HitNorm, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC }
 	local Index = Bullet.Index
 	
-	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
+	local ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
 	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity ,  FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
+
+	--This is crucial, to avoid 2nd tandem munitions spawn on 1st Bullet hitpos
+	Bullet.FirstPos = FlightRes.HitPos
 
 	--debugoverlay.Line(FlightRes.HitPos, FlightRes.HitPos+Bullet.Flight:GetNormalized(), 5, Color(255,255,0))
 
@@ -375,11 +378,13 @@ function ENT:DoReplicatedPropHit(Bullet)
         ACFM_ResetVelocity(Bullet)
         
 		if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
+
 		ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
 		ACF_CalcBulletFlight( Index, Bullet, true )
 	else
 
 		if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
+
 		ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 		ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 		ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	

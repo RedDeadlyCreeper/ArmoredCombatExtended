@@ -44,7 +44,7 @@ function ENT:SetBulletData(bdata)
 
     local gun = list.Get("ACFEnts").Guns[bdata.Id]
 
-    self:SetModelEasy( gun.round.model or gun.model or "models/missiles/aim9.mdl" )
+    self:SetModelEasy( gun and (gun.round.model or gun.model) or "models/missiles/aim9.mdl" )
 
     self:ParseBulletData(bdata)
 
@@ -455,6 +455,8 @@ function ENT:DoFlight(ToPos, ToDir)
     self:SetPos(setPos)
     self:SetAngles(setDir:Angle())
 
+    --debugoverlay.Line(setPos, setPos+setDir*100, 5, Color(255,255,0), true )
+
     self.BulletData.Pos = setPos
 
 end
@@ -607,6 +609,8 @@ function ENT:ACF_Activate( Recalc )
     self.ACF.Density    = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
     self.ACF.Type       = "Prop"
    
+    self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+
 end
 
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}

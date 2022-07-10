@@ -178,6 +178,12 @@ function ENT:Link( Target )
         return false, "Racks can only be linked to ammo crates!"
     end
     
+    -- Don't link if it's a blacklisted round type for this gun
+    local Blacklist = ACF.AmmoBlacklist[ Target.RoundType ] or {}
+    
+    if table.HasValue( Blacklist, self.Class ) then
+        return false, "That round type cannot be used with this gun!"
+    end
     
     local ret, msg = self:CanLinkCrate(Target)
     if not ret then
@@ -395,7 +401,7 @@ end
 function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, nil, self.Mass, self.ModelInertia, nil, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, nil, math.Round(self.Mass,2), self.ModelInertia, nil, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
         if not self.Legal and self.Firing then

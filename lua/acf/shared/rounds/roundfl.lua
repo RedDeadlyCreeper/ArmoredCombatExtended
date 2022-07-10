@@ -35,21 +35,26 @@ function Round.create( Gun, BulletData )
     local I=1
     local MuzzleVec
     
-    if Gun:GetClass() == "acf_ammo" then --if ammo is cooking off, shoot in random direction
+    --if ammo is cooking off, shoot in random direction
+    if Gun:GetClass() == "acf_ammo" then 
         local Inaccuracy
         MuzzleVec = VectorRand()
+
         for I = 1, BulletData["Flechettes"] do
-            Inaccuracy = VectorRand() / 360 * ((Gun.Inaccuracy or 0) + BulletData["FlechetteSpread"])
+            Inaccuracy              = VectorRand() / 360 * ((Gun.Inaccuracy or 0) + BulletData["FlechetteSpread"])
             FlechetteData["Flight"] = (MuzzleVec+Inaccuracy):GetNormalized() * BulletData["MuzzleVel"] * 39.37 + Gun:GetVelocity()
+
             ACF_CreateBullet( FlechetteData )
         end
     else
-        local BaseInaccuracy = math.tan(math.rad(Gun:GetInaccuracy()))
-        local AddInaccuracy = math.tan(math.rad(BulletData["FlechetteSpread"]))
+        local BaseInaccuracy    = math.tan(math.rad(Gun:GetInaccuracy()))
+        local AddInaccuracy     = math.tan(math.rad(BulletData["FlechetteSpread"]))
+
         MuzzleVec = Gun:GetForward()
+
         for I = 1, BulletData["Flechettes"] do
-            BaseSpread = BaseInaccuracy * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) * (Gun:GetUp() * (2 * math.random() - 1) + Gun:GetRight() * (2 * math.random() - 1)):GetNormalized()
-            AddSpread = AddInaccuracy * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) * (Gun:GetUp() * (2 * math.random() - 1) + Gun:GetRight() * (2 * math.random() - 1)):GetNormalized()
+            BaseSpread              = BaseInaccuracy * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) * (Gun:GetUp() * (2 * math.random() - 1) + Gun:GetRight() * (2 * math.random() - 1)):GetNormalized()
+            AddSpread               = AddInaccuracy * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) * (Gun:GetUp() * (2 * math.random() - 1) + Gun:GetRight() * (2 * math.random() - 1)):GetNormalized()
             FlechetteData["Flight"] = (MuzzleVec+BaseSpread+AddSpread):GetNormalized() * BulletData["MuzzleVel"] * 39.37 + Gun:GetVelocity()
             ACF_CreateBullet( FlechetteData )
         end
@@ -65,14 +70,18 @@ function Round.convert( Crate, PlayerData )
     local GUIData       = {}
 
     Data["LengthAdj"] = 0.5
-    if not PlayerData["PropLength"] then PlayerData["PropLength"] = 0 end
-    if not PlayerData["ProjLength"] then PlayerData["ProjLength"] = 0 end
-    if not PlayerData["Data5"] then PlayerData["Data5"] = 3 end --flechette count
-    if not PlayerData["Data6"] then PlayerData["Data6"] = 5 end --flechette spread
-    if not PlayerData["Data10"] then PlayerData["Data10"] = 0 end --tracer
+
+    PlayerData["PropLength"]    = PlayerData["PropLength"]  or 0
+    PlayerData["ProjLength"]    = PlayerData["ProjLength"]  or 0
+    PlayerData["Data5"]         = PlayerData["Data5"]       or 0    -- flechette count
+    PlayerData["Data6"]         = PlayerData["Data6"]       or 0    -- flechette spread
+    PlayerData["Data10"]        = PlayerData["Data10"]      or 0    -- tracer
+
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
     local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
+
+
     if GunClass == "SA" then
         Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*7-4),1,128)
     elseif GunClass == "MO" then
@@ -82,16 +91,19 @@ function Round.convert( Crate, PlayerData )
     else
         Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"]*7)-8,1,128)
     end
-    Data["MinFlechettes"] = 2
-    Data["Flechettes"] = math.Clamp(math.floor(PlayerData["Data5"]),Data["MinFlechettes"], Data["MaxFlechettes"])  --number of flechettes
+
+
+    Data["MinFlechettes"]   = 2
+    Data["Flechettes"]      = math.Clamp(math.floor(PlayerData["Data5"]),Data["MinFlechettes"], Data["MaxFlechettes"])  --number of flechettes
     
-    Data["MinSpread"] = 0.25
-    Data["MaxSpread"] = 30
+    Data["MinSpread"]       = 0.25
+    Data["MaxSpread"]       = 30
     Data["FlechetteSpread"] = math.Clamp(tonumber(PlayerData["Data6"]), Data["MinSpread"], Data["MaxSpread"])
     
-    local PenAdj                = 0.8 --higher means lower pen, but more structure (hp) damage (old: 2.35, 2.85)
-    local RadiusAdj             = 1.0 -- lower means less structure (hp) damage, but higher pen (old: 1.0, 0.8)
-    local PackRatio             = 0.0025*Data["Flechettes"]+0.69 --how efficiently flechettes are packed into shell
+    local PenAdj                = 0.8                            -- higher means lower pen, but more structure (hp) damage (old: 2.35, 2.85)
+    local RadiusAdj             = 1.0                            -- lower means less structure (hp) damage, but higher pen (old: 1.0, 0.8)
+    local PackRatio             = 0.0025*Data["Flechettes"]+0.69 -- how efficiently flechettes are packed into shell
+
     Data["FlechetteRadius"]     = math.sqrt( ( (PackRatio*RadiusAdj*Data["Caliber"]/2)^2 ) / Data["Flechettes"] ) -- max radius flechette can be, to fit number of flechettes in a shell
     Data["FlechetteArea"]       = 3.1416 * Data["FlechetteRadius"]^2 -- area of a single flechette
     Data["FlechetteMass"]       = Data["FlechetteArea"] * (Data["ProjLength"]*7.9/1000) -- volume of single flechette * density of steel
@@ -138,16 +150,14 @@ function Round.network( Crate, BulletData )
     Crate:SetNWFloat("PropMass",BulletData["PropMass"])
     Crate:SetNWFloat("MuzzleVel",BulletData["MuzzleVel"])
     Crate:SetNWFloat("Tracer",BulletData["Tracer"])
+
     -- bullet effects use networked data, so set these to the flechette stats
     Crate:SetNWFloat("Caliber",math.Round( BulletData["FlechetteRadius"]*0.2 ,2))
     Crate:SetNWFloat("ProjMass",BulletData["FlechetteMass"])
     Crate:SetNWFloat("DragCoef",BulletData["FlechetteDragCoef"])
     Crate:SetNWFloat( "FillerMass", 0 )
-    --Crate:SetNWFloat("Caliber",BulletData["Caliber"])
-    --Crate:SetNWFloat("ProjMass",BulletData["ProjMass"])
-    --Crate:SetNWFloat("DragCoef",BulletData["DragCoef"])
 
-        --For propper bullet model
+    --For propper bullet model
     Crate:SetNWFloat( "BulletModel", Round.model )
     
 end
@@ -181,15 +191,19 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
     if ACF_Check( Target ) then
 
-        local Speed = Bullet["Flight"]:Length() / ACF.VelScale
-        local Energy = ACF_Kinetic( Speed , Bullet["ProjMass"], Bullet["LimitVel"] )
-        local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+        local Speed     = Bullet["Flight"]:Length() / ACF.VelScale
+        local Energy    = ACF_Kinetic( Speed , Bullet["ProjMass"], Bullet["LimitVel"] )
+        local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 
         if HitRes.Overkill > 0 then
+
             table.insert( Bullet["Filter"] , Target )                   --"Penetrate" (Ingoring the prop for the retry trace)
-            Bullet["Flight"] = Bullet["Flight"]:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet["ProjMass"])^0.5 * 39.37
+
+            Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet["ProjMass"])^0.5 * 39.37
+
             return "Penetrated"
         elseif HitRes.Ricochet then
+
             return "Ricochet"
         else
             return false
@@ -204,9 +218,12 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
     
     local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, Bullet.LimitVel )
     local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
+
     if HitRes.Penetrated then
+
         return "Penetrated"
     elseif HitRes.Ricochet then
+
         return "Ricochet"
     else
         return false
@@ -286,15 +303,13 @@ end
 function Round.guiupdate( Panel, Table )
 
     local PlayerData = {}
-        PlayerData["Id"] = acfmenupanel.AmmoData["Data"]["id"]          --AmmoSelect GUI
-        PlayerData["Type"] = "FL"                                       --Hardcoded, match ACFRoundTypes table index
-        PlayerData["PropLength"] = acfmenupanel.AmmoData["PropLength"]  --PropLength slider
-        PlayerData["ProjLength"] = acfmenupanel.AmmoData["ProjLength"]  --ProjLength slider
-        PlayerData["Data5"] = acfmenupanel.AmmoData["Flechettes"]       --Flechette count slider
-        PlayerData["Data6"] = acfmenupanel.AmmoData["FlechetteSpread"]      --flechette spread slider
-        --PlayerData["Data7"] = acfmenupanel.AmmoData[Name]     --Not used
-        --PlayerData["Data8"] = acfmenupanel.AmmoData[Name]     --Not used
-        --PlayerData["Data9"] = acfmenupanel.AmmoData[Name]     --Not used
+        PlayerData["Id"]            = acfmenupanel.AmmoData["Data"]["id"]          --AmmoSelect GUI
+        PlayerData["Type"]          = "FL"                                       --Hardcoded, match ACFRoundTypes table index
+        PlayerData["PropLength"]    = acfmenupanel.AmmoData["PropLength"]  --PropLength slider
+        PlayerData["ProjLength"]    = acfmenupanel.AmmoData["ProjLength"]  --ProjLength slider
+        PlayerData["Data5"]         = acfmenupanel.AmmoData["Flechettes"]       --Flechette count slider
+        PlayerData["Data6"]         = acfmenupanel.AmmoData["FlechetteSpread"]      --flechette spread slider
+
         local Tracer = 0
         if acfmenupanel.AmmoData["Tracer"] then Tracer = 1 end
         PlayerData["Data10"] = Tracer               --Tracer

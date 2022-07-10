@@ -199,7 +199,7 @@ function ENT:Think()
     
     if ACF.CurTime > self.NextLegalCheck then
 
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, nil, true, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
         if not self.Legal then

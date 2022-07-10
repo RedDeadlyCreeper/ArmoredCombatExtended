@@ -211,7 +211,13 @@ function ENT:ACF_Activate( Recalc )
     self.ACF.Mass = self.Mass
     self.ACF.Density = (PhysObj:GetMass()*1000) / self.ACF.Volume
     self.ACF.Type = "Prop"
-    
+
+    self.ACF.Material     = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+
+    --Forces an update of mass
+    self.LastMass = 1 
+    self:UpdateFuelMass()
+
 end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
@@ -223,23 +229,37 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
     if self.Exploding or NoExplode or not self.IsExplosive then return HitRes end
     
     if HitRes.Kill then
+
         if hook.Run( "ACF_FuelExplode", self ) == false then return HitRes end
+
         self.Exploding = true
-        if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
+
+        if( IsValid(Inflictor) and Inflictor:IsPlayer() ) then
             self.Inflictor = Inflictor
         end
+
         ACF_ScaledExplosion( self )
+
         return HitRes
     end
     
     local Ratio = (HitRes.Damage/self.ACF.Health)^0.75 --chance to explode from sheer damage, small shots = small chance
     local ExplodeChance = (1-(self.Fuel/self.Capacity))^0.75 --chance to explode from fumes in tank, less fuel = more explodey
      
-    if math.Rand(0,1) < (ExplodeChance + Ratio) then  --it's gonna blow
+     --it's gonna blow
+    if math.Rand(0,1) < (ExplodeChance + Ratio) then  
+
         if hook.Run( "ACF_FuelExplode", self ) == false then return HitRes end
+
         self.Inflictor = Inflictor
         self.Exploding = true
-        ACF_ScaledExplosion( self )
+
+        timer.Simple(math.random(0.1,1), function()
+            if IsValid(self) then
+                ACF_ScaledExplosion( self )
+            end
+        end )
+        
     else                                                --spray some fuel around
         self:NextThink( CurTime() + 0.1 )
         self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage/self.ACF.Health)^1.5) * 0.25
@@ -279,21 +299,17 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 
     Tank:UpdateFuelTank(Id, SId, Data2)
     
-    local name
-    
-    if Data2 == 'Electric' then
-        name = 'Li-Ion Battery'
-    else
-        name = Data2.." Fuel Tank"
-    end
-    
+    local electric = (Data2 == 'Electric') and Tanks[Tank.SizeId].name..' Li-Ion Battery'
+    local gas      = Data2.." "..Tanks[Tank.SizeId].name..( not Tanks[Tank.SizeId].notitle and " Fuel Tank" or "")
+
+    local name = "ACE "..(electric or gas)
+
     Tank:SetNWString( "WireName", name )
     
     if IsValid(Owner) then
         Owner:AddCount( "_acf_misc", Tank )
         Owner:AddCleanup( "acfmenu", Tank )
     end
-    
     
     table.insert(ACF.FuelTanks, Tank)
     
@@ -333,11 +349,12 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
     
     self:UpdateFuelMass()
 
-    if Data2 == 'Electric' then
-        name = 'Li-Ion Battery'
-    else
-        name = Data2.." Fuel Tank"
-    end
+    local Tanks = list.Get("ACFEnts").FuelTanks
+
+    local electric = (Data2 == 'Electric') and Tanks[self.SizeId].name..' Li-Ion Battery'
+    local gas      = Data2.." "..Tanks[self.SizeId].name..( not Tanks[self.SizeId].notitle and " Fuel Tank" or "")
+
+    local name = "ACE "..(electric or gas)
     
     self:SetNWString( "WireName", name )
     
@@ -449,7 +466,7 @@ function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
         --local minmass = math.floor(self.Mass-6)  -- fuel is light, may as well save complexity and just check it's above empty mass
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true) -- mass-6, as mass update is granular to 5 kg
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.EmptyMass,2), nil, true, true) -- mass-6, as mass update is granular to 5 kg
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:UpdateOverlayText()
     end

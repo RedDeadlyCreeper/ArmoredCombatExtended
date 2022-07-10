@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "
 local Round = {}
 
 Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name  = "[APDS-LRP] - "..ACFTranslation.ShellAPDS[1] --Human readable name
+Round.name  = "[APDS] - "..ACFTranslation.ShellAPDS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
 Round.desc  = ACFTranslation.ShellAPDS[2]
 Round.netid = 9 --Unique ammotype ID for network transmission
@@ -23,140 +23,100 @@ function Round.convert( Crate, PlayerData )
     local Data          = {}
     local ServerData    = {}
     local GUIData       = {}
-    
-    if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-    if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-    if not PlayerData.SCalMult then PlayerData.SCalMult = 0.5 end
-    if not PlayerData["Data5"] then PlayerData["Data5"] = 0.5 end --caliber in mm count
-    if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+
+    PlayerData.PropLength   = PlayerData.PropLength or 0
+    PlayerData.ProjLength   = PlayerData.ProjLength or 0
+    PlayerData.SCalMult     = PlayerData.SCalMult   or 0.5
+    PlayerData.Data5        = PlayerData.Data5      or 0.5  --caliber in mm count
+    PlayerData.Data10       = PlayerData.Data10     or 0
     
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
     local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
     
-    if ACF.Year > 2000 then
-    
     if GunClass == "AC" or GunClass == "HMG" then
-    Data.MinCalMult = 0.35
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 2 -- Autocannons are puny anyways
-    Data.VelModifier = 1.6
-    Data.Ricochet = 68
+
+        Data.MinCalMult     = 0.35
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 2 -- Autocannons are puny anyways
+        Data.VelModifier    = 1.6
+        Data.Ricochet       = 68
     elseif GunClass == "RAC" then
-    Data.MinCalMult = 0.5
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.8
-    Data.VelModifier = 1.7
-    Data.Ricochet = 68
+
+        Data.MinCalMult     = 0.5
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 1.8
+        Data.VelModifier    = 1.7
+        Data.Ricochet       = 68
     elseif GunClass == "HRAC" then
-    Data.MinCalMult = 0.5
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.9
-    Data.VelModifier = 1.7
-    Data.Ricochet = 68
+
+        Data.MinCalMult     = 0.5
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 1.9
+        Data.VelModifier    = 1.7
+        Data.Ricochet       = 68
     elseif GunClass == "MG" then
-    Data.MinCalMult = 0.45
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.7
-    Data.VelModifier = 1.8
-    Data.Ricochet = 68
+
+        Data.MinCalMult     = 0.45
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 1.7
+        Data.VelModifier    = 1.8
+        Data.Ricochet       = 68
     elseif GunClass == "SA" then
-    Data.MinCalMult = 0.3
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 2
-    Data.VelModifier = 1.6
-    Data.Ricochet = 68
+
+        Data.MinCalMult     = 0.3
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 2
+        Data.VelModifier    = 1.6
+        Data.Ricochet       = 68
     elseif GunClass == "C" then
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 0.8
-    Data.VelModifier = 0.9
-    Data.Ricochet = 68
+
+        Data.MinCalMult     = 0.25
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 0.8
+        Data.VelModifier    = 0.9
+        Data.Ricochet       = 68
     elseif GunClass == "AL" then
-    Data.MinCalMult = 0.28
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 0.8
-    Data.VelModifier = 0.9
-    Data.Ricochet = 68
-    else
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.35
-    Data.VelModifier = 1
-    Data.Ricochet = 68  
-    end
-    
+
+        Data.MinCalMult     = 0.28
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 0.8
+        Data.VelModifier    = 0.9
+        Data.Ricochet = 68
     else
 
-    if GunClass == "AC" then
-    Data.MinCalMult = 0.35
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 2 -- Autocannons are puny anyways
-    Data.VelModifier = 1.6
-    Data.Ricochet = 55
-    elseif GunClass == "RAC" then
-    Data.MinCalMult = 0.5
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.8
-    Data.VelModifier = 1.7
-    Data.Ricochet = 50
-    elseif GunClass == "HRAC" then
-    Data.MinCalMult = 0.5
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.9
-    Data.VelModifier = 1.7
-    Data.Ricochet = 50
-    elseif GunClass == "MG" then
-    Data.MinCalMult = 0.5
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.7
-    Data.VelModifier = 1.8
-    Data.Ricochet = 50
-    elseif GunClass == "SA" then
-    Data.MinCalMult = 0.3
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 2
-    Data.VelModifier = 1.6
-    Data.Ricochet = 60
-    elseif GunClass == "C" then
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1
-    Data.VelModifier = 1
-    Data.Ricochet = 62
-    else
-    Data.MinCalMult = 0.25
-    Data.MaxCalMult = 1.0
-    Data.PenModifier = 1.35
-    Data.VelModifier = 1
-    Data.Ricochet = 62  
-    end
-    
+        Data.MinCalMult     = 0.25
+        Data.MaxCalMult     = 1.0
+        Data.PenModifier    = 1.35
+        Data.VelModifier    = 1
+        Data.Ricochet       = 68  
     end
 
     --Used for adapting acf2 apds/apfsds to the new format
-    PlayerData["Data5"] = math.Clamp(PlayerData["Data5"],Data.MinCalMult,Data.MaxCalMult)   
+    PlayerData.Data5    = math.Clamp(PlayerData.Data5,Data.MinCalMult,Data.MaxCalMult)   
     
-    Data.SCalMult = PlayerData["Data5"]
-    Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-    Data.ProjMass = Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 --Volume of the projectile as a cylinder * density of steel
-    Data.ShovePower = 0.2
-    Data.PenAera = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod 
+    Data.SCalMult       = PlayerData.Data5
+    Data.SubFrAera      = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
+    Data.ProjMass       = Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 --Volume of the projectile as a cylinder * density of steel
+    Data.ShovePower     = 0.2
+    Data.PenAera        = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod 
     
-    Data.DragCoef = ((Data.SubFrAera/10000)/Data.ProjMass)
-    Data.CaliberMod = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
-    Data.LimitVel = 1000                                        --Most efficient penetration speed in m/s
-    Data.KETransfert = 0.2                                  --Kinetic energy transfert to the target for movement purposes                                      
-    Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass*2.5, Data.Caliber )* Data.VelModifier
-    Data.BoomPower = Data.PropMass
+    Data.DragCoef       = ((Data.SubFrAera/10000)/Data.ProjMass)
+    Data.CaliberMod     = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
+    Data.LimitVel       = 1000                                        --Most efficient penetration speed in m/s
+    Data.KETransfert    = 0.2                                  --Kinetic energy transfert to the target for movement purposes                                      
+    Data.MuzzleVel      = ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass*2.5, Data.Caliber )* Data.VelModifier
+    Data.BoomPower      = Data.PropMass
 
-    if SERVER then --Only the crates need this part
-        ServerData.Id = PlayerData.Id
+    --Only the crates need this part
+    if SERVER then 
+        ServerData.Id   = PlayerData.Id
         ServerData.Type = PlayerData.Type
         return table.Merge(Data,ServerData)
     end
     
-    if CLIENT then --Only tthe GUI needs this part
+    --Only tthe GUI needs this part
+    if CLIENT then 
         GUIData = table.Merge(GUIData, Round.getDisplayData(Data))
         return table.Merge(Data,GUIData)
     end
@@ -191,87 +151,45 @@ end
 
 function Round.cratetxt( BulletData )
     
-    --local FrAera = BulletData.FrAera
     local DData = Round.getDisplayData(BulletData)
-    
-    --fakeent.ACF.Armour = DData.MaxPen or 0
-    --fakepen.Penetration = (DData.MaxPen * FrAera) / ACF.KEtoRHA   
-    --local fakepen = ACF_Kinetic( BulletData.SlugMV*39.37 , BulletData.SlugMass, 9999999 )
-    --local MaxHP = ACF_CalcDamage( fakeent , fakepen , FrAera , 0 )
-    
-    --[[
-    local TotalMass = BulletData.ProjMass + BulletData.PropMass
-    local MassUnit
-    
-    if TotalMass < 0.1 then
-        TotalMass = TotalMass * 1000
-        MassUnit = " g"
-    else
-        MassUnit = " kg"
-    end
-    ]]--
-    
     local str = 
     {
-        --"Cartridge Mass: ", math.Round(TotalMass, 2), MassUnit, "\n",
         "Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
         "Max Penetration: ", math.floor(DData.MaxPen), " mm"
-        --"Max Pen. Damage: ", math.Round(MaxHP.Damage, 1), " HP\n"
     }
     
     return table.concat(str)
     
 end
 
-function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
-
-    local Mat = Target.ACF.Material or "RHA"
-    local NormieMult = ACE.Armors[ Mat ].NormMult or 1
-    
-    Bullet.Normalize = true
-    Bullet.Pos = HitPos
-
-    local FlightNormal = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized()--Guess it doesnt need localization
-    local Speed = Bullet.Flight:Length()
-
-    Bullet.Flight = FlightNormal * Speed
-    
-    local DeltaTime = SysTime() - Bullet.LastThink
-    Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
-    Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)        --Calculates the next shell position
-    
-end
-
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
     if ACF_Check( Target ) then
-    
-        if Bullet.Normalize then
---      print("PropHit")
-            local Speed = Bullet.Flight:Length() / ACF.VelScale
-            local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-            local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+
+        local Speed     = Bullet.Flight:Length() / ACF.VelScale
+        local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+        local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
         
-            if HitRes.Overkill > 0 then
-                table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
-                ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-                Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-                Bullet.Normalize = false
-                return "Penetrated"
-            elseif HitRes.Ricochet then
-                Bullet.Normalize = false
-                return "Ricochet"
-            else
-                return false
-            end
+        if HitRes.Overkill > 0 then
+
+            table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
+
+            ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+            
+            Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+
+            return "Penetrated"
+        elseif HitRes.Ricochet then
+
+            return "Ricochet"
         else
-        Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
---      print("Normalize")
-        return "Penetrated"
+            return false
         end
+
     else 
         table.insert( Bullet.Filter , Target )
-    return "Penetrated" end
+        return "Penetrated" 
+    end
         
 end
 

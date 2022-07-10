@@ -261,9 +261,9 @@ function ENT:AcquireLock()
                 besterr = err
             end
 
-            local errorFromHeat = math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
-            local posErrorFromHeat = 1 - math.min(1, (Heat / 200))
-            local angerr        = 1 + randanginac * (errorFromAng + errorFromHeat)
+            local errorFromHeat     = math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
+            local posErrorFromHeat  = 1 - math.min(1, (Heat / 200))
+            local angerr            = 1 + randanginac * (errorFromAng + errorFromHeat)
 
             --For Owner table
             table.insert( Owners        , CPPI and ( IsValid( scanEnt:CPPIGetOwner() ) and scanEnt:CPPIGetOwner():GetName()) or scanEnt:GetOwner():GetName() or "")
@@ -307,7 +307,7 @@ function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
 
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, nil, true, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
         if not self.Legal then

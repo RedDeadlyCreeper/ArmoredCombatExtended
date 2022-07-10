@@ -267,21 +267,38 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
-	
-	ACF_RemoveBullet( Index )
-	
+
+    if not Bullet.Detonated then
+        ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
+    end
+
+    ACF_RemoveBullet( Index )
+    
 end
 
 function Round.endeffect( Effect, Bullet )
-	
-	local Impact = EffectData()
-		Impact:SetEntity( Bullet.Crate )
-		Impact:SetOrigin( Bullet.SimPos )
-		Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
-		Impact:SetScale( Bullet.SimFlight:Length() )
-		Impact:SetMagnitude( Bullet.RoundMass )
-	util.Effect( "ACF_AP_Impact", Impact )
-	
+    
+    if not Bullet.Detonated then
+
+        local Radius = (Bullet.FillerMass)^0.33*8*39.37
+        local Flash = EffectData()
+            Flash:SetOrigin( Bullet.SimPos )
+            Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
+            Flash:SetRadius( math.max( Radius, 1 ) )
+        util.Effect( "ACF_Scaled_Explosion", Flash )
+
+    else
+        
+        local Impact = EffectData()
+            Impact:SetEntity( Bullet.Crate )
+            Impact:SetOrigin( Bullet.SimPos )
+            Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
+            Impact:SetScale( Bullet.SimFlight:Length() )
+            Impact:SetMagnitude( Bullet.RoundMass )
+        util.Effect( "acf_ap_impact", Impact )
+
+    end
+
 end
 
 function Round.pierceeffect( Effect, Bullet )
@@ -294,7 +311,7 @@ function Round.pierceeffect( Effect, Bullet )
 			Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 			Spall:SetScale( Bullet.SimFlight:Length() )
 			Spall:SetMagnitude( Bullet.RoundMass )
-		util.Effect( "ACF_AP_Penetration", Spall )
+		util.Effect( "acf_ap_penetration", Spall )
 	
 	else
 		
@@ -303,7 +320,7 @@ function Round.pierceeffect( Effect, Bullet )
 			Flash:SetOrigin( Bullet.SimPos )
 			Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
 			Flash:SetRadius( math.max( Radius, 1 ) )
-		util.Effect( "ACF_HEAT_Explosion", Flash )
+		util.Effect( "acf_heat_explosion", Flash )
 		
 		Bullet.Detonated = true
 		Effect:SetModel("models/Gibs/wood_gib01e.mdl")
@@ -320,7 +337,7 @@ function Round.ricocheteffect( Effect, Bullet )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 		Spall:SetScale( Bullet.SimFlight:Length() )
 		Spall:SetMagnitude( Bullet.RoundMass )
-	util.Effect( "ACF_AP_Ricochet", Spall )
+	util.Effect( "acf_ap_ricochet", Spall )
 	
 end
 

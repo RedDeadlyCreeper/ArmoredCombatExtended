@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 463           -- ACE current version
+ACF.Version = 464           -- ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
@@ -71,7 +71,9 @@ CreateConVar("acf_debris_children", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_spalling", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_spalling_multipler", 1, FCVAR_ARCHIVE)
 
---end )
+-- Scaled Explosions
+CreateConVar("acf_explosions_scaled_he_max", 100, FCVAR_ARCHIVE)
+CreateConVar("acf_explosions_scaled_ents_max", 5, FCVAR_ARCHIVE)
 
 if CLIENT then
 --[[-----------------------------
@@ -84,32 +86,37 @@ end
 
 ACFM = ACFM or {}
 
+-- Useless
 ACFM.FlareBurnMultiplier        = 0.5
 ACFM.FlareDistractMultiplier    = 1 / 35
 
-ACF.DebrisChance        = GetConVar('acf_debris_children'):GetFloat()
-ACF.DebrisLifeTime      = GetConVar('acf_debris_lifetime'):GetInt()
+ACF.DebrisChance        = 0.5
+ACF.DebrisLifeTime      = 60  
+
+ACF.ScaledHEMax         = 50
+ACF.ScaledEntsMax       = 5
 
 ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 
-ACF.Threshold           = 264.7                                 -- Health Divisor (don't forget to update cvar function down below)
-ACF.PartialPenPenalty   = 5                                     -- Exponent for the damage penalty for partial penetration
+ACF.Threshold           = 264.7                     -- Health Divisor (don't forget to update cvar function down below)
+ACF.PartialPenPenalty   = 5                         -- Exponent for the damage penalty for partial penetration
 ACF.PenAreaMod          = 0.85
-ACF.KinFudgeFactor      = 2.1                                   -- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
-ACF.KEtoRHA             = 0.25                                  -- Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
-ACF.GroundtoRHA         = 0.15                                  -- How much mm of steel is a mm of ground worth (Real soil is about 0.15)
+ACF.KinFudgeFactor      = 2.1                       -- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
+ACF.KEtoRHA             = 0.25                      -- Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
+ACF.GroundtoRHA         = 0.15                      -- How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall           = 1
-ACF.AmmoMod             = 2.6                                   -- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoMod             = 2.6                       -- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul       = 1
 ACF.AmmoWidthMul        = 1
 ACF.ArmorMod            = 1 
-ACF.SlopeEffectFactor   = 1.1                                   -- Sloped armor effectiveness: armor / cos(angle)^factor
-ACF.Spalling            = GetConVar('acf_spalling'):GetInt()
-ACF.SpallMult           = GetConVar('acf_spalling_multipler'):GetInt()
+ACF.SlopeEffectFactor   = 1.1                       -- Sloped armor effectiveness: armor / cos(angle)^factor
+ACF.Spalling            = 1
+ACF.SpallMult           = 1
+
 ACF.GunfireEnabled      = true
 ACF.MeshCalcEnabled     = false
 
-ACF.BoomMult            = 1.5                                   -- How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult            = 1.5                       -- How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 --ACF Damage Multipler.
 
@@ -119,7 +126,6 @@ ACF.APBCDamageMult      = 1.5                       -- APBC Damage Multipler    
 ACF.APCBCDamageMult     = 1.0                       -- APCBC Damage Multipler           -1.05
 ACF.APHEDamageMult      = 1.5                       -- APHE Damage Multipler          
 ACF.APDSDamageMult      = 1.5                       -- APDS Damage Multipler          
-ACF.APDSSDamageMult     = 1.55                      -- APDSS Damage Multipler
 ACF.HVAPDamageMult      = 1.65                      -- HVAP/APCR Damage Multipler
 ACF.FLDamageMult        = 1.4                       -- FL Damage Multipler
 ACF.HEATDamageMult      = 2                         -- HEAT Damage Multipler
@@ -166,13 +172,12 @@ ACF.NormalizationFactor = 0.15                      -- at 0.1(10%) a round hitti
 
 ACF.AllowCSLua          = 0
 
-ACF.LiIonED             = 0.27                      --li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
+ACF.LiIonED             = 0.27                      -- li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
 ACF.CuIToLiter          = 0.0163871                 -- cubic inches to liters
 
 ACF.RefillDistance      = 400                       -- Distance in which ammo crate starts refilling.
 ACF.RefillSpeed         = 250                       -- (ACF.RefillSpeed / RoundMass) / Distance 
 
---ACF.ChildDebris       = 50                        -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
 ACF.DebrisIgniteChance  = 0.25
 ACF.DebrisScale         = 20                        -- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale         = 16                        -- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
@@ -231,11 +236,8 @@ if SERVER then
 elseif CLIENT then
 
     include("acf/client/cl_acfballistics.lua")
-    --include("acf/client/cl_acfmenu_gui.lua")
     include("acf/client/cl_acfrender.lua")
     include("acf/client/cl_extension.lua")
-    
-    --include("acf/client/cl_acfmenu_missileui.lua")
 
     if ACF.EnableDefaultDP then
     
@@ -243,7 +245,6 @@ elseif CLIENT then
         include("acf/client/gui/cl_acfsetpermission.lua")
         
     end
-    
     
     CreateConVar("acf_cl_particlemul", 1)
     CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
@@ -291,7 +292,6 @@ if ACF.Year > 1939 then
     include("acf/shared/rounds/roundheat.lua")
     include("acf/shared/rounds/roundaphe.lua")
     include("acf/shared/rounds/roundaphecbc.lua")
-    include("acf/shared/rounds/roundapdss.lua")
     include("acf/shared/rounds/roundhvap.lua")
     
 end
@@ -300,7 +300,6 @@ if ACF.Year > 1960 then
 
     include("acf/shared/rounds/roundapds.lua")
     include("acf/shared/rounds/roundapfsds.lua")
-    include("acf/shared/rounds/roundapfsdss.lua")
     include("acf/shared/rounds/roundheatfs.lua")
     include("acf/shared/rounds/roundhefs.lua")
     include("acf/shared/rounds/roundflare.lua")
@@ -320,6 +319,7 @@ ACF.Weapons     = list.Get("ACFEnts")
 ACF.Classes     = list.Get("ACFClasses")
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
 ACF.IdRounds    = list.Get("ACFIdRounds")   --Lookup tables so i can get rounds classes from clientside with just an integer
+
 ACE.Armors      = list.Get("ACE_MaterialTypes")
 ACE.GSounds     = list.Get("ACESounds")
 
@@ -379,6 +379,10 @@ function ACF_CVarChangeCallback(CVar, Prev, New)
         ACF.DebrisLifeTime = math.max( New,0)
     elseif( CVar == "acf_debris_children" ) then
         ACF.DebrisChance = math.Clamp(New,0,1)
+    elseif( CVar == "acf_explosions_scaled_he_max" ) then
+        ACF.ScaledHEMax = math.max(New,50)
+    elseif( CVar == "acf_explosions_scaled_ents_max" ) then
+        ACF.ScaledEntsMax = math.max(New,1)
     end
 end
 
@@ -391,6 +395,8 @@ cvars.AddChangeCallback("acf_spalling_multipler", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_gunfire", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_debris_lifetime", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_debris_children", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_explosions_scaled_he_max", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_explosions_scaled_ents_max", ACF_CVarChangeCallback)
 
 if SERVER then
     function ACF_SendNotify( ply, success, msg )

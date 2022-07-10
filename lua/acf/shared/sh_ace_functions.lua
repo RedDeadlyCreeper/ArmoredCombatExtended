@@ -270,47 +270,90 @@ function ACF_UpdateChecking( )
     end, function() end)
 end
 
---Creates and updates the ace dupes. ATM only analyzer.
-function ACE_Dupes_Refresh()
 
-    --Directory relative to DATA folder
-    local Directory = "advdupe2/ace tools"
+--Creates & updates ACE dupes.
+--[[
+-- USAGE:
+    To Add a dupe, you have to put inside of your_addon_name/scripts/vehicles/>HERE< with the following naming:
 
-    --Name of the file
-    local FileName  = "armor_analyzer"
+    acedupe_[folder name]_[your dupe name].txt
 
-    --To check if the file already exists
-    local FileExists = file.Exists( Directory.."/"..FileName..".txt", "DATA")
+    Note: 
+    - folder name must be ONE word (acecool, myaddon, tankpack, etc). It cannot have spaces!!!
+    - you dupe name can have spaces, however, they must be '_' for the file. The loader will automatically change that symbol to spaces.
 
-    --Writes in case of not existing
-    if not FileExists then
+    Correct way examples: 
 
-        local File_Content = file.Read("scripts/vehicles/armor_analyzer.txt", "GAME")
+    - acedupe_tanks_bmp2.txt
+    - acedupe_cars_my_cool_car.txt
+    - acedupe_thebest_the_best_of_the_best.txt
+]]
 
-        file.CreateDir(Directory)
-        file.Write(Directory.."/"..FileName..".txt", File_Content)
+do
 
+    local file_name
+    local file_directory
+    local main_directory = "advdupe2/"
 
-    --Updates the current one if it differs from the new version.
-    else
-        --Idea: bring the analyzer from the internet instead of locally?
+    local Dupes          = {}
+    local dupefiles      = {}
 
-        local Current_File_Size = file.Size("advdupe2/ace tools/armor_analyzer.txt", "DATA")
-        local New_File_Size     = file.Size("scripts/vehicles/armor_analyzer.txt", "GAME")
+    local fileIndex      = "acedupe"
 
-        if New_File_Size > 0 and Current_File_Size ~= New_File_Size then
+    function ACE_Dupes_Refresh()
 
-            print("[ACE|INFO]- Your armor analyzer is different. Updating...")
+        Dupes = file.Find("scripts/vehicles/*.txt", "GAME")
 
-            local File_Content = file.Read("scripts/vehicles/armor_analyzer.txt", "GAME")
+        if not Dupes then return end
 
-            file.Write(Directory.."/"..FileName..".txt", File_Content)
+        dupefiles = {}
 
+        for i, Result in ipairs(Dupes) do
+
+            local Id = string.Explode("_", Result)
+            if Id[1] ~= fileIndex then goto cont end
+
+            file_name = table.concat( Id, " ", 3) 
+            file_name = string.Replace( file_name, ".txt", "" )
+
+            dupefiles[i] = Result --Catching desired files
+            file_content = file.Read("scripts/vehicles/"..dupefiles[i], "GAME")
+
+            file_directory = main_directory.."ace "..Id[2]
+            local fileExists = file.Exists( file_directory.."/"..file_name..".txt", "DATA")
+
+            if not fileExists then
+
+                --print( "[ACE|INFO]- Creating dupe '"..file_name.."'' in "..file_directory )
+
+                file.CreateDir(file_directory)
+                file.Write(file_directory.."/"..file_name..".txt", file_content)
+
+                
+            else
+                --Idea: bring the analyzer from the internet instead of locally?
+
+                local CFile_Size = file.Size(file_directory.."/"..file_name..".txt", "DATA")
+                local NFile_Size = file.Size("scripts/vehicles/"..dupefiles[i], "GAME")
+
+                if NFile_Size > 0 and CFile_Size ~= NFile_Size then
+
+                    --print("[ACE|INFO]- your dupe "..file_name.." is different/outdated! Updating....")
+
+                    file.Write(file_directory.."/"..file_name..".txt", file_content)
+
+                end
+
+            end
+            ::cont::
         end
+
     end
+
 end
 
-timer.Simple(2, function()
+timer.Simple(1, function()
     ACF_UpdateChecking()
     ACE_Dupes_Refresh()
 end )
+

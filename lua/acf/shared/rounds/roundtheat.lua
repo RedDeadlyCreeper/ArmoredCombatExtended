@@ -101,11 +101,11 @@ function Round.convert( Crate, PlayerData )
 
     Data.HEAllocation       = GUIData.HEAllocation
 
-    Data.SlugMV             = 1.3*( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+    Data.SlugMV             = 1.15*( Data.FillerMass/2 * ACF.HEPower * (1-Data.HEAllocation) * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
     Data.SlugMass           = Data.SlugMass*4^2
     Data.SlugMV             = Data.SlugMV/4
 
-    Data.SlugMV2            = 1.3*( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
+    Data.SlugMV2            = 1.15*( Data.FillerMass/2 * ACF.HEPower * Data.HEAllocation * math.sin(math.rad(10+GUIData.ConeAng2)/2) /Data.SlugMass2)^ACF.HEATMVScaleTan --keep fillermass/2 so that penetrator stays the same
     Data.SlugMass2          = Data.SlugMass2*4^2
     Data.SlugMV2            = Data.SlugMV2/4
 
@@ -208,17 +208,15 @@ end
 
 function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
-    Bullet.Detonated    = Bullet.Detonated + 1
-    DetCount            = Bullet.Detonated or 0
+    --print("Called function detonate during DetCount: "..Bullet.Detonated )
 
-    --debugoverlay.Text(Bullet.Pos, "THEAT pos: "..DetCount, 10 )
-    --debugoverlay.Cross(Bullet.Pos, 5, 10, Color( 255, 255, 255 ), true )
+    Bullet.Detonated    = (Bullet.Detonated or 0) + 1
 
-    --debugoverlay.Text(HitPos, "THEAT pos using HitPos: "..DetCount, 10 )
-    --debugoverlay.Cross(HitPos, 5, 10, Color( 255, 255, 255 ), true )
+    local DetCount      = Bullet.Detonated
 
     --First Detonation
     if DetCount == 1 then 
+        --print("1ST CHARGE")
 
         Bullet.NotFirstPen = false
 
@@ -242,6 +240,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
     --Second Detonation
     elseif DetCount == 2 then 
+        --print("2ND CHARGE")
 
         Bullet.NotFirstPen = false
 
@@ -266,12 +265,25 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 --  print(Bullet.Detonated)
 end
 
+--TODO: Make shell fire both tandem charges at once.
+--BUG: 2nd charge trace doesnt return a valid HitNormal res, which makes impacted prop returns an infinite effective armor. Not always happens but its possible.
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
-    DetCount = Bullet.Detonated or 0
+    -- DetCount = 0 // the bullet has impacted something, it still doesnt detonate. Here checks if it should ricochet or detonate.
+    -- DetCount = 1 // the bullet has detonated and has penetrated the next layers. If fails to, a 2nd charge is called.
+    -- DetCount = 2 // the bullet has detonated its 2nd charge. The last one of this round.
+
+    local DetCount = Bullet.Detonated or 0
+
+    --print("THEAT DID HIT\n DetCount: "..DetCount)
+    --print("Hit Target: "..(Target:GetClass()) )
+    --print("ENTIndex: "..Target:EntIndex())
+
+    --2nd charge should always appear in the same place as 1st charge
+    if Bullet.FirstPos then HitPos = Bullet.FirstPos end
 
     if ACF_Check( Target ) then
-            
+    
         if DetCount > 0 then --Bullet Has Detonated
             Bullet.NotFirstPen = true
             
@@ -280,8 +292,6 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
             
             if HitRes.Overkill > 0 then
-
-                --print("Filtering prop due to HEAT #"..DetCount)
 
                 table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
                 ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
@@ -293,6 +303,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             elseif DetCount == 1 then 
 
                 Round.detonate( Index, Bullet, HitPos, HitNormal )
+
                 return "Penetrated"         
 
             else
@@ -324,7 +335,8 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 end
 
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
-    DetCount = Bullet.Detonated or 0
+    local DetCount = Bullet.Detonated or 0
+
     if DetCount < 2 then    
         Round.detonate( Index, Bullet, HitPos, HitNormal )
         return "Penetrated"
@@ -341,7 +353,16 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
-    
+    local DetCount = Bullet.Detonated or 0
+
+    --print("endflight during DetCount: "..DetCount)
+
+    if DetCount == 1 then
+        --print("endflight during 1st charge, detonating 2nd charge")
+        Round.detonate( Index, Bullet, HitPos, HitNormal )
+        return
+    end
+
     ACF_RemoveBullet( Index )
     
 end
@@ -354,21 +375,21 @@ function Round.endeffect( Effect, Bullet )
         Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Impact:SetScale( Bullet.SimFlight:Length() )
         Impact:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Impact", Impact )
+    util.Effect( "acf_ap_impact", Impact )
     
 end
 
 function Round.pierceeffect( Effect, Bullet )
-    DetCount = Bullet.Detonated or 0
+    local DetCount = Bullet.Detonated or 0
     if DetCount > 0 then
-    
+
         local Spall = EffectData()
             Spall:SetEntity( Bullet.Crate )
             Spall:SetOrigin( Bullet.SimPos )
             Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
             Spall:SetScale( Bullet.SimFlight:Length() )
             Spall:SetMagnitude( Bullet.RoundMass )
-        util.Effect( "ACF_AP_Penetration", Spall )
+        util.Effect( "acf_ap_penetration", Spall )
     
     else
         
@@ -377,11 +398,12 @@ function Round.pierceeffect( Effect, Bullet )
             Flash:SetOrigin( Bullet.SimPos )
             Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
             Flash:SetRadius( math.max( Radius, 1 ) )
-        util.Effect( "ACF_HEAT_Explosion", Flash )
+        util.Effect( "acf_heat_explosion", Flash )
         
         Bullet.Detonated = 1
         Effect:SetModel("models/Gibs/wood_gib01e.mdl")
     
+        Round.pierceeffect( Effect, Bullet )
     end
     
 end
@@ -394,7 +416,7 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Ricochet", Spall )
+    util.Effect( "acf_ap_ricochet", Spall )
     
 end
 
@@ -481,3 +503,6 @@ end
 list.Set("HERoundTypes", 'THEAT', Round ) 
 list.Set( "ACFRoundTypes", "THEAT", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "THEAT" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

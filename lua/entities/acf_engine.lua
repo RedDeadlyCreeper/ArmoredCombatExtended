@@ -89,153 +89,164 @@ if CLIENT then
     
 end
 
-local EngineWireDescs = {
-    --Inputs
-    ["Throttle"]        = "Controls the amount of fuel which will be displaced to the engine.\n Increasing it will also increase RPM, Power and fuel consumption. Values go from 0-100.",
+do
 
-    --Outputs
-    ["RPM"]             = "Returns the current RPM.",
-    ["Torque"]          = "Returns the current Torque.",
-    ["Power"]           = "Returns the current power of this engine.",
-    ["Fuel Use"]        = "Gives the actual fuel consumption of the engine.",
-    ["EngineHeat"]      = "Returns the engine's temperature."
-}
+    local EngineWireDescs = {
+        --Inputs
+        ["Throttle"]        = "Controls the amount of fuel which will be displaced to the engine.\n Increasing it will also increase RPM, Power and fuel consumption. Values go from 0-100.",
 
-function ENT:Initialize()
+        --Outputs
+        ["RPM"]             = "Returns the current RPM.",
+        ["Torque"]          = "Returns the current Torque.",
+        ["Power"]           = "Returns the current power of this engine.",
+        ["Fuel Use"]        = "Gives the actual fuel consumption of the engine.",
+        ["EngineHeat"]      = "Returns the engine's temperature."
+    }
 
-    self.Throttle       = 0
-    self.Active         = false
-    self.IsMaster       = true
-    self.GearLink       = {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
-    self.FuelLink       = {}
+    function ENT:Initialize()
+
+        self.Throttle       = 0
+        self.Active         = false
+        self.IsMaster       = true
+        self.GearLink       = {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
+        self.FuelLink       = {}
     
-    self.NextUpdate     = 0
-    self.LastThink      = 0
-    self.MassRatio      = 1
-    self.FuelTank       = 0
-    self.Heat           = ACE.AmbientTemp
-    self.TotalFuel      = 0
-    self.Efficiency     = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
-    self.Legal          = true
-    self.CanUpdate      = true
-    self.RequiresFuel   = false
-    self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-    self.Legal          = true
-    self.LegalIssues    = ""
-    self.LockOnActive   = false --used to turn on the engine in case of being lockdown by not legal
-    self.CrewLink       = {}
-    self.HasDriver      = 0
+        self.NextUpdate     = 0
+        self.LastThink      = 0
+        self.MassRatio      = 1
+        self.FuelTank       = 0
+        self.Heat           = ACE.AmbientTemp
+        self.TotalFuel      = 0
+        self.Efficiency     = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
+        self.Legal          = true
+        self.CanUpdate      = true
+        self.RequiresFuel   = false
+        self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+        self.Legal          = true
+        self.LegalIssues    = ""
+        self.LockOnActive   = false --used to turn on the engine in case of being lockdown by not legal
+        self.CrewLink       = {}
+        self.HasDriver      = 0
     
-    self.LastDamageTime=CurTime()
+        self.LastDamageTime=CurTime()
     
-    self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle ("..EngineWireDescs["Throttle"]..")" } ) --use fuel input?
-    self.Outputs = WireLib.CreateSpecialOutputs( self,  { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"},  
+        self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle ("..EngineWireDescs["Throttle"]..")" } ) --use fuel input?
+        self.Outputs = WireLib.CreateSpecialOutputs( self,  { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"},  
                                                         { "NORMAL","NORMAL","NORMAL", "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
     
-    Wire_TriggerOutput( self, "Entity", self )
-    Wire_TriggerOutput(self, "EngineHeat", self.Heat)
+        Wire_TriggerOutput( self, "Entity", self )
+        Wire_TriggerOutput(self, "EngineHeat", self.Heat)
     
-    self.WireDebugName = "ACF Engine"
+        self.WireDebugName = "ACF Engine"
 
-end  
+    end  
 
-local BackComp = {
-    ["Induction motor, Tiny"]               = "Electric-Tiny-NoBatt",
-    ["Induction motor, Small, Standalone"]  = "Electric-Small-NoBatt",
-    ["Induction motor, Medium, Standalone"] = "Electric-Medium-NoBatt",
-    ["Induction motor, Large, Standalone"]  = "Electric-Large-NoBatt"
-}
-
-function MakeACF_Engine(Owner, Pos, Angle, Id)
-
-    if not Owner:CheckLimit("_acf_misc") then return false end
-
-    local Engine = ents.Create( "acf_engine" )
-    if not IsValid( Engine ) then return false end
-    
-    local EID
-    local List = list.Get("ACFEnts")
-
-    if List.Mobility[Id] then 
-        EID = Id 
-    else 
-        EID = BackComp[Id] or "5.7-V8" 
-    end
-
-    local Lookup = List.Mobility[EID]
-    
-    Engine:SetAngles(Angle)
-    Engine:SetPos(Pos)
-    Engine:Spawn()
-    Engine:SetPlayer(Owner)
-    Engine.Owner = Owner
-    Engine.Id = EID
-    
-    Engine.Model            = Lookup.model
-    Engine.SoundPath        = Lookup.sound
-    Engine.Weight           = Lookup.weight
-    Engine.PeakTorque       = Lookup.torque
-    Engine.peakkw           = Lookup.peakpower
-    Engine.PeakKwRPM        = Lookup.peakpowerrpm
-    Engine.PeakTorqueHeld   = Lookup.torque
-    Engine.IdleRPM          = Lookup.idlerpm
-    Engine.PeakMinRPM       = Lookup.peakminrpm
-    Engine.PeakMaxRPM       = Lookup.peakmaxrpm
-    Engine.LimitRPM         = Lookup.limitrpm
-    Engine.Inertia          = Lookup.flywheelmass*(3.1416)^2
-    Engine.iselec           = Lookup.iselec
-    Engine.FlywheelOverride = Lookup.flywheeloverride
-    Engine.IsTrans          = Lookup.istrans -- driveshaft outputs to the side
-    Engine.FuelType         = Lookup.fuel or "Petrol"
-    Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
-    Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
-    Engine.CurveFactor      = Lookup.curvefactor
-    Engine.RequiresFuel     = Lookup.requiresfuel
-    Engine.SoundPitch       = Lookup.pitch or 1
-    Engine.SpecialHealth    = true
-    Engine.SpecialDamage    = true
-    Engine.TorqueMult       = 1
-    Engine.FuelTank         = 0
-    Engine.Heat             = ACE.AmbientTemp
-
-    Engine.TorqueScale      = ACF.TorqueScale[Engine.EngineType]
-    
-    --calculate base fuel usage
-    if Engine.EngineType == "Electric" then
-        Engine.FuelUse = ACF.ElecRate / (ACF.Efficiency[Engine.EngineType] * 60 * 60) --elecs use current power output, not max
-    else
-        Engine.FuelUse = ACF.TorqueBoost * ACF.FuelRate * ACF.Efficiency[Engine.EngineType] * Engine.peakkw / (60 * 60)
-    end
-
-    Engine.FlyRPM = 0
-    Engine:SetModel( Engine.Model ) 
-    Engine.Sound = nil
-    Engine.RPM = {}
-
-    Engine:PhysicsInit( SOLID_VPHYSICS )        
-    Engine:SetMoveType( MOVETYPE_VPHYSICS )         
-    Engine:SetSolid( SOLID_VPHYSICS )
-
-    Engine.Out = Engine:WorldToLocal(Engine:GetAttachment(Engine:LookupAttachment( "driveshaft" )).Pos)
-
-    local phys = Engine:GetPhysicsObject()
-    if IsValid( phys ) then
-        phys:SetMass( Engine.Weight )
-        Engine.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
-    end
-
-    Engine:SetNWString( "WireName", Lookup.name )
-    Engine:UpdateOverlayText()
-    
-    Owner:AddCount("_acf_misc", Engine)
-    Owner:AddCleanup( "acfmenu", Engine )
-    
-    ACF_Activate( Engine, 0 )
-
-    return Engine
 end
-list.Set( "ACFCvars", "acf_engine", {"id"} )
-duplicator.RegisterEntityClass("acf_engine", MakeACF_Engine, "Pos", "Angle", "Id")
+
+do
+
+    local BackComp = {
+        ["Induction motor, Tiny"]               = "Electric-Tiny-NoBatt",
+        ["Induction motor, Small, Standalone"]  = "Electric-Small-NoBatt",
+        ["Induction motor, Medium, Standalone"] = "Electric-Medium-NoBatt",
+        ["Induction motor, Large, Standalone"]  = "Electric-Large-NoBatt",
+
+        ["AVDS-1790-9A"]                        = "24.8-V12",
+        ["AVDS-1790-1500"]                      = "27.0-V12"
+    }
+
+    function MakeACF_Engine(Owner, Pos, Angle, Id)
+
+        if not Owner:CheckLimit("_acf_misc") then return false end
+
+        local Engine = ents.Create( "acf_engine" )
+        if not IsValid( Engine ) then return false end
+    
+        local EID
+        local List = list.Get("ACFEnts")
+
+        if List.Mobility[Id] then 
+            EID = Id 
+        else 
+            EID = BackComp[Id] or "5.7-V8" 
+        end
+
+        local Lookup = List.Mobility[EID]
+    
+        Engine:SetAngles(Angle)
+        Engine:SetPos(Pos)
+        Engine:Spawn()
+        Engine:SetPlayer(Owner)
+        Engine.Owner = Owner
+        Engine.Id = EID
+    
+        Engine.Model            = Lookup.model
+        Engine.SoundPath        = Lookup.sound
+        Engine.Weight           = Lookup.weight
+        Engine.PeakTorque       = Lookup.torque
+        Engine.peakkw           = Lookup.peakpower
+        Engine.PeakKwRPM        = Lookup.peakpowerrpm
+        Engine.PeakTorqueHeld   = Lookup.torque
+        Engine.IdleRPM          = Lookup.idlerpm
+        Engine.PeakMinRPM       = Lookup.peakminrpm
+        Engine.PeakMaxRPM       = Lookup.peakmaxrpm
+        Engine.LimitRPM         = Lookup.limitrpm
+        Engine.Inertia          = Lookup.flywheelmass*(3.1416)^2
+        Engine.iselec           = Lookup.iselec
+        Engine.FlywheelOverride = Lookup.flywheeloverride
+        Engine.IsTrans          = Lookup.istrans -- driveshaft outputs to the side
+        Engine.FuelType         = Lookup.fuel or "Petrol"
+        Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
+        Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
+        Engine.CurveFactor      = Lookup.curvefactor
+        Engine.RequiresFuel     = Lookup.requiresfuel
+        Engine.SoundPitch       = Lookup.pitch or 1
+        Engine.SpecialHealth    = true
+        Engine.SpecialDamage    = true
+        Engine.TorqueMult       = 1
+        Engine.FuelTank         = 0
+        Engine.Heat             = ACE.AmbientTemp
+
+        Engine.TorqueScale      = ACF.TorqueScale[Engine.EngineType]
+    
+        --calculate base fuel usage
+        if Engine.EngineType == "Electric" then
+            Engine.FuelUse = ACF.ElecRate / (ACF.Efficiency[Engine.EngineType] * 60 * 60) --elecs use current power output, not max
+        else
+            Engine.FuelUse = ACF.TorqueBoost * ACF.FuelRate * ACF.Efficiency[Engine.EngineType] * Engine.peakkw / (60 * 60)
+        end
+
+        Engine.FlyRPM = 0
+        Engine:SetModel( Engine.Model ) 
+        Engine.Sound = nil
+        Engine.RPM = {}
+
+        Engine:PhysicsInit( SOLID_VPHYSICS )        
+        Engine:SetMoveType( MOVETYPE_VPHYSICS )         
+        Engine:SetSolid( SOLID_VPHYSICS )
+
+        Engine.Out = Engine:WorldToLocal(Engine:GetAttachment(Engine:LookupAttachment( "driveshaft" )).Pos)
+
+        local phys = Engine:GetPhysicsObject()
+        if IsValid( phys ) then
+            phys:SetMass( Engine.Weight )
+            Engine.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
+        end
+
+        Engine:SetNWString( "WireName", Lookup.name )
+        Engine:UpdateOverlayText()
+    
+        Owner:AddCount("_acf_misc", Engine)
+        Owner:AddCleanup( "acfmenu", Engine )
+    
+        ACF_Activate( Engine, 0 )
+
+        return Engine
+    end
+    list.Set( "ACFCvars", "acf_engine", {"id"} )
+    duplicator.RegisterEntityClass("acf_engine", MakeACF_Engine, "Pos", "Angle", "Id")
+
+end
 
 function ENT:Update( ArgsTable )    
     -- That table is the player data, as sorted in the ACFCvars above, with player who shot, 
@@ -441,6 +452,9 @@ function ENT:ACF_Activate()
     
     Entity.ACF.Type = "Prop"
     --print(Entity.ACF.Health)
+
+    Entity.ACF.Material     = not isstring(Entity.ACF.Material) and ACE.BackCompMat[Entity.ACF.Material] or Entity.ACF.Material or "RHA"
+
 end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
@@ -454,7 +468,7 @@ end
 function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, true, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), self.ModelInertia, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:CheckRopes()
         self:CheckFuel()

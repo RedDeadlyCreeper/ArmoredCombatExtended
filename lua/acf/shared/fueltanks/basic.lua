@@ -326,7 +326,8 @@ ACF_DefineFuelTankSize( "Fuel_Drum", {
 	name = "Fuel Drum",
 	desc = "Tends to explode when shot.",
 	model = "models/props_c17/oildrum001_explosive.mdl",
-	dims = { S = 5128.9, V = 26794.4 }
+	dims = { S = 5128.9, V = 26794.4 },
+	notitle = true 
 } )
 
 ACF_DefineFuelTankSize( "Jerry_Can", {
@@ -334,6 +335,7 @@ ACF_DefineFuelTankSize( "Jerry_Can", {
 	desc = "Handy portable fuel container.",
 	model = "models/props_junk/gascan001a.mdl",
 	dims = { S = 1839.7, V = 4384.1 },
+	notitle = true 
 } )
 
 ACF_DefineFuelTankSize( "Transport_Tank", {
@@ -342,7 +344,8 @@ ACF_DefineFuelTankSize( "Transport_Tank", {
 	model = "models/props_wasteland/horizontalcoolingtank04.mdl",
 	dims = { S = 127505.5, V = 2102493.3 },
 	explosive = false,
-	nolinks = true
+	nolinks = true,
+	notitle = true 
 } )
 
 ACF_DefineFuelTankSize( "Storage_Tank", {
@@ -351,5 +354,17 @@ ACF_DefineFuelTankSize( "Storage_Tank", {
 	model = "models/props_wasteland/coolingtank02.mdl",
 	dims = { S = 144736.3, V = 2609960 },
 	explosive = false,
-	nolinks = true
+	nolinks = true,
+	notitle = true
+} )
+
+--Ik this model doesnt match with its dimensions at all, meant for gas stations where its storage is not visible.
+ACF_DefineFuelTankSize( "Gas_Pump", {
+	name = "Gas Pump",
+	desc = "Disappointingly non-explosive. Go there and refuel your car in a proper gas station.",
+	model = "models/props_wasteland/gaspump001a.mdl",
+	dims = { S = 144736.3, V = 2609960 },
+	explosive = false,
+	nolinks = true,
+	notitle = true 
 } )

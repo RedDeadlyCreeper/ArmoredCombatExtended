@@ -677,7 +677,7 @@ end
 function ENT:Think()
     
     if ACF.CurTime > self.NextLegalCheck then
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, true, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Mass,2), self.ModelInertia, true, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:UpdateOverlayText()
 

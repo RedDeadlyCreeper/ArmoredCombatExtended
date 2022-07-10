@@ -48,15 +48,15 @@ function ACF_UpdateVisualHealth(Entity)
 
 end
 
---Convert old numeric IDs to the new string IDs
-local BackCompMat = {
-    "RHA",
-    "CHA",
-    "Cer",
-    "Rub",
-    "ERA",
-    "Alum",
-    "Texto"
+--Used to reconvert old material ids
+ACE.BackCompMat = {
+    [0] = "RHA",
+    [1] = "CHA",
+    [2] = "Cer",
+    [3] = "Rub",
+    [4] = "ERA",
+    [5] = "Alum",
+    [6] = "Texto"
 }
 
 --Creates or updates the ACF entity data in a passive way. Meaning this entity wont be updated unless it really requires it (like a shot, damage, looking it using armor tool, etc)
@@ -67,10 +67,12 @@ function ACF_Activate( Entity , Recalc )
         Entity:ACF_Activate( Recalc )
         return
     end
+    
     Entity.ACF = Entity.ACF or {} 
 
     local Count
     local PhysObj = Entity:GetPhysicsObject()
+
     if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
     if PhysObj:IsValid() and Count and Count>100 then
 
@@ -86,17 +88,9 @@ function ACF_Activate( Entity , Recalc )
     
     -- Setting Armor properties for the first time (or reuse old data if present)
     Entity.ACF.Ductility    = Entity.ACF.Ductility or 0
-    Entity.ACF.Material     = Entity.ACF.Material or "RHA"
+    Entity.ACF.Material     = not isstring(Entity.ACF.Material) and ACE.BackCompMat[Entity.ACF.Material] or Entity.ACF.Material or "RHA"
 
-    -- Change numeric ids from old material to the new string material ids. Note that this is not active and residual data could remain
-    if not isstring(Entity.ACF.Material) then
-
-        local Mat_ID = Entity.ACF.Material + 1
-        Entity.ACF.Material = BackCompMat[Mat_ID]
-
-    end
-
-    local Area = Entity.ACF.Aera
+    local Area      = Entity.ACF.Aera
     local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
     
     local Mat       = Entity.ACF.Material or "RHA"
@@ -156,7 +150,7 @@ function ACF_Check( Entity )
     
 end
 
-function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Type ) 
+function ACF_Damage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Type ) 
 
     local Activated = ACF_Check( Entity )
     local CanDo = hook.Run("ACF_BulletDamage", Activated, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gun )
@@ -186,9 +180,9 @@ end
 
 function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
-    local armor             = Entity.ACF.Armour                             -- Armor
-    local losArmor          = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )  -- LOS Armor   
-    local losArmorHealth    = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )  -- Bc people had to abuse armor angling, FML  
+    local armor             = Entity.ACF.Armour                                                                                         -- Armor
+    local losArmor          = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )                                     -- LOS Armor   
+    local losArmorHealth    = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )    -- Bc people had to abuse armor angling, FML  
 
     local Mat               = Entity.ACF.Material or "RHA"    --very important thing
 
@@ -242,7 +236,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     end
 
     -- RHA Penetration
-    local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA  
+    local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA
 
     -- Projectile caliber. Messy, function signature    
     local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)

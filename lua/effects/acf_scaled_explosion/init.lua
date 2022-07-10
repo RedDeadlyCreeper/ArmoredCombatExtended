@@ -5,13 +5,12 @@
     which was passed from the server. 
  ---------------------------------------------------------]]
 function EFFECT:Init( data ) 
-	
-	self.Entity = data:GetEntity() or NULL
-	self.Origin = data:GetOrigin()
-	self.DirVec = data:GetNormal()
-	self.Radius = math.max( data:GetRadius() / 50 ,1)
-	self.Emitter = ParticleEmitter( self.Origin )
-	self.ParticleMul = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
+
+	self.Origin 		= data:GetOrigin()
+	self.DirVec 		= data:GetNormal()
+	self.Radius 		= math.max( data:GetRadius()  / 50 ,1)
+	self.Emitter 		= ParticleEmitter( self.Origin )
+	self.ParticleMul 	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
 	
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)*self.Radius
@@ -129,18 +128,6 @@ function EFFECT:Core( HitWater )
 
 	local Radius = self.Radius
 	local PMul = self.ParticleMul
-
-	--if explosion is due to the ammo, fuel, create smoke embers
-	--if self.Entity:IsValid() and (self.Entity:GetClass() == 'acf_ammo' or self.Entity:GetClass() == 'acf_fuel') then
-	--	if (Radius*PMul)/2 > 10 then --Smoke Embers
-	--		for i=0, (0.5*Radius*PMul)^0.1 do	
-	--			--ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(math.Rand(-Radius*5,Radius*5),math.Rand(-Radius*5,Radius*5),20+Radius), Angle(math.Rand(-10,10),0,math.Rand(-10,10))) --self.DirVec:Angle()
-	--			ParticleEffect( "EmberCluster", self.Origin+Vector(0,0,5+Radius*5), Angle(math.Rand(-45,45),0,math.Rand(-45,45))) --self.DirVec:Angle()
-	--		end
-	--	end
-	--end
-
-	--print('Total de emitters: '..self.Emitter:GetNumActiveParticles())
 
 	local RandColor = 0
 	local WaterColor = Color(255,255,255,100)

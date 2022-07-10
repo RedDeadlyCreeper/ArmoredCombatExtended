@@ -87,6 +87,7 @@ E2Helper.Descriptions["acfFLSpikeRadius"] = "Returns the radius (in mm) of the s
 E2Helper.Descriptions["acfFLSpikeMass"] = "Returns the mass of a single spike in a FL round in a crate or gun."
 E2Helper.Descriptions["acfPenetration"] = "Returns the penetration of an AP, APHE, HEAT or FL round in an ACF ammo crate or weapon."
 E2Helper.Descriptions["acfBlastRadius"] = "Returns the blast radius of an HE, APHE, or HEAT round in an ACF ammo crate or weapon."
+E2Helper.Descriptions["acfDragCoef"] = "Returns the drag coefficient of ammo in an ACF ammo crate or weapon."
 
 --armor
 E2Helper.Descriptions["acfPropHealth"] = "Returns the current health of an entity."

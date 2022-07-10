@@ -1,12 +1,10 @@
 
 
-
-
 --[[--------------------------------------------------------- 
     Initializes the effect. The data is a table of data  
     which was passed from the server. 
 ]]-----------------------------------------------------------
- function EFFECT:Init( data ) 
+function EFFECT:Init( data ) 
 
 	local Gun = data:GetEntity()
 	if not IsValid(Gun) then return end
@@ -16,40 +14,42 @@
 	
 	local Sound 		= Gun:GetNWString( "Sound", "" )
 	local Class 		= Gun:GetNWString( "Class", "C" )
-	local Caliber 		= Gun:GetNWInt( "Caliber", 1 ) * 10 --print('Caliber: '..Caliber)
+	local Caliber 		= Gun:GetNWInt( "Caliber", 1 ) * 10 
 
 	--This tends to fail
-	local ClassData 	= list.Get("ACFClasses").GunClass[Class] or {}
-	
+	local ClassData 	= list.Get("ACFClasses").GunClass[Class]
 	local Attachment 	= "muzzle"
-	local longbarrel 	= (ClassData and ClassData.longbarrel) or nil
+
+	if ClassData then
+
+		local longbarrel 	= ClassData.longbarrel or nil
 	
-	if longbarrel ~= nil then
-		if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
-			Attachment = longbarrel.newpos
+		if longbarrel ~= nil then
+			if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
+				Attachment = longbarrel.newpos
+			end
 		end
+
 	end
-	
-	local nosound = (Sound == "")
-	if( CLIENT and not IsValidSound( Sound ) ) then
+
+	if not IsValidSound( Sound ) then
 		Sound = ClassData["sound"]
 	end
 		
-	if IsValid(Gun) then
+	if Propellant > 0 then
 
-		if Propellant > 0 then
+		ACE_SGunFire( Gun, Sound, Propellant )
 
-			if not nosound then
-				ACE_SGunFire( Gun, Sound ,Class, Caliber , Propellant )
-			end
-			
-			local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
-			local Flash = ClassData["muzzleflash"] or '120mm_muzzleflash_noscale'
+		local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
+		local Flash = ClassData and ClassData["muzzleflash"] or '50cal_muzzleflash_noscale'
 
-			ParticleEffect( Flash , Muzzle.Pos, Muzzle.Ang, Gun )
+		ParticleEffect( Flash , Muzzle.Pos, Muzzle.Ang, Gun )
 
+		if Gun.Animate then 
 			Gun:Animate( Class, ReloadTime, false )
-		else
+		end
+	else
+		if Gun.Animate then 
 			Gun:Animate( Class, ReloadTime, true )
 		end
 	end

@@ -27,10 +27,10 @@ function Round.convert( Crate, PlayerData )
     local ServerData    = {}
     local GUIData       = {}
     
-    if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-    if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-    if not PlayerData.Data10 then PlayerData.Data10         = 0 end
-    
+    PlayerData.PropLength   =  PlayerData.PropLength    or 0
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.Data10       =  PlayerData.Data10        or 0
+
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
     Data.ProjMass       = Data.FrAera * (Data.ProjLength*7.9/1000)  -- Volume of the projectile as a cylinder * density of steel
@@ -104,18 +104,21 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
         if HitRes.Overkill > 0 then
 
             table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
+
             ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
             Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
 
             return "Penetrated"
         elseif HitRes.Ricochet then
+
             return "Ricochet"
         else
             return false
         end
     else 
         table.insert( Bullet.Filter , Target )
-    return "Penetrated" end
+        return "Penetrated" 
+    end
         
 end
 
@@ -123,9 +126,12 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
     
     local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, Bullet.LimitVel )
     local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
+
     if HitRes.Penetrated then
+
         return "Penetrated"
     elseif HitRes.Ricochet then
+
         return "Ricochet"
     else
         return false
@@ -148,7 +154,7 @@ function Round.endeffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Impact", Spall )
+    util.Effect( "acf_ap_impact", Spall )
 
 end
 
@@ -161,7 +167,7 @@ function Round.pierceeffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Penetration", Spall )
+    util.Effect( "acf_ap_penetration", Spall )
 
 end
 
@@ -174,7 +180,7 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Ricochet", Spall )
+    util.Effect( "acf_ap_ricochet", Spall )
     
 end
 

@@ -63,10 +63,13 @@ if CLIENT then
         local effect
     
         for i=1, #effectsTbl do
+            
             effect = effectsTbl[i]
             
-            if not (IsValid(effect.EntFrom) and IsValid(effect.EntTo)) then 
-                effectsTbl[i] = nil
+            if effect then
+                if not IsValid(effect.EntFrom) or not IsValid(effect.EntTo) then 
+                    effectsTbl[i] = nil
+                end
             end
         end
         
@@ -109,7 +112,7 @@ if CLIENT then
     usermessage.Hook("ACF_StopRefillEffect", function( msg )
 
         local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
-        if not IsValid( EntFrom ) or not IsValid( EntTo )or not EntFrom.RefillAmmoEffect then return end
+        if not IsValid( EntFrom ) or not IsValid( EntTo ) or not EntFrom.RefillAmmoEffect then return end
 
         for k,v in pairs( EntFrom.RefillAmmoEffect ) do
             if v.EntTo == EntTo then
@@ -160,23 +163,7 @@ function ENT:Initialize()
     self.Caliber            = 1
     self.RoFMul             = 1
     self.LastMass           = 1
---[[
-    self.RoundId            = ""        -- Weapon this round loads into, ie 140mmC, 105mmH ...
-    self.RoundType          = 0         -- Type of round, IE AP, HE, HEAT ...
-    self.RoundPropellant    = 0         -- Lenght of propellant
-    self.RoundProjectile    = 0         -- Lenght of the projectile
-    self.RoundData5         = 0
-    self.RoundData6         = 0
-    self.RoundData7         = 0
-    self.RoundData8         = 0
-    self.RoundData9         = 0
-    self.RoundData10        = 0
-    self.RoundData11        = 0
-    self.RoundData12        = 0
-    self.RoundData13        = 0
-    self.RoundData14        = 0
-    self.RoundData15        = 0
-]]
+
     self.Inputs             = Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
     self.Outputs            = Wire_CreateOutputs( self, { "Munitions" } )
 
@@ -185,15 +172,17 @@ function ENT:Initialize()
 end
 
 function ENT:ACF_Activate( Recalc )
-    
+
     local EmptyMass = math.max(self.EmptyMass, self:GetPhysicsObject():GetMass() - self.AmmoMassMax)
 
     self.ACF = self.ACF or {} 
     
     local PhysObj = self:GetPhysicsObject()
+
     if not self.ACF.Aera then
         self.ACF.Aera = PhysObj:GetSurfaceArea() * 6.45
     end
+
     if not self.ACF.Volume then
         self.ACF.Volume = PhysObj:GetVolume() * 16.38
     end
@@ -214,7 +203,13 @@ function ENT:ACF_Activate( Recalc )
     self.ACF.Mass       = self.Mass
     self.ACF.Density    = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
     self.ACF.Type       = "Prop"
-    
+
+    self.ACF.Material     = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+
+    --Forces an update of mass
+    self.LastMass = 1 
+    self:UpdateMass()
+
 end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
@@ -230,49 +225,53 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
         if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
             self.Inflictor = Inflictor
         end
+
         if self.Ammo > 1 and (not (self.BulletData.Type == "Refill")) then
             ACF_ScaledExplosion( self )
         else
---          ACF_HEKill( self, VectorRand() )
             self:Remove()
-            --print("HEKill")
         end
     end
     
     -- cookoff chance calculation
     if self.Damaged then return HitRes end
 
-    if table.IsEmpty( self.BulletData or {} ) then  
-        self:Remove()   
-    else
+        if table.IsEmpty( self.BulletData or {} ) then  
+            self:Remove()   
+        else
 
-    local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
+        local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
 
-    local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
-    if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
-        Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
-        CMul = 6
-    elseif Type == "HE" then
-        CMul = 3    
-    end 
+        local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
 
-    local DetRand = 0   
+        if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
+            Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
+            CMul = 6
+        elseif Type == "HE" then
+            CMul = 3    
+        end 
 
-    if (self.BulletData.Type == "Refill") then
-        DetRand = 0.75
-    else
-        DetRand = math.Rand(0,1) * CMul
-    end
+        local DetRand = 0   
+
+        if (self.BulletData.Type == "Refill") then
+            DetRand = 0.75
+        else
+            DetRand = math.Rand(0,1) * CMul
+        end
     
-    if DetRand >= 0.95 then --Tests if cooks off
-        self.Inflictor = Inflictor
-        self.Damaged = CurTime() + (5 - Ratio*3)
---      print("Cookoff")
-    elseif DetRand >= 0.7 then  
-        self.Inflictor = Inflictor
-        self.Damaged = 1 --Instant explosion guarenteed     
---      print("Instant boom")
-    end
+        --Cook Off
+        if DetRand >= 0.95 then 
+
+            self.Inflictor  = Inflictor
+            self.Damaged    = ACF.CurTime + (5 - Ratio*3)
+
+        --Boom
+        elseif DetRand >= 0.7 then  
+
+            self.Inflictor  = Inflictor
+            self.Damaged    = 1 --Instant explosion guarenteed     
+
+        end
     
     end
 
@@ -302,21 +301,18 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
     Ammo.Id = Id
     Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
-    Ammo.Ammo = Ammo.Capacity
+    Ammo.Ammo       = Ammo.Capacity
+    Ammo.EmptyMass  = ACF.Weapons.Ammo[Ammo.Id].weight or 1
 
-    Ammo.EmptyMass = ACF.Weapons.Ammo[Ammo.Id].weight or 1
+    Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
 
-
-    Ammo.Mass = Ammo.EmptyMass + Ammo.AmmoMassMax
-    Ammo.LastMass = 1
-    
+    Ammo.LastMass   = 1
     Ammo:UpdateMass()
-    
+
     Owner:AddCount( "_acf_ammo", Ammo )
     Owner:AddCleanup( "acfmenu", Ammo )
     
     table.insert(ACF.AmmoCrates, Ammo)
-    
     
     return Ammo
 end
@@ -422,7 +418,14 @@ do
         ["120mmSB"]         = "120mmSBC",
         ["140mmSB"]         = "140mmSBC",
         ["170mmSB"]         = "170mmSBC",
-        ["70mmFFARDAGR"]    = "70mmFFAR"
+        ["70mmFFARDAGR"]    = "70mmFFAR",
+        ["9M113 ASM"]           = "9M133 ASM"
+    }
+
+    --List of munitions no longer stay on ACE
+    local AmmoComp = {
+        ["APDSS"]          = "APDS",
+        ["APFSDSS"]        = "APFSDS"  
     }
 
     function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
@@ -438,7 +441,7 @@ do
 
         --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
 
-        self.RoundType          = Data2 or "AP"   -- Type of round, IE AP, HE, HEAT ...
+        self.RoundType          = AmmoComp[Data2] or Data2 or "AP"   -- Type of round, IE AP, HE, HEAT ...
         self.RoundPropellant    = Data3 or 0      -- Lenght of propellant
         self.RoundProjectile    = Data4 or 0      -- Lenght of the projectile
         self.RoundData5         = Data5 or 0
@@ -544,18 +547,23 @@ do
 end
 
 function ENT:UpdateMass()
-    self.Mass = self.EmptyMass + self.AmmoMassMax*(self.Ammo/math.max(self.Capacity,1))
-    
+
+    self.Mass = self.EmptyMass + math.Round( self.AmmoMassMax*(self.Ammo/math.max(self.Capacity,1)) )
+
     --reduce superflous engine calls, update crate mass every 5 kgs change or every 10s-15s
-    if math.abs((self.LastMass or 0) - self.Mass) > 5 or CurTime() > self.NextMassUpdate then
-        self.LastMass = self.Mass
-        self.NextMassUpdate = CurTime()+math.Rand(10,15)
+    if math.abs((self.LastMass or 0) - self.Mass) > 5 or ACF.CurTime > self.NextMassUpdate then
+
+        self.LastMass       = self.Mass
+        self.NextMassUpdate = ACF.CurTime + math.Rand(10,15)
+
         local phys = self:GetPhysicsObject()    
         if (phys:IsValid()) then 
+
             phys:SetMass( self.Mass ) 
+
         end
     end
-    
+
 end
 
 function ENT:GetInaccuracy()
@@ -602,10 +610,10 @@ function ENT:FirstLoad()
 end
 
 function ENT:Think()
-    
+
     if ACF.CurTime > self.NextLegalCheck then
 
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.EmptyMass,2), nil, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:UpdateOverlayText()
 
@@ -615,9 +623,9 @@ function ENT:Think()
             --if legal, go back to the action
             if self.Active then self.Load = true end
         end
-        
+
     end
-    
+
     if self.BulletData.Type == "Refill" then
         self:UpdateOverlayText()
     else
@@ -660,13 +668,15 @@ function ENT:Think()
             if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
                 
                 self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  ) 
-                local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
+                self.BulletCookSpeed    = self.BulletCookSpeed or ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
                 self.BulletData.Pos     = self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
-                self.BulletData.Flight  = (VectorRand()):GetNormalized() * Speed * 39.37 + self:GetVelocity()
-                self.BulletData.Owner   = self.Inflictor or self.Owner
-                self.BulletData.Gun     = self
-                self.BulletData.Crate   = self:EntIndex()
+                self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity()
+
+                self.BulletData.Owner   = self.BulletData.Owner or self.Inflictor or self.Owner
+                self.BulletData.Gun     = self.BulletData.Gun   or self
+                self.BulletData.Crate   = self.BulletData.Crate or self:EntIndex()
+                
                 self.CreateShell        = ACF.RoundTypes[CrateType].create
                 self:CreateShell( self.BulletData )
                     

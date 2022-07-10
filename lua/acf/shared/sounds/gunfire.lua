@@ -679,8 +679,8 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
 		}
 	}
  )
-
---generic rotary autocannon gunfire
+--[[
+--generic rotary autocannon gunfire. Broken atm
 ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav", 
 	{
 		main = {
@@ -713,7 +713,7 @@ ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
 		}
 	}
  )
-
+]]
 --Generic GL gunfire
 ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav", 
 	{

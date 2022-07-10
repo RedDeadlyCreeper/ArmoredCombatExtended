@@ -59,7 +59,7 @@ ACF_defineGun("BGM-71E ASM", { 									-- id
     armdelay    = 0.00     										-- minimum fuse arming delay
 } )
 
-ACF_defineGun("9M113 ASM", { 									-- id
+ACF_defineGun("9M133 ASM", { 									-- id
 	name 			= "9M133 Kornet Missile",
 	desc 			= "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
 	model 			= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",

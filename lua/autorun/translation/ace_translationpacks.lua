@@ -194,30 +194,17 @@ ACFTranslation.ShellAPHECBC = {
 }
 
 ACFTranslation.ShellAPDS = {
-	"Long Rod Armour Piercing Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\n Unlike its slug counterpart, this APDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)
-
-}
-
-ACFTranslation.ShellAPDSS = {
-	"Slug Armour Piercing Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APDS is better than LRP APDS for defeating flatter armor." --Desc (2)
+	"Armour Piercing Discarding Sabot", --AmmoName (1)
+	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour."
 
 }
 
 
 ACFTranslation.ShellAPFSDS = {
-	"Long Rod Armour Piercing Fin-Stabilized Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUnlike its slug counterpart, this APFSDS variant commonly used by Western MBTs is better vs sloped armor due to the sabot body being composed mainly of dense material." --Desc (2)
+	"Armour Piercing Fin-Stabilized Discarding Sabot", --AmmoName (1)
+	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour. Uses fin stabilizers."
 
 }
-
-ACFTranslation.ShellAPFSDSS = {
-	"Slug Armour Piercing Fin-Stabilized Discarding Sabot", --AmmoName (1)
-	"A shell that contains a subcaliber round, dedicated to penetrating heavy armour\n\nUses a small slug core and a steel body making it better for piercing armor. Due to its smaller penetrator, Slug APFSDS is better than LRP APFSDS for defeating flatter armor." --Desc (2)
-
-}
-
 
 ACFTranslation.ShellFL = {
 	"Flechette", --AmmoName (1)
@@ -300,6 +287,6 @@ ACFTranslation.THEAT = {
 
 ACFTranslation.THEATFS = {
 	"Tandem High Explosive Anti-Tank Fin-Stabilized", --AmmoName (1)
-	"A shell with multiple shaped charges. Similar to HEAT the explosive charge accelerates a molten jet to penetrate armor, unlike typical HEAT when the jet fails to penetrate a second charge will detonate and finish the job. This makes this form of ammo exceptional against special armor types like ERA.Uses fin stabilizers." --Desc (2)
+	"A shell with multiple shaped charges. Similar to HEAT the explosive charge accelerates a molten jet to penetrate armor, unlike typical HEAT when the jet fails to penetrate a second charge will detonate and finish the job. This makes this form of ammo exceptional against special armor types like ERA. Uses fin stabilizers." --Desc (2)
 
 }

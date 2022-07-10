@@ -56,7 +56,21 @@ ACF_defineGun("75mmC", {
 		propweight = 3.8
 	}
 } )
-	
+
+ACF_defineGun("85mmC", {
+	name = "85mm Cannon",
+	desc = "You can stop asking, we've got it now.",
+	model = "models/tankgun/tankgun_85mm.mdl",
+	gunclass = "C",
+	caliber = 8.5,
+	weight = 1030,
+	year = 1944,
+	round = {
+		maxlength = 85.5,
+		propweight = 6.65
+	}
+} )
+
 ACF_defineGun("100mmC", {
 	name = "100mm Cannon",
 	desc = "The 100mm was a benchmark for the early cold war period, and has great muzzle velocity and hitting power, while still boasting a respectable, if small, payload.",
