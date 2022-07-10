@@ -154,7 +154,7 @@ end
 local GunWireDescs = {
     --Inputs
     ["Unload"]   = "Unloads the current shell from the gun. Leaving the gun empty",
-    ["FuseTime"] = "Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds (excepting tandem, GLATGM and APHE rounds). \nNote that this is not really accurate.",
+    ["FuseTime"] = "Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.",
     ["ROFLimit"] = "Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.",
 
     --Outputs
