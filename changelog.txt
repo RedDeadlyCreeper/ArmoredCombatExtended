@@ -516,3 +516,6 @@ r100
 - Fixed theat bypassing armor. 
 - many minor bugs to several things
 - Removed Slug and LRP variants. merged into one apfsds/apds with no normalization
+
+*r140
+- Initial fix for Starfall library. Some bugs will exist, but basic functions are working. Please report any problems in the ACE discord or on Github.
