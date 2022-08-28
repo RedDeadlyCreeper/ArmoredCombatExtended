@@ -84,7 +84,6 @@ function this:GetGuidance(missile)
         return {}
     else
         self.TargetPos = targetPos
-        print(self.TargetPos)
         return {TargetPos = targetPos, ViewCone = self.ViewCone*1.3}
     end
 

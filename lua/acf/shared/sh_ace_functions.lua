@@ -357,3 +357,47 @@ timer.Simple(1, function()
     ACE_Dupes_Refresh()
 end )
 
+
+do
+
+    --Used to reconvert old material ids
+    ACE.BackCompMat = {
+        [0] = "RHA",
+        [1] = "CHA",
+        [2] = "Cer",
+        [3] = "Rub",
+        [4] = "ERA",
+        [5] = "Alum",
+        [6] = "Texto"
+    }
+
+    function ACE_GetMaterialData( Mat )
+
+        if not ACE.Armors or table.IsEmpty(ACE.Armors) then
+            print("[ACE|ERROR]- No Armor material data found! Have the armor folder been renamed or removed? Unexpected results could occur!")
+            return nil
+        end
+
+        Mat = not isstring(Mat) and ACE.BackCompMat[Mat] or Mat
+
+        local MatData = ACE.Armors[Mat]
+
+        if not MatData or table.IsEmpty(MatData) then
+            print("[ACE|ERROR]- We got an invalid or unknown armor [ "..Mat.." ] which is not able to be processed. Dealing as RHA...")
+
+            MatData = ACE.Armors["RHA"]
+
+        end
+
+        return MatData
+    end
+end
+
+function ACE_CheckRound( id )
+
+    local rounddata = ACF.RoundTypes[ id ]
+
+    if not rounddata then return false end
+
+    return true
+end

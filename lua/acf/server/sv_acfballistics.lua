@@ -17,8 +17,13 @@ ACF.TraceFilter = {           -- entities that cause issue with acf and should b
 
 -- optimization; reuse tables for ballistics traces
 local FlightRes = { }
-local FlightTr = { output = FlightRes,    mins = Vector( 0, 0, 0 ), maxs = Vector( 0, 0, 0 ) }
+local FlightTr = { output = FlightRes,    mins = vector_origin, maxs = vector_origin }
 -- end init
+
+--[[------------------------------------------------------------------------------------------------
+   DEBUG CONFIG
+]]--------------------------------------------------------------------------------------------------
+local DebugTime = 0.1
 
 --[[------------------------------------------------------------------------------------------------
    creates a new bullet being fired
@@ -33,30 +38,28 @@ function ACF_CreateBullet( BulletData )
    end
 
    --Those are BulletData settings that are global and shouldn't change round to round 
-   local cvarGrav = GetConVar("sv_gravity")
+   BulletData.Gravity         = GetConVar("sv_gravity"):GetInt()*-1
+   BulletData.Accel           = Vector(0,0,BulletData.Gravity)
+   BulletData.LastThink       = ACF.SysTime
+   BulletData.FlightTime      = 0
+   BulletData.TraceBackComp   = 0
 
-   BulletData["Accel"]           = Vector(0,0,cvarGrav:GetInt()*-1)
-   BulletData["LastThink"]       = ACF.SysTime
-   BulletData["FlightTime"]      = 0
-   BulletData["TraceBackComp"]   = 0
-
-   if type(BulletData["FuseLength"]) ~= "number" then
-      BulletData["FuseLength"]   = 0
-   else
-      if BulletData["FuseLength"] > 0 then
-         BulletData["InitTime"]  = ACF.SysTime
-      end
-   end
+   BulletData.FuseLength      = type(BulletData.FuseLength) == "number" and BulletData.FuseLength or 0
 
    --Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
-   if BulletData["Gun"]:IsValid() then                            --Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
+   if IsValid(BulletData.Gun) then
 
-      BulletData["TraceBackComp"] = math.max(ACF_GetPhysicalParent(BulletData["Gun"]):GetPhysicsObject():GetVelocity():Dot(BulletData["Flight"]:GetNormalized()),0)
-      --print(BulletData["TraceBackComp"])
+      local Gun = BulletData.Gun
+      local physobj = ACF_GetPhysicalParent(Gun):GetPhysicsObject()
 
-   end
-   BulletData["Filter"]    = { BulletData["Gun"] }
-   BulletData["Index"]     = ACF.CurBulletIndex
+      if IsValid(physobj) then 
+         BulletData.TraceBackComp = math.max(physobj:GetVelocity():Dot(BulletData.Flight:GetNormalized()),0)
+      end
+
+   end 
+
+   BulletData.Filter          = { BulletData.Gun }
+   BulletData.Index           = ACF.CurBulletIndex
 
    ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)     --Place the bullet at the current index pos
    ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
@@ -111,271 +114,239 @@ function ACF_CheckClips( Ent, HitPos )
    
 end
 
---[[------------------------------------------------------------------------------------------------
-   handles non-terminal ballistics and fusing of bullets
-]]--------------------------------------------------------------------------------------------------
-function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
+do
 
-   -- perf concern: use direct function call stored on bullet over hook system.
-   if Bullet.PreCalcFlight then Bullet:PreCalcFlight() end
-   
-   if not Bullet.LastThink then ACF_RemoveBullet( Index ) end
+   local PhysVel = ACF.PhysMaxVel * 0.025
 
-   if BackTraceOverride then Bullet.FlightTime = 0 end
-   local DeltaTime = ACF.SysTime - Bullet.LastThink
+   --[[------------------------------------------------------------------------------------------------
+      handles non-terminal ballistics and fusing of bullets
+   ]]--------------------------------------------------------------------------------------------------
+   function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 
-   --actual motion of the bullet
-   local Drag        = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
-   Bullet.NextPos    = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)                                                                                                -- Calculates the next shell position
-   Bullet.Flight     = Bullet.Flight + (Bullet.Accel - Drag)*DeltaTime                                                                                                        -- Calculates the next shell vector
-   Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*0.025,(Bullet.FlightTime*Bullet.Flight:Length()-Bullet["TraceBackComp"]*DeltaTime)))  -- Originally limited to 5m backtrace. Disabled due to reports of it breaking things.
+      -- perf concern: use direct function call stored on bullet over hook system.
+      if Bullet.PreCalcFlight then Bullet:PreCalcFlight() end
+      
+      if not Bullet.LastThink then ACF_RemoveBullet( Index ) end
 
-   --0.035 seconds of max backtrace of shell velocity, a bit more than 1 tick at 33 ticks/second
-
-   --ACF.PhysMaxVel*1,     limits max backtrace length at 200 meters.
-   --ACF.PhysMaxVel*0.025, limits max backtrace length at 5 meters.
-   --ACF.PhysMaxVel*0.1, limits max backtrace length at 20 meters.
-   --Distance in meters a vehicle covers each tick in meters
+      if BackTraceOverride then Bullet.FlightTime = 0 end
+      Bullet.DeltaTime = ACF.SysTime - Bullet.LastThink
 
 
-   --print(math.Round((Bullet.Pos-Bullet.StartTrace):Length(),1))
-   debugoverlay.Cross(Bullet.Pos,3,1,Color(255,255,255,32), true) --true start
-   --debugoverlay.Box(Bullet.StartTrace,Vector(-2,-2,-2),Vector(2,2,2),15,Color(0,255,0,32), true) --backtrace start
-   --debugoverlay.EntityTextAtPosition(Bullet.StartTrace, 0, "Tr", 15)
-   --debugoverlay.EntityTextAtPosition(Bullet.Pos, 0, "Pos", 15)
-   --debugoverlay.Line( Bullet.Pos+Vector(0,0,1), Bullet.StartTrace+Vector(0,0,1), 5, Color(0, 255, 255), true )
-   --debugoverlay.Line( Bullet.NextPos+VectorRand(), Bullet.StartTrace+VectorRand(), 5, ColorRand(), true )
-   
-   --updating timestep timers
-   Bullet.LastThink = ACF.SysTime
-   Bullet.FlightTime = Bullet.FlightTime + DeltaTime
-   
-   ACF_DoBulletsFlight( Index, Bullet )
+      --actual motion of the bullet
+      local Drag        = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+      Bullet.NextPos    = Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)                                                                                                -- Calculates the next shell position
+      Bullet.Flight     = Bullet.Flight + (Bullet.Accel - Drag)*Bullet.DeltaTime     
 
-   -- perf concern: use direct function call stored on bullet over hook system.
-   if Bullet.PostCalcFlight then Bullet:PostCalcFlight() end
+      -- Used for trace
+      local Flightnorm  = Bullet.Flight:GetNormalized()
+
+      Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * Bullet.Flight:Length() - Bullet.TraceBackComp * Bullet.DeltaTime ) 
+      Bullet.EndTrace   = Bullet.NextPos + Flightnorm*(PhysVel)                                                                                       
+    
+      debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255,32) ) --true start
+      debugoverlay.Line(Bullet.Pos, Bullet.NextPos, DebugTime, ColorRand() )
+      debugoverlay.Line(Bullet.StartTrace+Vector(0,0,5), Bullet.EndTrace+Vector(0,0,5), DebugTime, Color(0,255,0) )
+
+      --updating timestep timers
+      Bullet.LastThink = ACF.SysTime
+      Bullet.FlightTime = Bullet.FlightTime + Bullet.DeltaTime
+      
+      ACF_DoBulletsFlight( Index, Bullet )
+
+      -- perf concern: use direct function call stored on bullet over hook system.
+      if Bullet.PostCalcFlight then Bullet:PostCalcFlight() end
+   end
+
 end
 
 --[[------------------------------------------------------------------------------------------------
    handles bullet terminal ballistics, fusing, and visclip checking
 ]]--------------------------------------------------------------------------------------------------
-function ACF_DoBulletsFlight( Index, Bullet )
+do
+   local function ACF_PerformTrace( Bullet )
 
-   local CanDo = hook.Run("ACF_BulletsFlight", Index, Bullet )
-   if CanDo == false then return end
+      -- perform the trace for damage   
+      local RetryTrace = true 
 
-   if Bullet.FuseLength and Bullet.FuseLength > 0 then
+      FlightTr.mask     = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
+      --FlightTr.mask     = Bullet.Caliber <= 0.3 and (1174421507+16432) or (33570827+16432) --Experimental mask, including water hits
 
-      -- TODO: This way will not work, we need another way for fuse
-      local Time = ACF.SysTime - Bullet.InitTime
+      local TROffset    = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+      FlightTr.maxs     = Vector( TROffset, TROffset, TROffset )
+      FlightTr.mins     = -FlightTr.maxs  
 
-      if Time > Bullet.FuseLength then
+      FlightTr.filter   = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 
-         if not util.IsInWorld(Bullet.Pos) then
-            ACF_RemoveBullet( Index )
-         else
+      --if trace hits clipped part of prop, add prop to trace filter and retry
+      while RetryTrace do        
 
-            if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, nil) end -- nil was flightres, garbage data this early in code
+         -- Disables so we dont overloop it again
+         RetryTrace        = false
 
-            ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) -- defined at bottom
-            ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
-            ACF_BulletEndFlight( Index, Bullet, Bullet.Pos, Bullet.Flight:GetNormalized() )  
-         end
-      end
-   end
+         --compensation
+         FlightTr.start    = Bullet.StartTrace
+         FlightTr.endpos   = Bullet.EndTrace 
 
-   --if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
-   if Bullet.SkyLvL then
-
-      --We don't want to calculate bullets that will never come back to map
-      if (ACF.CurTime - Bullet.LifeTime) > 100 then
-         ACF_RemoveBullet( Index )
-         return
-      end
-
-      --We don't want rounds to hit the skybox top, but to pass through and come back down
-      if Bullet.NextPos.z + ACF.SkyboxGraceZone > Bullet.SkyLvL then --add in a bit of grace zone
-         Bullet.Pos = Bullet.NextPos
-         return
-
-      --We do want rounds outside of the world but not skybox top to be deleted
-      elseif not util.IsInWorld(Bullet.NextPos) then
-
-         ACF_RemoveBullet( Index )
-         return
-      --We fall back to this default
-      else
-         Bullet.SkyLvL = nil
-         Bullet.LifeTime = nil
-         Bullet.Pos = Bullet.NextPos
-         Bullet.SkipNextHit = true
-         return
-      end
-   end
-
-   FlightTr.mask     = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
-   --FlightTr.mask     = Bullet.Caliber <= 0.3 and (1174421507+16432) or (33570827+16432) --Experimental mask, including water hits
-   FlightTr.filter   = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
-
-   TROffset          = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
-   FlightTr.maxs     = Vector( TROffset, TROffset, TROffset )
-   FlightTr.mins     = -FlightTr.maxs  
-
-
-   --perform the trace for damage   
-   local RetryTrace = true 
-
-   --if trace hits clipped part of prop, add prop to trace filter and retry
-   while RetryTrace do        
-
-      -- Disables so we dont overloop it again
-      RetryTrace        = false
-
-      --compensation
-      FlightTr.start    = Bullet.StartTrace
-      FlightTr.endpos   = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025)  
-
-      -- Defining tracehull at first instance
-      util.TraceHull(FlightTr)    
-      
-      --if our shell hits visclips, convert the tracehull on traceline.
-      if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   
-
-         FlightTr.maxs     = vector_origin
-         FlightTr.mins     = -FlightTr.maxs  
-
-         -- trace result is stored in supplied output FlightRes (at top of file)
-         util.TraceHull(FlightTr)   
-
-         -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
-         if not FlightRes.HitNonWorld then
-
-            util.TraceHull(FlightTr)
-
-         end
-      end  
-        
-      --We hit something that's not world, if it's visclipped, filter it out and retry 
-        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hit the visclip as traceline, no more double bounds.
-          
-          table.insert( Bullet.Filter , FlightRes.Entity )
-          RetryTrace = true   --re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
+         -- Defining tracehull at first instance
+         util.TraceHull(FlightTr)    
          
-       end
-   
-   end   
-   
-   --bullet is told to ignore the next hit, so it does and resets flag
-   if Bullet.SkipNextHit then
+         --if our shell hits visclips, convert the tracehull on traceline.
+         if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   
 
-      if not FlightRes.StartSolid and not FlightRes.HitNoDraw then Bullet.SkipNextHit = nil end
-      Bullet.Pos = Bullet.NextPos
-   
-   --bullet hit something that isn't world and is allowed to hit
-   elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
+            FlightTr.maxs     = vector_origin
+            FlightTr.mins     = -FlightTr.maxs  
 
-      --If we hit stuff then send the resolution to the bullets damage function
-      ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
+            -- trace result is stored in supplied output FlightRes (at top of file)
+            util.TraceHull(FlightTr)   
+
+            -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
+            if not FlightRes.HitNonWorld then
+
+               util.TraceHull(FlightTr)
+
+            end
+         end  
+           
+         --We hit something that's not world, if it's visclipped, filter it out and retry 
+           if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hit the visclip as traceline, no more double bounds.
+             
+             table.insert( Bullet.Filter , FlightRes.Entity )
+             RetryTrace = true   --re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
+            
+          end
       
-      --Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
-      local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
+      end   
+   end
 
-      --Gets the distance the bullet traveled and divides it by the distance the bullet should have traveled during deltatime. Used to calculate drag time.
-      local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+   function ACF_DoBulletsFlight( Index, Bullet )
 
-      Bullet.Flight = Bullet.Flight - Drag * DTImpact
+      local CanDo = hook.Run("ACF_BulletsFlight", Index, Bullet )
+      if CanDo == false then return end
 
---[[
-      print("======BALLISTIC======")
-      print(FlightRes.Hit)
-      print(FlightRes.HitPos)
-      print(FlightRes.HitNormal)
-      print(FlightRes.Entity)
-      print("======BALLISTIC======")
+      ACF_PerformTrace( Bullet )
 
-      debugoverlay.Line( FlightRes.StartPos, FlightRes.HitPos, 10, Color(0,255,0,255), true )
-      debugoverlay.Line( FlightRes.HitPos, FlightRes.HitPos+FlightRes.HitNormal*1000, 10, Color(0,100,0,255), true  )
-]]
-      local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
+      --Fuse detonation. Note: Its possible that the bullet prefers to hit the incoming prop instead of detonate. Not a big concern.
+      if Bullet.FuseLength and Bullet.FuseLength > 0 then
 
-      --If we should do the same trace again, then do so
-      if Retry == "Penetrated" then    
+         if Bullet.FlightTime > Bullet.FuseLength then
 
-         if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
+            local Diff        = Bullet.FlightTime - Bullet.FuseLength
+            local ratio       = 1 - (Diff / Bullet.DeltaTime)
+            local ScaledPos   = LerpVector(ratio, Bullet.Pos, Bullet.NextPos)
 
-            Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
+            if FlightRes.Hit and FlightRes.Fraction < ratio then 
+               ScaledPos = FlightRes.HitPos
+            end
+
+            if not util.IsInWorld(ScaledPos) then
+               ACF_RemoveBullet( Index )
+            else
+
+               if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, nil) end -- nil was flightres, garbage data this early in code
+
+               ACF_BulletClient( Index, Bullet, "Update" , 1 , ScaledPos  ) -- defined at bottom
+               ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
+               ACF_BulletEndFlight( Index, Bullet, ScaledPos, Bullet.Flight:GetNormalized() )  
+
+               debugoverlay.Sphere(ScaledPos, 10, DebugTime, Color(255,100,0,255) )
+               debugoverlay.Text(ScaledPos, "Orange Sphere: Bullet Detonated here!", DebugTime )
+
+            end
+    
+            return
+         end
+      end
+
+      --if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
+      if Bullet.SkyLvL then
+
+         --We don't want to calculate bullets that will never come back to map
+         if (ACF.CurTime - Bullet.LifeTime) > 100 then
+            ACF_RemoveBullet( Index )
+            return
+         end
+
+         --We don't want rounds to hit the skybox top, but to pass through and come back down
+         if Bullet.NextPos.z + ACF.SkyboxGraceZone > Bullet.SkyLvL then --add in a bit of grace zone
+            Bullet.Pos = Bullet.NextPos
+            return
+
+         --We do want rounds outside of the world but not skybox top to be deleted
+         elseif not util.IsInWorld(Bullet.NextPos) then
+
+            ACF_RemoveBullet( Index )
+            return
+         --We fall back to this default
+         else
+            Bullet.SkyLvL        = nil
+            Bullet.LifeTime      = nil
+            Bullet.Pos           = Bullet.NextPos
+            Bullet.SkipNextHit   = true
+            return
+         end
+      end
+
+      --bullet is told to ignore the next hit, so it does and resets flag
+      if Bullet.SkipNextHit then
+
+         if not FlightRes.StartSolid and not FlightRes.HitNoDraw then Bullet.SkipNextHit = nil end
+         Bullet.Pos = Bullet.NextPos
+      
+      --bullet hit something that isn't world and is allowed to hit
+      elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
+
+         --If we hit stuff then send the resolution to the bullets damage function
+         ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
+         
+         --Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
+         local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
+
+         --Gets the distance the bullet traveled and divides it by the distance the bullet should have traveled during deltatime. Used to calculate drag time.
+         local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+
+         Bullet.Flight = Bullet.Flight - Drag * DTImpact
+
+         local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
+
+         --If we should do the same trace again, then do so
+         if Retry == "Penetrated" then    
+
+            if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
+
+               Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
+
+               --A bullet has impacted more than 50 props. But why though? 
+               if Bullet.ImpactCount > 100 then    
+
+                  ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
+                  ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
+                  ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
+               else
+
+                  ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
+                  ACF_DoBulletsFlight( Index, Bullet )
+               end
+
+         elseif Retry == "Ricochet"  then
+
+            if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
+
+               Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
 
             --A bullet has impacted more than 50 props. But why though? 
-            if Bullet.ImpactCount > 100 then    
+            if Bullet.ImpactCount > 100 then 
 
                ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
                ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
-               ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
+               ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )   
             else
 
-               ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
-               ACF_DoBulletsFlight( Index, Bullet )
+               ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
+               ACF_CalcBulletFlight( Index, Bullet, true )
             end
 
-      elseif Retry == "Ricochet"  then
-
-         if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
-
-            Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
-
-         --A bullet has impacted more than 50 props. But why though? 
-         if Bullet.ImpactCount > 100 then 
-
-            ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
-            ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
-            ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )   
+            --Else end the flight here
          else
-
-            ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
-            ACF_CalcBulletFlight( Index, Bullet, true )
-         end
-
-         --Else end the flight here
-      else
-
-         if Bullet.OnEndFlight then 
-            Bullet.OnEndFlight(Index, Bullet, FlightRes) 
-         end
-
-         ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
-         ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
-         ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )   
-      end
-
-   --bullet hit the world
-   elseif FlightRes.HitWorld then
-   
-      --If we hit the world then try to see if it's thin enough to penetrate
-      if not FlightRes.HitSky then                          
-      
-         ACF_BulletWorldImpact = ACF.RoundTypes[Bullet.Type]["worldimpact"]
-         
-         local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
-         
-         if Retry == "Penetrated" then                         --if it is, we soldier on  
-
-            if Bullet.OnPenetrated then 
-               Bullet.OnPenetrated(Index, Bullet, FlightRes) 
-            end
-
-            ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
-            ACF_CalcBulletFlight( Index, Bullet, true )           --The world ain't going to move, so we say True for the backtrace override
-            
-         elseif Retry == "Ricochet"  then
-
-            if Bullet.OnRicocheted then 
-               Bullet.OnRicocheted(Index, Bullet, FlightRes) 
-            end
-
-            ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
-            ACF_CalcBulletFlight( Index, Bullet, true )
-            
-         else                                         --If not, end of the line, boyo
 
             if Bullet.OnEndFlight then 
                Bullet.OnEndFlight(Index, Bullet, FlightRes) 
@@ -384,26 +355,65 @@ function ACF_DoBulletsFlight( Index, Bullet )
             ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
             ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
             ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )   
+         end
+
+      --bullet hit the world
+      elseif FlightRes.HitWorld then
+      
+         --If we hit the world then try to see if it's thin enough to penetrate
+         if not FlightRes.HitSky then                          
+         
+            ACF_BulletWorldImpact = ACF.RoundTypes[Bullet.Type]["worldimpact"]
             
+            local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
+            
+            if Retry == "Penetrated" then                         --if it is, we soldier on  
+
+               if Bullet.OnPenetrated then 
+                  Bullet.OnPenetrated(Index, Bullet, FlightRes) 
+               end
+
+               ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
+               ACF_CalcBulletFlight( Index, Bullet, true )           --The world ain't going to move, so we say True for the backtrace override
+               
+            elseif Retry == "Ricochet"  then
+
+               if Bullet.OnRicocheted then 
+                  Bullet.OnRicocheted(Index, Bullet, FlightRes) 
+               end
+
+               ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
+               ACF_CalcBulletFlight( Index, Bullet, true )
+               
+            else                                         --If not, end of the line, boyo
+
+               if Bullet.OnEndFlight then 
+                  Bullet.OnEndFlight(Index, Bullet, FlightRes) 
+               end
+
+               ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
+               ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
+               ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )   
+               
+            end
+
+         --hit skybox
+         else                                   
+            --only if leaving top of skybox
+            if FlightRes.HitNormal == Vector(0,0,-1) then   
+               Bullet.SkyLvL = FlightRes.HitPos.z                 -- Lets save height on which bullet went through skybox. So it will start tracing after falling bellow this level. This will prevent from hitting higher levels of map
+               Bullet.LifeTime = ACF.CurTime
+               Bullet.Pos = Bullet.NextPos
+            else 
+               ACF_RemoveBullet( Index )
+            end
          end
 
-      --hit skybox
-      else                                   
-         --only if leaving top of skybox
-         if FlightRes.HitNormal == Vector(0,0,-1) then   
-            Bullet.SkyLvL = FlightRes.HitPos.z                 -- Lets save height on which bullet went through skybox. So it will start tracing after falling bellow this level. This will prevent from hitting higher levels of map
-            Bullet.LifeTime = ACF.CurTime
-            Bullet.Pos = Bullet.NextPos
-         else 
-            ACF_RemoveBullet( Index )
-         end
+      --bullet hit nothing, keep flying
+      else
+         Bullet.Pos = Bullet.NextPos
       end
-
-   --bullet hit nothing, keep flying
-   else
-      Bullet.Pos = Bullet.NextPos
    end
-   
 end
 
 --[[------------------------------------------------------------------------------------------------
@@ -430,15 +440,20 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 
    elseif Type == "Init" then
 
+      local IsMissile
+
+      if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
+         IsMissile = 1
+      end
+
       local Effect = EffectData()
-         local Filler = 0
-         if Bullet["FillerMass"] then Filler = Bullet["FillerMass"]*15 end 
          Effect:SetMaterialIndex( Index )       --Bullet Index
          Effect:SetStart( Bullet.Flight/10 )    --Bullet Direction
          Effect:SetOrigin( Bullet.Pos )
          Effect:SetEntity( Entity(Bullet["Crate"]) )
          Effect:SetScale( 0 )
-         util.Effect( "ACF_BulletEffect", Effect, true, true )
+         Effect:SetAttachment( IsMissile or 0 )
+      util.Effect( "ACF_BulletEffect", Effect, true, true )
 
    end
 

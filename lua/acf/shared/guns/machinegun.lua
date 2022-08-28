@@ -8,6 +8,7 @@ ACF_defineGunClass("MG", {
 	rofmod = 0.9,
 	year = 1910,
 	sound = "weapons/ACF_Gun/mg_fire4.wav",
+	noloader = true,
 
 } )
 

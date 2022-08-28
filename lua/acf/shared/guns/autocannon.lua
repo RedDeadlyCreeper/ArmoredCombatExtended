@@ -8,7 +8,7 @@ ACF_defineGunClass("AC", {
 	rofmod = 0.35,
 	year = 1930,
 	sound = "weapons/acf_gun/ac_fire4.wav",
-
+	noloader = true,
 } )
 
 --add a gun to the class

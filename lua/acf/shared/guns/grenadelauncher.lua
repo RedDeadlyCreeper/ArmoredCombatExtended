@@ -8,6 +8,8 @@ ACF_defineGunClass("GL", {
 	rofmod = 1,
 	year = 1970,
 	sound = "weapons/acf_gun/grenadelauncher.wav",
+	nolights 	= true,
+	noloader = true,	
 
 } )
 

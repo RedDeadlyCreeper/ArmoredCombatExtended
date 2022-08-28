@@ -31,6 +31,8 @@ Material.spallmult      = 0
 Material.ArmorMul       = 1
 Material.NormMult       = 1
 
+Material.Stopshock      = true
+
 if SERVER then
 
     ACE.ERABoomPerTick = 0 --Used to count how many bricks are being detonated per tick
@@ -107,7 +109,7 @@ if SERVER then
 
             --print("----------------------------------------Boom")
 
-            local HEWeight  = armor*0.25  
+            local HEWeight  = math.Min(armor*0.25,100) -- #nonukespls
             local Radius    = ACE_CalculateHERadius( HEWeight )
             local Owner     = (CPPI and Entity:CPPIGetOwner()) or NULL
             local EntPos    = Entity:GetPos()

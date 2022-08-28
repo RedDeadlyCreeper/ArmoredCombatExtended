@@ -29,7 +29,7 @@ SWEP.Purpose		= "Slavic bullet thrower"
 SWEP.Instructions	= "Left mouse to shoot"		
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "Weapon_Galil.Single"	
+SWEP.Primary.Sound			= "Weapon_AK47.Single"	
 SWEP.Primary.NumShots		= 1	
 SWEP.Primary.Recoil			= 0.5	
 SWEP.Primary.RecoilAngleVer	= 0.2	
@@ -117,14 +117,25 @@ function SWEP:InitBulletData()
 		
 end	
 		
-function SWEP:PrimaryAttack()		
+function SWEP:PrimaryAttack()	
+
+	--Put this if you want sounds + lights working on client realm.....
+	--if ( game.SinglePlayer() ) then self:CallOnClient( "PrimaryAttack" ) end
+
 	if ( !self:CanPrimaryAttack() ) then return end		
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )	
 	self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )	
 
-	if CLIENT then 
-		return 
-		end
+
+	--Add this to your weapon. Easy to edit. reminder: 
+	-- ACF_RenderLight(entity index, lightSize, colour, pos)
+	-- ACE_SGunFire( SWEP entity, Sound , PropMass )
+	
+    if CLIENT then 
+        --ACE_SGunFire( self, self.Primary.Sound, self.BulletData.PropMass ) -- cool
+        --ACF_RenderLight(self:EntIndex(), 1000, Color(255, 128, 48), self:GetPos())
+        return 
+    end 
 	
 	self.BulletData.Owner = self.Owner
 	self.BulletData.Gun = self	

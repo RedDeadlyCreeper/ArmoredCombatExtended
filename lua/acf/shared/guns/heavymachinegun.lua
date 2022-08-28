@@ -8,6 +8,7 @@ ACF_defineGunClass("HMG", {
 	rofmod = 0.17,
 	year = 1935,
 	sound = "weapons/ACF_Gun/mg_fire3.wav",
+	noloader = true,
 
 	longbarrel = {
 		index = 2, 

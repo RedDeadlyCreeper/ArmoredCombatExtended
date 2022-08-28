@@ -20,72 +20,70 @@ end
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )
     
-    local Data = {}
-    local ServerData = {}
-    local GUIData = {}
+    local Data          = {}
+    local ServerData    = {}
+    local GUIData       = {}
     
-    if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-    if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-    PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
-    if not PlayerData.Data6 then PlayerData.Data6 = 0 end
-    if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+    PlayerData.PropLength = PlayerData.PropLength   or 0
+    PlayerData.ProjLength = PlayerData.ProjLength   or 0
+    PlayerData.Data5      = PlayerData.Data5 and math.max(PlayerData.Data5, 0) or 0
+    PlayerData.Data6      = PlayerData.Data6        or 0
+    PlayerData.Data10     = PlayerData.Data10       or 0
     
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
     --Shell sturdiness calcs
-    Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
-    Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
-    local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+    Data.ProjMass           = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
+    Data.MuzzleVel          = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
+    local Energy            = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
         
-    local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
-    GUIData.MinFillerVol = 0
-    GUIData.MaxFillerVol = math.min(GUIData.ProjVolume,MaxVol*0.9)
-    GUIData.FillerVol = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
-    Data.FillerMass = GUIData.FillerVol * ACF.HEDensity/1000
+    local MaxVol            = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
+    GUIData.MinFillerVol    = 0
+    GUIData.MaxFillerVol    = math.min(GUIData.ProjVolume,MaxVol*0.9)
+    GUIData.FillerVol       = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
+    Data.FillerMass         = GUIData.FillerVol * ACF.HEDensity/1000
     
-    Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol,0)*7.9/1000 + Data.FillerMass
-    Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
+    Data.ProjMass           = math.max(GUIData.ProjVolume-GUIData.FillerVol,0)*7.9/1000 + Data.FillerMass
+    Data.MuzzleVel          = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
     
     --Random bullshit left
-    Data.ShovePower = 0.1
-    Data.PenAera = Data.FrAera^ACF.PenAreaMod
-    Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
-    Data.LimitVel = 700                                     --Most efficient penetration speed in m/s
-    Data.KETransfert = 0.1                                  --Kinetic energy transfert to the target for movement purposes
-    Data.Ricochet = 54                                      --Base ricochet angle
-    
-    Data.BoomPower = Data.PropMass + Data.FillerMass
+    Data.ShovePower         = 0.1
+    Data.PenAera            = Data.FrAera^ACF.PenAreaMod
+    Data.DragCoef           = ((Data.FrAera/10000)/Data.ProjMass)
+    Data.LimitVel           = 700                                     --Most efficient penetration speed in m/s
+    Data.KETransfert        = 0.1                                  --Kinetic energy transfert to the target for movement purposes
+    Data.Ricochet           = 54                                      --Base ricochet angle
 
-    Data.HasPenned = false
-    Data.DetDelay = math.Clamp(PlayerData.Data6, 0, 5)
-    
+    Data.BoomPower          = Data.PropMass + Data.FillerMass
+
+    Data.HasPenned          = false
+    Data.DetDelay           = math.Clamp(PlayerData.Data6, 0, 5)
+
     if SERVER then --Only the crates need this part
-        ServerData.Id = PlayerData.Id
-        ServerData.Type = PlayerData.Type
+        ServerData.Id       = PlayerData.Id
+        ServerData.Type     = PlayerData.Type
         return table.Merge(Data,ServerData)
     end
     
     if CLIENT then --Only tthe GUI needs this part
-        GUIData = table.Merge(GUIData, Round.getDisplayData(Data))
+        GUIData             = table.Merge(GUIData, Round.getDisplayData(Data))
         return table.Merge(Data,GUIData)
     end
-    
 end
-
 
 function Round.getDisplayData(Data)
-    local GUIData = {}
-    local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
-    
+
+    local GUIData       = {}
+    local Energy        = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+    local FragMass      = Data.ProjMass - Data.FillerMass
+
+    GUIData.MaxPen      = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
     GUIData.BlastRadius = (Data.FillerMass)^0.33*8
-    local FragMass = Data.ProjMass - Data.FillerMass
-    GUIData.Fragments = math.max(math.floor((Data.FillerMass/FragMass)*ACF.HEFrag),2)
-    GUIData.FragMass = FragMass/GUIData.Fragments
-    GUIData.FragVel = (Data.FillerMass*ACF.HEPower*1000/GUIData.FragMass/GUIData.Fragments)^0.5
+    GUIData.Fragments   = math.max(math.floor((Data.FillerMass/FragMass)*ACF.HEFrag),2)
+    GUIData.FragMass    = FragMass/GUIData.Fragments
+    GUIData.FragVel     = (Data.FillerMass*ACF.HEPower*1000/GUIData.FragMass/GUIData.Fragments)^0.5
     return GUIData
 end
-
 
 function Round.network( Crate, BulletData )
 
@@ -126,26 +124,24 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
     
     if ACF_Check( Target ) then
     
-        local Speed = Bullet.Flight:Length() / ACF.VelScale
-        local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-        local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+        local Speed     = Bullet.Flight:Length() / ACF.VelScale
+        local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+        local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
         
         if HitRes.Overkill > 0 then
         
         if Bullet.HasPenned == false then
-        Bullet.HasPenned = true
 
-        Bullet.FuseLength = Bullet.DetDelay or 0
-        
-        Bullet.InitTime = SysTime()
-        
-        
+            Bullet.HasPenned    = true
+            Bullet.FuseLength   = Bullet.DetDelay or 0
+            Bullet.InitTime     = SysTime()
         end
         
-        
             table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
+
             ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
             Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+
             return "Penetrated"
         elseif HitRes.Ricochet then
             return "Ricochet"
@@ -219,22 +215,19 @@ function Round.guicreate( Panel, Table )
     acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.APHE )
     
     acfmenupanel:CPanelText("BonusDisplay", "")
-
-    acfmenupanel:CPanelText("Desc", "") --Description (Name, Desc)
+    acfmenupanel:CPanelText("Desc", "")                 --Description (Name, Desc)
     
-    acfmenupanel:AmmoStats(0,0,0,0)     --AmmoStats -->> RoundLenght, MuzzleVelocity & MaxPen
+    acfmenupanel:AmmoStats(0,0,0,0)                     --AmmoStats -->> RoundLenght, MuzzleVelocity & MaxPen
     
     acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "HE Filler", "")--Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+    acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "HE Filler", "")            --Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     
-    acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")           --Tracer checkbox (Name, Title, Desc)
+    acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")   --Tracer checkbox (Name, Title, Desc)
     
-    acfmenupanel:CPanelText("BlastDisplay", "") --HE Blast data (Name, Desc)
-    acfmenupanel:CPanelText("FragDisplay", "")  --HE Fragmentation data (Name, Desc)
-    
-    acfmenupanel:CPanelText("RicoDisplay", "")  --estimated rico chance
-    
+    acfmenupanel:CPanelText("BlastDisplay", "")         --HE Blast data (Name, Desc)
+    acfmenupanel:CPanelText("FragDisplay", "")          --HE Fragmentation data (Name, Desc)
+    acfmenupanel:CPanelText("RicoDisplay", "")          --estimated rico chance
     acfmenupanel:CPanelText("PenetrationDisplay", "")   --Proj muzzle penetration (Name, Desc)
     
     Round.guiupdate( Panel, Table )
@@ -244,15 +237,13 @@ end
 function Round.guiupdate( Panel, Table )
 
     local PlayerData = {}
-        PlayerData.Id = acfmenupanel.AmmoData.Data.id           --AmmoSelect GUI
-        PlayerData.Type = "APHE"                                        --Hardcoded, match ACFRoundTypes table index
-        PlayerData.PropLength = acfmenupanel.AmmoData.PropLength    --PropLength slider
-        PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength    --ProjLength slider
-        PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
-        PlayerData.Data6 = acfmenupanel.AmmoData.DetDelay       
-        local Tracer = 0
-        if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
-        PlayerData.Data10 = Tracer              --Tracer
+        PlayerData.Id           = acfmenupanel.AmmoData.Data.id             --AmmoSelect GUI
+        PlayerData.Type         = "APHE"                                    --Hardcoded, match ACFRoundTypes table index
+        PlayerData.PropLength   = acfmenupanel.AmmoData.PropLength          --PropLength slider
+        PlayerData.ProjLength   = acfmenupanel.AmmoData.ProjLength          --ProjLength slider
+        PlayerData.Data5        = acfmenupanel.AmmoData.FillerVol
+        PlayerData.Data6        = acfmenupanel.AmmoData.DetDelay       
+        PlayerData.Data10       = acfmenupanel.AmmoData.Tracer and 1 or 0   --Tracer
     
     local Data = Round.convert( Panel, PlayerData )
     

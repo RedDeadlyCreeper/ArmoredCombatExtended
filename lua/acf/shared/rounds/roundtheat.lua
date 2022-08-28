@@ -14,7 +14,7 @@ Round.netid = 15 --Unique ammotype ID for network transmission
 function Round.create( Gun, BulletData )
     
     ACF_CreateBullet( BulletData )
-    
+
 end
 
 function Round.ConeCalc( ConeAngle, Radius, Length )
@@ -236,7 +236,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
     
         local DeltaTime         = SysTime() - Bullet.LastThink
         Bullet.StartTrace       = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
-        Bullet.NextPos          = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)       --Calculates the next shell position
+        Bullet.NextPos          = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)       --Calculates the next shell position      
 
     --Second Detonation
     elseif DetCount == 2 then 
@@ -302,6 +302,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             --If bullet has detonated once and fails to pen
             elseif DetCount == 1 then 
 
+                Bullet.Filter = {}
                 Round.detonate( Index, Bullet, HitPos, HitNormal )
 
                 return "Penetrated"         

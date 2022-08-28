@@ -8,6 +8,7 @@ ACF_defineGunClass("RAC", {
 	rofmod = 0.07,
 	year = 1962,
 	sound = "weapons/acf_gun/mg_fire2.wav",
+	noloader = true,
 
 	color = {135, 135, 135}
 } )

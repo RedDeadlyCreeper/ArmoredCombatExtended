@@ -205,8 +205,6 @@ function this:AcquireLock(missile)
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
-		debugoverlay.Sphere(entpos, 100, 5, Color(255,255,0,100))
-
 		--print(absang.p)
 		--print(absang.y)
 

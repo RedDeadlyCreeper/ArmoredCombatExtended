@@ -8,8 +8,8 @@ ACF_defineGunClass("AL", {
 	rofmod = 0.64,
 	year = 1946,
 	sound = "weapons/acf_gun/autoloader.wav",
-	autosound = "acf_extra/tankfx/reload.wav"
-
+	autosound = "acf_extra/tankfx/reload.wav",
+	noloader = true,
 } )
 
 --add a gun to the class

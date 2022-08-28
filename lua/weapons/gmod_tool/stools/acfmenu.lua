@@ -64,9 +64,9 @@ function TOOL:LeftClick( trace )
 	if CLIENT then return true end
 	if not IsValid( trace.Entity ) and not trace.Entity:IsWorld() then return false end
 	
-	local ply = self:GetOwner()
-	local Type = self:GetClientInfo( "type" )
-	local Id = self:GetClientInfo( "id" )
+	local ply 	= self:GetOwner()
+	local Type 	= self:GetClientInfo( "type" )
+	local Id 	= self:GetClientInfo( "id" )
 	
 	local TypeId = ACF.Weapons[Type][Id]
 	if not TypeId then return false end
@@ -95,8 +95,8 @@ function TOOL:LeftClick( trace )
 			-- Using the Duplicator entity register to find the right factory function
 			local Ent = DupeClass.Func( ply, unpack( ArgTable ) )
 			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
+			
 			Ent:Activate()
-			--Ent:GetPhysicsObject():Wake()
 			Ent:DropToFloor()
 			Ent:GetPhysicsObject():EnableMotion( false )
 			

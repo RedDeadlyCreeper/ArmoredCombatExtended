@@ -370,8 +370,6 @@ function ENT:DoReplicatedPropHit(Bullet)
 	--This is crucial, to avoid 2nd tandem munitions spawn on 1st Bullet hitpos
 	Bullet.FirstPos = FlightRes.HitPos
 
-	--debugoverlay.Line(FlightRes.HitPos, FlightRes.HitPos+Bullet.Flight:GetNormalized(), 5, Color(255,255,0))
-
 	--Internally used in case of HEAT hitting world, penetrating or not
 	if Retry == "Penetrated" then
 

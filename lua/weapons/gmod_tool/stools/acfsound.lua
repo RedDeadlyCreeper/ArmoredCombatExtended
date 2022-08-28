@@ -13,9 +13,6 @@ if CLIENT then
 	language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
 end
 
-
-
-
 ACF.SoundToolSupport = {
 	acf_gun = {
 		GetSound = function(ent) return {Sound = ent.Sound} end,
@@ -60,6 +57,41 @@ ACF.SoundToolSupport = {
 			setSound( ent, soundData )
 		end
 	},
+
+	acf_rack = {
+		GetSound = function(ent) return {Sound = ent.Sound} end,
+		
+		SetSound = function(ent, soundData) 
+			ent.Sound = soundData.Sound
+			ent:SetNWString( "Sound", soundData.Sound )
+		end,
+		
+		ResetSound = function(ent)
+			local Class = ent.Class
+			local Classes = list.Get("ACFClasses")
+			
+			local soundData = {Sound = Classes["GunClass"][Class]["sound"]}
+			
+			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
+			setSound( ent, soundData )
+		end
+	},
+	
+	acf_missileradar = {
+		GetSound = function(ent) return {Sound = ent.Sound} end,
+		
+		SetSound = function(ent, soundData) 
+			ent.Sound = soundData.Sound
+			ent:SetNWString( "Sound", soundData.Sound )
+		end,
+		
+		ResetSound = function(ent)
+			local soundData = {Sound = ACFM.DefaultRadarSound}
+			
+			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
+			setSound( ent, soundData )
+		end
+	} 
 }
 
 local function ReplaceSound( ply , Entity , data)

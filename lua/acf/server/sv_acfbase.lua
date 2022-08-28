@@ -48,16 +48,6 @@ function ACF_UpdateVisualHealth(Entity)
 
 end
 
---Used to reconvert old material ids
-ACE.BackCompMat = {
-    [0] = "RHA",
-    [1] = "CHA",
-    [2] = "Cer",
-    [3] = "Rub",
-    [4] = "ERA",
-    [5] = "Alum",
-    [6] = "Texto"
-}
 
 --Creates or updates the ACF entity data in a passive way. Meaning this entity wont be updated unless it really requires it (like a shot, damage, looking it using armor tool, etc)
 function ACF_Activate( Entity , Recalc )
@@ -94,14 +84,7 @@ function ACF_Activate( Entity , Recalc )
     local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
     
     local Mat       = Entity.ACF.Material or "RHA"
-    local MatData   = ACE.Armors[Mat]
-
-    if not MatData or table.IsEmpty(MatData) then
-        print("[ACE|ERROR]- We got an invalid or unknown armor [ "..Mat.." ] which is not able to be processed. Dealing as RHA...")
-
-        MatData = ACE.Armors["RHA"]
-
-    end
+    local MatData   = ACE_GetMaterialData( Mat )
 
     local massMod   = MatData.massMod
     
@@ -145,9 +128,8 @@ function ACF_Check( Entity )
     elseif Entity.ACF.Mass != physobj:GetMass() then
         ACF_Activate( Entity , true )
     end
-    --print("ACF_Check "..Entity.ACF.Type)
+
     return Entity.ACF.Type  
-    
 end
 
 function ACF_Damage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Type ) 
@@ -180,32 +162,14 @@ end
 
 function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
+    local HitRes            = {}
+
     local armor             = Entity.ACF.Armour                                                                                         -- Armor
     local losArmor          = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )                                     -- LOS Armor   
     local losArmorHealth    = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )    -- Bc people had to abuse armor angling, FML  
 
     local Mat               = Entity.ACF.Material or "RHA"    --very important thing
-
-    local HitRes            = {}
-
-    if not ACE.Armors or table.IsEmpty(ACE.Armors) then
-        print("[ACE|ERROR]- No Armor material data found! Have the armor folder been renamed or removed? Refusing...")
-
-        HitRes.Damage   = 0
-        HitRes.Overkill = 0
-        HitRes.Loss     = 1
-
-        return HitRes
-    end
-
-    local MatData = ACE.Armors[Mat]
-
-    if not MatData or table.IsEmpty(MatData) then
-        print("[ACE|ERROR]- We got an invalid or unknown armor [ "..Mat.." ] which is not able to be processed. Dealing as RHA...")
-
-        MatData = ACE.Armors["RHA"]
-
-    end
+    local MatData           = ACE_GetMaterialData( Mat )
 
     local damageMult        = 1
 
@@ -448,9 +412,8 @@ function ACF_GetLinkedWheels( MobilityEnt )
     if not IsValid( MobilityEnt ) then return {} end
 
     local ToCheck = {}
-    local Wheels = {}
-
-    local iteration = 0
+    local Checked = {}
+    local Wheels  = {}
 
     local links = MobilityEnt.GearLink or MobilityEnt.WheelLink -- handling for usage on engine or gearbox
 
@@ -462,20 +425,30 @@ function ACF_GetLinkedWheels( MobilityEnt )
         table.insert(ToCheck, link.Ent)
     end
 
+    --print("max checks: "..#ToCheck)
+
     --print('total ents to check: '..#ToCheck)
 
     -- use a stack to traverse the link tree looking for wheels at the end
     while #ToCheck > 0 do
 
-        iteration = iteration + 1
-        if iteration > 500 then break end
-
         local Ent = table.remove(ToCheck,#ToCheck)
+
         if IsValid(Ent) then
 
             if Ent:GetClass() == "acf_gearbox" then
+
+                Checked[Ent:EntIndex()] = true
+
                 for k,v in pairs( Ent.WheelLink ) do
-                    table.insert(ToCheck, v.Ent)
+
+                    if IsValid(v.Ent) and not Checked[v.Ent:EntIndex()] then
+                        table.insert(ToCheck, v.Ent)
+                    else
+                        v.Notvalid = true 
+                    end
+
+                    ::cont::
                 end
             else
                 Wheels[Ent] = Ent -- indexing it same as ACF_GetAllPhysicalConstraints, for easy merge.  whoever indexed by entity in that function, uuuuuuggghhhhh

@@ -5,6 +5,9 @@ if CLIENT then
 	--Copied from garrysmod CalcVehicleView function, to allow acf ents to be included into the filter
 	function ACE_CalcVehicleView( Vehicle, ply, view )
 
+		--Make sure that allowed seats use this override.
+		if not Vehicle.ACE_CamOverride then return end
+
 		if ( Vehicle.GetThirdPersonMode == nil || ply:GetViewEntity() != ply ) then
 			-- This shouldn't ever happen.
 			return
@@ -29,9 +32,9 @@ if CLIENT then
 		local tr = util.TraceHull( {
 			start = view.origin,
 			endpos = TargetOrigin,
-			filter = function( e )
-				local c = e:GetClass() -- Avoid contact with entities that can potentially be attached to the vehicle. Ideally, we should check if "e" is constrained to "Vehicle".
-				return !c:StartWith( "prop_physics" ) &&!c:StartWith( "prop_dynamic" ) && !c:StartWith( "phys_bone_follower" ) && !c:StartWith( "prop_ragdoll" ) && !e:IsVehicle() && !c:StartWith( "gmod_" ) && !c:StartWith( "acf_" ) && !c:StartWith( "ace_" )
+			mask = CONTENTS_SOLID,
+			filter = function( e ) 
+				return false
 			end,
 			mins = Vector( -WallOffset, -WallOffset, -WallOffset ),
 			maxs = Vector( WallOffset, WallOffset, WallOffset ),
@@ -51,9 +54,9 @@ if CLIENT then
 
 	end
 
+	hook.Remove( "CalcVehicleView", "ACE_CalcVehicleView_Override")
 	hook.Add( "CalcVehicleView", "ACE_CalcVehicleView_Override", ACE_CalcVehicleView)
 
 elseif SERVER then
-
 
 end

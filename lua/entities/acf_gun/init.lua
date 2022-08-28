@@ -1,168 +1,7 @@
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
 
-AddCSLuaFile()
-
-DEFINE_BASECLASS( "base_wire_entity" )
-
-ENT.PrintName = "ACF Gun"
-ENT.WireDebugName = "ACF Gun"
-
-if CLIENT then
-
-    local ACF_GunInfoWhileSeated = CreateClientConVar("ACF_GunInfoWhileSeated", 0, true, false)
-
-    function ENT:Initialize()
-        
-        self.BaseClass.Initialize( self )
-        
-        self.LastFire = 0
-        self.Reload = 1
-        self.CloseTime = 1
-        self.Rate = 1
-        self.RateScale = 1
-        self.FireAnim = self:LookupSequence( "shoot" )
-        self.CloseAnim = self:LookupSequence( "load" )
-        self.LastThink = 0
-    end
-    
-    -- copied from base_wire_entity: DoNormalDraw's notip arg isn't accessible from ENT:Draw defined there.
-    function ENT:Draw()
-    
-        local lply = LocalPlayer()
-        local hideBubble = not ACF_GunInfoWhileSeated:GetBool() and IsValid(lply) and lply:InVehicle()
-        
-        self.BaseClass.DoNormalDraw(self, false, hideBubble)
-        Wire_Render(self)
-        
-        if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then 
-            -- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
-            Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false ) 
-        end
-        
-    end
-    
-    function ENT:Think()
-        
-        self.BaseClass.Think( self )
-        
-        local SinceFire = CurTime() - self.LastFire
-        self:SetCycle( SinceFire * self.Rate / self.RateScale )
-        if CurTime() > self.LastFire + self.CloseTime and self.CloseAnim then
-            self:ResetSequence( self.CloseAnim )
-            self:SetCycle( ( SinceFire - self.CloseTime ) * self.Rate / self.RateScale )
-            self.Rate = 1 / ( self.Reload - self.CloseTime ) -- Base anim time is 1s, rate is in 1/10 of a second
-            self:SetPlaybackRate( self.Rate )
-        end
-        
-    end
-
-    function ENT:Animate( Class, ReloadTime, LoadOnly )
-        
-        if self.CloseAnim and self.CloseAnim > 0 then
-            self.CloseTime = math.max(ReloadTime-0.75,ReloadTime*0.75)
-        else
-            self.CloseTime = ReloadTime
-            self.CloseAnim = nil
-        end
-        
-        self:ResetSequence( self.FireAnim )
-        self:SetCycle( 0 )
-        self.RateScale = self:SequenceDuration()
-        if LoadOnly then
-            self.Rate = 1000000
-        else
-            self.Rate = 1/math.Clamp(self.CloseTime,0.1,1.5)    --Base anim time is 1s, rate is in 1/10 of a second
-        end
-        self:SetPlaybackRate( self.Rate )
-        self.LastFire = CurTime()
-        self.Reload = ReloadTime
-        
-    end
-
-    function ACFGunGUICreate( Table )
-            
-        acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
-        
-        local GunDisplay = acfmenupanel.CData.DisplayModel
-
-        GunDisplay = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
-        GunDisplay:SetModel( Table.model )
-        GunDisplay:SetCamPos( Vector( 250, 500, 250 ) )
-        GunDisplay:SetLookAt( Vector( 0, 0, 0 ) )
-        GunDisplay:SetFOV( 20 )
-        GunDisplay:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-        GunDisplay.LayoutEntity = function( panel, entity ) end
-        acfmenupanel.CustomDisplay:AddItem( GunDisplay )
-
-        local GunClass = list.Get("ACFClasses").GunClass[Table.gunclass]
-        acfmenupanel:CPanelText("ClassDesc", GunClass.desc) 
-        acfmenupanel:CPanelText("GunDesc", Table.desc)
-        acfmenupanel:CPanelText("Caliber", "Caliber : "..(Table.caliber*10).."mm")
-        acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
-        acfmenupanel:CPanelText("Year", "Year : "..Table.year)
-        
-        if Table.rack then
-            if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
-            if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
-
-            if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : "..Table.guidelay.." seconds") 
-            else acfmenupanel:CPanelText("GuiDelay", "With a guidance, this ordnance will start to do maneuvers with no delays") end
-
-
-            if Table.guidance and #Table.guidance > 0 then
-
-                local guitxt = ""
-                for k, guidance in ipairs(Table.guidance) do
-                    if guidance ~= "Dumb" then
-                        guitxt = guitxt.."- "..guidance.."\n"
-                    end
-                end
-
-                if guitxt ~= "" then
-                    acfmenupanel:CPanelText("Guidances", "\nAvailable guidances : \n"..guitxt )
-                end
-            end
-
-            if Table.fuses and #Table.fuses > 0 then
-
-                local guitxt = ""
-                for k, fuses in ipairs(Table.fuses) do
-                    guitxt = guitxt.."- "..fuses.."\n"
-                end
-
-                acfmenupanel:CPanelText("Fuses", "Available fuses : \n"..guitxt )
-            end
-
-        else
-            local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
-            local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
-            acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
-            if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :   "..Table.magreload.." s") end
-            acfmenupanel:CPanelText("Spread", "Spread : "..(GunClass.spread * 1.5).." degrees")
-            acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : "..GunClass.spread.." degrees")
-
-            acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
-        end
-        
-        acfmenupanel.CustomDisplay:PerformLayout()
-        
-    end
-
-    return
-end
-
-
-local GunWireDescs = {
-    --Inputs
-    ["Unload"]   = "Unloads the current shell from the gun. Leaving the gun empty",
-    ["FuseTime"] = "Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.",
-    ["ROFLimit"] = "Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.",
-
-    --Outputs
-    ["Ready"]    = "Returns if the gun is ready to fire.",
-    ["Heat"]     = "Returns the gun's temperature.",
-    ["OverHeat"] = "Is the gun overheating?"
-}
-
+include("shared.lua")
 
 function ENT:Initialize()
         
@@ -203,26 +42,65 @@ function ENT:Initialize()
     
     self.Inaccuracy             = 1
     self.LastThink              = 0 
-    self.Inputs                 = WireLib.CreateInputs( self, {    "Fire", 
-                                                                "Unload ("..GunWireDescs["Unload"]..")", 
-                                                                "Reload", 
-                                                                "Fuse Time ("..GunWireDescs["FuseTime"]..")" } )
-
-    self.Outputs                = WireLib.CreateOutputs( self,   {  "Ready ("..GunWireDescs["Ready"]..")", 
-                                                                    "AmmoCount", 
-                                                                    "Entity [ENTITY]",  
-                                                                    "Shots Left", 
-                                                                    "Fire Rate", 
-                                                                    "Muzzle Weight", 
-                                                                    "Muzzle Velocity" , 
-                                                                    "Heat ("..GunWireDescs["Heat"]..")", 
-                                                                    "OverHeat ("..GunWireDescs["OverHeat"]..")"} )
-    Wire_TriggerOutput(self, "Entity", self)
 
 end  
 
 do
+    local Inputs = {
+        Fire     = "Fire (Shoots a bullet if loaded. Hold to keep shooting.)",
+        Unload   = "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
+        Reload   = "Reload (Reloads the current weapon, according to the active ammo it has.)",
+        FuseTime = "Fuse Time (Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.)",
+        ROFLimit = "ROFLimit (Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.)",
+    }
+    local Outputs = {
+         Ready          = "Ready (Returns if the gun is ready to fire.)",
+         AmmoCount      = "AmmoCount (Returns the total ammo this gun can shoot.)",
+         Entity         = "Entity [ENTITY]",
+         ShotsLeft      = "Shots Left (Returns the number of shots in the gun.)", 
+         FireRate       = "Fire Rate (Returns the Rate of Fire of this gun)", 
+         MuzzleWeight   = "Muzzle Weight (Returns the muzzle weight)", 
+         MuzzleVelocity = "Muzzle Velocity (Returns the muzzle velocity)" , 
+         Heat           = "Heat (Returns the gun's temperature.)",
+         OverHeat       = "OverHeat (Is the gun overheating?)"    
+    }
 
+    local Inputs_Fuse = {
+        Inputs.Fire,
+        Inputs.Unload,
+        Inputs.Reload,
+        Inputs.FuseTime,
+        Inputs.ROFLimit
+    }
+    local Inputs_NoFuse = {
+        Inputs.Fire,
+        Inputs.Unload,
+        Inputs.Reload,
+        Inputs.ROFLimit
+    }
+    local Inputs_Fuse_noreload = {
+        Inputs.Fire,
+        Inputs.Unload,
+        Inputs.FuseTime,
+        Inputs.ROFLimit
+    }
+    local Inputs_NoFuse_noreload = {
+        Inputs.Fire,
+        Inputs.Unload,
+        Inputs.ROFLimit
+    }
+    local Outputs_Default = {
+        Outputs.Ready,
+        Outputs.AmmoCount,
+        Outputs.Entity,
+        Outputs.ShotsLeft,
+        Outputs.FireRate,
+        Outputs.MuzzleWeight,
+        Outputs.MuzzleVelocity,
+        Outputs.Heat,
+        Outputs.OverHeat
+    }
+    
     --List of ids which no longer stay on ACE. Useful to replace them with the closest counterparts
     local BackComp = {
         ["20mmHRAC"]        = "20mmRAC",
@@ -270,6 +148,8 @@ do
         Gun.Heat            = ACE.AmbientTemp
         Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1)^1.2
 
+        Gun.noloaders       = ClassData.noloader or nil
+
         if ClassData.color then
             Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
         end
@@ -285,43 +165,35 @@ do
     
         --IDK why does this has been broken, giving it sense now
         --to cover guns that uses magazines
-        if(Lookup.magsize) then 
+        if Lookup.magsize then 
 
             Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize) 
             local Cal = Gun.Caliber
     
-            if Cal>=3 and Cal<=12 then  
-                Gun.Inputs = Wire_AdjustInputs( Gun, {  "Fire", 
-                                                        "Unload ("..GunWireDescs["Unload"]..")", 
-                                                        "Reload", 
-                                                        "Fuse Time ("..GunWireDescs["FuseTime"]..")", 
-                                                        "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
+            if Cal >=2 and Cal <=14 then  
+                Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse )
             else 
-                Gun.Inputs = Wire_AdjustInputs( Gun, {  "Fire", 
-                                                        "Unload ("..GunWireDescs["Unload"]..")", 
-                                                        "Reload", 
-                                                        "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
+                Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse )
             end     
         
         --to cover guns that get its ammo directly from the crate
         else
             local Cal = Gun.Caliber
 
-            if Cal>=3 and Cal<=12 then
-                Gun.Inputs = Wire_AdjustInputs( Gun, {  "Fire", 
-                                                        "Unload ("..GunWireDescs["Unload"]..")" , 
-                                                        "Fuse Time ("..GunWireDescs["FuseTime"]..")", 
-                                                        "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
+            if Cal>=2 and Cal<=14 then
+                Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse_noreload )
             else
-                Gun.Inputs = Wire_AdjustInputs( Gun, {  "Fire", 
-                                                        "Unload ("..GunWireDescs["Unload"]..")", 
-                                                        "ROFLimit ("..GunWireDescs["ROFLimit"]..")"} )
+                Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse_noreload )
             end
         end
     
+        Gun.Outputs = WireLib.CreateOutputs( Gun, Outputs_Default )
+
+        Wire_TriggerOutput(Gun, "Entity", Gun)
+
         Gun.MagReload = 0
         if(Lookup.magreload) then
-            Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload)
+            Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload )
         end
 
         Gun.MinLengthBonus = 0.5 * 3.1416*(Gun.Caliber/2)^2 * Lookup.round.maxlength
@@ -415,7 +287,7 @@ function ENT:UpdateOverlayText()
 
     if #self.CrewLink > 0 then
         text = text .. "\n\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
-        text = text .. "\nTotal Loaders: "..self.LoaderCount
+        text = text .. ( self.noloaders and "" or "\nTotal Loaders: "..self.LoaderCount  )
     end
 
     if self.IsOverheated then
@@ -431,8 +303,6 @@ function ENT:UpdateOverlayText()
 end
 
 function ENT:Link( Target )
-    
---  print(Target:GetClass())
     
     if not IsValid( Target ) then
         return false, "Target not a valid entity!"      
@@ -489,7 +359,7 @@ function ENT:Link( Target )
             return false, "The gun already has 3 loaders!"  
         end
 
-        if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" or self.Class == "AL" then
+        if self.noloaders then
             return false, "This gun cannot have a loader!"  
         end 
     
@@ -959,19 +829,13 @@ do
 
                 local Cal = self.Caliber
 
-                if Cal < 12 then
-                    local FuseNoise = 1
+                if Cal < 14 then
 
                     if FusedRounds[self.BulletData.Type]  then
-                        if self.FuseTime < (0.28^math.max(Cal-3,1)) then
-                            FuseNoise = 1
-                        else
-                            FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
-                        end
                         
-                        if self.OverrideFuse then --using fusetime via wire will override the ammo fusetime!
-                            --print(wired)
-                            self.BulletData.FuseLength = self.FuseTime * FuseNoise          
+                        --using fusetime via wire will override the ammo fusetime!
+                        if self.OverrideFuse then 
+                            self.BulletData.FuseLength = self.FuseTime       
                         end 
                     end
                 end
@@ -1169,8 +1033,8 @@ function ENT:PreEntityCopy()
     end
     for Key, Value in pairs(self.CrewLink) do                   --First clean the table of any invalid entities
         if not Value:IsValid() then
-            table.remove(self.CrewLink, Value)
-        end
+            table.remove(self.CrewLink, Value) 
+        end 
     end
     for Key, Value in pairs(self.CrewLink) do                   --Then save it
         table.insert(entids, Value:EntIndex())
@@ -1197,14 +1061,16 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
                 local Ammo = CreatedEntities[ AmmoID ]
 
-                if Ammo and Ammo:IsValid() then
+                if IsValid(Ammo) then
                 
                     if Ammo:GetClass() == "acf_ammo" then
                         self:Link( Ammo )
                     elseif Ammo:GetClass() == "ace_crewseat_gunner" then
                         self:Link( Ammo )
                     elseif Ammo:GetClass() == "ace_crewseat_loader" then
-                        self:Link( Ammo )
+                        if not self.noloaders then 
+                            self:Link( Ammo )
+                        end
                     end
                 end
             end

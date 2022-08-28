@@ -243,3 +243,6 @@ end
 list.Set( "APRoundTypes", Round.Type , Round )
 list.Set( "ACFRoundTypes", Round.Type, Round )        --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, Round.Type )    --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

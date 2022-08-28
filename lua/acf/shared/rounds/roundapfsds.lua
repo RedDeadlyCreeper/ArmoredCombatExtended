@@ -99,7 +99,7 @@ function Round.cratetxt( BulletData )
     local DData = Round.getDisplayData(BulletData)
     local str = 
     {
-        "Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
+        "Muzzle Velocity: ", math.floor(BulletData.MuzzleVel), " m/s\n",
         "Max Penetration: ", math.floor(DData.MaxPen), " mm"
     }
     
@@ -267,3 +267,6 @@ end
 list.Set( "APRoundTypes", "APFSDS", Round )
 list.Set( "ACFRoundTypes", "APFSDS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "APFSDS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

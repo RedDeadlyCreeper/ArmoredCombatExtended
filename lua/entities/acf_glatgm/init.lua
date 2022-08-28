@@ -19,6 +19,7 @@ function ENT:Initialize()
     self:PhysicsInit(SOLID_VPHYSICS);
     self:SetUseType(SIMPLE_USE);
     self:SetSolid(SOLID_VPHYSICS);
+    self:SetCollisionGroup(COLLISION_GROUP_WORLD)
 
     self.PhysObj = self:GetPhysicsObject()
     self.PhysObj:EnableGravity( false )
@@ -120,7 +121,8 @@ function ENT:Think()
             
         self.Time = TimeNew
 
-        if tr.Hit then
+        --Break glatgms in contact with water. Assuming they are fast.
+        if tr.Hit or self:WaterLevel() == 3 then
             self:Detonate()
         end
 
@@ -140,6 +142,8 @@ function ENT:Detonate()
 
         ACF_ActiveMissiles[self] = nil
         self.Detonated = true
+
+        self:Remove()
 
         btdat = {}
         btdat["Type"]           = "HEAT" 
@@ -192,16 +196,8 @@ function ENT:Detonate()
     
         btdat.Pos = self:GetPos() + self:GetForward() * 2
 
-        --debugoverlay.Cross(btdat.Pos, 10, 5, Color(255,255,0),true)
-
         self.CreateShell = ACF.RoundTypes[btdat.Type].create
         self:CreateShell( btdat )
-
-        timer.Simple(0.1, function()
-            if IsValid(self) then
-                self:Remove()
-            end
-        end )
         
         local Flash = EffectData()
             Flash:SetOrigin( self:GetPos() )

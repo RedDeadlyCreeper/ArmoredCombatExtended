@@ -62,15 +62,15 @@ function SWEP:Think()
 		trace.start = userid:GetShootPos()
 		trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 		trace.filter = userid --Not hitting the owner's feet when aiming down
-		trace.mins = Vector(0,0,0)
-		trace.maxs = Vector(0,0,0)
+		trace.mins = vector_origin
+		trace.maxs = trace.mins
+
 		local tr = util.TraceHull( trace )
 		local ent = tr.Entity
-		if ent:IsValid() and self.LastSend < CurTime() then
+
+		if IsValid(ent) then
 			if not ent:IsPlayer() and not ent:IsNPC() then	
-				self.LastSend = CurTime() + 1
-				local Valid = ACF_Check( ent )
-				if Valid then
+				if ACF_Check( ent ) then
 					self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
 					self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 					self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
@@ -88,25 +88,34 @@ end
 function SWEP:PrimaryAttack()
 
 	self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
+
 	local userid = self.Owner
 	local userid = self.Owner
+
 	local trace = {}
-	trace.start = userid:GetShootPos()
-	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
-	trace.filter = userid --Not hitting the owner's feet when aiming down
-	trace.mins = Vector(0,0,0)
-	trace.maxs = Vector(0,0,0)
+	trace.start 	= userid:GetShootPos()
+	trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
+	trace.filter 	= userid --Not hitting the owner's feet when aiming down
+	trace.mins 		= vector_origin
+	trace.maxs 		= trace.mins
 	local tr = util.TraceHull( trace )
-		if ( tr.HitWorld ) then return end	
-		if CLIENT then return end
+
+	if ( tr.HitWorld ) then return end	
+	if CLIENT then return end
+
 	local ent = tr.Entity
+
 	if ent:IsValid() and ent:GetClass() ~= 'ace_debris' then
+
 		if ent:IsPlayer() || ent:IsNPC() then
-			local PlayerHealth = ent:Health() --get the health
-			local PlayerMaxHealth = ent:GetMaxHealth()--and max health too
-			local PlayerArmour = ent:Armor()
-			local PlayerMaxArmour = 100
+
+			local PlayerHealth 		= ent:Health() --get the health
+			local PlayerMaxHealth 	= ent:GetMaxHealth()--and max health too
+			local PlayerArmour 		= ent:IsPlayer() and ent:Armor() or 0
+			local PlayerMaxArmour 	= 100
+
 			if ( PlayerHealth >= PlayerMaxHealth ) then return end --if the player is healthy or somehow dead, move right along.
+
 			PlayerHealth = PlayerHealth + 3 --otherwise add 1 HP
 			ent:SetHealth( PlayerHealth ) --and boost the player's HP to that.
 			
@@ -115,29 +124,37 @@ function SWEP:PrimaryAttack()
 			self.Weapon:SetNWFloat( "MaxHP", PlayerMaxHealth )
 			self.Weapon:SetNWFloat( "MaxArmour", PlayerMaxArmour )
 			
-			local effect = EffectData()--then make some pretty effects :D ("Fixed that up a bit so it looks like it's actually emanating from the healing player, well mostly" Kaf)
 			local AngPos = userid:GetAttachment( 4 )
+			local effect = EffectData()--then make some pretty effects :D ("Fixed that up a bit so it looks like it's actually emanating from the healing player, well mostly" Kaf)
 			effect:SetOrigin( AngPos.Pos + userid:GetAimVector() * 10 )
 			effect:SetNormal( userid:GetAimVector() )
 			effect:SetEntity( self.Weapon )
 			util.Effect( "thruster_ring", effect, true, true ) --("The 2 booleans control clientside override, by default it doesn't display it since it'll lag a bit behind inputs in MP, same for sounds" Kaf)
+			
 			ent:EmitSound( "items/medshot4.wav", true, true )--and play a sound.
 		else
+
 			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
+
 			local Valid = ACF_Check ( ent )
+
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
+
 				ent.ACF.Health = math.min(ent.ACF.Health + (600/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
 				ent.ACF.Armour = math.min(ent.ACF.MaxArmour * (ent.ACF.Health/ent.ACF.MaxHealth),ent.ACF.MaxArmour)
---				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 50 , true, true )--Welding noise here, gotte figure out how to do a looped sound.
 				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_WEAPON )
 				TeslaSpark(tr.HitPos , 1 )
+
+				ACF_UpdateVisualHealth(ent)
 			end
+
 			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
 			self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 			self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 		end
 	else 
+
 		self.Weapon:SetNWFloat( "HP", 0 )
 		self.Weapon:SetNWFloat( "Armour", 0 )
 		self.Weapon:SetNWFloat( "MaxHP", 0 )
@@ -154,11 +171,11 @@ function SWEP:SecondaryAttack()
 	local userid = self.Owner
 	local trace = {}
 
-	trace.start = userid:GetShootPos()
-	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
-	trace.filter = userid
-	trace.mins = Vector(0,0,0)
-	trace.maxs = Vector(0,0,0)
+	trace.start 	= userid:GetShootPos()
+	trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
+	trace.filter 	= userid
+	trace.mins 		= vector_origin
+	trace.maxs 		= trace.mins
 
 	local tr = util.TraceHull( trace )
 
@@ -167,80 +184,54 @@ function SWEP:SecondaryAttack()
 
 	local ent = tr.Entity
 
-	if ent:IsValid() then
-		local Valid = ACF_Check ( ent )
-		if Valid then
+	if not IsValid(ent) then return end
 
-			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
-			self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
-			self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
-			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
+	if ACF_Check ( ent ) then
 
-			local HitRes = {}
+		self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
+		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
+		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
+		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 
-			if ent:IsPlayer() then
-				HitRes = ACF_Damage ( ent , {Kinetic = 0.2,Momentum = 0,Penetration = 0.2} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
-			else
+		local HitRes = {}
+		local Energy = {}
 
-				if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
+		if ent:IsPlayer() or ent:IsNPC() or ent:IsNextBot() then
+
+			Energy = { Kinetic = 0.2,Momentum = 0,Penetration = 0.2 }
+			HitRes = ACF_Damage ( ent, Energy, 2, 0, self.Owner, _, self, "Torch" )
+		else
+
+			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 				
-				HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
-				
-				local Mat 		= ent.ACF.Material or "RHA"
-				local MatData 	= ACE.Armors[Mat]
+			Energy = { Kinetic = 500, Momentum = 0, Penetration = 500 }
+			HitRes = ACF_Damage ( ent, Energy, 2, 0, self.Owner, _, self, "Torch" )
 
-				if not MatData then MatData = ACE.Armors["RHA"] end
-
-				if MatData.IsExplosive then     --ERA should detonate now
-				
-						local HEWeight = ent.ACF.Armour*0.01			
-						local Radius =( HEWeight*0.0001 )^0.33*8*39.37
-						local Owner = ent:CPPIGetOwner()
-
-					if HitRes.Kill then
-
-						--calling HE explosion function. Adjusted HE power, its possible to change on future.
-                        ACF_HE( ent:GetPos(), Vector(0,0,1), HEWeight , HEWeight, Owner , ent , ent ) 
-                      
-                    	--removing it because era simply is not removed after explosion
-						ent:Remove()   
-					
-					end
-				end
-				--this part will destroy the prop once its health is almost 0. Disabled atm			
-				if ent.ACF.Health < 2 then		
-				    ACF_APKill( ent, VectorRand() , 0)
-				    ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )  --Sound is no correct
-				end				
-			end
-			if HitRes.Kill then
-				constraint.RemoveAll( ent )
-				ent:SetParent(nil)
-				ent:SetCollisionGroup( COLLISION_GROUP_NONE ) 
-				local Phys = ent:GetPhysicsObject()
-				Phys:EnableMotion( true )
-				Phys:Wake()
-			else
-				local effectdata = EffectData()
-				effectdata:SetMagnitude( 1.0 )
-				effectdata:SetRadius( 1.0 )
-				effectdata:SetScale( 1.0 )
-				effectdata:SetStart( userid:GetShootPos() )
-				effectdata:SetOrigin( tr.HitPos )
-				util.Effect( "Sparks", effectdata , true , true )
---				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", true , true ) --old annoyinly loud sounds
-				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", 75, 100, 1, CHAN_WEAPON )
-			end
-		else 
-			self.Weapon:SetNWFloat( "HP", 0 )
-			self.Weapon:SetNWFloat( "Armour", 0 )
-			self.Weapon:SetNWFloat( "MaxHP", 0 )
-			self.Weapon:SetNWFloat( "MaxArmour", 0 )
 		end
 
+		if HitRes.Kill and not ent:IsPlayer() then
+
+			ACF_APKill( ent, VectorRand() , 0)
+			ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO ) 
+		else
+			local effectdata = EffectData()
+			effectdata:SetMagnitude( 2.0 )
+			effectdata:SetRadius( 1.0 )
+			effectdata:SetScale( 1.0 )
+			effectdata:SetStart( userid:GetShootPos() )
+			effectdata:SetOrigin( tr.HitPos )
+
+			util.Effect( "Sparks", effectdata , true , true )
+			ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", 75, 100, 1, CHAN_WEAPON )
+		end
+	else 
+		self.Weapon:SetNWFloat( "HP", 0 )
+		self.Weapon:SetNWFloat( "Armour", 0 )
+		self.Weapon:SetNWFloat( "MaxHP", 0 )
+		self.Weapon:SetNWFloat( "MaxArmour", 0 )
 	end
-	
 end
+
 function SWEP:Reload()
 
 end

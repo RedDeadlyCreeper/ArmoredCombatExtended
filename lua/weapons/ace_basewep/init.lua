@@ -116,12 +116,11 @@ function SWEP:ACEFireBullet()
     local EyeAngle = self.Owner:EyeAngles()
     --Boolet Firing
     local RandUnitSquare = (EyeAngle:Up() * (2 * math.random() - 1) + EyeAngle:Right() * (2 * math.random() - 1))
-    local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * self.InaccuracyAccumulation * (1 - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber) * sprinting * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+    local Spread = RandUnitSquare:GetNormalized() * self.Primary.Cone * self.InaccuracyAccumulation * math.max(1 - self.ZoomAccuracyImprovement * ZoomedNumber - self.CrouchAccuracyImprovement * CrouchedNumber, 0.01) * sprinting * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
 --  local Spread = Vector(0 , 0 , 0)
 --  local Spread = EyeAngle:Forward()/10 * SWEP.coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4))) 
     local ShootVec = EyeAngle:Forward()+Spread
 --  local ShootVec = EyeAngle:Forward()
-    
     self.BulletData.Pos = MuzzlePos+EyeAngle:Forward()*30 --35
     self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + self.Owner:GetVelocity()
     

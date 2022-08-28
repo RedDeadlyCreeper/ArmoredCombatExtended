@@ -26,6 +26,8 @@ Material.spallmult      = 0.01
 Material.ArmorMul       = 0.01
 Material.NormMult       = 0.05
 
+Material.Stopshock      = true
+
 if SERVER then
     function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
         

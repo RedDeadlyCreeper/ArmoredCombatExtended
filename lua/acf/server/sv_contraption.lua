@@ -216,6 +216,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 end
 )
 
+
 -- Optimization resource, this will try to clean the main table just to reduce Ent count
 function ACE_refreshdata()
 

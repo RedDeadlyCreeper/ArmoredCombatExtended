@@ -8,6 +8,7 @@ ACF_defineGunClass("SA", {
 	rofmod = 0.5,
 	year = 1935,
 	sound = "acf_extra/tankfx/gnomefather/25mm1.wav",
+	noloader = true,
 
 } )
 

@@ -519,3 +519,20 @@ r100
 
 *r140
 - Initial fix for Starfall library. Some bugs will exist, but basic functions are working. Please report any problems in the ACE discord or on Github.
+
+*r141
+- Added more extended lighting during combat (muzzleflashes, explosions, glatgm, flares). Can be enabled via client.
+- Implemented first stage of water effects into ACE: Missiles cannot ignite their motors underwater. glatgms will detonate in contact with the water.
+- Flares will be killed in contact with water. No needed to confuse missiles underwater.
+- Added a new tool to override vanilla 3rd person seat, meant to ignore any object from colliding with the view. Can be duped.
+- Any invalid ammocrate will be returned into AP.
+- kornet missile should look as it is now.
+- Fixed ghost cracks being heard by AT missiles and non existant bullets. Its possible to hear this last one in some cases yet.
+- Fixed bullet fuse calculation. Now more precise. Thanks twisted
+- Fixed choppy engine sound. Thanks Cheezus
+- Flares can ignite players and npcs.
+- Limited ERA HE accumulation.
+- 9M311 sam missile will use laser guidance only.
+- Removed loader count on overlay for weapons that cannot have them.
+- Removed 3rd cam global override. Broke some addons, use the new tool instead.
+- Polished some stuff.

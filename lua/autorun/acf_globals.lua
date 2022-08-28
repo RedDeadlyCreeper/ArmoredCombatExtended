@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 465           -- ACE current version
+ACF.Version = 466           -- ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
@@ -35,7 +35,6 @@ CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
 
-ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )      -- Should flares light players and NPCs on fire?  Does not affect godded players.
 ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )      -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities. 
 
 -- Cvars for legality checking

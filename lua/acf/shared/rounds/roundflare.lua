@@ -21,7 +21,11 @@ function Round.create( Gun, BulletData )
 		ent:SetAngles( BulletData.Flight:Angle() )
 		ent.Life = (BulletData.FillerMass or 1) / (0.4*ACFM.FlareBurnMultiplier)
 		ent:Spawn()
-		ent:SetOwner( Gun.Owner )
+		ent:SetOwner( Gun )
+
+		if CPPI then
+			ent:CPPISetOwner( Gun.Owner)
+		end
 
 		local phys = ent:GetPhysicsObject()
 		phys:SetVelocity( BulletData.Flight )
@@ -123,7 +127,6 @@ function Round.cratetxt( BulletData )
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Burn Rate: ", math.Round(DData.BurnRate, 1), " kg/s\n",
 		"Burn Duration: ", math.Round(DData.BurnTime, 1), " s\n"--,
-		--"Distract Chance: ", math.floor(DData.DistractChance * 100), " %"
 	}
 	
 	return table.concat(str)
@@ -131,24 +134,6 @@ function Round.cratetxt( BulletData )
 end
 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
-	
-	local canIgnite = GetConVar("ACFM_FlaresIgnite"):GetBool()
-	
-	if canIgnite then
-		
-		--TODO: use ACF_BulletDamage( Type, Entity, Energy, Area, Angle, Inflictor, Bone, Gun, IsFromAmmo )
-		
-		local Type = ACF_Check(Target)
-		
-		if Type == "Squishy" then
-			
-			if (Target:IsPlayer() and not Target:HasGodMode()) or Target:IsNPC() then
-				Target:Ignite(30)
-			end
-			
-		end
-		
-	end
 	
 	return false
 	
@@ -257,3 +242,6 @@ end
 list.Set( "SPECSRoundTypes", "FLR", Round ) 
 list.Set( "ACFRoundTypes", "FLR", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "FLR" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

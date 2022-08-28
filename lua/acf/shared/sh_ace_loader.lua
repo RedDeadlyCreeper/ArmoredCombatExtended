@@ -53,25 +53,27 @@ local irst_base = {
 
 -- add gui stuff to base classes if this is client
 if CLIENT then
-    gun_base.guicreate          = function( Panel, Table ) ACFGunGUICreate( Table ) end or nil
+    gun_base.guicreate          = function( Panel, Table ) ACFGunGUICreate( Table )         end or nil
     gun_base.guiupdate          = function() return end
     
-    engine_base.guicreate       = function( panel, tbl ) ACFEngineGUICreate( tbl ) end or nil
-    engine_base.guiupdate       = function() return end
+    --engine_base.guicreate       = function( panel, tbl ) ACE_EngineGUI_Create( tbl )        end or nil -- experimental
+    --engine_base.guiupdate       = function( panel, tbl ) ACE_EngineGUI_Update( tbl )        end or nil
     
-    gearbox_base.guicreate      = function( panel, tbl ) ACFGearboxGUICreate( tbl ) end or nil
+    engine_base.guicreate       = function( panel, tbl ) ACE_EngineGUI_Update( tbl )        end or nil 
+
+    gearbox_base.guicreate      = function( panel, tbl ) ACFGearboxGUICreate( tbl )         end or nil
     gearbox_base.guiupdate      = function() return end
     
-    fueltank_base.guicreate     = function( panel, tbl ) ACFFuelTankGUICreate( tbl ) end or nil
-    fueltank_base.guiupdate     = function( panel, tbl ) ACFFuelTankGUIUpdate( tbl ) end or nil
+    fueltank_base.guicreate     = function( panel, tbl ) ACFFuelTankGUICreate( tbl )        end or nil
+    fueltank_base.guiupdate     = function( panel, tbl ) ACFFuelTankGUIUpdate( tbl )        end or nil
 
-    radar_base.guicreate        = function( Panel, Table ) ACFRadarGUICreate( Table ) end
+    radar_base.guicreate        = function( Panel, Table ) ACFRadarGUICreate( Table )       end
     radar_base.guiupdate        = function() return end
 
-    trackradar_base.guicreate   = function( Panel, Table ) ACFTrackRadarGUICreate( Table ) end or nil
+    trackradar_base.guicreate   = function( Panel, Table ) ACFTrackRadarGUICreate( Table )  end or nil
     trackradar_base.guiupdate   = function() return end
 
-    irst_base.guicreate         = function( Panel, Table ) ACFIRSTGUICreate( Table ) end or nil
+    irst_base.guicreate         = function( Panel, Table ) ACFIRSTGUICreate( Table )        end or nil
     irst_base.guiupdate         = function() return end
 end
 

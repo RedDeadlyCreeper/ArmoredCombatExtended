@@ -72,7 +72,7 @@ ACF_defineGun("9M133 ASM", { 									-- id
 	year = 1994,
 	rofmod = 0.7,
 	round = {
-		model			= "models/missiles/glatgm/9m112f.mdl", 	-- shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
+		model			= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl", 	-- shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
 		rackmdl			= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 		maxlength		= 105,
 		casing			= 0.2,									-- thickness of missile casing, cm
@@ -266,7 +266,7 @@ ACF_defineGun("FGM-148 ASM", {
 		minspeed		= 1000,									-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.02,									-- drag coefficient while falling               --was 0.01
 		dragcoefflight  = 0.025,                 				-- drag coefficient during flight
-		finmul			= 0.2,									-- fin multiplier (mostly used for unpropelled guidance)
+		finmul			= 0.4,									-- fin multiplier (mostly used for unpropelled guidance)
         penmul      	= math.sqrt(0.55)  						-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
@@ -280,5 +280,7 @@ ACF_defineGun("FGM-148 ASM", {
     				["1x Javelin"] = true
     			},    
     agility     = 0.5,     										-- multiplier for missile turn-rate.
-    armdelay    = 1     										-- minimum fuse arming delay
+    armdelay    = 1,     										-- minimum fuse arming delay
+    
+    prepush     = false, 										-- Additional push and delaying motor ignition
 } )

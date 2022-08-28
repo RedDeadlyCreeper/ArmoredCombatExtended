@@ -3,8 +3,6 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-DEFINE_BASECLASS( "base_wire_entity" )
-
 function ENT:Initialize()
 
     self.ThinkDelay             = 0.1

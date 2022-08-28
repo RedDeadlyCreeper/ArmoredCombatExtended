@@ -276,9 +276,10 @@ function PANEL:Init( )
    local Gearboxes      = Mobility:AddNode( "Gearboxes" , "icon16/brick.png"  )
    local FuelTanks      = Mobility:AddNode( "Fuel Tanks" , "icon16/brick.png"  )
    local Engines        = Mobility:AddNode("Engines" , "icon16/brick.png" )
-   
+
    local EngineSubcats  = {}
-        
+
+
    for _, MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
       local Categories  = EngineSubcats
       local NodeAdd     = Mobility
@@ -666,8 +667,8 @@ function ACFCLGUICreate( Table )
    local Effects = vgui.Create( "DForm" )
    Effects:SetName("Rendering")
 
-   Effects:CheckBox("Allow missile motor lighting", "ACFM_MissileLights")
-   Effects:ControlHelp( "Enable dynamic lights to be emitted from missile motors (impacts performance!)" )
+   Effects:CheckBox("Allow lighting rendering", "ACFM_MissileLights")
+   Effects:ControlHelp( "Enables lighting for explosions, muzzle flashes and rocket motors, increasing the inmersion during combat, however, may impact heavily the performance and it's possible it doesn't render properly in certain map surfaces." )
 
    Effects:CheckBox("Draw Mobility rope links", "ACF_MobilityRopeLinks")
    Effects:ControlHelp( "Allow you to see the links between engines and gearboxes (requires dupe restart)" )

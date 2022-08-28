@@ -20,7 +20,7 @@ local function CalcArmor( Area, Ductility, Thickness, Mat )
 
     Mat = Mat or "RHA"
 
-    local MatData       = ACE.Armors[Mat]
+    local MatData       = ACE_GetMaterialData( Mat )
     local MassMod       = MatData.massMod
     
     local mass          = Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * MassMod
@@ -216,7 +216,7 @@ if CLIENT then
 
             if ToolPanel.panel then
 
-                local MatData = ACE.Armors[value]
+                local MatData = ACE_GetMaterialData( value )
 
                 --Use RHA if the choosen material is invalid or doesnt exist
                 if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
@@ -417,7 +417,7 @@ function TOOL:Think()
     if ACF_Check( ent ) then
 
         local Mat = ent.ACF.Material or "RHA"
-        local MatData = ACE.Armors[Mat]
+        local MatData =  ACE_GetMaterialData( Mat )
 
         if not MatData then return end
 
@@ -461,7 +461,7 @@ function TOOL:DrawHUD()
     local thickness     = GetConVarNumber( "acfarmorprop_thickness" )
     local mat           = GetConVarString( "acfarmorprop_material" ) or "RHA"
 
-    local MatData       = ACE.Armors[mat]
+    local MatData       = ACE_GetMaterialData( mat )
 
     local mass, armor, health = CalcArmor( area, ductility / 100, thickness , mat)
     mass = math.min( mass, 50000 )

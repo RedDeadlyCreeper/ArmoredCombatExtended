@@ -10,6 +10,7 @@ local TraceInit = { output = TraceRes }
 --Used for filter certain undesired ents inside of HE processing
 ACF.HEFilter = {
     gmod_wire_hologram          = true,
+    starfall_hologram           = true,
     prop_vehicle_crane          = true,
     prop_dynamic                = true,
     ace_debris                  = true,
@@ -31,26 +32,6 @@ ACE.CritEnts = {
     gmod_wire_gate              = true
 }
 
---Used to avoid ERA chain reactions
-ACE.RealGuns = {
-    acf_gun                     = true,
-    acf_missile                 = true,
-    acf_glatgm                  = true
-}
-
---ents that should receive the spall instead of being used as shockwave transfer
-ACF.VulnerableEnts = {
-
-    acf_gun                     = true,
-    acf_engine                  = true,
-    acf_fueltank                = true,
-    acf_gearbox                 = true,
-    acf_ammo                    = true,
-    acf_rack                    = true,
-    prop_vehicle_prisoner_pod   = true
-
-}
-
 --I don't want HE processing every ent that it has in range
 function ACF_HEFind( Hitpos, Radius )
 
@@ -66,6 +47,7 @@ function ACF_HEFind( Hitpos, Radius )
 
     return Table
 end
+
 --[[----------------------------------------------------------------------------
     Function:
         ACF_HE
@@ -119,7 +101,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
                     TraceInit.start     = Hitpos
                     TraceInit.endpos    = Tar:WorldSpaceCenter()
                     TraceInit.filter    = OccFilter
-                    TraceInit.mask      = MASK_SOLID
                     TraceInit.mins      = vector_origin
                     TraceInit.maxs      = TraceInit.mins 
                     util.TraceHull( TraceInit )
@@ -249,9 +230,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
                     Occlusion.start     = NewHitpos
                     Occlusion.endpos    = NewHitat + (NewHitat-NewHitpos):GetNormalized()*100
                     Occlusion.filter    = NoOcc
-                    Occlusion.mask      = MASK_SOLID
-                    Occlusion.mins      = Vector( 0, 0, 0 )
-                    Occlusion.maxs      = Vector( 0, 0, 0 )
+                    Occlusion.mins      = vector_origin
+                    Occlusion.maxs      = Occlusion.mins
 
                     local Occ   = util.TraceHull( Occlusion )   
                     
@@ -261,9 +241,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
                         Occlusion.start     = NewHitpos
                         Occlusion.endpos    = NewHitat + (NewHitat-NewHitpos):GetNormalized()*100
                         Occlusion.filter    = NoOcc
-                        Occlusion.mask      = MASK_SOLID
-                        Occlusion.mins      = Vector( 0, 0, 0 )
-                        Occlusion.maxs      = Vector( 0, 0, 0 )                       
+                        Occlusion.mins      = vector_origin
+                        Occlusion.maxs      = Occlusion.mins                      
 
                         Occ = util.TraceHull( Occlusion )   
                     end
@@ -335,7 +314,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
     if not ACF.Spalling then return end
     
     local Mat           = Material or "RHA"
-    local MatData       = ACE.Armors[Mat]
+    local MatData       = ACE_GetMaterialData( Mat )
 
     -- Spall damage
     local SpallMul      = MatData.spallmult or 1
@@ -384,12 +363,6 @@ end
 
 do
 
-    local AllowedMaterials = {
-        Rub = true,
-        ERA = true,
-        Texto = true
-    }
-
     --Dedicated function for HESH spalling
     function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 
@@ -424,8 +397,8 @@ do
         TrFront.endpos      = HitPos + HitVec:GetNormalized()*Caliber*1.5
         TrFront.ignoreworld = true
         TrFront.filter      = {}
-        TrFront.mins        = Vector(0,0,0)
-        TrFront.maxs        = Vector(0,0,0)
+        TrFront.mins        = vector_origin
+        TrFront.maxs        = TrFront.mins
 
         --Traceback general data--
         local TrBack        = {}
@@ -433,8 +406,8 @@ do
         TrBack.endpos       = HitPos
         TrBack.ignoreworld  = true
         TrBack.filter       = function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then return true end end
-        TrBack.mins         = Vector(0,0,0)
-        TrBack.maxs         = Vector(0,0,0)
+        TrBack.mins         = vector_origin
+        TrBack.maxs         = TrBack.maxs
 
         while FindEnd do
 
@@ -469,6 +442,7 @@ do
 
                     --prop's material
                     local mat = tracefront.Entity.ACF and tracefront.Entity.ACF.Material or "RHA"
+                    local MatData = ACE_GetMaterialData( mat )
 
 
                     local Hasvoid = false
@@ -490,11 +464,11 @@ do
                     end
 
                     --check if we have spaced armor, spall liners ahead, if so, end here
-                    if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACF.VulnerableEnts[ tracefront.Entity:GetClass() ]) or AllowedMaterials[mat] then
+                    if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACF.CritEnts[ tracefront.Entity:GetClass() ]) or Material.Stopshock then
                         --print('stopping')
-                        FindEnd = false
-                        finalpos = HitBacks[iteration - 1] + HitVec:GetNormalized()*0.1
-                        fNormal = Normals[iteration - 1]
+                        FindEnd     = false
+                        finalpos    = HitBacks[iteration - 1] + HitVec:GetNormalized()*0.1
+                        fNormal     = Normals[iteration - 1]
                         --print('iteration #'..iteration..' / FINISHED!') 
 
                         break 
@@ -527,15 +501,12 @@ do
 
             --flag this iteration as lost
             if not tracefront.Hit then
-                --print('[ACE|WARN]- TRACE HAS BROKEN!')
-                TraceBugged = true
-            end
 
-            --break if the trace has bugged.
-            if TraceBugged  then
-                FindEnd = false 
-                finalpos = HitBack + HitVec:GetNormalized()*0.1
-                fNormal = Normals[iteration]
+                --print('[ACE|WARN]- TRACE HAS BROKEN!')
+
+                FindEnd     = false 
+                finalpos    = HitBack + HitVec:GetNormalized()*0.1
+                fNormal     = Normals[iteration]
                 --print('iteration #'..iteration..' / FINISHED')
 
                 break
@@ -564,7 +535,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
     spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 
     local Mat = Material or "RHA"
-    local MatData       = ACE.Armors[Mat]
+    local MatData       = ACE_GetMaterialData( Mat )
 
     -- Spall damage
     local SpallMul      = MatData.spallmult or 1
@@ -639,7 +610,7 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
         local Angle         = ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
 
         local Mat           = SpallRes.Entity.ACF.Material or "RHA"
-        local MatData       = ACE.Armors[Mat]
+        local MatData       = ACE_GetMaterialData( Mat )
 
         local spallarmor    = MatData.spallarmor
         local spallresist   = MatData.spallresist
@@ -647,7 +618,7 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
         SpallEnergy.Penetration = SpallEnergy.Penetration / spallarmor
 
         --extra damage for ents like ammo, engines, etc
-        if ACF.VulnerableEnts[ SpallRes.Entity:GetClass() ] then
+        if ACE.CritEnts[ SpallRes.Entity:GetClass() ] then
             SpallEnergy.Penetration = SpallEnergy.Penetration * 1.5
         end
 
@@ -966,7 +937,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
         --ERA props should not create debris
         local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
-        local MatData = ACE.Armors[Mat]
+        local MatData = ACE_GetMaterialData( Mat )
         if MatData.IsExplosive then return end
     
     end
@@ -1015,7 +986,7 @@ function ACF_APKill( Entity , HitVector , Power )
 
         --ERA props should not create debris
         local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
-        local MatData = ACE.Armors[Mat]
+        local MatData = ACE_GetMaterialData( Mat )
         if MatData.IsExplosive then return end
 
     end

@@ -456,6 +456,7 @@ end
 
 function ACE_SGunFire( Gun, Sound, Propellant )
 
+    if not IsValid(Gun) then return end
     if not Sound or Sound == "" then return end
 
     Propellant = math.max(Propellant,50)
@@ -553,9 +554,6 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
     local entply = ply
 
-    --flag this, so we are not playing this sound for this bullet next time
-    BulletData.CrackCreated = true
-
     debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
 
     local count     = 1
@@ -579,8 +577,13 @@ function ACE_SBulletCrack( BulletData, Caliber )
         local Delay     = ( Dist/1500 ) * ACE.DelayMultipler                                --print('amount to match: '..Delay)
 
         if count > Delay then
+
             if not Emitted then
+
                 Emitted = true
+
+                --flag this, so we are not playing this sound for this bullet next time
+                BulletData.CrackCreated = true
 
                 local VolFix = 1
 
