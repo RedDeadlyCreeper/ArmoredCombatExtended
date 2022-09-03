@@ -58,7 +58,7 @@ function ACF_CreateBullet( BulletData )
 
    end 
 
-   BulletData.Filter          = { BulletData.Gun }
+   BulletData.Filter          = BulletData.Filter or { BulletData.Gun }
    BulletData.Index           = ACF.CurBulletIndex
 
    ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)     --Place the bullet at the current index pos

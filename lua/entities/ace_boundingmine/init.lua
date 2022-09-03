@@ -16,9 +16,12 @@ function ENT:Initialize()
 	
 	self.TimeVar = 1
 	self.MineState = 0
-	self.FuseTime = 0.3
+	self.FuseTime = 0.5
 	self.phys = phys
 	self.LastTime = 0
+	self:DrawShadow( false )
+	self:SetMaterial( "models/props_canal/canal_bridge_railing_01c" )
+	
 	if ( IsValid( phys ) ) then phys:Wake() end
 end
 
@@ -67,7 +70,7 @@ function ENT:Think()
 					self.phys:EnableMotion(true)
 					self.phys:ApplyForceCenter(self:GetUp()*self.phys:GetMass()*-230)
 					self.LastTime = CurTime()
-					self:EmitSound("acf_extra/tankfx/guns/m60_fire_1.wav")
+					self:EmitSound("weapons/amr/sniper_fire.wav", 75, 190, 1, CHAN_WEAPON )
 				end
 			end
 		end
@@ -79,15 +82,16 @@ function ENT:Think()
 		self.LastTime = CurTime()
 
 		if self.FuseTime < 0 then
-		
+
 			--print(self:GetOwner())
-			ACF_HE( self:GetPos() , Vector(0,0,1) , 4 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 
 			local Flash = EffectData()
 				Flash:SetOrigin( self:GetPos() - self:GetUp()*6 )
 				Flash:SetNormal( Vector(0,0,-1) )
 				Flash:SetRadius( math.max( 0.2, 1 ) )
 			util.Effect( "ACF_Scaled_Explosion", Flash )
+
 
 			self:Remove()
 		end

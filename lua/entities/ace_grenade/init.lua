@@ -5,14 +5,16 @@ include("shared.lua")
 
 
 function ENT:Initialize()
-
-	self:SetModel( "models/weapons/w_eq_fraggrenade_thrown.mdl" )
-	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:PhysicsInit(SOLID_VPHYSICS);
+	self:SetModel( "models/weapons/w_eq_fraggrenade.mdl" )
+	self:SetSolid( SOLID_BBOX )
+	self:SetCollisionBounds( Vector( -2 , -2 , -2 ) , Vector( 2 , 2 , 2 ) )
+	self:SetMoveType(MOVETYPE_FLYGRAVITY);
+	self:PhysicsInit(MOVECOLLIDE_FLY_CUSTOM);
 	self:SetUseType(SIMPLE_USE);
-	self:SetSolid(SOLID_VPHYSICS);
+
+	
 	local phys = self:GetPhysicsObject()
-	phys:SetMass(4.5) --4.1 kg mine, round down.
+	phys:SetMass(5) --4.1 kg mine, round down.
 	
 	self.FuseTime = 4
 	self.phys = phys
@@ -20,9 +22,13 @@ function ENT:Initialize()
 	if ( IsValid( phys ) ) then 
 		phys:Wake() 
 		phys:SetBuoyancyRatio( 5 ) 
-		phys:SetDragCoefficient( 1 )
-		phys:SetDamping( 0.75, 0.75 )
+		phys:SetDragCoefficient( 0 )
+		phys:SetDamping( 0, 8 )
+		phys:SetMaterial( "grenade" )
 	end
+
+	self:EmitSound( "npc/roller/blade_in.wav", 150, 100, 2, CHAN_AUTO )
+
 end
 
 function ENT:Think()

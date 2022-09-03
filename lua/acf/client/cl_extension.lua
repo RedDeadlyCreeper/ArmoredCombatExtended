@@ -520,14 +520,17 @@ function ACE_SGunFire( Gun, Sound, Propellant )
                     end
 
                     ACE.Sounds.GunTb[GunId] = (ACE.Sounds.GunTb[GunId] or 0) + 1
-                    if ACE.Sounds.GunTb[GunId] > #SoundData[State]["Package"] then ACE.Sounds.GunTb[GunId] = 1 end
 
-                    --print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
+                    if SoundData[State] then
+                        if ACE.Sounds.GunTb[GunId] > #SoundData[State]["Package"] then ACE.Sounds.GunTb[GunId] = 1 end
 
-                    Sound   = SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]] 
+                        --print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
 
-                    VolFix  = SoundData[State]["Volume"]
-                    Pitch   = SoundData[State]["Pitch"]
+                        Sound   = SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]] 
+
+                        VolFix  = SoundData[State]["Volume"]
+                        Pitch   = SoundData[State]["Pitch"]
+                    end
                     
                 end
 

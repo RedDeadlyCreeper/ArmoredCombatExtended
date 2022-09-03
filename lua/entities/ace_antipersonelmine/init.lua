@@ -13,6 +13,8 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(0.5) --4.1 kg mine, round down.
+	self:DrawShadow( false )
+	self:SetMaterial( "models/props_canal/metalwall005b" )
 	
 	self.TimeVar = 1
 	self.MineState = 0
@@ -41,7 +43,7 @@ function ENT:Think()
 					
 			if groundRanger.Hit and groundRanger.HitWorld then
 
-				self:SetPos(groundRanger.HitPos+Vector(0,0,-1.7))
+				self:SetPos(groundRanger.HitPos+Vector(0,0,-1.05))
 				self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
 				self.MineState = 1
 				self.phys:EnableMotion(false)

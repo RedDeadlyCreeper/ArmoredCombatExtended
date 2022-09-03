@@ -6,14 +6,16 @@ include("shared.lua")
 
 function ENT:Initialize()
 
-	self:SetModel( "models/maxofs2d/hover_plate.mdl" )
+	self:SetModel( "models/maxofs2d/button_02.mdl" )
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(8)
-	
+	self:DrawShadow( false )
+	self:SetMaterial( "models/props_canal/metalwall005b" )
+
 	self.TimeVar = 1
 	self.MineState = 0
 	self.phys = phys
@@ -38,7 +40,7 @@ function ENT:Think()
 			} )	
 					
 			if groundRanger.Hit and groundRanger.HitWorld then
-				self:SetPos(groundRanger.HitPos+Vector(0,0,-1))
+				self:SetPos(groundRanger.HitPos+Vector(0,0,-2.5))
 				self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
 				self.MineState = 1
 				self.phys:EnableMotion(false)
