@@ -188,6 +188,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.InitTime = SysTime()
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
+	Bullet.FlightTime       = 0 --reseting timer
 	Bullet.FuseLength = 0.1 + 10/(Bullet.Flight:Length()*0.0254)
 	Bullet.DragCoef = Bullet.SlugDragCoef
 	

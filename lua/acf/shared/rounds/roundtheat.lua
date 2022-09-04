@@ -223,6 +223,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
         ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * (1-Bullet.HEAllocation), Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
 
         Bullet.InitTime         = SysTime()
+        Bullet.FlightTime       = 0 --reseting timer
         Bullet.FuseLength       = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
         Bullet.Pos              = HitPos
         Bullet.Flight           = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
@@ -247,6 +248,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
         ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * Bullet.HEAllocation, Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
     
         Bullet.InitTime         = SysTime()
+        Bullet.FlightTime       = 0 --reseting timer
         Bullet.FuseLength       = 0.005 + 40/((Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37):Length()*0.0254)
         Bullet.Pos              = HitPos
         Bullet.Flight           = Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37

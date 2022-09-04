@@ -129,10 +129,6 @@ function Round.getDisplayData(Data)
 
     local SlugEnergy    = ACF_Kinetic( Data.SlugMV*39.37 , Data.SlugMass, 999999 )
 
-    --print("SlugEnergy: "..SlugEnergy.Penetration)
-    --print("SlugPenAera: "..Data.SlugPenAera)
-    --print("KEtoRHA: "..ACF.KEtoRHA)
-
     GUIData.MaxPen      = (SlugEnergy.Penetration/Data.SlugPenAera)*ACF.KEtoRHA
     GUIData.BlastRadius = (Data.BoomFillerMass)^0.33*8--*39.37
     GUIData.Fragments   = math.max(math.floor((Data.BoomFillerMass/Data.CasingMass)*ACF.HEFrag),2)
@@ -187,6 +183,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
     Bullet.Detonated        = true
     Bullet.InitTime         = SysTime()
+    Bullet.FlightTime       = 0 --reseting timer
     Bullet.FuseLength       = 0.005 + 40/((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length()*0.0254)
     Bullet.Pos              = HitPos
     Bullet.Flight           = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
@@ -221,27 +218,27 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             Round.detonate( Index, Bullet, HitPos, HitNormal )
             return "Penetrated"
 
-        end --Bullet sends Jet
+        else --Bullet sends Jet
 
-        Bullet.NotFirstPen = true
-        
-        local Speed  = Bullet.Flight:Length() / ACF.VelScale
-        local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, 999999 )
-        local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-        
-        if HitRes.Overkill > 0 then
-
-            table.insert( Bullet.Filter , Target )
-
-            ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-            Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
+            Bullet.NotFirstPen = true
             
-            return "Penetrated"
-        else
+            local Speed  = Bullet.Flight:Length() / ACF.VelScale
+            local Energy = ACF_Kinetic( Speed, Bullet.ProjMass, 999999 )
+            local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 
-            return false
+            if HitRes.Overkill > 0 then
+
+                table.insert( Bullet.Filter , Target )
+
+                ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+                Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
+                
+                return "Penetrated"
+            else
+
+                return false
+            end
         end
-          
     else
         table.insert( Bullet.Filter , Target )
         return "Penetrated"
@@ -256,7 +253,8 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
         return "Penetrated"
     end
     
-    local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, 999999 )
+    local Speed  = Bullet.Flight:Length() / ACF.VelScale
+    local Energy = ACF_Kinetic( Speed, Bullet.ProjMass, 999999 )
     local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
     
     if HitRes.Penetrated then

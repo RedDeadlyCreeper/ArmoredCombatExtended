@@ -29,7 +29,7 @@ local DebugTime = 0.1
    creates a new bullet being fired
 ]]--------------------------------------------------------------------------------------------------
 function ACF_CreateBullet( BulletData )
-   
+
    -- Increment the index
    ACF.CurBulletIndex = ACF.CurBulletIndex + 1     
 

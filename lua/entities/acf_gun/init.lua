@@ -114,23 +114,23 @@ do
     function MakeACF_Gun(Owner, Pos, Angle, Id)
 
         local EID       = BackComp[Id] or Id or "100mmC"
-        local List      = list.Get("ACFEnts")
+        local List      = ACF.Weapons
         local Lookup    = List.Guns[EID]
     
         if Lookup.gunclass == "SL" then
             if not Owner:CheckLimit("_acf_smokelauncher") then return false end
         else
     
-        if Lookup.gunclass == "RAC" or Lookup.gunclass == "MG" or Lookup.gunclass == "AC" then
-            if not Owner:CheckLimit("_acf_rapidgun") then return false end
-        elseif Lookup.caliber >= ACF.LargeCaliber then
-            if not Owner:CheckLimit("_acf_largegun") then return false end
-        end 
+            if Lookup.gunclass == "RAC" or Lookup.gunclass == "MG" or Lookup.gunclass == "AC" then
+                if not Owner:CheckLimit("_acf_rapidgun") then return false end
+            elseif Lookup.caliber >= ACF.LargeCaliber then
+                if not Owner:CheckLimit("_acf_largegun") then return false end
+            end 
             if not Owner:CheckLimit("_acf_gun") then return false end
         end
     
         local Gun = ents.Create("acf_gun")
-        local ClassData = list.Get("ACFClasses").GunClass[Lookup.gunclass]
+        local ClassData = ACF.Classes.GunClass[Lookup.gunclass]
 
         if not IsValid(Gun) then return false end
 
@@ -148,7 +148,9 @@ do
         Gun.Heat            = ACE.AmbientTemp
         Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1)^1.2
 
-        Gun.noloaders       = ClassData.noloader or nil
+        Gun.noloaders       = ClassData.noloader or nil 
+
+        Gun.Inaccuracy = ClassData.spread
 
         if ClassData.color then
             Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
@@ -198,21 +200,21 @@ do
 
         Gun.MinLengthBonus = 0.5 * 3.1416*(Gun.Caliber/2)^2 * Lookup.round.maxlength
 
-        Gun:SetNWString( "WireName", Lookup.name )
-        Gun:SetNWString( "Class", Gun.Class )
-        Gun:SetNWInt( "Caliber", Gun.Caliber )
-        Gun:SetNWString( "ID", Gun.Id )
-
-        Gun.Muzzleflash     = ClassData.muzzleflash
+        Gun.Muzzleflash     = Lookup.muzzleflash or ClassData.muzzleflash
         Gun.RoFmod          = ClassData.rofmod
         Gun.RateOfFire      = 1 --updated when gun is linked to ammo
         Gun.Sound           = Lookup.sound or ClassData.sound
         Gun.AutoSound       = ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
 
+        Gun:SetNWInt( "Caliber", Gun.Caliber )
+        Gun:SetNWString( "WireName", Lookup.name )
+        Gun:SetNWString( "Class", Gun.Class )
+        Gun:SetNWString( "ID", Gun.Id )
+        Gun:SetNWString( "Muzzleflash", Gun.Muzzleflash )
         Gun:SetNWString( "Sound", Gun.Sound )
-        Gun.Inaccuracy = ClassData.spread
+
         Gun:SetModel( Gun.Model )   
-    
+
         Gun:PhysicsInit( SOLID_VPHYSICS )       
         Gun:SetMoveType( MOVETYPE_VPHYSICS )        
         Gun:SetSolid( SOLID_VPHYSICS )
@@ -240,25 +242,23 @@ do
     
         Owner:AddCleanup( "acfmenu", Gun )
     
-    if Lookup.gunclass == "SL" then
-        Owner:AddCount("_acf_smokelauncher", Gun)
-    else
+        if Lookup.gunclass == "SL" then
+            Owner:AddCount("_acf_smokelauncher", Gun)
+        else
+        
+        if Lookup.gunclass == "RAC" or Lookup.gunclass == "MG" or Lookup.gunclass == "AC" then
+            Owner:AddCount("_acf_rapidgun", Gun)
+        elseif Lookup.caliber >= ACF.LargeCaliber then
+            Owner:AddCount("_acf_largegun", Gun)
+        end
+            Owner:AddCount("_acf_gun", Gun)
+        end
+        
+        ACF_Activate(Gun, 0)
+        
+        return Gun
     
-    if Lookup.gunclass == "RAC" or Lookup.gunclass == "MG" or Lookup.gunclass == "AC" then
-        Owner:AddCount("_acf_rapidgun", Gun)
-    elseif Lookup.caliber >= ACF.LargeCaliber then
-        Owner:AddCount("_acf_largegun", Gun)
     end
-    
-        Owner:AddCount("_acf_gun", Gun)
-    end
-    
-    ACF_Activate(Gun, 0)
-    
-    return Gun
-    
-end
-
 end
 
 list.Set( "ACFCvars", "acf_gun", {"id"} )

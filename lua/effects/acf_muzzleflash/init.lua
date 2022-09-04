@@ -9,12 +9,13 @@ function EFFECT:Init( data )
 	local Gun = data:GetEntity()
 	if not IsValid(Gun) then return end
 	
-	local Propellant 	= data:GetScale()
-	local ReloadTime 	= data:GetMagnitude()
+	local Propellant 	 = data:GetScale()
+	local ReloadTime 	 = data:GetMagnitude()
 	
-	local Sound 		= Gun:GetNWString( "Sound", "" )
-	local Class 		= Gun:GetNWString( "Class", "C" )
-	local Caliber 		= Gun:GetNWInt( "Caliber", 1 ) * 10 
+	local Sound 		 = Gun:GetNWString( "Sound", "" )
+	local Class 		 = Gun:GetNWString( "Class", "C" )
+	local Caliber 		 = Gun:GetNWInt( "Caliber", 1 ) * 10 
+	local MuzzleEffect = Gun:GetNWString( "Muzzleflash", '50cal_muzzleflash_noscale' )
 
 	--This tends to fail
 	local ClassData 	= ACF.Classes.GunClass[Class]
@@ -41,9 +42,8 @@ function EFFECT:Init( data )
 		ACE_SGunFire( Gun, Sound, Propellant )
 
 		local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
-		local Flash  = ClassData and ClassData.muzzleflash or '50cal_muzzleflash_noscale'
 
-		ParticleEffect( Flash , Muzzle.Pos, Muzzle.Ang, Gun )
+		ParticleEffect( MuzzleEffect , Muzzle.Pos, Muzzle.Ang, Gun )
 
 		if Gun:WaterLevel() ~= 3 and not ClassData.nolights then
 

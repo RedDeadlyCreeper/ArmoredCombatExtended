@@ -546,3 +546,6 @@ r100
 
 *r144
 - Fix weapon heat value lowering at different speeds on different servers -cheezus
+
+*r145
+- Fixed HEAT and its variants not penetrating as it should

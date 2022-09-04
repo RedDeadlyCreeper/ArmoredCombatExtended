@@ -683,7 +683,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
     Bullet.Ricochets = Bullet.Ricochets or 0
 
     local Angle     = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
-    local HitRes    = ACF_Damage ( Target, Energy, Bullet["PenAera"], Angle, Bullet["Owner"], Bone, Bullet["Gun"], Bullet["Type"] )
+    local HitRes    = ACF_Damage( Target, Energy, Bullet["PenAera"], Angle, Bullet["Owner"], Bone, Bullet["Gun"], Bullet["Type"] )
     
     HitRes.Ricochet = false
 
