@@ -311,7 +311,7 @@ local delta = engine.TickInterval()
 function SWEP:HandleRecoil()
     local delay = self.HeatReductionDelay or (1 / self.FireRate + delta)
 
-    if (IsFirstTimePredicted() or game.SinglePlayer()) and CurTime() - self.LastFired > delay then
+    if CurTime() - self.LastFired > delay then
         self.Heat = math.max(self.Heat - (self.HeatReductionRate * delta), 0)
     end
 
