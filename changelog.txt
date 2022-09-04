@@ -543,3 +543,6 @@ r100
 
 *r143
 - Fixed typo on bulletdata.filter not working properly
+
+*r144
+- Fix weapon heat value lowering at different speeds on different servers -cheezus
