@@ -536,3 +536,10 @@ r100
 - Removed loader count on overlay for weapons that cannot have them.
 - Removed 3rd cam global override. Broke some addons, use the new tool instead.
 - Polished some stuff.
+
+*r142
+- Reworked ACE SWEPs. Added spray patterns, proper recoil and added lighting rendering and sound extension support. Huge thanks to cheezus & RDC by the changes
+- Removed T/HEAT ammo from flare launcher.
+
+*r143
+- Fixed typo on bulletdata.filter not working properly
