@@ -30,7 +30,7 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 --Recoil (crosshair movement) settings--
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
-SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
+SWEP.HeatReductionRate = 150 --Heat loss per second when not firing
 SWEP.HeatPerShot = 5 --Heat generated per shot
 SWEP.HeatMax = 30 --Maximum heat - determines max rate at which recoil is applied to eye angles
                 --Also determines point at which random spread is at its highest intensity
@@ -190,12 +190,10 @@ function SWEP:GetShootDir()
     spreadY = spreadY * degrees
 
     local shootDir = owner:GetAimVector()
-
-    --There's gotta be a nicer way to do this with more proper math, but for now this works
-    local upAxis = owner:GetAimVector():Angle():Right()
-    local sideAxis = owner:GetAimVector():Angle():Up()
-    shootDir = shootDir:RotateAroundAxis(upAxis, spreadY)
-    shootDir = shootDir:RotateAroundAxis(sideAxis, spreadX)
+    local sideAxis = shootDir:Cross(Vector(0, 0, 1)):GetNormalized()
+    local upAxis = shootDir:Cross(sideAxis):GetNormalized()
+    shootDir = shootDir:RotateAroundAxis(upAxis, spreadX)
+    shootDir = shootDir:RotateAroundAxis(sideAxis, spreadY)
 
     return shootDir
 end

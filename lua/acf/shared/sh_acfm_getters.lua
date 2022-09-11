@@ -12,8 +12,13 @@ function ACF_GetGunValue(bdata, val)
     if class then
         local ret 
         
-        if class.round then ret = class.round[val] end
-        if ret == nil then ret = class[val] end
+        if class.round then 
+            ret = class.round[val] 
+        end
+
+        if ret == nil then 
+            ret = class[val] 
+        end
         
         if ret ~= nil then
             return ret
@@ -150,20 +155,20 @@ function ACF_GetRoundFromCVars()
     local round = {}
     
     round.Id            = GetConVarString( "acfmenu_data1" )
-	round.Type          = GetConVarString( "acfmenu_data2" )
-	round.PropLength    = GetConVarNumber( "acfmenu_data3" )
-	round.ProjLength    = GetConVarNumber( "acfmenu_data4" )
-	round.Data5         = GetConVarNumber( "acfmenu_data5" )
+    round.Type          = GetConVarString( "acfmenu_data2" )
+    round.PropLength    = GetConVarNumber( "acfmenu_data3" )
+    round.ProjLength    = GetConVarNumber( "acfmenu_data4" )
+    round.Data5         = GetConVarNumber( "acfmenu_data5" )
     round.Data6         = GetConVarNumber( "acfmenu_data6" )
     round.Data7         = GetConVarString( "acfmenu_data7" )
     round.Data8         = GetConVarString( "acfmenu_data8" )
     round.Data9         = GetConVarString( "acfmenu_data9" )
-	round.Data10        = GetConVarNumber( "acfmenu_data10" )
-	round.Data11        = GetConVarNumber( "acfmenu_data11" )
-	round.Data12        = GetConVarNumber( "acfmenu_data12" )
-	round.Data13        = GetConVarNumber( "acfmenu_data13" )
-	round.Data14        = GetConVarNumber( "acfmenu_data14" )
-	round.Data15        = GetConVarNumber( "acfmenu_data15" )
+    round.Data10        = GetConVarNumber( "acfmenu_data10" )
+    round.Data11        = GetConVarNumber( "acfmenu_data11" )
+    round.Data12        = GetConVarNumber( "acfmenu_data12" )
+    round.Data13        = GetConVarNumber( "acfmenu_data13" )
+    round.Data14        = GetConVarNumber( "acfmenu_data14" )
+    round.Data15        = GetConVarNumber( "acfmenu_data15" )
     
     return round
     

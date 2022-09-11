@@ -31,7 +31,7 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 --Recoil (crosshair movement) settings--
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
-SWEP.HeatReductionRate = 100 --Heat loss per second when not firing
+SWEP.HeatReductionRate = 175 --Heat loss per second when not firing
 --SWEP.HeatReductionDelay = 0.3 --Delay after firing before beginning to reduce heat
 SWEP.HeatPerShot = 7 --Heat generated per shot
 SWEP.HeatMax = 40 --Maximum heat - determines max rate at which recoil is applied to eye angles

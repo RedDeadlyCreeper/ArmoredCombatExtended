@@ -18,8 +18,6 @@ function SWEP:DoAmmoStatDisplay()
 end
 
 function SWEP:Equip()
-
-	self:GetOwner():GiveAmmo( 299, self.Primary.Ammo	, false )
 	self:DoAmmoStatDisplay()
 	self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
 end

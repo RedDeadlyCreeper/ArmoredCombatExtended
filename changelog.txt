@@ -549,3 +549,12 @@ r100
 
 *r145
 - Fixed HEAT and its variants not penetrating as it should
+
+*r146
+- Weapon spread now uses proper math
+- Grenades go where you're actually aiming
+- Grenades don't spawn until the throwing animation plays
+- No more grenade spam
+- Death while playing grenade throw animation spawns a grenade at your death position
+- Recoil on some automatic weapons tweaked
+- Grenades and mines now spawn with far less ammo

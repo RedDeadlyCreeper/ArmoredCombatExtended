@@ -36,7 +36,7 @@ SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
 SWEP.Primary.Delay			= 1
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 1
+SWEP.Primary.DefaultClip	= 5
 SWEP.Primary.Automatic		= 0
 SWEP.Primary.Ammo		= "RPG_Round"
 
