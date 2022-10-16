@@ -63,7 +63,7 @@ end
 function this:GetDisplayConfig()
 	return 
 	{
-		["Primer"] = math.Round(self.Primer, 1) .. " s",
+		["Arming delay"] = math.Round(self.Primer, 3) .. " s",
 		["Distance"] = math.Round(self.Distance / 39.37, 1) .. " m"
 	}
 end

@@ -63,7 +63,6 @@ local function resolveAABBs(mins, maxs)
 	return mins, maxs
 end
 
-
 //TODO: sanitize safetable instead of marking it all as bad
 local function validateSZs(safetable)
 	if type(safetable) ~= "table" then return false end
@@ -88,17 +87,12 @@ local function validateSZs(safetable)
 	return true
 end
 
-
-
-
 local function getMapFilename()
 	
 	local mapname = string.gsub(game.GetMap(), "[^%a%d-_]", "_")
 	return mapSZDir .. mapname .. ".txt"
 	
 end
-
-
 
 local function getMapSZs()
 	local mapname = getMapFilename()
@@ -115,7 +109,6 @@ local function getMapSZs()
 	return true
 end
 
-
 local function SaveMapDPM(mode)
 	local mapname = string.gsub(game.GetMap(), "[^%a%d-_]", "_")
 	file.Write(mapDPMDir .. mapname .. ".txt", mode)
@@ -125,7 +118,6 @@ local function LoadMapDPM()
 	local mapname = string.gsub(game.GetMap(), "[^%a%d-_]", "_")
 	return file.Read(mapDPMDir .. mapname .. ".txt", "DATA")
 end
-
 
 hook.Add( "Initialize", "ACF_LoadSafesForMap", function()
 	if not getMapSZs() then
@@ -198,9 +190,6 @@ concommand.Add( "ACF_AddSafeZone", function(ply, cmd, args, str)
 		return true	
 	end
 end)
-
-
-
 
 concommand.Add( "ACF_RemoveSafeZone", function(ply, cmd, args, str)
 	local validply = IsValid(ply)
@@ -435,8 +424,6 @@ function this.IsInSafezone(pos)
 	return false
 end
 
-
-
 function this.RegisterMode(mode, name, desc, default, think, defaultaction)
 
 	this.Modes[name] = mode
@@ -462,19 +449,13 @@ function this.RegisterMode(mode, name, desc, default, think, defaultaction)
 			this.DefaultPermission = name
 		end
 	end
-	
-	--Old method - can break on rare occasions!
-	--if LoadMapDPM() == name or default then 
-	--	print("ACF: Setting permission mode to: "..name)
-	--	this.DamagePermission = this.Modes[name]
-	--	this.DefaultPermission = name
-	--end
 end
 
+function this.CanDamage(Type, Entity, Energy, FrArea, Angle, Inflictor, Bone, Gun)
 
-
-function this.CanDamage(Type, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gun)
-
+	--Disables protection if either CPPI is unexistent or has been disabled via convar.
+	local DP = GetConVar("acf_enable_dp"):GetInt()
+	if not CPPI or DP == 0 then return true end
 
 	local owner = (CPPI and Entity:CPPIGetOwner()) or Entity:GetOwner()
 	
@@ -497,12 +478,10 @@ function this.CanDamage(Type, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gu
 end
 hook.Add("ACF_BulletDamage", "ACF_DamagePermissionCore", this.CanDamage)
 
+function this.thinkWrapper()
 
-
-this.thinkWrapper = function()
-	local curmode = table.KeyFromValue(this.Modes, this.DamagePermission)
-	--print(curmode)
-	local think = this.ModeThinks[curmode]
+	local curmode 	= table.KeyFromValue(this.Modes, this.DamagePermission)
+	local think 	= this.ModeThinks[curmode]
 	local nextthink
 	
 	if think then
@@ -511,10 +490,8 @@ this.thinkWrapper = function()
 	
 	timer.Simple(nextthink or 0.01, this.thinkWrapper)
 end
-
 timer.Simple(0.01, this.thinkWrapper)
 
- 
 function this.GetDamagePermissions(ownerid)
 	if not this.Player[ownerid] then
 		this.Player[ownerid] = {[ownerid] = true}
@@ -522,7 +499,6 @@ function this.GetDamagePermissions(ownerid)
 
 	return this.Player[ownerid]
 end
-
 
 function this.AddDamagePermission(owner, attacker)
 	local ownerid = owner:SteamID()
@@ -533,7 +509,6 @@ function this.AddDamagePermission(owner, attacker)
 	ownerprefs[attackerid] = true
 end
 
-
 function this.RemoveDamagePermission(owner, attacker)
 	local ownerid = owner:SteamID()
 	if not this.Player[ownerid] then return end
@@ -542,14 +517,12 @@ function this.RemoveDamagePermission(owner, attacker)
 	this.Player[ownerid][attackerid] = nil
 end
 
-
 function this.ClearDamagePermissions(owner)
 	local ownerid = owner:SteamID()
 	if not this.Player[ownerid] then return end
 	
 	this.Player[ownerid] = nil
 end
-
 
 function this.PermissionsRaw(ownerid, attackerid, value)
 	if not ownerid then return end
@@ -566,7 +539,6 @@ function this.PermissionsRaw(ownerid, attackerid, value)
 	return false
 end
 
-
 local function onDisconnect( ply )
 	plyid = ply:SteamID()
 	
@@ -577,9 +549,6 @@ local function onDisconnect( ply )
 	plyzones[plyid] = nil
 end
 hook.Add( "PlayerDisconnected", "ACF_PermissionDisconnect", onDisconnect )
-
-
-
 
 local function plyBySID(steamid)
 	for k, v in pairs(player.GetAll()) do
@@ -662,7 +631,10 @@ function this.SendPermissionsState(ply)
 	net.Send(ply)
 end
 util.AddNetworkString("ACF_refreshpermissions")
-net.Receive("ACF_refreshpermissions", function(len, ply) this.SendPermissionsState(ply) end)
+net.Receive("ACF_refreshpermissions", function(len, ply) 
+	ACE_SendDPStatus() 
+	this.SendPermissionsState(ply) 
+end)
 
 
 

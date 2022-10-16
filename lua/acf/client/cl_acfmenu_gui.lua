@@ -997,7 +997,7 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
       acfmenupanel["CData"][Name]:SetDecimals( Decimals )
 
       acfmenupanel["CData"][Name.."_label"] = vgui.Create( "DLabel", acfmenupanel["CData"][Name]) -- recreating the label
-      acfmenupanel["CData"][Name.."_label"]:SetPos( 0,0 )
+      acfmenupanel["CData"][Name.."_label"]:SetPos( 0, 0)
       acfmenupanel["CData"][Name.."_label"]:SetText( Title )
       acfmenupanel["CData"][Name.."_label"]:SizeToContents()
       acfmenupanel["CData"][Name.."_label"]:SetTextColor( Color( 0, 0, 0) )
@@ -1035,7 +1035,7 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
    end
 
    acfmenupanel["CData"][Name.."_text"]:SetText( Desc )
-   acfmenupanel["CData"][Name.."_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 10 )
+   acfmenupanel["CData"][Name.."_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 14 )
    acfmenupanel["CData"][Name.."_text"]:SizeToContentsX()
    
 end

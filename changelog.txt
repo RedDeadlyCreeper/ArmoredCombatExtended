@@ -561,3 +561,17 @@ r100
 
 *r147
 - Attempt to fix: https://trello.com/c/it39Qwwk - cheezus
+
+*r148
+- Added fuze Plunging. Recreates the TOW-2B special capacity.
+- Done NADMOD optional. No longer needed for clients. However, DP will be disabled without that.
+- Added angle effectiveness into ERA
+- Added a bunch of new balances to missiles. Improved arty flights.
+- Added new SWEPs: flare gun and smoke grenade. Courtesy of Cheezus
+- Added ACF3's traceline workaround. You should not have issues with traces anymore.
+- Added New armor analyzer. Its under WIP but feel free to make suggestions. This one will eventually surpass the old one.
+- Added acfPropArmorData() function (E2/SF) Courtesy of Cheezus
+- Fixed some exploits with ammo and collision group. Thanks ally by the report and cheezus by actually making it.
+- Fixed several typos on code naming. Courtesy of KemGus
+- Improved ghosting time. Now Missiles should be less likely to self hit your own vehicle if moving.
+- Removed old ghosting time convar. Useless at this point.

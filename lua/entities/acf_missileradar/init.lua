@@ -232,7 +232,7 @@ end
 
 function ENT:GetDetectedEnts()
 
-    print("reached base GetDetectedEnts")
+    --print("reached base GetDetectedEnts")
 
 end
 
@@ -247,7 +247,7 @@ function ENT:ScanForMissiles()
     local i = 0
     
     local closest
-    local closestSqr = 999999
+    local closestSqr = math.huge
     
     local thisPos = self:GetPos()
     
@@ -259,12 +259,12 @@ function ENT:ScanForMissiles()
         posArray[i] = missile.CurPos
         velArray[i] = missile.LastVel
         
-        local curSqr = thisPos:DistToSqr(missile.CurPos)
+        local curSqr = thisPos:DistToSqr(missile.CurPos) 
+
         if curSqr < closestSqr then
             closest = missile.CurPos
             closestSqr = curSqr
         end
-    
     end
     
     if not closest then closestSqr = 0 end

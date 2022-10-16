@@ -21,7 +21,7 @@ Material.ArmorMul       = 1
 Material.NormMult       = 0.8
 
 if SERVER then
-    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
+    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
         
         local HitRes = {}
 
@@ -41,7 +41,7 @@ if SERVER then
         -- Breach chance roll
         if breachProb > math.random() and maxPenetration > armor then
                 
-            HitRes.Damage   = FrAera / resiliance * damageMult          -- Inflicted Damage
+            HitRes.Damage   = FrArea / resiliance * damageMult          -- Inflicted Damage
             HitRes.Overkill = maxPenetration - armor                        -- Remaining penetration
             HitRes.Loss     = armor / maxPenetration                        -- Energy loss in percents
 
@@ -52,7 +52,7 @@ if SERVER then
                 
             local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
-            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult ) / resiliance
+            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult ) / resiliance
             HitRes.Overkill = ( maxPenetration - Penetration )
             HitRes.Loss     = Penetration / maxPenetration
             
@@ -63,7 +63,7 @@ if SERVER then
         -- Projectile did not breach nor penetrate armor
         local Penetration = math.min( maxPenetration , losArmor * effectiveness )
             
-        HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult ) / resiliance
+        HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult ) / resiliance
         HitRes.Overkill = 0
         HitRes.Loss     = 1
         

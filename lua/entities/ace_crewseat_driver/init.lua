@@ -19,7 +19,10 @@ end
 
 function ENT:Initialize()
 
-	self:SetModel( "models/vehicles/pilot_seat.mdl" )
+	if self:GetModel() == "models/vehicles/pilot_seat.mdl" then
+		self:SetPos(self:LocalToWorld(Vector(0, 15.3, -14)))
+	end
+	self:SetModel( "models/chairs_playerstart/sitpose.mdl" )
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetUseType(SIMPLE_USE);

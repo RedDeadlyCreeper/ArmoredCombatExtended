@@ -31,6 +31,9 @@ ACF_defineGun("Type 63 RA", {                               -- id
     year        = 1960,
     rofmod      = 0.3,
     roundclass  = "Rocket",
+    rotmult     = 60,       -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    maxrottq    = 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
+
     round       =   {
         model           = "models/missiles/glatgm/mgm51.mdl",
         rackmdl         = "models/missiles/glatgm/mgm51.mdl",
@@ -42,9 +45,9 @@ ACF_defineGun("Type 63 RA", {                               -- id
         burnrate        = 450,                              -- cm^3/s at average chamber pressure
         starterpct      = 0.1,
         minspeed        = 200,                              -- minimum speed beyond which the fins work at 100% efficiency
-        dragcoef        = 0.002,                            -- drag coefficient while falling
+        dragcoef        = 0.005,                            -- drag coefficient while falling
         dragcoefflight  = 0.001,                            -- drag coefficient during flight
-        finmul          = 0.02,                             -- fin multiplier (mostly used for unpropelled guidance)
+        finmul          = 0.5,                             -- fin multiplier (mostly used for unpropelled guidance)
         penmul          = math.sqrt(0.15)                   -- 139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -63,6 +66,7 @@ ACF_defineGun("Type 63 RA", {                               -- id
 
     viewcone    = 180,                                      -- cone radius, 180 = full 360 tracking
     agility     = 0.08,
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
 
@@ -82,6 +86,9 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     year        = 1980,
     rofmod      = 0.25,
     roundclass  = "Rocket",
+    rotmult     = 20,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    maxrottq    = 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
+
     round       =   {
         model           = "models/missiles/9m31.mdl",
         rackmdl         = "models/missiles/9m31.mdl",
@@ -90,12 +97,12 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
         armour          = 10,                               -- effective armour thickness of casing, in mm
         propweight      = 1.2,                              -- motor mass - motor casing
         thrust          = 1300,                             -- average thrust - kg*in/s^2
-        burnrate        = 120,                              -- cm^3/s at average chamber pressure
+        burnrate        = 150,                              -- cm^3/s at average chamber pressure
         starterpct      = 0.1,
         minspeed        = 300,                              -- minimum speed beyond which the fins work at 100% efficiency 
-        dragcoef        = 0.002,                            -- drag coefficient while falling
-        dragcoefflight  = 0.010,                            -- drag coefficient during flight
-        finmul          = 0.05,                             -- fin multiplier (mostly used for unpropelled guidance)  
+        dragcoef        = 0.006,                            -- drag coefficient while falling
+        dragcoefflight  = 0.009,                            -- drag coefficient during flight
+        finmul          = 0.5,                             -- fin multiplier (mostly used for unpropelled guidance)  
         penmul          = math.sqrt(0.2)                    --  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -113,6 +120,7 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     
     agility     = 0.07,
     viewcone    = 180,
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
@@ -133,6 +141,9 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     year        = 1983,
     rofmod      = 0.2,
     roundclass  = "Rocket",
+    rotmult     = 30,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    maxrottq    = 3000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
+
     round       =   {
         model           = "models/missiles/aim120.mdl",
         rackmdl         = "models/missiles/aim120.mdl",
@@ -146,7 +157,7 @@ ACF_defineGun("SS-40 RA", {                                 -- id
         minspeed        = 300,                              -- minimum speed beyond which the fins work at 100% efficiency
         dragcoef        = 0.002,                            -- drag coefficient while falling
         dragcoefflight  = 0.009,                            -- drag coefficient during flight
-        finmul          = 0.05,                             -- fin multiplier (mostly used for unpropelled guidance)
+        finmul          = 0.5,                             -- fin multiplier (mostly used for unpropelled guidance)
         penmul          = math.sqrt(0.2)                    -- 139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -164,6 +175,7 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     
     agility     = 0.03,
     viewcone    = 180, 
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
@@ -183,6 +195,8 @@ ACF_defineGun("RW61 RA", {                                  -- id
     year        = 1944,
     rofmod      = 0.25,
     roundclass  = "Rocket",
+    rotmult     = 100,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+
     round       =
     {
         model       = "models/missiles/RW61M.mdl",
@@ -195,7 +209,8 @@ ACF_defineGun("RW61 RA", {                                  -- id
         burnrate    = 5000,                                 -- cm^3/s at average chamber pressure
         starterpct  = 0.01,                                 -- percentage of the propellant consumed in the starter motor.
         minspeed    = 1,                                    -- minimum speed beyond which the fins work at 100% efficiency
-        dragcoef    = 0,                                    -- drag coefficient of the missile
+        dragcoef    = 0.002,                                    -- drag coefficient of the missile
+        dragcoefflight  = 0.009,                            -- drag coefficient during flight
         finmul      = 0.001,                                -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.4)                        -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
@@ -212,5 +227,7 @@ ACF_defineGun("RW61 RA", {                                  -- id
     viewcone    = 55,                                       -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 1,                                        -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )

@@ -110,6 +110,6 @@ hook.Add("SpawnMenuOpen", "ACFPermissionsSpawnMenuOpen", this.SpawnMenuOpen)
 
 
 function this.PopulateToolMenu()
-	spawnmenu.AddToolMenuOption("Utilities", "ACF", "Damage Permission", "Damage Permission", "", "", this.ClientPanel)
+	spawnmenu.AddToolMenuOption("Utilities", "ACE", "Damage Permission", "Damage Permission", "", "", this.ClientPanel)
 end
 hook.Add("PopulateToolMenu", "ACFPermissionsPopulateToolMenu", this.PopulateToolMenu)

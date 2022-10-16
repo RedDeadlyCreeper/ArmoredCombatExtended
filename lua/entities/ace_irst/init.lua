@@ -189,8 +189,6 @@ function ENT:AcquireLock()
 
     local IRSTPos           = self:GetPos()
     local inac              = self.inac
-    local randanginac       = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-    local randposinac       = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
 
     --Table definition
     local Owners            = {}
@@ -213,6 +211,9 @@ function ENT:AcquireLock()
 
 
     for k, scanEnt in ipairs(found) do
+
+        local randanginac       = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+        local randposinac       = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
 
         entpos      = scanEnt:WorldSpaceCenter()
         difpos      = (entpos - IRSTPos)

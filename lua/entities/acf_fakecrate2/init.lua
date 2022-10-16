@@ -17,7 +17,7 @@ end
 
 
 local nullhit = {Damage = 0, Overkill = 0, Loss = 0, Kill = false}
-function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )
+function ENT:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor )
 	return table.Copy(nullhit)
 end
 

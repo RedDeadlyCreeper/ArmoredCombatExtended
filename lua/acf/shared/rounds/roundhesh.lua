@@ -36,7 +36,7 @@ function Round.convert( Crate, PlayerData )
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
 		
-	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
+	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
 	GUIData.MinFillerVol = 0
 	GUIData.MaxFillerVol = math.min(GUIData.ProjVolume,MaxVol)
 	GUIData.FillerVol = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
@@ -47,8 +47,8 @@ function Round.convert( Crate, PlayerData )
 	
 	--Random bullshit left
 	Data.ShovePower = 0.1
-	Data.PenAera = Data.FrAera^ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
+	Data.PenArea = Data.FrArea^ACF.PenAreaMod
+	Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)
 	Data.LimitVel = 100										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 62										--Base ricochet angle
@@ -123,7 +123,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*250, Energy, Target, HitPos, HitNormal/10 , Bone )
 
 		table.insert( Bullet.Filter , Target )
-		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*ACF.HEPower , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+		ACF_Spall_HESH( HitPos, Bullet.Flight, Bullet.Filter, Bullet.FillerMass*ACF.HEPower, Bullet.Caliber*5, Target.ACF.Armour, Bullet.Owner, Target.ACF.Material) --Do some spalling
 	
 	else 
 		table.insert( Bullet.Filter , Target )

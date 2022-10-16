@@ -2132,10 +2132,10 @@ function ents_methods:acfPenetration ()
 
 	--[[if Type == "AP" or Type == "APHE" then
 		Energy = ACF_Kinetic( this.BulletData[ "MuzzleVel" ] * 39.37, this.BulletData[ "ProjMass" ] - ( this.BulletData[ "FillerMass" ] or 0 ), this.BulletData[ "LimitVel" ] )
-		return math.Round( ( Energy.Penetration / this.BulletData[ "PenAera" ] ) * ACF.KEtoRHA, 3 )
+		return math.Round( ( Energy.Penetration / this.BulletData[ "PenArea" ] ) * ACF.KEtoRHA, 3 )
 	elseif Type == "HEAT" then
 		Energy = ACF_Kinetic( this.BulletData[ "SlugMV" ] * 39.37, this.BulletData[ "SlugMass" ], 9999999 )
-		return math.Round( ( Energy.Penetration / this.BulletData[ "SlugPenAera" ] ) * ACF.KEtoRHA, 3 )
+		return math.Round( ( Energy.Penetration / this.BulletData[ "SlugPenArea" ] ) * ACF.KEtoRHA, 3 )
 	elseif Type == "FL" then
 		Energy = ACF_Kinetic( this.BulletData[ "MuzzleVel" ] * 39.37 , this.BulletData[ "FlechetteMass" ], this.BulletData[ "LimitVel" ] )
 		return math.Round( ( Energy.Penetration / this.BulletData[ "FlechettePenArea" ] ) * ACF.KEtoRHA, 3 )
@@ -2144,13 +2144,13 @@ function ents_methods:acfPenetration ()
 	if Type == "AP" or Type == "APHE" then
 		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"])
 
-		return math.Round((Energy.Penetration / this.BulletData["PenAera"]) * ACF.KEtoRHA, 3)
+		return math.Round((Energy.Penetration / this.BulletData["PenArea"]) * ACF.KEtoRHA, 3)
 	elseif Type == "HEAT" then
 		local Crushed, HEATFillerMass, _ = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
 		if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
 		Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV(this.BulletData, HEATFillerMass) * 39.37, this.BulletData["SlugMass"], 9999999)
 
-		return math.Round((Energy.Penetration / this.BulletData["SlugPenAera"]) * ACF.KEtoRHA, 3)
+		return math.Round((Energy.Penetration / this.BulletData["SlugPenArea"]) * ACF.KEtoRHA, 3)
 	elseif Type == "FL" then
 		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["FlechetteMass"], this.BulletData["LimitVel"])
 
@@ -2269,6 +2269,34 @@ function ents_methods:acfPropDuctility ()
 	if restrictInfo( this ) then return 0 end
 	if not ACF_Check( this ) then return 0 end
 	return ( this.ACF.Ductility or 0 ) * 100
+end
+
+--- Returns the armor data of an entity
+-- @server
+-- @return table A table with keys: Curve, Effectiveness, HEATEffectiveness, Material
+function ents_methods:acfPropArmorData()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+
+	local empty = {}
+	if not validPhysics( this ) then return empty end
+	if restrictInfo( this ) then return empty end
+	if not ACF_Check( this ) then return empty end
+
+	local mat = this.ACF.Material
+	if not mat then return empty end
+
+	local matData = ACE.Armors[mat]
+	if not matData then return empty end
+
+	return {
+		Curve = matData.curve,
+		Effectiveness = matData.effectiveness,
+		HEATEffectiveness = matData.HEATeffectiveness or matData.effectiveness,
+		Material = mat
+	}
 end
 
 -- [ Fuel Functions ] --

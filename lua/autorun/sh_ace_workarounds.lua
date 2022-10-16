@@ -60,3 +60,12 @@ if CLIENT then
 elseif SERVER then
 
 end
+
+-- Workaround to issue: https://github.com/Facepunch/garrysmod-issues/issues/4142. Brought from ACF3
+function util.TraceLine( tracedata )
+
+    tracedata.mins   = vector_origin
+    tracedata.maxs   = tracedata.mins
+
+    return util.TraceHull(tracedata)
+end

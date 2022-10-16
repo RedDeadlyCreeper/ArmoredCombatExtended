@@ -96,12 +96,12 @@ function Round.convert( Crate, PlayerData )
     PlayerData.Data5    = math.Clamp(PlayerData.Data5,Data.MinCalMult,Data.MaxCalMult)   
     
     Data.SCalMult       = PlayerData.Data5
-    Data.SubFrAera      = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-    Data.ProjMass       = Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 --Volume of the projectile as a cylinder * density of steel
+    Data.SubFrArea      = Data.FrArea * math.min(PlayerData.Data5,Data.MaxCalMult)^2
+    Data.ProjMass       = Data.SubFrArea * (Data.ProjLength*7.9/1000) * 2.5 --Volume of the projectile as a cylinder * density of steel
     Data.ShovePower     = 0.2
-    Data.PenAera        = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod 
+    Data.PenArea        = (Data.PenModifier*Data.SubFrArea)^ACF.PenAreaMod 
     
-    Data.DragCoef       = ((Data.SubFrAera/10000)/Data.ProjMass)
+    Data.DragCoef       = ((Data.SubFrArea/10000)/Data.ProjMass)
     Data.CaliberMod     = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
     Data.LimitVel       = 1000                                        --Most efficient penetration speed in m/s
     Data.KETransfert    = 0.2                                  --Kinetic energy transfert to the target for movement purposes                                      
@@ -127,7 +127,7 @@ end
 function Round.getDisplayData(Data)
     local GUIData = {}
     local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+    GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
     return GUIData
 end
 
@@ -301,8 +301,8 @@ function Round.guiupdate( Panel, Table )
     
     acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)   --Description (Name, Desc)
     
-    acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+    acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+    acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("SCalMult",Data.SCalMult,Data.MinCalMult,Data.MaxCalMult,2, "Subcaliber Size Multiplier", "Caliber : "..math.floor(Data.Caliber * math.min(PlayerData.Data5,Data.MaxCalMult)*10).." mm")--Subcaliber round slider (Name, Min, Max, Decimals, Title, Desc)   
     
     acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*5)/10).."cm\n", "" )           --Tracer checkbox (Name, Title, Desc)
@@ -316,7 +316,7 @@ function Round.guiupdate( Panel, Table )
     
     -------------------------------------------------------------------------------
     
-    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel )
+    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
     
 end
 

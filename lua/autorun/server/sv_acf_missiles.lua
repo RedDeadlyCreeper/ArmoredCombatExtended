@@ -21,7 +21,7 @@ function ACFM_BulletLaunch(BData)
     debugoverlay.Text(BData.Pos, "Here its spawning", 10)
 
     ACF.CurBulletIndex = ACF.CurBulletIndex + 1        --Increment the index
-    if ACF.CurBulletIndex > ACF.BulletIndexLimt then
+    if ACF.CurBulletIndex > ACF.BulletIndexLimit then
         ACF.CurBulletIndex = 1
     end
 

@@ -71,6 +71,11 @@ do
       Alum = true
    }
 
+   local ValidCollisionGroups = {
+      [COLLISION_GROUP_NONE] = true,
+      [COLLISION_GROUP_WORLD] = true
+   }
+
    --TODO: remove unused functions
    function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, _, CanVisclip )
 
@@ -138,7 +143,12 @@ do
       if ACF.Legal.Ignore.visclip <= 0 and not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
          table.insert(problems,"Has visclip")
       end
-    
+   
+      -- check for bad collision groups
+      if ACF.Legal.Ignore.Solid <= 0 and not ValidCollisionGroups[Ent:GetCollisionGroup()] then
+         table.insert(problems, "Bad collision group")
+      end
+
       -- legal if number of problems is 0
       return (#problems == 0), table.concat(problems, ", ")
    

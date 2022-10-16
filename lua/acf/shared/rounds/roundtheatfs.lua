@@ -20,10 +20,10 @@ end
 function Round.ConeCalc( ConeAngle, Radius, Length )
     
     local CLen = math.tan(math.rad(ConeAngle))*Radius
-    local CAera = 3.1416 * Radius * (Radius^2 + CLen^2)^0.5
+    local CArea = 3.1416 * Radius * (Radius^2 + CLen^2)^0.5
     local CVol = (3.1416 * Radius^2 * CLen)/3
 
-    return CLen, CAera, CVol
+    return CLen, CArea, CVol
     
 end
 
@@ -49,31 +49,31 @@ function Round.convert( Crate, PlayerData )
 
     local ConeThick = Data.Caliber/50
     local ConeLength = 0
-    local ConeAera = 0
+    local ConeArea = 0
     local ConeLength2 = 0
-    local ConeAera2 = 0
+    local ConeArea2 = 0
     local AirVol = 0
     local AirVol2 = 0
-    ConeLength, ConeAera, AirVol = Round.ConeCalc( PlayerData.Data6, Data.Caliber/2, PlayerData.ProjLength )
-    ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( PlayerData.Data13, Data.Caliber/2, PlayerData.ProjLength )
-    Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000 + ConeAera*ConeThick*7.9/1000 --Volume of the projectile as a cylinder - Volume of the filler - Volume of the crush cone * density of steel + Volume of the filler * density of TNT + Aera of the cone * thickness * density of steel
+    ConeLength, ConeArea, AirVol = Round.ConeCalc( PlayerData.Data6, Data.Caliber/2, PlayerData.ProjLength )
+    ConeLength2, ConeArea2, AirVol2 = Round.ConeCalc( PlayerData.Data13, Data.Caliber/2, PlayerData.ProjLength )
+    Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000 + ConeArea*ConeThick*7.9/1000 --Volume of the projectile as a cylinder - Volume of the filler - Volume of the crush cone * density of steel + Volume of the filler * density of TNT + Area of the cone * thickness * density of steel
     Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
     local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
     
     local MaxVol = 0
     local MaxLength = 0
     local MaxRadius = 0
-    MaxVol, MaxLength, MaxRadius = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
+    MaxVol, MaxLength, MaxRadius = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
         
     GUIData.MinConeAng = 0
     GUIData.MaxConeAng = math.deg( math.atan((Data.ProjLength - ConeThick )/(Data.Caliber/2)) )
     GUIData.ConeAng = math.Clamp(PlayerData.Data6*1, GUIData.MinConeAng, GUIData.MaxConeAng)
     GUIData.ConeAng2 = math.Clamp(PlayerData.Data13*1, GUIData.MinConeAng, GUIData.MaxConeAng)
     GUIData.HEAllocation = PlayerData.Data14
-    ConeLength, ConeAera, AirVol = Round.ConeCalc( GUIData.ConeAng, Data.Caliber/2, Data.ProjLength )
-    ConeLength2, ConeAera2, AirVol2 = Round.ConeCalc( GUIData.ConeAng2, Data.Caliber/2, Data.ProjLength )
-    local ConeVol = ConeAera * ConeThick
-    local ConeVol2 = ConeAera2 * ConeThick
+    ConeLength, ConeArea, AirVol = Round.ConeCalc( GUIData.ConeAng, Data.Caliber/2, Data.ProjLength )
+    ConeLength2, ConeArea2, AirVol2 = Round.ConeCalc( GUIData.ConeAng2, Data.Caliber/2, Data.ProjLength )
+    local ConeVol = ConeArea * ConeThick
+    local ConeVol2 = ConeArea2 * ConeThick
         
     GUIData.MinFillerVol = 0
     GUIData.MaxFillerVol = math.max(MaxVol -  AirVol - ConeVol,GUIData.MinFillerVol)*0.95
@@ -100,12 +100,12 @@ function Round.convert( Crate, PlayerData )
     Data.SlugMass2 = Data.SlugMass2*4^2
     Data.SlugMV2 = Data.SlugMV2/4
 
-    local SlugFrAera =  3.1416 * (Data.SlugCaliber/2)^2
-    local SlugFrAera2 = 3.1416 * (Data.SlugCaliber2/2)^2
-    Data.SlugPenAera =  SlugFrAera^ACF.PenAreaMod
-    Data.SlugPenAera2 = SlugFrAera2^ACF.PenAreaMod
-    Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*750
-    Data.SlugDragCoef2 = ((SlugFrAera2/10000)/Data.SlugMass2)*750
+    local SlugFrArea =  3.1416 * (Data.SlugCaliber/2)^2
+    local SlugFrArea2 = 3.1416 * (Data.SlugCaliber2/2)^2
+    Data.SlugPenArea =  SlugFrArea^ACF.PenAreaMod
+    Data.SlugPenArea2 = SlugFrArea2^ACF.PenAreaMod
+    Data.SlugDragCoef = ((SlugFrArea/10000)/Data.SlugMass)*750
+    Data.SlugDragCoef2 = ((SlugFrArea2/10000)/Data.SlugMass2)*750
     Data.SlugRicochet =     500                                 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
     
@@ -113,8 +113,8 @@ function Round.convert( Crate, PlayerData )
 
     --Random bullshit left
     Data.ShovePower = 0.1
-    Data.PenAera = Data.FrAera^ACF.PenAreaMod
-    Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
+    Data.PenArea = Data.FrArea^ACF.PenAreaMod
+    Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)
     Data.LimitVel = 100                                     --Most efficient penetration speed in m/s
     Data.KETransfert = 0.1                                  --Kinetic energy transfert to the target for movement purposes
     Data.Ricochet = 64                                      --Base ricochet angle
@@ -142,8 +142,8 @@ function Round.getDisplayData(Data)
 
     local SlugEnergy = ACF_Kinetic( Data.SlugMV*39.37 , Data.SlugMass, 999999 )
     local SlugEnergy2 = ACF_Kinetic( Data.SlugMV2*39.37 , Data.SlugMass2, 999999 )
-    GUIData.MaxPen = (SlugEnergy.Penetration/Data.SlugPenAera)*ACF.KEtoRHA
-    GUIData.MaxPen2 = (SlugEnergy2.Penetration/Data.SlugPenAera2)*ACF.KEtoRHA
+    GUIData.MaxPen = (SlugEnergy.Penetration/Data.SlugPenArea)*ACF.KEtoRHA
+    GUIData.MaxPen2 = (SlugEnergy2.Penetration/Data.SlugPenArea2)*ACF.KEtoRHA
     --GUIData.BlastRadius = (Data.FillerMass/2)^0.33*5*10
     GUIData.BlastRadius = (Data.BoomFillerMass)^0.33*8--*39.37
     GUIData.Fragments = math.max(math.floor((Data.BoomFillerMass/Data.CasingMass)*ACF.HEFrag),2)
@@ -211,7 +211,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
         Bullet.ProjMass         = Bullet.SlugMass
         Bullet.CannonCaliber    = Bullet.Caliber * 2
         Bullet.Caliber          = Bullet.SlugCaliber
-        Bullet.PenAera          = Bullet.SlugPenAera
+        Bullet.PenArea          = Bullet.SlugPenArea
         Bullet.Ricochet         = Bullet.SlugRicochet
     
         local DeltaTime         = SysTime() - Bullet.LastThink
@@ -231,7 +231,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
     
         Bullet.ProjMass     = Bullet.SlugMass2
         Bullet.Caliber      = Bullet.SlugCaliber2
-        Bullet.PenAera      = Bullet.SlugPenAera2
+        Bullet.PenArea      = Bullet.SlugPenArea2
         Bullet.Ricochet     = Bullet.SlugRicochet
     
         local DeltaTime     = SysTime() - Bullet.LastThink

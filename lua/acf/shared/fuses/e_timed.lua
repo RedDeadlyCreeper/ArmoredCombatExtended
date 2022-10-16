@@ -50,7 +50,7 @@ end
 function this:GetDisplayConfig()
 	return 
 	{
-		["Primer"] = tostring(math.Round(self.Primer, 1)) .. " s",
+		["Arming delay"] = tostring(math.Round(self.Primer, 3)) .. " s",
 		["Timer"] = tostring(math.Round(self.Timer, 1)) .. " s"
 	}
 end

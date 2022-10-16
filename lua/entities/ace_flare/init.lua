@@ -17,7 +17,7 @@ function ENT:Initialize()
 	self.Owner 		= self:GetOwner()
 
 	local phys = self:GetPhysicsObject()
-	phys:SetMass(2)
+	phys:SetMass(3)
 	phys:EnableDrag( true )
 	phys:SetDragCoefficient( 50 )
 	phys:SetBuoyancyRatio( 2 )
@@ -62,6 +62,17 @@ function ENT:PhysicsCollide( Table , PhysObj )
 	if not IsValid(HitEnt) then return end
 
 	if HitEnt:IsNPC() or (HitEnt:IsPlayer() and not HitEnt:HasGodMode()) then
-		HitEnt:Ignite( self.Heat, 1 )
+		if vFireInstalled then
+
+			CreateVFireEntFires(HitEnt, 3)
+		else
+
+			HitEnt:Ignite( self.Heat, 1 )
+		end
+
 	end
+end
+
+function ENT:CanTool()
+	return false
 end

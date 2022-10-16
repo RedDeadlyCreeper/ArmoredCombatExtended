@@ -114,7 +114,6 @@ do
         Engine.FuelType         = Lookup.fuel or "Petrol"
         Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
         Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
-        Engine.CurveFactor      = Lookup.curvefactor
         Engine.RequiresFuel     = Lookup.requiresfuel
         Engine.SoundPitch       = Lookup.pitch or 1
         Engine.SpecialHealth    = true
@@ -328,16 +327,16 @@ function ENT:ACF_Activate()
     if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
     if PhysObj:IsValid() and Count and Count>100 then
 
-        if not Entity.ACF.Aera then
-            Entity.ACF.Aera = (PhysObj:GetSurfaceArea() * 6.45) * 0.52505066107
+        if not Entity.ACF.Area then
+            Entity.ACF.Area = (PhysObj:GetSurfaceArea() * 6.45) * 0.52505066107
         end
         --if not Entity.ACF.Volume then
         --  Entity.ACF.Volume = (PhysObj:GetVolume() * 16.38)
         --end
     else
         local Size = Entity.OBBMaxs(Entity) - Entity.OBBMins(Entity)
-        if not Entity.ACF.Aera then
-            Entity.ACF.Aera = ((Size.x * Size.y)+(Size.x * Size.z)+(Size.y * Size.z)) * 6.45
+        if not Entity.ACF.Area then
+            Entity.ACF.Area = ((Size.x * Size.y)+(Size.x * Size.z)+(Size.y * Size.z)) * 6.45
         end
         --if not Entity.ACF.Volume then
         --  Entity.ACF.Volume = Size.x * Size.y * Size.z * 16.38
@@ -345,11 +344,11 @@ function ENT:ACF_Activate()
     end
     
     Entity.ACF.Ductility = Entity.ACF.Ductility or 0
-    --local Area = (Entity.ACF.Aera+Entity.ACF.Aera*math.Clamp(Entity.ACF.Ductility,-0.8,0.8))
-    local Area = (Entity.ACF.Aera)
+    --local Area = (Entity.ACF.Area+Entity.ACF.Area*math.Clamp(Entity.ACF.Ductility,-0.8,0.8))
+    local Area = (Entity.ACF.Area)
     --local Armour = (Entity:GetPhysicsObject():GetMass()*1000 / Area / 0.78) / (1 + math.Clamp(Entity.ACF.Ductility, -0.8, 0.8))^(1/2) --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
     local Armour = (Entity:GetPhysicsObject():GetMass()*1000 / Area / 0.78) 
-    --local Health = (Area/ACF.Threshold) * (1 + math.Clamp(Entity.ACF.Ductility, -0.8, 0.8))                                               --Setting the threshold of the prop aera gone
+    --local Health = (Area/ACF.Threshold) * (1 + math.Clamp(Entity.ACF.Ductility, -0.8, 0.8))                                               --Setting the threshold of the prop Area gone
     local Health = (Area/ACF.Threshold)
     
     local Percent = 1 
@@ -373,10 +372,10 @@ function ENT:ACF_Activate()
 
 end
 
-function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
 
     local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulEngine) or 1) --Heat penetrators deal bonus damage to engines
-    local HitRes = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor ) --Calling the standard damage prop function
+    local HitRes = ACF_PropDamage( Entity, Energy, FrArea * Mul, Angle, Inflictor ) --Calling the standard damage prop function
     
     return HitRes --This function needs to return HitRes
 end
@@ -483,8 +482,16 @@ function ENT:CalcMassRatio()
         
     end
 
+    --phys / parented
+    --total: 6000 kgs
+    --5000/1000 = 5 ratio
+    --1000/5000 = 0.2 ratio
+    --local Tmass = PhysMass + Mass
+
     self.MassRatio = PhysMass / Mass
-    
+    --self.MassRatio = 1 / (Tmass/10000)
+    --self.MassRatio = (PhysMass^0.9225) / Mass
+
     Wire_TriggerOutput( self, "Mass", math.Round( Mass, 2 ) )
     Wire_TriggerOutput( self, "Physical Mass", math.Round( PhysMass, 2 ) )
     
@@ -561,7 +568,7 @@ function ENT:CalcRPM()
     self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1+self.HasDriver*ACF.DriverTorqueBoost)
 
     -- Calculate the current torque from flywheel RPM
-    local perc = (self.FlyRPM - self.IdleRPM) / self.CurveFactor / self.LimitRPM
+    local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
     self.Torque = boost * self.Throttle * ACF_CalcCurve(self.TorqueCurve, perc) * self.PeakTorque * (self.FlyRPM < self.LimitRPM and 1 or 0)
 
     local Drag 

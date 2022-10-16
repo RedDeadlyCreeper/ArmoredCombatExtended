@@ -58,10 +58,8 @@ ACF_defineGun("50kgBOMB", {                         -- id
                     ["4xRK"] = true
                 },   
   
-    
-    seekcone    = 40,                               -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 60,                               -- getting outside this cone will break the lock.  Divided by 2. 
-    
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                              -- minimum fuse arming delay
 } )
 
@@ -105,9 +103,8 @@ ACF_defineGun("100kgBOMB", {                        -- id
                     ["4xRK"] = true
                 },   
  
-    seekcone    = 40,                               -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 60,                               -- getting outside this cone will break the lock.  Divided by 2. 
-    
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                              -- minimum fuse arming delay
 } )
 
@@ -149,10 +146,9 @@ ACF_defineGun("250kgBOMB", {                        -- id
                     ["3xRK"] = true, 
                     ["4xRK"] = true
                 },   
+ 
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
-    seekcone    = 40,                               -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 60,                               -- getting outside this cone will break the lock.  Divided by 2. 
-    
     armdelay    = 0.00                              -- minimum fuse arming delay
 } )
 
@@ -192,9 +188,8 @@ ACF_defineGun("500kgBOMB", {                        -- id
                     ["2xRK"] = true
                 },   
  
-    seekcone    = 40,                               -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 60,                               -- getting outside this cone will break the lock.  Divided by 2. 
-    
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                              -- minimum fuse arming delay
 } )
 
@@ -233,9 +228,8 @@ ACF_defineGun("1000kgBOMB", {                       -- id
                     ["1xRK"] = true
                 },                  
  
-    seekcone    = 40,                               -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 60,                               -- getting outside this cone will break the lock.  Divided by 2. 
-    
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                              -- minimum fuse arming delay
 } )
 
@@ -279,6 +273,8 @@ ACF_defineGun("100kgGBOMB", {                       -- id
                     ["4xRK"] = true
                 },   
     
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                              -- minimum fuse arming delay
 })
 
@@ -321,6 +317,8 @@ ACF_defineGun("250kgGBOMB", {                       -- id
                     ["3xRK"] = true, 
                     ["4xRK"] = true
                 },  
+
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
 } )

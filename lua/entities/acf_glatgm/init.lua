@@ -156,7 +156,7 @@ function ENT:Detonate()
         btdat["Filter"]         = { self , self.Entity }
         btdat["Flight"]         = self.BulletData.Flight
         btdat["FlightTime"]     = 0
-        btdat["FrAera"]         = self.BulletData.FrAera
+        btdat["FrArea"]         = self.BulletData.FrArea
         btdat["FuseLength"]     = 0
         btdat["Gun"]            = self
         btdat["Id"]             = self.BulletData.Id
@@ -164,7 +164,7 @@ function ENT:Detonate()
         btdat["LimitVel"]       = 100
         btdat["MuzzleVel"]      = self.BulletData.MuzzleVel
         btdat["Owner"]          = self.BulletData.Owner
-        btdat["PenAera"]        = self.BulletData.PenAera
+        btdat["PenArea"]        = self.BulletData.PenArea
         btdat["Pos"]            = self.BulletData.Pos
         btdat["ProjLength"]     = self.BulletData.ProjLength
         btdat["ProjMass"]       = self.BulletData.ProjMass
@@ -180,7 +180,7 @@ function ENT:Detonate()
         btdat["SlugCaliber"]    = self.BulletData.SlugCaliber
         btdat["SlugDragCoef"]   = self.BulletData.SlugDragCoef
         btdat["SlugMV"]         = self.BulletData.SlugMV
-        btdat["SlugPenAera"]    = self.BulletData.SlugPenAera
+        btdat["SlugPenArea"]    = self.BulletData.SlugPenArea
         btdat["SlugRicochet"]   = self.BulletData.SlugRicochet
         btdat["ConeVol"]        = self.BulletData.ConeVol
         btdat["CasingMass"]     = self.BulletData.CasingMass

@@ -5,7 +5,7 @@
 
 ACF.Bullet           = {}     -- when ACF is loaded, this table holds bullets
 ACF.CurBulletIndex   = 0      -- used to track where to insert bullets
-ACF.BulletIndexLimt  = 5000   -- The maximum number of bullets in flight at any one time TODO: fix the typo
+ACF.BulletIndexLimit  = 5000   -- The maximum number of bullets in flight at any one time TODO: fix the typo
 ACF.SkyboxGraceZone  = 100    -- grace zone for the high angle fire
 
 ACF.TraceFilter = {           -- entities that cause issue with acf and should be not be processed at all
@@ -33,7 +33,7 @@ function ACF_CreateBullet( BulletData )
    -- Increment the index
    ACF.CurBulletIndex = ACF.CurBulletIndex + 1     
 
-   if ACF.CurBulletIndex > ACF.BulletIndexLimt then
+   if ACF.CurBulletIndex > ACF.BulletIndexLimit then
       ACF.CurBulletIndex = 1
    end
 

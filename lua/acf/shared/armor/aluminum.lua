@@ -22,7 +22,7 @@ Material.ArmorMul       = 0.334
 Material.NormMult       = 0.7
 
 if SERVER then
-    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
+    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
         
         local HitRes = {}
 
@@ -53,7 +53,7 @@ if SERVER then
 
         if breachProb > math.random() and maxPenetration > armor then               -- Breach chance roll
             
-            HitRes.Damage   = FrAera / resiliance * DamageModifier * damageMult                         -- Inflicted Damage
+            HitRes.Damage   = FrArea / resiliance * DamageModifier * damageMult                         -- Inflicted Damage
             HitRes.Overkill = maxPenetration - armor                        -- Remaining penetration
             HitRes.Loss     = armor / maxPenetration                        -- Energy loss in percents
 
@@ -64,7 +64,7 @@ if SERVER then
             
             local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
-            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrAera * DamageModifier * damageMult )/ resiliance  
+            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance  
             HitRes.Overkill = (maxPenetration - Penetration)
             HitRes.Loss     = Penetration / maxPenetration
             
@@ -75,7 +75,7 @@ if SERVER then
         -- Projectile did not breach nor penetrate armor    
         local Penetration = math.min( maxPenetration , losArmor * effectiveness)
         
-        HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrAera * DamageModifier * damageMult )/ resiliance
+        HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
         HitRes.Overkill = 0
         HitRes.Loss     = 1
         

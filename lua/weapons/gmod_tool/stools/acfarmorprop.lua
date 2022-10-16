@@ -280,7 +280,7 @@ function TOOL:LeftClick( trace )
     local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
     local material  = self:GetClientInfo( "material" ) or "RHA"
 
-    local mass          = CalcArmor( ent.ACF.Aera, ductility / 100, thickness , material)
+    local mass          = CalcArmor( ent.ACF.Area, ductility / 100, thickness , material)
     
     ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = material} )
     
@@ -421,7 +421,7 @@ function TOOL:Think()
 
         if not MatData then return end
 
-        ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Aera )
+        ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Area )
         self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
         self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
         self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )

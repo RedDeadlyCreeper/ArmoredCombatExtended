@@ -30,6 +30,8 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     weight          = 75,                                   -- Don't scale down the weight though!
     rofmod          = 0.5,
     year            = 1953,
+    rotmult         = 0.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+
     round = {
         model           = "models/missiles/aim9m.mdl",
         rackmdl         = "models/missiles/aim9m.mdl",
@@ -63,13 +65,14 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     agility         = 3,                                    -- multiplier for missile turn-rate.      --was 5
     armdelay        = 0.00,                                 -- minimum fuse arming delay        --was 0.4
     guidelay        = 0.25,                                 -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.075,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 3
 } )
 
 --AIM-120 Sparrow. A medium-Range AAM missile, perfect for those who really need a decent boom in a single pass. Just remember that this is not an AIM-9 and is better to aim before.
 ACF_defineGun("AIM-120 AAM", {                              -- id
     name            = "AIM-120 Missile",
-    desc            = "Faster than the AIM-9, but also a lot heavier. Burns hot and fast, with a good reach, but harder to lock with.  This long-range missile is sure to deliver one heck of a blast upon impact.\nSeeks only 10 degrees and less agile than its smaller stablemate, so choose your shots carefully.",
+    desc            = "Faster than the AIM-9, but also a lot heavier. Burns hot and fast, with a good reach, but harder to lock with.  This long-range missile is sure to deliver one heck of a blast upon impact.\nSeeks only 20 degrees and less agile than its smaller stablemate, so choose your shots carefully.",
     model           = "models/missiles/aim120c.mdl",
     effect          = "Rocket Motor Missile1",
     gunclass        = "AAM",
@@ -80,6 +83,8 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     year            = 1991,
     rofmod          = 0.35,
     modeldiameter   = 7.1 * 2.54,                           -- in cm
+    rotmult         = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+
     round = {
         model           = "models/missiles/aim120c.mdl",
         rackmdl         = "models/missiles/aim120c.mdl",
@@ -111,6 +116,7 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     agility         = 3,                                    -- multiplier for missile turn-rate. -- was 2
     armdelay        = 0.00,                                 -- minimum fuse arming delay --was 0.3
     guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.075,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 2.5
 } )
 
@@ -118,7 +124,7 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
 --with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", {                               -- id
     name            = "AIM-54 Missile",
-    desc            = "A supersonic long-range air to air missile, a early generation to AIM-120. This 300kgs beast is decided to reduce your first opponent that it faces to ashes, of course, if its tiny seek cone is able to see it.",
+    desc            = "A supersonic long-range air to air missile, an early generation to AIM-120. This 300 kgs beast is decided to reduce your first opponent that it faces to ashes, of course, if its tiny seek cone is able to see it.",
     model           = "models/missiles/aim54.mdl",
     effect          = "Rocket Motor Missile1",
     gunclass        = "AAM",
@@ -129,6 +135,8 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
     year            = 1974,
     rofmod          = 0.32,
     modeldiameter   = 9.0 * 2.54,                           -- in cm
+    rotmult         = 6,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+
     round = {
         model           = "models/missiles/aim54.mdl",
         rackmdl         = "models/missiles/aim54.mdl",
@@ -156,6 +164,7 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
 
     agility         = 3,                                    -- multiplier for missile turn-rate.  --was 0.7
     armdelay        = 0.00,                                 -- minimum fuse arming delay --was 0.3
-    guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    guidelay        = 0.5,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.05,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 3
 } )

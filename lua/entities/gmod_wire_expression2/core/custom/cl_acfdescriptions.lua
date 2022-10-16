@@ -97,6 +97,7 @@ E2Helper.Descriptions["acfPropArmorMax"] = "Returns the max armor of an entity."
 E2Helper.Descriptions["acfPropDuctility"] = "Returns the ductility of an entity."
 E2Helper.Descriptions["acfEffectiveArmor"] = "Returns the effective armor of a given nominal armor value and angle, or from a trace hitting an entity."
 E2Helper.Descriptions["acfPropMaterial"] = "Returns the material of an entity."
+E2Helper.Descriptions["acfPropArmorData"] = "Returns a table with armor data of the prop. Keys:\nCurve = [N]\nEffectiveness = [N]\nHEATEffectiveness = [N]\nMaterial = [S]"
 
 --fuel
 E2Helper.Descriptions["acfFuel"] = "Returns the remaining liters of fuel or kilowatt hours in an ACF fuel tank, or available to an engine."

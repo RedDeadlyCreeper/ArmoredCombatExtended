@@ -1,27 +1,26 @@
 AddCSLuaFile()
 
+local Clamp = math.Clamp
+
 --Calculates a position along a catmull-rom spline (as defined on https://www.mvps.org/directx/articles/catmull/)
 --This is used for calculating engine torque curves
 function ACF_CalcCurve(Points, Pos)
-    if #Points < 3 then
-        return 0
-    end
+    local Count = #Points
 
-    local T = 0
+    if Count < 3 then return 0 end
+
     if Pos <= 0 then
-        T = 0
+        return Points[1]
     elseif Pos >= 1 then
-        T = 1
-    else
-        T = Pos * (#Points - 1)
-        T = T % 1
+        return Points[Count]
     end
 
-    local CurrentPoint = math.floor(Pos * (#Points - 1) + 1)
-    local P0 = Points[math.Clamp(CurrentPoint - 1, 1, #Points - 2)]
-    local P1 = Points[math.Clamp(CurrentPoint, 1, #Points - 1)]
-    local P2 = Points[math.Clamp(CurrentPoint + 1, 2, #Points)]
-    local P3 = Points[math.Clamp(CurrentPoint + 2, 3, #Points)]
+    local T       = (Pos * (Count - 1)) % 1
+    local Current = math.floor(Pos * (Count - 1) + 1)
+    local P0      = Points[Clamp(Current - 1, 1, Count - 2)]
+    local P1      = Points[Clamp(Current, 1, Count - 1)]
+    local P2      = Points[Clamp(Current + 1, 2, Count)]
+    local P3      = Points[Clamp(Current + 2, 3, Count)]
 
     return 0.5 * ((2 * P1) +
         (P2 - P0) * T +
@@ -34,54 +33,42 @@ function ACF_CalcEnginePerformanceData(curve, maxTq, idle, redline)
     local peakTq = 0
     local peakTqRPM
     local peakPower = 0
-    local powerbandMinRPM
-    local powerbandMaxRPM
     local powerTable = {} --Power at each point on the curve for use in powerband calc
-    local powerbandTable = {} --(torque + power) / 2 at each point on the curve
-    local powerbandPeak = 0 --Highest value of (torque + power) / 2
     local res = 32 --Iterations for use in calculating the curve, higher is more accurate
-    local curveFactor = (redline - idle) / redline --Torque curves all start after idle RPM is reached
 
-    --Calculate peak torque/power rpm.
+    --Calculate peak torque/power RPM
     for i = 0, res do
         local rpm = i / res * redline
-        local perc = (rpm - idle) / curveFactor / redline
+        local perc = math.Remap(rpm, idle, redline, 0, 1)
         local curTq = ACF_CalcCurve(curve, perc)
         local power = maxTq * curTq * rpm / 9548.8
+
         powerTable[i] = power
+
         if power > peakPower then
             peakPower = power
             peakPowerRPM = rpm
         end
 
-        if math.Clamp(curTq, 0, 1) > peakTq then
+        if Clamp(curTq, 0, 1) > peakTq then
             peakTq = curTq
             peakTqRPM = rpm
         end
     end
 
-    --Loop two, to calculate the powerband's peak.
-    for i = 0, res do
-        local power = powerTable[i] / peakPower
-        local tq = ACF_CalcCurve(curve, i / res)
-        local powerband = power + tq --This seems like the best way I was given to calculate the powerband range - maybe improve eventually?
-        powerbandTable[i] = powerband
+    --Find the bounds of the powerband (within 10% of its peak)
+    local powerbandMinRPM
+    local powerbandMaxRPM
 
-        if powerband > powerbandPeak then
-            powerbandPeak = powerband
-        end
-    end
-
-    --Loop three, to actually figure out where the bounds of the powerband are (within 10% of max).
     for i = 0, res do
-        local powerband = powerbandTable[i] / powerbandPeak
+        local powerFrac = powerTable[i] / peakPower
         local rpm = i / res * redline
 
-        if powerband > 0.9 and not powerbandMinRPM then
+        if powerFrac > 0.9 and not powerbandMinRPM then
             powerbandMinRPM = rpm
         end
 
-        if (powerbandMinRPM and powerband < 0.9 and not powerbandMaxRPM) or (i == res and not powerbandMaxRPM) then
+        if (powerbandMinRPM and powerFrac < 0.9 and not powerbandMaxRPM) or (i == res and not powerbandMaxRPM) then
             powerbandMaxRPM = rpm
         end
     end

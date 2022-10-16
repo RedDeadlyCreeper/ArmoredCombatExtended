@@ -10,8 +10,8 @@ Material.year           = 1955
 Material.massMod        = 2
 Material.curve          = 0.95
 
-Material.effectiveness      = 5
-Material.HEATeffectiveness  = 20
+Material.effectiveness      = 2.5   --5 --Data before to angle factor. Needs proper testing
+Material.HEATeffectiveness  = 8     --20
 
 Material.resiliance         = 1
 Material.HEATresiliance     = 1
@@ -31,7 +31,7 @@ Material.spallmult      = 0
 Material.ArmorMul       = 1
 Material.NormMult       = 1
 
-Material.Stopshock      = true
+Material.Stopshock      = true      -- Use this value if the material is meant to stop shockwaves
 
 if SERVER then
 
@@ -59,7 +59,11 @@ if SERVER then
     -- NOTE: When an explosive shell hits the bricks, can cause lag spikes since each brick is detonating by its own way and not as ammo crates / fuel tanks do.
     -- Possible Fix: Iterates through each affected brick to check if they should detonate or not (jugding by its hp), if so, then a scaled explosion function is called only for those bricks.
     -- Possible Complications: When an explosion occurs in an ERA corner and average explosion pos is inside of contraption.
-    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
+    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
+
+        --print("\narmor: "..armor.."mm")
+        --print("losArmor: "..losArmor.."mm")
+        --print("angle effectiveness: "..math.Round( ((losArmor/armor)*100 - 100) ).."%" )
 
         local HitRes = {}
 
@@ -69,18 +73,18 @@ if SERVER then
         local resiliance    = Material.resiliance
         local sensor        = Material.APSensorFactor
         
-        local blastArmor = effectiveness * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
+        local blastArmor = effectiveness * losArmor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
 
         --ERA is more effective vs HEAT than vs kinetic 
         if Material.HEATList[Type] then    
 
-            blastArmor  = Material.HEATeffectiveness * armor
+            blastArmor  = Material.HEATeffectiveness * losArmor
             resiliance  = Material.HEATresiliance
             sensor      = Material.HEATSensorFactor
 
         elseif Material.HEList[Type] then
 
-            blastArmor  = Material.Neffectiveness * armor
+            blastArmor  = Material.Neffectiveness * armor -- Intentional
             resiliance  = Material.Nresiliance
             sensor      = 1
 
@@ -146,7 +150,7 @@ if SERVER then
             -- Breach chance roll
             if breachProb > math.random() and maxPenetration > armor then
 
-                HitRes.Damage   = FrAera / resiliance * damageMult          -- Inflicted Damage
+                HitRes.Damage   = FrArea / resiliance * damageMult          -- Inflicted Damage
                 HitRes.Overkill = maxPenetration - armor                    -- Remaining penetration
                 HitRes.Loss     = armor / maxPenetration                    -- Energy loss in percents
 
@@ -157,7 +161,7 @@ if SERVER then
         
                 local Penetration = math.min( maxPenetration, losArmor * effectiveness)
 
-                HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult )
+                HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )
                 HitRes.Overkill = ( maxPenetration - Penetration )
                 HitRes.Loss     = Penetration / maxPenetration
             
@@ -168,7 +172,7 @@ if SERVER then
             -- Projectile did not breach nor penetrate armor
             local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult )/ resiliance
+            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )/ resiliance
             HitRes.Overkill = 0
             HitRes.Loss     = 1
         

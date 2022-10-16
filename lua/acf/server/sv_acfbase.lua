@@ -66,13 +66,13 @@ function ACF_Activate( Entity , Recalc )
     if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
     if PhysObj:IsValid() and Count and Count>100 then
 
-        if not Entity.ACF.Aera then
-            Entity.ACF.Aera = (PhysObj:GetSurfaceArea() * 6.45) * 0.52505066107
+        if not Entity.ACF.Area then
+            Entity.ACF.Area = (PhysObj:GetSurfaceArea() * 6.45) * 0.52505066107
         end
     else
         local Size = Entity.OBBMaxs(Entity) - Entity.OBBMins(Entity)
-        if not Entity.ACF.Aera then
-            Entity.ACF.Aera = ((Size.x * Size.y)+(Size.x * Size.z)+(Size.y * Size.z)) * 6.45
+        if not Entity.ACF.Area then
+            Entity.ACF.Area = ((Size.x * Size.y)+(Size.x * Size.z)+(Size.y * Size.z)) * 6.45
         end
     end
     
@@ -80,7 +80,7 @@ function ACF_Activate( Entity , Recalc )
     Entity.ACF.Ductility    = Entity.ACF.Ductility or 0
     Entity.ACF.Material     = not isstring(Entity.ACF.Material) and ACE.BackCompMat[Entity.ACF.Material] or Entity.ACF.Material or "RHA"
 
-    local Area      = Entity.ACF.Aera
+    local Area      = Entity.ACF.Area
     local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
     
     local Mat       = Entity.ACF.Material or "RHA"
@@ -89,7 +89,7 @@ function ACF_Activate( Entity , Recalc )
     local massMod   = MatData.massMod
     
     local Armour    = ACF_CalcArmor( Area, Ductility, Entity:GetPhysicsObject():GetMass() / massMod ) -- So we get the equivalent thickness of that prop in mm if all its weight was a steel plate
-    local Health    = ( Area / ACF.Threshold ) * ( 1 + Ductility ) -- Setting the threshold of the prop aera gone
+    local Health    = ( Area / ACF.Threshold ) * ( 1 + Ductility ) -- Setting the threshold of the prop Area gone
 
     local Percent   = 1 
     
@@ -132,27 +132,27 @@ function ACF_Check( Entity )
     return Entity.ACF.Type  
 end
 
-function ACF_Damage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Type ) 
+function ACF_Damage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun, Type ) 
 
     local Activated = ACF_Check( Entity )
-    local CanDo = hook.Run("ACF_BulletDamage", Activated, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gun )
+    local CanDo = hook.Run("ACF_BulletDamage", Activated, Entity, Energy, FrArea, Angle, Inflictor, Bone, Gun )
     if CanDo == false or Activated == false then -- above (default) hook does nothing with activated. Excludes godded players.
         return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }     
     end
     
     if Entity.SpecialDamage then
-        return Entity:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Type )
+        return Entity:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Type )
     elseif Activated == "Prop" then 
         
-        return ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , Type)
+        return ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone , Type)
         
     elseif Activated == "Vehicle" then
     
-        return ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun , Type)
+        return ACF_VehicleDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
         
     elseif Activated == "Squishy" then
     
-        return ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun , Type)
+        return ACF_SquishyDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
         
     end
     
@@ -160,7 +160,7 @@ end
 
 
 
-function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
+function ACF_CalcDamage( Entity , Energy , FrArea , Angle , Type) --y=-5/16x+b
 
     local HitRes            = {}
 
@@ -200,20 +200,20 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     end
 
     -- RHA Penetration
-    local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA
+    local maxPenetration = (Energy.Penetration / FrArea) * ACF.KEtoRHA
 
     -- Projectile caliber. Messy, function signature    
-    local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
+    local caliber = 20 * ( FrArea^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
 
     local ACE_ArmorResolution = MatData["ArmorResolution"]
-    HitRes = ACE_ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
+    HitRes = ACE_ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
     return HitRes
 end
 
-function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , Type)
+function ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone , Type)
 
-    local HitRes = ACF_CalcDamage( Entity , Energy , FrAera , Angle  , Type)
+    local HitRes = ACF_CalcDamage( Entity , Energy , FrArea , Angle  , Type)
     
     HitRes.Kill = false
     if HitRes.Damage >= Entity.ACF.Health then
@@ -236,9 +236,9 @@ function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , T
     
 end
 
-function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun  , Type)
+function ACF_VehicleDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun  , Type)
 
-    local HitRes = ACF_CalcDamage( Entity , Energy , FrAera , Angle  , Type)
+    local HitRes = ACF_CalcDamage( Entity , Energy , FrArea , Angle  , Type)
     local Driver = Entity:GetDriver()
     local validd = Driver:IsValid()
 
@@ -271,7 +271,7 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
     return HitRes
 end
 
-function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun , Type)
+function ACF_SquishyDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
     
     local Size = Entity:BoundingRadius()
     local Mass = Entity:GetPhysicsObject():GetMass()
@@ -282,52 +282,52 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
         
         if ( Bone == 1 ) then       --This means we hit the head
             Target.ACF.Armour = Mass*0.02   --Set the skull thickness as a percentage of Squishy weight, this gives us 2mm for a player, about 22mm for an Antlion Guard. Seems about right
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , Angle , Type)       --This is hard bone, so still sensitive to impact angle
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle , Type)       --This is hard bone, so still sensitive to impact angle
             Damage = HitRes.Damage*20
             if HitRes.Overkill > 0 then                                 --If we manage to penetrate the skull, then MASSIVE DAMAGE
                 Target.ACF.Armour = Size*0.25*0.01                      --A quarter the bounding radius seems about right for most critters head size
-                HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)
+                HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 , Type)
                 Damage = Damage + HitRes.Damage*100
             end
             Target.ACF.Armour = Mass*0.065  --Then to check if we can get out of the other side, 2x skull + 1x brains
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , Angle , Type)   
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle , Type)   
             Damage = Damage + HitRes.Damage*20              
             
         elseif ( Bone == 0 or Bone == 2 or Bone == 3 ) then     --This means we hit the torso. We are assuming body armour/tough exoskeleton/zombie don't give fuck here, so it's tough
             Target.ACF.Armour = Mass*0.04   --Set the armour thickness as a percentage of Squishy weight, this gives us 8mm for a player, about 90mm for an Antlion Guard. Seems about right
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , Angle , Type)       --Armour plate,, so sensitive to impact angle
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle , Type)       --Armour plate,, so sensitive to impact angle
             Damage = HitRes.Damage*5
             if HitRes.Overkill > 0 then
                 Target.ACF.Armour = Size*0.5*0.02                           --Half the bounding radius seems about right for most critters torso size
-                HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)       
+                HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 , Type)       
                 Damage = Damage + HitRes.Damage*25                          --If we penetrate the armour then we get into the important bits inside, so DAMAGE
             end
             Target.ACF.Armour = Mass*0.185  --Then to check if we can get out of the other side, 2x armour + 1x guts
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , Angle , Type)
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle , Type)
             Damage = Damage + HitRes.Damage*5       
             
         elseif ( Bone == 4 or Bone == 5 ) then      --This means we hit an arm or appendage, so ormal damage, no armour
         
             Target.ACF.Armour = Size*0.2*0.02                           --A fitht the bounding radius seems about right for most critters appendages
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)       --This is flesh, angle doesn't matter
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 , Type)       --This is flesh, angle doesn't matter
             Damage = HitRes.Damage*10                           --Limbs are somewhat less important
         
         elseif ( Bone == 6 or Bone == 7 ) then
         
             Target.ACF.Armour = Size*0.2*0.02                           --A fitht the bounding radius seems about right for most critters appendages
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)       --This is flesh, angle doesn't matter
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 , Type)       --This is flesh, angle doesn't matter
             Damage = HitRes.Damage*10                           --Limbs are somewhat less important
             
         elseif ( Bone == 10 ) then                  --This means we hit a backpack or something
         
             Target.ACF.Armour = Size*0.1*0.02                           --Arbitrary size, most of the gear carried is pretty small
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)       --This is random junk, angle doesn't matter
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 , Type)       --This is random junk, angle doesn't matter
             Damage = HitRes.Damage*1                                --Damage is going to be fright and shrapnel, nothing much       
 
         else                                        --Just in case we hit something not standard
         
             Target.ACF.Armour = Size*0.2*0.02                       
-            HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 )
+            HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 )
             Damage = HitRes.Damage*10   
             
         end
@@ -335,7 +335,7 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
     else                                        --Just in case we hit something not standard
     
         Target.ACF.Armour = Size*0.2*0.02                       
-        HitRes = ACF_CalcDamage( Target , Energy , FrAera , 0 , Type)
+        HitRes = ACF_CalcDamage( Target , Energy , FrArea , 0 , Type)
         Damage = HitRes.Damage*10   
     
     end

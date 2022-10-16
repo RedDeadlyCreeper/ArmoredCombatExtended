@@ -31,18 +31,18 @@ function Round.convert( Crate, PlayerData )
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
 	
-	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
+	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
 	GUIData.MinCavVol = 0
 	GUIData.MaxCavVol = math.min(GUIData.ProjVolume,MaxVol)
 	Data.CavVol = math.Clamp(PlayerData.Data5,GUIData.MinCavVol,GUIData.MaxCavVol)
 	
-	Data.ProjMass = ( (Data.FrAera * Data.ProjLength) - Data.CavVol )*7.9/1000 --Volume of the projectile as a cylinder * fraction missing due to hollow point (Data5) * density of steel
+	Data.ProjMass = ( (Data.FrArea * Data.ProjLength) - Data.CavVol )*7.9/1000 --Volume of the projectile as a cylinder * fraction missing due to hollow point (Data5) * density of steel
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local ExpRatio = (Data.CavVol/GUIData.ProjVolume)
 	Data.ShovePower = 0.2 + ExpRatio/2
 	Data.ExpCaliber = Data.Caliber + ExpRatio*Data.ProjLength
-	Data.PenAera = (3.1416 * Data.ExpCaliber/2)^2^ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
+	Data.PenArea = (3.1416 * Data.ExpCaliber/2)^2^ACF.PenAreaMod
+	Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)
 	Data.LimitVel = 400										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 72										--Base ricochet angle
@@ -67,7 +67,7 @@ function Round.getDisplayData(Data)
 	local GUIData = {}
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
 	GUIData.MaxKETransfert = Energy.Kinetic*Data.ShovePower
-	GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+	GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
 	return GUIData
 end
 
@@ -173,7 +173,7 @@ function Round.guiupdate( Panel, Table )
 	
 	-------------------------------------------------------------------------------
 	
-	ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel )
+	ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
 end
 
 list.Set( "APRoundTypes", "HP", Round )

@@ -26,7 +26,7 @@ do
 		net.Start("ACE_CamOverride")
 			net.WriteEntity( seat )
 			net.WriteBool(bool or false)
-		net.Send( ply )
+		net.Broadcast() -- we need to make sure all clients (including the owner) can have the override
 
 	end
 

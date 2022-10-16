@@ -43,12 +43,12 @@ function Round.convert( Crate, PlayerData )
 --    end
 	
 	Data.SCalMult = PlayerData["Data5"]
-	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-	Data.ProjMass = (Data.SubFrAera * (Data.ProjLength*7.9/1000) * 1.5 + (Data.FrAera - Data.SubFrAera) * (Data.ProjLength*7.9/10000)) --(Tungsten Core Mass + Sabot Exterior Mass) * Mass modifier used for bad aerodynamics
+	Data.SubFrArea = Data.FrArea * math.min(PlayerData.Data5,Data.MaxCalMult)^2
+	Data.ProjMass = (Data.SubFrArea * (Data.ProjLength*7.9/1000) * 1.5 + (Data.FrArea - Data.SubFrArea) * (Data.ProjLength*7.9/10000)) --(Tungsten Core Mass + Sabot Exterior Mass) * Mass modifier used for bad aerodynamics
 	Data.ShovePower = 0.2
-	Data.PenAera = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod	
+	Data.PenArea = (Data.PenModifier*Data.SubFrArea)^ACF.PenAreaMod	
 	
-	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)*0.8
+	Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)*0.8
 	Data.CaliberMod = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
 	Data.LimitVel = 900										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.2									--Kinetic energy transfert to the target for movement purposes										
@@ -72,7 +72,7 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = ((Energy.Penetration/Data.PenAera)*ACF.KEtoRHA)*1.055
+	GUIData.MaxPen = ((Energy.Penetration/Data.PenArea)*ACF.KEtoRHA)*1.055
 	return GUIData
 end
 
@@ -96,13 +96,13 @@ end
 
 function Round.cratetxt( BulletData )
 	
-	--local FrAera = BulletData.FrAera
+	--local FrArea = BulletData.FrArea
 	local DData = Round.getDisplayData(BulletData)
 	
 	--fakeent.ACF.Armour = DData.MaxPen or 0
-	--fakepen.Penetration = (DData.MaxPen * FrAera) / ACF.KEtoRHA	
+	--fakepen.Penetration = (DData.MaxPen * FrArea) / ACF.KEtoRHA	
 	--local fakepen = ACF_Kinetic( BulletData.SlugMV*39.37 , BulletData.SlugMass, 9999999 )
-	--local MaxHP = ACF_CalcDamage( fakeent , fakepen , FrAera , 0 )
+	--local MaxHP = ACF_CalcDamage( fakeent , fakepen , FrArea , 0 )
 	
 	--[[
 	local TotalMass = BulletData.ProjMass + BulletData.PropMass
@@ -277,7 +277,7 @@ function Round.guiupdate( Panel, Table )
 	
 	-------------------------------------------------------------------------------	
 	
-	ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel )
+	ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
 	
 end
 

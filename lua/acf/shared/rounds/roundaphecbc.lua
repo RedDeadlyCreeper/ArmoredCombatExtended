@@ -35,7 +35,7 @@ function Round.convert( Crate, PlayerData )
     Data.MuzzleVel          = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
     local Energy            = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
         
-    local MaxVol            = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
+    local MaxVol            = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
     GUIData.MinFillerVol    = 0
     GUIData.MaxFillerVol    = math.min(GUIData.ProjVolume,MaxVol*0.9)
     GUIData.FillerVol       = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
@@ -46,8 +46,8 @@ function Round.convert( Crate, PlayerData )
     
     --Random bullshit left
     Data.ShovePower         = 0.1
-    Data.PenAera            = Data.FrAera^ACF.PenAreaMod
-    Data.DragCoef           = ((Data.FrAera/10000)/Data.ProjMass)
+    Data.PenArea            = Data.FrArea^ACF.PenAreaMod
+    Data.DragCoef           = ((Data.FrArea/10000)/Data.ProjMass)
     Data.LimitVel           = 700                                       --Most efficient penetration speed in m/s
     Data.KETransfert        = 0.1                                   --Kinetic energy transfert to the target for movement purposes
     Data.Ricochet           = 56                                        --Base ricochet angle
@@ -75,7 +75,7 @@ end
 function Round.getDisplayData(Data)
     local GUIData   = {}
     local Energy    = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    GUIData.MaxPen  = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+    GUIData.MaxPen  = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
     
     GUIData.BlastRadius = (Data.FillerMass)^0.33*8
     local FragMass      = Data.ProjMass - Data.FillerMass
@@ -299,8 +299,8 @@ function Round.guiupdate( Panel, Table )
     
     acfmenupanel:AmmoStats((math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100), (Data.MaxTotalLength) ,math.floor(Data.MuzzleVel*ACF.VelScale) ,math.floor(Data.MaxPen)) 
     
-    acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+    acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+    acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")    --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("DetDelay",Data.DetDelay,0,1,2, "Detonation Fuse Delay", "Delay : "..(math.Round(Data.DetDelay*1000,2)).." ms") --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
     
@@ -316,7 +316,7 @@ function Round.guiupdate( Panel, Table )
     
     -------------------------------------------------------------------------------
     
-    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel )
+    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
 end
 
 list.Set( "APRoundTypes", "APHECBC", Round ) 

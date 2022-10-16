@@ -13,7 +13,8 @@ local function checkIfDataIsMissile(data)
 	local class = guns[data.Id]
 	
 	if not (class and class.gunclass) then
-		return oldDisplayData(data)
+		oldDisplayData(data)
+		return
 	end
 	
 	local classes = list.Get("ACFClasses").GunClass

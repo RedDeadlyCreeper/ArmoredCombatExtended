@@ -605,7 +605,7 @@ function ENT:TrimDistantCrates()
             end
         end
     end
-
+    
 end
 
 function ENT:Think()
@@ -917,7 +917,7 @@ end
 function ENT:LoadAmmo( AddTime, Reload )
 
     self:TrimDistantCrates()
-    
+
     local AmmoEnt = self:FindNextCrate()
     local curTime = CurTime()
     

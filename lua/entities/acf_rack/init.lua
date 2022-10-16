@@ -412,7 +412,7 @@ function ENT:Think()
     local Ammo = table.Count(self.Missiles or {})
     
     local Time = CurTime()
-    if self.LastSend+1 <= Time then
+    if self.LastSend + 1 <= Time then
         
         self:TrimDistantCrates()
         self:UpdateRefillBonus()
@@ -425,18 +425,16 @@ function ENT:Think()
         
         self:GetReloadTime(self:PeekMissile())
         self:SetStatusString()
---      self:SetGuidanceString()
         
         self.LastSend = Time
     
     end
-    
+
     self.NextFire = math.min(self.NextFire + (Time - self.LastThink) / self:WaitFunction(self:PeekMissile()), 1)
-    
+
     if self.NextFire >= 1 and Ammo > 0 and Ammo <= self.MagSize then
         self.Ready = true
         Wire_TriggerOutput(self, "Ready", 1)
-        --print(self.Firing , Ammo > 0)
         if self.Firing then
             self.ReloadTime = nil
             self:FireMissile()
@@ -453,7 +451,7 @@ function ENT:Think()
             self:Reload()
         end
     end
-    
+
     self:GetOverlayText()
     
     self:NextThink(Time + 0.5)
@@ -609,6 +607,10 @@ function ENT:AddMissile()
     missile.Launcher        = self
     missile.ForceTdelay     = self.ForceTdelay
     
+    if CPPI then
+        missile:CPPISetOwner(ply)
+    end
+
     local BulletData = ACFM_CompactBulletData(Crate)
     BulletData.IsShortForm  = true    
     BulletData.Owner        = ply
@@ -656,7 +658,7 @@ end
 
 
 function ENT:LoadAmmo( Reload )
-
+    
     self:TrimDistantCrates()
 
     if not self:CanReload() then return false end
@@ -797,7 +799,7 @@ function ENT:FireMissile()
     
     if self.Ready and self.Legal and (self.PostReloadWait < CurTime()) then
         
-        ACF_GetPhysicalParent(self)
+        self.BaseEntity = ACF_GetPhysicalParent(self) or game.GetWorld()
         
         local nextMsl = self:PeekMissile()
 

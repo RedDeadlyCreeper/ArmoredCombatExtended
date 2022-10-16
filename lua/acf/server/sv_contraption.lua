@@ -35,7 +35,8 @@ local AllowedEnts = {
     [ "acf_ammo" ]                  = true,
     [ "acf_engine" ]                = true,
     [ "acf_fueltank" ]              = true,
-    [ "acf_gearbox" ]               = true
+    [ "acf_gearbox" ]               = true,
+    [ "primitive_shape" ]           = true
 
 }
 
@@ -221,48 +222,25 @@ end
 function ACE_refreshdata()
 
     --print('[ACE | INFO]- Starting Refreshing. . .')
-    for i = 1, table.Count( ACE.contraptionEnts ) do 
-    
-        -- check if there's something first
-        if ACE.contraptionEnts[i] then 
-            
-            -- Remove this if not longer exist
-            if not ACE.contraptionEnts[i]:IsValid() then 
-                --print('[ACE | INFO]- Invalid Entity Spotted! removing. . .')
-                table.remove( ACE.contraptionEnts , i )
-                
-                goto cont 
-            
-            -- otherwise, continue
-            else 
-              
-                -- check if it has parent
-                if ACE.contraptionEnts[i]:GetParent():IsValid() then   
-                     
-                    -- if parented, check if it's not a Heat emitter 
-                    if not ACE.contraptionEnts[i].Heat then     
-                        
-                        -- if not, remove it. Removing most of parented props will decrease cost of guidances
-                        --print('[ACE | INFO]- Parented prop! removing. . .')
-                        table.remove( ACE.contraptionEnts , i )   
-                    
-                        goto cont
-                    else 
-                    
-                        --print('[ACE | INFO]- this entity is Heat Emitter!')   --parented Heat emitters are used for guidance purpose
-                    end
-                end     
-            end         
+    for index, Ent in ipairs(ACE.contraptionEnts) do 
 
-        -- if Empty, remove it too          
-        else
-        
-            --print('[ACE | INFO]- There´s nothing here! removing. . .')
-            table.remove( ACE.contraptionEnts , i ) 
+        -- check if the entity is valid
+        if not IsValid(Ent) then goto cont end 
+
+        -- check if it has parent
+        if Ent:GetParent():IsValid() then   
+             
+            -- if parented, check if it's not a Heat emitter 
+            if not Ent.Heat then     
+                
+                -- if not, remove it. Removing most of parented props will decrease cost of guidances
+                --print('[ACE | INFO]- Parented prop! removing. . .')
+                table.remove( ACE.contraptionEnts , index )   
             
-            goto cont
-        end
-        
+                goto cont
+            end
+        end     
+
         ::cont::
     end
     
