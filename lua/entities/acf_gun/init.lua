@@ -594,6 +594,20 @@ function ENT:Heat_Function()
 
 end
 
+function ENT:TrimDistantCrates()
+
+    for Key, Crate in pairs(self.AmmoLink) do
+        if IsValid( Crate ) and Crate.Load then
+            if RetDist( self, Crate ) >= 512 then
+                self:Unlink( Crate )
+                soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+                self:EmitSound(soundstr, 500, 100)
+            end
+        end
+    end
+
+end
+
 function ENT:Think()
     
     --Legality check part
@@ -902,6 +916,8 @@ end
 
 function ENT:LoadAmmo( AddTime, Reload )
 
+    self:TrimDistantCrates()
+    
     local AmmoEnt = self:FindNextCrate()
     local curTime = CurTime()
     

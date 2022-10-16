@@ -558,3 +558,6 @@ r100
 - Death while playing grenade throw animation spawns a grenade at your death position
 - Recoil on some automatic weapons tweaked
 - Grenades and mines now spawn with far less ammo
+
+*r147
+- Attempt to fix: https://trello.com/c/it39Qwwk - cheezus
