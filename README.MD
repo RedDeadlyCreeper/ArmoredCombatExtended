@@ -12,8 +12,9 @@ The Armoured Combat Extended (as known as ACE), is an addon that brings you a re
 ## Requirements
 
 ACE requires you have the following addons before using:
-* **[NADMOD Prop Protection](https://steamcommunity.com/workshop/filedetails/?id=159298542)**
-* **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)**
+
+* **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)** 
+* **[NADMOD Prop Protection](https://steamcommunity.com/workshop/filedetails/?id=159298542)** (No really mandatory for general use, but required if you want to use the built in ACE Damage Protection)
 
 ## Workshop edition
 
@@ -21,7 +22,7 @@ We have a **[workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=25
 
 ## Manual Installation
 
-You can clone this repository using **[Github Desktop](https://desktop.github.com/)** or downloading the Zip which is provided from green button "Code"
+You can clone this repository using **[Github Desktop](https://desktop.github.com/)**, **[GitKraken](https://www.gitkraken.com/)**  or downloading the Zip which is provided from green button "Code"
 
 If you dont like the methods above, you can use tortoiseGIT, which you can download **[here!](https://tortoisegit.org/)**. Also you'll need **[GIT](https://git-scm.com/downloads)**
 
