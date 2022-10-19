@@ -575,3 +575,6 @@ r100
 - Fixed several typos on code naming. Courtesy of KemGus
 - Improved ghosting time. Now Missiles should be less likely to self hit your own vehicle if moving.
 - Removed old ghosting time convar. Useless at this point.
+
+*r149
+- Avoided serverside function being called on client realm when executing acf_enable_dp

@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 473           -- ACE current version
+ACF.Version = 474           -- ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
@@ -57,7 +57,6 @@ CreateConVar("acf_healthmod", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_armormod", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_ammomod", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_gunfire", 1, FCVAR_ARCHIVE)
---CreateConVar("acf_year", ACF.Year, FCVAR_ARCHIVE)
 
 -- Debris
 CreateConVar("acf_debris_lifetime", 30, FCVAR_ARCHIVE)
@@ -351,8 +350,7 @@ end )
 
 
 function ACF_CVarChangeCallback(CVar, Prev, New)
-    --if( Cvar == "acf_year" ) then
-        --ACF.Year = math.Clamp(New,1900,2021)
+
     if( CVar == "acf_healthmod" ) then
         ACF.Threshold = 264.7 / math.max(New, 0.01)
     elseif( CVar == "acf_armormod" ) then
@@ -374,7 +372,9 @@ function ACF_CVarChangeCallback(CVar, Prev, New)
     elseif( CVar == "acf_explosions_scaled_ents_max" ) then
         ACF.ScaledEntsMax = math.max(New,1)
     elseif( CVar == "acf_enable_dp" ) then
-        ACE_SendDPStatus()
+        if ACE_SendDPStatus then
+            ACE_SendDPStatus()
+        end
     end
 end
 
