@@ -578,3 +578,7 @@ r100
 
 *r149
 - Avoided serverside function being called on client realm when executing acf_enable_dp
+
+*r150
+- Updated the new armor analyzer. Added many new features.
+- Fixed rounding values for RPMfunction in general.

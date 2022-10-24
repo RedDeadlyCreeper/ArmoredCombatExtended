@@ -1269,7 +1269,7 @@ function ents_methods:acfRPM ()
 
 	if not isEngine( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
-	return math.floor( this.FlyRPM ) or 0
+	return math.Round( this.FlyRPM ) or 0
 end
 
 --- Returns the current torque of an ACF engine

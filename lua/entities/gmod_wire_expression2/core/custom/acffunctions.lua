@@ -338,7 +338,7 @@ end
 e2function number entity:acfRPM()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	return math.floor(this.FlyRPM or 0)
+	return math.Round(this.FlyRPM or 0)
 end
 
 -- Returns the current torque of an ACF engine
