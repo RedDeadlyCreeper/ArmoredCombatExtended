@@ -582,3 +582,8 @@ r100
 *r150
 - Updated the new armor analyzer. Added many new features.
 - Fixed rounding values for RPMfunction in general.
+
+*r151
+- Reworked traces. Now bullets should hit the proper player hitbox. Courtesy of Cheezus
+- Fixed APHE/CBC fuse. Not really precise but works now.
+- Fixed sounds playing twice on SWEPs when watching another player shooting

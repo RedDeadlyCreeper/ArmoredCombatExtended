@@ -180,10 +180,18 @@ do
       FlightTr.maxs     = Vector( TROffset, TROffset, TROffset )
       FlightTr.mins     = -FlightTr.maxs  
 
+      -- Table to hold temporary filter keys that should be removed after the below while loop is completed
+      if not Bullet.FilterKeysToRemove then Bullet.FilterKeysToRemove = {} end
+
+      for k, v in ipairs(Bullet.FilterKeysToRemove) do
+         table.remove(Bullet.Filter, v)
+         Bullet.FilterKeysToRemove[k] = nil
+      end
+
       FlightTr.filter   = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 
       --if trace hits clipped part of prop, add prop to trace filter and retry
-      while RetryTrace do        
+      while RetryTrace do
 
          -- Disables so we dont overloop it again
          RetryTrace        = false
@@ -214,13 +222,29 @@ do
            
          --We hit something that's not world, if it's visclipped, filter it out and retry 
            if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hit the visclip as traceline, no more double bounds.
-             
-             table.insert( Bullet.Filter , FlightRes.Entity )
+
+             table.insert( Bullet.Filter, FlightRes.Entity )
              RetryTrace = true   --re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
-            
+
           end
-      
-      end   
+
+         -- If we hit a player or NPC, we need to retry the trace as a TraceLine
+         -- TraceHull hits player's physics collision boxes rather than proper hitboxes, causing near miss shots to hit
+         local HitEnt = FlightRes.Entity
+         if FlightRes.HitNonWorld and (HitEnt:IsPlayer() or HitEnt:IsNPC()) then
+
+            FlightTr.output = nil
+            local PlayerHitCheck = util.LegacyTraceLine(FlightTr).Entity
+            FlightTr.output = FlightRes
+
+            if HitEnt ~= PlayerHitCheck then
+               table.insert(Bullet.Filter, HitEnt)
+               table.insert(Bullet.FilterKeysToRemove, #Bullet.Filter)
+
+               RetryTrace = true
+            end
+         end
+      end
    end
 
    function ACF_DoBulletsFlight( Index, Bullet )
@@ -239,7 +263,7 @@ do
             local ratio       = 1 - (Diff / Bullet.DeltaTime)
             local ScaledPos   = LerpVector(ratio, Bullet.Pos, Bullet.NextPos)
 
-            if FlightRes.Hit and FlightRes.Fraction < ratio then 
+            if FlightRes.Hit and FlightRes.Fraction < ratio or Bullet.HasPenned then 
                ScaledPos = FlightRes.HitPos
             end
 

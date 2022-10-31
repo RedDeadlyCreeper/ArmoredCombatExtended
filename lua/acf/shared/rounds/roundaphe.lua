@@ -127,15 +127,16 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
         local Speed     = Bullet.Flight:Length() / ACF.VelScale
         local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
         local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-        
-        if HitRes.Overkill > 0 then
-        
-        if Bullet.HasPenned == false then
 
-            Bullet.HasPenned    = true
-            Bullet.FuseLength   = Bullet.DetDelay or 0
-            Bullet.InitTime     = SysTime()
-        end
+        if HitRes.Overkill > 0 then
+
+            if Bullet.HasPenned == false then
+
+                Bullet.HasPenned    = true
+                Bullet.FuseLength   = Bullet.DetDelay or 0
+                Bullet.InitTime     = SysTime()
+                Bullet.FlightTime   = 0
+            end
         
             table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
 
@@ -169,7 +170,7 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
-    
+
     ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
     ACF_RemoveBullet( Index )
     
@@ -286,3 +287,6 @@ end
 list.Set( "APRoundTypes", "APHE", Round )
 list.Set( "ACFRoundTypes", "APHE", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "APHE" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

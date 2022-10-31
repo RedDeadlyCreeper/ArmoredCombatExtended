@@ -250,3 +250,16 @@ function ACE_refreshdata()
 end
 
 hook.Add("AdvDupe_FinishPasting","ACE_refresh", ACE_refreshdata)
+
+--[[
+    hook.Call("AdvDupe_FinishPasting", nil, {
+        {
+            EntityList = EntityList,
+            CreatedEntities = CreatedEntities,
+            ConstraintList = ConstraintList,
+            CreatedConstraints = CreatedConstraints,
+            HitPos = OrigPos or Position,
+            Player = Player
+        }
+    }, 1)
+]]

@@ -146,20 +146,19 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
     if ACF_Check( Target ) then
     
         if Bullet.Normalize then
---      print("PropHit")
-            local Speed = Bullet.Flight:Length() / ACF.VelScale
-            local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-            local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+
+            local Speed     = Bullet.Flight:Length() / ACF.VelScale
+            local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+            local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
         
             if HitRes.Overkill > 0 then
 
                 if Bullet.HasPenned == false then --Activate APHE Fuse
-                    Bullet.HasPenned = true
-                
-                    Bullet.FuseLength = Bullet.DetDelay or 0
-                    
-                    Bullet.InitTime = SysTime()
-                    
+
+                    Bullet.HasPenned    = true
+                    Bullet.FuseLength   = Bullet.DetDelay or 0
+                    Bullet.InitTime     = SysTime()
+                    Bullet.FlightTime   = 0
                     
                 end
 
@@ -322,3 +321,6 @@ end
 list.Set( "APRoundTypes", "APHECBC", Round ) 
 list.Set( "ACFRoundTypes", "APHECBC", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "APHECBC" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

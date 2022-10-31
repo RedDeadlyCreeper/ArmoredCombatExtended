@@ -202,6 +202,7 @@ function SWEP:Shoot()
     local owner = self:GetOwner()
 
     if SERVER then
+        self.BulletData.Filter = {self:GetOwner()}
         self:ACEFireBullet(owner:GetShootPos() + owner:GetVelocity() * engine.TickInterval(), self:GetShootDir())
     end
 end
@@ -244,10 +245,10 @@ function SWEP:PrimaryAttack()
         if sounds then
             if SERVER then
                 ACE_NetworkedSound(owner, owner, self.Primary.Sound, self.BulletData.PropMass)
+            else
+                self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
             end
-
-            self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
-        elseif not sounds then
+        elseif not sounds and CLIENT then
             self:EmitSound(self.Primary.Sound)
         end
 

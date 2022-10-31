@@ -796,7 +796,7 @@ do
     }   
 
     function ENT:FireShell()
-        
+
         local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
         if CanDo == false then return end
 
@@ -849,7 +849,7 @@ do
                         
                         --using fusetime via wire will override the ammo fusetime!
                         if self.OverrideFuse then 
-                            self.BulletData.FuseLength = self.FuseTime       
+                            self.BulletData.FuseLength = self.FuseTime
                         end 
                     end
                 end

@@ -46,13 +46,13 @@ configs[#configs + 1] =
 
 
 function this:GetDetonate(missile, guidance)
-	
+    
     if not self:IsArmed() then return false end
     
     local target = guidance.TargetPos or guidance:GetGuidance(missile).TargetPos
     
-	if not target then return false end
-	if (missile.CurPos + missile.LastVel):DistToSqr(target) > (self.Distance ^ 2) then return false end
+    if not target then return false end
+    if (missile.CurPos + missile.LastVel):DistToSqr(target) > (self.Distance ^ 2) then return false end
     
     return true
     
@@ -61,9 +61,9 @@ end
 
 
 function this:GetDisplayConfig()
-	return 
-	{
-		["Arming delay"] = math.Round(self.Primer, 3) .. " s",
-		["Distance"] = math.Round(self.Distance / 39.37, 1) .. " m"
-	}
+    return 
+    {
+        ["Arming delay"] = math.Round(self.Primer, 3) .. " s",
+        ["Distance"] = math.Round(self.Distance / 39.37, 1) .. " m"
+    }
 end
