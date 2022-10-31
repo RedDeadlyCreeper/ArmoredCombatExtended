@@ -587,3 +587,6 @@ r100
 - Reworked traces. Now bullets should hit the proper player hitbox. Courtesy of Cheezus
 - Fixed APHE/CBC fuse. Not really precise but works now.
 - Fixed sounds playing twice on SWEPs when watching another player shooting
+
+*r152
+- Added COLLISION_GROUP_VEHICLE as valid collision group for legality checks

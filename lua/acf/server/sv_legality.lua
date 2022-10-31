@@ -73,7 +73,8 @@ do
 
    local ValidCollisionGroups = {
       [COLLISION_GROUP_NONE] = true,
-      [COLLISION_GROUP_WORLD] = true
+      [COLLISION_GROUP_WORLD] = true,
+      [COLLISION_GROUP_VEHICLE] = true
    }
 
    --TODO: remove unused functions
