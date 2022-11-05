@@ -590,3 +590,7 @@ r100
 
 *r152
 - Added COLLISION_GROUP_VEHICLE as valid collision group for legality checks
+
+*r153
+- Fix ACF_CheckClips not respecting primitives.
+- Added more primitive classes to the contraption entity finder.

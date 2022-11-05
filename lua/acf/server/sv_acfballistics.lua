@@ -98,10 +98,20 @@ end
    checks the visclips of an entity, to determine if round should pass through or not.
    ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
 ]]--------------------------------------------------------------------------------------------------
+
+local ValidClipEnts = {
+   ["prop_physics"] = true,
+   ["primitive_shape"] = true,
+   ["primitive_airfoil"] = true,
+   ["primitive_rail_slider"] = true,
+   ["primitive_slider"] = true,
+   ["primitive_ladder"] = true
+}
+
 function ACF_CheckClips( Ent, HitPos )
 
    if not IsValid(Ent) or Ent.ClipData == nil then return false end        -- only valid visclipped ents                                    
-   if Ent:GetClass() ~= "prop_physics" then return false end               -- only props
+   if not ValidClipEnts[Ent:GetClass()] then return false end              -- only props
    local phys = Ent:GetPhysicsObject()                                         
    if not IsValid(phys) or phys:GetVolume() == nil then return false end   -- makesphere
 

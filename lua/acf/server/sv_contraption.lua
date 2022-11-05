@@ -36,7 +36,11 @@ local AllowedEnts = {
     [ "acf_engine" ]                = true,
     [ "acf_fueltank" ]              = true,
     [ "acf_gearbox" ]               = true,
-    [ "primitive_shape" ]           = true
+    [ "primitive_shape" ]           = true,
+    [ "primitive_airfoil" ]         = true,
+    [ "primitive_rail_slider" ]     = true,
+    [ "primitive_slider" ]          = true,
+    [ "primitive_ladder" ]          = true
 
 }
 
