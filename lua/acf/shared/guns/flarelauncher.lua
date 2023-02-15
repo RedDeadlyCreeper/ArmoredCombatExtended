@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("FGL", {
-    type = "Gun",
+	type = "Gun",
 	spread = 3,
 	name = "Flare Launcher",
 	desc = ACFTranslation.GunClasses[5],
@@ -8,8 +8,8 @@ ACF_defineGunClass("FGL", {
 	rofmod = 0.6,
 	year = 1970,
 	sound = "acf_extra/tankfx/flare_launch.wav",
-	
-	ammoBlacklist   = {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
+
+	ammoBlacklist	= {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
 } )
 
 --add a gun to the class

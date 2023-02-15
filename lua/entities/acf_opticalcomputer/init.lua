@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-function ENT:SpawnFunction( ply, trace )
+function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 

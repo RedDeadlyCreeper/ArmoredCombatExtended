@@ -1,193 +1,193 @@
 
-local Material          = {}
+local Material		= {}
 
-Material.id             = "Rub"
-Material.name           = "Rubber"
-Material.sname          = "Rubber"
-Material.desc           = "Another Material, that while its totally useless agaisnt kinetic rounds, excels agaisnt shaped charges like HEAT"
-Material.year           = 1955
+Material.id			= "Rub"
+Material.name		= "Rubber"
+Material.sname		= "Rubber"
+Material.desc		= "Another Material, that while its totally useless agaisnt kinetic rounds, excels agaisnt shaped charges like HEAT"
+Material.year		= 1955
 
-Material.massMod        = 0.2
-Material.curve          = 0.95
+Material.massMod		= 0.2
+Material.curve		= 0.95
 
 Material.specialeffect  = 30
 
 Material.effectiveness  = 0.02
 Material.HEATeffectiveness = 3
-Material.resiliance     = 0.25
+Material.resiliance	= 0.25
 Material.HEATresiliance = 0.3
-Material.HEresiliance   = 0.3
+Material.HEresiliance	= 0.3
 Material.Catchresiliance = 0.25
 
-Material.spallarmor     = 2
-Material.spallresist    = 3.5
+Material.spallarmor	= 2
+Material.spallresist	= 3.5
 
-Material.spallmult      = 0.01
-Material.ArmorMul       = 0.01
-Material.NormMult       = 0.05
+Material.spallmult	= 0.01
+Material.ArmorMul	= 0.01
+Material.NormMult	= 0.05
 
-Material.Stopshock      = true
+Material.Stopshock	= true
 
 if SERVER then
-    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
-        
-        local HitRes = {}
+	function Material.ArmorResolution( _, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
-        local curve         = Material.curve
-        local effectiveness = Material.effectiveness
-        local resiliance    = Material.resiliance
+		local HitRes = {}
 
-        armor       = armor^curve
-        losArmor    = losArmor^curve
-                
-        --=========================================================================================================\
-        --------------------------------------------------------- For HEAT shells & Spall -------------------------->
-        --=========================================================================================================/
-        if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" or Type == "Spall") then
+		local curve		= Material.curve
+		local effectiveness = Material.effectiveness
+		local resiliance	= Material.resiliance
 
-            local specialeffect         = Material.specialeffect
-            local specialeffectiveness  = Material.HEATeffectiveness
-            local specialresiliance     = Material.HEATresiliance
+		armor	= armor ^ curve
+		losArmor	= losArmor ^ curve
 
-            local spallresist = Material.spallresist
+		--=========================================================================================================\
+		--------------------------------------------------------- For HEAT shells & Spall -------------------------->
+		--=========================================================================================================/
+		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" or Type == "Spall" then
 
-            if Type == 'Spall' then
-                specialeffectiveness = specialeffectiveness*spallresist
-            end
+			local specialeffect		= Material.specialeffect
+			local specialeffectiveness  = Material.HEATeffectiveness
+			local specialresiliance	= Material.HEATresiliance
 
-            local DmgResist = 0.01+math.min(caliber*10/specialeffect,5)*6
+			local spallresist = Material.spallresist
 
-            -- Breach probability
-            local breachProb = math.Clamp((caliber / armor / specialeffectiveness - 1.3) / (7 - 1.3), 0, 1)
+			if Type == "Spall" then
+				specialeffectiveness = specialeffectiveness * spallresist
+			end
 
-            -- Penetration probability
-            local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * ( maxPenetration / losArmor / specialeffectiveness - 1 ))), 0.0015, 0.9985) - 0.0015) / 0.997; 
+			local DmgResist = 0.01 + math.min(caliber * 10 / specialeffect, 5) * 6
 
-            -- Breach chance roll
-            if breachProb > math.random() and maxPenetration > armor then                           
-                        
-                HitRes.Damage   = FrArea / specialresiliance * damageMult           -- Inflicted Damage
-                HitRes.Overkill = maxPenetration - armor                                            -- Remaining penetration
-                HitRes.Loss     = armor / maxPenetration                                            -- Energy loss in percents
+			-- Breach probability
+			local breachProb = math.Clamp((caliber / armor / specialeffectiveness - 1.3) / (7 - 1.3), 0, 1)
 
-                return HitRes
+			-- Penetration probability
+			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * ( maxPenetration / losArmor / specialeffectiveness - 1 ))), 0.0015, 0.9985) - 0.0015) / 0.997;
 
-            -- Penetration chance roll          
-            elseif penProb > math.random() then                                 
-                        
-                local Penetration = math.min( maxPenetration, losArmor * specialeffectiveness )
+			-- Breach chance roll
+			if breachProb > math.random() and maxPenetration > armor then
 
-                HitRes.Damage   = ( Penetration / losArmorHealth / specialeffectiveness )^2 * FrArea / specialresiliance * DmgResist * damageMult
-                HitRes.Overkill = (maxPenetration - Penetration)
-                HitRes.Loss     = Penetration / maxPenetration
-            
-                return HitRes
-                                
-            end
+				HitRes.Damage	= FrArea / specialresiliance * damageMult		-- Inflicted Damage
+				HitRes.Overkill = maxPenetration - armor											-- Remaining penetration
+				HitRes.Loss	= armor / maxPenetration											-- Energy loss in percents
 
-            -- Projectile did not breach nor penetrate armor
-            local Penetration = math.min( maxPenetration , losArmor * specialeffectiveness )
-                
-            HitRes.Damage   = ( Penetration / losArmor / specialeffectiveness )^2 * FrArea / specialresiliance * DmgResist * damageMult 
-            HitRes.Overkill = 0
-            HitRes.Loss     = 1
-        
-            return HitRes
-        --===============================================================================================\  
-        --------------------------------------------------------- For HE shells --------------------------> 
-        --===============================================================================================/
-        elseif Type == "HE" then
-            --print('spalling2!!!')
-            --print(Type)
+				return HitRes
 
-            local specialeffectiveness = Material.HEATeffectiveness
-            local HEresiliance = Material.HEresiliance
+			-- Penetration chance roll
+			elseif penProb > math.random() then
 
-            -- Breach probability
-            local breachProb = math.Clamp((caliber / armor / HEresiliance - 1.3) / (7 - 1.3), 0, 1)
+				local Penetration = math.min( maxPenetration, losArmor * specialeffectiveness )
 
-            -- Penetration probability
-            local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / specialeffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997; 
+				HitRes.Damage = (Penetration / losArmorHealth / specialeffectiveness) ^ 2 * FrArea / specialresiliance * DmgResist * damageMult
+				HitRes.Overkill = (maxPenetration - Penetration)
+				HitRes.Loss	= Penetration / maxPenetration
 
-            -- Breach chance roll
-            if breachProb > math.random() and maxPenetration > armor then               
+				return HitRes
 
-                HitRes.Damage   = FrArea / HEresiliance  * damageMult    -- Inflicted Damage
-                HitRes.Overkill = maxPenetration - armor                             -- Remaining penetration
-                HitRes.Loss     = armor / maxPenetration                             -- Energy loss in percents
+			end
 
-                return HitRes
+			-- Projectile did not breach nor penetrate armor
+			local Penetration = math.min( maxPenetration , losArmor * specialeffectiveness )
 
-            -- Penetration chance roll              
-            elseif penProb > math.random() then                                 
-                
-                local Penetration = math.min( maxPenetration, losArmor * specialeffectiveness )
+			HitRes.Damage	= ( Penetration / losArmor / specialeffectiveness ) ^ 2 * FrArea / specialresiliance * DmgResist * damageMult
+			HitRes.Overkill = 0
+			HitRes.Loss	= 1
 
-                HitRes.Damage   = ( Penetration / losArmorHealth / specialeffectiveness )^2 * FrArea / HEresiliance * damageMult    
-                HitRes.Overkill = (maxPenetration - Penetration)
-                HitRes.Loss     = Penetration / maxPenetration
+			return HitRes
+		--===============================================================================================\
+		--------------------------------------------------------- For HE shells -------------------------->
+		--===============================================================================================/
+		elseif Type == "HE" then
+			--print("spalling2!!!")
+			--print(Type)
 
-                return HitRes
+			local specialeffectiveness = Material.HEATeffectiveness
+			local HEresiliance = Material.HEresiliance
 
-            end
+			-- Breach probability
+			local breachProb = math.Clamp((caliber / armor / HEresiliance - 1.3) / (7 - 1.3), 0, 1)
 
-            -- Projectile did not breach nor penetrate armor
-            local Penetration = math.min( maxPenetration , losArmor * specialeffectiveness )
+			-- Penetration probability
+			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / specialeffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997
 
-            HitRes.Damage   = ( Penetration / losArmorHealth / specialeffectiveness )^2 * FrArea / HEresiliance * damageMult    
-            HitRes.Overkill = 0
-            HitRes.Loss     = 1
+			-- Breach chance roll
+			if breachProb > math.random() and maxPenetration > armor then
 
-            return HitRes
-        
-        --===============================================================================================\
-        --------------------------------------------------------- For AP shells -------------------------->
-        --===============================================================================================/
-        else
-            
-            local Catchresiliance = Material.Catchresiliance
-            
-            -- Breach probability
-            local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)
+				HitRes.Damage	= FrArea / HEresiliance  * damageMult	-- Inflicted Damage
+				HitRes.Overkill = maxPenetration - armor							-- Remaining penetration
+				HitRes.Loss	= armor / maxPenetration							-- Energy loss in percents
 
-            -- Penetration probability
-            local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;  
+				return HitRes
 
-            -- Breach chance roll
-            if breachProb > math.random() and maxPenetration > armor then                           
+			-- Penetration chance roll
+			elseif penProb > math.random() then
 
-                HitRes.Damage   = FrArea / resiliance * damageMult                          -- Inflicted Damage
-                HitRes.Overkill = maxPenetration - armor                        -- Remaining penetration
-                HitRes.Loss     = armor / maxPenetration                        -- Energy loss in percents
+				local Penetration = math.min( maxPenetration, losArmor * specialeffectiveness )
 
-                return HitRes
+				HitRes.Damage	= ( Penetration / losArmorHealth / specialeffectiveness ) ^ 2 * FrArea / HEresiliance * damageMult
+				HitRes.Overkill = (maxPenetration - Penetration)
+				HitRes.Loss	= Penetration / maxPenetration
 
-            -- Penetration chance roll          
-            elseif penProb > math.random() then                                 
-                
-                local Penetration = math.min( maxPenetration, losArmor * effectiveness )
+				return HitRes
 
-                HitRes.Damage   = ( Penetration / losArmorHealth * effectiveness )^2 * FrArea / resiliance * damageMult 
-                HitRes.Overkill = (maxPenetration - Penetration)
-                HitRes.Loss     = Penetration / maxPenetration
-                    
-                --print('Damage applied: '..HitRes.Damage)
-                return HitRes
-                            
-            end
-            
-            -- Projectile did not breach nor penetrate armor
-            local Penetration = math.min( maxPenetration , losArmor * effectiveness )
+			end
 
-            HitRes.Damage   = ( Penetration / losArmorHealth * effectiveness )^2 * FrArea / Catchresiliance * damageMult    
-            HitRes.Overkill = 0
-            HitRes.Loss     = 1
+			-- Projectile did not breach nor penetrate armor
+			local Penetration = math.min( maxPenetration , losArmor * specialeffectiveness )
 
-            return HitRes       
+			HitRes.Damage	= ( Penetration / losArmorHealth / specialeffectiveness ) ^ 2 * FrArea / HEresiliance * damageMult
+			HitRes.Overkill = 0
+			HitRes.Loss	= 1
 
-        end
+			return HitRes
 
-    end 
+		--===============================================================================================\
+		--------------------------------------------------------- For AP shells -------------------------->
+		--===============================================================================================/
+		else
+
+			local Catchresiliance = Material.Catchresiliance
+
+			-- Breach probability
+			local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)
+
+			-- Penetration probability
+			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
+
+			-- Breach chance roll
+			if breachProb > math.random() and maxPenetration > armor then
+
+				HitRes.Damage	= FrArea / resiliance * damageMult						-- Inflicted Damage
+				HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
+				HitRes.Loss	= armor / maxPenetration						-- Energy loss in percents
+
+				return HitRes
+
+			-- Penetration chance roll
+			elseif penProb > math.random() then
+
+				local Penetration = math.min( maxPenetration, losArmor * effectiveness )
+
+				HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness ) ^ 2 * FrArea / resiliance * damageMult
+				HitRes.Overkill = (maxPenetration - Penetration)
+				HitRes.Loss	= Penetration / maxPenetration
+
+				--print('Damage applied: ' .. HitRes.Damage)
+				return HitRes
+
+			end
+
+			-- Projectile did not breach nor penetrate armor
+			local Penetration = math.min( maxPenetration , losArmor * effectiveness )
+
+			HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness ) ^ 2 * FrArea / Catchresiliance * damageMult
+			HitRes.Overkill = 0
+			HitRes.Loss	= 1
+
+			return HitRes
+
+		end
+
+	end
 end
 
-list.Set( "ACE_MaterialTypes", Material.id, Material ) 
+list.Set( "ACE_MaterialTypes", Material.id, Material )

@@ -5,15 +5,15 @@ ACF_DefineIRSTClass("DIR-IRST", {
 } )
 
 ACF_DefineIRST("Small-IRST", {
-	name 			= "Small IRST Device",
+	name			= "Small IRST Device",
 	ent				= "ace_irst",
-	desc 			= "A small IRST device used by fighter jets to track its target's heat",
+	desc			= "A small IRST device used by fighter jets to track its target's heat",
 	model			= "models/props_lab/monitor01b.mdl",
-	class 			= "DIR-IRST",
-	weight 			= 400,
-	mindist 		= 200,
-	maxdist 		= 23622, --600m
+	class			= "DIR-IRST",
+	weight			= 400,
+	mindist		= 200,
+	maxdist		= 23622, --600m
 	SeekSensitivity = 1,
 	viewcone		= 45,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
-	inaccuracy 	 	= 6
+	inaccuracy		= 6
 } )

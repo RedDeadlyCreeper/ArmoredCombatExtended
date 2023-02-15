@@ -1,35 +1,35 @@
 if SERVER then
-    util.AddNetworkString("ACE_SWEPSounds")
+	util.AddNetworkString("ACE_SWEPSounds")
 
-    function ACE_NetworkedSound(sourcePly, ent, snd, propmass)
+	function ACE_NetworkedSound(sourcePly, ent, snd, propmass)
 		if game.SinglePlayer() then return end
 
-        local targets = {}
+		local targets = {}
 
-        for _, v in ipairs(player.GetAll()) do
-            if v ~= sourcePly then
-                table.insert(targets, v)
-            end
-        end
+		for _, v in ipairs(player.GetAll()) do
+			if v ~= sourcePly then
+				table.insert(targets, v)
+			end
+		end
 
-        net.Start("ACE_SWEPSounds", true)
-        net.WriteEntity(ent)
-        net.WriteString(snd)
-        net.WriteFloat(propmass)
-        net.Send(targets)
-    end
+		net.Start("ACE_SWEPSounds", true)
+		net.WriteEntity(ent)
+		net.WriteString(snd)
+		net.WriteFloat(propmass)
+		net.Send(targets)
+	end
 else
-    net.Receive("ACE_SWEPSounds", function()
-        ACE_SGunFire(net.ReadEntity(), net.ReadString(), net.ReadFloat())
-    end)
+	net.Receive("ACE_SWEPSounds", function()
+		ACE_SGunFire(net.ReadEntity(), net.ReadString(), net.ReadFloat())
+	end)
 end
 
 --ak47mm gunfire
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ak47_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ak47_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/ak47/close/close1.mp3",
 				"ace_weapons/sweps/multi_sound/content/ak47/close/close2.mp3",
@@ -41,12 +41,12 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ak47_multi.mp3",
 				"ace_weapons/sweps/multi_sound/content/ak47/close/close8.mp3",
 				"ace_weapons/sweps/multi_sound/content/ak47/close/close9.mp3",
 				"ace_weapons/sweps/multi_sound/content/ak47/close/close10.mp3",
-	
+
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/ak47/mid/mid.mp3",
 				"ace_weapons/sweps/multi_sound/content/ak47/mid/mid1.mp3",
@@ -63,8 +63,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ak47_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/ak47/far/far.mp3",
 				"ace_weapons/sweps/multi_sound/content/ak47/far/far1.mp3",
@@ -80,15 +80,15 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ak47_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 
 --amr
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/amr_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/amr_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/amr/close/close1.mp3",
 				"ace_weapons/sweps/multi_sound/content/amr/close/close2.mp3",
@@ -97,8 +97,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/amr_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4/mid/mid1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4/mid/mid2.mp3",
@@ -108,8 +108,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/amr_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4/far/far1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4/far/far2.mp3",
@@ -117,27 +117,27 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/amr_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 
 
 
 --at4 Anti Tank
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4/close/close1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4/close/close2.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4/close/close3.mp3",
-				"ace_weapons/sweps/multi_sound/content/at4/close/close4.mp3"	
+				"ace_weapons/sweps/multi_sound/content/at4/close/close4.mp3"
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4/mid/mid1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4/mid/mid2.mp3",
@@ -147,8 +147,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4/far/far1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4/far/far2.mp3",
@@ -157,17 +157,17 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 
 
 
 --at4P Anti Tank Proto
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4p_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4p_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4p/close/close1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4p/close/close2.mp3",
@@ -176,8 +176,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4p_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4p/mid/mid1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4p/mid/mid2.mp3",
@@ -186,8 +186,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4p_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/at4p/far/far1.mp3",
 				"ace_weapons/sweps/multi_sound/content/at4p/far/far2.mp3",
@@ -196,14 +196,14 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/at4p_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --aug
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/aug_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/aug_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/aug/close/close1.mp3",
 				"ace_weapons/sweps/multi_sound/content/aug/close/close2.mp3",
@@ -218,8 +218,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/aug_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/aug/mid/mid1.mp3",
 				"ace_weapons/sweps/multi_sound/content/aug/mid/mid2.mp3",
@@ -235,8 +235,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/aug_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/sweps/multi_sound/content/aug/far/far1.mp3",
 				"ace_weapons/sweps/multi_sound/content/aug/far/far2.mp3",
@@ -251,87 +251,87 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/aug_multi.mp3",
 			}
 		}
 	}
- )
+)
 
- --awp
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/awp_multi.mp3", 
- {
-	 main = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/awp/close/close1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/close/close2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/close/close3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/close/close4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/close/close5.mp3",
-		 }
-	 },
-	 mid = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/awp/mid/mid1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/mid/mid2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/mid/mid3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/mid/mid4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/mid/mid5.mp3",
-		 }
- 
-	 },
-	 far = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/awp/far/far1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/far/far2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/far/far3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/far/far4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/awp/far/far5.mp3",
-		 }
-	 }
- }
- )
-
- --deagle
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/deagle_multi.mp3", 
- {
-	 main = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/deagle/close/close1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/deagle/close/close2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/deagle/close/close3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/deagle/close/close4.mp3",
-		 }
-	}
- }
- )
-
-
- --deagle
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/elite_multi.mp3", 
- {
-	 main = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/elite/close/close1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/elite/close/close2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/elite/close/close3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/elite/close/close4.mp3",
-		 }
-	}
- }
- )
-
---famas
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3", 
+--awp
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/awp_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/awp/close/close1.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/close/close2.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/close/close3.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/close/close4.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/close/close5.mp3",
+		}
+	},
+	mid = {
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/awp/mid/mid1.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/mid/mid2.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/mid/mid3.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/mid/mid4.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/mid/mid5.mp3",
+		}
+
+	},
+	far = {
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/awp/far/far1.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/far/far2.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/far/far3.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/far/far4.mp3",
+			"ace_weapons/sweps/multi_sound/content/awp/far/far5.mp3",
+		}
+	}
+}
+)
+
+--deagle
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/deagle_multi.mp3",
+{
+	main = {
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/deagle/close/close1.mp3",
+			"ace_weapons/sweps/multi_sound/content/deagle/close/close2.mp3",
+			"ace_weapons/sweps/multi_sound/content/deagle/close/close3.mp3",
+			"ace_weapons/sweps/multi_sound/content/deagle/close/close4.mp3",
+		}
+	}
+}
+)
+
+
+--deagle
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/elite_multi.mp3",
+{
+	main = {
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/elite/close/close1.mp3",
+			"ace_weapons/sweps/multi_sound/content/elite/close/close2.mp3",
+			"ace_weapons/sweps/multi_sound/content/elite/close/close3.mp3",
+			"ace_weapons/sweps/multi_sound/content/elite/close/close4.mp3",
+		}
+	}
+}
+)
+
+--famas
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
+{
+	main = {
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/famas/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/famas/close/close2.mp3",
@@ -346,8 +346,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/famas/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/famas/mid/mid2.mp3",
@@ -363,8 +363,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/famas/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/famas/far/far2.mp3",
@@ -381,31 +381,31 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
 }
 )
 
- --fiveseven
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/fiveseven_multi.mp3", 
- {
-	 main = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close5.mp3",
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close6.mp3",
-			 "ace_weapons/sweps/multi_sound/content/fiveseven/close/close7.mp3",
-		 }
-	}
- }
- )
-
- --galil
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/galil_multi.mp3", 
+--fiveseven
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/fiveseven_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close1.mp3",
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close2.mp3",
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close3.mp3",
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close4.mp3",
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close5.mp3",
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close6.mp3",
+			"ace_weapons/sweps/multi_sound/content/fiveseven/close/close7.mp3",
+		}
+	}
+}
+)
+
+--galil
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/galil_multi.mp3",
+{
+	main = {
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/galil/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/galil/close/close2.mp3",
@@ -420,8 +420,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/galil/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/galil/mid/mid2.mp3",
@@ -437,8 +437,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/galil/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/galil/far/far2.mp3",
@@ -455,62 +455,62 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/famas_multi.mp3",
 }
 )
 
- --glock
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/glock_multi.mp3", 
- {
-	 main = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/glock/close/close1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/glock/close/close2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/glock/close/close3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/glock/close/close4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/glock/close/close5.mp3",
-			 "ace_weapons/sweps/multi_sound/content/glock/close/close6.mp3",
-		 }
-	}
- }
- )
-
- --m3super90
- ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m3super90_multi.mp3", 
- {
-	 main = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close5.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close6.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/close/close7.mp3",
-		 }
-	 },
-	 mid = {
-		 Volume 	= 1,
-		 Pitch 	= 100,
-		 Package = {
-			 "ace_weapons/sweps/multi_sound/content/m3super90/mid/mid1.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/mid/mid2.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/mid/mid3.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/mid/mid4.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/mid/mid5.mp3",
-			 "ace_weapons/sweps/multi_sound/content/m3super90/mid/mid6.mp3",
-		 }
- 
-	 },
- }
- )
-
- --m16mm gunfire
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m16_multi.mp3", 
+--glock
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/glock_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/glock/close/close1.mp3",
+			"ace_weapons/sweps/multi_sound/content/glock/close/close2.mp3",
+			"ace_weapons/sweps/multi_sound/content/glock/close/close3.mp3",
+			"ace_weapons/sweps/multi_sound/content/glock/close/close4.mp3",
+			"ace_weapons/sweps/multi_sound/content/glock/close/close5.mp3",
+			"ace_weapons/sweps/multi_sound/content/glock/close/close6.mp3",
+		}
+	}
+}
+)
+
+--m3super90
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m3super90_multi.mp3",
+{
+	main = {
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close1.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close2.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close3.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close4.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close5.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close6.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/close/close7.mp3",
+		}
+	},
+	mid = {
+		Volume	= 1,
+		Pitch	= 100,
+		Package = {
+			"ace_weapons/sweps/multi_sound/content/m3super90/mid/mid1.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/mid/mid2.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/mid/mid3.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/mid/mid4.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/mid/mid5.mp3",
+			"ace_weapons/sweps/multi_sound/content/m3super90/mid/mid6.mp3",
+		}
+
+	},
+}
+)
+
+--m16mm gunfire
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m16_multi.mp3",
+{
+	main = {
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/m16/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/m16/close/close2.mp3",
@@ -521,8 +521,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m16_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/m16/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/m16/mid/mid2.mp3",
@@ -534,8 +534,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m16_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/m16/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/m16/far/far2.mp3",
@@ -549,11 +549,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m16_multi.mp3",
 )
 
 --m249saw
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m249saw_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m249saw_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/m249saw/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/m249saw/close/close2.mp3",
@@ -568,8 +568,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m249saw_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/m249saw/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/m249saw/mid/mid2.mp3",
@@ -585,8 +585,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m249saw_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/m249saw/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/m249saw/far/far2.mp3",
@@ -604,11 +604,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/m249saw_multi.mp3",
 )
 
 --mac10
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mac10_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mac10_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/mac10/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/mac10/close/close2.mp3",
@@ -623,8 +623,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mac10_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/mac10/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/mac10/mid/mid2.mp3",
@@ -640,8 +640,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mac10_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/mac10/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/mac10/far/far2.mp3",
@@ -657,11 +657,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mac10_multi.mp3",
 )
 
 --mp5
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mp5_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mp5_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/mp5/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/mp5/close/close2.mp3",
@@ -676,8 +676,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mp5_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/mp5/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/mp5/mid/mid2.mp3",
@@ -693,8 +693,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mp5_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/mp5/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/mp5/far/far2.mp3",
@@ -710,11 +710,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/mp5_multi.mp3",
 )
 
 --p90
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p90_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p90_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/p90/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/p90/close/close2.mp3",
@@ -729,8 +729,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p90_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/p90/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/p90/mid/mid2.mp3",
@@ -746,8 +746,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p90_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/p90/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/p90/far/far2.mp3",
@@ -763,11 +763,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p90_multi.mp3",
 )
 
 --p228
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p228_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p228_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/p228/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/p228/close/close2.mp3",
@@ -780,11 +780,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/p228_multi.mp3",
 )
 
 --scout
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/scout_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/scout_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/scout/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/scout/close/close2.mp3",
@@ -795,8 +795,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/scout_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/scout/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/scout/mid/mid2.mp3",
@@ -809,8 +809,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/scout_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/scout/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/scout/far/far2.mp3",
@@ -827,11 +827,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/scout_multi.mp3",
 )
 
 --sg552
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/sg552_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/sg552_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/sg552/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/sg552/close/close2.mp3",
@@ -846,8 +846,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/sg552_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/sg552/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/sg552/mid/mid2.mp3",
@@ -863,8 +863,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/sg552_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/sg552/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/sg552/far/far2.mp3",
@@ -882,11 +882,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/sg552_multi.mp3",
 )
 
 --tmp
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/tmp_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/tmp_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/tmp/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/tmp/close/close2.mp3",
@@ -904,11 +904,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/tmp_multi.mp3",
 )
 
 --ump45
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ump45_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ump45_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/ump45/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/ump45/close/close2.mp3",
@@ -923,8 +923,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ump45_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/ump45/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/ump45/mid/mid2.mp3",
@@ -940,8 +940,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ump45_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/ump45/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/ump45/far/far2.mp3",
@@ -957,11 +957,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/ump45_multi.mp3",
 )
 
 --usp
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/usp_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/usp_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/usp/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/usp/close/close2.mp3",
@@ -974,11 +974,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/usp_multi.mp3",
 )
 
 --xm25
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm25_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm25_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/xm25/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/xm25/close/close2.mp3",
@@ -994,11 +994,11 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm25_multi.mp3",
 )
 
 --xm1014mm gunfire
-ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm1014_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm1014_multi.mp3",
 {
 	main = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/xm1014/close/close1.mp3",
 			"ace_weapons/sweps/multi_sound/content/xm1014/close/close2.mp3",
@@ -1009,8 +1009,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm1014_multi.mp3",
 		}
 	},
 	mid = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/xm1014/mid/mid1.mp3",
 			"ace_weapons/sweps/multi_sound/content/xm1014/mid/mid2.mp3",
@@ -1022,8 +1022,8 @@ ACE_DefineGunFireSound( "ace_weapons/sweps/multi_sound/xm1014_multi.mp3",
 
 	},
 	far = {
-		Volume 	= 1,
-		Pitch 	= 100,
+		Volume	= 1,
+		Pitch	= 100,
 		Package = {
 			"ace_weapons/sweps/multi_sound/content/xm1014/far/far1.mp3",
 			"ace_weapons/sweps/multi_sound/content/xm1014/far/far2.mp3",

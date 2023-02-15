@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("MG", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.16,
 	name = "Machinegun",
 	desc = ACFTranslation.GunClasses[9],
@@ -44,7 +44,7 @@ ACF_defineGun("12.7mmMG", {
 		propweight = 0.1
 	}
 } )
-	
+
 ACF_defineGun("14.5mmMG", {
 	name = "14.5mm Machinegun",
 	desc = "The 14.5mm MG trades its smaller stablemates' rate of fire for more armor penetration and damage.",

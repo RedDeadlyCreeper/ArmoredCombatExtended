@@ -5,14 +5,14 @@ SWEP.SubCategory = "Grenades/Mines"
 
 if CLIENT then
 	SWEP.PrintName		= "Smoke Grenade"
-	SWEP.Slot		    = 4
+	SWEP.Slot			= 4
 	SWEP.SlotPos		= 3
 end
 
 SWEP.Spawnable		= true
 
 --Visual
-SWEP.ViewModelFlip 	= true
+SWEP.ViewModelFlip	= true
 SWEP.ViewModel		= "models/weapons/v_eq_smokegrenade.mdl"
 SWEP.WorldModel		= "models/weapons/w_eq_smokegrenade.mdl"
 SWEP.ReloadSound	= "weapons/knife/knife_deploy1.wav"
@@ -40,7 +40,6 @@ SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
 
 SWEP.JustDeployed = true
---
 
 function SWEP:Deploy()
 	if CLIENT then return end
@@ -48,10 +47,12 @@ function SWEP:Deploy()
 	self.JustDeployed = true --No abusing weapon switching to spam throw grenades
 	self:SendWeaponAnim(ACT_VM_DRAW)
 
+	self:DoAmmoStatDisplay()
+
 	return true
 end
 
-function SWEP:ThrowNade(power)
+function SWEP:ThrowNade(power, heightoffset)
 	local owner = self:GetOwner()
 
 	timer.Simple(1, function()
@@ -81,10 +82,10 @@ function SWEP:ThrowNade(power)
 			power = 0
 		end
 
-		local aim = owner:GetAimVector()
+		local aim = owner:GetAimVector() + Vector(0, 0, 0.1)
 
 		local ent = ents.Create("ace_smokegrenade")
-		ent:SetPos(owner:GetShootPos())
+		ent:SetPos(owner:GetShootPos() + Vector(0, 0, heightoffset))
 		ent:SetAngles(owner:EyeAngles())
 		ent:Spawn()
 		ent:GetPhysicsObject():ApplyForceCenter(aim * power + owner:GetVelocity() * ent:GetPhysicsObject():GetMass())
@@ -107,9 +108,8 @@ function SWEP:PrimaryAttack()
 
 	self:SendWeaponAnim(ACT_VM_PULLPIN)
 
-	self:ThrowNade(4000)
+	self:ThrowNade(4000, -7)
 end
-
 
 function SWEP:SecondaryAttack()
 	if not self:CanPrimaryAttack() then return end
@@ -131,7 +131,7 @@ function SWEP:SecondaryAttack()
 	self:SendWeaponAnim( ACT_VM_PULLPIN  )
 	owner:SetAnimation( PLAYER_ATTACK1 )
 
-	self:ThrowNade(1000)
+	self:ThrowNade(1000, -10)
 end
 
 function SWEP:Think()

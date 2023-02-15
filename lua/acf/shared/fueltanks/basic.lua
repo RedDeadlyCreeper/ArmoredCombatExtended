@@ -2,7 +2,7 @@
 --definition for the fuel tank that shows on menu
 ACF_DefineFuelTank( "Basic_FuelTank", {
 	name = "High Grade Fuel Tank",
-	desc = ACFTranslation.FuelTanks[1]..((ACF.TorqueBoost-1)*100).."%.",
+	desc = ACFTranslation.FuelTanks[1] .. ((ACF.TorqueBoost-1) * 100) .. "%.",
 	category = "High Grade"
 } )
 
@@ -327,7 +327,7 @@ ACF_DefineFuelTankSize( "Fuel_Drum", {
 	desc = "Tends to explode when shot.",
 	model = "models/props_c17/oildrum001_explosive.mdl",
 	dims = { S = 5128.9, V = 26794.4 },
-	notitle = true 
+	notitle = true
 } )
 
 ACF_DefineFuelTankSize( "Jerry_Can", {
@@ -335,7 +335,7 @@ ACF_DefineFuelTankSize( "Jerry_Can", {
 	desc = "Handy portable fuel container.",
 	model = "models/props_junk/gascan001a.mdl",
 	dims = { S = 1839.7, V = 4384.1 },
-	notitle = true 
+	notitle = true
 } )
 
 ACF_DefineFuelTankSize( "Transport_Tank", {
@@ -345,7 +345,7 @@ ACF_DefineFuelTankSize( "Transport_Tank", {
 	dims = { S = 127505.5, V = 2102493.3 },
 	explosive = false,
 	nolinks = true,
-	notitle = true 
+	notitle = true
 } )
 
 ACF_DefineFuelTankSize( "Storage_Tank", {
@@ -366,5 +366,5 @@ ACF_DefineFuelTankSize( "Gas_Pump", {
 	dims = { S = 144736.3, V = 2609960 },
 	explosive = false,
 	nolinks = true,
-	notitle = true 
+	notitle = true
 } )

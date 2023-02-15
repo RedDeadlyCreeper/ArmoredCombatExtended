@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("C", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.1,
 	name = "Cannon",
 	desc = ACFTranslation.GunClasses[4],
@@ -12,8 +12,8 @@ ACF_defineGunClass("C", {
 
 --add a gun to the class
 ACF_defineGun("37mmC", { --id
-    name = "37mm Cannon",
-    desc = "A light and fairly weak cannon with good accuracy.",
+	name = "37mm Cannon",
+	desc = "A light and fairly weak cannon with good accuracy.",
 	model = "models/tankgun/tankgun_37mm.mdl",
 	sound = "ace_weapons/multi_sound/50mm_multi.mp3",
 	gunclass = "C",
@@ -41,7 +41,7 @@ ACF_defineGun("50mmC", {
 		propweight = 2.1
 	}
 } )
-	
+
 ACF_defineGun("75mmC", {
 	name = "75mm Cannon",
 	desc = "The 75mm is still rather respectable in rate of fire, but has only modest payload.  Often found on the Eastern Front, and on cold war light tanks.",
@@ -85,7 +85,7 @@ ACF_defineGun("100mmC", {
 		propweight = 9.5
 	}
 } )
-	
+
 ACF_defineGun("120mmC", {
 	name = "120mm Cannon",
 	desc = "Often found in MBTs, the 120mm shreds lighter armor with utter impunity, and is formidable against even the big boys.",
@@ -130,4 +130,12 @@ ACF_defineGun("170mmC", {
 		propweight = 34
 	}
 } )
-	
+
+--- MODEL DATA
+
+ACE_DefineModelData("models/tankgun/tankgun_100mm.mdl",{
+
+	Model = "models/tankgun/tankgun_100mm.mdl",
+	DefaultSize = 100,
+
+})

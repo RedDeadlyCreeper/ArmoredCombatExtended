@@ -11,7 +11,7 @@ ACF.Countermeasure[ClassName] = this
 ---
 
 
-this.AppliesTo = 
+this.AppliesTo =
 {
 	Infrared = true
 }
@@ -45,9 +45,9 @@ end
 function this:Configure(flare)
 
 	self.Flare = flare
-	self.SuccessChance = flare.DistractChance	
+	self.SuccessChance = flare.DistractChance
 	self:UpdateActive()
-	
+
 	--print("SuccessChance", self.SuccessChance, "Active", self.Active)
 
 end
@@ -58,26 +58,26 @@ end
 function this:UpdateActive()
 
 	local flare = self.Flare
-	
-	if not flare then 
-		self.Active = false 
-		return 
+
+	if not flare then
+		self.Active = false
+		return
 	end
 
 	self.Active = (flare.CreateTime + flare.BurnTime) > SysTime()
-	
+
 end
 
 
 
 
-function this:GetGuidanceOverride(missile, guidance)
+function this:GetGuidanceOverride()
 
 	if not self.Flare then return end
-	
+
 	self:UpdateActive()
 	if not self.Active then return end
-	
+
 	local activeFlare = ACF.Bullet[self.Flare.Index]
 	if not (activeFlare and activeFlare.FlareUID == self.Flare.FlareUID) then return end
 
@@ -89,18 +89,18 @@ end
 
 
 -- TODO: refine formula.
-function this:ApplyChance(missile, guidance)
-	
+function this:ApplyChance()
+
 	self:UpdateActive()
-	
+
 	if not self.Active then return false end
-	
+
 	local success = math.random() < self.SuccessChance
-	
+
 	--print("Applying chance", math.Round(self.SuccessChance * 100, 1) .. "% : ", success and "success" or "failed")
-	
+
 	return success
-	
+
 end
 
 
@@ -110,21 +110,21 @@ end
 -- does not actually apply the effect, just tests the chance of it happening.
 -- 'flare' is bulletdata.
 function this:TryAgainst(missile, guidance)
-	
+
 	if not self.Flare then return end
-	
+
 	self:UpdateActive()
 	if not self.Active then return end
-	
+
 	local cone = guidance.ViewCone
-	
+
 	if not cone or cone <= 0 then return end
-	
+
 	local pos = missile:GetPos()
 	local dir = missile:GetForward()
-	
+
 	return ACFM_ConeContainsPos(pos, dir, cone, self.Flare.Pos) and self:ApplyChance(missile, guidance, flare)
-	
+
 end
 
 
@@ -138,23 +138,23 @@ function this:ApplyToAll()
 
 	self:UpdateActive()
 	if not self.Active then return {} end
-	
+
 	local ret = {}
-	
+
 	local targets = ACFM_GetAllMissilesWhichCanSee(self.Flare.Pos)
-	
-	for k, missile in pairs(targets) do
-	
+
+	for _, missile in pairs(targets) do
+
 		local guidance = missile.Guidance
-		
+
 		if self:ApplyChance(missile, guidance) then
-			ret[#ret+1] = missile
+			ret[#ret + 1] = missile
 		end
-	
+
 	end
 
 	return ret
-	
+
 end
 
 
@@ -163,28 +163,28 @@ end
 -- 'static' function to iterate over all flares in flight and return one which affects the guidance.
 -- TODO: apply sub-1 chance to distract guidance in ACFM_GetAnyFlareInCone.
 function this.ApplyAll(missile, guidance)
-	
+
 	local cone = guidance.ViewCone
-	
+
 	if not cone or cone <= 0 then return end
-	
+
 	local pos = missile:GetPos()
 	local dir = missile:GetForward()
-	
+
 	local flares = ACFM_GetFlaresInCone(pos, dir, cone)
-	
-	for k, flare in pairs(flares) do
-	
+
+	for _, flare in pairs(flares) do
+
 		local ret = flare.FlareObj
-	
-		if ret:ApplyChance(missile, guidance, flare) then		
+
+		if ret:ApplyChance(missile, guidance, flare) then
 			return ret
 		end
-		
+
 	end
-	
+
 	return nil
-	
+
 end
 
 

@@ -9,7 +9,7 @@ local StWB = 0.75 --straight weight bonus mulitplier
 
 -- Torque Rating
 local Gear8ST = 670
-local Gear8MT = 1690	
+local Gear8MT = 1690
 local Gear8LT = 6140
 local StTB = 1.25 --straight torque bonus multiplier
 
@@ -40,7 +40,7 @@ ACF_DefineGearbox( "8Gear-L-S", {
 
 ACF_DefineGearbox( "8Gear-L-M", {
 	name = "8-Speed, Inline, Medium",
-	desc = "A medium duty 8 speed gearbox..",
+	desc = "A medium duty 8 speed gearbox .. ",
 	model = "models/engines/linear_m.mdl",
 	category = "8-Speed",
 	weight = Gear8MW,
@@ -162,7 +162,7 @@ ACF_DefineGearbox( "8Gear-LD-L", {
 
 ACF_DefineGearbox( "8Gear-T-S", {
 	name = "8-Speed, Transaxial, Small",
-	desc = "A small and light 8 speed gearbox..",
+	desc = "A small and light 8 speed gearbox .. ",
 	model = "models/engines/transaxial_s.mdl",
 	category = "8-Speed",
 	weight = Gear8SW,
@@ -185,7 +185,7 @@ ACF_DefineGearbox( "8Gear-T-S", {
 
 ACF_DefineGearbox( "8Gear-T-M", {
 	name = "8-Speed, Transaxial, Medium",
-	desc = "A medium duty 8 speed gearbox..",
+	desc = "A medium duty 8 speed gearbox .. ",
 	model = "models/engines/transaxial_m.mdl",
 	category = "8-Speed",
 	weight = Gear8MW,

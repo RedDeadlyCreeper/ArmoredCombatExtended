@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("HMG", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.4,
 	name = "Heavy Machinegun",
 	desc = ACFTranslation.GunClasses[7],
@@ -11,8 +11,8 @@ ACF_defineGunClass("HMG", {
 	noloader = true,
 
 	longbarrel = {
-		index = 2, 
-		submodel = 4, 
+		index = 2,
+		submodel = 4,
 		newpos = "muzzle2"
 	}
 } )
@@ -26,7 +26,7 @@ ACF_defineGun("30mmHMGShort", {
 	caliber = 3.01,
 	weight = 140,
 	year = 1941,
-	rofmod = 1.8, --at 1.05, 495rpm; 
+	rofmod = 1.8, --at 1.05, 495rpm;
 	round = {
 		maxlength = 25,
 		propweight = 0.03
@@ -48,7 +48,7 @@ ACF_defineGun("40mmHMGShort", {
 		propweight = 0.12
 	}
 } )
-	
+
 --add a gun to the class
 ACF_defineGun("20mmHMG", {
 	name = "20mm Heavy Machinegun",
@@ -77,7 +77,7 @@ ACF_defineGun("30mmHMG", {
 	caliber = 3.0,
 	weight = 180,
 	year = 1941,
-	rofmod = 0.8, --at 1.05, 495rpm; 
+	rofmod = 0.8, --at 1.05, 495rpm;
 	magsize = 50,
 	magreload = 10,
 	round = {

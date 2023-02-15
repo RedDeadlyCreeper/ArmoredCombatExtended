@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("MO", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.7,
 	name = "Mortar",
 	desc = ACFTranslation.GunClasses[10],
@@ -38,10 +38,10 @@ ACF_defineGun("80mmM", {
 	year = 1915,
 	round = {
 		maxlength = 38,
-		propweight = 0.055 
+		propweight = 0.055
 	}
 } )
-	
+
 ACF_defineGun("120mmM", {
 	name = "120mm Mortar",
 	desc = "The versatile 120 is sometimes vehicle-mounted to provide quick boomsplat to support the infantry.  Carries more boom in its boomsplat, has good HEAT performance, and is more accurate in high-angle firing.",
@@ -53,10 +53,10 @@ ACF_defineGun("120mmM", {
 	year = 1935,
 	round = {
 		maxlength = 45,
-		propweight = 0.175 
+		propweight = 0.175
 	}
 } )
-	
+
 ACF_defineGun("150mmM", {
 	name = "150mm Mortar",
 	desc = "The perfect balance between the 120mm and the 200mm. Can prove a worthy main gun weapon, as well as a mighty good mortar emplacement",
@@ -68,7 +68,7 @@ ACF_defineGun("150mmM", {
 	year = 1945,
 	round = {
 		maxlength = 60,
-		propweight = 0.235 
+		propweight = 0.235
 	}
 } )
 
@@ -83,7 +83,7 @@ ACF_defineGun("200mmM", {
 	year = 1940,
 	round = {
 		maxlength = 90,
-		propweight = 0.330 
+		propweight = 0.330
 	}
 } )
 
@@ -114,7 +114,7 @@ ACF_defineGun("280mmM", {
 	year = 1945,
 	round = {
 		maxlength = 150,
-		propweight = 0.462 
+		propweight = 0.462
 	}
 } )
 
@@ -129,6 +129,6 @@ ACF_defineGun("380mmM", {
 	year = 1941,
 	round = {
 		maxlength = 180,
-		propweight = 0.562 
+		propweight = 0.562
 	}
 } )

@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-function ENT:SpawnFunction( ply, trace )
+function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
@@ -38,7 +38,7 @@ function ENT:Initialize()
 	self.OutOfEnergy = false
 
 	self.LegalTick = 0
-	self.checkLegalIn = 5+math.random(0,5) --Random checks every 5-10 seconds
+	self.checkLegalIn = 5 + math.random(0,5) --Random checks every 5-10 seconds
 	self.IsLegal = true
 
 	self.JamID = 0
@@ -52,7 +52,7 @@ function ENT:isLegal()
 	if not self:IsSolid() then return false end
 
 	ACF_GetPhysicalParent(self)
-	
+
 	self.IsLegal = self.acfphysparent:IsSolid()
 
 	return self.IsLegal
@@ -71,7 +71,7 @@ end
 function ENT:SetActive(active)
 
 	self.Active = active
-	
+
 	if active  then
 		local sequence = self:LookupSequence("active") or 0
 		self:ResetSequence(sequence)
@@ -87,65 +87,65 @@ end
 
 function ENT:Think()
 
-	local curTime = CurTime()	
+	local curTime = CurTime()
 	self:NextThink(curTime + self.ThinkDelay)
 
-    self.LegalTick = (self.LegalTick or 0) + 1
+	self.LegalTick = (self.LegalTick or 0) + 1
 
-    if 	self.LegalTick >= (self.checkLegalIn or 0) then
-	
-        self.LegalTick = 0
-        self.checkLegalIn = 5+math.random(0,5) --Random checks every 5-10 seconds
-        self:isLegal()
+	if	self.LegalTick >= (self.checkLegalIn or 0) then
 
-    end
+		self.LegalTick = 0
+		self.checkLegalIn = 5 + math.random(0,5) --Random checks every 5-10 seconds
+		self:isLegal()
 
-    self.CurrentlyJamming = 0
+	end
 
-    if self.Active and self.IsLegal and not self.OutOfEnergy then
+	self.CurrentlyJamming = 0
 
-	    self.JamEnergy = math.max(self.JamEnergy - 2,0)
+	if self.Active and self.IsLegal and not self.OutOfEnergy then
 
-	    if self.JamEnergy == 0 then
-		    self.OutOfEnergy = true
-	    end
+		self.JamEnergy = math.max(self.JamEnergy - 2,0)
 
-	    local thisPos = self:GetPos()
+		if self.JamEnergy == 0 then
+			self.OutOfEnergy = true
+		end
 
-	    scanEnt = ACE.radarEntities[self.JamID]
+		local thisPos = self:GetPos()
 
-		if(IsValid( scanEnt )) then
-		
-			local radActive = scanEnt.Active 
+		scanEnt = ACE.radarEntities[self.JamID]
+
+		if IsValid( scanEnt ) then
+
+			--local radActive = scanEnt.Active
 			local entpos = scanEnt:GetPos()
 
-			local LOStr = util.TraceLine( { 
+			local LOStr = util.TraceLine( {
 				start = thisPos ,
 				endpos = entpos,
 				collisiongroup = COLLISION_GROUP_WORLD,
-				filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end, --Hits anything in the world.
+				filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end, --Hits anything in the world.
 				mins = Vector(0,0,0),
 				maxs = Vector(0,0,0)
-				} ) 
+				} )
 
 			if not LOStr.Hit then --Trace did not hit world
-				self.CurrentlyJamming = self.JamID	
+				self.CurrentlyJamming = self.JamID
 			end
 		end
-    else
-	
+	else
+
 		self.JamEnergy = math.min(self.JamEnergy + 1,100)
 
 		if self.JamEnergy == 100 then
 			self.OutOfEnergy = false
 		end
-    end
+	end
 
-    if self.OutOfEnergy then
-	    WireLib.TriggerOutput( self, "Energy", 0 )
-    else
-        WireLib.TriggerOutput( self, "Energy", self.JamEnergy )
-    end
+	if self.OutOfEnergy then
+		WireLib.TriggerOutput( self, "Energy", 0 )
+	else
+		WireLib.TriggerOutput( self, "Energy", self.JamEnergy )
+	end
 end
 
 function ENT:OnRemove()

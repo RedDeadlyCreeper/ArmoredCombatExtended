@@ -34,14 +34,14 @@ ACF_DefineGearbox( "9Gear-L-S", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
 
 ACF_DefineGearbox( "9Gear-L-M", {
 	name = "9-Speed, Inline, Medium",
-	desc = "A medium duty 9 speed gearbox..",
+	desc = "A medium duty 9 speed gearbox .. ",
 	model = "models/engines/linear_m.mdl",
 	category = "9-Speed",
 	weight = Gear9MW,
@@ -58,7 +58,7 @@ ACF_DefineGearbox( "9Gear-L-M", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -82,7 +82,7 @@ ACF_DefineGearbox( "9Gear-L-L", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -109,7 +109,7 @@ ACF_DefineGearbox( "9Gear-LD-S", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -134,7 +134,7 @@ ACF_DefineGearbox( "9Gear-LD-M", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -159,7 +159,7 @@ ACF_DefineGearbox( "9Gear-LD-L", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -168,7 +168,7 @@ ACF_DefineGearbox( "9Gear-LD-L", {
 
 ACF_DefineGearbox( "9Gear-T-S", {
 	name = "9-Speed, Transaxial, Small",
-	desc = "A small and light 9 speed gearbox..",
+	desc = "A small and light 9 speed gearbox .. ",
 	model = "models/engines/transaxial_s.mdl",
 	category = "9-Speed",
 	weight = Gear9SW,
@@ -185,14 +185,14 @@ ACF_DefineGearbox( "9Gear-T-S", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
 
 ACF_DefineGearbox( "9Gear-T-M", {
 	name = "9-Speed, Transaxial, Medium",
-	desc = "A medium duty 9 speed gearbox..",
+	desc = "A medium duty 9 speed gearbox .. ",
 	model = "models/engines/transaxial_m.mdl",
 	category = "9-Speed",
 	weight = Gear9MW,
@@ -209,7 +209,7 @@ ACF_DefineGearbox( "9Gear-T-M", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -233,7 +233,7 @@ ACF_DefineGearbox( "9Gear-T-L", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -260,7 +260,7 @@ ACF_DefineGearbox( "9Gear-TD-S", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -285,7 +285,7 @@ ACF_DefineGearbox( "9Gear-TD-M", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -310,7 +310,7 @@ ACF_DefineGearbox( "9Gear-TD-L", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -336,7 +336,7 @@ ACF_DefineGearbox( "9Gear-ST-S", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -360,7 +360,7 @@ ACF_DefineGearbox( "9Gear-ST-M", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )
@@ -384,7 +384,7 @@ ACF_DefineGearbox( "9Gear-ST-L", {
 		[ 6 ] = 0.6,
 		[ 7 ] = 0.7,
 		[ 8 ] = 0.8,
-		[ 9 ] = -0.1,              
+		[ 9 ] = -0.1,
 		[ -1 ] = 0.5
 	}
 } )

@@ -42,7 +42,7 @@ local function reloadTime(ent)
 end
 
 local function restrictInfo(ply, ent)
-	if GetConVar("sbox_acf_restrictinfo"):GetInt() != 0 then
+	if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
 		if isOwner(ply, ent) then return false else return true end
 	end
 	return false
@@ -62,9 +62,9 @@ end
 local function isLinkableACFEnt(ent)
 
 	if not validPhysics(ent) then return false end
-	
+
 	local entClass = ent:GetClass()
-	
+
 	return ACF_E2_LinkTables[entClass] ~= nil
 
 end
@@ -112,7 +112,7 @@ end
 e2function void entity:acfActive( number on )
 	if not (isEngine(this) or isAmmo(this) or isFuel(this)) then return end
 	if not isOwner(self, this) then return end
-	this:TriggerInput("Active", on)	
+	this:TriggerInput("Active", on)
 end
 
 __e2setcost( 5 )
@@ -127,9 +127,9 @@ __e2setcost( 1 )
 
 
 
-ACF_E2_LinkTables = ACF_E2_LinkTables or 
+ACF_E2_LinkTables = ACF_E2_LinkTables or
 { -- link resources within each ent type.  should point to an ent: true if adding link.Ent, false to add link itself
-	acf_engine 		= {GearLink = true, FuelLink = false},
+	acf_engine		= {GearLink = true, FuelLink = false},
 	acf_gearbox		= {WheelLink = true, Master = false},
 	acf_fueltank	= {Master = false},
 	acf_gun			= {AmmoLink = false},
@@ -138,38 +138,38 @@ ACF_E2_LinkTables = ACF_E2_LinkTables or
 
 
 local function getLinks(ent, enttype)
-	
+
 	local ret = {}
 	-- find the link resources available for this ent type
 	for entry, mode in pairs(ACF_E2_LinkTables[enttype]) do
 		if not ent[entry] then error("Couldn't find link resource " .. entry .. " for entity " .. tostring(ent)) return end
-		
+
 		-- find all the links inside the resources
 		for _, link in pairs(ent[entry]) do
-			ret[#ret+1] = mode and link.Ent or link
+			ret[#ret + 1] = mode and link.Ent or link
 		end
 	end
-	
+
 	return ret
 end
 
 
 local function searchForGearboxLinks(ent)
 	local boxes = ents.FindByClass("acf_gearbox")
-	
+
 	local ret = {}
-	
+
 	for _, box in pairs(boxes) do
 		if IsValid(box) then
 			for _, link in pairs(box.WheelLink) do
 				if link.Ent == ent then
-					ret[#ret+1] = box
+					ret[#ret + 1] = box
 					break
 				end
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -177,17 +177,17 @@ end
 __e2setcost( 20 )
 
 e2function array entity:acfLinks()
-	
+
 	if not IsValid(this) then return {} end
-	
+
 	local enttype = this:GetClass()
-	
+
 	if not ACF_E2_LinkTables[enttype] then
 		return searchForGearboxLinks(this)
 	end
-	
+
 	return getLinks(this, enttype)
-	
+
 end
 
 
@@ -231,12 +231,12 @@ e2function number entity:acfLinkTo(entity target, number notify)
 		end
 		return 0
 	end
-    
-    local success, msg = this:Link(target)
-    if notify > 0 then
-        ACF_SendNotify(self.player, success, msg)
-    end
-    return success and 1 or 0
+
+	local success, msg = this:Link(target)
+	if notify > 0 then
+		ACF_SendNotify(self.player, success, msg)
+	end
+	return success and 1 or 0
 end
 
 --allows e2 to perform ACF unlinks
@@ -247,12 +247,12 @@ e2function number entity:acfUnlinkFrom(entity target, number notify)
 		end
 		return 0
 	end
-    
-    local success, msg = this:Unlink(target)
-    if notify > 0 then
-        ACF_SendNotify(self.player, success, msg)
-    end
-    return success and 1 or 0
+
+	local success, msg = this:Unlink(target)
+	if notify > 0 then
+		ACF_SendNotify(self.player, success, msg)
+	end
+	return success and 1 or 0
 end
 
 -- returns any wheels linked to this engine/gearbox or child gearboxes
@@ -296,19 +296,19 @@ e2function number entity:acfMaxPower()
 	return getMaxPower(this)
 end
 
--- Same as the two above just with fuel duhhh//
+-- Same as the two above just with fuel duhhh--
 
 e2function number entity:acfMaxTorqueWithFuel()
-	return getMaxTorque(this)*ACF.TorqueBoost or 0
+	return getMaxTorque(this) * ACF.TorqueBoost or 0
 end
 
 -- Detailed explanation of this function
 
 e2function number entity:acfMaxPowerWithFuel()
-	return getMaxPower(this)*ACF.TorqueBoost or 0
+	return getMaxPower(this) * ACF.TorqueBoost or 0
 end
 
---//
+----
 
 -- Returns the idle rpm of an ACF engine
 e2function number entity:acfIdleRPM()
@@ -359,7 +359,7 @@ end
 e2function number entity:acfFlyMass()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this ) then return 0 end
-	return this.Inertia / (3.1416)^2 or 0
+	return this.Inertia / (3.1416) ^ 2 or 0
 end
 
 -- Returns the current power of an ACF engine
@@ -373,13 +373,13 @@ end
 e2function number entity:acfInPowerband()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	
+
 	pbmin = this.PeakMinRPM
 	pbmax = this.PeakMaxRPM
 
 	if (this.FlyRPM < pbmin) then return 0 end
 	if (this.FlyRPM > pbmax) then return 0 end
-	
+
 	return 1
 end
 
@@ -675,7 +675,7 @@ end
 e2function void entity:acfFire( number fire )
 	if not isGun(this) then return end
 	if not isOwner(self, this) then return end
-	this:TriggerInput("Fire", fire)	
+	this:TriggerInput("Fire", fire)
 end
 
 -- Causes an ACF weapon to unload
@@ -762,7 +762,7 @@ end
 e2function number entity:acfMuzzleVel()
 	if not (isAmmo(this) or isGun(this)) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	return math.Round((this.BulletData["MuzzleVel"] or 0)*ACF.VelScale,3)
+	return math.Round((this.BulletData["MuzzleVel"] or 0) * ACF.VelScale,3)
 end
 
 -- Returns the mass of the projectile in a crate or gun
@@ -802,7 +802,7 @@ e2function number entity:acfDragCoef()
 	if restrictInfo(self, this) then return 0 end
 
 	local BulletData = this.BulletData
-	local DragCoef   = BulletData and BulletData.DragCoef
+	local DragCoef	= BulletData and BulletData.DragCoef
 
 	return DragCoef and DragCoef / ACF.DragDiv or 0
 end
@@ -816,16 +816,16 @@ e2function number entity:acfPenetration()
 	local Type = this.BulletData["Type"] or ""
 	local Energy
 	if Type == "AP" or Type == "APHE" then
-		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"]*39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"] )
-		return math.Round((Energy.Penetration/this.BulletData["PenArea"])*ACF.KEtoRHA,3)
+		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"] )
+		return math.Round((Energy.Penetration/this.BulletData["PenArea"]) * ACF.KEtoRHA,3)
 	elseif Type == "HEAT" then
 		local Crushed, HEATFillerMass, BoomFillerMass = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
 		if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
-		Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV( this.BulletData, HEATFillerMass )*39.37, this.BulletData["SlugMass"], 9999999 )
-		return math.floor((Energy.Penetration/this.BulletData["SlugPenArea"])*ACF.KEtoRHA,3)
+		Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV( this.BulletData, HEATFillerMass ) * 39.37, this.BulletData["SlugMass"], 9999999 )
+		return math.floor((Energy.Penetration/this.BulletData["SlugPenArea"]) * ACF.KEtoRHA,3)
 	elseif Type == "FL" then
-		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"]*39.37 , this.BulletData["FlechetteMass"], this.BulletData["LimitVel"] )
-		return math.Round((Energy.Penetration/this.BulletData["FlechettePenArea"])*ACF.KEtoRHA, 3)
+		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37 , this.BulletData["FlechetteMass"], this.BulletData["LimitVel"] )
+		return math.Round((Energy.Penetration/this.BulletData["FlechettePenArea"]) * ACF.KEtoRHA, 3)
 	end
 	return 0
 end
@@ -836,9 +836,9 @@ e2function number entity:acfBlastRadius()
 	if restrictInfo(self, this) then return 0 end
 	local Type = this.BulletData["Type"] or ""
 	if Type == "HE" or Type == "APHE" then
-		return math.Round(this.BulletData["FillerMass"]^0.33*8,3)
+		return math.Round(this.BulletData["FillerMass"] ^ 0.33 * 8,3)
 	elseif Type == "HEAT" then
-		return math.Round((this.BulletData["FillerMass"]/3)^0.33*8,3)
+		return math.Round((this.BulletData["FillerMass"]/3) ^ 0.33 * 8,3)
 	end
 	return 0
 end
@@ -893,7 +893,7 @@ e2function number entity:acfPropDuctility()
 	if not validPhysics(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not ACF_Check(this) then return 0 end
-	return (this.ACF.Ductility or 0)*100
+	return (this.ACF.Ductility or 0) * 100
 end
 
 -- Returns the effective armor from a trace hitting a prop
@@ -904,7 +904,7 @@ e2function number ranger:acfEffectiveArmor()
 	return math.Round(this.Entity.ACF.Armour/math.abs( math.cos(math.rad(ACF_GetHitAngle( this.HitNormal , this.HitPos-this.StartPos )))),1)
 end
 
--- Returns the material of an entity. 
+-- Returns the material of an entity.
 e2function string entity:acfPropMaterial()
 	if not validPhysics(this) then return "RHA" end
 	if restrictInfo(self, this) then return "RHA" end
@@ -980,13 +980,13 @@ e2function number entity:acfFuel()
 	elseif isEngine(this) then
 		if restrictInfo(self, this) then return 0 end
 		if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-		
+
 		local liters = 0
 		for _,tank in pairs(this.FuelLink) do
 			if not validPhysics(tank) then continue end
 			if tank.Active then liters = liters + tank.Fuel end
 		end
-		
+
 		return math.Round(liters, 3)
 	end
 	return 0
@@ -1000,18 +1000,18 @@ e2function number entity:acfFuelLevel()
 	elseif isEngine(this) then
 		if restrictInfo(self, this) then return 0 end
 		if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-		
+
 		local liters = 0
 		local capacity = 0
 		for _,tank in pairs(this.FuelLink) do
 			if not validPhysics(tank) then continue end
-			if tank.Active then 
+			if tank.Active then
 				capacity = capacity + tank.Capacity
 				liters = liters + tank.Fuel
 			end
 		end
 		if not (capacity > 0) then return 0 end
-		
+
 		return math.Round(liters / capacity, 3)
 	end
 	return 0
@@ -1022,14 +1022,14 @@ e2function number entity:acfFuelUse()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-	
+
 	local Tank = nil
 	for _,fueltank in pairs(this.FuelLink) do
 		if not validPhysics(fueltank) then continue end
 		if fueltank.Fuel > 0 and fueltank.Active then Tank = fueltank break end
 	end
 	if not Tank then return 0 end
-	
+
 	local Consumption
 	if this.FuelType == "Electric" then
 		Consumption = 60 * (this.Torque * this.FlyRPM / 9548.8) * this.FuelUse
@@ -1045,17 +1045,17 @@ e2function number entity:acfPeakFuelUse()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-	
+
 	local fuel = "Petrol"
 	local Tank = nil
 	for _,fueltank in pairs(this.FuelLink) do
 		if fueltank.Fuel > 0 and fueltank.Active then Tank = fueltank break end
 	end
 	if tank then fuel = tank.Fuel end
-	
+
 	local Consumption
 	if this.FuelType == "Electric" then
-		Consumption = 60 * (this.PeakTorque * this.LimitRPM / (4*9548.8)) * this.FuelUse
+		Consumption = 60 * (this.PeakTorque * this.LimitRPM / (4 * 9548.8)) * this.FuelUse
 	else
 		local Load = 0.3 + this.Throttle * 0.7
 		Consumption = 60 * this.FuelUse / ACF.FuelDensity[fuel]

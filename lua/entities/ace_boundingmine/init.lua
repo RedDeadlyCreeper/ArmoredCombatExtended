@@ -13,7 +13,7 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(4) --4.1 kg mine, round down.
-	
+
 	self.TimeVar = 1
 	self.MineState = 0
 	self.FuseTime = 0.5
@@ -21,10 +21,25 @@ function ENT:Initialize()
 	self.LastTime = 0
 	self:DrawShadow( false )
 	self:SetMaterial( "models/props_canal/canal_bridge_railing_01c" )
-	
+
 	if ( IsValid( phys ) ) then phys:Wake() end
 end
 
+function ENT:CanTool(ply, _, toolname)
+	if ((CPPI and self:CPPICanTool(ply, "remover")) or (not CPPI)) and toolname == "remover" then
+		return true
+	end
+
+	return false
+end
+
+function ENT:CanProperty(ply, property)
+	if ((CPPI and self:CPPICanTool(ply, "remover")) or (not CPPI)) and property == "remover" then
+		return true
+	end
+
+	return false
+end
 
 function ENT:Think()
 
@@ -42,17 +57,17 @@ function ENT:Think()
 					endpos = self:GetPos() + Vector(0,0,-50),
 					collisiongroup = COLLISION_GROUP_WORLD,
 					filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
-				} )	
-					
+				} )
+
 				if groundRanger.Hit and groundRanger.HitWorld then
 
-					self:SetPos(groundRanger.HitPos+Vector(0,0,7.1))
-					self:SetAngles(groundRanger.HitNormal:Angle()-Angle(90,0,0))
+					self:SetPos(groundRanger.HitPos + Vector(0,0,7.1))
+					self:SetAngles(groundRanger.HitNormal:Angle() - Angle(90,0,0))
 					self.MineState = 1
 					self.phys:EnableMotion(false)
 				end
 					--print(groundRanger.Hit)
-					
+
 			elseif self.MineState == 1 then --Mine activated and searching for enemy
 
 				local triggerRanger = util.TraceHull( {
@@ -65,10 +80,10 @@ function ENT:Think()
 				} )
 
 				if triggerRanger.Hit then
-					self:SetPos(self:GetPos() + self:GetUp()*-20)
+					self:SetPos(self:GetPos() + self:GetUp() * -20)
 					self.MineState = 2
 					self.phys:EnableMotion(true)
-					self.phys:ApplyForceCenter(self:GetUp()*self.phys:GetMass()*-230)
+					self.phys:ApplyForceCenter(self:GetUp() * self.phys:GetMass() * -230)
 					self.LastTime = CurTime()
 					self:EmitSound("weapons/amr/sniper_fire.wav", 75, 190, 1, CHAN_WEAPON )
 				end
@@ -76,18 +91,16 @@ function ENT:Think()
 		end
 
 	else
-	
+
 		local curtime = CurTime()
 		self.FuseTime = self.FuseTime-(curtime-self.LastTime)
 		self.LastTime = CurTime()
 
 		if self.FuseTime < 0 then
-
-			--print(self:GetOwner())
-			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self:CPPIGetOwner(), nil, self) --0.5 is standard antipersonal mine
 
 			local Flash = EffectData()
-				Flash:SetOrigin( self:GetPos() - self:GetUp()*6 )
+				Flash:SetOrigin( self:GetPos() - self:GetUp() * 6 )
 				Flash:SetNormal( Vector(0,0,-1) )
 				Flash:SetRadius( math.max( 0.2, 1 ) )
 			util.Effect( "ACF_Scaled_Explosion", Flash )

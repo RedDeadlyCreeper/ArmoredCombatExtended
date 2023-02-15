@@ -6,11 +6,11 @@ ACF_DefineTrackRadarClass("DIR-TRACK", {
 } )
 
 ACF_DefineTrackRadar("Large-TRACK", {
-	name 		= "Large Tracking Radar",
+	name		= "Large Tracking Radar",
 	ent			= "ace_trackingradar",
-	desc 		= "A large tracking radar. Commonly mounted in SPAAGs and aircrafts",
+	desc		= "A large tracking radar. Commonly mounted in SPAAGs and aircrafts",
 	model		= "models/missiles/radar_big.mdl",
-	class 		= "DIR-TRACK",
-	weight 		= 600,
+	class		= "DIR-TRACK",
+	weight		= 600,
 	viewcone	= 15				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 } )

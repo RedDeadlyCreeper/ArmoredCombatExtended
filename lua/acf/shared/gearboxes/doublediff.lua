@@ -1,4 +1,4 @@
--- Double Differential 
+-- Double Differential
 
 -- Weight
 local GearDDSW = 45
@@ -7,7 +7,7 @@ local GearDDLW = 180
 
 -- Torque Rating
 local GearDDST = 20000
-local GearDDMT = 45000 
+local GearDDMT = 45000
 local GearDDLT = 100000
 
 -- general description
@@ -17,7 +17,7 @@ local DDDesc = "\n\nA Double Differential transmission allows for a multitude of
 
 ACF_DefineGearbox( "DoubleDiff-T-S", {
 	name = "Double Differential, Small",
-	desc = "A light duty regenerative steering transmission."..DDDesc,
+	desc = "A light duty regenerative steering transmission." .. DDDesc,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Regenerative Steering",
 	weight = GearDDSW,
@@ -36,7 +36,7 @@ ACF_DefineGearbox( "DoubleDiff-T-S", {
 
 ACF_DefineGearbox( "DoubleDiff-T-M", {
 	name = "Double Differential, Medium",
-	desc = "A medium regenerative steering transmission."..DDDesc,
+	desc = "A medium regenerative steering transmission." .. DDDesc,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Regenerative Steering",
 	weight = GearDDMW,
@@ -55,7 +55,7 @@ ACF_DefineGearbox( "DoubleDiff-T-M", {
 
 ACF_DefineGearbox( "DoubleDiff-T-L", {
 	name = "Double Differential, Large",
-	desc = "A heavy regenerative steering transmission."..DDDesc,
+	desc = "A heavy regenerative steering transmission." .. DDDesc,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Regenerative Steering",
 	weight = GearDDLW,

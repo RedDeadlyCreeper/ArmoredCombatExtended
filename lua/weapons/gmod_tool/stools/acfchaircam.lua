@@ -21,7 +21,7 @@ end
 
 do
 
-	local function SendBoolToClient( ply, seat, bool )
+	local function SendBoolToClient( _, seat, bool )
 
 		net.Start("ACE_CamOverride")
 			net.WriteEntity( seat )
@@ -33,7 +33,7 @@ do
 	do
 
 		local function ApplyOverride( ply, seat, data )
-			
+
 			timer.Simple(0.1, function()
 				if not IsValid(seat) then return end
 
@@ -59,7 +59,7 @@ do
 	do
 
 		function TOOL:LeftClick( trace )
-			
+
 			if CLIENT then return true end
 
 			if not IsValid(trace.Entity) then return false end
@@ -76,7 +76,7 @@ do
 			return true
 		end
 
-		function TOOL:RightClick( trace )
+		function TOOL:RightClick()
 			if CLIENT then return false end
 
 			return false
@@ -117,20 +117,20 @@ do
 		net.Receive("ACE_CamOverride", ReceiveBoolFromServer)
 
 		function TOOL:DrawHUD()
-		    
-		    if not CLIENT then return end
-		    
-		    local seat = self:GetOwner():GetEyeTrace().Entity
+
+			if not CLIENT then return end
+
+			local seat = self:GetOwner():GetEyeTrace().Entity
 
 			if not IsValid(seat) then return end
 			local class = seat:GetClass()
 			if not string.StartWith(class, "prop_vehicle_") then return false end
 
-			local text = "Override: "..(seat.ACE_CamOverride and "Yes" or "No")
-		    local pos = seat:WorldSpaceCenter()
+			local text = "Override: " .. (seat.ACE_CamOverride and "Yes" or "No")
+			local pos = seat:WorldSpaceCenter()
 
-		    AddWorldTip( nil, text, nil, pos, nil )
-		    
+			AddWorldTip( nil, text, nil, pos, nil )
+
 		end
 
 		function TOOL.BuildCPanel( panel )

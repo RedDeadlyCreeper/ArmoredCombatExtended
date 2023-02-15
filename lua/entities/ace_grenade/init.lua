@@ -12,16 +12,16 @@ function ENT:Initialize()
 	self:PhysicsInit(MOVECOLLIDE_FLY_CUSTOM);
 	self:SetUseType(SIMPLE_USE);
 
-	
+
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(5) --4.1 kg mine, round down.
-	
+
 	self.FuseTime = 4
 	self.phys = phys
 	self.LastTime = CurTime()
-	if ( IsValid( phys ) ) then 
-		phys:Wake() 
-		phys:SetBuoyancyRatio( 5 ) 
+	if ( IsValid( phys ) ) then
+		phys:Wake()
+		phys:SetBuoyancyRatio( 5 )
 		phys:SetDragCoefficient( 0 )
 		phys:SetDamping( 0, 8 )
 		phys:SetMaterial( "grenade" )
@@ -38,13 +38,13 @@ function ENT:Think()
 	self.LastTime = CurTime()
 
 	if self.FuseTime < 0 then
-		
-		self:Remove()
-		
-		local HEWeight=4	
-		local Radius = (HEWeight)^0.33*8*39.37
 
-		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+		self:Remove()
+
+		local HEWeight = 4
+		local Radius = HEWeight ^ 0.33 * 8 * 39.37
+
+		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self:CPPIGetOwner(), nil, self) --0.5 is standard antipersonal mine
 
 		local Flash = EffectData()
 		Flash:SetOrigin( self:GetPos() + Vector(0,0,8) )

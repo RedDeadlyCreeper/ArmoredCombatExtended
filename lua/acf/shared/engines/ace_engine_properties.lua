@@ -1,6 +1,6 @@
 --Fuel Density
 ACF.FuelDensity = { --kg/liter
-	Diesel = 0.832,  
+	Diesel = 0.832,
 	Petrol = 0.745,
 	Electric = 1.35 -- li-ion --WAS 3.1
 }

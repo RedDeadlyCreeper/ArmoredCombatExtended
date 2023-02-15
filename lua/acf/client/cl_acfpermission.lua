@@ -9,51 +9,51 @@ local getPanelChecks = function() return {} end
 
 
 
-net.Receive("ACF_refreshfriends", function(len)
+net.Receive("ACF_refreshfriends", function()
 	--Msg("\ncl refreshfriends\n")
 	local perms = net.ReadTable()
 	local checks = getPanelChecks()
-	
+
 	--PrintTable(perms)
-	
-	for k, check in pairs(checks) do
+
+	for _, check in pairs(checks) do
 		if perms[check.steamid] then
 			check:SetChecked(true)
 		else
 			check:SetChecked(false)
 		end
 	end
-	
+
 end)
 
 
 
-net.Receive("ACF_refreshfeedback", function(len)
+net.Receive("ACF_refreshfeedback", function()
 	local success = net.ReadBit()
 	local str, notify
-	
+
 	if success then
-		str = "Successfully updated your ACF damage permissions!"
+		str = "Successfully updated your ACE damage permissions!"
 		notify = "NOTIFY_GENERIC"
 	else
-		str = "Failed to update your ACF damage permissions."
+		str = "Failed to update your ACE damage permissions."
 		notify = "NOTIFY_ERROR"
 	end
-	
+
 	GAMEMODE:AddNotify(str, notify, 7)
-	
+
 end)
 
 
 
 function this.ApplyPermissions(checks)
 	perms = {}
-	
-	for k, check in pairs(checks) do
+
+	for _, check in pairs(checks) do
 		if not check.steamid then Error("Encountered player checkbox without an attached SteamID!") end
 		perms[check.steamid] = check:GetChecked()
 	end
-	
+
 	net.Start("ACF_dmgfriends")
 		net.WriteTable(perms)
 	net.SendToServer()
@@ -62,10 +62,12 @@ end
 
 
 function this.ClientPanel(Panel)
-	Panel:ClearControls()
-	if !this.ClientCPanel then this.ClientCPanel = Panel end
+
+	if IsValid(Panel) then Panel:Clear() end
+
+	if not this.ClientCPanel then this.ClientCPanel = Panel end
 	Panel:SetName("ACF Damage Permissions")
-	
+
 	local txt = Panel:Help("ACF Damage Permission Panel")
 	txt:SetContentAlignment( TEXT_ALIGN_CENTER )
 	txt:SetFont("DermaDefaultBold")
@@ -75,24 +77,24 @@ function this.ClientPanel(Panel)
 	local txt = Panel:Help("Allow or deny ACF damage to your props using this panel.\n\nThese preferences only work during the Build and Strict Build modes.")
 	txt:SetContentAlignment( TEXT_ALIGN_CENTER )
 	--txt:SetAutoStretchVertical(false)
-	
+
 	Panel.playerChecks = {}
 	local checks = Panel.playerChecks
-	
+
 	getPanelChecks = function() return checks end
-	
+
 	local Players = player.GetAll()
 	for _, tar in pairs(Players) do
-		if(IsValid(tar)) then
+		if IsValid(tar) then
 			local check = Panel:CheckBox(tar:Nick())
 			check.steamid = tar:SteamID()
 			--if tar == LocalPlayer() then check:SetChecked(true) end
-			checks[#checks+1] = check
+			checks[#checks + 1] = check
 		end
 	end
 	local button = Panel:Button("Give Damage Permission")
 	button.DoClick = function() this.ApplyPermissions(Panel.playerChecks) end
-	
+
 	net.Start("ACF_refreshfriends")
 		net.WriteBit(true)
 	net.SendToServer(ply)

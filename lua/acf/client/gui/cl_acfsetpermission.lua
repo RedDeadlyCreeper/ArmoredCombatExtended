@@ -1,37 +1,37 @@
 
 local Menu = {}
 
-// the category the menu goes under
+-- the category the menu goes under
 Menu.Category = "ACE"
 
 
-// the name of the item 
+-- the name of the item
 Menu.Name = "Set Permission Mode"
 
-// the convar to execute when the player clicks on the tab
+-- the convar to execute when the player clicks on the tab
 Menu.Command = ""
 
 
 
 local Permissions = {}
 
-local PermissionModes 	= {}
+local PermissionModes	= {}
 local CurrentPermission = "default"
 local DefaultPermission = "none"
 local ModeDescTxt
-local ModeDescDefault   = "Can't find any info for this mode!"
+local ModeDescDefault	= "Can't find any info for this mode!"
 local currentMode
-local currentModeTxt    = "\nThe current damage permission mode is %s."
-local introTxt 		    = "Damage Permission Modes change the way that ACF damage works.\n\nYou can change the DP mode if you are an admin."
+local currentModeTxt	= "\nThe current damage permission mode is %s."
+local introTxt			= "Damage Permission Modes change the way that ACE damage works.\n\nYou can change the DP mode if you are an admin."
 
-local statusTxt 		= "\nCurrent Protection status:"
-local condition  		= "Unknown"
+local statusTxt		= "\nCurrent Protection status:"
+local condition		= "Unknown"
 
-local cppidl 			= "Do you need ACE protection? Remember to restart your game once installed!"
+local cppidl			= "Do you need ACE protection? Remember to restart your game once installed!"
 
 local cvarstat = false
 
-local list 
+local list
 local button
 local button2
 local button3
@@ -39,37 +39,29 @@ local status
 local status2
 
 function ACE_ReceiveDPStatus()
-	
-    cvarstat = net.ReadBool() or false
-    Permissions:Update()
+
+	cvarstat = net.ReadBool() or false
+	Permissions:Update()
 
 end
 net.Receive( "ACE_DPStatus", ACE_ReceiveDPStatus )
 
-net.Receive("ACF_refreshpermissions", function(len)
-	
-	PermissionModes 	= net.ReadTable()
-	CurrentPermission 	= net.ReadString() 
-	DefaultPermission 	= net.ReadString()
-	
+net.Receive("ACF_refreshpermissions", function()
+
+	PermissionModes	= net.ReadTable()
+	CurrentPermission	= net.ReadString()
+	DefaultPermission	= net.ReadString()
+
 	Permissions:Update()
-	
+
 end)
-
-local function CheckCPPI()
-	if not CPPI then return false end
-	return true
-end
-
 
 function Menu.MakePanel(Panel)
 
 	Permissions:RequestUpdate()
 
-	Panel:ClearControls()
-	
 	if not PermissionModes then return end
-	
+
 	Panel:SetName("Permission Modes")
 	Panel:AddItem(txt)
 
@@ -94,10 +86,10 @@ function Menu.MakePanel(Panel)
 	currentMode:SetContentAlignment( TEXT_ALIGN_CENTER )
 	currentMode:SetFont("DermaDefaultBold")
 	currentMode:SizeToContents()
-	
+
 	Panel:AddItem(currentMode)
-	
-	
+
+
 	if LocalPlayer():IsAdmin() then
 
 		list = vgui.Create("DListView")
@@ -107,10 +99,10 @@ function Menu.MakePanel(Panel)
 		list:SetMultiSelect(false)
 		list:SetSize(30,100)
 
-		for permission,desc in pairs(PermissionModes) do
+		for permission in pairs(PermissionModes) do
 			list:AddLine(permission, "", "")
 		end
-		
+
 		for id,line in pairs(list:GetLines()) do
 			if line:GetValue(1) == CurrentPermission then
 				list:GetLine(id):SetValue(2,"Yes")
@@ -127,43 +119,43 @@ function Menu.MakePanel(Panel)
 			end
 		end
 		Panel:AddItem(list)
-		
+
 		local txt = Panel:Help("What this mode does:")
 		txt:SetContentAlignment( TEXT_ALIGN_CENTER )
 		txt:SetFont("DermaDefaultBold")
 		txt:SizeToContents()
 		Panel:AddItem(txt)
-		
+
 		ModeDescTxt = Panel:Help(PermissionModes[CurrentPermission] or ModeDescDefault)
 		ModeDescTxt:SetContentAlignment( TEXT_ALIGN_CENTER )
 		ModeDescTxt:SizeToContents()
 		Panel:AddItem(ModeDescTxt)
-		
+
 		--Button 1
 		button = Panel:Button("Set Permission Mode")
-		button.DoClick = function()	
+		button.DoClick = function()
 			local line = list:GetLine(list:GetSelectedLine())
 			if not line then
 				Permissions:RequestUpdate()
 				return
 			end
-			
+
 			local mode = line and line:GetValue(1)
-			RunConsoleCommand("ACF_setpermissionmode",mode) 
+			RunConsoleCommand("ACF_setpermissionmode",mode)
 		end
 		Panel:AddItem(button)
-		
+
 		--Button 2
 		button2 = Panel:Button("Set Default Permission Mode")
-		button2.DoClick = function()  
+		button2.DoClick = function()
 			local line = list:GetLine(list:GetSelectedLine())
 			if not line then
 				Permissions:RequestUpdate()
 				return
 			end
-			
+
 			local mode = line and line:GetValue(1)
-			RunConsoleCommand("ACF_setdefaultpermissionmode",mode) 
+			RunConsoleCommand("ACF_setdefaultpermissionmode",mode)
 		end
 		Panel:AddItem(button2)
 
@@ -176,7 +168,7 @@ function Menu.MakePanel(Panel)
 
 			--Button 3
 			button3 = Panel:Button("Download NADMOD!")
-			button3.DoClick = function()  
+			button3.DoClick = function()
 				gui.OpenURL( "https://steamcommunity.com/sharedfiles/filedetails/?id=159298542" )
 			end
 			Panel:AddItem(button3)
@@ -188,7 +180,7 @@ end
 
 function Permissions:Update()
 
-	if list then	
+	if IsValid(list) then
 		for id,line in pairs(list:GetLines()) do
 			if line:GetValue(1) == CurrentPermission then
 				list:GetLine(id):SetValue(2,"Yes")
@@ -202,34 +194,34 @@ function Permissions:Update()
 			end
 		end
 	end
-	
-	if currentMode then
+
+	if IsValid(currentMode) then
 		currentMode:SetText(string.format(currentModeTxt, CurrentPermission))
 		currentMode:SizeToContents()
 	end
 
-	if button then
+	if IsValid(button) then
 		button:SetEnabled( cvarstat and CPPI )
 		button2:SetEnabled( cvarstat and CPPI )
 	end
 
-	if status2 then
+	if IsValid(status2) then
 
 		condition = ""
 
-		local color 	= Color(0,100,0)
-		local warning 	= false
+		local color	= Color(0,100,0)
+		local warning	= false
 
 		if not cvarstat or not CPPI then
 			warning = true
 			color = Color(255,0,0)
 
 			if not cvarstat then
-				condition 	= condition .. "Disabled by the server. "
+				condition	= condition .. "Disabled by the server. "
 			end
 
 			if not CPPI then
-				condition 	= condition .. "No CPPI found."
+				condition	= condition .. "No CPPI found."
 			end
 
 		end
@@ -249,14 +241,14 @@ end
 
 function Permissions:RequestUpdate()
 	net.Start("ACF_refreshpermissions")
-		net.WriteBit(true)	
+		net.WriteBit(true)
 	net.SendToServer()
 end
 
 
 function Menu.OnSpawnmenuOpen()
 	Permissions:RequestUpdate()
-end 
+end
 
 
 
@@ -268,9 +260,9 @@ local panel = Menu.MakePanel
 local hookname = string.Replace(item," ","_")
 
 
-hook.Add("SpawnMenuOpen", "ACF.SpawnMenuOpen."..hookname, open)
+hook.Add("SpawnMenuOpen", "ACF.SpawnMenuOpen." .. hookname, open)
 
 
-hook.Add("PopulateToolMenu", "ACF.PopulateToolMenu."..hookname, function()
+hook.Add("PopulateToolMenu", "ACF.PopulateToolMenu." .. hookname, function()
 	spawnmenu.AddToolMenuOption("Utilities", cat, item, item, var, "", panel)
 end)

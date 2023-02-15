@@ -46,7 +46,7 @@ blurb = blurb .. " However, automatics are significantly heavier than their manu
 
 ACF_DefineGearbox( "3Gear-A-L-S", {
 	name = "3-Speed Auto, Inline, Small",
-	desc = "A small, and light 3 speed automatic inline gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 3 speed automatic inline gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/linear_s.mdl",
 	category = "Automatic",
 	weight = Gear3SW,
@@ -66,7 +66,7 @@ ACF_DefineGearbox( "3Gear-A-L-S", {
 
 ACF_DefineGearbox( "3Gear-A-L-M", {
 	name = "3-Speed Auto, Inline, Medium",
-	desc = "A medium sized, 3 speed automatic inline gearbox"..blurb,
+	desc = "A medium sized, 3 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_m.mdl",
 	category = "Automatic",
 	weight = Gear3MW,
@@ -86,7 +86,7 @@ ACF_DefineGearbox( "3Gear-A-L-M", {
 
 ACF_DefineGearbox( "3Gear-A-L-L", {
 	name = "3-Speed Auto, Inline, Large",
-	desc = "A large, heavy and sturdy 3 speed inline gearbox"..blurb,
+	desc = "A large, heavy and sturdy 3 speed inline gearbox" .. blurb,
 	model = "models/engines/linear_l.mdl",
 	category = "Automatic",
 	weight = Gear3LW,
@@ -108,7 +108,7 @@ ACF_DefineGearbox( "3Gear-A-L-L", {
 
 ACF_DefineGearbox( "3Gear-A-LD-S", {
 	name = "3-Speed Auto, Inline, Small, Dual Clutch",
-	desc = "A small, and light 3 speed automatic inline gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 3 speed automatic inline gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/linear_s.mdl",
 	category = "Automatic",
 	weight = Gear3SW,
@@ -129,7 +129,7 @@ ACF_DefineGearbox( "3Gear-A-LD-S", {
 
 ACF_DefineGearbox( "3Gear-A-LD-M", {
 	name = "3-Speed Auto, Inline, Medium, Dual Clutch",
-	desc = "A medium sized, 3 speed automatic inline gearbox"..blurb,
+	desc = "A medium sized, 3 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_m.mdl",
 	category = "Automatic",
 	weight = Gear3MW,
@@ -150,7 +150,7 @@ ACF_DefineGearbox( "3Gear-A-LD-M", {
 
 ACF_DefineGearbox( "3Gear-A-LD-L", {
 	name = "3-Speed Auto, Inline, Large, Dual Clutch",
-	desc = "A large, heavy and sturdy 3 speed automatic inline gearbox"..blurb,
+	desc = "A large, heavy and sturdy 3 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_l.mdl",
 	category = "Automatic",
 	weight = Gear3LW,
@@ -173,7 +173,7 @@ ACF_DefineGearbox( "3Gear-A-LD-L", {
 
 ACF_DefineGearbox( "3Gear-A-T-S", {
 	name = "3-Speed Auto, Transaxial, Small",
-	desc = "A small, and light 3 speed automatic gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 3 speed automatic gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Automatic",
 	weight = Gear3SW,
@@ -193,7 +193,7 @@ ACF_DefineGearbox( "3Gear-A-T-S", {
 
 ACF_DefineGearbox( "3Gear-A-T-M", {
 	name = "3-Speed Auto, Transaxial, Medium",
-	desc = "A medium sized, 3 speed automatic gearbox"..blurb,
+	desc = "A medium sized, 3 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Automatic",
 	weight = Gear3MW,
@@ -213,7 +213,7 @@ ACF_DefineGearbox( "3Gear-A-T-M", {
 
 ACF_DefineGearbox( "3Gear-A-T-L", {
 	name = "3-Speed Auto, Transaxial, Large",
-	desc = "A large, heavy and sturdy 3 speed automatic gearbox"..blurb,
+	desc = "A large, heavy and sturdy 3 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Automatic",
 	weight = Gear3LW,
@@ -235,7 +235,7 @@ ACF_DefineGearbox( "3Gear-A-T-L", {
 
 ACF_DefineGearbox( "3Gear-A-TD-S", {
 	name = "3-Speed Auto, Transaxial, Small, Dual Clutch",
-	desc = "A small, and light 3 speed automatic gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 3 speed automatic gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Automatic",
 	weight = Gear3SW,
@@ -256,7 +256,7 @@ ACF_DefineGearbox( "3Gear-A-TD-S", {
 
 ACF_DefineGearbox( "3Gear-A-TD-M", {
 	name = "3-Speed Auto, Transaxial, Medium, Dual Clutch",
-	desc = "A medium sized, 3 speed automatic gearbox"..blurb,
+	desc = "A medium sized, 3 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Automatic",
 	weight = Gear3MW,
@@ -277,7 +277,7 @@ ACF_DefineGearbox( "3Gear-A-TD-M", {
 
 ACF_DefineGearbox( "3Gear-A-TD-L", {
 	name = "3-Speed Auto, Transaxial, Large, Dual Clutch",
-	desc = "A large, heavy and sturdy 3 speed automatic gearbox"..blurb,
+	desc = "A large, heavy and sturdy 3 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Automatic",
 	weight = Gear3LW,
@@ -300,7 +300,7 @@ ACF_DefineGearbox( "3Gear-A-TD-L", {
 
 ACF_DefineGearbox( "3Gear-A-ST-S", {
 	name = "3-Speed Auto, Straight, Small",
-	desc = "A small straight-through automatic gearbox"..blurb,
+	desc = "A small straight-through automatic gearbox" .. blurb,
 	model = "models/engines/t5small.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear3SW * StWB),
@@ -320,7 +320,7 @@ ACF_DefineGearbox( "3Gear-A-ST-S", {
 
 ACF_DefineGearbox( "3Gear-A-ST-M", {
 	name = "3-Speed Auto, Straight, Medium",
-	desc = "A medium sized, 3 speed automatic straight-through gearbox."..blurb,
+	desc = "A medium sized, 3 speed automatic straight-through gearbox." .. blurb,
 	model = "models/engines/t5med.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear3MW * StWB),
@@ -340,7 +340,7 @@ ACF_DefineGearbox( "3Gear-A-ST-M", {
 
 ACF_DefineGearbox( "3Gear-A-ST-L", {
 	name = "3-Speed Auto, Straight, Large",
-	desc = "A large sized, 3 speed automatic straight-through gearbox."..blurb,
+	desc = "A large sized, 3 speed automatic straight-through gearbox." .. blurb,
 	model = "models/engines/t5large.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear3LW * StWB),
@@ -364,7 +364,7 @@ ACF_DefineGearbox( "3Gear-A-ST-L", {
 
 ACF_DefineGearbox( "5Gear-A-L-S", {
 	name = "5-Speed Auto, Inline, Small",
-	desc = "A small, and light 5 speed automatic inline gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 5 speed automatic inline gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/linear_s.mdl",
 	category = "Automatic",
 	weight = Gear5SW,
@@ -386,7 +386,7 @@ ACF_DefineGearbox( "5Gear-A-L-S", {
 
 ACF_DefineGearbox( "5Gear-A-L-M", {
 	name = "5-Speed Auto, Inline, Medium",
-	desc = "A medium sized, 5 speed automatic inline gearbox"..blurb,
+	desc = "A medium sized, 5 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_m.mdl",
 	category = "Automatic",
 	weight = Gear5MW,
@@ -408,7 +408,7 @@ ACF_DefineGearbox( "5Gear-A-L-M", {
 
 ACF_DefineGearbox( "5Gear-A-L-L", {
 	name = "5-Speed Auto, Inline, Large",
-	desc = "A large, heavy and sturdy 5 speed inline gearbox"..blurb,
+	desc = "A large, heavy and sturdy 5 speed inline gearbox" .. blurb,
 	model = "models/engines/linear_l.mdl",
 	category = "Automatic",
 	weight = Gear5LW,
@@ -432,7 +432,7 @@ ACF_DefineGearbox( "5Gear-A-L-L", {
 
 ACF_DefineGearbox( "5Gear-A-LD-S", {
 	name = "5-Speed Auto, Inline, Small, Dual Clutch",
-	desc = "A small, and light 5 speed automatic inline gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 5 speed automatic inline gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/linear_s.mdl",
 	category = "Automatic",
 	weight = Gear5SW,
@@ -455,7 +455,7 @@ ACF_DefineGearbox( "5Gear-A-LD-S", {
 
 ACF_DefineGearbox( "5Gear-A-LD-M", {
 	name = "5-Speed Auto, Inline, Medium, Dual Clutch",
-	desc = "A medium sized, 5 speed automatic inline gearbox"..blurb,
+	desc = "A medium sized, 5 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_m.mdl",
 	category = "Automatic",
 	weight = Gear5MW,
@@ -478,7 +478,7 @@ ACF_DefineGearbox( "5Gear-A-LD-M", {
 
 ACF_DefineGearbox( "5Gear-A-LD-L", {
 	name = "5-Speed Auto, Inline, Large, Dual Clutch",
-	desc = "A large, heavy and sturdy 5 speed automatic inline gearbox"..blurb,
+	desc = "A large, heavy and sturdy 5 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_l.mdl",
 	category = "Automatic",
 	weight = Gear5LW,
@@ -503,7 +503,7 @@ ACF_DefineGearbox( "5Gear-A-LD-L", {
 
 ACF_DefineGearbox( "5Gear-A-T-S", {
 	name = "5-Speed Auto, Transaxial, Small",
-	desc = "A small, and light 5 speed automatic gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 5 speed automatic gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Automatic",
 	weight = Gear5SW,
@@ -525,7 +525,7 @@ ACF_DefineGearbox( "5Gear-A-T-S", {
 
 ACF_DefineGearbox( "5Gear-A-T-M", {
 	name = "5-Speed Auto, Transaxial, Medium",
-	desc = "A medium sized, 5 speed automatic gearbox"..blurb,
+	desc = "A medium sized, 5 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Automatic",
 	weight = Gear5MW,
@@ -547,7 +547,7 @@ ACF_DefineGearbox( "5Gear-A-T-M", {
 
 ACF_DefineGearbox( "5Gear-A-T-L", {
 	name = "5-Speed Auto, Transaxial, Large",
-	desc = "A large, heavy and sturdy 5 speed automatic gearbox"..blurb,
+	desc = "A large, heavy and sturdy 5 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Automatic",
 	weight = Gear5LW,
@@ -571,7 +571,7 @@ ACF_DefineGearbox( "5Gear-A-T-L", {
 
 ACF_DefineGearbox( "5Gear-A-TD-S", {
 	name = "5-Speed Auto, Transaxial, Small, Dual Clutch",
-	desc = "A small, and light 5 speed automatic gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 5 speed automatic gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Automatic",
 	weight = Gear5SW,
@@ -594,7 +594,7 @@ ACF_DefineGearbox( "5Gear-A-TD-S", {
 
 ACF_DefineGearbox( "5Gear-A-TD-M", {
 	name = "5-Speed Auto, Transaxial, Medium, Dual Clutch",
-	desc = "A medium sized, 5 speed automatic gearbox"..blurb,
+	desc = "A medium sized, 5 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Automatic",
 	weight = Gear5MW,
@@ -617,7 +617,7 @@ ACF_DefineGearbox( "5Gear-A-TD-M", {
 
 ACF_DefineGearbox( "5Gear-A-TD-L", {
 	name = "5-Speed Auto, Transaxial, Large, Dual Clutch",
-	desc = "A large, heavy and sturdy 5 speed automatic gearbox"..blurb,
+	desc = "A large, heavy and sturdy 5 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Automatic",
 	weight = Gear5LW,
@@ -642,7 +642,7 @@ ACF_DefineGearbox( "5Gear-A-TD-L", {
 
 ACF_DefineGearbox( "5Gear-A-ST-S", {
 	name = "5-Speed Auto, Straight, Small",
-	desc = "A small straight-through automatic gearbox"..blurb,
+	desc = "A small straight-through automatic gearbox" .. blurb,
 	model = "models/engines/t5small.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear5SW * StWB),
@@ -664,7 +664,7 @@ ACF_DefineGearbox( "5Gear-A-ST-S", {
 
 ACF_DefineGearbox( "5Gear-A-ST-M", {
 	name = "5-Speed Auto, Straight, Medium",
-	desc = "A medium sized, 5 speed automatic straight-through gearbox."..blurb,
+	desc = "A medium sized, 5 speed automatic straight-through gearbox." .. blurb,
 	model = "models/engines/t5med.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear5MW * StWB),
@@ -686,7 +686,7 @@ ACF_DefineGearbox( "5Gear-A-ST-M", {
 
 ACF_DefineGearbox( "5Gear-A-ST-L", {
 	name = "5-Speed Auto, Straight, Large",
-	desc = "A large sized, 5 speed automatic straight-through gearbox."..blurb,
+	desc = "A large sized, 5 speed automatic straight-through gearbox." .. blurb,
 	model = "models/engines/t5large.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear5LW * StWB),
@@ -712,7 +712,7 @@ ACF_DefineGearbox( "5Gear-A-ST-L", {
 
 ACF_DefineGearbox( "7Gear-A-L-S", {
 	name = "7-Speed Auto, Inline, Small",
-	desc = "A small, and light 7 speed automatic inline gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 7 speed automatic inline gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/linear_s.mdl",
 	category = "Automatic",
 	weight = Gear7SW,
@@ -736,7 +736,7 @@ ACF_DefineGearbox( "7Gear-A-L-S", {
 
 ACF_DefineGearbox( "7Gear-A-L-M", {
 	name = "7-Speed Auto, Inline, Medium",
-	desc = "A medium sized, 7 speed automatic inline gearbox"..blurb,
+	desc = "A medium sized, 7 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_m.mdl",
 	category = "Automatic",
 	weight = Gear7MW,
@@ -760,7 +760,7 @@ ACF_DefineGearbox( "7Gear-A-L-M", {
 
 ACF_DefineGearbox( "7Gear-A-L-L", {
 	name = "7-Speed Auto, Inline, Large",
-	desc = "A large, heavy and sturdy 7 speed inline gearbox"..blurb,
+	desc = "A large, heavy and sturdy 7 speed inline gearbox" .. blurb,
 	model = "models/engines/linear_l.mdl",
 	category = "Automatic",
 	weight = Gear7LW,
@@ -786,7 +786,7 @@ ACF_DefineGearbox( "7Gear-A-L-L", {
 
 ACF_DefineGearbox( "7Gear-A-LD-S", {
 	name = "7-Speed Auto, Inline, Small, Dual Clutch",
-	desc = "A small, and light 7 speed automatic inline gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 7 speed automatic inline gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/linear_s.mdl",
 	category = "Automatic",
 	weight = Gear7SW,
@@ -811,7 +811,7 @@ ACF_DefineGearbox( "7Gear-A-LD-S", {
 
 ACF_DefineGearbox( "7Gear-A-LD-M", {
 	name = "7-Speed Auto, Inline, Medium, Dual Clutch",
-	desc = "A medium sized, 7 speed automatic inline gearbox"..blurb,
+	desc = "A medium sized, 7 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_m.mdl",
 	category = "Automatic",
 	weight = Gear7MW,
@@ -836,7 +836,7 @@ ACF_DefineGearbox( "7Gear-A-LD-M", {
 
 ACF_DefineGearbox( "7Gear-A-LD-L", {
 	name = "7-Speed Auto, Inline, Large, Dual Clutch",
-	desc = "A large, heavy and sturdy 7 speed automatic inline gearbox"..blurb,
+	desc = "A large, heavy and sturdy 7 speed automatic inline gearbox" .. blurb,
 	model = "models/engines/linear_l.mdl",
 	category = "Automatic",
 	weight = Gear7LW,
@@ -863,7 +863,7 @@ ACF_DefineGearbox( "7Gear-A-LD-L", {
 
 ACF_DefineGearbox( "7Gear-A-T-S", {
 	name = "7-Speed Auto, Transaxial, Small",
-	desc = "A small, and light 7 speed automatic gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 7 speed automatic gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Automatic",
 	weight = Gear7SW,
@@ -887,7 +887,7 @@ ACF_DefineGearbox( "7Gear-A-T-S", {
 
 ACF_DefineGearbox( "7Gear-A-T-M", {
 	name = "7-Speed Auto, Transaxial, Medium",
-	desc = "A medium sized, 7 speed automatic gearbox"..blurb,
+	desc = "A medium sized, 7 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Automatic",
 	weight = Gear7MW,
@@ -911,7 +911,7 @@ ACF_DefineGearbox( "7Gear-A-T-M", {
 
 ACF_DefineGearbox( "7Gear-A-T-L", {
 	name = "7-Speed Auto, Transaxial, Large",
-	desc = "A large, heavy and sturdy 7 speed automatic gearbox"..blurb,
+	desc = "A large, heavy and sturdy 7 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Automatic",
 	weight = Gear7LW,
@@ -937,7 +937,7 @@ ACF_DefineGearbox( "7Gear-A-T-L", {
 
 ACF_DefineGearbox( "7Gear-A-TD-S", {
 	name = "7-Speed Auto, Transaxial, Small, Dual Clutch",
-	desc = "A small, and light 7 speed automatic gearbox, with a somewhat limited max torque rating"..blurb,
+	desc = "A small, and light 7 speed automatic gearbox, with a somewhat limited max torque rating" .. blurb,
 	model = "models/engines/transaxial_s.mdl",
 	category = "Automatic",
 	weight = Gear7SW,
@@ -962,7 +962,7 @@ ACF_DefineGearbox( "7Gear-A-TD-S", {
 
 ACF_DefineGearbox( "7Gear-A-TD-M", {
 	name = "7-Speed Auto, Transaxial, Medium, Dual Clutch",
-	desc = "A medium sized, 7 speed automatic gearbox"..blurb,
+	desc = "A medium sized, 7 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_m.mdl",
 	category = "Automatic",
 	weight = Gear7MW,
@@ -987,7 +987,7 @@ ACF_DefineGearbox( "7Gear-A-TD-M", {
 
 ACF_DefineGearbox( "7Gear-A-TD-L", {
 	name = "7-Speed Auto, Transaxial, Large, Dual Clutch",
-	desc = "A large, heavy and sturdy 7 speed automatic gearbox"..blurb,
+	desc = "A large, heavy and sturdy 7 speed automatic gearbox" .. blurb,
 	model = "models/engines/transaxial_l.mdl",
 	category = "Automatic",
 	weight = Gear7LW,
@@ -1014,7 +1014,7 @@ ACF_DefineGearbox( "7Gear-A-TD-L", {
 
 ACF_DefineGearbox( "7Gear-A-ST-S", {
 	name = "7-Speed Auto, Straight, Small",
-	desc = "A small straight-through automatic gearbox"..blurb,
+	desc = "A small straight-through automatic gearbox" .. blurb,
 	model = "models/engines/t5small.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear7SW * StWB),
@@ -1038,7 +1038,7 @@ ACF_DefineGearbox( "7Gear-A-ST-S", {
 
 ACF_DefineGearbox( "7Gear-A-ST-M", {
 	name = "7-Speed Auto, Straight, Medium",
-	desc = "A medium sized, 7 speed automatic straight-through gearbox."..blurb,
+	desc = "A medium sized, 7 speed automatic straight-through gearbox." .. blurb,
 	model = "models/engines/t5med.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear7MW * StWB),
@@ -1062,7 +1062,7 @@ ACF_DefineGearbox( "7Gear-A-ST-M", {
 
 ACF_DefineGearbox( "7Gear-A-ST-L", {
 	name = "7-Speed Auto, Straight, Large",
-	desc = "A large sized, 7 speed automatic straight-through gearbox."..blurb,
+	desc = "A large sized, 7 speed automatic straight-through gearbox." .. blurb,
 	model = "models/engines/t5large.mdl",
 	category = "Automatic",
 	weight = math.floor(Gear7LW * StWB),

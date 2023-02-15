@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("SBC", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.095,
 	name = "Smooth-Bore Cannon",
 	desc = ACFTranslation.GunClasses[15],
@@ -42,7 +42,7 @@ ACF_defineGun("75mmSBC", {
 		propweight = 3.8
 	}
 } )
-	
+
 ACF_defineGun("100mmSBC", {
 	name = "100mm Smoothbore Cannon",
 	desc = "100mm Smoothbore cannon, with good penetration performance, can perform a deadly strike in one single pass. Seen on those modern tank destroyers.",
@@ -57,7 +57,7 @@ ACF_defineGun("100mmSBC", {
 		propweight = 20
 	}
 } )
-	
+
 ACF_defineGun("120mmSBC", {
 	name = "120mm Smoothbore Cannon",
 	desc = "120mm Smoothbore cannon, powerful general purpose main battle tank cannon",
@@ -72,7 +72,7 @@ ACF_defineGun("120mmSBC", {
 		propweight = 30
 	}
 } )
-	
+
 ACF_defineGun("140mmSBC", {
 	name = "140mm Smoothbore Cannon",
 	desc = "140mm Smoothbore cannon, heavy railgun like cannon spawned out of a hatred of 60 tons. 'Your litterly removing the armor tool' -Anon",
@@ -103,3 +103,13 @@ ACF_defineGun("170mmSBC", {
 		propweight = 34
 	}
 } )
+
+--- MODEL DATA
+
+ACE_DefineModelData("models/tankgun_new/tankgun_100mm.mdl",{
+
+	Model = "models/tankgun_new/tankgun_100mm.mdl",
+	DefaultSize = 100,
+
+})
+

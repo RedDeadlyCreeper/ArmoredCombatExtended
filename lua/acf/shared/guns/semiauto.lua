@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("SA", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.14,
 	name = "Semiautomatic Cannon",
 	desc = ACFTranslation.GunClasses[12],
@@ -30,7 +30,7 @@ ACF_defineGun("25mmSA", { --id
 		propweight = 0.5
 	}
 } )
-	
+
 ACF_defineGun("37mmSA", {
 	name = "37mm Semiautomatic Cannon",
 	desc = "The 37mm is surprisingly powerful, its five-round clips boasting a respectable payload and a high muzzle velocity.",

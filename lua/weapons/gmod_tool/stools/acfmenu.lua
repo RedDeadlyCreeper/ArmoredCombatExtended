@@ -7,7 +7,7 @@ TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
 TOOL.ClientConVar[ "type" ] = "gun"
-TOOL.ClientConVar[ "id" ] = "7.62mmMG"
+TOOL.ClientConVar[ "id" ] = "7.62mmMG" --Used by guns and crates (as example)
 
 TOOL.ClientConVar[ "data1" ] = "7.62mmMG"
 TOOL.ClientConVar[ "data2" ] = "AP"
@@ -33,7 +33,7 @@ if CLIENT then
 	language.Add( "Tool.acfmenu.desc", ACFTranslation.ACFMenuTool[3] )
 	language.Add( "Tool.acfmenu.0", ACFTranslation.ACFMenuTool[4] )
 	language.Add( "Tool.acfmenu.1", ACFTranslation.ACFMenuTool[5] )
-	
+
 	language.Add( "Undone_ACF Entity", ACFTranslation.ACFMenuTool[6] )
 	language.Add( "Undone_acf_engine",ACFTranslation.ACFMenuTool[7] )
 	language.Add( "Undone_acf_gearbox", ACFTranslation.ACFMenuTool[8] )
@@ -44,17 +44,17 @@ if CLIENT then
 	language.Add( "SBoxLimit_acf_ammo", ACFTranslation.ACFMenuTool[13] )
 	language.Add( "SBoxLimit_acf_sensor", ACFTranslation.ACFMenuTool[14] )
 
-	/*------------------------------------
+	--[[------------------------------------
 		BuildCPanel
-	------------------------------------*/
+	--------------------------------------]]
 	function TOOL.BuildCPanel( CPanel )
-	
+
 		local pnldef_ACFmenu = vgui.RegisterFile( "acf/client/cl_acfmenu_gui.lua" )
-		
-		// create
+
+		-- create
 		local DPanel = vgui.CreateFromTable( pnldef_ACFmenu )
 		CPanel:AddPanel( DPanel )
-	
+
 	end
 end
 
@@ -63,49 +63,61 @@ function TOOL:LeftClick( trace )
 
 	if CLIENT then return true end
 	if not IsValid( trace.Entity ) and not trace.Entity:IsWorld() then return false end
-	
-	local ply 	= self:GetOwner()
-	local Type 	= self:GetClientInfo( "type" )
-	local Id 	= self:GetClientInfo( "id" )
-	
+
+	local ply	= self:GetOwner()
+	local Type	= self:GetClientInfo( "type" )
+	local Id	= self:GetClientInfo( "id" )
+	local entClass
 	local TypeId = ACF.Weapons[Type][Id]
-	if not TypeId then return false end
-	
-	local DupeClass = duplicator.FindEntityClass( TypeId["ent"] ) 
-	
-	if DupeClass then
-		local ArgTable = {}
-			ArgTable[2] = trace.HitNormal:Angle():Up():Angle() 
-			ArgTable[1] = trace.HitPos + trace.HitNormal*50
-			debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
-			debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
-			
-		local ArgList = list.Get("ACFCvars")
-		
-		-- Reading the list packaged with the ent to see what client CVar it needs
-		for Number, Key in pairs( ArgList[ACF.Weapons[Type][Id]["ent"]] ) do
-			ArgTable[ Number+2 ] = self:GetClientInfo( Key )
+
+	if not TypeId then
+		if Type == "Ammo" then
+			entClass = "acf_ammo"
 		end
-		
-		if trace.Entity:GetClass() == ACF.Weapons[Type][Id]["ent"] and trace.Entity.CanUpdate then
+	else
+		entClass = TypeId["ent"]
+	end
+
+	local DupeClass = duplicator.FindEntityClass( entClass )
+
+	if DupeClass then
+
+		local ArgTable = {}
+		ArgTable[2] = trace.HitNormal:Angle():Up():Angle()
+		ArgTable[1] = trace.HitPos + trace.HitNormal * 50
+
+		debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
+		debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
+
+		local ArgList = list.Get("ACFCvars")
+
+		-- Reading the list packaged with the ent to see what client CVar it needs
+		for Number, Key in pairs( ArgList[entClass] ) do
+			ArgTable[ Number + 2 ] = self:GetClientInfo( Key )
+		end
+
+		if trace.Entity:GetClass() == entClass and trace.Entity.CanUpdate then
 			table.insert( ArgTable, 1, ply )
 			local success, msg = trace.Entity:Update( ArgTable )
 			ACF_SendNotify( ply, success, msg )
 		else
 			-- Using the Duplicator entity register to find the right factory function
-			local Ent = DupeClass.Func( ply, unpack( ArgTable ) )
+			local Ent = DupeClass.Func( ply, unpack( ArgTable ) ) --aka function like MakeACF_Ammo
 			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
-			
+
+			--PrintTable(DupeClass)
+			--PrintTable(ArgTable)
+
 			Ent:Activate()
 			Ent:DropToFloor()
 			Ent:GetPhysicsObject():EnableMotion( false )
-			
-			undo.Create( ACF.Weapons[Type][Id]["ent"] )
+
+			undo.Create( entClass )
 				undo.AddEntity( Ent )
 				undo.SetPlayer( ply )
 			undo.Finish()
 		end
-			
+
 		return true
 	else
 		print(ACFTranslation.ACFMenuTool[16])
@@ -118,29 +130,29 @@ function TOOL:RightClick( trace )
 
 	if not IsValid( trace.Entity ) then return false end
 	if CLIENT then return true end
-	
+
 	local ply = self:GetOwner()
-	
+
 	if self:GetStage() == 0 and trace.Entity.IsMaster then
 		self.Master = trace.Entity
 		self:SetStage( 1 )
 		return true
 	elseif self:GetStage() == 1 then
 		local success, msg
-		
+
 		if ply:KeyDown( IN_USE ) or ply:KeyDown( IN_SPEED ) then
 			success, msg = self.Master:Unlink( trace.Entity )
 		else
 			success, msg = self.Master:Link( trace.Entity )
 		end
-		
+
 		ACF_SendNotify( ply, success, msg )
-		
+
 		self:SetStage( 0 )
 		self.Master = nil
 		return true
 	else
 		return false
 	end
-	
+
 end

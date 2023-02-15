@@ -9,15 +9,11 @@ function SWEP:DoAmmoStatDisplay()
 
 
 	local sendInfo = string.format( "AT Mine")
-
-			sendInfo = sendInfo .. string.format(", %.1fm blast", 60 ^ 0.33 * 8) --4 taken from mine entity
-
-
+		sendInfo = sendInfo .. string.format(", %.1fm blast", 60 ^ 0.33 * 8) --4 taken from mine entity
 
 	self:GetOwner():SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 10)", sendInfo))
 end
 
 function SWEP:Equip()
-	self:DoAmmoStatDisplay()
 	self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
 end

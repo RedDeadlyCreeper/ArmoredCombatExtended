@@ -3,7 +3,7 @@ local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "
 
 TOOL.Category		= cat
 TOOL.Name			= "#Tool.acfcopy.listname";
-TOOL.Author 		= "looter";
+TOOL.Author		= "looter";
 TOOL.Command		= nil;
 TOOL.ConfigName		= "";
 
@@ -17,8 +17,8 @@ if CLIENT then
 	language.Add( "Tool.acfcopy.desc", ACFTranslation.CopyToolText[3] );
 	language.Add( "Tool.acfcopy.0", ACFTranslation.CopyToolText[4] );
 
-	function TOOL.BuildCPanel( CPanel )
-	
+	function TOOL.BuildCPanel()
+
 	end
 
 end
@@ -30,13 +30,13 @@ function TOOL:LeftClick( trace )
 
 	local ent = trace.Entity;
 
-	if !IsValid( ent ) then 
+	if not IsValid( ent ) then
 		return false;
 	end
 
 	local pl = self:GetOwner();
 
-	if( ent:GetClass() == "acf_gearbox" and #self.GearboxCopyData > 1 and ent.CanUpdate ) then
+	if ent:GetClass() == "acf_gearbox" and #self.GearboxCopyData > 1 and ent.CanUpdate then
 
 		local success, msg = ent:Update( self.GearboxCopyData );
 
@@ -44,7 +44,7 @@ function TOOL:LeftClick( trace )
 
 	end
 
-	if( ent:GetClass() == "acf_ammo" and #self.AmmoCopyData > 1 and ent.CanUpdate ) then
+	if ent:GetClass() == "acf_ammo" and #self.AmmoCopyData > 1 and ent.CanUpdate then
 
 		local success, msg = ent:Update( self.AmmoCopyData );
 
@@ -63,13 +63,13 @@ function TOOL:RightClick( trace )
 
 	local ent = trace.Entity;
 
-	if !IsValid( ent ) then 
+	if not IsValid( ent ) then
 		return false;
 	end
 
 	local pl = self:GetOwner();
 
-	if( ent:GetClass() == "acf_gearbox" ) then
+	if ent:GetClass() == "acf_gearbox" then
 
 		local ArgsTable = {};
 
@@ -97,7 +97,7 @@ function TOOL:RightClick( trace )
 
 	end
 
-	if( ent:GetClass() == "acf_ammo" ) then
+	if ent:GetClass() == "acf_ammo" then
 
 		local ArgsTable = {};
 
@@ -131,5 +131,5 @@ function TOOL:RightClick( trace )
 	end
 
 	return true;
-	
+
 end

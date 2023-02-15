@@ -1,26 +1,26 @@
-/**
+--[[
 	ACF Permission mode: Strict Build
 		This mode blocks all damage to entities without the owner's permission.
 		Owners can permit damage from specific players.
 		Players and NPCs are also protected in this mode.
 		This mode requires a CPPI-compatible prop-protector to function properly.
-//*/
+]]
 
 if not ACF or not ACF.Permissions or not ACF.Permissions.RegisterMode then error("ACF: Tried to load the " .. modename .. " permission-mode before the permission-core has loaded!") end
 local perms = ACF.Permissions
 
 
-// the name for this mode used in commands and identification
+-- the name for this mode used in commands and identification
 local modename = "strictbuild"
 
-// a short description of what the mode does
+-- a short description of what the mode does
 local modedescription = "Disables all ACF damage unless the owner permits it. PvP is disallowed."
 
-// if the attacker or victim can't be identified, what should we do?  true allows damage, false blocks it.
+-- if the attacker or victim can't be identified, what should we do?  true allows damage, false blocks it.
 local DefaultPermission = false
 
 
-/*
+--[[
 	Defines the behaviour of ACF damage protection under this protection mode.
 	This function is called every time an entity can be affected by potential ACF damage.
 	Args;
@@ -29,30 +29,32 @@ local DefaultPermission = false
 		ent			Entity:	The entity which may be damaged.
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
-//*/
-local function modepermission(owner, attacker, ent)
-	
+]]
+local function modepermission(owner, attacker)
+
 	if not (owner.SteamID or attacker.SteamID) then
 		--print("ACF ERROR: owner or attacker is not a player!", tostring(owner), tostring(attacker), "\n", debug.traceback())
 		if DefaultPermission then return
 		else return DefaultPermission end
-	end	
-	
-	local ownerid = owner:SteamID()
-	local attackerid = attacker:SteamID()
-	local ownerperms = perms.GetDamagePermissions(ownerid)
-	local godOwner = owner:HasGodMode()
-	local godInflictor = attacker:HasGodMode()
-	--or (Inflictor:HasGodMode() or false)
---or (Entity.Owner:HasGodMode())
---print(Entity:GetOwner())
+	end
 
+	local ownerid		= owner:SteamID()
+	local attackerid	= attacker:SteamID()
+	local ownerperms	= perms.GetDamagePermissions(ownerid)
+	local godOwner		= owner:HasGodMode()
+	local godInflictor	= attacker:HasGodMode()
+
+	-- Disallow the damage if the attacker has not any way to receive damage to him.
+	--if attacker.HasDisabledPerms then
+		--Msg("[ACE | WARN]- The user " .. attacker:Nick() .. " has disabled his own permissions! Cancelling prop damage....")
+
+	-- Deal damage to props if the owner has given permission to the attacker to do it.
+	--elseif ownerperms[attackerid] and not (godOwner or godInflictor) then
 	if ownerperms[attackerid] and not (godOwner or godInflictor) then
-		--print("permitted")
 		return
 	end
-	
-	--print("disallowed")
+
+	-- return false if to deny the damage
 	return false
 end
 

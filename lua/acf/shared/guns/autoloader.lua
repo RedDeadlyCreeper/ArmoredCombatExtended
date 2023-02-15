@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("AL", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.1,
 	name = "Autoloader",
 	desc = ACFTranslation.GunClasses[3],
@@ -88,7 +88,7 @@ ACF_defineGun("140mmAL", {
 		propweight = 28
 	}
 } )
-		
+
 
 ACF_defineGun("170mmAL", {
 	name = "170mm Autoloading Cannon",

@@ -7,7 +7,7 @@ local Damaged = {
 
 hook.Add("PostDrawOpaqueRenderables", "ACF_RenderDamage", function()
 	if not ACF_HealthRenderList then return end
-    cam.Start3D( EyePos(), EyeAngles() )
+	cam.Start3D( EyePos(), EyeAngles() )
 		for k,ent in pairs( ACF_HealthRenderList ) do
 
 			--In case that this is missing
@@ -27,42 +27,42 @@ hook.Add("PostDrawOpaqueRenderables", "ACF_RenderDamage", function()
 end)
 
 net.Receive("ACF_RenderDamage", function()
-    
+
 	local Table = net.ReadTable()
 
 		if not Table then return end
-	
-    	for k,v in ipairs( Table ) do
 
-    		if not v.ID then break end
-	
-    	 	local ent, Health, MaxHealth = ents.GetByIndex( v.ID ), v.Health, v.MaxHealth
-    		if not IsValid(ent) then return end
-    		if Health != MaxHealth then
-    			ent.ACF_Health = Health
-     			ent.ACF_MaxHealth = MaxHealth
-    			ent.ACF_HelathPercent = (Health/MaxHealth)
-    			if ent.ACF_HelathPercent > 0.7 then
-    				ent.ACF_Material = Damaged[1]
-    			elseif ent.ACF_HelathPercent > 0.3 then
-     				ent.ACF_Material = Damaged[2]
-    			elseif ent.ACF_HelathPercent <= 0.3 then
-    				ent.ACF_Material = Damaged[3]
-    			end
-    			ACF_HealthRenderList = ACF_HealthRenderList or {}
-     			ACF_HealthRenderList[ent:EntIndex()] = ent
-    		else
-    			if ACF_HealthRenderList then
-    				if #ACF_HealthRenderList<=1 then
-    					ACF_HealthRenderList = nil
-    				else
-	    				table.remove(ACF_HealthRenderList,ent:EntIndex())
-    				end
-    				if ent.ACF then
-    					ent.ACF.Health = nil
-    					ent.ACF.MaxHealth = nil
-     				end
-    			end
-    		end
-    	end
+		for _, v in ipairs( Table ) do
+
+			if not v.ID then break end
+
+			local ent, Health, MaxHealth = ents.GetByIndex( v.ID ), v.Health, v.MaxHealth
+			if not IsValid(ent) then return end
+			if Health ~= MaxHealth then
+				ent.ACF_Health = Health
+				ent.ACF_MaxHealth = MaxHealth
+				ent.ACF_HelathPercent = (Health / MaxHealth)
+				if ent.ACF_HelathPercent > 0.7 then
+					ent.ACF_Material = Damaged[1]
+				elseif ent.ACF_HelathPercent > 0.3 then
+					ent.ACF_Material = Damaged[2]
+				elseif ent.ACF_HelathPercent <= 0.3 then
+					ent.ACF_Material = Damaged[3]
+				end
+				ACF_HealthRenderList = ACF_HealthRenderList or {}
+				ACF_HealthRenderList[ent:EntIndex()] = ent
+			else
+				if ACF_HealthRenderList then
+					if #ACF_HealthRenderList <= 1 then
+						ACF_HealthRenderList = nil
+					else
+						table.remove(ACF_HealthRenderList,ent:EntIndex())
+					end
+					if ent.ACF then
+						ent.ACF.Health = nil
+						ent.ACF.MaxHealth = nil
+					end
+				end
+			end
+		end
 end)

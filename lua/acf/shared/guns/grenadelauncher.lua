@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("GL", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.4,
 	name = "Grenade Launcher",
 	desc = ACFTranslation.GunClasses[6],
@@ -8,8 +8,8 @@ ACF_defineGunClass("GL", {
 	rofmod = 1,
 	year = 1970,
 	sound = "weapons/acf_gun/grenadelauncher.wav",
-	nolights 	= true,
-	noloader = true,	
+	nolights	= true,
+	noloader = true,
 
 } )
 
@@ -33,7 +33,7 @@ ACF_defineGun("40mmGL", { --id
 
 ACF_defineGun("20mmGL", { --id
 	name = "20mm Grenade Launcher",
-	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak                            using 40mm GL as placeholder bc the 20mm mini is borked",
+	desc = "The 20mm is the embodyment of wimpy weapons, although it has a large clip and can fire HE it is bloody weak							using 40mm GL as placeholder bc the 20mm mini is borked",
 	model = "models/launcher/20mmgl.mdl",
 	sound = "weapons/acf_gun/grenadelauncher.wav",
 	gunclass = "GL",

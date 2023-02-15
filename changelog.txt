@@ -594,3 +594,18 @@ r100
 *r153
 - Fix ACF_CheckClips not respecting primitives.
 - Added more primitive classes to the contraption entity finder.
+
+*r154
+- Added scalable ammo crates. credits for acf3 by the concept.
+- Improved ammo config. Courtesy of KemGus
+- Added new sweps: stinger, javelin & slam. Thanks RDC and cheezus.
+- Added better sounds for the howitzer. Courtesy of HoloLight
+- Improved radio fuze. Now it works with more guidances.
+- Fixed many issues caused by invalid stuff to several entities (specially with acf3 entities)
+- Missiles dimensions cannot be changed anymore.
+- users cannot damage anything if they disabled their own perms.
+- changed how ammo dims are calculated. Fixes issues where 2 crates with identical dims should have the same cap when it was not.
+- Fixed several errors with missiles/bombs being bigger/smaller than they appear.
+- Improved gun recoil stabilization. Courtesy of kerbalcadet
+- godmoded ppl are not affected by tinnitus anymore.
+- ace update should fail properly now, if theres no internet available. Courtesy of cheezus.

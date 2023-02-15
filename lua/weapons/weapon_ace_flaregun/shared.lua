@@ -12,6 +12,8 @@ SWEP.WorldModel = "models/weapons/w_pistol.mdl"
 SWEP.HoldType = "pistol"
 SWEP.ViewModelFlip = false
 
+SWEP.FireRate = 0.5
+
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 8
 SWEP.Primary.Ammo = "pistol"
@@ -45,7 +47,7 @@ function SWEP:PrimaryAttack()
 			if drag < 300 then
 				e:GetPhysicsObject():SetDragCoefficient(drag)
 				timer.Simple(0.1, function()
-					increaseDrag(e, drag * 1.25)
+					increaseDrag(e, drag * 1.15)
 				end)
 			end
 		end
@@ -64,7 +66,7 @@ function SWEP:PrimaryAttack()
 			end
 
 			local phys = ent:GetPhysicsObject()
-			phys:SetVelocity( owner:GetAimVector() * 6000 )
+			phys:SetVelocity( owner:GetAimVector() * 13000 )
 			ent.Heat = 150
 
 		end
@@ -75,6 +77,12 @@ function SWEP:PrimaryAttack()
 	self:EmitSound(self.Primary.Sound)
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+
+	self:SetNextPrimaryFire(CurTime() + math.Round(1 / self.FireRate, 2))
+
+	if self:Clip1() == 0 and self:Ammo1() > 0 then
+		self:Reload()
+	end
 end
 
 function SWEP:SecondaryAttack()
