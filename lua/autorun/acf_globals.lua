@@ -6,7 +6,7 @@ ACF.AmmoBlacklist = {}
 ACF.Version = 479		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
-ACF.Year = 2022			-- Current Year
+ACF.Year = 2023			-- Current Year
 
 print("[ACE | INFO]- loading ACE. . .")
 
