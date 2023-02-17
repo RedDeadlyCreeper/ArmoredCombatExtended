@@ -123,9 +123,12 @@ do
 		local function VerifyScale( Scale )
 			if not isvector( Scale ) then return end
 
-			Scale.x = math.Clamp(Scale.x,10,1000)
-			Scale.y = math.Clamp(Scale.y,10,1000)
-			Scale.z = math.Clamp(Scale.z,10,1000)
+			local MinSize = ACF.CrateMinimumSize
+			local MaxSize = ACF.CrateMaximumSize
+
+			Scale.x = math.Clamp(Scale.x,MinSize,MaxSize)
+			Scale.y = math.Clamp(Scale.y,MinSize,MaxSize)
+			Scale.z = math.Clamp(Scale.z,MinSize,MaxSize)
 
 			return Scale
 		end

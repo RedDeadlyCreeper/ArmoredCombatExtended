@@ -194,11 +194,12 @@ do
 	local function VerifyScale( Scale )
 		if not isvector( Scale ) then return end
 
+		local MinSize = ACF.CrateMinimumSize
 		local MaxSize = ACF.CrateMaximumSize
 
-		Scale.x = math.Clamp( math.Round(Scale.x, 1) ,10,MaxSize)
-		Scale.y = math.Clamp( math.Round(Scale.y, 1) ,10,MaxSize)
-		Scale.z = math.Clamp( math.Round(Scale.z, 1) ,10,MaxSize)
+		Scale.x = math.Clamp( math.Round(Scale.x, 1), MinSize, MaxSize)
+		Scale.y = math.Clamp( math.Round(Scale.y, 1), MinSize, MaxSize)
+		Scale.z = math.Clamp( math.Round(Scale.z, 1), MinSize, MaxSize)
 
 		return Scale
 	end
@@ -491,12 +492,12 @@ do
 
 	local Floor = math.floor
 	local MaxValue = math.max
-	local toInche = 2.54		--Number used for cm -> inche conversion
+	local toInch = 2.54		--Number used for cm -> inche conversion
 
 	function ENT:BuildAmmoCapacity()
 
 		local AmmoGunData = GunTable[self.BulletData.Id]
-		local vol		= Floor(self:GetPhysicsObject():GetVolume())
+		local Vol		= Floor(self:GetPhysicsObject():GetVolume())
 		local WireName	= "No data"
 		local Capacity
 		local AmmoMaxMass
@@ -504,8 +505,8 @@ do
 		--ammo capacity start code
 		if self.BulletData.Type == "Refill" then
 
-			Capacity = 99999999
-			AmmoMaxMass = vol
+			Capacity = 99999999 --can't use math huge because weight sets to 1
+			AmmoMaxMass = Vol
 
 			WireName = "ACE Universal Supply Crate"
 
@@ -519,20 +520,22 @@ do
 			local GunId = AmmoGunData.gunclass
 			local WeaponType = GunClasses[GunId].type
 
-			local width, shellLength
+			local width
+			local shellLength
 
 			if WeaponType == "missile" then
 
-				width = AmmoGunData.modeldiameter or (AmmoGunData.caliber / ACF.AmmoLengthMul / toInche)
-				shellLength = AmmoGunData.length / ACF.AmmoLengthMul / toInche
+				width = AmmoGunData.modeldiameter or (AmmoGunData.caliber / ACF.AmmoLengthMul / toInch)
+				shellLength = AmmoGunData.length / ACF.AmmoLengthMul / toInch
 
 			else
 
-				width = AmmoGunData.caliber / ACF.AmmoWidthMul / toInche
-				shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0)) / ACF.AmmoLengthMul / toInche
+				width = AmmoGunData.caliber / ACF.AmmoWidthMul / toInch
+				shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0)) / ACF.AmmoLengthMul / toInch
 
 			end
 
+			-- Calculate the capacity based on the dimensions of the entity and the dimensions of the ammo
 			local cap1 = Floor(Dimensions.x / shellLength) * Floor(Dimensions.y / width) * Floor(Dimensions.z / width)
 			local cap2 = Floor(Dimensions.y / shellLength) * Floor(Dimensions.x / width) * Floor(Dimensions.z / width)
 			local cap3 = Floor(Dimensions.z / shellLength) * Floor(Dimensions.x / width) * Floor(Dimensions.y / width)
@@ -567,7 +570,7 @@ do
 
 		self.AmmoMassMax = AmmoMaxMass
 		self.Capacity	= Capacity
-		self.Volume	= vol --Used by the missile reload bonus
+		self.Volume	= Vol --Used by the missile reload bonus
 		self.Caliber	= AmmoGunData.caliber or 1
 		self.RoFMul	= self.IsTwoPiece and 0.3 or 0						--30% ROF penalty for 2 piece
 

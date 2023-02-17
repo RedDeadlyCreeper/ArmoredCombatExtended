@@ -609,3 +609,11 @@ r100
 - Improved gun recoil stabilization. Courtesy of kerbalcadet
 - godmoded ppl are not affected by tinnitus anymore.
 - ace update should fail properly now, if theres no internet available. Courtesy of cheezus.
+
+*r155
+- Allowed even smaller crates.
+- Fixed SPG-9 pod still having the wrong caliber.
+- Brought back old legacy crate cursed dimensions.
+- Added disclaimer regarding legacy crates.
+- Minor restruct and bugfixes. Courtesy of kemgus.
+- Removed javelin/stinger sweps.

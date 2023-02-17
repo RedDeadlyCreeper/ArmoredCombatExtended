@@ -957,6 +957,7 @@ do
 	--------------- NEW CONFIG ---------------
 	do
 
+		local MinCrateSize = ACF.CrateMinimumSize
 		local MaxCrateSize = ACF.CrateMaximumSize
 
 		acfmenupanel:CPanelText("Crate_desc_new", "\nAdjust the dimensions for your crate. In inches.", nil, CrateNewPanel)
@@ -964,7 +965,7 @@ do
 		local LengthSlider = vgui.Create( "DNumSlider" )
 		LengthSlider:SetText( "Length" )
 		LengthSlider:SetDark( true )
-		LengthSlider:SetMin( 10 )
+		LengthSlider:SetMin( MinCrateSize )
 		LengthSlider:SetMax( MaxCrateSize )
 		LengthSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Length"] or 10 )
 		LengthSlider:SetDecimals( 1 )
@@ -978,7 +979,7 @@ do
 		local WidthSlider = vgui.Create( "DNumSlider" )
 		WidthSlider:SetText( "Width" )
 		WidthSlider:SetDark( true )
-		WidthSlider:SetMin( 10 )
+		WidthSlider:SetMin( MinCrateSize )
 		WidthSlider:SetMax( MaxCrateSize )
 		WidthSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Width"] or 10 )
 		WidthSlider:SetDecimals( 1 )
@@ -992,7 +993,7 @@ do
 		local HeightSlider = vgui.Create( "DNumSlider" )
 		HeightSlider:SetText( "Height" )
 		HeightSlider:SetDark( true )
-		HeightSlider:SetMin( 10 )
+		HeightSlider:SetMin( MinCrateSize )
 		HeightSlider:SetMax( MaxCrateSize )
 		HeightSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Height"] or 10 )
 		HeightSlider:SetDecimals( 1 )
@@ -1009,6 +1010,7 @@ do
 	do
 
 		acfmenupanel:CPanelText("Crate_desc_legacy", "\nChoose a crate in the legacy way. Remember to enable the checkbox below to do so.", nil, CrateOldPanel)
+		acfmenupanel:CPanelText("Crate_desc_legacy2", "DISCLAIMER: These crates are deprecated and dont't follow any proper format like the capacity or size. Don't trust on these crates, apart they might be removed in a future!", nil, CrateOldPanel)
 
 		local LegacyCheck = vgui.Create( "DCheckBoxLabel" ) -- Create the checkbox
 		LegacyCheck:SetPos( 25, 50 )							-- Set the position
@@ -1020,11 +1022,13 @@ do
 		function LegacyCheck:OnChange( val )
 			acfmenupanel.AmmoPanelConfig["LegacyAmmos"] = val
 			if val then
-			acfmenupanel.AmmoData["Id"] =  acfmenupanel.AmmoData["IdLegacy"]
-			RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
+				acfmenupanel.AmmoData["Id"] =  acfmenupanel.AmmoData["IdLegacy"]
+				RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
 			else
-			CreateIdForCrate( MainPanel )
+				CreateIdForCrate( MainPanel )
 			end
+
+			MainPanel:UpdateAttribs()
 
 		end
 
