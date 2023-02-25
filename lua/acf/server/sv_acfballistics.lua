@@ -34,7 +34,7 @@ function ACF_CreateBullet( BulletData )
 	ACF.CurBulletIndex = ACF.CurBulletIndex + 1
 
 	if ACF.CurBulletIndex > ACF.BulletIndexLimit then
-	ACF.CurBulletIndex = 1
+		ACF.CurBulletIndex = 1
 	end
 
 	--Those are BulletData settings that are global and shouldn't change round to round
@@ -59,13 +59,12 @@ function ACF_CreateBullet( BulletData )
 	end
 
 	if BulletData.Filter then
-	table.Add(BulletData.Filter, { BulletData.Gun } )
+		table.Add(BulletData.Filter, { BulletData.Gun } )
 	else
-	BulletData.Filter = { BulletData.Gun }
+		BulletData.Filter = { BulletData.Gun }
 	end
 
 	BulletData.Index		= ACF.CurBulletIndex
-
 	ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)	--Place the bullet at the current index pos
 	ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
 	ACF_CalcBulletFlight( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex] )

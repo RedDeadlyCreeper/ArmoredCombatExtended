@@ -1,10 +1,10 @@
 --[[
-			_____ ______	__  __ _		_ _
-		/\	/ ____|  ____| |  \/  (_)	(_) |
-	/  \ | |	| |__	| \  / |_ ___ ___ _| | ___  ___
-	/ /\ \| |	|  __|	| |\/| | / __/ __| | |/ _ \/ __|
-	/ ____ \ |____| |	| |  | | \__ \__ \ | |  __/\__ \
-	/_/	\_\_____|_|	|_|  |_|_|___/___/_|_|\___||___/
+			  _____ ______	 __  __ _		  _ _
+		/\	/  ____|  ____| |  \/  (_)	     (_) |
+	   /  \ | |	   | |__	| \  / |_ ___ ___ _| | ___  ___
+	  / /\ \| |	   |  __|	| |\/| | / __/ __| | |/ _ \/ __|
+	 / ____ \ |____| |	    | |  | | \__ \__ \ | |  __/\__ \
+	/_/	   \_\_____|_|	    |_|  |_|_|___/___/_|_|\___||___/
 
 	By Bubbus + Cre8or
 
@@ -16,42 +16,39 @@ ACF_ActiveMissiles = ACF_ActiveMissiles or {}
 
 include("acf/shared/sh_acfm_getters.lua")
 
-function ACFM_BulletLaunch(BData)
+--[[
+	Differences with the default bullet function:
+		1.- It doesnt count traceback, since the missile has no velocity and the bullet will not be hitting the initial launcher.
+]]--
+function ACFM_BulletLaunch(BulletData)
 
-	debugoverlay.Text(BData.Pos, "Here its spawning", 10)
+	-- Increment the index
+	ACF.CurBulletIndex = ACF.CurBulletIndex + 1
 
-	ACF.CurBulletIndex = ACF.CurBulletIndex + 1		--Increment the index
 	if ACF.CurBulletIndex > ACF.BulletIndexLimit then
 		ACF.CurBulletIndex = 1
 	end
 
-	--local cvarGrav	= GetConVar("sv_gravity")  --gravity
-	BData.Accel		= Vector(0,0,-600)			--Those are BData settings that are global and shouldn't change round to round
-	BData.LastThink	= BData.LastThink or SysTime()
-	BData["FlightTime"] = 0
+	--Those are BulletData settings that are global and shouldn't change round to round
+	BulletData.Gravity		= GetConVar("sv_gravity"):GetInt() * -1
+	BulletData.Accel		= Vector(0,0,BulletData.Gravity)
+	BulletData.LastThink	= ACF.SysTime
+	BulletData.FlightTime	= 0
+	BulletData.TraceBackComp	= 0
 
-	--local Owner = BData.Owner  --owner of bullet
+	BulletData.FuseLength	= type(BulletData.FuseLength) == "number" and BulletData.FuseLength or 0
 
-	if BData["FuseLength"] then
-		BData["InitTime"] = SysTime()
+	if BulletData.Filter then
+		table.Add(BulletData.Filter, { BulletData.Gun } )
+	else
+		BulletData.Filter = { BulletData.Gun }
 	end
 
-	if not BData.TraceBackComp then											--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
-		if IsValid(BData.Gun) then
-			BData["TraceBackComp"] = BData.Gun:GetPhysicsObject():GetVelocity():Dot(BData.Flight:GetNormalized())
-		else
-			BData["TraceBackComp"] = 0
-		end
-	end
-
-	BData.Filter = BData.Filter or { BData["Gun"] }
-
-	BData.Index = ACF.CurBulletIndex
-	ACF.Bullet[ACF.CurBulletIndex] = BData		--Place the bullet at the current index pos
+	BulletData.Index		= ACF.CurBulletIndex
+	ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)	--Place the bullet at the current index pos
 	ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
 
 end
-
 
 
 
@@ -188,8 +185,6 @@ end
 ResetVelocity.HE = ResetVelocity.AP
 ResetVelocity.HEP = ResetVelocity.AP
 ResetVelocity.SM = ResetVelocity.AP
---ResetVelocity.HEAT = ResetVelocity.AP
-
 
 function ResetVelocity.HEAT(bdata)
 

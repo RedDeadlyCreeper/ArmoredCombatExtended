@@ -664,16 +664,12 @@ function ENT:CheckRopes()
 		end
 
 		-- make sure the angle is not excessive
-		local Direction
-		if self.IsTrans then Direction = -self:GetRight() else Direction = self:GetForward() end
-
-		local DrvAngle = ( OutPos - InPos ):GetNormalized():Dot( Direction )
-		if DrvAngle < 0.7 then
+		if not self:Checkdriveshaft( Ent ) then
 			self:Unlink( Ent )
+			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+			self:EmitSound(soundstr,500,100)
 		end
-
 	end
-
 end
 
 --unlink fuel tanks out of range
@@ -681,11 +677,51 @@ function ENT:CheckFuel()
 	for _,tank in pairs(self.FuelLink) do
 		if self:GetPos():Distance(tank:GetPos()) > 512 then
 			self:Unlink( tank )
-			soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
 			self:EmitSound(soundstr,500,100)
 			self:UpdateOverlayText()
 		end
 	end
+end
+
+do
+	--[[
+	--HARDCODED. USE MODELDEFINITION INSTEAD
+	local TransAxialGearboxes = {
+		["models/engines/transaxial_l.mdl"] = true,
+		["models/engines/transaxial_m.mdl"] = true,
+		["models/engines/transaxial_s.mdl"] = true,
+		["models/engines/transaxial_t.mdl"] = true --mhm acf extras invading...
+	}
+	]]
+
+	-- make sure the angle is not excessive
+	function ENT:Checkdriveshaft( NextEnt )
+		local InPos = NextEnt:LocalToWorld( NextEnt.In ) 	--gearbox to connect to engine
+		local OutPos = self:LocalToWorld( self.Out ) 		--the engine output
+
+		local MaxAngle = 0.7 --magic number to define the max tolerance of link between gearboxes
+		local Direction = self.IsTrans and -self:GetRight() or self:GetForward() --transaxial like turbines. Forward is for conventional engines like a V8
+		local DrvAngle 	= ( OutPos - InPos ):GetNormalized():Dot( Direction )
+
+		--Check if the link is right from engine's perspective
+		if DrvAngle < MaxAngle then
+			return false
+		--else
+			--[[ --Disabled since this could break several builds. When we have more junctions, this could be enforced.
+			--Now, do the same, but from gearbox's perspective this time.
+			Direction 	= TransAxialGearboxes[ NextEnt:GetModel() ] and -NextEnt:GetForward() or -NextEnt:GetRight()
+			DrvAngle 	= ( InPos - OutPos ):GetNormalized():Dot( Direction )
+
+			if DrvAngle < MaxAngle then
+				return false
+			end
+			]]
+		end
+
+		return true
+	end
+
 end
 
 function ENT:Link( Target )
@@ -694,26 +730,23 @@ function ENT:Link( Target )
 		return false, "Can only link to gearboxes, fuel tanks, or driver crew seats!"
 	end
 
-
 	if Target:GetClass() == "acf_fueltank" then
 		return self:LinkFuel( Target )
 	end
 
 	if Target:GetClass() == "ace_crewseat_driver" then
 
-	if self.HasDriver == 1 then
-	return false, "The engine already has a driver!"
-	end
+		if self.HasDriver == 1 then
+			return false, "The engine already has a driver!"
+		end
 
-	table.insert( self.CrewLink, Target )
-	table.insert( Target.Master, self )
+		table.insert( self.CrewLink, Target )
+		table.insert( Target.Master, self )
 
-	self.HasDriver = 1
-	self:UpdateOverlayText()
+		self.HasDriver = 1
+		self:UpdateOverlayText()
 
-
-	return true, "Link successful!"
-
+		return true, "Link successful!"
 	end
 
 	-- Check if target is already linked
@@ -724,16 +757,12 @@ function ENT:Link( Target )
 	end
 
 	-- make sure the angle is not excessive
-	local InPos = Target:LocalToWorld( Target.In )
-	local OutPos = self:LocalToWorld( self.Out )
-
-	local Direction
-	if self.IsTrans then Direction = -self:GetRight() else Direction = self:GetForward() end
-
-	local DrvAngle = ( OutPos - InPos ):GetNormalized():Dot( Direction )
-	if DrvAngle < 0.7 then
+	if not self:Checkdriveshaft( Target ) then
 		return false, "Cannot link due to excessive driveshaft angle!"
 	end
+
+	local InPos = Target:LocalToWorld( Target.In ) 	--gearbox to connect to engine
+	local OutPos = self:LocalToWorld( self.Out ) 	--the engine output
 
 	local Rope = nil
 	if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
@@ -741,10 +770,10 @@ function ENT:Link( Target )
 	end
 
 	local Link = {
-		Ent = Target,
-		Rope = Rope,
+		Ent 	= Target,
+		Rope 	= Rope,
 		RopeLen = ( OutPos - InPos ):Length(),
-		ReqTq = 0
+		ReqTq 	= 0
 	}
 
 	table.insert( self.GearLink, Link )
@@ -752,6 +781,7 @@ function ENT:Link( Target )
 
 	return true, "Link successful!"
 end
+
 
 function ENT:Unlink( Target )
 

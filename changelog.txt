@@ -617,3 +617,7 @@ r100
 - Added disclaimer regarding legacy crates.
 - Minor restruct and bugfixes. Courtesy of kemgus.
 - Removed javelin/stinger sweps.
+
+*r156
+- BGM71 should fly better now
+- added break sounds for gearbox connections

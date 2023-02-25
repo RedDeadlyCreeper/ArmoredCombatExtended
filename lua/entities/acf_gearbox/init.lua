@@ -9,44 +9,44 @@ do
 
 	local GearboxWireDescs = {
 		["Gear"]		= "Sets the gear of this gearbox.",
-		["GearUp"]	= "Increases one gear above the current one.",
+		["GearUp"]		= "Increases one gear above the current one.",
 		["GearDown"]	= "Decreases one gear below the current one.",
-		["Clutch"]	= "Applies Clutch to gearbox. Values from 0 to 1.",
-		["Brake"]	= "Applies Brake to gearbox. The value you put, the strenght of the brake."
+		["Clutch"]		= "Applies Clutch to gearbox. Values from 0 to 1.",
+		["Brake"]		= "Applies Brake to gearbox. The value you put, the strenght of the brake."
 	}
 
 	function ENT:Initialize()
 
 		self.IsGeartrain	= true
-		self.Master		= {}
-		self.IsMaster	= true
+		self.Master			= {}
+		self.IsMaster		= true
 
-		self.WheelLink	= {} -- a "Link" has these components: Ent, Side, Axis, Rope, RopeLen, Output, ReqTq, Vel
+		self.WheelLink		= {} -- a "Link" has these components: Ent, Side, Axis, Rope, RopeLen, Output, ReqTq, Vel
 
-		self.TotalReqTq	= 0
+		self.TotalReqTq		= 0
 		self.RClutch		= 0
 		self.LClutch		= 0
-		self.LBrake		= 0
-		self.RBrake		= 0
-		self.SteerRate	= 0
+		self.LBrake			= 0
+		self.RBrake			= 0
+		self.SteerRate		= 0
 
-		self.Gear		= 0
-		self.GearRatio	= 0
+		self.Gear			= 0
+		self.GearRatio		= 0
 		self.ChangeFinished = 0
 
-		self.LegalThink	= 0
+		self.LegalThink		= 0
 
 		self.RPM			= {}
-		self.CurRPM		= 0
+		self.CurRPM			= 0
 		self.CVT			= false
-		self.DoubleDiff	= false
-		self.Auto		= false
-		self.InGear		= false
-		self.CanUpdate	= true
-		self.LastActive	= 0
-		self.Legal		= true
-		self.Parentable	= false
-		self.RootParent	= nil
+		self.DoubleDiff		= false
+		self.Auto			= false
+		self.InGear			= false
+		self.CanUpdate		= true
+		self.LastActive		= 0
+		self.Legal			= true
+		self.Parentable		= false
+		self.RootParent		= nil
 		self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 		self.LegalIssues	= ""
 
@@ -463,17 +463,17 @@ function ENT:CheckRopes()
 		-- make sure it is not stretched too far
 		if OutPos:Distance( InPos ) > Link.RopeLen * 1.5 then
 			self:Unlink( Ent )
+			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+			self:EmitSound(soundstr,500,100)
 		end
 
 		-- make sure the angle is not excessive
-		local DrvAngle = ( OutPos - InPos ):GetNormalized():Dot( ( self:GetRight() * Link.Output.y ):GetNormalized() )
-		if DrvAngle < 0.7 then
+		if not self:Checkdriveshaft( Ent ) then
 			self:Unlink( Ent )
+			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+			self:EmitSound(soundstr,500,100)
 		end
-
-
 	end
-
 end
 
 -- Check if every entity we are linked to still actually exists
@@ -709,6 +709,55 @@ function ENT:ChangeDrive(value)
 
 end
 
+do
+
+	--[[
+	--HARDCODED. USE MODELDEFINITION INSTEAD
+	local TransAxialGearboxes = {
+		["models/engines/transaxial_l.mdl"] = true,
+		["models/engines/transaxial_m.mdl"] = true,
+		["models/engines/transaxial_s.mdl"] = true,
+		["models/engines/transaxial_t.mdl"] = true --mhm acf extras invading...
+	}
+	]]
+
+	function ENT:Checkdriveshaft( NextEnt )
+
+		local InPos = vector_origin
+		if NextEnt.IsGeartrain then
+			InPos = NextEnt.In
+		end
+		local InPosWorld = NextEnt:LocalToWorld( InPos )
+
+		local OutPos	= self.OutR
+		if self:WorldToLocal( InPosWorld ).y < 0 then
+			OutPos  = self.OutL
+		end
+		local OutPosWorld = self:LocalToWorld( OutPos )
+
+		local MaxAngle = 0.7 --magic number to define the max tolerance of link between gearboxes
+		local Direction = ( self:GetRight() * OutPos.y ):GetNormalized()
+		local DrvAngle = ( OutPosWorld - InPosWorld ):GetNormalized():Dot( Direction )
+
+		if DrvAngle < MaxAngle then
+			return false
+		--else
+			--[[ --Disabled since this could break several builds. When we have more junctions, this could be enforced.
+			--Now, do the same, but from gearbox's point this time.
+			Direction 	= TransAxialGearboxes[ NextEnt:GetModel() ] and -NextEnt:GetForward() or -NextEnt:GetRight() --transaxial like those T junctions. Forward is for Straight like gearboxes.
+			DrvAngle 	= ( InPosWorld - OutPosWorld ):GetNormalized():Dot( Direction )
+
+			if DrvAngle < MaxAngle then
+				return false
+			end
+			]]
+		end
+
+		return true
+	end
+
+end
+
 function ENT:Link( Target )
 
 	if not IsValid( Target ) or not table.HasValue( { "prop_physics", "acf_gearbox", "tire" }, Target:GetClass() ) then
@@ -723,6 +772,10 @@ function ENT:Link( Target )
 	end
 
 	-- make sure the angle is not excessive
+	if not self:Checkdriveshaft( Target ) then
+		return false, "Cannot link due to excessive driveshaft angle!"
+	end
+
 	local InPos = Vector( 0, 0, 0 )
 	if Target.IsGeartrain then
 		InPos = Target.In
@@ -737,11 +790,6 @@ function ENT:Link( Target )
 	end
 	local OutPosWorld = self:LocalToWorld( OutPos )
 
-	local DrvAngle = ( OutPosWorld - InPosWorld ):GetNormalized():Dot( ( self:GetRight() * OutPos.y ):GetNormalized() )
-	if DrvAngle < 0.7 then
-		return false, "Cannot link due to excessive driveshaft angle!"
-	end
-
 	local Rope = nil
 	if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
 		Rope = constraint.CreateKeyframeRope( OutPosWorld, 1, "cable/cable2", nil, self, OutPos, 0, Target, InPos, 0 )
@@ -752,15 +800,15 @@ function ENT:Link( Target )
 	local Inertia	= ( Axis * Phys:GetInertia() ):Length()
 
 	local Link = {
-		Ent		= Target,
+		Ent			= Target,
 		Side		= Side,
 		Axis		= Axis,
-		Inertia	= Inertia,
+		Inertia		= Inertia,
 		Rope		= Rope,
-		RopeLen	= ( OutPosWorld - InPosWorld ):Length(),
-		Output	= OutPos,
-		ReqTq	= 0,
-		Vel		= 0
+		RopeLen		= ( OutPosWorld - InPosWorld ):Length(),
+		Output		= OutPos,
+		ReqTq		= 0,
+		Vel			= 0
 	}
 	table.insert( self.WheelLink, Link )
 
