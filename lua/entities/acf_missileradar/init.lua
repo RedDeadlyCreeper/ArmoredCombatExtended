@@ -25,7 +25,14 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 
 	self.Inputs				= WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs				= WireLib.CreateOutputs( self, {"Detected (" .. RadarWireDescs["Detected"] .. ")", "ClosestDistance", "Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]", "Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]", "Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]"} )
+	self.Outputs			= WireLib.CreateOutputs( self, {"Detected (" .. RadarWireDescs["Detected"] .. ")", "ClosestDistance", "Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]", "Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]", "Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]"} )
+	self.OutputData = {
+		Detected = 0,
+		ClosestDistance = 0,
+		Entities = {},
+		Position = {},
+		Velocity = {},
+	}
 
 	self.ThinkDelay			= 0.1
 	self.StatusUpdateDelay	= 0.5
@@ -33,7 +40,7 @@ function ENT:Initialize()
 
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
-	self.LegalIssues			= ""
+	self.LegalIssues		= ""
 
 	self.Active				= false
 
@@ -263,11 +270,19 @@ function ENT:ScanForMissiles()
 
 	if not closest then closestSqr = 0 end
 
+	local closestOutput = math.sqrt(closestSqr)
+
 	WireLib.TriggerOutput( self, "Detected", i )
-	WireLib.TriggerOutput( self, "ClosestDistance", math.sqrt(closestSqr) )
+	WireLib.TriggerOutput( self, "ClosestDistance", closestOutput )
 	WireLib.TriggerOutput( self, "Entities", entArray )
 	WireLib.TriggerOutput( self, "Position", posArray )
 	WireLib.TriggerOutput( self, "Velocity", velArray )
+
+	self.OutputData.Detected = i
+	self.OutputData.ClosestDistance = closestOutput
+	self.OutputData.Entities = entArray
+	self.OutputData.Position = posArray
+	self.OutputData.Velocity = velArray
 
 	if i > (self.LastMissileCount or 0) then
 		self:EmitSound( self.Sound or ACFM.DefaultRadarSound, 500, 100 )
@@ -281,15 +296,19 @@ function ENT:ClearOutputs()
 
 	if #self.Outputs.Entities.Value > 0 then
 		WireLib.TriggerOutput( self, "Entities", {} )
+		self.OutputData.Entities = {}
 	end
 
 	if #self.Outputs.Position.Value > 0 then
 		WireLib.TriggerOutput( self, "Position", {} )
 		WireLib.TriggerOutput( self, "ClosestDistance", 0 )
+		self.OutputData.Position = {}
+		self.OutputData.ClosestDistance = 0
 	end
 
 	if #self.Outputs.Velocity.Value > 0 then
 		WireLib.TriggerOutput( self, "Velocity", {} )
+		self.OutputData.Velocity = {}
 	end
 
 end

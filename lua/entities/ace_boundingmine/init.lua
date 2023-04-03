@@ -97,14 +97,13 @@ function ENT:Think()
 		self.LastTime = CurTime()
 
 		if self.FuseTime < 0 then
-			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self:CPPIGetOwner(), nil, self) --0.5 is standard antipersonal mine
+			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self.DamageOwner, nil, self) --0.5 is standard antipersonal mine
 
 			local Flash = EffectData()
 				Flash:SetOrigin( self:GetPos() - self:GetUp() * 6 )
 				Flash:SetNormal( Vector(0,0,-1) )
 				Flash:SetRadius( math.max( 0.2, 1 ) )
 			util.Effect( "ACF_Scaled_Explosion", Flash )
-
 
 			self:Remove()
 		end

@@ -160,10 +160,12 @@ function SWEP:PrimaryAttack()
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
+	local owner = self:GetOwner()
+
 	if CLIENT then
-		local trace = self:GetOwner():GetEyeTrace()
+		local trace = owner:GetEyeTrace()
 		local tracepos = trace.HitPos
-		local distcheck = (self:GetOwner():GetShootPos() - tracepos):Length()
+		local distcheck = (owner:GetShootPos() - tracepos):Length()
 
 		if distcheck < 100 then
 			self:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )
@@ -172,16 +174,16 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	self.BulletData.Owner = self:GetOwner()
+	self.BulletData.Owner = owner
 	self.BulletData.Gun = self
 
-	if not self:GetOwner():HasGodMode() then
+	if not owner:HasGodMode() then
 
-		local trace = self:GetOwner():GetEyeTrace()
+		local trace = owner:GetEyeTrace()
 		local traceEnt = trace.Entity
 		local hitNormal = trace.HitNormal
 		local tracepos = trace.HitPos
-		local distcheck = (self:GetOwner():GetShootPos() - tracepos):Length()
+		local distcheck = (owner:GetShootPos() - tracepos):Length()
 
 		if distcheck < 100 then
 			local ent = ents.Create( "ace_slammine" )
@@ -189,29 +191,29 @@ function SWEP:PrimaryAttack()
 			if ( IsValid( ent ) ) then
 
 				ent:SetPos( tracepos + hitNormal * 2 )
-				ent:SetAngles( (self:GetOwner():GetShootPos() - tracepos):Angle() + Angle(90, 0, 0) )
+				ent:SetAngles( (owner:GetShootPos() - tracepos):Angle() + Angle(90, 0, 0) )
 				--ent:SetAngles(hitNormal:Angle() + Angle(90, 0, 0))
 				ent:Spawn()
-				ent:SetOwner( self:GetOwner() )
 				ent.Bulletdata = self.BulletData
-				self:GetOwner():AddCleanup( "aceexplosives", ent )
+				owner:AddCleanup( "aceexplosives", ent )
 
 				if CPPI then
-					ent:CPPISetOwner(Entity(0))
+					ent:CPPISetOwner( Entity(0) )
 				end
 
 				if IsValid(traceEnt) then
 					ent:SetParent(traceEnt)
 				end
 
+				ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
 				ent.ExplosionDelay = self:GetExplosionDelay()
 			end
 
 			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-			self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
+			owner:SetAnimation( PLAYER_ATTACK1 )
 
 			if self:Ammo1() > 0 then
-				self:GetOwner():RemoveAmmo( 1, "Grenade")
+				owner:RemoveAmmo( 1, "Grenade")
 			else
 				self:TakePrimaryAmmo(1)
 			end

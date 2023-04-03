@@ -56,7 +56,7 @@ local function modepermission(owner, attacker, ent)
 	-- Deal damage to props if the owner has given permission to the attacker to do it.
 	--elseif ownerperms[attackerid] and not (godOwner or godInflictor) then
 	if ownerperms[attackerid] and not (godOwner or godInflictor) then
-		return
+		return true
 	end
 
 	-- return false if to deny the damage

@@ -792,7 +792,7 @@ function ENT:Link( Target )
 
 	local Rope = nil
 	if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
-		Rope = constraint.CreateKeyframeRope( OutPosWorld, 1, "cable/cable2", nil, self, OutPos, 0, Target, InPos, 0 )
+		Rope = ACE_CreateLinkRope( OutPosWorld, self, OutPos, Target, InPos )
 	end
 
 	local Phys	= Target:GetPhysicsObject()

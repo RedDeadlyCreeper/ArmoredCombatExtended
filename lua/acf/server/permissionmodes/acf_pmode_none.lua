@@ -24,7 +24,7 @@ local modedescription = "Completely disables damage protection."
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 ----]]
 local function modepermission()
-	return
+	return true
 end
 
 perms.RegisterMode(modepermission, modename, modedescription, true, nil, true)

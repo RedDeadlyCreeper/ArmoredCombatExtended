@@ -4,7 +4,8 @@ E2Helper.Descriptions["acfIsGearbox"] = "Returns 1 if the entity is an ACF gearb
 E2Helper.Descriptions["acfIsGun"] = "Returns 1 if the entity is an ACF gun."
 E2Helper.Descriptions["acfIsAmmo"] = "Returns 1 if the entity is an ACF ammo crate."
 E2Helper.Descriptions["acfIsFuel"] = "Returns 1 if the entity is an ACF fuel tank."
-E2Helper.Descriptions["acfActive"] = "Gets/sets Active (0-1) for an ACF engine, ammo crate, or fuel tank."
+E2Helper.Descriptions["acfActive(e:)"] = "Returns whether an ACF engine, ammo crate, or fuel tank is active"
+E2Helper.Descriptions["acfActive(e:n)"] = "Sets whether an ACF engine, ammo crate, or fuel tank is active"
 E2Helper.Descriptions["acfHitClip"] = "Returns 1 if hitpos is on a clipped part of prop"
 E2Helper.Descriptions["acfNameShort"] = "Returns the short name of an ACF entity."
 E2Helper.Descriptions["acfName"] = "Returns the full name of an ACF entity."
@@ -32,7 +33,9 @@ E2Helper.Descriptions["acfFlyInertia"] = "Returns the inertia of an ACF engine's
 E2Helper.Descriptions["acfFlyMass"] = "Returns the mass of an ACF engine's flywheel."
 E2Helper.Descriptions["acfPower"] = "Returns the current power (in kW) of an ACF engine."
 E2Helper.Descriptions["acfInPowerband"] = "Returns 1 if the ACF engine RPM is inside the powerband."
-E2Helper.Descriptions["acfThrottle"] = "Gets/sets Throttle (0-100) for an ACF engine."
+E2Helper.Descriptions["acfThrottle(e:)"] = "Gets throttle (0-100) for an ACF engine."
+E2Helper.Descriptions["acfThrottle(e:n)"] = "Sets throttle (0-100) for an ACF engine."
+E2Helper.Descriptions["acfFuelRemaining"] = "Returns the amount of fuel remaining for an ACF engine, in litres or kilowatt-hours."
 
 --gearbox
 E2Helper.Descriptions["acfGear"] = "Returns the current gear of an ACF gearbox."
@@ -68,6 +71,7 @@ E2Helper.Descriptions["acfReloadTime"] = "Returns time to next shot of an ACF we
 E2Helper.Descriptions["acfReloadProgress"] = "Returns number between 0 and 1 which represents reloading progress of an ACF weapon. Useful for progress bars."
 E2Helper.Descriptions["acfSpread"] = "Returns the spread of an ACF weapon."
 E2Helper.Descriptions["acfFireRate"] = "Returns the rate of fire of an ACF weapon."
+E2Helper.Descriptions["acfSetROFLimit"] = "Sets the rate of fire limit of an ACF weapon."
 E2Helper.Descriptions["acfFire"] = "Sets the firing state of an ACF weapon.  Kills are only attributed to gun owner.  Use wire inputs on gun if you want to properly attribute kills to driver."
 E2Helper.Descriptions["acfUnload"] = "Causes an ACF weapon to unload."
 E2Helper.Descriptions["acfReload"] = "Causes an ACF weapon to reload."
@@ -106,3 +110,6 @@ E2Helper.Descriptions["acfFuelRequired"] = "Returns 1 if an ACF engine requires 
 E2Helper.Descriptions["acfRefuelDuty"] = "Sets an ACF fuel tank on refuel duty, causing it to supply other fuel tanks with fuel."
 E2Helper.Descriptions["acfFuelUse"] = "Returns the current fuel consumption of an engine in liters per minute or kilowatts."
 E2Helper.Descriptions["acfPeakFuelUse"] = "Returns the peak fuel consumption of an engine in liters per minute or kilowatts."
+
+--radars
+E2Helper.Descriptions["acfRadarData"] = "Returns a table containing the outputs you'd get from an ACF tracking radar, missile radar, or IRST.\nCheck radar wire outputs for key names."

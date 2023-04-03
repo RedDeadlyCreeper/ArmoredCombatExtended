@@ -10,6 +10,17 @@ function ENT:Initialize()
 	self.LastStatusUpdate	= CurTime()
 	self.Active				= false
 
+	self.Inputs	= WireLib.CreateInputs( self, { "Active" } )
+	self.Outputs	= WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
+	self.OutputData = {
+		Detected		= 0,
+		Owner			= {},
+		Position		= {},
+		Angle			= {},
+		EffHeat			= {},
+		ClosestToBeam	= -1
+	}
+
 	self:SetActive(false)
 
 	self.Heat				= 21	-- Heat
@@ -22,9 +33,6 @@ function ENT:Initialize()
 	self.ClosestToBeam		= -1
 
 	self:UpdateOverlayText()
-
-	self.Inputs	= WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs	= WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
 
 end
 
@@ -124,6 +132,14 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Angle"		, {} )
 		WireLib.TriggerOutput( self, "EffHeat"	, {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
+
+		self.OutputData.Detected = 0
+		self.OutputData.Owner = {}
+		self.OutputData.Position = {}
+		self.OutputData.Angle = {}
+		self.OutputData.EffHeat = {}
+		self.OutputData.ClosestToBeam = -1
+
 		self.Heat = 21
 	end
 
@@ -283,6 +299,13 @@ function ENT:AcquireLock()
 		WireLib.TriggerOutput( self, "Angle"		, posTable )
 		WireLib.TriggerOutput( self, "EffHeat"	, Temperatures )
 		WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
+
+		self.OutputData.Detected = 1
+		self.OutputData.Owner = Owners
+		self.OutputData.Position = Positions
+		self.OutputData.Angle = posTable
+		self.OutputData.EffHeat = Temperatures
+		self.OutputData.ClosestToBeam = self.ClosestToBeam
 	else --Nothing detected
 
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
@@ -291,6 +314,13 @@ function ENT:AcquireLock()
 		WireLib.TriggerOutput( self, "Angle"		, {} )
 		WireLib.TriggerOutput( self, "EffHeat"	, {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
+
+		self.OutputData.Detected = 0
+		self.OutputData.Owner = {}
+		self.OutputData.Position = {}
+		self.OutputData.Angle = {}
+		self.OutputData.EffHeat = {}
+		self.OutputData.ClosestToBeam = -1
 	end
 
 

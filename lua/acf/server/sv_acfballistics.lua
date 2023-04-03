@@ -182,7 +182,7 @@ do
 	-- perform the trace for damage
 	local RetryTrace = true
 
-	FlightTr.mask	= Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
+	FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 	--FlightTr.mask	= Bullet.Caliber <= 0.3 and (1174421507 + 16432) or (33570827 + 16432) --Experimental mask, including water hits
 
 	local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.

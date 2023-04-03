@@ -23,6 +23,14 @@ function ENT:Initialize()
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
 	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam","IsJammed"} )
+	self.OutputData = {
+		Detected = 0,
+		Owner = {},
+		Position = {},
+		Velocity = {},
+		ClosestToBeam = -1,
+		IsJammed = 0
+	}
 
 end
 
@@ -132,6 +140,14 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Velocity", {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 		WireLib.TriggerOutput( self, "IsJammed", 0 )
+
+		self.OutputData.Detected = 0
+		self.OutputData.Owner = {}
+		self.OutputData.Position = {}
+		self.OutputData.Velocity = {}
+		self.OutputData.ClosestToBeam = -1
+		self.OutputData.IsJammed = 0
+
 		self.Heat = 21
 	end
 
@@ -167,6 +183,7 @@ function ENT:Think()
 		end
 
 		WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
+		self.OutputData.IsJammed = self.IsJammed
 
 		if self.IsJammed <= 0 then
 
@@ -315,12 +332,24 @@ function ENT:Think()
 				WireLib.TriggerOutput( self, "Velocity", velArray )
 				WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
 
+				self.OutputData.Detected = 1
+				self.OutputData.Owner = ownArray
+				self.OutputData.Position = posArray
+				self.OutputData.Velocity = velArray
+				self.OutputData.ClosestToBeam = self.ClosestToBeam
+
 			else --Nothing detected
 				WireLib.TriggerOutput( self, "Detected", 0 )
 				WireLib.TriggerOutput( self, "Owner", {} )
 				WireLib.TriggerOutput( self, "Position", {} )
 				WireLib.TriggerOutput( self, "Velocity", {} )
 				WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
+
+				self.OutputData.Detected = 0
+				self.OutputData.Owner = {}
+				self.OutputData.Position = {}
+				self.OutputData.Velocity = {}
+				self.OutputData.ClosestToBeam = -1
 			end
 		end
 	end

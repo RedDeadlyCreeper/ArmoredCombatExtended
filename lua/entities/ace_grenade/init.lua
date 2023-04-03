@@ -44,7 +44,7 @@ function ENT:Think()
 		local HEWeight = 4
 		local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
-		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self:CPPIGetOwner(), nil, self) --0.5 is standard antipersonal mine
+		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self.DamageOwner, nil, self) --0.5 is standard antipersonal mine
 
 		local Flash = EffectData()
 		Flash:SetOrigin( self:GetPos() + Vector(0,0,8) )

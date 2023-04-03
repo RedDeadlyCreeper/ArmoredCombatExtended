@@ -76,36 +76,38 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	self.BulletData.Owner = self:GetOwner()
+	local owner = self:GetOwner()
+
+	self.BulletData.Owner = owner
 	self.BulletData.Gun = self
 
-	local Forward = self:GetOwner():EyeAngles():Forward()
-
-	if not self:GetOwner():HasGodMode() then
+	if not owner:HasGodMode() then
 		local ent = ents.Create( "ace_antitankmine" )
 
 		if ( IsValid( ent ) ) then
 
-			ent:SetPos( self:GetOwner():GetShootPos() + Forward * 32 )
-			ent:SetAngles( self:GetOwner():EyeAngles() )
+			local Forward = owner:EyeAngles():Forward()
+
+			ent:SetPos( owner:GetShootPos() + Forward * 32 )
+			ent:SetAngles( owner:EyeAngles() )
 			ent:Spawn()
 			ent:SetVelocity( Forward * 10 )
-			ent:SetOwner( self:GetOwner() )
-			self:GetOwner():AddCleanup( "aceexplosives", ent )
+			owner:AddCleanup( "aceexplosives", ent )
 
 			if CPPI then
-				ent:CPPISetOwner(Entity(0))
+				ent:CPPISetOwner( Entity(0) )
 			end
+			ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
 		end
 	end
 
 	self.lastFire = CurTime()
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
+	owner:SetAnimation( PLAYER_ATTACK1 )
 
 	if self:Ammo1() > 0 then
-		self:GetOwner():RemoveAmmo( 1, "Grenade")
+		owner:RemoveAmmo( 1, "Grenade")
 	else
 		self:TakePrimaryAmmo(1)
 	end

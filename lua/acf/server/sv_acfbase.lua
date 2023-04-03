@@ -463,3 +463,38 @@ function ACF_GetLinkedWheels( MobilityEnt )
 
 	return Wheels
 end
+
+--[[----------------------------------------------------------------------
+	A variation of the CreateKeyframeRope( ... ) for usage on ACE
+	This one is more simple than the original function.
+	Creates a rope without any constraint
+------------------------------------------------------------------------]]
+function ACE_CreateLinkRope( Pos, Ent1, LPos1, Ent2, LPos2 )
+
+	local rope = ents.Create( "keyframe_rope" )
+	rope:SetPos( Pos )
+	rope:SetKeyValue( "Width", 1 )
+	rope:SetKeyValue( "Type", 2 )
+
+	rope:SetKeyValue( "RopeMaterial", "cable/cable2" )
+
+	-- Attachment point 1
+	rope:SetEntity( "StartEntity", Ent1 )
+	rope:SetKeyValue( "StartOffset", tostring( LPos1 ) )
+	rope:SetKeyValue( "StartBone", 0 )
+
+	-- Attachment point 2
+	rope:SetEntity( "EndEntity", Ent2 )
+	rope:SetKeyValue( "EndOffset", tostring( LPos2 ) )
+	rope:SetKeyValue( "EndBone", 0 )
+
+	rope:Spawn()
+	rope:Activate()
+
+	-- Delete the rope if the attachments get killed
+	Ent1:DeleteOnRemove( rope )
+	Ent2:DeleteOnRemove( rope )
+
+	return rope
+
+end
