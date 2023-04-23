@@ -936,7 +936,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 	--Link Pasting
 	if Ent.EntityMods and Ent.EntityMods.GearLink and Ent.EntityMods.GearLink.entities then
 		local GearLink = Ent.EntityMods.GearLink
-		if GearLink.entities and table.Count(GearLink.entities) > 0 then
+		if GearLink.entities and next(GearLink.entities) then
 			timer.Simple( 0, function() -- this timer is a workaround for an ad2/makespherical issue https://github.com/nrlulz/ACF/issues/14#issuecomment-22844064
 				for _,ID in pairs(GearLink.entities) do
 					local Linked = CreatedEntities[ ID ]
@@ -953,7 +953,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 	--fuel tank link Pasting
 	if Ent.EntityMods and Ent.EntityMods.FuelLink and Ent.EntityMods.FuelLink.entities then
 		local FuelLink = Ent.EntityMods.FuelLink
-		if FuelLink.entities and table.Count(FuelLink.entities) > 0 then
+		if FuelLink.entities and next(FuelLink.entities) then
 			for _,ID in pairs(FuelLink.entities) do
 				local Linked = CreatedEntities[ ID ]
 				if IsValid( Linked ) then
@@ -966,7 +966,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 --ace_crewseat_gunner
 	if Ent.EntityMods and Ent.EntityMods.CrewLink and Ent.EntityMods.CrewLink.entities then
 		local CrewLink = Ent.EntityMods.CrewLink
-		if CrewLink.entities and table.Count(CrewLink.entities) > 0 then
+		if CrewLink.entities and next(CrewLink.entities) then
 			for _,ID in pairs(CrewLink.entities) do
 				local Linked = CreatedEntities[ ID ]
 				if IsValid( Linked ) then

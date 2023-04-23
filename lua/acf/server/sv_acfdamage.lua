@@ -892,7 +892,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
 
 		-- explode stuff last, so we don't re-process all that junk again in a new explosion
-		if table.Count( boom ) > 0 then
+		if next( boom ) then
 
 			for _, child in pairs( boom ) do
 

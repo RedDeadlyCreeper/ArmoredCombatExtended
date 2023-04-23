@@ -898,7 +898,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
 	if Ent.EntityMods and Ent.EntityMods.ACFAmmoLink and Ent.EntityMods.ACFAmmoLink.entities then
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink
-		if AmmoLink.entities and table.Count(AmmoLink.entities) > 0 then
+		if AmmoLink.entities and next(AmmoLink.entities) then
 			for _,AmmoID in pairs(AmmoLink.entities) do
 				local Ammo = CreatedEntities[ AmmoID ]
 				if Ammo and Ammo:IsValid() and Ammo:GetClass() == "acf_ammo" then

@@ -136,7 +136,7 @@ function PANEL:Init( )
 
 --print(table.Count(self.ModClasses))
 
-	if table.Count(self.ModClasses["GunClass"]) > 0 then	--this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder respectively!!
+	if next(self.ModClasses["GunClass"]) then	--this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder respectively!!
 
 	local Mod = HomeNode:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
 

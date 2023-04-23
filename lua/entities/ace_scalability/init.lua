@@ -81,23 +81,26 @@ end
 ]]
 do
 
-	local function NetworkNewScale( Ent, Scale )
+	local function NetworkNewScale( Ent, Scale, ply )
 
 		net.Start("ACE_Scalable_Network")
 			net.WriteFloat(Scale.x)
 			net.WriteFloat(Scale.y)
 			net.WriteFloat(Scale.z)
 			net.WriteEntity( Ent )
-		net.Broadcast()
 
+		if IsValid(ply) then
+			net.Send(ply)
+		else
+			net.Broadcast()
+		end
 	end
 
 	function ENT:ACE_SetScale( ScaleData )
 
-		local MeshData = ScaleData.Mesh
-		local Scale = ScaleData.Scale
-		--local Size = ScaleData.Size
-		local PhysMaterial = ScaleData.Material
+		local MeshData 		= ScaleData.Mesh
+		local Scale 		= ScaleData.Scale
+		local PhysMaterial 	= ScaleData.Material
 
 		MeshData = self:ConvertMeshToScale( MeshData, Scale )
 
@@ -120,19 +123,44 @@ do
 
 	end
 
-	net.Receive("ACE_Scalable_Network", function()
+	-- If the net sends an entity, we will send the render scale of that entity back to the requester.
+	-- Otherwise, we will send all the available entity render scales to the specified client. at 1 entity/tick. 
+	-- As reference, 1000 scalable ents takes around of 15.15 secs to fully complete at 66 tickrate
+	net.Receive("ACE_Scalable_Network", function( _, ply )
 
 		local Ent = net.ReadEntity()
 
-		if not IsValid(Ent) then return end
-		if not Ent.IsScalable then return end
+		if IsValid(Ent) then
+			if Ent.IsScalable then
+				local ScaleData = Ent.ScaleData
+				NetworkNewScale( Ent, ScaleData.Scale, ply )
+			end
+		else
 
-		local ScaleData = Ent.ScaleData
+			--TODO: Do a dedicated scalable table to avoid unnecessary loops
+			local Id = "ACE_ScaleRequest_" .. math.random(1,100)
+			local scalable_ents = {}
+			local ContraptionEnts = ACE.contraptionEnts
 
-		NetworkNewScale( Ent, ScaleData.Scale )
+			for _, ent in ipairs(ContraptionEnts) do
 
+				if IsValid(ent) and ent.IsScalable then
+					table.insert( scalable_ents, ent )
+				end
+			end
+
+			timer.Create(Id, 0, math.max(#scalable_ents, 1), function()
+
+				local RepLeft = timer.RepsLeft( Id ) + 1
+				local ent = scalable_ents[ RepLeft ]
+
+				if IsValid( ent ) then
+					local ScaleData = ent.ScaleData
+					NetworkNewScale( scalable_ents[ RepLeft ], ScaleData.Scale, ply )
+				end
+			end)
+		end
 	end)
-
 end
 
 --Brought from the ACF3

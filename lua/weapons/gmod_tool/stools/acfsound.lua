@@ -15,6 +15,26 @@ if CLIENT then
 	language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
 end
 
+if CLIENT then
+
+	TOOL.Information = {
+
+		{ name = "left", icon = "gui/lmb.png" },
+		{ name = "right", icon = "gui/rmb.png" },
+		{ name = "reload", icon = "gui/r.png" },
+
+	}
+
+	language.Add( "Tool.acfsound.name", ACFTranslation.SoundToolText[1] )
+	language.Add( "Tool.acfsound.desc", ACFTranslation.SoundToolText[2] )
+	--language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
+
+	language.Add( "Tool.acfsound.left", "Apply the new sound. You can use empty sounds too." )
+	language.Add( "Tool.acfsound.right", "Copy the sound." )
+	language.Add( "Tool.acfsound.reload", "Reset to default sound." )
+
+end
+
 local GunClasses = ACF.Classes.GunClass
 local GunTable = ACF.Weapons.Guns
 
@@ -189,83 +209,137 @@ function TOOL:Reload( trace )
 
 	support.ResetSound(trace.Entity)
 
+	duplicator.ClearEntityModifier( trace.Entity, "acf_replacesound" )
+
 	return true
 end
 
-function TOOL.BuildCPanel(panel)
-	local wide = panel:GetWide()
+if CLIENT then
 
-	local SoundNameText = vgui.Create("DTextEntry", ValuePanel)
-	SoundNameText:SetText("")
-	SoundNameText:SetWide(wide)
-	SoundNameText:SetTall(20)
-	SoundNameText:SetMultiline(false)
-	SoundNameText:SetConVar("wire_soundemitter_sound")
-	SoundNameText:SetVisible(true)
-	panel:AddItem(SoundNameText)
+	function TOOL.BuildCPanel(panel)
+		local wide = panel:GetWide()
 
-	local SoundBrowserButton = vgui.Create("DButton")
-	SoundBrowserButton:SetText("Open Sound Browser")
-	SoundBrowserButton:SetWide(wide)
-	SoundBrowserButton:SetTall(20)
-	SoundBrowserButton:SetVisible(true)
-	SoundBrowserButton.DoClick = function()
-		RunConsoleCommand("wire_sound_browser_open",SoundNameText:GetValue())
-	end
-	panel:AddItem(SoundBrowserButton)
+		panel:Help( "Replaces default sounds of certain ACE entities with this tool. You can replace the sounds of cannons, racks, engines and Anti-Missile Radar.\n" )
 
-	local SoundPre = vgui.Create("DPanel")
-	SoundPre:SetWide(wide)
-	SoundPre:SetTall(20)
-	SoundPre:SetVisible(true)
+		local SoundNameText = vgui.Create("DTextEntry", ValuePanel)
+		SoundNameText:SetText("")
+		SoundNameText:SetWide(wide - 20)
+		SoundNameText:SetTall(20)
+		SoundNameText:SetMultiline(false)
+		SoundNameText:SetConVar("wire_soundemitter_sound")
+		SoundNameText:SetVisible(true)
+		SoundNameText:Dock(LEFT)
+		panel:AddItem(SoundNameText)
 
-	local SoundPreWide = SoundPre:GetWide()
+		local SoundBrowserButton = vgui.Create("DButton")
+		SoundBrowserButton:SetText("Open Sound Browser")
+		SoundBrowserButton:SetWide(wide)
+		SoundBrowserButton:SetTall(20)
+		SoundBrowserButton:SetVisible(true)
+		SoundBrowserButton:SetIcon( "icon16/application_view_list.png" )
+		SoundBrowserButton.DoClick = function()
+			RunConsoleCommand("wire_sound_browser_open", SoundNameText:GetValue(), "1")
+		end
+		panel:AddItem(SoundBrowserButton)
 
-	local SoundPrePlay = vgui.Create("DButton", SoundPre)
-	SoundPrePlay:SetText("Play")
-	SoundPrePlay:SetWide(SoundPreWide / 2)
-	SoundPrePlay:SetPos(0, 0)
-	SoundPrePlay:SetTall(20)
-	SoundPrePlay:SetVisible(true)
-	SoundPrePlay.DoClick = function()
-		RunConsoleCommand("play",SoundNameText:GetValue())
-	end
+		local SoundPre = vgui.Create("DPanel")
+		SoundPre:SetWide(wide)
+		SoundPre:SetTall(20)
+		SoundPre:SetVisible(true)
 
-	local SoundPreStop = vgui.Create("DButton", SoundPre)
-	SoundPreStop:SetText("Stop")
-	SoundPreStop:SetWide(SoundPreWide / 2)
-	SoundPreStop:SetPos(SoundPreWide / 2, 0)
-	SoundPreStop:SetTall(20)
-	SoundPreStop:SetVisible(true)
-	SoundPreStop.DoClick = function()
-		RunConsoleCommand("play", "common/NULL.WAV") --Playing a silent sound will mute the preview but not the sound emitters.
-	end
-	panel:AddItem(SoundPre)
-	SoundPre:InvalidateLayout(true)
-	SoundPre.PerformLayout = function()
 		local SoundPreWide = SoundPre:GetWide()
+
+		local SoundPrePlay = vgui.Create("DButton", SoundPre)
+		SoundPrePlay:SetText("Play")
 		SoundPrePlay:SetWide(SoundPreWide / 2)
+		SoundPrePlay:SetPos(0, 0)
+		SoundPrePlay:SetTall(20)
+		SoundPrePlay:SetVisible(true)
+		SoundPrePlay:SetIcon( "icon16/sound.png" )
+		SoundPrePlay.DoClick = function()
+			RunConsoleCommand("play",SoundNameText:GetValue())
+		end
+
+		local SoundPreStop = vgui.Create("DButton", SoundPre)
+		SoundPreStop:SetText("Stop")
 		SoundPreStop:SetWide(SoundPreWide / 2)
 		SoundPreStop:SetPos(SoundPreWide / 2, 0)
+		SoundPreStop:SetTall(20)
+		SoundPreStop:SetVisible(true)
+		SoundPreStop:SetIcon( "icon16/sound_mute.png" )
+		SoundPreStop.DoClick = function()
+			RunConsoleCommand("play", "common/NULL.WAV") --Playing a silent sound will mute the preview but not the sound emitters.
+		end
+		panel:AddItem(SoundPre)
+		SoundPre:InvalidateLayout(true)
+		SoundPre.PerformLayout = function()
+			local SoundPreWide = SoundPre:GetWide()
+			SoundPrePlay:SetWide(SoundPreWide / 2)
+			SoundPreStop:SetWide(SoundPreWide / 2)
+			SoundPreStop:SetPos(SoundPreWide / 2, 0)
+		end
+
+		local ClearButton = vgui.Create("DButton")
+		ClearButton:SetText("Clear Sound")
+		ClearButton:SetWide(wide)
+		ClearButton:SetTall(20)
+		ClearButton:SetIcon( "icon16/cancel.png" )
+		ClearButton:SetVisible(true)
+		ClearButton.DoClick = function()
+			SoundNameText:SetValue("")
+		end
+		panel:AddItem(ClearButton)
+
+		--panel:ControlHelp( "string help" )
+
+		panel:AddControl("Slider", {
+			Label = "Pitch:",
+			Command = "acfsound_pitch",
+			Type = "Float",
+			Min = "0.1",
+			Max = "2",
+		}):SetTooltip("Works only for engines.")
+		--[[
+		local SoundPitch = vgui.Create("DNumSlider")
+		SoundPitch:SetMin( 0.1 )
+		SoundPitch:SetMax( 2 )
+		SoundPitch:SetDecimals( 0.1 )
+		SoundPitch:SetWide(wide)
+		SoundPitch:SetText("Pitch:")
+		SoundPitch:SetToolTip(ACFTranslation.SoundToolText[6])
+		SoundPitch:SetConVar( "acfsound_pitch" )
+		SoundPitch:SetValue( 1 )
+		panel:AddItem(SoundPitch)
+		--]]
+
 	end
 
-	panel:AddControl("Slider", {
-		Label = "Pitch:",
-		Command = "acfsound_pitch",
-		Type = "Float",
-		Min = "0.1",
-		Max = "2",
-	}):SetTooltip("Works only for engines.")
 	--[[
-	local SoundPitch = vgui.Create("DNumSlider")
-	SoundPitch:SetMin( 0.1 )
-	SoundPitch:SetMax( 2 )
-	SoundPitch:SetDecimals( 0.1 )
-	SoundPitch:SetWide(wide)
-	SoundPitch:SetText("Pitch:")
-	SoundPitch:SetToolTip(ACFTranslation.SoundToolText[6])
-	SoundPitch:SetConVar( "acfsound_pitch" )
-	SoundPitch:SetValue( 1 )
-	panel:AddItem(SoundPitch)
-	--]]
+		This is another dirty hack that prevents the sound emitter tool from automatically equipping when a sound is selected in the sound browser.
+		However, this hack only applies if the currently equipped tool is the sound replacer and you're trying to switch to the wire sound tool.
+		Additionally, if you're using a weapon instead of a tool and you choose a sound while the sound replacer menu is displayed, you will be redirected to it.
+
+		The sound emitter will be equipped normally when switching to any other tool at the time of the change.
+	]]
+
+	spawnmenu.ActivateToolLegacy = spawnmenu.ActivateToolLegacy or spawnmenu.ActivateTool
+
+	function spawnmenu.ActivateTool( tool, bool_menu, ... )
+
+		local CurTool = LocalPlayer():GetTool()
+
+		if CurTool and CurTool.Mode then
+
+			local CurMode = isstring(CurTool.Mode) and CurTool.Mode or ""
+
+			if tool == "wire_soundemitter" and CurMode == "acfsound" then
+				tool = CurMode
+			end
+
+		end
+
+		spawnmenu.ActivateToolLegacy( tool, bool_menu, ... )
+	end
+
 end
+

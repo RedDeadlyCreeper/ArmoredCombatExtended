@@ -2,12 +2,16 @@ include("shared.lua")
 
 function ENT:Initialize()
 
-	net.Start("ACE_Scalable_Network")
-		net.WriteEntity( self )
-	net.SendToServer()
+	local ply = LocalPlayer()
 
+	if ply.CanReceiveNet then
+		net.Start("ACE_Scalable_Network")
+			net.WriteEntity( self )
+		net.SendToServer()
+	end
 end
 
+--Really needed?
 function ENT:Draw()
 
 	self:DrawModel()
@@ -52,25 +56,31 @@ local ModelData = ACE.ModelData
 local function BuildRealPhysics( entity, Scale )
 
 	local Model		= entity:GetModel()
-	local Mesh			= ModelData[Model].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
-	local PhysMaterial  = ModelData[Model].physMaterial or ""
 
-	if entity.ConvertMeshToScale then
-		Mesh = entity:ConvertMeshToScale(Mesh, Scale)
-	end
+	if ModelData[Model] then
 
-	entity:PhysicsInitMultiConvex(Mesh)
-	entity:EnableCustomCollisions(true)
-	entity:SetRenderBounds(entity:GetCollisionBounds())
-	entity:DrawShadow(false)
+		local PhysObj = entity.PhysicsObj
 
-	local PhysObj = entity:GetPhysicsObject()
+		local Mesh			= ModelData[Model].CustomMesh or PhysObj:GetMeshConvexes()
+		local PhysMaterial  = ModelData[Model].physMaterial or ""
 
-	if IsValid(PhysObj) then
-		entity.PhysicsObj = PhysObj
-		PhysObj:SetMaterial( PhysMaterial )
-		PhysObj:EnableMotion(false)
-		PhysObj:Sleep()
+		if entity.ConvertMeshToScale then
+			Mesh = entity:ConvertMeshToScale(Mesh, Scale)
+		end
+
+		entity:PhysicsInitMultiConvex(Mesh)
+		entity:EnableCustomCollisions(true)
+		entity:SetRenderBounds(entity:GetCollisionBounds())
+		entity:DrawShadow(false)
+
+		PhysObj = entity:GetPhysicsObject()
+
+		if IsValid(PhysObj) then
+			entity.PhysicsObj = PhysObj
+			PhysObj:SetMaterial( PhysMaterial )
+			PhysObj:EnableMotion(false)
+			PhysObj:Sleep()
+		end
 	end
 end
 
@@ -95,6 +105,20 @@ net.Receive("ACE_Scalable_Network", function()
 
 	end
 end)
+
+--This workaround fixes the issue with scale rendering not loading properly for clients who have joined after the entity creation.
+--The client will request the scale renders of ALL existing entities to the server, then they will be sent to the client at tick speed (1 entity per tick), to avoid overflowing the net with alot of ents.
+hook.Remove( "InitPostEntity", "ACE_RefreshScalables" )
+hook.Add( "InitPostEntity", "ACE_RefreshScalables", function()
+
+	local ply = LocalPlayer()
+	ply.CanReceiveNet = true
+
+	net.Start("ACE_Scalable_Network")
+	net.SendToServer()
+
+end)
+
 
 do -- Dealing with visual clip's bullshit
 	local EntMeta = FindMetaTable("Entity")

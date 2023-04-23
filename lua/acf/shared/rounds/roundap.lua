@@ -4,13 +4,13 @@ AddCSLuaFile()
 --put all guns that this ammo should NOT fit
 ACF.AmmoBlacklist.AP =  { "MO", "RM", "SL", "GL", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL","SBC"}
 
-local Round = {}
+local Round   = {}
 
-Round.type  = "Ammo"									-- Tells the spawn menu what entity to spawn
-Round.name  = "[AP] - " .. ACFTranslation.ShellAP[1]	-- Human readable name
-Round.model = "models/munitions/round_100mm_shot.mdl"	-- Shell flight model
-Round.desc  = ACFTranslation.ShellAP[2]				-- Ammo description
-Round.netid = 1										-- Unique ID for this ammo
+Round.type    = "Ammo"									-- Tells the spawn menu what entity to spawn
+Round.name    = "[AP] - " .. ACFTranslation.ShellAP[1]	-- Human readable name
+Round.model   = "models/munitions/round_100mm_shot.mdl"	-- Shell flight model
+Round.desc    = ACFTranslation.ShellAP[2]				-- Ammo description
+Round.netid   = 1										-- Unique ID for this ammo
 
 Round.Type  = "AP"
 
@@ -23,30 +23,30 @@ end
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( _, PlayerData )
 
-	local Data		= {}
-	local ServerData	= {}
-	local GUIData	= {}
+	local Data         = {}
+	local ServerData   = {}
+	local GUIData      = {}
 
-	PlayerData.PropLength	=  PlayerData.PropLength	or 0
-	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
-	PlayerData.Tracer	=  PlayerData.Tracer		or 0
-	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
+	PlayerData.PropLength    = PlayerData.PropLength	or 0
+	PlayerData.ProjLength    = PlayerData.ProjLength	or 0
+	PlayerData.Tracer        = PlayerData.Tracer		or 0
+	PlayerData.TwoPiece      = PlayerData.TwoPiece	or 0
 
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
-	Data.ProjMass = Data.FrArea * (Data.ProjLength * 7.9 / 1000) -- Volume of the projectile as a cylinder * density of steel
-	Data.ShovePower = 0.2
-	Data.PenArea = Data.FrArea ^ ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrArea / 10000) / Data.ProjMass) * 1.2
-	Data.LimitVel = 750 -- Most efficient penetration speed in m/s
+	Data.ProjMass    = Data.FrArea * (Data.ProjLength * 7.9 / 1000) -- Volume of the projectile as a cylinder * density of steel
+	Data.ShovePower  = 0.2
+	Data.PenArea     = Data.FrArea ^ ACF.PenAreaMod
+	Data.DragCoef    = ((Data.FrArea / 10000) / Data.ProjMass) * 1.2
+	Data.LimitVel    = 750 -- Most efficient penetration speed in m/s
 	Data.KETransfert = 0.3 -- Kinetic energy transfert to the target for movement purposes
-	Data.Ricochet = 53 -- Base ricochet angle
-	Data.MuzzleVel = ACF_MuzzleVelocity(Data.PropMass, Data.ProjMass, Data.Caliber)
-	Data.BoomPower = Data.PropMass
+	Data.Ricochet    = 53 -- Base ricochet angle
+	Data.MuzzleVel   = ACF_MuzzleVelocity(Data.PropMass, Data.ProjMass, Data.Caliber)
+	Data.BoomPower   = Data.PropMass
 
 	if SERVER then --Only the crates need this part
-		ServerData.Id	= PlayerData.Id
-		ServerData.Type	= PlayerData.Type
+		ServerData.Id   = PlayerData.Id
+		ServerData.Type = PlayerData.Type
 		return table.Merge(Data,ServerData)
 	end
 

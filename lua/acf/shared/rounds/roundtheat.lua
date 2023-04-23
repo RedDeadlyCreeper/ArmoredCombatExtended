@@ -223,22 +223,22 @@ function Round.detonate( _, Bullet, HitPos, HitNormal )
 
 		ACF_HE( HitPos - Bullet.Flight:GetNormalized() * 3, HitNormal, Bullet.BoomFillerMass * (1-Bullet.HEAllocation), Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
 
-		Bullet.InitTime		= SysTime()
-		Bullet.FlightTime	= 0 --reseting timer
-		Bullet.FuseLength = 0.005 + 40 / ((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length() * 0.0254)
-		Bullet.Pos			= HitPos
-		Bullet.Flight		= Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
-		Bullet.DragCoef		= Bullet.SlugDragCoef
+		Bullet.InitTime         = SysTime()
+		Bullet.FlightTime       = 0 --reseting timer
+		Bullet.FuseLength       = 0.005 + 40 / ((Bullet.Flight + Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37):Length() * 0.0254)
+		Bullet.Pos              = HitPos
+		Bullet.Flight           = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
+		Bullet.DragCoef         = Bullet.SlugDragCoef
 
-		Bullet.ProjMass		= Bullet.SlugMass
-		Bullet.CannonCaliber	= Bullet.Caliber * 2
-		Bullet.Caliber		= Bullet.SlugCaliber
-		Bullet.PenArea		= Bullet.SlugPenArea
-		Bullet.Ricochet		= Bullet.SlugRicochet
+		Bullet.ProjMass         = Bullet.SlugMass
+		Bullet.CannonCaliber    = Bullet.Caliber * 2
+		Bullet.Caliber          = Bullet.SlugCaliber
+		Bullet.PenArea          = Bullet.SlugPenArea
+		Bullet.Ricochet         = Bullet.SlugRicochet
 
-		local DeltaTime		= SysTime() - Bullet.LastThink
-		Bullet.StartTrace	= Bullet.Pos - Bullet.Flight:GetNormalized() * math.min(ACF.PhysMaxVel * DeltaTime,Bullet.FlightTime * Bullet.Flight:Length())
-		Bullet.NextPos		= Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)	--Calculates the next shell position
+		local DeltaTime         = SysTime() - Bullet.LastThink
+		Bullet.StartTrace       = Bullet.Pos - Bullet.Flight:GetNormalized() * math.min(ACF.PhysMaxVel * DeltaTime,Bullet.FlightTime * Bullet.Flight:Length())
+		Bullet.NextPos          = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)	--Calculates the next shell position
 
 	--Second Detonation
 	elseif DetCount == 2 then

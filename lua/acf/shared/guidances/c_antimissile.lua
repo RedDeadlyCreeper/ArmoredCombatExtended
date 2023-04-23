@@ -221,7 +221,7 @@ function JankCone (init, forward, range, cone)
 	local Missiles = ACF_ActiveMissiles
 	local tblout = {}
 
-	if table.Count(Missiles) > 0 then
+	if next(Missiles) then
 		for v, _ in pairs (Missiles) do
 			if not IsValid(v) then continue end
 			local dist = (v:GetPos() - init):Length()

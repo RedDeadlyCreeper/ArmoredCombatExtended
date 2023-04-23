@@ -94,12 +94,25 @@ function ACFGearboxGUICreate( Table )
 		end
 	end
 
+	--
+	local InvertButton = vgui.Create("DButton")
+	InvertButton:SetText( "Invert Final drive" )
+	InvertButton:SetIcon( "icon16/arrow_refresh.png" )
+	InvertButton.DoClick = function()
+		if acfmenupanel.CData[10] then ---10 gear is the final drive
+
+			local oldValue = acfmenupanel.CData[10]:GetValue()
+			acfmenupanel.CData[10]:SetValue( oldValue * -1 )
+		end
+	end
+	acfmenupanel.CustomDisplay:AddItem(InvertButton)
+
 	acfmenupanel:CPanelText("Desc", Table.desc)
 	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : " .. Table.maxtq .. "n-m / " .. math.Round(Table.maxtq * 0.73) .. "ft-lb")
-	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. "kg")
+	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. "kg\n")
 
 	if Table.auto then
-		acfmenupanel:CPanelText( "ShiftPointGen", "\nShift Point Generator:" )
+		acfmenupanel:CPanelText( "ShiftPointGen", "Shift Point Generator:", "DermaDefaultBold" )
 
 		if not acfmenupanel.CData.ShiftGenPanel then
 			acfmenupanel.CData.ShiftGenPanel = vgui.Create( "DPanel" )
@@ -112,8 +125,8 @@ function ACFGearboxGUICreate( Table )
 			acfmenupanel.CData.ShiftGenPanel.Calc = acfmenupanel.CData.ShiftGenPanel:Add( "DButton" )
 				acfmenupanel.CData.ShiftGenPanel.Calc:SetText( "Calculate" )
 				acfmenupanel.CData.ShiftGenPanel.Calc:Dock( BOTTOM )
-				--acfmenupanel.CData.ShiftGenPanel.Calc:SetWide( 80 )
 				acfmenupanel.CData.ShiftGenPanel.Calc:SetTall( 20 )
+
 				acfmenupanel.CData.ShiftGenPanel.Calc.DoClick = function()
 					local _, factor = acfmenupanel.CData.UnitsInput:GetSelected()
 					local mul = math.pi * acfmenupanel.CData.ShiftGenPanel.RPM:GetValue() * acfmenupanel.CData.ShiftGenPanel.Ratio:GetValue() * acfmenupanel.CData[10]:GetValue() * acfmenupanel.CData.ShiftGenPanel.Wheel:GetValue() / (60 * factor)
@@ -149,7 +162,7 @@ function ACFGearboxGUICreate( Table )
 					acfmenupanel.CData.RatioPanel:DockMargin( 4, 0, 4, 0 )
 					acfmenupanel.CData.RatioPanel:Dock( RIGHT )
 					acfmenupanel.CData.RatioPanel:SetWide( 76 )
-					acfmenupanel.CData.RatioPanel:SetTooltip( "Total ratio is the ratio of all gearboxes (exluding this one) multiplied together.\nFor example, if you use engine to automatic to diffs to wheels, your total ratio would be (diff gear ratio * diff final ratio)." )
+					acfmenupanel.CData.RatioPanel:SetTooltip( "Total ratio is the ratio of all gearboxes (excluding this one) multiplied together.\nFor example, if you use engine to automatic to diffs to wheels, your total ratio would be (diff gear ratio * diff final ratio)." )
 
 					acfmenupanel.CData.ShiftGenPanel.RatioLabel = acfmenupanel.CData.RatioPanel:Add( "DLabel" )
 						acfmenupanel.CData.ShiftGenPanel.RatioLabel:Dock( TOP )
@@ -195,6 +208,7 @@ end
 function ACF_GearsSlider(Gear, Value, ID, Desc, CVT)
 
 	if Gear and not acfmenupanel.CData[Gear] then
+
 		acfmenupanel.CData[Gear] = vgui.Create( "DNumSlider", acfmenupanel.CustomDisplay )
 			acfmenupanel.CData[Gear]:SetText( Desc or "Gear " .. Gear )
 			acfmenupanel.CData[Gear].Label:SizeToContents()

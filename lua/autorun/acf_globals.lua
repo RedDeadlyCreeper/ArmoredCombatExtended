@@ -3,20 +3,20 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 482		-- ACE current version
+ACF.Version = 483		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
 
 print("[ACE | INFO]- loading ACE. . .")
 
-ACE				= {}
-ACE.ArmorTypes	= {}
+ACE               = {}
+ACE.ArmorTypes    = {}
 
-ACF.Weapons		= {}
-ACF.Classes		= {}
-ACF.RoundTypes	= {}
-ACF.IdRounds		= {}	--Lookup tables so i can get rounds classes from clientside with just an integer
+ACF.Weapons       = {}
+ACF.Classes       = {}
+ACF.RoundTypes    = {}
+ACF.IdRounds      = {}	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 --[[----------------------------
 	Entity Limits
@@ -83,108 +83,129 @@ end
 
 ACFM = ACFM or {}
 
--- Useless
-ACFM.FlareBurnMultiplier		= 0.5
-ACFM.FlareDistractMultiplier	= 1 / 35
+---------------------------------- Useless/Ignore ----------------------------------
+ACFM.FlareBurnMultiplier        = 0.5
+ACFM.FlareDistractMultiplier    = 1 / 35
 
-ACF.DebrisChance		= 0.5
-ACF.DebrisLifeTime	= 60
+---------------------------------- General ----------------------------------
 
-ACF.ScaledHEMax		= 50
-ACF.ScaledEntsMax	= 5
+ACF.EnableKillicons       = true					-- Enable killicons overwriting.
+ACF.GunfireEnabled        = true
+ACF.MeshCalcEnabled       = false
 
-ACF.LargeCaliber		= 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
+ACF.SpreadScale           = 16						-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
+ACF.GunInaccuracyScale    = 1						-- A multiplier for gun accuracy.
+ACF.GunInaccuracyBias     = 2						-- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
-ACF.Threshold		= 264.7					-- Health Divisor (don't forget to update cvar function down below)
-ACF.PartialPenPenalty	= 5						-- Exponent for the damage penalty for partial penetration
-ACF.PenAreaMod		= 0.85
-ACF.KinFudgeFactor	= 2.1					-- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
-ACF.KEtoRHA			= 0.25					-- Empirical conversion from (kinetic energy in KJ)/(Area in Cm2) to RHA penetration
-ACF.GroundtoRHA		= 0.15					-- How much mm of steel is a mm of ground worth (Real soil is about 0.15)
-ACF.KEtoSpall		= 1
-ACF.AmmoMod			= 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
-ACF.AmmoLengthMul	= 1
-ACF.AmmoWidthMul		= 1
-ACF.ArmorMod			= 1
-ACF.SlopeEffectFactor	= 1.1					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
-ACF.Spalling			= 1
-ACF.SpallMult		= 1
+---------------------------------- Debris ----------------------------------
 
-ACF.GunfireEnabled	= true
-ACF.MeshCalcEnabled	= false
+ACF.DebrisIgniteChance    = 0.25
+ACF.DebrisScale           = 20						-- Ignore debris that is less than this bounding radius.
+ACF.DebrisChance          = 0.5
+ACF.DebrisLifeTime        = 60
 
-ACF.BoomMult			= 1.5					-- How much more do ammocrates blow up, useful since crates detonate all at once now.
+---------------------------------- Fuel & fuel Tank config ----------------------------------
 
---ACF Damage Multipler.
+ACF.LiIonED             = 0.27					-- li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
+ACF.CuIToLiter          = 0.0163871				-- cubic inches to liters
 
-ACF.APDamageMult		= 2						-- AP Damage Multipler			-1.1
-ACF.APCDamageMult	= 1.5					-- APC Damage Multipler		-1.1
-ACF.APBCDamageMult	= 1.5					-- APBC Damage Multipler		-1.05
-ACF.APCBCDamageMult	= 1.0					-- APCBC Damage Multipler		-1.05
-ACF.APHEDamageMult	= 1.5					-- APHE Damage Multipler
-ACF.APDSDamageMult	= 1.5					-- APDS Damage Multipler
-ACF.HVAPDamageMult	= 1.65					-- HVAP/APCR Damage Multipler
-ACF.FLDamageMult		= 1.4					-- FL Damage Multipler
-ACF.HEATDamageMult	= 2						-- HEAT Damage Multipler
-ACF.HEDamageMult		= 2						-- HE Damage Multipler
-ACF.HESHDamageMult	= 1.2					-- HESH Damage Multipler
-ACF.HPDamageMult		= 8						-- HP Damage Multipler
+ACF.TorqueBoost         = 1.25					-- torque multiplier from using fuel
+ACF.DriverTorqueBoost   = 0.25					-- torque multiplier from having a driver
+ACF.FuelRate            = 10						-- multiplier for fuel usage, 1.0 is approx real world
+ACF.ElecRate            = 2						-- multiplier for electrics								--BEFORE to balance: 0.458
+ACF.TankVolumeMul       = 1						-- multiplier for fuel tank capacity, 1.0 is approx real world
 
---ACF HE
+---------------------------------- Ammo Crate config ----------------------------------
 
-ACF.HEDamageFactor	= 50
+ACF.CrateMaximumSize    = 250
+ACF.CrateMinimumSize    = 5
 
-ACF.HEPower			= 8000					-- HE Filler power per KG in KJ
-ACF.HEDensity		= 1.65					-- HE Filler density (That's TNT density)
-ACF.HEFrag			= 1500					-- Mean fragment number for equal weight TNT and casing
-ACF.HEBlastPen		= 0.4					-- Blast penetration exponent based of HE power
-ACF.HEFeatherExp		= 0.5					-- exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
-ACF.HEATMVScale		= 0.75					-- Filler KE to HEAT slug KE conversion expotential
-ACF.HEATMVScaleTan	= 0.75					-- Filler KE to HEAT slug KE conversion expotential
-ACF.HEATMulAmmo		= 30						-- HEAT slug damage multiplier; 13.2x roughly equal to AP damage
-ACF.HEATMulFuel		= 4						-- needs less multiplier, much less health than ammo
-ACF.HEATMulEngine	= 10						-- likewise
-ACF.HEATPenLayerMul	= 0.95					-- HEAT base energy multiplier
-ACF.HEATBoomConvert	= 1 / 3					-- percentage of filler that creates HE damage at detonation
+ACF.RefillDistance      = 400					-- Distance in which ammo crate starts refilling.
+ACF.RefillSpeed         = 250					-- (ACF.RefillSpeed / RoundMass) / Distance
 
-ACF.DragDiv			= 80						-- Drag fudge factor
-ACF.VelScale			= 1						-- Scale factor for the shell velocities in the game world
+---------------------------------- Explosive config ----------------------------------
 
+ACF.HEDamageFactor    = 50
+ACF.BoomMult          = 1.5					-- How much more do ammocrates/fueltanks blow up, useful since crates detonate all at once now.
+
+ACF.HEPower           = 8000					-- HE Filler power per KG in KJ
+ACF.HEDensity         = 1.65					-- HE Filler density (That's TNT density)
+ACF.HEFrag            = 1500					-- Mean fragment number for equal weight TNT and casing
+ACF.HEBlastPen        = 0.4					-- Blast penetration exponent based of HE power
+ACF.HEFeatherExp      = 0.5					-- exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
+ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expotential
+ACF.HEATMVScaleTan    = 0.75					-- Filler KE to HEAT slug KE conversion expotential
+ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly equal to AP damage
+ACF.HEATMulFuel       = 4						-- needs less multiplier, much less health than ammo
+ACF.HEATMulEngine     = 10						-- likewise
+ACF.HEATPenLayerMul   = 0.95					-- HEAT base energy multiplier
+ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
+
+ACF.ScaledHEMax       = 50
+ACF.ScaledEntsMax     = 5
+
+---------------------------------- Ballistic config ----------------------------------
+
+ACF.Bullet            = {}	-- when ACF is loaded, this table holds bullets
+ACF.CurBulletIndex    = 0	-- used to track where to insert bullets
+ACF.BulletIndexLimit  = 5000	-- The maximum number of bullets in flight at any one time TODO: fix the typo
+ACF.SkyboxGraceZone   = 100	-- grace zone for the high angle fire
+ACF.SkyboxMinCaliber  = 5
+
+ACF.TraceFilter       = {		-- entities that cause issue with acf and should be not be processed at all
+
+	prop_vehicle_crane   = true,
+	prop_dynamic         = true,
+	npc_strider          = true
+
+}
+
+ACF.DragDiv           = 80						-- Drag fudge factor
+ACF.VelScale          = 1						-- Scale factor for the shell velocities in the game world
+ACF.PBase             = 1050					-- 1KG of propellant produces this much KE at the muzzle, in kj
+ACF.PScale            = 1						-- Gun Propellant power expotential
+ACF.MVScale           = 0.5					-- Propellant to MV convertion expotential
+ACF.PDensity          = 1.6					-- Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
 ACF.PhysMaxVel		= 8000
-ACF.SmokeWind		= 5 + math.random() * 35	-- affects the ability of smoke to be used for screening effect
-
-ACF.PBase			= 1050					-- 1KG of propellant produces this much KE at the muzzle, in kj
-ACF.PScale			= 1						-- Gun Propellant power expotential
-ACF.MVScale			= 0.5					-- Propellant to MV convertion expotential
-ACF.PDensity			= 1.6					-- Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
-
-ACF.TorqueBoost		= 1.25					-- torque multiplier from using fuel
-ACF.DriverTorqueBoost	= 0.25					-- torque multiplier from having a driver
-ACF.FuelRate			= 10						-- multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate			= 2						-- multiplier for electrics								--BEFORE to balance: 0.458
-ACF.TankVolumeMul	= 1						-- multiplier for fuel tank capacity, 1.0 is approx real world
-
 
 ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
-ACF.AllowCSLua		= 0
+---------------------------------- Misc & other ----------------------------------
 
-ACF.LiIonED			= 0.27					-- li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
-ACF.CuIToLiter		= 0.0163871				-- cubic inches to liters
+ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 
-ACF.RefillDistance	= 400					-- Distance in which ammo crate starts refilling.
-ACF.RefillSpeed		= 250					-- (ACF.RefillSpeed / RoundMass) / Distance
+ACF.APDamageMult        = 2						-- AP Damage Multipler			-1.1
+ACF.APCDamageMult       = 1.5					-- APC Damage Multipler		-1.1
+ACF.APBCDamageMult      = 1.5					-- APBC Damage Multipler		-1.05
+ACF.APCBCDamageMult     = 1.0					-- APCBC Damage Multipler		-1.05
+ACF.APHEDamageMult      = 1.5					-- APHE Damage Multipler
+ACF.APDSDamageMult      = 1.5					-- APDS Damage Multipler
+ACF.HVAPDamageMult      = 1.65					-- HVAP/APCR Damage Multipler
+ACF.FLDamageMult        = 1.4					-- FL Damage Multipler
+ACF.HEATDamageMult      = 2						-- HEAT Damage Multipler
+ACF.HEDamageMult        = 2						-- HE Damage Multipler
+ACF.HESHDamageMult      = 1.2					-- HESH Damage Multipler
+ACF.HPDamageMult        = 8						-- HP Damage Multipler
 
-ACF.DebrisIgniteChance  = 0.25
-ACF.DebrisScale		= 20						-- Ignore debris that is less than this bounding radius.
-ACF.SpreadScale		= 16						-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
-ACF.GunInaccuracyScale  = 1						-- A multiplier for gun accuracy.
-ACF.GunInaccuracyBias	= 2						-- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
+ACF.SmokeWind           = 5 + math.random() * 35	-- affects the ability of smoke to be used for screening effect
+ACF.AllowCSLua          = 0
 
-ACF.EnableKillicons	= true					-- Enable killicons overwriting.
+ACF.Threshold           = 264.7					-- Health Divisor (don't forget to update cvar function down below)
+ACF.PartialPenPenalty   = 5						-- Exponent for the damage penalty for partial penetration
+ACF.PenAreaMod          = 0.85
+ACF.KinFudgeFactor      = 2.1					-- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
+ACF.KEtoRHA             = 0.25					-- Empirical conversion from (kinetic energy in KJ)/(Area in Cm2) to RHA penetration
+ACF.GroundtoRHA         = 0.15					-- How much mm of steel is a mm of ground worth (Real soil is about 0.15)
+ACF.KEtoSpall           = 1
+ACF.AmmoMod             = 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
+ACF.AmmoLengthMul       = 1
+ACF.AmmoWidthMul        = 1
+ACF.ArmorMod            = 1
+ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
+ACF.Spalling            = 1
+ACF.SpallMult           = 1
 
-ACF.CrateMaximumSize	= 250
-ACF.CrateMinimumSize 	= 5
+--------------------------------------------------------------------
 
 if ACF.AllowCSLua > 0 then
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
