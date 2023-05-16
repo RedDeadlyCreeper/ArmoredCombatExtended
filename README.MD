@@ -14,7 +14,7 @@ The Armoured Combat Extended (as known as ACE), is an addon that brings you a re
 ACE requires you have the following addons before using:
 
 * **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)** 
-* **[NADMOD Prop Protection](https://steamcommunity.com/workshop/filedetails/?id=159298542)** (No really mandatory for general use, but required if you want to use the built in ACE Damage Protection)
+* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (Not required for general use, but you are granted with some dupes that are only visible with this tool )
 
 ## Workshop edition
 
