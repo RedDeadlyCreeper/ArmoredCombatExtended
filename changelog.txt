@@ -633,3 +633,10 @@ r100
 - Added button to invert final drive during the gear config.
 - Optimized flying bullets. Fixed some bugs related to it.
 - Fixed some bugs/errors with scalable ents.
+
+*r159
+- ACE dupes are optional now. You can remove them if you dont need them.
+- Added a button to restore the removed dupes if you want the dupes back.
+- Added Type 90 tank into dupes. Credits goes to Doitsu
+- Tweaked the ACE Sound Replacer Tool a bit more.
+- Fixed an issue related to sbox limit with racks.

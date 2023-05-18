@@ -61,6 +61,7 @@ ACF_defineGun("85mmC", {
 	name = "85mm Cannon",
 	desc = "You can stop asking, we've got it now.",
 	model = "models/tankgun/tankgun_85mm.mdl",
+	sound = "ace_weapons/multi_sound/75mm_multi.mp3",
 	gunclass = "C",
 	caliber = 8.5,
 	weight = 1030,

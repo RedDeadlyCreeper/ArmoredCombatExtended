@@ -271,7 +271,7 @@ end
 
 	Note:
 	- folder name must be ONE word (acecool, myaddon, tankpack, etc). It cannot have spaces!!!
-	- you dupe name can have spaces, however, they must be '_' for the file. The loader will automatically change that symbol to spaces.
+	- your dupe name can have spaces, however, they must be '_' for the file. The loader will automatically change that symbol to spaces.
 
 	Correct way examples:
 
@@ -282,70 +282,90 @@ end
 
 do
 
-	local file_name
-	local file_directory
-	local main_directory = "advdupe2/"
 
-	local Dupes		= {}
-	local dupefiles	= {}
+	if CLIENT then
 
-	local fileIndex	= "acedupe"
+		concommand.Add( "acf_dupes_remount", function()
 
-	function ACE_Dupes_Refresh()
-
-		Dupes = file.Find("scripts/vehicles/*.txt", "GAME")
-
-		if not Dupes then return end
-
-		dupefiles = {}
-
-		for i, Result in ipairs(Dupes) do
-
-			local Id = string.Explode("_", Result)
-			if Id[1] ~= fileIndex then continue end
-
-			file_name = table.concat( Id, " ", 3)
-			file_name = string.Replace( file_name, ".txt", "" )
-
-			dupefiles[i] = Result --Catching desired files
-			file_content = file.Read("scripts/vehicles/" .. dupefiles[i], "GAME")
-
-			file_directory = main_directory .. "ace " .. Id[2]
-			local fileExists = file.Exists( file_directory .. "/" .. file_name .. ".txt", "DATA")
-
-			if not fileExists then
-
-				--print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
-
-				file.CreateDir(file_directory)
-				file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
-
-
-			else
-				--Idea: bring the analyzer from the internet instead of locally?
-
-				local CFile_Size = file.Size(file_directory .. "/" .. file_name .. ".txt", "DATA")
-				local NFile_Size = file.Size("scripts/vehicles/" .. dupefiles[i], "GAME")
-
-				if NFile_Size > 0 and CFile_Size ~= NFile_Size then
-
-					--print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
-
-					file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
-
-				end
-
+			if not AdvDupe2 then
+				notification.AddLegacy( "Unable to reload the dupes.", NOTIFY_ERROR, 7)
+				return
 			end
 
+			if file.Exists("acf/ace_dupespawn.txt", "DATA") then
+
+				notification.AddLegacy( "Dupe files were reloaded!", NOTIFY_GENERIC, 7)
+				file.Delete("acf/ace_dupespawn.txt")
+				ACE_Dupes_Refresh()
+			end
+		end )
+
+		function ACE_Dupes_Refresh()
+
+			local files = file.Find("scripts/vehicles/acedupe_*.txt", "GAME")
+
+			if files then
+
+				local file_naming = {}
+
+				local file_name
+				local file_directory
+				local file_exists
+				local cfile_content
+				local dupespawned = file.Exists("acf/ace_dupespawn.txt", "DATA")
+
+				for _, txtfile in ipairs(files) do
+
+					file_content   = file.Read("scripts/vehicles/" .. txtfile, "GAME") or ""
+					file_naming    = string.Explode("_", txtfile)
+					file_name      = table.concat( file_naming, " ", 3) -- Parses the file name
+					file_name      = string.Replace( file_name, ".txt", "" )
+
+					file_directory   = "advdupe2/ace " .. file_naming[2]
+					file_exists      = file.Exists( file_directory .. "/" .. file_name .. ".txt", "DATA")
+
+					if not file_exists then
+
+						if not dupespawned then
+							file.CreateDir(file_directory)
+							file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
+
+							print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
+						end
+					else
+						--Idea: bring the analyzer from the internet instead of locally?
+						cfile_content = file.Read(file_directory .. "/" .. file_name .. ".txt", "DATA") or ""
+
+						if util.SHA256(cfile_content) ~= util.SHA256(file_content) then
+
+							print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
+
+							file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
+
+						end
+					end
+				end
+
+				if not dupespawned then
+					file.Write("acf/ace_dupespawn.txt", "This means, dupe loader will not populate the dupes if they were removed.")
+				end
+			end
 		end
 
-	end
+		timer.Simple(1,function()
+			--Why do we need to create useless files if the user has not the advdupe2 in the first place.
+			if not AdvDupe2 then
+				return
+			end
 
+			ACE_Dupes_Refresh()
+		end)
+
+	end
 end
 
 timer.Simple(1, function()
 	ACF_UpdateChecking()
-	ACE_Dupes_Refresh()
 end )
 
 

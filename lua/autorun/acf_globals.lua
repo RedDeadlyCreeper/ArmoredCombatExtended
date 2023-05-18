@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 483		-- ACE current version
+ACF.Version = 484		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
@@ -331,13 +331,13 @@ if ACF.Year > 1989 then
 end
 
 
-ACF.Weapons	= list.Get("ACFEnts")
-ACF.Classes	= list.Get("ACFClasses")
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
+ACF.Weapons       = list.Get("ACFEnts")
+ACF.Classes       = list.Get("ACFClasses")
+ACF.RoundTypes    = list.Get("ACFRoundTypes")
+ACF.IdRounds      = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
-ACE.Armors	= list.Get("ACE_MaterialTypes")
-ACE.GSounds	= list.Get("ACESounds")
+ACE.Armors        = list.Get("ACE_MaterialTypes")
+ACE.GSounds       = list.Get("ACESounds")
 
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")

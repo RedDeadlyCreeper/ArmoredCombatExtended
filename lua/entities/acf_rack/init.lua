@@ -671,9 +671,9 @@ function ENT:LoadAmmo()
 
 end
 
-function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
+function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 
-	if not Owner:CheckLimit("_acf_rack") then return false end
+	if not IsValid(UpdateRack) and not Owner:CheckLimit("_acf_rack") then return false end
 
 	local Rack = UpdateRack or ents.Create("acf_rack")
 

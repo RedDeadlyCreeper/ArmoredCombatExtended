@@ -701,6 +701,14 @@ function ACFCLGUICreate()
 
 	acfmenupanel.CustomDisplay:AddItem( Effects )
 
+	local DupeSection = vgui.Create( "DForm" )
+	DupeSection:SetName("Dupe Loader")
+
+	DupeSection:Help( "If for some reason, your ace dupe folder was damaged or deleted, you can restore them here." )
+	DupeSection:Button("Restore ace dupe folders", "acf_dupes_remount" )
+
+	acfmenupanel.CustomDisplay:AddItem( DupeSection )
+
 end
 
 --[[=========================

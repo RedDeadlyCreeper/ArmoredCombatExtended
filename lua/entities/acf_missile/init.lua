@@ -38,11 +38,7 @@ function ENT:Initialize()
 
 end
 
-function ENT:CanTool(ply, _, mode)
-	if mode ~= "wire_adv" or (CPPI and ply ~= self:CPPIGetOwner()) then return false end
 
-	return true
-end
 
 --===========================================================================================
 ----- BulletData functions
@@ -187,18 +183,18 @@ function ENT:CalcFlight()
 	else
 		-- has not guidance
 
-		local DirAng		= Dir:Angle()
-		local VelNorm	= LastVel / Speed
-		local AimDiff	= Dir - VelNorm
-		local DiffLength	= AimDiff:Length()
+		local DirAng        = Dir:Angle()
+		local VelNorm       = LastVel / Speed
+		local AimDiff       = Dir - VelNorm
+		local DiffLength    = AimDiff:Length()
 
 		if DiffLength >= 0.001 and DiffLength < 1.95 and  Time > self.GhostPeriod then
 
-			local Torque		= DiffLength * self.TorqueMul * Speed * self.RotMultipler
-			local AngVelDiff	= Torque / self.Inertia * DeltaTime
-			local DiffAxis	= AimDiff:Cross(Dir):GetNormalized()
+			local Torque       = DiffLength * self.TorqueMul * Speed * self.RotMultipler
+			local AngVelDiff   = Torque / self.Inertia * DeltaTime
+			local DiffAxis     = AimDiff:Cross(Dir):GetNormalized()
 
-			self.RotAxis		= self.RotAxis + DiffAxis * AngVelDiff
+			self.RotAxis       = self.RotAxis + DiffAxis * AngVelDiff
 		end
 
 		self.RotAxis = self.RotAxis * 0.99
@@ -226,11 +222,11 @@ function ENT:CalcFlight()
 
 	-- Inertia/Motor thrust calculation
 
-	local Vel		= LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity )) * ACF.VelScale * DeltaTime ^ 2
-	local Up			= Dir:Cross(Vel):Cross(Dir):GetNormalized()
-	local Speed		= Vel:Length()
-	local VelNorm	= Vel / Speed
-	local DotSimple	= Up.x * VelNorm.x + Up.y * VelNorm.y + Up.z * VelNorm.z
+	local Vel        = LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity )) * ACF.VelScale * DeltaTime ^ 2
+	local Up         = Dir:Cross(Vel):Cross(Dir):GetNormalized()
+	local Speed      = Vel:Length()
+	local VelNorm    = Vel / Speed
+	local DotSimple  = Up.x * VelNorm.x + Up.y * VelNorm.y + Up.z * VelNorm.z
 
 	Vel = Vel - Up * Speed * DotSimple * self.FinMultiplier
 
@@ -786,9 +782,16 @@ local dontDrive = {
 	ace_missile_swep_guided = true
 }
 
+
 hook.Add("CanDrive", "acf_missile_CanDrive", function(_, ent)
 	if dontDrive[ent:GetClass()] then return false end
 end)
+
+function ENT:CanTool(ply, _, mode)
+	if mode ~= "wire_adv" or (CPPI and ply ~= self:CPPIGetOwner()) then return false end
+
+	return true
+end
 
 function ENT:OnRemove()
 

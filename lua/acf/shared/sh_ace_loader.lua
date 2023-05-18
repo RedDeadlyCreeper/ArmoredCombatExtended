@@ -4,80 +4,80 @@ AddCSLuaFile()
 
 ACF = ACF or {}
 
-local GunClasses		= {}
-local RackClasses	= {}
-local RadarClasses	= {}
+local GunClasses          = {}
+local RackClasses         = {}
+local RadarClasses        = {}
 
-local GunTable		= {}
-local RackTable		= {}
-local Radars			= {}
+local GunTable            = {}
+local RackTable           = {}
+local Radars              = {}
 
-local EngineTable	= {}
-local GearboxTable	= {}
-local FuelTankTable	= {}
-local FuelTankSizeTable = {}
+local EngineTable         = {}
+local GearboxTable        = {}
+local FuelTankTable       = {}
+local FuelTankSizeTable   = {}
 
-local MobilityTable = {}
+local MobilityTable       = {}
 
-local GSoundData	= {}
-local ModelData	= {}
+local GSoundData          = {}
+local ModelData           = {}
 
 -- setup base classes
 local gun_base = {
-	ent = "acf_gun",
-	type = "Guns"
+	ent    = "acf_gun",
+	type   = "Guns"
 }
 local engine_base = {
-	ent = "acf_engine",
-	type = "Engines"
+	ent    = "acf_engine",
+	type   = "Engines"
 }
 local gearbox_base = {
-	ent = "acf_gearbox",
-	type = "Gearboxes",
-	sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	ent    = "acf_gearbox",
+	type   = "Gearboxes",
+	sound  = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
 }
 local fueltank_base = {
-	ent = "acf_fueltank",
-	type = "FuelTanks"
+	ent    = "acf_fueltank",
+	type   = "FuelTanks"
 }
 local rack_base = {
-	ent =	"acf_rack",
-	type =  "Racks"
+	ent    = "acf_rack",
+	type   = "Racks"
 }
 local radar_base = {
-	ent =	"acf_missileradar",
-	type =  "Radars"
+	ent    = "acf_missileradar",
+	type   = "Radars"
 }
 local trackradar_base = {
-	ent =	"ace_trackingradar",
-	type =  "Radars"
+	ent    = "ace_trackingradar",
+	type   = "Radars"
 }
 local irst_base = {
-	ent = "ace_irst",
-	type = "Radars"
+	ent    = "ace_irst",
+	type   = "Radars"
 }
 
 -- add gui stuff to base classes if this is client
 if CLIENT then
-	gun_base.guicreate		= function( _, Table ) ACFGunGUICreate( Table )		end or nil
-	gun_base.guiupdate		= function() return end
+	gun_base.guicreate           = function( _, Table ) ACFGunGUICreate( Table )		end or nil
+	gun_base.guiupdate           = function() return end
 
-	engine_base.guicreate	= function( _, tbl ) ACE_EngineGUI_Update( tbl )		end or nil
+	engine_base.guicreate        = function( _, tbl ) ACE_EngineGUI_Update( tbl )		end or nil
 
-	gearbox_base.guicreate	= function( _, tbl ) ACFGearboxGUICreate( tbl )		end or nil
-	gearbox_base.guiupdate	= function() return end
+	gearbox_base.guicreate       = function( _, tbl ) ACFGearboxGUICreate( tbl )		end or nil
+	gearbox_base.guiupdate       = function() return end
 
-	fueltank_base.guicreate	= function( _, tbl ) ACFFuelTankGUICreate( tbl )		end or nil
-	fueltank_base.guiupdate	= function( _, tbl ) ACFFuelTankGUIUpdate( tbl )		end or nil
+	fueltank_base.guicreate      = function( _, tbl ) ACFFuelTankGUICreate( tbl )		end or nil
+	fueltank_base.guiupdate      = function( _, tbl ) ACFFuelTankGUIUpdate( tbl )		end or nil
 
-	radar_base.guicreate		= function( _, Table ) ACFRadarGUICreate( Table )	end
-	radar_base.guiupdate		= function() return end
+	radar_base.guicreate         = function( _, Table ) ACFRadarGUICreate( Table )	end
+	radar_base.guiupdate         = function() return end
 
-	trackradar_base.guicreate	= function( _, Table ) ACFTrackRadarGUICreate( Table )  end or nil
-	trackradar_base.guiupdate	= function() return end
+	trackradar_base.guicreate    = function( _, Table ) ACFTrackRadarGUICreate( Table )  end or nil
+	trackradar_base.guiupdate    = function() return end
 
-	irst_base.guicreate		= function( _, Table ) ACFIRSTGUICreate( Table )		end or nil
-	irst_base.guiupdate		= function() return end
+	irst_base.guicreate          = function( _, Table ) ACFIRSTGUICreate( Table )		end or nil
+	irst_base.guiupdate          = function() return end
 end
 
 -- some factory functions for defining ents
@@ -118,12 +118,12 @@ function ACF_DefineEngine( id, data )
 	if (data.year or 0) < ACF.Year then
 		local engineData = ACF_CalcEnginePerformanceData(data.torquecurve or ACF.GenericTorqueCurves[data.enginetype], data.torque, data.idlerpm, data.limitrpm)
 
-		data.peaktqrpm	= engineData.peakTqRPM
-		data.peakpower	= engineData.peakPower
-		data.peakpowerrpm	= engineData.peakPowerRPM
-		data.peakminrpm	= engineData.powerbandMinRPM
-		data.peakmaxrpm	= engineData.powerbandMaxRPM
-		data.curvefactor	= (data.limitrpm - data.idlerpm) / data.limitrpm
+		data.peaktqrpm    = engineData.peakTqRPM
+		data.peakpower    = engineData.peakPower
+		data.peakpowerrpm = engineData.peakPowerRPM
+		data.peakminrpm   = engineData.powerbandMinRPM
+		data.peakmaxrpm   = engineData.powerbandMaxRPM
+		data.curvefactor  = (data.limitrpm - data.idlerpm) / data.limitrpm
 
 		data.id = id
 		table.Inherit( data, engine_base )
@@ -305,11 +305,11 @@ list.Set( "ACESounds"	, "GunFire"	, GSoundData	)
 
 list.Set( "ACFEnts"	, "Mobility"		, MobilityTable )
 
-ACF.Weapons	= list.Get("ACFEnts")
-ACF.Classes	= list.Get("ACFClasses")
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
+ACF.Weapons       = list.Get("ACFEnts")
+ACF.Classes       = list.Get("ACFClasses")
+ACF.RoundTypes    = list.Get("ACFRoundTypes")
+ACF.IdRounds      = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
-ACE.Armors	= list.Get("ACE_MaterialTypes")
-ACE.GSounds	= list.Get("ACESounds")
-ACE.ModelData	= ModelData
+ACE.Armors        = list.Get("ACE_MaterialTypes")
+ACE.GSounds       = list.Get("ACESounds")
+ACE.ModelData     = ModelData

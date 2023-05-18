@@ -279,6 +279,17 @@ if CLIENT then
 			SoundPreStop:SetPos(SoundPreWide / 2, 0)
 		end
 
+		local CopyButton = vgui.Create("DButton")
+		CopyButton:SetText("Copy to clipboard")
+		CopyButton:SetWide(wide)
+		CopyButton:SetTall(20)
+		CopyButton:SetIcon( "icon16/page_copy.png" )
+		CopyButton:SetVisible(true)
+		CopyButton.DoClick = function()
+			SetClipboardText( SoundNameText:GetValue())
+		end
+		panel:AddItem(CopyButton)
+
 		local ClearButton = vgui.Create("DButton")
 		ClearButton:SetText("Clear Sound")
 		ClearButton:SetWide(wide)
@@ -287,6 +298,7 @@ if CLIENT then
 		ClearButton:SetVisible(true)
 		ClearButton.DoClick = function()
 			SoundNameText:SetValue("")
+			RunConsoleCommand("wire_soundemitter_sound", "")
 		end
 		panel:AddItem(ClearButton)
 
