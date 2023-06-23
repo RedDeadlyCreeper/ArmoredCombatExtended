@@ -640,3 +640,12 @@ r100
 - Added Type 90 tank into dupes. Credits goes to Doitsu
 - Tweaked the ACE Sound Replacer Tool a bit more.
 - Fixed an issue related to sbox limit with racks.
+
+*r160
+- Added a God-based permission mode. Godded players require damage perms to do damage, ungodded ones dont need it. Courtesy of cheezus
+- Added InfMap partial support. Effects and particles are still broken.
+- Debris will keep the momentum of the destroyed props.
+- Fixed GBU-10 not having the bodygroups being loaded properly. Thank you PsychoDog
+- ACE notifications are done via new functions. Courtesy of cheezus
+- HESH code has proper penetration functions
+- Fixed some small bugs

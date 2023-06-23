@@ -102,7 +102,7 @@ function SWEP:DoAmmoStatDisplay()
 		sendInfo = sendInfo .. string.format(", (2)%.1fmm pen", MaxPen)
 	end
 
-	self:GetOwner():SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 10)", sendInfo))
+	ACE_SendNotification(self:GetOwner(), sendInfo, 10)
 end
 
 function SWEP:Equip()

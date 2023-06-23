@@ -1,4 +1,8 @@
 # Armored Combat Framework Extended
+[![Discord Invite](https://img.shields.io/discord/580463055595503646?label=Discord&style=flat-square)](https://discord.gg/Y8aEYU6)
+[![Linting Status](https://img.shields.io/github/actions/workflow/status/MartyX5555/ACE-Dev/main.yml?branch=master&label=Linter%20Status&style=flat-square)](https://github.com/MartyX5555/ACE-Dev/actions?query=workflow%3AGLuaFixer)
+[![Repository Size](https://img.shields.io/github/repo-size/MartyX5555/ACE-Dev?label=Repository%20Size&style=flat-square)](https://github.com/MartyX5555/ACE-Dev)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/MartyX5555/ACE-Dev?label=Commit%20Activity&style=flat-square)](https://github.com/MartyX5555/ACE-Dev/graphs/commit-activity)
 
 The Armoured Combat Extended (as known as ACE), is an addon that brings you a realistic combat damage system, a several amount of weapons, like cannons, missiles or bombs and a great amount of engines and gearboxes, so you can build one of the most popular stuff on gmod; *tanks and cars*, although you can build whatever you want. To use this addon, wiremod basic knowledge is required.
 

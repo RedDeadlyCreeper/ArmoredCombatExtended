@@ -859,12 +859,8 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 					-- can't use #table or :count() because of ent indexing...
 					count = count + 1
 				end
-
 			end
-
-
 		end
-
 
 		-- HE kill the children of this ent, instead of disappearing them by removing parent
 		if count > 0 then
@@ -885,11 +881,8 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
 				constraint.RemoveAll( child )
 				child:Remove()
-
-
 			end
 		end
-
 
 		-- explode stuff last, so we don't re-process all that junk again in a new explosion
 		if next( boom ) then
@@ -900,7 +893,6 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
 				child.Exploding = true
 				ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
-
 
 			end
 		end
@@ -946,14 +938,13 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 		phys:SetDragCoefficient( -50 )
 		phys:SetMass( physent:GetMass() )
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:GetPos() + VectorRand() * 10  )
+		phys:SetVelocity( ACF_GetPhysicalParent( Entity ):GetVelocity() )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:WorldSpaceCenter() + VectorRand() * 10  )
 
 	end
 
 	return Debris
-
 end
-
 
 function ACF_APKill( Entity , HitVector , Power )
 
@@ -990,11 +981,12 @@ function ACF_APKill( Entity , HitVector , Power )
 	if phys:IsValid() and physent:IsValid() then
 		phys:SetDragCoefficient( -50 )
 		phys:SetMass( physent:GetMass() )
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:GetPos() + VectorRand() * 10 )
+		phys:SetVelocity( ACF_GetPhysicalParent( Entity ):GetVelocity() )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:WorldSpaceCenter() + VectorRand() * 10 )
+
 	end
 
 	return Debris
-
 end
 
 do
@@ -1010,30 +1002,30 @@ do
 		local HEWeight
 		local ExplodePos = {}
 
-		local MaxGroup	= ACF.ScaledEntsMax	-- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
-		local MaxHE	= ACF.ScaledHEMax	-- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
+		local MaxGroup    = ACF.ScaledEntsMax	-- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
+		local MaxHE       = ACF.ScaledHEMax	-- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
-		local Inflictor  = ent.Inflictor or nil
-		local Owner	= CPPI and ent:CPPIGetOwner() or NULL
+		local Inflictor   = ent.Inflictor or nil
+		local Owner       = CPPI and ent:CPPIGetOwner() or NULL
 
 		if ent:GetClass() == "acf_fueltank" then
 
-			local Fuel	= ent.Fuel	or 0
-			local Capacity  = ent.Capacity  or 0
-			local Type	= ent.FuelType  or "Petrol"
+			local Fuel       = ent.Fuel	or 0
+			local Capacity   = ent.Capacity  or 0
+			local Type       = ent.FuelType  or "Petrol"
 
 			HEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
 		else
 
-			local HE		= ent.BulletData.FillerMass	or 0
-			local Propel	= ent.BulletData.PropMass	or 0
-			local Ammo	= ent.Ammo					or 0
+			local HE       = ent.BulletData.FillerMass	or 0
+			local Propel   = ent.BulletData.PropMass	or 0
+			local Ammo     = ent.Ammo					or 0
 
 			HEWeight = ( ( HE + Propel * ( ACF.PBase / ACF.HEPower ) ) * Ammo ) * AmmoExplosionScale
 		end
 
-		local Radius		= ACE_CalculateHERadius( HEWeight )
-		local Pos		= ent:LocalToWorld(ent:OBBCenter())
+		local Radius    = ACE_CalculateHERadius( HEWeight )
+		local Pos       = ent:LocalToWorld(ent:OBBCenter())
 
 		table.insert(ExplodePos, Pos)
 
@@ -1065,9 +1057,9 @@ do
 					local Hitat = Found:NearestPoint( Pos )
 
 					local Occlusion = {}
-						Occlusion.start	= Pos
-						Occlusion.endpos	= Hitat + (Hitat-Pos):GetNormalized() * 100
-						Occlusion.filter	= Filter
+						Occlusion.start   = Pos
+						Occlusion.endpos  = Hitat + (Hitat-Pos):GetNormalized() * 100
+						Occlusion.filter  = Filter
 					local Occ = util.TraceLine( Occlusion )
 
 					--Filters any ent which blocks the trace.
@@ -1087,18 +1079,18 @@ do
 
 						if Found:GetClass() == "acf_fueltank" then
 
-							local Fuel	= Found.Fuel	or 0
-							local Capacity  = Found.Capacity or 0
-							local Type	= Found.FuelType or "Petrol"
+							local Fuel       = Found.Fuel	or 0
+							local Capacity   = Found.Capacity or 0
+							local Type       = Found.FuelType or "Petrol"
 
 							FoundHEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
 						else
 
 							if Found.RoundType == "Refill" then Found:Remove() continue end
 
-							local HE	= Found.BulletData.FillerMass	or 0
-							local Propel  = Found.BulletData.PropMass	or 0
-							local Ammo	= Found.Ammo					or 0
+							local HE       = Found.BulletData.FillerMass	or 0
+							local Propel   = Found.BulletData.PropMass	or 0
+							local Ammo     = Found.Ammo					or 0
 
 							FoundHEWeight = ( ( HE + Propel * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
 						end
@@ -1107,10 +1099,10 @@ do
 
 						HEWeight = HEWeight + FoundHEWeight
 
-						Found.IsExplosive	= false
+						Found.IsExplosive   = false
 						Found.DamageAction  = false
-						Found.KillAction	= false
-						Found.Exploding	= true
+						Found.KillAction    = false
+						Found.Exploding     = true
 
 						table.insert( Filter,Found )
 						table.remove( CExplosives,i )
@@ -1123,9 +1115,7 @@ do
 							else
 								Occ.Entity:Ignite( 120, HEWeight / 10 )
 							end
-
 						end
-
 					end
 				end
 

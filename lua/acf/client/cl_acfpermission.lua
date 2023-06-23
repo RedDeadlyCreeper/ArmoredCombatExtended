@@ -34,14 +34,13 @@ net.Receive("ACF_refreshfeedback", function()
 
 	if success then
 		str = "Successfully updated your ACE damage permissions!"
-		notify = "NOTIFY_GENERIC"
+		notify = NOTIFY_GENERIC
 	else
 		str = "Failed to update your ACE damage permissions."
-		notify = "NOTIFY_ERROR"
+		notify = NOTIFY_ERROR
 	end
 
-	GAMEMODE:AddNotify(str, notify, 7)
-
+	notification.AddLegacy(str, notify, 7)
 end)
 
 

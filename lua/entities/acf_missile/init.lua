@@ -576,6 +576,12 @@ function ENT:Think()
 			self.CacheParticleEffect = nil
 		end
 
+		--Delete the missile if it was fired outside of the map
+		if not self:IsInWorld() then
+			self:Remove()
+			return
+		end
+
 	end
 
 	return self.BaseClass.Think(self)

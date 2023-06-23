@@ -87,7 +87,7 @@ function SWEP:SecondaryAttack()
 		self.FuseDelay = time > 0.07 and time or 0
 	end
 
-	owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None")))
+	ACE_SendNotification(owner, "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None"), 2)
 
 	return
 end

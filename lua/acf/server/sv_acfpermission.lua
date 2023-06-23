@@ -354,7 +354,7 @@ concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, _, args)
 
 		for _, v in pairs(player.GetAll()) do
 			if v:IsAdmin() then
-				v:SendLua("chat.AddText(Color(255,0,0),\"Default permission mode for " .. game.GetMap() .. " has been set to " .. mode .. "!\")")
+				ACE_SendMsg(v, Color(255, 0, 0), "Default permission mode for " .. game.GetMap() .. " has been set to " .. mode .. "!")
 			end
 		end
 
@@ -399,7 +399,7 @@ local function tellPlysAboutDPMode(mode, oldmode)
 	if mode == oldmode then return end
 
 	for _, v in pairs(player.GetAll()) do
-		v:SendLua("chat.AddText(Color(255,0,0),\"Damage protection has been changed to " .. mode .. " mode!\")")
+		ACE_SendMsg(v, Color(255,0,0), "Damage protection has been changed to " .. mode .. " mode!")
 	end
 end
 hook.Add("ACF_ProtectionModeChanged", "ACF_TellPlysAboutDPMode", tellPlysAboutDPMode)
@@ -594,8 +594,8 @@ net.Receive("ACF_dmgfriends", function(_, ply)
 
 				local note = v and "given you" or "removed your"
 				local MsgNote = v and "given" or "removed"
-				--Msg("Sending", targ, " ", note, "\n")
-				targ:SendLua(string.format("GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!", "NOTIFY_GENERIC"))
+
+				ACE_SendNotification(targ, ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!")
 				print("[ACE | INFO]- The user " .. ply:Nick() .. " has " .. MsgNote .. " permissions to damage objects with ACE " .. (v and "to" or "from") .. " " .. ((targ == ply) and "himself" or targ:Nick()))
 			end
 		end

@@ -475,6 +475,51 @@ function ACE_CheckFuelTank( fueltankid )
 	return true
 end
 
+if SERVER then
+	function ACE_SendMsg(ply, ...)
+		net.Start("ACE_SendMessage")
+		net.WriteBool(false)
+		net.WriteTable({...})
+		net.Send(ply)
+	end
+
+	function ACE_SendNotification(ply, hint, duration)
+		net.Start("ACE_SendMessage")
+		net.WriteBool(true)
+		net.WriteString(hint)
+		net.WriteUInt(duration or 7, 8)
+		net.Send(ply)
+	end
+
+	function ACE_BroadcastMsg(...)
+		net.Start("ACE_SendMessage")
+		net.WriteBool(false)
+		net.WriteTable({...})
+		net.Broadcast()
+	end
+else
+	net.Receive("ACE_SendMessage", function()
+		local isHint = net.ReadBool()
+
+		if isHint then
+			local hint = net.ReadString()
+			local duration = net.ReadUInt(8)
+
+			notification.AddLegacy(hint, NOTIFY_GENERIC, duration)
+		else
+			local msg = net.ReadTable()
+
+			for k, v in pairs(msg) do
+				if type(v) == "table" and #v == 4 then -- For some reason, color objects are sometimes converted to tables during networking?
+					msg[k] = Color(v[1], v[2], v[3], v[4])
+				end
+			end
+
+			chat.AddText(unpack(msg))
+		end
+	end)
+end
+
 --[[ IDK if this will take some usage
 function ACE_Msg( type, txt )
 

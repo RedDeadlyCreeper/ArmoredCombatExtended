@@ -119,9 +119,9 @@ function SWEP:SecondaryAttack()
 	if CLIENT then return end
 
 	if self.Primary.Automatic then
-		owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "<<Automatic>>"))
+		ACE_SendNotification(owner, "<<Automatic>>", 2)
 	else
-		owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "<<Semi>>"))
+		ACE_SendNotification(owner, "<<Semi>>", 2)
 	end
 
 end

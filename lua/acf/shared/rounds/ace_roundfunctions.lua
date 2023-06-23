@@ -5,64 +5,42 @@ do
 
 	local Floor = math.floor
 	local MaxValue = math.max
-	--local MinValue = math.min
 	local PI = math.pi
+
+	local function OldShapedShellsAdjust( PlayerData, Data, GUIData, lengthFactor )
+		PlayerData.PropLength = math.max(0.01 + Data.Caliber * lengthFactor, PlayerData.PropLength )
+
+		-- check if current lenght exceeds the max lenght available
+		if PlayerData.PropLength + PlayerData.ProjLength > GUIData.MaxTotalLength then
+
+			PlayerData.ProjLength = GUIData.MaxTotalLength - PlayerData.PropLength
+
+		end
+	end
 
 	function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 		local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
-
-		GUIData.MaxTotalLength	= BulletMax.maxlength * (Data.LengthAdj or 1)
-
-		Data.Caliber			= ACF.Weapons["Guns"][PlayerData["Id"]]["caliber"]
-		Data.FrArea			= PI * (Data.Caliber / 2) ^ 2
-
-		Data.Tracer			= PlayerData.Tracer > 0 and math.min(Data.Caliber / 5, 3) or 0 --Tracer space calcs
-		Data.TwoPiece			= PlayerData.TwoPiece > 0 and 1 or 0
---[[
-		print("\nData to check")
-		print(PlayerData.Tracer)
-		print(PlayerData.TwoPiece)
-		print("\nCreated Data")
-		print(Data.Tracer)
-		print(Data.TwoPiece)
-]]
-		--print('Prop Before: ' .. PlayerData["PropLength"])
-		--print('Proj Before: ' .. PlayerData["ProjLength"])
-
 		local Type = PlayerData.Type or ""
+
+		GUIData.MaxTotalLength    = BulletMax.maxlength * (Data.LengthAdj or 1)
+
+		Data.Caliber              = ACF.Weapons["Guns"][PlayerData["Id"]]["caliber"]
+		Data.FrArea               = PI * (Data.Caliber / 2) ^ 2
+
+		Data.Tracer               = PlayerData.Tracer > 0 and math.min(Data.Caliber / 5, 3) or 0 --Tracer space calcs
+		Data.TwoPiece             = PlayerData.TwoPiece > 0 and 1 or 0
 
 		-- created to adapt old ammos to the new heatfs speed
 		if Type == "HEATFS" or Type == "THEATFS" then
-			PlayerData.PropLength = math.max(0.01 + Data.Caliber * 3.9, PlayerData.PropLength )
-
-			-- check if current lenght exceeds the max lenght available
-			if PlayerData.PropLength + PlayerData.ProjLength > GUIData.MaxTotalLength then
-
-				PlayerData.ProjLength = GUIData.MaxTotalLength - PlayerData.PropLength
-
-			end
-
+			OldShapedShellsAdjust( PlayerData, Data, GUIData, 3.9 )
 		-- same as above, but for hefs
 		elseif Type == "HEFS" then
-			PlayerData.PropLength = math.max(0.01 + Data.Caliber * 4.5, PlayerData.PropLength )
-
-			--check if current lenght exceeds the max lenght available
-			if PlayerData.PropLength + PlayerData.ProjLength + 1 > GUIData.MaxTotalLength then
-
-				PlayerData.ProjLength = GUIData.MaxTotalLength - PlayerData.PropLength
-
-			end
+			OldShapedShellsAdjust( PlayerData, Data, GUIData, 4.5 )
 		end
-
-		--print('MaxLenght: ' .. GUIData["MaxTotalLength"])
-		--print('Remain for Proj: ' .. GUIData["MaxTotalLength"] - PlayerData["PropLength"])
-		--print('Prop After: ' .. PlayerData["PropLength"])
-		--print('Proj After: ' .. PlayerData["ProjLength"])
 
 		local PropMax = (BulletMax.propweight * 1000 / ACF.PDensity) / Data.FrArea	--Current casing absolute max propellant capacity
 		local CurLength = (PlayerData.ProjLength + math.min(PlayerData.PropLength,PropMax) + Data.Tracer )
-
 
 		GUIData.MinPropLength = 0.01
 		GUIData.MaxPropLength = math.max(math.min(GUIData.MaxTotalLength - CurLength + PlayerData.PropLength, PropMax), GUIData.MinPropLength) --Check if the desired prop lenght fits in the case and doesn't exceed the gun max
@@ -71,7 +49,7 @@ do
 		GUIData.MaxProjLength = math.max(GUIData.MaxTotalLength - CurLength + PlayerData.ProjLength, GUIData.MinProjLength ) --Check if the desired proj lenght fits in the case
 
 		--This is to check the current ratio between elements if i need to clamp it
-		local Ratio 		= math.min((GUIData.MaxTotalLength - Data.Tracer) / (PlayerData.ProjLength + math.min(PlayerData.PropLength, PropMax)), 1)
+		local Ratio 		= math.min(1, (GUIData.MaxTotalLength - Data.Tracer) / (PlayerData.ProjLength + math.min(PlayerData.PropLength, PropMax)))
 
 		Data.ProjLength		= math.Clamp( PlayerData.ProjLength * Ratio, GUIData.MinProjLength, GUIData.MaxProjLength )
 		Data.PropLength		= math.Clamp( PlayerData.PropLength * Ratio, GUIData.MinPropLength, GUIData.MaxPropLength )
