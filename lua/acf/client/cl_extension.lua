@@ -257,7 +257,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					end
 
 					--Tinnitus function
-					if ACE.EnableTinnitus and not ply.ACE_HasGodMode then
+					if ACE.EnableTinnitus and not ply:HasGodMode() then
 						local TinZone = math.max(Radius * 80, 50) * ACE.TinnitusZoneMultipler
 
 						if Dist <= TinZone and ACE_SHasLOS(HitPos) and entply == ply and not ply.aceposoverride then
