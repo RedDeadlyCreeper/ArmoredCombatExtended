@@ -254,7 +254,7 @@ function PANEL:Init( )
 	Ammo subfolder SPECS
 ]]--=========================
 
-	local SPECSAttribs = list.Get("SPECSRoundTypes") --local RoundAttribs = list.Get("ACFRoundTypes")
+	local SPECSAttribs = list.Get("SPECSRoundTypes")
 	self.SPECSAttribs = {}
 	for ID,Table in pairs(SPECSAttribs) do
 	Table.id = ID
@@ -686,6 +686,17 @@ function ACFCLGUICreate()
 	Sub:SetText("Client Side parameters can be adjusted here.")
 	Sub:SizeToContents()
 	acfmenupanel.CustomDisplay:AddItem( Sub )
+
+	local Sounds = vgui.Create( "DForm" )
+	Sounds:SetName("Sounds")
+
+	Sounds:CheckBox("Allow Tinnitus Noise", "acf_tinnitus")
+	Sounds:ControlHelp( "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat." )
+
+	Sounds:NumSlider( "Ambient overall sounds", "acf_sound_volume", 0, 100, 0 )
+	Sounds:ControlHelp( "Adjusts the volume of ACE sounds like explosions, penetrations, ricochets, etc. Engines and some mechanic sounds are not affected yet." )
+
+	acfmenupanel.CustomDisplay:AddItem( Sounds )
 
 	local Effects = vgui.Create( "DForm" )
 	Effects:SetName("Rendering")

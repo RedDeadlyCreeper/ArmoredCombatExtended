@@ -12,6 +12,8 @@ Round.model = "models/munitions/round_100mm_mortar_shot.mdl" --Shell flight mode
 Round.desc = ACFTranslation.ShellHEATFS[2]
 Round.netid = 18 --Unique ammotype ID for network transmission
 
+Round.Type  = "HEATFS"
+
 function Round.create( _, BulletData )
 
 	ACF_CreateBullet( BulletData )
@@ -378,7 +380,7 @@ function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "HEATFS"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "HEATFS"										--Hardcoded, match as Round.Type instead
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
@@ -432,8 +434,5 @@ function Round.guiupdate( Panel )
 end
 
 list.Set("HERoundTypes", "HEATFS", Round )
-list.Set( "ACFRoundTypes", "HEATFS", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "HEATFS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
-
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties
+ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

@@ -52,22 +52,12 @@ local function modepermission(owner, attacker, ent)
 end
 
 
-
-function tellPlyAboutZones(ply, zone)
-	if perms.DamagePermission ~= modepermission then return end
-	ACE_SendMsg(ply, zone and Color(0, 255, 0) or Color(255, 0, 0), "You have entered the " .. (zone and zone .. " safezone." or "battlefield!"))
-end
-hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", tellPlyAboutZones)
-
-
-
 local function DisableNoclipPressInBattle( ply, wantsNoclipOn )
 	if not (ShouldDisableNoclip and wantsNoclipOn and table.KeyFromValue(perms.Modes, perms.DamagePermission) == modename) then return end
 
 	return perms.IsInSafezone(ply:GetPos()) ~= false
 end
 hook.Add( "PlayerNoClip", "ACF_DisableNoclipPressInBattle", DisableNoclipPressInBattle )
-
 
 
 local function modethink()
@@ -97,4 +87,4 @@ local function modethink()
 end
 
 
-perms.RegisterMode(modepermission, modename, modedescription, false, modethink)
+perms.RegisterMode(modepermission, modename, modedescription, false, modethink, nil, true)

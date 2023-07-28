@@ -9,6 +9,8 @@ Round.model = "models/munitions/round_100mm_shot.mdl"		-- Shell flight model
 Round.desc  = ACFTranslation.ShellAPHECBC[2]
 Round.netid = 21												-- Unique ammotype ID for network transmission
 
+Round.Type  = "APHECBC"
+
 function Round.create( _, BulletData )
 
 		ACF_CreateBullet( BulletData )
@@ -125,7 +127,7 @@ end
 function Round.normalize( _, Bullet, HitPos, HitNormal, Target)
 
 	local Mat = Target.ACF.Material or "RHA"
-	local NormieMult = ACE.Armors[ Mat ].NormMult or 1
+	local NormieMult = ACE.ArmorTypes[ Mat ].NormMult or 1
 
 	Bullet.Normalize = true
 	Bullet.Pos = HitPos
@@ -268,7 +270,7 @@ function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id		--AmmoSelect GUI
-		PlayerData.Type = "APHECBC"									--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "APHECBC"									--Hardcoded, match as Round.Type instead
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
@@ -297,8 +299,5 @@ function Round.guiupdate( Panel )
 end
 
 list.Set( "APRoundTypes", "APHECBC", Round )
-list.Set( "ACFRoundTypes", "APHECBC", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "APHECBC" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
-
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties
+ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

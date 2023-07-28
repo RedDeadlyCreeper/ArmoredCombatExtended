@@ -82,6 +82,51 @@ function ACF_CalcEnginePerformanceData(curve, maxTq, idle, redline)
 	}
 end
 
+-- A cheap way to check if the distance between 2 points is within a target distance.
+function ACE_InDist( Pos1, Pos2, Distance )
+	return (Pos2 - Pos1):LengthSqr() < Distance ^ 2
+end
+
+	-- Material Enum
+	-- 65 ANTLION
+	-- 66 BLOODYFLESH
+	-- 67 CONCRETE / NODRAW
+	-- 68 DIRT
+	-- 70 FLESH
+	-- 71 GRATE
+	-- 72 ALIENFLESH
+	-- 73 CLIP
+	-- 76 PLASTIC
+	-- 77 METAL
+	-- 78 SAND
+	-- 79 FOLIAGE
+	-- 80 COMPUTER
+	-- 83 SLOSH
+	-- 84 TILE
+	-- 86 VENT
+	-- 87 WOOD
+	-- 89 GLASS
+
+function ACE_GetMaterialName( Mat )
+	--concrete
+	local GroundMat = "Concrete"
+
+	-- Dirt
+	if Mat == 68 or Mat == 79 or Mat == 85 then
+		GroundMat = "Dirt"
+	-- Sand
+	elseif Mat == 78 then
+		GroundMat = "Sand"
+	-- Glass
+	elseif Mat == 89 then
+		GroundMat = "Glass"
+	elseif Mat == 77 or Mat == 86 or Mat == 80 then
+		GroundMat = "Metal"
+	end
+
+	return GroundMat
+end
+
 -- changes here will be automatically reflected in the armor properties tool
 function ACF_CalcArmor( Area, Ductility, Mass )
 
@@ -395,7 +440,7 @@ do
 			end
 		end
 
-		local MatData = ACE.Armors[Mat]
+		local MatData = ACE.ArmorTypes[Mat]
 
 		return MatData
 	end
@@ -404,7 +449,7 @@ end
 --TODO: Use a universal function
 function ACE_CheckMaterial( MatId )
 
-	local matdata = ACE.Armors[ MatId ]
+	local matdata = ACE.ArmorTypes[ MatId ]
 
 	if not matdata then return false end
 

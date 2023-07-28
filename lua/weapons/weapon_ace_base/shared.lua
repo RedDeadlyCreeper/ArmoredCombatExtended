@@ -243,7 +243,7 @@ function SWEP:PrimaryAttack()
 		self.Reloading = false
 	end
 
-	local sounds = list.Get("ACESounds").GunFire[self.Primary.Sound]
+	local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
 
 	if game.SinglePlayer() then
 		self:CallOnClient("PrimaryAttack")

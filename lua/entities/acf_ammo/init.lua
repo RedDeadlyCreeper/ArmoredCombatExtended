@@ -327,10 +327,6 @@ function ENT:Update( ArgsTable )
 
 	local msg = "Ammo crate updated successfully!"
 
-	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
-		return false, "You don't own that ammo crate!"
-	end
-
 	if ArgsTable[6] == "Refill" then -- Argtable[6] is the round type. If it's refill it shouldn't be loaded into guns, so we refuse to change to it
 		return false, "Refill ammo type is only avaliable for new crates!"
 	end

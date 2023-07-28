@@ -19,18 +19,29 @@ function ENT:Initialize()
 	self.Legal				= true
 	self.LegalIssues			= ""
 
+	self.MinViewCone = 3
+	self.MaxViewCone = 45
+
 	self.ClosestToBeam		= -1
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
 	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam","IsJammed"} )
 	self.OutputData = {
-		Detected = 0,
-		Owner = {},
-		Position = {},
-		Velocity = {},
-		ClosestToBeam = -1,
-		IsJammed = 0
+		Detected        = 0,
+		Owner           = {},
+		Position        = {},
+		Velocity        = {},
+		ClosestToBeam   = -1,
+		IsJammed        = 0
 	}
+
+end
+
+local function SetConeParameters( Radar )
+
+	Radar.InaccuracyMul          = (0.035 * (Radar.Cone / 15) ^ 2) * 0.2
+	Radar.DPLRFAC                = 65 - (Radar.Cone / 2)
+	Radar.ConeInducedGCTRSize    = Radar.Cone * 10
 
 end
 
@@ -50,14 +61,13 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	Radar:SetAngles(Angle)
 	Radar:SetPos(Pos)
 
-	Radar.Model				= radar.model
-	Radar.Weight				= radar.weight
-	Radar.ACFName			= radar.name
-	Radar.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
-	Radar.Cone				= Radar.ICone
-	Radar.InaccuracyMul		= (0.035 * (Radar.Cone / 15) ^ 2) * 0.2
-	Radar.DPLRFAC			= 65-(Radar.Cone / 2)
-	Radar.ConeInducedGCTRSize	= Radar.Cone * 10
+	Radar.Model    = radar.model
+	Radar.Weight   = radar.weight
+	Radar.ACFName  = radar.name
+	Radar.ICone    = radar.viewcone	--Note: intentional. --Recorded initial cone
+	Radar.Cone     = Radar.ICone
+
+	SetConeParameters( Radar )
 
 	Radar.Id					= Id
 	Radar.Class				= radar.class
@@ -102,16 +112,15 @@ end
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
 		self:SetActive((value ~= 0) and self.Legal)
-	end
-	if inp == "Cone" then
+	elseif inp == "Cone" then
 		if value > 0 then
 
-			self.Cone = math.Clamp(value / 2,3,45)
+			self.Cone = math.Clamp(value / 2, self.MinViewCone ,self.MaxViewCone )
+
+			SetConeParameters( self )
+
 			local curTime = CurTime()
 			self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
-			self.InaccuracyMul = (0.035 * (self.Cone / 15) ^ 2) * 0.2	-- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
-			self.DPLRFAC = 90-(self.Cone / 2)
-			self.ConeInducedGCTRSize = self.Cone * 10
 		else
 			self.Cone = self.ICone
 		end
@@ -231,13 +240,11 @@ function ENT:Think()
 					--Entity is within radar cone
 					if (absang.p < self.Cone and absang.y < self.Cone) then
 
-						local LOStr = util.TraceHull( {
+						local LOStr = util.TraceLine( {
 
 							start = thisPos ,endpos = entpos,
 							collisiongroup = COLLISION_GROUP_WORLD,
 							filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
-							mins = Vector( -0, -0, -0 ),
-							maxs = Vector( 0, 0, 0 )
 
 						}) --Hits anything in the world.
 

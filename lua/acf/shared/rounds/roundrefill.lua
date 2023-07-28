@@ -8,6 +8,8 @@ Round.name = "[Supply] - " .. ACFTranslation.ShellRef[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellRef[2]
 
+Round.Type  = "Refill"
+
 -- Function to convert the player's slider data into the complete round data
 function Round.convert()
 
@@ -72,4 +74,4 @@ function Round.guiupdate()
 end
 
 list.Set( "SPECSRoundTypes", "Refill", Round )
-list.Set( "ACFRoundTypes", "Refill", Round )  --Set the round properties
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties

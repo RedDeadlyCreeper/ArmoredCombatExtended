@@ -114,7 +114,7 @@ function EFFECT:Init( data )
 		ACF_RenderLight( game.GetWorld():EntIndex(), self.Radius * 1800, Color(255, 128, 48), self.Origin, 0.1)
 	end
 
-	ACEE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
+	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end

@@ -3,7 +3,7 @@ ACF = ACF or {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 485		-- ACE current version
+ACF.Version = 486		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
@@ -12,6 +12,7 @@ print("[ACE | INFO]- loading ACE. . .")
 
 ACE               = ACE or {}
 ACE.ArmorTypes    = {}
+ACE.GSounds 	  = {}
 
 ACF.Weapons       = {}
 ACF.Classes       = {}
@@ -78,6 +79,8 @@ if CLIENT then
 	CreateClientConVar( "ACFM_MissileLights", 0 ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
 	CreateClientConVar("acf_sens_irons", 0.5, true, false, "Reduce mouse sensitivity by this amount when zoomed in with iron sights on ACE SWEPs.", 0.01, 1)
 	CreateClientConVar("acf_sens_scopes", 0.2, true, false, "Reduce mouse sensitivity by this amount when zoomed in with scopes on ACE SWEPs.", 0.01, 1)
+	CreateClientConVar( "acf_tinnitus", 1, true, false, "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat.", 0, 1 )
+	CreateClientConVar( "acf_sound_volume", 1, true, false, "Adjusts the volume of explosions and gunshots.", 0, 100 )
 
 end
 
@@ -206,7 +209,17 @@ ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(ang
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
---------------------------------------------------------------------
+---------------------------------- Particle colors  ----------------------------------
+
+ACE.DustMaterialColor = {
+	Concrete   = Color(100,100,100,150),
+	Dirt       = Color(117,101,70,150),
+	Sand       = Color(200,180,116,150),
+	Glass      = Color(255,255,255,50),
+}
+
+--------------------------------------------------------------------------------------
+
 
 if ACF.AllowCSLua > 0 then
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
@@ -246,7 +259,7 @@ if SERVER then
 	AddCSLuaFile("acf/client/cl_acfballistics.lua")
 	AddCSLuaFile("acf/client/cl_acfmenu_gui.lua")
 	AddCSLuaFile("acf/client/cl_acfrender.lua")
-	AddCSLuaFile("acf/client/cl_extension.lua")
+	AddCSLuaFile("acf/client/cl_soundbase.lua")
 
 	AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
@@ -258,7 +271,7 @@ elseif CLIENT then
 
 	include("acf/client/cl_acfballistics.lua")
 	include("acf/client/cl_acfrender.lua")
-	include("acf/client/cl_extension.lua")
+	include("acf/client/cl_soundbase.lua")
 
 	include("acf/client/cl_acfpermission.lua")
 	include("acf/client/gui/cl_acfsetpermission.lua")
@@ -330,16 +343,6 @@ if ACF.Year > 1989 then
 	include("acf/shared/rounds/roundtheatfs.lua")
 
 end
-
-
-ACF.Weapons       = list.Get("ACFEnts")
-ACF.Classes       = list.Get("ACFClasses")
-ACF.RoundTypes    = list.Get("ACFRoundTypes")
-ACF.IdRounds      = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
-
-ACE.Armors        = list.Get("ACE_MaterialTypes")
-ACE.GSounds       = list.Get("ACESounds")
-
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")
 

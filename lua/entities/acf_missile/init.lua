@@ -652,11 +652,9 @@ end
 ----- Skin/Bodygroup/effect/Sound functions
 --===========================================================================================
 function ENT:LaunchEffect()
-	local sound = self.BulletData.Sound or ACF_GetGunValue(self.BulletData, "sound")
-
-	if sound then
-		self:EmitSound(sound, 511, 100)
-	end
+	local Effect = EffectData()
+		Effect:SetEntity( self )
+	util.Effect( "acf_missilelaunch", Effect, true, true )
 end
 
 function ENT:UpdateSkin()

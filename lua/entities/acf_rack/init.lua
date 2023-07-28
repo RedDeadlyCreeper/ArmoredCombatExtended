@@ -55,12 +55,12 @@ end
 
 local RackWireDescs = {
 	--Inputs
-	["Reload"]	= "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
-	["Delay"]	= "Sets a specific delay to guidance control over the default one in seconds.\n Note that you cannot override lower values than default.",
-	["TargetPos"]	= "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
+	["Reload"]       = "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
+	["Delay"]        = "Sets a specific delay to guidance control over the default one in seconds.\n Note that you cannot override lower values than default.",
+	["TargetPos"]    = "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
 
 	--Outputs
-	["Ready"]	= "Returns if the rack is ready to fire."
+	["Ready"]        = "Returns if the rack is ready to fire."
 
 }
 
@@ -68,33 +68,33 @@ function ENT:Initialize()
 
 	self.BaseClass.Initialize(self)
 
-	self.SpecialHealth		= false	--If true needs a special ACF_Activate function
-	self.SpecialDamage		= false	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
-	self.ReloadTime			= 1
-	self.RackStatus			= "Empty"
-	self.Ready				= true
-	self.Firing				= nil
-	self.NextFire			= 1
-	self.PostReloadWait		= CurTime()
-	self.WaitFunction		= self.GetFireDelay
-	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal				= true
-	self.LegalIssues			= ""
-	self.LastSend			= 0
+	self.SpecialHealth   = false	--If true needs a special ACF_Activate function
+	self.SpecialDamage   = false	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
+	self.ReloadTime      = 1
+	self.RackStatus      = "Empty"
+	self.Ready           = true
+	self.Firing          = nil
+	self.NextFire        = 1
+	self.PostReloadWait  = CurTime()
+	self.WaitFunction    = self.GetFireDelay
+	self.NextLegalCheck  = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal           = true
+	self.LegalIssues     = ""
+	self.LastSend        = 0
 	self:CPPISetOwner(self)
 
-	self.IsMaster			= true
-	self.CurAmmo				= 1
-	self.Sequence			= 1
-	self.LastThink			= CurTime()
+	self.IsMaster              = true
+	self.CurAmmo               = 1
+	self.Sequence              = 1
+	self.LastThink             = CurTime()
 
-	self.BulletData			= {}
-	self.BulletData.Type		= "Empty"
-	self.BulletData.PropMass	= 0
-	self.BulletData.ProjMass	= 0
+	self.BulletData            = {}
+	self.BulletData.Type       = "Empty"
+	self.BulletData.PropMass   = 0
+	self.BulletData.ProjMass   = 0
 
-	self.ForceTdelay			= 0
-	self.Inaccuracy			= 1
+	self.ForceTdelay           = 0
+	self.Inaccuracy            = 1
 
 	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload (" .. RackWireDescs["Reload"] .. ")", "Track Delay (" .. RackWireDescs["Delay"] .. ")",	"Target Pos (" .. RackWireDescs["TargetPos"] .. ")" },
 													{ "NORMAL", "NORMAL", "NORMAL", "VECTOR" } )
@@ -227,54 +227,11 @@ function ENT:UnloadAmmo()
 	-- we're ok with mixed munitions.
 end
 
-local WireTable = { "gmod_wire_adv_pod", "gmod_wire_pod", "gmod_wire_keyboard", "gmod_wire_joystick", "gmod_wire_joystick_multi" }
-
-function ENT:GetUser( inp )
-	if not inp then return nil end
-
-	if inp:GetClass() == "gmod_wire_adv_pod" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_pod" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_keyboard" then
-		if inp.ply then
-			return inp.ply
-		end
-	elseif inp:GetClass() == "gmod_wire_joystick" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_joystick_multi" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_expression2" then
-		if inp.Inputs["Fire"] then
-			return self:GetUser(inp.Inputs["Fire"].Src)
-		elseif inp.Inputs["Shoot"] then
-			return self:GetUser(inp.Inputs["Shoot"].Src)
-		elseif inp.Inputs then
-			for _,v in pairs(inp.Inputs) do
-				if not IsValid(v.Src) then return inp.Owner or inp:CPPIGetOwner() end
-				if table.HasValue(WireTable, v.Src:GetClass()) then
-					return self:GetUser(v.Src)
-				end
-			end
-		end
-	end
-	return inp.Owner or inp:CPPIGetOwner()
-
-end
-
 function ENT:TriggerInput( iname , value )
 
 	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
-			self.User = self:GetUser(self.Inputs["Fire"].Src)
+			self.User = ACE_GetWeaponUser( self, self.Inputs.Fire.Src )
 			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
 			self:FireMissile()
 			self:Think()
@@ -440,7 +397,7 @@ function ENT:Think()
 			self.ReloadTime = nil
 			self:Reload()
 		elseif self.ReloadTime and self.ReloadTime > 1 then
-			self:EmitSound( "acf_extra/airfx/weapon_select.wav", 500, 100 )
+			self:EmitSound( "acf_extra/airfx/weapon_select.wav", 75, 100 )
 			self.ReloadTime = nil
 		end
 	elseif self.NextFire >= 1 and Ammo == 0 then
@@ -571,7 +528,7 @@ end
 
 function ENT:AddMissile()
 
-	self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
+	self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 75, 100 )
 
 	self:TrimNullMissiles()
 
@@ -622,6 +579,8 @@ function ENT:AddMissile()
 	if self.HideMissile then missile:SetNoDraw(true) end
 	if self.ProtectMissile then missile:SetNotSolid(true) end
 
+	missile:SetNWEntity( "Launcher", missile.Launcher )
+
 	missile:Spawn()
 
 	self.Missiles[NextIdx + 1] = missile
@@ -671,22 +630,20 @@ function ENT:LoadAmmo()
 
 end
 
-function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
+function MakeACF_Rack(Owner, Pos, Angle, Id)
 
-	if not IsValid(UpdateRack) and not Owner:CheckLimit("_acf_rack") then return false end
+	if not Owner:CheckLimit("_acf_rack") then return false end
 
-	local Rack = UpdateRack or ents.Create("acf_rack")
+	local Rack = ents.Create("acf_rack")
 
 	if not IsValid(Rack) then return false end
 
 	Rack:SetAngles(Angle)
 	Rack:SetPos(Pos)
+	Rack:Spawn()
 
-	if not UpdateRack then --print("no update")
-		Rack:Spawn()
-		Owner:AddCount("_acf_rack", Rack)
-		Owner:AddCleanup( "acfmenu", Rack )
-	end
+	Owner:AddCount("_acf_rack", Rack)
+	Owner:AddCleanup( "acfmenu", Rack )
 
 	if not ACE_CheckRack( Id ) then
 		Id = "1xRK"
@@ -723,31 +680,30 @@ function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 
 	local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
 
-	Rack.Muzzleflash		= gundef.muzzleflash	or gunclass.muzzleflash	or ""
-	Rack.RoFmod			= gunclass["rofmod"]								or 1
-	Rack.Sound			= gundef.sound		or gunclass.sound		or ""
-	Rack.Inaccuracy		= gundef["spread"]	or gunclass["spread"]	or 1
+	Rack.Muzzleflash       = gundef.muzzleflash	or gunclass.muzzleflash	or ""
+	Rack.RoFmod            = gunclass["rofmod"]								or 1
+	Rack.Sound             = gundef.sound		or gunclass.sound		or "acf_extra/airfx/rocket_fire2.wav"
+	Rack.DefaultSound      = Rack.Sound
+	Rack.SoundPitch        = 100
+	Rack.Inaccuracy        = gundef["spread"]	or gunclass["spread"]	or 1
 
-	Rack.HideMissile		= ACF_GetRackValue(Id, "hidemissile")			or false
-	Rack.ProtectMissile	= gundef.protectmissile or gunclass.protectmissile  or false
-	Rack.CustomArmour	= gundef.armour		or gunclass.armour		or 1
+	Rack.HideMissile       = ACF_GetRackValue(Id, "hidemissile")			or false
+	Rack.ProtectMissile    = gundef.protectmissile or gunclass.protectmissile  or false
+	Rack.CustomArmour      = gundef.armour		or gunclass.armour		or 1
 
-	Rack.ReloadMultiplier	= ACF_GetRackValue(Id, "reloadmul")
-	Rack.WhitelistOnly	= ACF_GetRackValue(Id, "whitelistonly")
+	Rack.ReloadMultiplier  = ACF_GetRackValue(Id, "reloadmul")
+	Rack.WhitelistOnly     = ACF_GetRackValue(Id, "whitelistonly")
 
 	Rack:SetNWString("WireName",Rack.name)
 	Rack:SetNWString( "Class",  Rack.Class )
 	Rack:SetNWString( "ID",	Rack.Id )
 	Rack:SetNWString( "Sound",  Rack.Sound )
+	Rack:SetNWInt( "SoundPitch",  Rack.SoundPitch )
 
-	if not UpdateRack or Rack.Model ~= Rack:GetModel() then
-
-		Rack:SetModel( Rack.Model )
-		Rack:PhysicsInit( SOLID_VPHYSICS )
-		Rack:SetMoveType( MOVETYPE_VPHYSICS )
-		Rack:SetSolid( SOLID_VPHYSICS )
-	end
-
+	Rack:SetModel( Rack.Model )
+	Rack:PhysicsInit( SOLID_VPHYSICS )
+	Rack:SetMoveType( MOVETYPE_VPHYSICS )
+	Rack:SetSolid( SOLID_VPHYSICS )
 
 	local phys = Rack:GetPhysicsObject()
 	if (phys:IsValid()) then
@@ -831,6 +787,7 @@ function ENT:FireMissile()
 
 			if self.Sound and self.Sound ~= "" then
 				missile.BulletData.Sound = self.Sound
+				missile.BulletData.Pitch = self.SoundPitch
 			end
 
 			missile:DoFlight(bdata.Pos, ShootVec)
@@ -844,7 +801,7 @@ function ENT:FireMissile()
 			self:SetNWInt("Ammo",	Ammo)
 
 		else
-			self:EmitSound("weapons/pistol/pistol_empty.wav",500,100)
+			self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 		end
 
 		self.Ready = false
@@ -854,13 +811,13 @@ function ENT:FireMissile()
 		self.ReloadTime = ReloadTime
 
 	else
-		self:EmitSound("weapons/pistol/pistol_empty.wav",500,100)
+		self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 	end
 
 end
 
 function ENT:MuzzleEffect()
-	self:EmitSound( "phx/epicmetal_hard.wav", 500, 100 )
+	self:EmitSound( "phx/epicmetal_hard.wav", 75, 100 )
 end
 
 function ENT:PreEntityCopy()
@@ -880,21 +837,12 @@ function ENT:PreEntityCopy()
 		duplicator.StoreEntityModifier( self, "ACFAmmoLink", info )
 	end
 
-	duplicator.StoreEntityModifier( self, "ACFRackInfo", {Id = self.Id} )
-
 	--Wire dupe info
 	self.BaseClass.PreEntityCopy( self )
 
 end
 
-
-
-
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-
-	self.Id = Ent.EntityMods.ACFRackInfo.Id
-
-	MakeACF_Rack(self:CPPIGetOwner(), self:GetPos(), self:GetAngles(), self.Id, self)
 
 	if Ent.EntityMods and Ent.EntityMods.ACFAmmoLink and Ent.EntityMods.ACFAmmoLink.entities then
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink
@@ -909,22 +857,10 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 		Ent.EntityMods.ACFAmmoLink = nil
 	end
 
-
 	--Wire dupe info
 	self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
 
 end
-
-
-
-
-function ACF_Rack_OnPhysgunDrop(_, ent)
-	if ent:GetClass() == "acf_rack" then
-		timer.Simple(0.01, function() if IsValid(ent) then ent:SetLoadedWeight() end end)
-	end
-end
-
-hook.Add("PhysgunDrop", "ACF_Rack_OnPhysgunDrop", ACF_Rack_OnPhysgunDrop)
 
 function ENT:OnRemove()
 	Wire_Remove(self)

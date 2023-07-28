@@ -11,6 +11,8 @@ Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellGLGM[2]
 Round.netid = 9 --Unique ammotype ID for network transmission
 
+Round.Type  = "GLATGM"
+
 function Round.create( Gun, BulletData )
 	if Gun:GetClass() == "acf_ammo" then
 		ACF_CreateBullet( BulletData )
@@ -358,7 +360,7 @@ function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "GLATGM"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "GLATGM"										--Hardcoded, match as Round.Type instead
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
@@ -413,8 +415,5 @@ function Round.guiupdate( Panel )
 end
 
 list.Set("HERoundTypes", "GLATGM", Round )
-list.Set( "ACFRoundTypes", "GLATGM", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "GLATGM" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
-
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties
+ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

@@ -20,16 +20,25 @@ local modedescription = "Players without godmode can damage anyone else's entiti
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 ]]
+
 local function modepermission(owner, attacker, ent)
 	if not IsValid(ent) then return false end
+
+	local ownerid		= owner:SteamID()
+	local attackerid	= attacker:SteamID()
+	local ownerperms	= perms.GetDamagePermissions(ownerid)
+
+	if perms.Safezones then
+		local entpos = ent:GetPos()
+		local attpos = attacker:GetPos()
+
+		if (perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos)) and not ownerperms[attackerid] then return false end
+	end
 
 	if ent:IsPlayer() or ent:IsNPC() then
 		return true
 	end
 
-	local ownerid		= owner:SteamID()
-	local attackerid	= attacker:SteamID()
-	local ownerperms	= perms.GetDamagePermissions(ownerid)
 	local godOwner		= owner:HasGodMode()
 	local godInflictor	= attacker:HasGodMode()
 
@@ -42,4 +51,4 @@ local function modepermission(owner, attacker, ent)
 	return false
 end
 
-perms.RegisterMode(modepermission, modename, modedescription, false, nil, DefaultPermission)
+perms.RegisterMode(modepermission, modename, modedescription, false, nil, DefaultPermission, true)

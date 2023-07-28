@@ -283,33 +283,21 @@ do
 
 end
 
-ACF.RoundTypes = list.Get("ACFRoundTypes")
-ACF.IdRounds = list.Get("ACFIdRounds")  --Lookup tables so i can get rounds classes from clientside with just an integer
-
 -- now that the tables are populated, throw them in the acf ents list
-list.Set( "ACFClasses"  , "GunClass"	, GunClasses	)
-list.Set( "ACFClasses"  , "Rack"		, RackClasses	)
-list.Set( "ACFClasses"  , "Radar"	, RadarClasses  )
+ACF.Classes.GunClass        = GunClasses
+ACF.Classes.Rack            = RackClasses
+ACF.Classes.Radar           = RadarClasses
 
-list.Set( "ACFEnts"	, "Guns"		, GunTable	)
-list.Set( "ACFEnts"	, "Racks"	, RackTable	)
-list.Set( "ACFEnts"	, "Engines"	, EngineTable	)
-list.Set( "ACFEnts"	, "Gearboxes"	, GearboxTable  )
-list.Set( "ACFEnts"	, "FuelTanks"	, FuelTankTable )
-list.Set( "ACFEnts"	, "FuelTanksSize", FuelTankSizeTable )
-list.Set( "ACFEnts"	, "Radars"	, Radars		)
+ACF.Weapons.Guns            = GunTable
+ACF.Weapons.Racks           = RackTable
+ACF.Weapons.Engines         = EngineTable
+ACF.Weapons.Gearboxes       = GearboxTable
+ACF.Weapons.FuelTanks       = FuelTankTable
+ACF.Weapons.FuelTanksSize   = FuelTankSizeTable
+ACF.Weapons.Radars          = Radars
 
-list.Set( "ACESounds"	, "GunFire"	, GSoundData	)
+--Small reminder of Mobility table. Still being used in stuff like starfall/e2. This can change
+ACF.Weapons.Mobility        = MobilityTable
 
---Small remainder of Mobility table. Still being used in stuff like starfall/e2. This can change
-
-list.Set( "ACFEnts"	, "Mobility"		, MobilityTable )
-
-ACF.Weapons       = list.Get("ACFEnts")
-ACF.Classes       = list.Get("ACFClasses")
-ACF.RoundTypes    = list.Get("ACFRoundTypes")
-ACF.IdRounds      = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
-
-ACE.Armors        = list.Get("ACE_MaterialTypes")
-ACE.GSounds       = list.Get("ACESounds")
-ACE.ModelData     = ModelData
+ACE.GSounds.GunFire         = GSoundData
+ACE.ModelData               = ModelData

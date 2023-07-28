@@ -213,10 +213,6 @@ function ENT:Update( ArgsTable )
 	-- That table is the player data, as sorted in the ACFCvars above, with player who shot,
 	-- and pos and angle of the tool trace inserted at the start
 
-	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
-		return false, "You don't own that gearbox!"
-	end
-
 	local Id = ArgsTable[4] -- Argtable[4] is the engine ID
 	local GearboxData = GearboxTable[Id]
 

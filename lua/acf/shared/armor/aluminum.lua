@@ -84,4 +84,4 @@ if SERVER then
 	end
 end
 
-list.Set( "ACE_MaterialTypes", Material.id, Material )
+ACE.ArmorTypes[Material.id] = Material

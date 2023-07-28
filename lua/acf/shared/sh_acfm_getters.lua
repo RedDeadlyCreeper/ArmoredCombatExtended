@@ -24,7 +24,7 @@ function ACF_GetGunValue(bdata, val)
 		if ret ~= nil then
 			return ret
 		else
-			local classes = list.Get("ACFClasses").GunClass
+			local classes = ACF.Classes.GunClass
 			class = classes[class.gunclass]
 
 			if class then
@@ -122,7 +122,7 @@ function ACF_CanLinkRack(rackId, ammoId, bdata, rack)
 		return false, calMsg
 	end
 
-	local Classes = list.Get("ACFClasses").GunClass
+	local Classes = ACF.Classes.GunClass
 	if "missile" ~= Classes[gun.gunclass].type then
 		return false, "Racks cannot be linked to ammo crates of type '" .. tostring(ammoId) .. "'!"
 	end

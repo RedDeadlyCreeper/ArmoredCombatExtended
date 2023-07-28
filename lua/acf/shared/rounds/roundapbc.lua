@@ -9,6 +9,8 @@ Round.model = "models/munitions/round_100mm_shot.mdl"	-- Shell flight model
 Round.desc  = ACFTranslation.ShellAPBC[2]
 Round.netid = 18										-- Unique ammotype ID for network transmission
 
+Round.Type  = "APBC"
+
 function Round.create( _, BulletData )
 
 	ACF_CreateBullet( BulletData )
@@ -200,7 +202,7 @@ function Round.guiupdate( Panel, _ )
 
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id		--AmmoSelect GUI
-		PlayerData.Type = "APBC"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "APBC"										--Hardcoded, match as Round.Type instead
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
@@ -225,5 +227,5 @@ function Round.guiupdate( Panel, _ )
 end
 
 list.Set( "APRoundTypes", "APBC", Round )
-list.Set( "ACFRoundTypes", "APBC", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "APBC" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties
+ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

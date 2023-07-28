@@ -21,7 +21,7 @@ function ENT:GetMunitionAngPos(missile, attach, attachname)
 		angpos = {Pos = self:GetPos(), Ang = self:GetAngles()}
 	end
 
-	local guns		= list.Get("ACFEnts").Guns
+	local guns		= ACF.Weapons.Guns
 	local gun	= guns[missile.BulletData.Id]
 
 	if not gun then return angpos end

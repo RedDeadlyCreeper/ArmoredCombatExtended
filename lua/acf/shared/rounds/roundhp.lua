@@ -1,8 +1,8 @@
 
 AddCSLuaFile()
 
-local RoundTypes = list.Get( "ACFRoundTypes" )
-local Round = RoundTypes.AP -- inherit from AP
+local RoundTypes = ACF.RoundTypes
+local Round = table.Copy(RoundTypes.AP) -- inherit from AP
 
 ACF.AmmoBlacklist.HP = ACF.AmmoBlacklist.AP
 
@@ -11,6 +11,8 @@ Round.name = "[HP] - " .. ACFTranslation.HP[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.HP[2]
 Round.netid = 3 --Unique ammotype ID for network transmission
+
+Round.Type  = "HP"
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( _, PlayerData )
@@ -132,7 +134,7 @@ function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
-		PlayerData.Type = "HP"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.Type = "HP"										--Hardcoded, match as Round.Type instead
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.CavVol
@@ -158,8 +160,5 @@ function Round.guiupdate( Panel )
 end
 
 list.Set( "APRoundTypes", "HP", Round )
-list.Set( "ACFRoundTypes", "HP", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid, "HP" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
-
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties
+ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

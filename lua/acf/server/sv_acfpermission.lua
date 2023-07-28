@@ -14,6 +14,7 @@ this.Player = {}
 this.Modes = {}
 this.ModeDescs = {}
 this.ModeThinks = {}
+this.NotifySafezones = {}
 
 --TODO: convar this
 local mapSZDir = "acf/safezones/"
@@ -125,6 +126,11 @@ hook.Add( "Initialize", "ACF_LoadSafesForMap", function()
 	end
 end )
 
+hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", function(ply, zone)
+	if not this.NotifySafezones[table.KeyFromValue(this.Modes, this.DamagePermission)] then return end
+
+	ACE_SendMsg(ply, zone and Color(0, 255, 0) or Color(255, 0, 0), "You have entered the " .. (zone and zone .. " safezone." or "battlefield!"))
+end)
 
 local plyzones = {}
 hook.Add("Think", "ACF_DetectSZTransition", function()
@@ -424,11 +430,12 @@ function this.IsInSafezone(pos)
 	return false
 end
 
-function this.RegisterMode(mode, name, desc, default, think, defaultaction)
+function this.RegisterMode(mode, name, desc, default, think, defaultaction, notifysafezones)
 
 	this.Modes[name] = mode
 	this.ModeDescs[name] = desc
 	this.ModeThinks[name] = think or function() end
+	this.NotifySafezones[name] = notifysafezones or false
 	this.DefaultCanDamage = defaultaction or false
 	print("[ACE | INFO]- Registered damage permission mode \"" .. name .. "\"!")
 

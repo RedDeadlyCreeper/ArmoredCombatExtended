@@ -649,3 +649,14 @@ r100
 - ACE notifications are done via new functions. Courtesy of cheezus
 - HESH code has proper penetration functions
 - Fixed some small bugs
+
+*r161
+- added pitch support to guns, racks & radars.
+- IRSTs now have Cone input.
+- Missile rack custom sounds works on dedicated servers. See workaround for details.
+- Safezones added on god based permission mode. By cheezus
+- Improved how penetration decals are created. Now double side decals are done.
+- Added sound extension basic support to missile racks & radars. Please send your feedback about the noise distance
+- Removed "You don't own that entity" message from all the ACE entities
+- Fixed a problem related to shells bypassing props under certain conditions.
+- Fixed some small issues

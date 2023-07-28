@@ -620,7 +620,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
 		}
 	}
 )
-
+--[[
 --Generic Mortar gunfire. Ik its empty, the structure is here just to avoid recreate it in the future.
 ACE_DefineGunFireSound( "weapons/ACF_Gun/mortar_new.wav",
 	{
@@ -648,7 +648,7 @@ ACE_DefineGunFireSound( "weapons/ACF_Gun/mortar_new.wav",
 		}
 	}
 )
-
+]]
 --Generic AT Rifle gunfire
 ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
 	{
@@ -717,6 +717,7 @@ ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
 	}
 )
 ]]
+--[[
 --Generic GL gunfire
 ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav",
 	{
@@ -800,7 +801,7 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/flare_launch.wav",
 		}
 	}
 )
-
+]]--
 --[[
 --Test sound definition. Meant to see if the core works as intended.
 ACE_DefineGunFireSound( "physics/metal/bts5_panels_impact_lg_01.wav",

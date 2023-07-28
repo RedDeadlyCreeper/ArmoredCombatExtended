@@ -7,64 +7,68 @@ local GunClasses = ACF.Classes.GunClass
 
 local GunTable = ACF.Weapons.Guns
 
+--The distances these ents would have if its caliber was 10mm. Incremented by caliber size.
+local CrewLinkDistBase = 100
+local AmmoLinkDistBase = 512
+
 function ENT:Initialize()
 
-	self.ReloadTime			= 1
+	self.ReloadTime          = 1
 
-	self.FirstLoad			= true
-	self.Ready				= true
-	self.Firing				= nil
-	self.Reloading			= nil
-	self.NextFire			= 0
-	self.LastSend			= 0
-	self.LastLoadDuration	= 0
-	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal				= true
-	self.LegalIssues			= ""
-	self.FuseTime			= 0
-	self.OverrideFuse		= false		-- Override disabled by default
-	self.ROFLimit			= 0			-- Used for selecting firerate
+	self.FirstLoad           = true
+	self.Ready               = true
+	self.Firing              = nil
+	self.Reloading           = nil
+	self.NextFire            = 0
+	self.LastSend            = 0
+	self.LastLoadDuration    = 0
+	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal               = true
+	self.LegalIssues         = ""
+	self.FuseTime            = 0
+	self.OverrideFuse        = false		-- Override disabled by default
+	self.ROFLimit            = 0			-- Used for selecting firerate
 
-	self.IsMaster			= true		-- needed?
-	self.AmmoLink			= {}
-	self.CrewLink			= {}
-	self.HasGunner			= false
-	self.LoaderCount			= 0
-	self.CurAmmo				= 1
-	self.Sequence			= 1
-	self.GunClass			= "MG"
+	self.IsMaster            = true		-- needed?
+	self.AmmoLink            = {}
+	self.CrewLink            = {}
+	self.HasGunner           = false
+	self.LoaderCount         = 0
+	self.CurAmmo             = 1
+	self.Sequence            = 1
+	self.GunClass            = "MG"
 
-	self.Heat				= ACE.AmbientTemp
-	self.IsOverheated		= false
+	self.Heat                = ACE.AmbientTemp
+	self.IsOverheated        = false
 
-	self.BulletData			= {}
-	self.BulletData.Type		= "Empty"
-	self.BulletData.PropMass	= 0
-	self.BulletData.ProjMass	= 0
+	self.BulletData          = {}
+	self.BulletData.Type     = "Empty"
+	self.BulletData.PropMass = 0
+	self.BulletData.ProjMass = 0
 
-	self.Inaccuracy			= 1
-	self.LastThink			= 0
+	self.Inaccuracy          = 1
+	self.LastThink           = 0
 
 end
 
 do
 	local Inputs = {
-		Fire	= "Fire (Shoots a bullet if loaded. Hold to keep shooting.)",
-		Unload	= "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
-		Reload	= "Reload (Reloads the current weapon, according to the active ammo it has.)",
-		FuseTime = "Fuse Time (Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.)",
-		ROFLimit = "ROFLimit (Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.)",
+		Fire        = "Fire (Shoots a bullet if loaded. Hold to keep shooting.)",
+		Unload      = "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
+		Reload      = "Reload (Reloads the current weapon, according to the active ammo it has.)",
+		FuseTime    = "Fuse Time (Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.)",
+		ROFLimit    = "ROFLimit (Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.)",
 	}
 	local Outputs = {
-		Ready		= "Ready (Returns if the gun is ready to fire.)",
-		AmmoCount	= "AmmoCount (Returns the total ammo this gun can shoot.)",
-		Entity		= "Entity [ENTITY]",
-		ShotsLeft	= "Shots Left (Returns the number of shots in the gun.)",
-		FireRate	= "Fire Rate (Returns the Rate of Fire of this gun)",
-		MuzzleWeight	= "Muzzle Weight (Returns the muzzle weight)",
-		MuzzleVelocity = "Muzzle Velocity (Returns the muzzle velocity)" ,
-		Heat		= "Heat (Returns the gun's temperature.)",
-		OverHeat	= "OverHeat (Is the gun overheating?)"
+		Ready           = "Ready (Returns if the gun is ready to fire.)",
+		AmmoCount       = "AmmoCount (Returns the total ammo this gun can shoot.)",
+		Entity          = "Entity [ENTITY]",
+		ShotsLeft       = "Shots Left (Returns the number of shots in the gun.)",
+		FireRate        = "Fire Rate (Returns the Rate of Fire of this gun)",
+		MuzzleWeight    = "Muzzle Weight (Returns the muzzle weight)",
+		MuzzleVelocity  = "Muzzle Velocity (Returns the muzzle velocity)" ,
+		Heat            = "Heat (Returns the gun's temperature.)",
+		OverHeat        = "OverHeat (Is the gun overheating?)"
 	}
 
 	local Inputs_Fuse = {
@@ -105,12 +109,12 @@ do
 
 	--List of ids which no longer stay on ACE. Useful to replace them with the closest counterparts
 	local BackComp = {
-		["20mmHRAC"]		= "20mmRAC",
-		["30mmHRAC"]		= "30mmRAC",
-		["105mmSB"]		= "100mmSBC",
-		["120mmSB"]		= "120mmSBC",
-		["140mmSB"]		= "140mmSBC",
-		["170mmSB"]		= "170mmSBC"
+		["20mmHRAC"]    = "20mmRAC",
+		["30mmHRAC"]    = "30mmRAC",
+		["105mmSB"]     = "100mmSBC",
+		["120mmSB"]     = "120mmSBC",
+		["140mmSB"]     = "140mmSBC",
+		["170mmSB"]     = "170mmSBC"
 	}
 
 	local rapidgun = {
@@ -154,13 +158,13 @@ do
 		Gun:SetPos(Pos)
 		Gun:Spawn()
 		Gun:CPPISetOwner(Owner)
-		Gun.Id			= Id
-		Gun.Caliber		= Lookup.caliber
-		Gun.Model		= Lookup.model
-		Gun.Mass			= Lookup.weight
-		Gun.Class		= Lookup.gunclass
-		Gun.Heat			= ACE.AmbientTemp
-		Gun.LinkRangeMul	= math.max(Gun.Caliber / 10,1) ^ 1.2
+		Gun.Id              = Id
+		Gun.Caliber         = Lookup.caliber
+		Gun.Model           = Lookup.model
+		Gun.Mass            = Lookup.weight
+		Gun.Class           = Lookup.gunclass
+		Gun.Heat            = ACE.AmbientTemp
+		Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1) ^ 1.2
 
 		Gun.noloaders	= ClassData.noloader or nil
 
@@ -207,13 +211,15 @@ do
 			Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload )
 		end
 
-		Gun.MinLengthBonus = 0.5 * 3.1416 * (Gun.Caliber / 2) ^ 2 * Lookup.round.maxlength
+		Gun.MinLengthBonus    = 0.5 * 3.1416 * (Gun.Caliber / 2) ^ 2 * Lookup.round.maxlength
 
-		Gun.Muzzleflash	= Lookup.muzzleflash or ClassData.muzzleflash
-		Gun.RoFmod		= ClassData.rofmod
-		Gun.RateOfFire	= 1 --updated when gun is linked to ammo
-		Gun.Sound		= Lookup.sound or ClassData.sound
-		Gun.AutoSound	= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
+		Gun.Muzzleflash       = Lookup.muzzleflash or ClassData.muzzleflash
+		Gun.RoFmod            = ClassData.rofmod
+		Gun.RateOfFire        = 1 --updated when gun is linked to ammo
+		Gun.Sound             = Lookup.sound or ClassData.sound
+		Gun.DefaultSound      = Gun.Sound
+		Gun.SoundPitch        = 100
+		Gun.AutoSound         = ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
 
 		Gun:SetNWInt( "Caliber", Gun.Caliber )
 		Gun:SetNWString( "WireName", Lookup.name )
@@ -221,6 +227,7 @@ do
 		Gun:SetNWString( "ID", Gun.Id )
 		Gun:SetNWString( "Muzzleflash", Gun.Muzzleflash )
 		Gun:SetNWString( "Sound", Gun.Sound )
+		Gun:SetNWInt( "SoundPitch", Gun.SoundPitch )
 
 		Gun:SetModel( Gun.Model )
 
@@ -300,6 +307,22 @@ function ENT:UpdateOverlayText()
 
 end
 
+local function IsInRetDist( enta, entb, Distance )
+	if not IsValid(enta) or not IsValid(entb) then return end
+	return ACE_InDist( enta:GetPos(), entb:GetPos(), Distance )
+end
+
+local BreakSoundTbl = {
+	ace_crewseat_gunner = "physics/metal/metal_canister_impact_hard",
+	ace_crewseat_loader = "physics/metal/metal_canister_impact_hard",
+	acf_ammo = "physics/metal/metal_box_impact_bullet",
+}
+
+local function BreakGunLink( Gun, LinkedEnt )
+	Gun:Unlink( LinkedEnt )
+	Gun:EmitSound( (BreakSoundTbl[LinkedEnt:GetClass()] or "physics/metal/metal_box_impact_bullet" ) .. tostring(math.random(1, 3)) .. ".wav",100,100)
+end
+
 function ENT:Link( Target )
 
 	if not IsValid( Target ) then
@@ -318,7 +341,7 @@ function ENT:Link( Target )
 		end
 
 		--Don't link if it's too far from this gun
-		if RetDist( self, Target ) > 100 * self.LinkRangeMul then
+		if not IsInRetDist( self, Target, CrewLinkDistBase * self.LinkRangeMul ) then
 			return false, "That crewseat is too far to be linked to this gun!"
 		end
 
@@ -345,7 +368,7 @@ function ENT:Link( Target )
 		end
 
 		--Don't link if it's too far from this gun
-		if RetDist( self, Target ) > 100 * self.LinkRangeMul then
+		if not IsInRetDist( self, Target, CrewLinkDistBase * self.LinkRangeMul ) then
 			return false, "That crewseat is too far to be linked to this gun!"
 		end
 
@@ -371,9 +394,16 @@ function ENT:Link( Target )
 	--Ammo Link
 	elseif Target:GetClass() == "acf_ammo" then
 
-		-- Don't link if it's not the right ammo type
-		if Target.BulletData.Id ~= self.Id then
-			return false, "Wrong ammo type!"
+		-- Don't link if it's already linked
+		for _, v in pairs( self.AmmoLink ) do
+			if v == Target then
+				return false, "That crate is already linked to this gun!"
+			end
+		end
+
+		-- Dont't link if it's too far from this gun
+		if not IsInRetDist( self, Target, AmmoLinkDistBase * self.LinkRangeMul ) then
+			return false, "That crate is too far to be connected with this gun!"
 		end
 
 		-- Don't link if it's a refill crate
@@ -381,23 +411,16 @@ function ENT:Link( Target )
 			return false, "Refill crates cannot be linked!"
 		end
 
+		-- Don't link if it's not the right ammo type
+		if Target.BulletData.Id ~= self.Id then
+			return false, "Wrong ammo type!"
+		end
+
 		-- Don't link if it's a blacklisted round type for this gun
 		local Blacklist = ACF.AmmoBlacklist[ Target.RoundType ] or {}
 
 		if table.HasValue( Blacklist, self.Class ) then
 			return false, "That round type cannot be used with this gun!"
-		end
-
-		-- Dont't link if it's too far from this gun
-		if RetDist( self, Target ) > 512 * self.LinkRangeMul then
-			return false, "That crate is too far to be connected with this gun!"
-		end
-
-		-- Don't link if it's already linked
-		for _, v in pairs( self.AmmoLink ) do
-			if v == Target then
-				return false, "That crate is already linked to this gun!"
-			end
 		end
 
 		table.insert( self.AmmoLink, Target )
@@ -479,54 +502,13 @@ function ENT:CanProperty( _, property )
 
 end
 
-local WireTable = { "gmod_wire_adv_pod", "gmod_wire_pod", "gmod_wire_keyboard", "gmod_wire_joystick", "gmod_wire_joystick_multi" }
-
-function ENT:GetUser( inp )
-	if not inp then return nil end
-	if inp:GetClass() == "gmod_wire_adv_pod" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_pod" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_keyboard" then
-		if inp.ply then
-			return inp.ply
-		end
-	elseif inp:GetClass() == "gmod_wire_joystick" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_joystick_multi" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_expression2" then
-		if inp.Inputs.Fire then
-			return self:GetUser(inp.Inputs.Fire.Src)
-		elseif inp.Inputs.Shoot then
-			return self:GetUser(inp.Inputs.Shoot.Src)
-		elseif inp.Inputs then
-			for _,v in pairs(inp.Inputs) do
-				if v.Src and table.HasValue(WireTable, v.Src:GetClass()) then
-					return self:GetUser(v.Src)
-				end
-			end
-		end
-	end
-	return inp.Owner or inp:CPPIGetOwner()
-
-end
-
 function ENT:TriggerInput( iname, value )
 
 	if (iname == "Unload" and value > 0 and not self.Reloading) then
 		self:UnloadAmmo()
 	elseif ( iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire < CurTime() then
-			self.User = self:GetUser(self.Inputs.Fire.Src) or self:CPPIGetOwner()
+			self.User = ACE_GetWeaponUser( self, self.Inputs.Fire.Src )
 			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
 			self:FireShell()
 			self:Think()
@@ -551,13 +533,6 @@ function ENT:TriggerInput( iname, value )
 			self.ROFLimit = 0
 		end
 	end
-end
-
-local function RetDist( enta, entb )
-	if not ((enta and enta:IsValid()) or (entb and entb:IsValid())) then return 0 end
-	disp = enta:GetPos() - entb:GetPos()
-	dist = math.sqrt( disp.x * disp.x + disp.y * disp.y + disp.z * disp.z )
-	return dist
 end
 
 function ENT:Heat_Function()
@@ -597,10 +572,8 @@ end
 function ENT:TrimDistantCrates()
 
 	for _, Crate in pairs(self.AmmoLink) do
-		if IsValid( Crate ) and Crate.Load and RetDist( self, Crate ) >= 512 then
-			self:Unlink( Crate )
-			soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
-			self:EmitSound(soundstr, 500, 100)
+		if IsValid( Crate ) and Crate.Load and not IsInRetDist( self, Crate, AmmoLinkDistBase * self.LinkRangeMul ) then
+			BreakGunLink( self, Crate )
 		end
 	end
 
@@ -608,10 +581,8 @@ end
 
 function ENT:TrimDistantCrewSeats()
 	for _, Seat in pairs(self.CrewLink) do
-		if IsValid( Seat ) and RetDist( self, Seat ) > 100 then
-			self:Unlink( Seat )
-			soundstr =  "physics/metal/metal_canister_impact_hard" .. tostring(math.random(1, 3)) .. ".wav"
-			self:EmitSound(soundstr,500,100)
+		if IsValid( Seat ) and not IsInRetDist( self, Seat, CrewLinkDistBase * self.LinkRangeMul ) then
+			BreakGunLink( self, Seat )
 		end
 	end
 end
@@ -674,16 +645,16 @@ function ENT:Think()
 	local Time = CurTime()
 	if self.LastSend + 1 <= Time then
 
-		local Ammo		= 0
+		local Ammo = 0
 
-		for _, Crate in pairs(self.AmmoLink) do --UnlinkDistance
+		--UnlinkDistance
+		for _, Crate in pairs(self.AmmoLink) do
 			if IsValid( Crate ) and Crate.Load and Crate.Legal then
-				if RetDist( self, Crate ) < 512 * self.LinkRangeMul then
+
+				if IsInRetDist( self, Crate, AmmoLinkDistBase * self.LinkRangeMul ) then
 					Ammo = Ammo + (Crate.Ammo or 0)
 				else
-					self:Unlink( Crate )
-					soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
-					self:EmitSound(soundstr,500,100)
+					BreakGunLink( self, Crate )
 				end
 			end
 		end
@@ -744,7 +715,7 @@ function ENT:ReloadMag()
 	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Legal ) then
 		if ( ACF.RoundTypes[self.BulletData.Type] ) then		--Check if the roundtype loaded actually exists
 			self:LoadAmmo(self.MagReload, false)
-			self:EmitSound("weapons/357/357_reload4.wav",500,100)
+			self:EmitSound("weapons/357/357_reload4.wav",68,100)
 			self.CurrentShot = 0
 			Wire_TriggerOutput(self, "Ready", 0)
 		else
@@ -867,7 +838,7 @@ do
 
 				if (self.CurrentShot >= self.MagSize) and (self.MagSize > 1) then
 					self:LoadAmmo(self.MagReload, false)
-					self:EmitSound("weapons/357/357_reload4.wav",500,100)
+					self:EmitSound("weapons/357/357_reload4.wav",68,100)
 					timer.Simple(self.LastLoadDuration, function() if IsValid(self) then self.CurrentShot = 0 end end)
 				else
 					self:LoadAmmo(false, false)
@@ -961,7 +932,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 			self.BulletData.PropMass = 0
 			self.BulletData.ProjMass = 0
 
-		self:EmitSound("weapons/shotgun/shotgun_empty.wav",500,100)
+		self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 		Wire_TriggerOutput(self, "Loaded", "Empty")
 
 		self.NextFire = curTime + 0.5
@@ -986,7 +957,7 @@ function ENT:UnloadAmmo()
 
 	self.Ready = false
 	Wire_TriggerOutput(self, "Ready", 0)
-	self:EmitSound("weapons/shotgun/shotgun_empty.wav",500,100)
+	self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 
 	local unloadtime = self.ReloadTime / 2 -- base time to swap a fully loaded shell out
 	if self.NextFire < CurTime() then -- unloading in middle of reload

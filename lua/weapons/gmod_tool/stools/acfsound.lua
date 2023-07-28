@@ -44,11 +44,13 @@ ACF.SoundToolSupport = {
 
 	acf_gun = {
 
-		GetSound = function(ent) return { Sound = ent.Sound } end,
+		GetSound = function(ent) return { Sound = ent.Sound, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch", soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)
@@ -58,16 +60,19 @@ ACF.SoundToolSupport = {
 
 			local sound = lookup.sound or GunClasses[Class]["sound"]
 
-			local soundData = { Sound = sound }
+			local soundData = { Sound = sound, Pitch = 100 }
 
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
+		end,
+
+		NewFormat = function()
 		end
 	},
 
 	acf_engine = {
 
-		GetSound = function(ent) return { Sound = ent.SoundPath, Pitch = ent.SoundPitch } end,
+		GetSound = function(ent) return { Sound = ent.SoundPath, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
 			ent.SoundPath = soundData.Sound
@@ -89,11 +94,14 @@ ACF.SoundToolSupport = {
 
 	acf_rack = {
 
-		GetSound = function(ent) return { Sound = ent.Sound } end,
+		GetSound = function(ent) return { Sound = ent.Sound, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
+
 			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)
@@ -101,58 +109,79 @@ ACF.SoundToolSupport = {
 			local Class = ent.Class
 			local sound = GunClasses[Class]["sound"] or ""
 
-			local soundData = { Sound = sound }
+			local soundData = { Sound = sound, Pitch = 100 }
 
-			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
+			local setSound = ACF.SoundToolSupport["acf_rack"].SetSound
 			setSound( ent, soundData )
+		end,
+
+		NewFormat = function()
 		end
+
 	},
 
 	acf_missileradar = {
 
-		GetSound = function(ent) return { Sound = ent.Sound } end,
+		GetSound = function(ent) return { Sound = ent.Sound or ACFM.DefaultRadarSound, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)
-			local soundData = {Sound = ACFM.DefaultRadarSound}
+			local soundData = {Sound = ACFM.DefaultRadarSound, Pitch = 100}
 
-			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
+			local setSound = ACF.SoundToolSupport["acf_missileradar"].SetSound
 			setSound( ent, soundData )
 		end
-	}
+	},
+
+	NewFormat = function()
+	end
+
 }
 
 local function ReplaceSound( _ , Entity , data)
 	if not IsValid( Entity ) then return end
 	local sound = data[1]
-	local pitch = data[2] or 1
+	local pitch = tonumber(data[2]) or 100
+	local isNew = data[3]
 
-	timer.Simple(1, function()
-		if not IsValid( Entity ) then return end --Caused by insta removal of the dupe
+	if pitch < 10 then
+		pitch = pitch * 100
+	end
 
-		local class = Entity:GetClass()
-		local support = ACF.SoundToolSupport[class]
+	local class = Entity:GetClass()
+	local support = ACF.SoundToolSupport[class]
 
-		if not support then return end
+	if support then
 
+		-- Before to the implementation, sounds were still being granted with the pitch you had on the slider,
+		-- making that the official integration makes it to use it, altering the supposed non pitch it had before
+		-- This should fix it, making sure to tag it with a new format in future applications.
+		if support.NewFormat and not isNew then
+			pitch = 100
+		end
+
+		-- Workaround to fix issue with StoreEntityModifier not loading on certain entities
+		-- For some reason, the naming "acf_replacesound" seems not to work with the "acf_rack" entities on dedicated servers. Changing the identifier for other not sharing some keywords fixed it.
+		local newdata = {sound, pitch, true}
 		support.SetSound(Entity, {Sound = sound, Pitch = pitch})
-	end)
-
-	duplicator.StoreEntityModifier( Entity, "acf_replacesound", {sound, pitch} )
+		duplicator.StoreEntityModifier( Entity, "ACFCustomSounds", newdata ) -- The new test identifier. The old one doesnt work properly with some ents
+		duplicator.StoreEntityModifier( Entity, "acf_replacesound", newdata )
+	end
 end
 
-duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound )
-
+duplicator.RegisterEntityModifier( "ACFCustomSounds", ReplaceSound )
+duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound ) -- Still calling the old identifier. We don't want old builds to lose their custom sounds if not edited later.
 
 local function IsReallyValid(trace, ply)
 	if not trace.Entity:IsValid() then return false end
 	if trace.Entity:IsPlayer() then return false end
 	if SERVER and not trace.Entity:GetPhysicsObject():IsValid() then return false end
-
 
 	local class = trace.Entity:GetClass()
 	if not ACF.SoundToolSupport[class] then
@@ -176,7 +205,7 @@ function TOOL:LeftClick( trace )
 
 	local sound = self:GetOwner():GetInfo("wire_soundemitter_sound")
 	local pitch = self:GetOwner():GetInfo("acfsound_pitch")
-	ReplaceSound( self:GetOwner(), trace.Entity, {sound, pitch} )
+	ReplaceSound( self:GetOwner(), trace.Entity, {sound, pitch, true} )
 	return true
 end
 
@@ -210,6 +239,7 @@ function TOOL:Reload( trace )
 	support.ResetSound(trace.Entity)
 
 	duplicator.ClearEntityModifier( trace.Entity, "acf_replacesound" )
+	duplicator.ClearEntityModifier( trace.Entity, "ACFCustomSounds" )
 
 	return true
 end
@@ -302,28 +332,8 @@ if CLIENT then
 		end
 		panel:AddItem(ClearButton)
 
-		--panel:ControlHelp( "string help" )
-
-		panel:AddControl("Slider", {
-			Label = "Pitch:",
-			Command = "acfsound_pitch",
-			Type = "Float",
-			Min = "0.1",
-			Max = "2",
-		}):SetTooltip("Works only for engines.")
-		--[[
-		local SoundPitch = vgui.Create("DNumSlider")
-		SoundPitch:SetMin( 0.1 )
-		SoundPitch:SetMax( 2 )
-		SoundPitch:SetDecimals( 0.1 )
-		SoundPitch:SetWide(wide)
-		SoundPitch:SetText("Pitch:")
-		SoundPitch:SetToolTip(ACFTranslation.SoundToolText[6])
-		SoundPitch:SetConVar( "acfsound_pitch" )
-		SoundPitch:SetValue( 1 )
-		panel:AddItem(SoundPitch)
-		--]]
-
+		panel:NumSlider( "Pitch", "acfsound_pitch", 10, 255, 0 )
+		panel:ControlHelp( "Adjust the pitch of the sound. Currently supports engines, guns, racks and missile radars. \n\nNote: This will not work with dynamic sounds atm." )
 	end
 
 	--[[

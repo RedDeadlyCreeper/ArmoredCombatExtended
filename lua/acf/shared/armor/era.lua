@@ -183,5 +183,4 @@ if SERVER then
 	end
 end
 
-list.Set( "ACE_MaterialTypes", Material.id, Material )
-ACE.Armors	= list.Get("ACE_MaterialTypes")
+ACE.ArmorTypes[Material.id] = Material

@@ -248,22 +248,15 @@ function ACF_VehicleDamage(Entity, Energy, FrArea, Angle, Inflictor, _, Gun, Typ
 	if HitRes.Damage ~= HitRes.Damage then HitRes.Damage = 0 end
 
 	if validd then
-
 		local dmg = 40
-
-		if Type == "Spall" then
-			dmg = 40
-			--print(HitRes.Damage * dmg)
-		end
-
 		Driver:TakeDamage( HitRes.Damage * dmg , Inflictor, Gun )
 	end
 
 	HitRes.Kill = false
 	if HitRes.Damage >= Entity.ACF.Health then --Drivers will no longer survive seat destruction
-			if validd then
-				Driver:Kill()
-			end
+		if validd then
+			Driver:Kill()
+		end
 		HitRes.Kill = true
 	else
 		Entity.ACF.Health = Entity.ACF.Health - HitRes.Damage
@@ -496,5 +489,46 @@ function ACE_CreateLinkRope( Pos, Ent1, LPos1, Ent2, LPos2 )
 	Ent2:DeleteOnRemove( rope )
 
 	return rope
+
+end
+
+local WireTable = { "gmod_wire_adv_pod", "gmod_wire_pod", "gmod_wire_keyboard", "gmod_wire_joystick", "gmod_wire_joystick_multi" }
+
+function ACE_GetWeaponUser( Weapon, inp )
+	if not inp then return nil end
+	if inp:GetClass() == "gmod_wire_adv_pod" then
+		if inp.Pod then
+			return inp.Pod:GetDriver()
+		end
+	elseif inp:GetClass() == "gmod_wire_pod" then
+		if inp.Pod then
+			return inp.Pod:GetDriver()
+		end
+	elseif inp:GetClass() == "gmod_wire_keyboard" then
+		if inp.ply then
+			return inp.ply
+		end
+	elseif inp:GetClass() == "gmod_wire_joystick" then
+		if inp.Pod then
+			return inp.Pod:GetDriver()
+		end
+	elseif inp:GetClass() == "gmod_wire_joystick_multi" then
+		if inp.Pod then
+			return inp.Pod:GetDriver()
+		end
+	elseif inp:GetClass() == "gmod_wire_expression2" then
+		if inp.Inputs.Fire then
+			return ACE_GetWeaponUser( Weapon, inp.Inputs.Fire.Src )
+		elseif inp.Inputs.Shoot then
+			return ACE_GetWeaponUser( Weapon, inp.Inputs.Shoot.Src )
+		elseif inp.Inputs then
+			for _,v in pairs(inp.Inputs) do
+				if v.Src and table.HasValue(WireTable, v.Src:GetClass()) then
+					return ACE_GetWeaponUser( Weapon, v.Src )
+				end
+			end
+		end
+	end
+	return inp.Owner or inp:CPPIGetOwner()
 
 end

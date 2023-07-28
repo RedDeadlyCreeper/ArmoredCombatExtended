@@ -11,6 +11,8 @@ Round.model = "models/munitions/dart_100mm.mdl"	-- Shell flight model
 Round.desc  = ACFTranslation.ShellFL[2]
 Round.netid = 8									-- Unique ammotype ID for network transmission
 
+Round.Type  = "FL"
+
 function Round.create( Gun, BulletData )
 
 	--setup flechettes
@@ -169,10 +171,10 @@ function Round.cratetxt( BulletData )
 	local DData = Round.getDisplayData(BulletData)
 
 	local inaccuracy = 0
-	local Gun = list.Get("ACFEnts").Guns[BulletData.Id]
+	local Gun = ACF.Weapons.Guns[BulletData.Id]
 
 	if Gun then
-		local Classes = list.Get("ACFClasses")
+		local Classes = ACF.Classes
 		inaccuracy = (Classes.GunClass[Gun.gunclass] or {spread = 0}).spread
 	end
 
@@ -299,7 +301,7 @@ function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData["Id"]			= acfmenupanel.AmmoData["Data"]["id"]		--AmmoSelect GUI
-		PlayerData["Type"]		= "FL"									--Hardcoded, match ACFRoundTypes table index
+		PlayerData["Type"]		= "FL"									--Hardcoded, match as Round.Type instead
 		PlayerData["PropLength"]	= acfmenupanel.AmmoData["PropLength"]  --PropLength slider
 		PlayerData["ProjLength"]	= acfmenupanel.AmmoData["ProjLength"]  --ProjLength slider
 		PlayerData["Data5"]		= acfmenupanel.AmmoData["Flechettes"]	--Flechette count slider
@@ -329,5 +331,5 @@ function Round.guiupdate( Panel )
 end
 
 list.Set( "SPECSRoundTypes", "FL", Round )
-list.Set( "ACFRoundTypes", "FL", Round )  --Set the round properties
-list.Set( "ACFIdRounds", Round.netid , "FL" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+ACF.RoundTypes[Round.Type] = Round     --Set the round properties
+ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

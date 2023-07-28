@@ -305,10 +305,6 @@ function ENT:Update( ArgsTable )
 
 	local Feedback = ""
 
-	if not self:CPPICanTool(ArgsTable[1]) then --Argtable[1] is the player that shot the tool
-		return false, "You don't own that fuel tank!"
-	end
-
 	if ( ArgsTable[6] ~= self.FuelType ) then
 		for _, Engine in pairs( self.Master ) do
 			if Engine:IsValid() then

@@ -10,7 +10,7 @@ function ENT:Initialize()
 	self.LastStatusUpdate	= CurTime()
 	self.Active				= false
 
-	self.Inputs	= WireLib.CreateInputs( self, { "Active" } )
+	self.Inputs	= WireLib.CreateInputs( self, { "Active", "Cone" } )
 	self.Outputs	= WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
 	self.OutputData = {
 		Detected		= 0,
@@ -26,6 +26,9 @@ function ENT:Initialize()
 	self.Heat				= 21	-- Heat
 	self.HeatAboveAmbient	= 5	-- How many degrees above Ambient Temperature this irst will start to track?
 
+	self.MinViewCone = 3
+	self.MaxViewCone = 45
+
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
 	self.LegalIssues			= ""
@@ -34,6 +37,10 @@ function ENT:Initialize()
 
 	self:UpdateOverlayText()
 
+end
+
+local function SetConeParameter( IRST )
+	IRST.inac = math.max( (IRST.Cone / 15) ^ 2, 2 ) print(IRST.inac)
 end
 
 function MakeACE_IRST(Owner, Pos, Angle, Id)
@@ -58,8 +65,9 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 	IRST.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
 	IRST.Cone				= IRST.ICone
 
+	SetConeParameter( IRST )
+
 	IRST.SeekSensitivity	= radar.SeekSensitivity
-	IRST.inac				= radar.inaccuracy
 
 	IRST.MinimumDistance	= radar.mindist
 	IRST.MaximumDistance	= radar.maxdist
@@ -109,6 +117,22 @@ end
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
 		self:SetActive((value ~= 0) and self.Legal)
+	elseif inp == "Cone" then
+		if value > 0 then
+
+			self.Cone = math.Clamp(value / 2, self.MinViewCone ,self.MaxViewCone )
+
+			SetConeParameter( self )
+
+			--local curTime = CurTime()
+			--self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
+		else
+			self.Cone = self.ICone
+		end
+
+
+
+		self:UpdateOverlayText()
 	end
 end
 
@@ -150,15 +174,15 @@ function ENT:GetWhitelistedEntsInCone()
 	local ScanArray = ACE.contraptionEnts
 	if table.IsEmpty(ScanArray) then return {} end
 
-	local WhitelistEnts = {}
-	local LOSdata	= {}
-	local LOStr		= {}
+	local WhitelistEnts    = {}
+	local LOSdata          = {}
+	local LOStr            = {}
 
-	local IRSTPos	= self:GetPos()
+	local IRSTPos          = self:GetPos()
 
-	local entpos		= Vector()
-	local difpos		= Vector()
-	local dist		= 0
+	local entpos           = Vector()
+	local difpos           = Vector()
+	local dist             = 0
 
 	for _, scanEnt in ipairs(ScanArray) do
 
@@ -178,12 +202,12 @@ function ENT:GetWhitelistedEntsInCone()
 		-- skip any ent far than maximum distance
 		if dist > self.MaximumDistance then continue end
 
-		LOSdata.start		= IRSTPos
-		LOSdata.endpos		= entpos
-		LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
-		LOSdata.filter		= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
-		LOSdata.mins			= vector_origin
-		LOSdata.maxs			= LOSdata.mins
+		LOSdata.start             = IRSTPos
+		LOSdata.endpos            = entpos
+		LOSdata.collisiongroup    = COLLISION_GROUP_WORLD
+		LOSdata.filter            = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
+		LOSdata.mins              = vector_origin
+		LOSdata.maxs              = LOSdata.mins
 
 		LOStr = util.TraceHull( LOSdata )
 
@@ -215,13 +239,13 @@ function ENT:AcquireLock()
 	self.ClosestToBeam = -1
 	local besterr		= math.huge --Hugh mungus number
 
-	local entpos			= Vector()
-	local difpos			= Vector()
-	local nonlocang		= Angle()
-	local ang			= Angle()
-	local absang			= Angle()
-	local errorFromAng	= 0
-	local dist			= 0
+	local entpos       = Vector()
+	local difpos       = Vector()
+	local nonlocang    = Angle()
+	local ang          = Angle()
+	local absang       = Angle()
+	local errorFromAng = 0
+	local dist         = 0
 
 	local physEnt		= NULL
 

@@ -164,6 +164,21 @@ function EFFECT:Think()
 	return false
 end
 
+--Check if the crack is allowed to perform or not
+local function CanBulletCrack( Bullet )
+
+	if Bullet.IsMissile then return false end
+	if Bullet.CrackCreated then return false end
+	if ACE_SInDistance( Bullet.InitialPos, 750 ) then return false end
+	if not ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber * 100 * ACE.CrackDistanceMultipler,250) ) then return false end
+	if Bullet.Impacted then return false end
+
+	local SqrtSpeed = (Bullet.SimPos - Bullet.SimPosLast):LengthSqr()
+	if SqrtSpeed < 50 ^ 2 then return false end
+
+	return true
+end
+
 function EFFECT:ApplyMovement( Bullet, Index )
 
 	local setPos = Bullet.SimPos
@@ -176,15 +191,8 @@ function EFFECT:ApplyMovement( Bullet, Index )
 		self:SetPos( setPos ) --Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
 
-		local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length())
-
 		--sonic crack sound
-		--horribly long if condition please fix without making a pyramid
-		if
-			not Bullet.CrackCreated and not Bullet.IsMissile and
-			ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber * 100 * ACE.CrackDistanceMultipler,250) ) and
-			not ACE_SInDistance( Bullet.InitialPos, 750 ) and Speed > 100 and not Bullet.Impacted
-		then
+		if CanBulletCrack( Bullet ) then
 			ACE_SBulletCrack(Bullet, Bullet.Caliber)
 		end
 	else

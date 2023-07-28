@@ -212,17 +212,13 @@ do
 			--if our shell hits visclips, convert the tracehull on traceline.
 			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
-				FlightTr.maxs	= vector_origin
-				FlightTr.mins	= -FlightTr.maxs
-
 				-- trace result is stored in supplied output FlightRes (at top of file)
-				util.TraceHull(FlightTr)
+				util.TraceLine(FlightTr)
 
 				-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
 				if not FlightRes.HitNonWorld then
 
-				util.TraceHull(FlightTr)
-
+					util.TraceHull(FlightTr)
 				end
 			end
 

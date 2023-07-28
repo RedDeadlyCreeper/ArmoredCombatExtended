@@ -30,7 +30,7 @@ function SetMissileGUIEnabled(_, enabled, gundata)
 
 				local gunId = acfmenupanel.CData.CaliberSelect:GetValue()
 				if gunId then
-					local guns = list.Get("ACFEnts").Guns
+					local guns = ACF.Weapons.Guns
 					gun = guns[gunId]
 				end
 
@@ -78,7 +78,7 @@ function SetMissileGUIEnabled(_, enabled, gundata)
 
 				local gunId = acfmenupanel.CData.CaliberSelect:GetValue()
 				if gunId then
-					local guns = list.Get("ACFEnts").Guns
+					local guns = ACF.Weapons.Guns
 					gun = guns[gunId]
 				end
 
@@ -253,7 +253,7 @@ function ModifyACFMenu(panel)
 			local gunTbl = acfmenupanel.WeaponData["Guns"][data]
 			local class = gunTbl.gunclass
 
-			local Classes = list.Get("ACFClasses")
+			local Classes = ACF.Classes
 			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, Classes.GunClass[class].type == "missile", gunTbl ) end)
 		end
 
@@ -262,7 +262,7 @@ function ModifyACFMenu(panel)
 			local gunTbl = acfmenupanel.WeaponData["Guns"][data]
 			local class = gunTbl.gunclass
 
-			local Classes = list.Get("ACFClasses")
+			local Classes = ACF.Classes
 			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, Classes.GunClass[class].type == "missile", gunTbl) end)
 		end
 
@@ -285,7 +285,7 @@ function ModifyACFMenu(panel)
 
 	if gunsNode then
 		local classNodes = gunsNode.ChildNodes:GetChildren()
-		local gunClasses = list.Get("ACFClasses").GunClass
+		local gunClasses = ACF.Classes.GunClass
 
 		for _, node in pairs(classNodes) do
 			local gunNodeElement = node.ChildNodes

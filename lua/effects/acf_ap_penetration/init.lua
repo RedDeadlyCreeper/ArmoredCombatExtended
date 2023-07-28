@@ -1,68 +1,61 @@
---local ACFEnts = list.Get("ACFEnts")
---local GunTable = ACFEnts.Guns
 
 --[[---------------------------------------------------------
 Initializes the effect. The data is a table of data
 which was passed from the server.
 -----------------------------------------------------------]]
+
+local function DoubleSidedTraceResult( Effect )
+
+	local BackTraceFilter = {}
+
+	local FrontTraceData = {}
+	FrontTraceData.start = Effect.Origin - Effect.DirVec:GetNormalized()
+	FrontTraceData.endpos = Effect.Origin + Effect.DirVec * 150 --IK that. I prefer big props dont have a exit point than simply faking it if it never was.
+	local FTrace = util.TraceLine(FrontTraceData)
+
+	local BackTraceData = {}
+	BackTraceData.start = FrontTraceData.endpos
+	BackTraceData.endpos = FrontTraceData.start
+	BackTraceData.filter = function( ent ) if ent == FTrace.Entity then return true else table.insert(BackTraceFilter, ent) return false end end
+	local BTrace = util.TraceLine(BackTraceData)
+
+	debugoverlay.Line(FrontTraceData.start, FTrace.HitPos , 5, Color(0,255,255))
+	debugoverlay.Line(BackTraceData.start, BTrace.HitPos, 5, Color(191,255,0))
+
+	return FTrace, BTrace, BackTraceFilter
+end
+
+
 function EFFECT:Init( data )
-	self.Ent			= data:GetEntity()
-	self.Caliber		= self.Ent:GetNWFloat( "Caliber", 10 )
-	self.Origin		= data:GetOrigin()
-	self.DirVec		= data:GetNormal()
-	self.Velocity		= data:GetScale() --Mass of the projectile in kg
-	self.Mass			= data:GetMagnitude() --Velocity of the projectile in gmod units
-	self.Emitter		= ParticleEmitter( self.Origin )
-	self.ParticleMul	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
+	self.AmmoCrate   = data:GetEntity()
+	self.Origin      = data:GetOrigin()
+	self.DirVec      = data:GetNormal()
+	self.Velocity    = data:GetScale() --Mass of the projectile in kg
+	self.Mass        = data:GetMagnitude() --Velocity of the projectile in gmod units
 
-	self.Scale = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
+	self.Emitter     = ParticleEmitter( self.Origin )
+	self.ParticleMul = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
+	self.Scale       = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
+	self.Caliber     = self.AmmoCrate:GetNWFloat( "Caliber", 10 )
 
-	local Tr = { }
-		Tr.start = self.Origin - self.DirVec * 20
-		Tr.endpos = self.Origin + self.DirVec * 100
-		Tr.mins = Vector(0,0,0)
-		Tr.maxs = Vector(0,0,0)
-	local Impact = util.TraceHull(Tr)					--Trace to see if it will hit anything
-	self.Normal = Impact.HitNormal
+	local FTrace, BTrace, BackTraceFilter = DoubleSidedTraceResult( self )
 
-	if IsValid(Impact.Entity) then
-		debugoverlay.Text(self.Origin - self.DirVec * 20, Impact.Entity:GetClass(), 5)
+	util.Decal("Impact.Concrete", FTrace.StartPos, FTrace.HitPos + self.DirVec * 50, nil )
+	util.Decal("Impact.Concrete", BTrace.StartPos, BTrace.HitPos - self.DirVec * 50, BackTraceFilter )
+
+	self.Normal = FTrace.HitNormal
+	if IsValid(FTrace.Entity) then
+		debugoverlay.Text(self.Origin - self.DirVec * 20, FTrace.Entity:GetClass(), 5)
 	end
-	debugoverlay.Line(self.Origin - self.DirVec * 20, Impact.HitPos , 5, Color(0,255,255))
 
-	-- Material Enum
-	-- 65  ANTLION
-	-- 66 BLOODYFLESH
-	-- 67 CONCRETE / NODRAW
-	-- 68 DIRT
-	-- 70 FLESH
-	-- 71 GRATE
-	-- 72 ALIENFLESH
-	-- 73 CLIP
-	-- 76 PLASTIC
-	-- 77 METAL
-	-- 78 SAND
-	-- 79 FOLIAGE
-	-- 80 COMPUTER
-	-- 83 SLOSH
-	-- 84 TILE
-	-- 86 VENT
-	-- 87 WOOD
-	-- 89 GLASS
 
-	--local Mat = Impact.MatType
-	--print(Mat)
-
-	self:Prop()
-
-	ACE_SPen( self.Origin, self.Velocity, self.Mass )
+	self:CreatePenetrationEffect()
+	ACE_SPenetration( self.Origin, self.Velocity, self.Mass )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
 
-function EFFECT:Prop()
-
-	util.Decal("Impact.Concrete", self.Origin - self.DirVec * 50, self.Origin + self.DirVec * 50, self.Ent )
+function EFFECT:CreatePenetrationEffect()
 
 	for _ = 0, self.Scale * self.ParticleMul do
 

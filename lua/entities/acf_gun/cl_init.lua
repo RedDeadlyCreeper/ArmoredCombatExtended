@@ -86,7 +86,7 @@ function ACFGunGUICreate( Table )
 	GunDisplay.LayoutEntity = function() end
 	acfmenupanel.CustomDisplay:AddItem( GunDisplay )
 
-	local GunClass = list.Get("ACFClasses").GunClass[Table.gunclass]
+	local GunClass = ACF.Classes.GunClass[Table.gunclass]
 	acfmenupanel:CPanelText("ClassDesc", GunClass.desc)
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
 	acfmenupanel:CPanelText("Caliber", "Caliber : " .. (Table.caliber * 10) .. "mm")

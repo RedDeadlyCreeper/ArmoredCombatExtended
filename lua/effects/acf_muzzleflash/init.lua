@@ -9,12 +9,13 @@ function EFFECT:Init( data )
 	local Gun = data:GetEntity()
 	if not IsValid(Gun) then return end
 
-	local Propellant	= data:GetScale()
-	local ReloadTime	= data:GetMagnitude()
+	local Propellant   = data:GetScale()
+	local ReloadTime   = data:GetMagnitude()
 
-	local Sound		= Gun:GetNWString( "Sound", "" )
-	local Class		= Gun:GetNWString( "Class", "C" )
-	local Caliber		= Gun:GetNWInt( "Caliber", 1 ) * 10
+	local Sound        = Gun:GetNWString( "Sound", "" )
+	local SoundPitch   = Gun:GetNWInt( "SoundPitch", 100 )
+	local Class        = Gun:GetNWString( "Class", "C" )
+	local Caliber      = Gun:GetNWInt( "Caliber", 1 ) * 10
 	local MuzzleEffect = Gun:GetNWString( "Muzzleflash", "50cal_muzzleflash_noscale" )
 
 	--This tends to fail
@@ -37,7 +38,7 @@ function EFFECT:Init( data )
 
 	if Propellant > 0 then
 
-		ACE_SGunFire( Gun, Sound, Propellant )
+		ACE_SGunFire( Gun, Sound, SoundPitch, Propellant )
 
 		local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
 

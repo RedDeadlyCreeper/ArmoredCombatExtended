@@ -20,7 +20,7 @@ if SERVER then
 	end
 else
 	net.Receive("ACE_SWEPSounds", function()
-		ACE_SGunFire(net.ReadEntity(), net.ReadString(), net.ReadFloat())
+		ACE_SGunFire(net.ReadEntity(), net.ReadString(), 1, net.ReadFloat())
 	end)
 end
 

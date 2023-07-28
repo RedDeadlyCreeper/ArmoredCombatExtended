@@ -94,7 +94,7 @@ if CLIENT then
 	-- Material ComboBox creation
 	local function MaterialTable( panel )
 
-		local MaterialTypes = ACE.Armors
+		local MaterialTypes = ACE.ArmorTypes
 		if not MaterialTypes then return end
 
 		local Material = GetConVar("acfarmorprop_material"):GetString()

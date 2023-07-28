@@ -64,13 +64,13 @@ end
 do
 
 	local BackComp = {
-		["Induction motor, Tiny"]			= "Electric-Tiny-NoBatt",
-		["Induction motor, Small, Standalone"]  = "Electric-Small-NoBatt",
-		["Induction motor, Medium, Standalone"] = "Electric-Medium-NoBatt",
-		["Induction motor, Large, Standalone"]  = "Electric-Large-NoBatt",
+		["Induction motor, Tiny"]                 = "Electric-Tiny-NoBatt",
+		["Induction motor, Small, Standalone"]    = "Electric-Small-NoBatt",
+		["Induction motor, Medium, Standalone"]   = "Electric-Medium-NoBatt",
+		["Induction motor, Large, Standalone"]    = "Electric-Large-NoBatt",
 
-		["AVDS-1790-9A"]						= "24.8-V12",
-		["AVDS-1790-1500"]					= "27.0-V12"
+		["AVDS-1790-9A"]                          = "24.8-V12",
+		["AVDS-1790-1500"]                        = "27.0-V12"
 	}
 
 	function MakeACF_Engine(Owner, Pos, Angle, Id)
@@ -92,31 +92,32 @@ do
 		Engine:CPPISetOwner(Owner)
 		Engine.Id = Id
 
-		Engine.Model			= Lookup.model
-		Engine.SoundPath		= Lookup.sound
-		Engine.Weight		= Lookup.weight
-		Engine.PeakTorque	= Lookup.torque
-		Engine.peakkw		= Lookup.peakpower
-		Engine.PeakKwRPM		= Lookup.peakpowerrpm
-		Engine.PeakTorqueHeld	= Lookup.torque
-		Engine.IdleRPM		= Lookup.idlerpm
-		Engine.PeakMinRPM	= Lookup.peakminrpm
-		Engine.PeakMaxRPM	= Lookup.peakmaxrpm
-		Engine.LimitRPM		= Lookup.limitrpm
-		Engine.Inertia		= Lookup.flywheelmass * 3.1416 ^ 2
-		Engine.iselec		= Lookup.iselec
+		Engine.Model            = Lookup.model
+		Engine.Weight           = Lookup.weight
+		Engine.PeakTorque       = Lookup.torque
+		Engine.peakkw           = Lookup.peakpower
+		Engine.PeakKwRPM        = Lookup.peakpowerrpm
+		Engine.PeakTorqueHeld   = Lookup.torque
+		Engine.IdleRPM          = Lookup.idlerpm
+		Engine.PeakMinRPM       = Lookup.peakminrpm
+		Engine.PeakMaxRPM       = Lookup.peakmaxrpm
+		Engine.LimitRPM         = Lookup.limitrpm
+		Engine.Inertia          = Lookup.flywheelmass * 3.1416 ^ 2
+		Engine.iselec           = Lookup.iselec
 		Engine.FlywheelOverride = Lookup.flywheeloverride
-		Engine.IsTrans		= Lookup.istrans -- driveshaft outputs to the side
-		Engine.FuelType		= Lookup.fuel or "Petrol"
-		Engine.EngineType	= Lookup.enginetype or "GenericPetrol"
-		Engine.TorqueCurve	= Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
-		Engine.RequiresFuel	= Lookup.requiresfuel
-		Engine.SoundPitch	= Lookup.pitch or 1
-		Engine.SpecialHealth	= true
-		Engine.SpecialDamage	= true
-		Engine.TorqueMult	= 1
-		Engine.FuelTank		= 0
-		Engine.Heat			= ACE.AmbientTemp
+		Engine.IsTrans          = Lookup.istrans -- driveshaft outputs to the side
+		Engine.FuelType         = Lookup.fuel or "Petrol"
+		Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
+		Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
+		Engine.RequiresFuel     = Lookup.requiresfuel
+		Engine.SoundPath        = Lookup.sound
+		Engine.DefaultSound     = Engine.SoundPath
+		Engine.SoundPitch       = Lookup.pitch or 100
+		Engine.SpecialHealth    = true
+		Engine.SpecialDamage    = true
+		Engine.TorqueMult       = 1
+		Engine.FuelTank         = 0
+		Engine.Heat             = ACE.AmbientTemp
 
 		Engine.TorqueScale	= ACF.TorqueScale[Engine.EngineType]
 
@@ -167,10 +168,6 @@ function ENT:Update( ArgsTable )
 		return false, "Turn off the engine before updating it!"
 	end
 
-	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
-		return false, "You don't own that engine!"
-	end
-
 	local Id = ArgsTable[4] -- Argtable[4] is the engine ID
 	local Lookup = EngineTable[Id]
 
@@ -188,29 +185,30 @@ function ENT:Update( ArgsTable )
 		end
 	end
 
-	self.Id				= Id
-	self.SoundPath		= Lookup.sound
-	self.Weight			= Lookup.weight
-	self.PeakTorque		= Lookup.torque
-	self.peakkw			= Lookup.peakpower
-	self.PeakKwRPM		= Lookup.peakpowerrpm
-	self.PeakTorqueHeld	= Lookup.torque
-	self.IdleRPM			= Lookup.idlerpm
-	self.PeakMinRPM		= Lookup.peakminrpm
-	self.PeakMaxRPM		= Lookup.peakmaxrpm
-	self.LimitRPM		= Lookup.limitrpm
-	self.Inertia			= Lookup.flywheelmass * 3.1416 ^ 2
-	self.iselec			= Lookup.iselec -- is the engine electric?
-	self.FlywheelOverride	= Lookup.flywheeloverride -- modifies rpm drag on iselec==true
-	self.IsTrans			= Lookup.istrans
-	self.FuelType		= Lookup.fuel
-	self.EngineType		= Lookup.enginetype
-	self.RequiresFuel	= Lookup.requiresfuel
-	self.SoundPitch		= Lookup.pitch or 1
-	self.SpecialHealth	= true
-	self.SpecialDamage	= true
-	self.TorqueMult		= self.TorqueMult or 1
-	self.FuelTank		= 0
+	self.Id                = Id
+	self.Weight            = Lookup.weight
+	self.PeakTorque        = Lookup.torque
+	self.peakkw            = Lookup.peakpower
+	self.PeakKwRPM         = Lookup.peakpowerrpm
+	self.PeakTorqueHeld    = Lookup.torque
+	self.IdleRPM           = Lookup.idlerpm
+	self.PeakMinRPM        = Lookup.peakminrpm
+	self.PeakMaxRPM        = Lookup.peakmaxrpm
+	self.LimitRPM          = Lookup.limitrpm
+	self.Inertia           = Lookup.flywheelmass * 3.1416 ^ 2
+	self.iselec            = Lookup.iselec -- is the engine electric?
+	self.FlywheelOverride  = Lookup.flywheeloverride -- modifies rpm drag on iselec==true
+	self.IsTrans           = Lookup.istrans
+	self.FuelType          = Lookup.fuel
+	self.EngineType        = Lookup.enginetype
+	self.RequiresFuel      = Lookup.requiresfuel
+	self.SoundPath         = Lookup.sound
+	self.DefaultSound      = self.SoundPath
+	self.SoundPitch        = Lookup.pitch or 100
+	self.SpecialHealth     = true
+	self.SpecialDamage     = true
+	self.TorqueMult        = self.TorqueMult or 1
+	self.FuelTank          = 0
 
 	self.TorqueScale		= ACF.TorqueScale[self.EngineType]
 
@@ -642,7 +640,7 @@ function ENT:CalcRPM()
 	--Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
 
 	if self.Sound then
-		self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * self.SoundPitch) / 50, 255 ), 0 )
+		self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * (self.SoundPitch / 100)) / 50, 255 ), 0 )
 		self.Sound:ChangeVolume( 0.25 + (0.1 + 0.9 * ((SmoothRPM / self.LimitRPM) ^ 1.5)) * self.Throttle / 1.5, 0 )
 	end
 

@@ -646,7 +646,7 @@ local Shell170mm = {}
 	Shell170mm.volume = 11630.235
 AmmoTable["Shell170mm"] = Shell170mm
 
-list.Set( "ACFEnts", "Ammo", AmmoTable )	--end ammo containers listing
+ACF.Weapons.Ammo = AmmoTable --end ammo containers listing
 
 --WOW
 ACE_DefineModelData("models/holograms/rcube_thin.mdl",{
