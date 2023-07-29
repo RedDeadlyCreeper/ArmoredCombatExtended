@@ -218,6 +218,9 @@ do
 				-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
 				if not FlightRes.HitNonWorld then
 
+					-- The traceline function overrides the mins/maxs. So i must redefine them again here.
+					FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
+					FlightTr.mins = -FlightTr.maxs
 					util.TraceHull(FlightTr)
 				end
 			end

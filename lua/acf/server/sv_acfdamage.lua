@@ -9,28 +9,28 @@ local TraceInit = { output = TraceRes }
 
 --Used for filter certain undesired ents inside of HE processing
 ACF.HEFilter = {
-	gmod_wire_hologram		= true,
-	starfall_hologram		= true,
-	prop_vehicle_crane		= true,
-	prop_dynamic				= true,
-	ace_debris				= true,
-	sent_tanktracks_legacy	= true,
-	sent_tanktracks_auto		= true,
-	ace_flares				= true
+	gmod_wire_hologram       = true,
+	starfall_hologram        = true,
+	prop_vehicle_crane       = true,
+	prop_dynamic             = true,
+	ace_debris               = true,
+	sent_tanktracks_legacy   = true,
+	sent_tanktracks_auto     = true,
+	ace_flares               = true
 }
 
 --Used for tracebug HE workaround
 ACE.CritEnts = {
-	acf_gun					= true,
-	acf_ammo					= true,
-	acf_engine				= true,
-	acf_gearbox				= true,
-	acf_fueltank				= true,
-	acf_rack					= true,
-	acf_missile				= true,
-	ace_missile_swep_guided	= true,
-	prop_vehicle_prisoner_pod	= true,
-	gmod_wire_gate			= true
+	acf_gun                    = true,
+	acf_ammo                   = true,
+	acf_engine                 = true,
+	acf_gearbox                = true,
+	acf_fueltank               = true,
+	acf_rack                   = true,
+	acf_missile                = true,
+	ace_missile_swep_guided    = true,
+	prop_vehicle_prisoner_pod  = true,
+	gmod_wire_gate             = true
 }
 
 --I don't want HE processing every ent that it has in range

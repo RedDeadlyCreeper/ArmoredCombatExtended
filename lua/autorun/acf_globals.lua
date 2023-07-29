@@ -3,7 +3,7 @@ ACF = ACF or {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 486		-- ACE current version
+ACF.Version = 487		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
@@ -80,7 +80,7 @@ if CLIENT then
 	CreateClientConVar("acf_sens_irons", 0.5, true, false, "Reduce mouse sensitivity by this amount when zoomed in with iron sights on ACE SWEPs.", 0.01, 1)
 	CreateClientConVar("acf_sens_scopes", 0.2, true, false, "Reduce mouse sensitivity by this amount when zoomed in with scopes on ACE SWEPs.", 0.01, 1)
 	CreateClientConVar( "acf_tinnitus", 1, true, false, "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat.", 0, 1 )
-	CreateClientConVar( "acf_sound_volume", 1, true, false, "Adjusts the volume of explosions and gunshots.", 0, 100 )
+	CreateClientConVar( "acf_sound_volume", 100, true, false, "Adjusts the volume of explosions and gunshots.", 0, 100 )
 
 end
 

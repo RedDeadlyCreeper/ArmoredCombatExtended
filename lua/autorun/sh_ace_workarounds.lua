@@ -71,7 +71,6 @@ end
 function util.TraceLine(TraceData, ...)
 
 	if istable(TraceData) then
-		TraceData = table.Copy(TraceData)
 		TraceData.mins = Zero
 		TraceData.maxs = Zero
 	end

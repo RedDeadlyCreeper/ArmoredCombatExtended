@@ -660,3 +660,7 @@ r100
 - Removed "You don't own that entity" message from all the ACE entities
 - Fixed a problem related to shells bypassing props under certain conditions.
 - Fixed some small issues
+
+*r162
+- Reverted a change that caused problems with traces.
+- Default sound level adjusted to 100%. by Cheezus
