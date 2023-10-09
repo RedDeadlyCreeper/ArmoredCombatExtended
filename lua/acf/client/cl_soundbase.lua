@@ -49,6 +49,17 @@ ACE.Sounds.LOSWhitelist = {
 
 do
 
+	-- Cache results so we don't need to do expensive filesystem checks every time
+	local IsValidCache = {}
+
+	-- Returns whether or not a sound actually exists, fixes client timeout issues
+	function IsValidSound( path )
+		if IsValidCache[path] == nil then
+			IsValidCache[path] = file.Exists( string.format( "sound/%s", tostring( path ) ), "GAME" ) and true or false
+		end
+		return IsValidCache[path]
+	end
+
 	--Global sound function. In order to be modified by a convar config
 	--If the Origin is an entity, uses entity:EmitSound( SoundTxt , SoundLevel, Pitch, Volume )
 	--If the Origin is a vector Position, uses sound.Play(SoundTxt, Position, SoundLevel, Pitch, Volume)
@@ -570,7 +581,7 @@ do
 
 					Emitted = true
 
-					local VolFix = 1
+					local VolFix = 0.1
 
 					--Small arm guns
 					local Sound = ACE.Sounds["Cracks"]["small"]["close"][math.random(1,#ACE.Sounds["Cracks"]["small"]["close"])]
@@ -582,6 +593,8 @@ do
 						--above 100mm cannons
 						if Caliber >= 10 then
 							Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+							VolFix = 1
+
 
 							--Some fly sounds don´t fit really well. Special case here.
 							if Caliber >= 20 then

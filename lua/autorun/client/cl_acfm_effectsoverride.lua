@@ -1,7 +1,7 @@
 
 function ACF_CanEmitLight(lightSize)
 
-	local minLightSize = GetConVar("ACFM_MissileLights"):GetFloat()
+	local minLightSize = GetConVar("acf_enable_lighting"):GetFloat()
 
 	if minLightSize == 0 then return false end
 	if lightSize == 0 then return false end

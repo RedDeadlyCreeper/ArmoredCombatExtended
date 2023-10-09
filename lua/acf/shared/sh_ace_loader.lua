@@ -21,6 +21,7 @@ local MobilityTable       = {}
 
 local GSoundData          = {}
 local ModelData           = {}
+local MineData 			  = {}
 
 -- setup base classes
 local gun_base = {
@@ -207,6 +208,12 @@ end
 function ACE_DefineModelData( id, data )
 	data.id = id
 	ModelData[id] = data
+	ModelData[data.Model] = data -- I will allow both model or fast name as id.
+end
+
+function ACE_DefineMine(id, data)
+	data.id = id
+	MineData[id] = data
 end
 
 -- Getters for guidance names, for use in missile definitions.
@@ -261,6 +268,7 @@ do
 		"armor",
 		"guns",
 		"missiles",
+		"mines",
 		"radars",
 		"ammocrates",
 		"engines",
@@ -301,3 +309,4 @@ ACF.Weapons.Mobility        = MobilityTable
 
 ACE.GSounds.GunFire         = GSoundData
 ACE.ModelData               = ModelData
+ACE.MineData  				= MineData

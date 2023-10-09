@@ -3,6 +3,7 @@ SWEP.Base = "weapon_ace_base"
 SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Pistols"
 SWEP.Purpose = "AP Pistol"
+SWEP.Instructions	= "Left click to shoot. Right click while sprinting to change firemode, Right click to aim"
 SWEP.Spawnable = true
 SWEP.Slot = 1 --Which inventory column the weapon appears in
 SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
@@ -11,16 +12,13 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 --Main settings--
 SWEP.FireRate = 13 --Rounds per second
 
-SWEP.Primary.ClipSize = 15
-SWEP.Primary.DefaultClip = 45
+SWEP.Primary.ClipSize = 20
+SWEP.Primary.DefaultClip = 140
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/glock_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
-
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
 
 SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
 										--Most models have a built-in first-person reload sound
@@ -114,6 +112,17 @@ function SWEP:SecondaryAttack()
 
 	local owner = self:GetOwner()
 
+	if not owner:IsSprinting() then
+		self:OnSecondaryAttack()
+
+		if SERVER and not self.Reloading then
+			local ZS = not self:GetZoomState()
+			self:SetZoomState(ZS)
+			self:SetOwnerZoomSpeed(ZS)
+		end
+
+	else
+
 	self.Primary.Automatic = not self.Primary.Automatic
 
 	if CLIENT then return end
@@ -122,6 +131,7 @@ function SWEP:SecondaryAttack()
 		ACE_SendNotification(owner, "<<Automatic>>", 2)
 	else
 		ACE_SendNotification(owner, "<<Semi>>", 2)
+	end
 	end
 
 end

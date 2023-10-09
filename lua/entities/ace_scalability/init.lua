@@ -100,7 +100,7 @@ do
 
 		local MeshData 		= ScaleData.Mesh
 		local Scale 		= ScaleData.Scale
-		local PhysMaterial 	= ScaleData.Material
+		local PhysMaterial 	= ScaleData.Material or ""
 
 		MeshData = self:ConvertMeshToScale( MeshData, Scale )
 
@@ -139,15 +139,7 @@ do
 
 			--TODO: Do a dedicated scalable table to avoid unnecessary loops
 			local Id = "ACE_ScaleRequest_" .. math.random(1,100)
-			local scalable_ents = {}
-			local ContraptionEnts = ACE.contraptionEnts
-
-			for _, ent in ipairs(ContraptionEnts) do
-
-				if IsValid(ent) and ent.IsScalable then
-					table.insert( scalable_ents, ent )
-				end
-			end
+			local scalable_ents = ACE.ScalableEnts
 
 			timer.Create(Id, 0, math.max(#scalable_ents, 1), function()
 

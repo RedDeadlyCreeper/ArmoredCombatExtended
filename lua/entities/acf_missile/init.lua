@@ -356,8 +356,8 @@ function ENT:CalcFlight()
 	self.FlightTime = Flight
 
 	--Missile trajectory debugging
-	debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
-	debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
+	--.Line(Pos, EndPos, 10, Color(0, 255, 0))
+	--debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
 
 	self:DoFlight()
 end
@@ -445,7 +445,9 @@ do
 					self.CutoutTime	= Time + self.MotorLength -- must not be called here
 				end
 
-				self:LaunchEffect()
+				if self.Motor > 0 then
+					self:LaunchEffect()
+				end
 
 			end )
 		elseif not GunData.prepush then
@@ -468,7 +470,9 @@ do
 				self.CutoutTime	= Time + self.MotorLength
 			end
 
-			self:LaunchEffect()
+			if self.Motor > 0 then
+				self:LaunchEffect()
+			end
 
 		end
 
@@ -793,7 +797,6 @@ end)
 
 function ENT:CanTool(ply, _, mode)
 	if mode ~= "wire_adv" or (CPPI and ply ~= self:CPPIGetOwner()) then return false end
-
 	return true
 end
 

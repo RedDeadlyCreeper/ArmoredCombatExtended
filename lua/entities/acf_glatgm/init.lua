@@ -52,12 +52,19 @@ function ENT:Initialize()
 	-- how far off the forward offset is for the targeting position
 	self.offsetLength = self.velocity * self.secondsOffset
 
+	--You need to declare the CPPI owner before seeing if the optic's owner is equal to the GLATGM's owner!
+	self:CPPISetOwner(self.BulletData.Owner)
+
 	--Gets the Closest computer to spawned missile to override gun´s guidance
 	--Dont bother at using this if the table is empty
-	if not table.IsEmpty( ACE.Opticals ) then
-		for _, Optical in pairs( ACE.Opticals ) do
+	if next(ACE.Opticals) then
 
-			if not IsValid(Optical) then continue end
+		for _, Optical in pairs(ACE.Opticals) do
+			--print("Looking for computer...")
+
+			if not IsValid(Optical) then
+				continue
+			end
 
 			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
 			if Optical:GetPos():DistToSqr(self:GetPos()) < 250 ^ 2 and Optical:CPPIGetOwner() == self:CPPIGetOwner() then
@@ -69,12 +76,8 @@ function ENT:Initialize()
 				self.Optic = true
 
 			end
-
-
 		end
 	end
-
-	self:CPPISetOwner(self.BulletData.Owner)
 
 	--Rocket Trail effect
 	timer.Simple(0.1,function() ParticleEffectAttach("Rocket_Smoke_Trail",4, self,1)  end)

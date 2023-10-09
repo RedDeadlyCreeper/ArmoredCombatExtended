@@ -175,6 +175,7 @@ do
 		end
 
 		Gun.PGRoFmod	= Lookup.rofmod and math.max(0.01, Lookup.rofmod) or 1 --per gun rof
+		Gun.maxrof = Lookup.maxrof
 		Gun.CurrentShot = 0
 		Gun.MagSize	= 1
 
@@ -257,7 +258,7 @@ do
 
 		Gun:UpdateOverlayText()
 
-		Owner:AddCleanup( "acfmenu", Gun )
+		Owner:AddCleanup("acfmenu", Gun)
 
 		ACF_Activate(Gun, 0)
 
@@ -305,6 +306,7 @@ function ENT:UpdateOverlayText()
 
 	self:SetOverlayText( text )
 
+
 end
 
 local function IsInRetDist( enta, entb, Distance )
@@ -320,13 +322,17 @@ local BreakSoundTbl = {
 
 local function BreakGunLink( Gun, LinkedEnt )
 	Gun:Unlink( LinkedEnt )
-	Gun:EmitSound( (BreakSoundTbl[LinkedEnt:GetClass()] or "physics/metal/metal_box_impact_bullet" ) .. tostring(math.random(1, 3)) .. ".wav",100,100)
+	Gun:EmitSound( (BreakSoundTbl[LinkedEnt:GetClass()] or "physics/metal/metal_box_impact_bullet" ) .. tostring(math.random(1, 3)) .. ".wav", 100, 100)
 end
 
 function ENT:Link( Target )
 
 	if not IsValid( Target ) then
 		return false, "Target not a valid entity!"
+	end
+
+	if not Target.Legal then
+		return false, "This entity is illegal!"
 	end
 
 	-- CrewLink
@@ -354,6 +360,7 @@ function ENT:Link( Target )
 		table.insert( Target.Master, self )
 
 		self.HasGunner = true
+		Target.LinkedGun = self
 
 		return true, "Link successful!"
 
@@ -376,10 +383,6 @@ function ENT:Link( Target )
 			return false, "You need a gunner before you can have a loader!"
 		end
 
-		if self.LoaderCount >= 3 then
-			return false, "The gun already has 3 loaders!"
-		end
-
 		if self.noloaders then
 			return false, "This gun cannot have a loader!"
 		end
@@ -388,6 +391,7 @@ function ENT:Link( Target )
 		table.insert( Target.Master, self )
 
 		self.LoaderCount = self.LoaderCount + 1
+		Target.LinkedGun = self
 
 		return true, "Link successful!"
 
@@ -468,6 +472,8 @@ function ENT:Unlink( Target )
 				self.LoaderCount = self.LoaderCount - 1
 			end
 
+			Target.LinkedGun = nil
+
 			table.remove(self.CrewLink,Key)
 			Success = true
 		end
@@ -502,23 +508,30 @@ function ENT:CanProperty( _, property )
 
 end
 
-function ENT:TriggerInput( iname, value )
-
-	if (iname == "Unload" and value > 0 and not self.Reloading) then
+function ENT:TriggerInput(iname, value)
+	if iname == "Unload" and value > 0 and not self.Reloading then
+		-- Triggered to unload ammo
 		self:UnloadAmmo()
-	elseif ( iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal ) then
+	elseif iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal then
+		-- Triggered to fire if conditions are met
 		if self.NextFire < CurTime() then
-			self.User = ACE_GetWeaponUser( self, self.Inputs.Fire.Src )
-			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
+			-- Check if it's time to fire
+			self.User = ACE_GetWeaponUser(self, self.Inputs.Fire.Src)
+			if not IsValid(self.User) then
+				self.User = self:CPPIGetOwner()
+			end
 			self:FireShell()
 			self:Think()
+			self.Firing = true
 		end
-		self.Firing = true
-	elseif ( iname == "Fire" and value <= 0 ) then
+	elseif iname == "Fire" and value <= 0 then
+		-- Triggered to stop firing
 		self.Firing = false
-	elseif ( iname == "Reload" and value ~= 0 ) then
+	elseif iname == "Reload" and value ~= 0 then
+		-- Triggered to start reloading
 		self.Reloading = true
-	elseif ( iname == "Fuse Time" ) then
+	elseif iname == "Fuse Time" then
+		-- Set the fuse time if value is greater than 0
 		if value > 0 then
 			self.FuseTime = value
 			self.OverrideFuse = true
@@ -526,14 +539,18 @@ function ENT:TriggerInput( iname, value )
 			self.FuseTime = 0
 			self.OverrideFuse = false
 		end
-	elseif (iname == "ROFLimit") then
+	elseif iname == "ROFLimit" then
+		-- Set the rate of fire limit if value is greater than 0
+		local lowestROF = 0.1
 		if value > 0 then
-			self.ROFLimit = math.min(1 / (value / 60), 600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
+			self.ROFLimit = math.max(value, lowestROF) -- Limit the rate of fire
 		else
 			self.ROFLimit = 0
 		end
 	end
 end
+
+
 
 function ENT:Heat_Function()
 
@@ -543,7 +560,7 @@ function ENT:Heat_Function()
 	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
 
 	-- TODO: instead of breaking the gun by heat, decrease accurancy and jam it
-	local OverHeat = math.max(self.Heat / 200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
+	local OverHeat = math.max(self.Heat / 200, 0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
 	if OverHeat > 1 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
 
 		self.IsOverheated = true
@@ -630,7 +647,7 @@ function ENT:Think()
 
 		self:UpdateOverlayText()
 
-		if not self.Legal and self.Firing then self:TriggerInput("Fire",0) end
+		if not self.Legal and self.Firing then self:TriggerInput("Fire", 0) end
 
 	end
 
@@ -673,12 +690,12 @@ function ENT:Think()
 			Wire_TriggerOutput(self, "Shots Left", 1)
 		end
 
-		self:SetNWString("GunType",self.Id)
+		self:SetNWString("GunType", self.Id)
 		self:SetNWInt("Ammo",Ammo)
-		self:SetNWString("Type",self.BulletData.Type)
-		self:SetNWFloat("Mass",self.BulletData.ProjMass * 100)
-		self:SetNWFloat("Propellant",self.BulletData.PropMass * 1000)
-		self:SetNWFloat("FireRate",self.RateOfFire)
+		self:SetNWString("Type", self.BulletData.Type)
+		self:SetNWFloat("Mass", self.BulletData.ProjMass * 100)
+		self:SetNWFloat("Propellant", self.BulletData.PropMass * 1000)
+		self:SetNWFloat("FireRate", self.RateOfFire)
 
 		self.LastSend = Time
 
@@ -715,7 +732,7 @@ function ENT:ReloadMag()
 	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Legal ) then
 		if ( ACF.RoundTypes[self.BulletData.Type] ) then		--Check if the roundtype loaded actually exists
 			self:LoadAmmo(self.MagReload, false)
-			self:EmitSound("weapons/357/357_reload4.wav",68,100)
+			self:EmitSound("weapons/357/357_reload4.wav", 68, 100)
 			self.CurrentShot = 0
 			Wire_TriggerOutput(self, "Ready", 0)
 		else
@@ -763,6 +780,25 @@ do
 end
 
 do
+
+	function ENT:ChooseLoader()
+
+		local highestStaminaLoader = nil
+		local highestStamina = 0
+
+		for _, crewEnt in ipairs(self.CrewLink) do
+			if crewEnt:GetClass() == "ace_crewseat_loader" and crewEnt.Legal then
+				local stamina = crewEnt.Stamina
+				if stamina >= highestStamina then
+					highestStamina = stamina
+					highestStaminaLoader = crewEnt
+				end
+			end
+		end
+
+		return highestStaminaLoader
+	end
+
 
 	local FusedRounds = {
 		HE	= true,
@@ -844,6 +880,7 @@ do
 					self:LoadAmmo(false, false)
 				end
 				Wire_TriggerOutput(self, "Ready", 0)
+
 			else
 
 				self.CurrentShot = 0
@@ -892,13 +929,53 @@ function ENT:LoadAmmo( AddTime, Reload )
 		self.BulletData.Crate = AmmoEnt:EntIndex()
 
 		local Adj = not self.BulletData.LengthAdj and 1 or self.BulletData.LengthAdj --FL firerate bonus adjustment
-		local CrewReload = 1
+		local curLoaderStamina = 100
 
-		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
-			CrewReload = 1.25-(self.LoaderCount * 0.25)
+		local curLoader = self:ChooseLoader()
+		if IsValid(curLoader) then
+			curLoaderStamina = curLoader.Stamina
 		end
 
-		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus * Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1), self.ROFLimit)
+		local maxRof = self.ROFLimit
+
+		if self.maxrof and self.ROFLimit ~= 0  then
+			maxRof = math.min(self.maxrof, self.ROFLimit)
+		elseif self.maxrof and self.ROFLimit == 0 then
+			maxRof = self.maxrof
+		end
+
+		-- Define a table of valid classes
+		local invalidClasses = {"AC", "MG", "RAC", "HMG", "GL", "SA"}
+
+		local fireRateModifier = self.RoFmod * self.PGRoFmod * (AmmoEnt.RoFMul + 1)
+		local defaultReloadTime = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus * Adj) / 500) ^ 0.60) * fireRateModifier
+		local lowestReloadTime = defaultReloadTime
+
+		if maxRof > 0 then
+			lowestReloadTime = 60 / maxRof
+		end
+
+		--print(maxRof)
+
+		-- Check if self.Class is in the invalidClasses table
+		if not ACE_table_contains(invalidClasses, self.Class) and self.maxrof then
+
+			if self.LoaderCount > 0 and IsValid(curLoader) then -- if loaders are linked then
+
+				local CrewReload = curLoaderStamina / 100
+				local reloadTime = lowestReloadTime / CrewReload -- in seconds!!!!
+
+				self.ReloadTime = math.Clamp(reloadTime, lowestReloadTime, defaultReloadTime)
+
+				--print(lowestReloadTime, defaultReloadTime)
+				curLoader:DecreaseStamina()
+			else --no loader
+				self.ReloadTime = math.max(defaultReloadTime, lowestReloadTime)
+			end
+		else -- gun cannot have loader
+			self.ReloadTime = math.max(defaultReloadTime, lowestReloadTime)
+		end
+
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 
 		self.RateOfFire = (60 / self.ReloadTime)
@@ -932,7 +1009,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 			self.BulletData.PropMass = 0
 			self.BulletData.ProjMass = 0
 
-		self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
+		self:EmitSound("weapons/shotgun/shotgun_empty.wav", 68, 100)
 		Wire_TriggerOutput(self, "Loaded", "Empty")
 
 		self.NextFire = curTime + 0.5
@@ -944,7 +1021,7 @@ end
 
 function ENT:UnloadAmmo()
 
-	if not self.BulletData or not self.BulletData.Crate then return end -- Explanation: http://www.youtube.com/watch?v=dwjrui9oCVQ
+	if not self.BulletData or not self.BulletData.Crate then return end
 	if not self.Ready then
 		if (self.NextFire-CurTime()) < 0 then return end -- see above; preventing spam
 		if self.MagSize > 1 and self.CurrentShot >= self.MagSize then return end -- prevent unload in middle of mag reload
@@ -957,11 +1034,11 @@ function ENT:UnloadAmmo()
 
 	self.Ready = false
 	Wire_TriggerOutput(self, "Ready", 0)
-	self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
+	self:EmitSound("weapons/shotgun/shotgun_empty.wav", 68, 100)
 
 	local unloadtime = self.ReloadTime / 2 -- base time to swap a fully loaded shell out
 	if self.NextFire < CurTime() then -- unloading in middle of reload
-		unloadtime = math.min(unloadtime, math.max(self.ReloadTime - (self.NextFire - CurTime()),0) )
+		unloadtime = math.min(unloadtime, math.max(self.ReloadTime - (self.NextFire - CurTime()), 0) )
 	end
 	self:LoadAmmo( unloadtime, true )
 
@@ -978,7 +1055,7 @@ function ENT:MuzzleEffect()
 
 	if self.AutoSound and self.Sound ~= "" then
 		timer.Simple(0.6, function()
-			self:EmitSound(self.AutoSound, 73, math.random(84,86))
+			self:EmitSound(self.AutoSound, 73, math.random(84, 86))
 		end )
 	end
 end
@@ -1032,7 +1109,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
 		if AmmoLink.entities and table.Count(AmmoLink.entities) > 0 then
 
-			for _,AmmoID in pairs(AmmoLink.entities) do
+			for _, AmmoID in pairs(AmmoLink.entities) do
 
 				local Ammo = CreatedEntities[ AmmoID ]
 

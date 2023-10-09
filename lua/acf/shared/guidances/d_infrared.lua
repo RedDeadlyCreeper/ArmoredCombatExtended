@@ -180,7 +180,7 @@ function this:AcquireLock(missile)
 
 	local missilePos	= missile:GetPos()
 
-	local bestAng	= 0
+	local bestAng	= math.huge
 	local bestent	= NULL
 
 	local Heat		= 0
@@ -229,10 +229,18 @@ function this:AcquireLock(missile)
 
 		if absang.p < self.SeekCone and absang.y < self.SeekCone then --Entity is within missile cone
 
-			testang = Heat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
+			testang = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
+
+			if self.Target == scanEnt then
+				testang = testang / self.SeekSensitivity
+			end
+
+			testang = testang - Heat
+
+
 
 			--Sorts targets as closest to being directly in front of radar
-			if testang > bestAng then
+			if testang < bestAng then
 
 				bestAng = testang
 				bestent = classifyent

@@ -3,6 +3,7 @@ SWEP.Base = "weapon_ace_base"
 SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Special"
 SWEP.Purpose = "Lob HE behind cover"
+SWEP.Instructions	= "Left click to shoot. Right click while sprinting to scope, Right click to lase"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in
 SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
@@ -12,21 +13,18 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 SWEP.FireRate = 3 --Rounds per second
 
 SWEP.Primary.ClipSize = 5
-SWEP.Primary.DefaultClip = 15
+SWEP.Primary.DefaultClip = 40
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "SMG1"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/xm25_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
-
 SWEP.ReloadSound = "weapons/amr/sniper_reload.wav" --Sound other players hear when you reload - this is NOT your first-person sound
 										--Most models have a built-in first-person reload sound
 
-SWEP.ZoomFOV = 90
-SWEP.HasScope = false --True if the weapon has a sniper-style scope
+SWEP.ZoomFOV = 35
+SWEP.HasScope = true --True if the weapon has a sniper-style scope
 
 
 --Recoil (crosshair movement) settings--
@@ -50,7 +48,7 @@ SWEP.ViewPunchAmount = 1 --Degrees to punch the view upwards each shot - does no
 SWEP.BaseSpread = 0.1 --First-shot random spread, in degrees
 SWEP.MaxSpread = 1.5 --Maximum added random spread from heat value, in degrees
 					--If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 7 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.MovementSpread = 0 --Increase aimcone to this many degrees when sprinting at full speed
 SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
 
@@ -75,21 +73,41 @@ function SWEP:OnPrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if CLIENT then return end
-
 	local owner = self:GetOwner()
 
-	local RangeTrace = util.QuickTrace(owner:GetShootPos(), owner:GetAimVector() * 50000, {owner})
+	if owner:IsSprinting() then
+		self:OnSecondaryAttack()
 
-	if RangeTrace.Hit then
-		local time = ((owner:GetShootPos() - RangeTrace.HitPos):Length() / 39.37 + 2.5) / 110
+		if SERVER and not self.Reloading then
+			local ZS = not self:GetZoomState()
+			self:SetZoomState(ZS)
+			self:SetOwnerZoomSpeed(ZS)
+		end
 
-		self.FuseDelay = time > 0.07 and time or 0
+	else
+
+		if CLIENT then return end
+
+		local RangeTrace = util.QuickTrace(owner:GetShootPos(), owner:GetAimVector() * 50000, {owner})
+
+		if RangeTrace.Hit then
+			local difpos = RangeTrace.HitPos - owner:GetShootPos()
+			local XM25dist = difpos:Length() / 39.37
+			local Xdist = ( difpos * Vector(1,1,0) ):Length() / 39.37
+			local Ydist = ( (owner:GetShootPos().z) - RangeTrace.HitPos.z ) / 39.37
+			local time = (XM25dist + 2.5) / 110
+
+			self.FuseDelay = time > 0.07 and time or 0
+			owner:SendLua( "XM25FuseDelay=" .. self.FuseDelay )
+			owner:SendLua( "XM25Distance=" .. XM25dist )
+			owner:SendLua( "XM25Px=" .. Xdist )
+			owner:SendLua( "XM25Py=" .. Ydist )
+		end
+
+		ACE_SendNotification(owner, "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None"), 2)
+		return
+
 	end
-
-	ACE_SendNotification(owner, "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None"), 2)
-
-	return
 end
 
 function SWEP:InitBulletData()
@@ -98,8 +116,8 @@ function SWEP:InitBulletData()
 	self.BulletData.Id = "25mmGL"
 	self.BulletData.Type = "HEAT"
 	self.BulletData.Id = 2
-	self.BulletData.Caliber = 2.5
-	self.BulletData.PropLength = 16 --Volume of the case as a cylinder * Powder density converted from g to kg
+	self.BulletData.Caliber = 2.5 --2.5 for 25mm
+	self.BulletData.PropLength = 30 --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.ProjLength = 560 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 	self.BulletData.Data5 = 200 --He Filler or Flechette count
 	self.BulletData.Data6 = 30 --HEAT ConeAng or Flechette Spread
@@ -118,7 +136,7 @@ function SWEP:InitBulletData()
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.FillerVol = self.BulletData.Data5
 	self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 2.75
+	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 1
 	local ConeArea = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
 	local ConeThick = self.BulletData.Caliber / 50
 	local ConeVol = ConeArea * ConeThick

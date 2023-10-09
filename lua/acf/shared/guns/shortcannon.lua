@@ -6,8 +6,9 @@ ACF_defineGunClass("SC", {
 	desc = ACFTranslation.GunClasses[13],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.3,
+	maxrof = 25, -- maximum rounds per minute
 	year = 1915,
-	sound = "weapons/acf_gun/cannon_new.wav",
+	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
 
 } )
 
@@ -20,7 +21,8 @@ ACF_defineGun("37mmSC", {
 	gunclass = "SC",
 	caliber = 3.7,
 	weight = 55,
-	rofmod = 1.4,
+	rofmod = 45,
+	maxrof = 40, -- maximum rounds per minute
 	year = 1915,
 	round = {
 		maxlength = 45,
@@ -36,6 +38,7 @@ ACF_defineGun("50mmSC", {
 	gunclass = "SC",
 	caliber = 5.0,
 	weight = 300,
+	maxrof = 37, -- maximum rounds per minute
 	year = 1915,
 	round = {
 		maxlength = 63,
@@ -51,6 +54,7 @@ ACF_defineGun("75mmSC", {
 	gunclass = "SC",
 	caliber = 7.5,
 	weight = 480,
+	maxrof = 25, -- maximum rounds per minute
 	year = 1936,
 	round = {
 		maxlength = 76,
@@ -65,6 +69,7 @@ ACF_defineGun("85mmSC", {
 	gunclass = "SC",
 	caliber = 8.5,
 	weight = 1250,
+	maxrof = 23, -- maximum rounds per minute
 	year = 1942,
 	round = {
 		maxlength = 84.5,
@@ -80,6 +85,7 @@ ACF_defineGun("100mmSC", {
 	gunclass = "SC",
 	caliber = 10.0,
 	weight = 1000,
+	maxrof = 18, -- maximum rounds per minute
 	year = 1940,
 	round = {
 		maxlength = 93,
@@ -95,6 +101,7 @@ ACF_defineGun("120mmSC", {
 	gunclass = "SC",
 	caliber = 12.0,
 	weight = 1400,
+	maxrof = 13, -- maximum rounds per minute
 	year = 1944,
 	round = {
 		maxlength = 110,
@@ -110,6 +117,7 @@ ACF_defineGun("140mmSC", {
 	gunclass = "SC",
 	caliber = 14.0,
 	weight = 2050,
+	maxrof = 9, -- maximum rounds per minute
 	year = 1999,
 	round = {
 		maxlength = 127,
@@ -125,6 +133,7 @@ ACF_defineGun("170mmSC", {
 	gunclass = "SC",
 	caliber = 17.0,
 	weight = 3200,
+	maxrof = 6.7, -- maximum rounds per minute
 	year = 1999,
 	round = {
 		maxlength = 147,

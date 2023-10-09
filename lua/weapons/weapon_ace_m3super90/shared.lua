@@ -12,15 +12,12 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 SWEP.FireRate = 1 --Rounds per second
 
 SWEP.Primary.ClipSize = 8
-SWEP.Primary.DefaultClip = 24
+SWEP.Primary.DefaultClip = 48
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/m3super90_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 10 --Number of bullets to fire each shot, used for shotguns
-
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
 
 SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
 										--Most models have a built-in first-person reload sound

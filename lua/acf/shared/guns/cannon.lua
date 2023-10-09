@@ -6,7 +6,8 @@ ACF_defineGunClass("C", {
 	desc = ACFTranslation.GunClasses[4],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.5,
-	sound = "weapons/acf_gun/cannon_new.wav",
+	maxrof = 19, -- maximum rounds per minute
+	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
 
 } )
 
@@ -21,6 +22,7 @@ ACF_defineGun("37mmC", { --id
 	weight = 95,
 	year = 1919,
 	rofmod = 1.4,
+	maxrof = 42, -- maximum rounds per minute
 	round = {
 		maxlength = 48,
 		propweight = 1.125
@@ -36,6 +38,7 @@ ACF_defineGun("50mmC", {
 	caliber = 5.0,
 	weight = 380,
 	year = 1935,
+	maxrof = 32, -- maximum rounds per minute
 	round = {
 		maxlength = 63,
 		propweight = 2.1
@@ -51,6 +54,7 @@ ACF_defineGun("75mmC", {
 	caliber = 7.5,
 	weight = 660,
 	year = 1942,
+	maxrof = 17, -- maximum rounds per minute
 	round = {
 		maxlength = 78,
 		propweight = 3.8
@@ -59,13 +63,14 @@ ACF_defineGun("75mmC", {
 
 ACF_defineGun("85mmC", {
 	name = "85mm Cannon",
-	desc = "You can stop asking, we've got it now.",
+	desc = "Slightly better than 75, however may introduce problems to tanks, whose armor could stop 75mm. T-34-85 gun.",
 	model = "models/tankgun/tankgun_85mm.mdl",
 	sound = "ace_weapons/multi_sound/75mm_multi.mp3",
 	gunclass = "C",
 	caliber = 8.5,
 	weight = 1030,
 	year = 1944,
+	maxrof = 15.5, -- maximum rounds per minute
 	round = {
 		maxlength = 85.5,
 		propweight = 6.65
@@ -81,6 +86,7 @@ ACF_defineGun("100mmC", {
 	caliber = 10.0,
 	weight = 1400,
 	year = 1944,
+	maxrof = 14, -- maximum rounds per minute
 	round = {
 		maxlength = 93,
 		propweight = 9.5
@@ -96,6 +102,7 @@ ACF_defineGun("120mmC", {
 	caliber = 12.0,
 	weight = 2100,
 	year = 1955,
+	maxrof = 10, -- maximum rounds per minute
 	round = {
 		maxlength = 110,
 		propweight = 18
@@ -111,6 +118,7 @@ ACF_defineGun("140mmC", {
 	caliber = 14.0,
 	weight = 3900,
 	year = 1990,
+	maxrof = 8, -- maximum rounds per minute
 	round = {
 		maxlength = 127,
 		propweight = 28
@@ -126,17 +134,9 @@ ACF_defineGun("170mmC", {
 	caliber = 17.0,
 	weight = 7800,
 	year = 1990,
+	maxrof = 4, -- maximum rounds per minute
 	round = {
 		maxlength = 154,
 		propweight = 34
 	}
 } )
-
---- MODEL DATA
-
-ACE_DefineModelData("models/tankgun/tankgun_100mm.mdl",{
-
-	Model = "models/tankgun/tankgun_100mm.mdl",
-	DefaultSize = 100,
-
-})

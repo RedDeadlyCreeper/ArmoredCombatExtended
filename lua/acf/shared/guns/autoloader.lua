@@ -7,7 +7,7 @@ ACF_defineGunClass("AL", {
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 0.64,
 	year = 1946,
-	sound = "weapons/acf_gun/autoloader.wav",
+	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
 	autosound = "acf_extra/tankfx/reload.wav",
 	noloader = true,
 } )
@@ -43,7 +43,7 @@ ACF_defineGun("100mmAL", {
 	weight = 1800,
 	year = 1956,
 	rofmod = 0.8,
-	magsize = 10,
+	magsize = 12,
 	magreload = 25,
 	round = {
 		maxlength = 93,
@@ -62,7 +62,7 @@ ACF_defineGun("120mmAL", {
 	weight = 2700,
 	year = 1956,
 	rofmod = 0.8,
-	magsize = 8,
+	magsize = 12,
 	magreload = 30,
 	round = {
 		maxlength = 110,
@@ -81,7 +81,7 @@ ACF_defineGun("140mmAL", {
 	weight = 4800,
 	year = 1970,
 	rofmod = 0.9,
-	magsize = 8,
+	magsize = 12,
 	magreload = 40,
 	round = {
 		maxlength = 127,
@@ -101,7 +101,7 @@ ACF_defineGun("170mmAL", {
 	weight = 12460,
 	year = 1970,
 	rofmod = 1,
-	magsize = 6,
+	magsize = 12,
 	magreload = 40,
 	round = {
 		maxlength = 154,

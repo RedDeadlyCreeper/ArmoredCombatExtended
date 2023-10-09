@@ -111,7 +111,7 @@ end
 
 function EFFECT:Metal( SmokeColor )
 
-	SmokeColor.a = SmokeColor.a * 0.5
+	local SmokeAlpha = SmokeColor.a * 0.5
 
 	--local PMul = self.ParticleMul
 	local Vel = self.Velocity / 2500
@@ -130,7 +130,7 @@ function EFFECT:Metal( SmokeColor )
 			Dust:SetVelocity(VectorRand() * math.random(25, 35 * Energy))
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(math.Rand(0.1, 4) * math.max(Energy, 2) / 3)
-			Dust:SetStartAlpha(math.Rand(math.max(SmokeColor.a - 25, 10), SmokeColor.a))
+			Dust:SetStartAlpha(math.Rand(math.max(SmokeAlpha - 25, 10), SmokeAlpha))
 			Dust:SetEndAlpha(0)
 			Dust:SetStartSize(5 * Energy)
 			Dust:SetEndSize(15 * Energy)

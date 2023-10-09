@@ -166,17 +166,13 @@ local function ReplaceSound( _ , Entity , data)
 			pitch = 100
 		end
 
-		-- Workaround to fix issue with StoreEntityModifier not loading on certain entities
-		-- For some reason, the naming "acf_replacesound" seems not to work with the "acf_rack" entities on dedicated servers. Changing the identifier for other not sharing some keywords fixed it.
 		local newdata = {sound, pitch, true}
 		support.SetSound(Entity, {Sound = sound, Pitch = pitch})
-		duplicator.StoreEntityModifier( Entity, "ACFCustomSounds", newdata ) -- The new test identifier. The old one doesnt work properly with some ents
 		duplicator.StoreEntityModifier( Entity, "acf_replacesound", newdata )
 	end
 end
 
-duplicator.RegisterEntityModifier( "ACFCustomSounds", ReplaceSound )
-duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound ) -- Still calling the old identifier. We don't want old builds to lose their custom sounds if not edited later.
+duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound )
 
 local function IsReallyValid(trace, ply)
 	if not trace.Entity:IsValid() then return false end
@@ -239,7 +235,6 @@ function TOOL:Reload( trace )
 	support.ResetSound(trace.Entity)
 
 	duplicator.ClearEntityModifier( trace.Entity, "acf_replacesound" )
-	duplicator.ClearEntityModifier( trace.Entity, "ACFCustomSounds" )
 
 	return true
 end
@@ -364,4 +359,3 @@ if CLIENT then
 	end
 
 end
-

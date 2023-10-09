@@ -31,13 +31,9 @@ SWEP.Primary.Sound			= "weapons/slam/throw.wav"
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Delay			= 2
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 5
+SWEP.Primary.DefaultClip	= 13
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo		= "Grenade"
-
-SWEP.Secondary.Ammo		= "none"
-SWEP.Secondary.ClipSize		= -1
-SWEP.Secondary.DefaultClip	= -1
 
 SWEP.JustDeployed = true
 

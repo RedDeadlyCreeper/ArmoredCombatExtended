@@ -103,7 +103,9 @@ ACF_defineGun("9M133 ASM", {									-- id
 
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
-					["1x Kornet"] = true
+					["1x Kornet"] = true,
+					["2x Kornet"] = true,
+					["4x Kornet"] = true
 			},
 
 	viewcone		= 25,										-- getting outside this cone will break the lock.  Divided by 2.
@@ -129,6 +131,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	year			= 1969,
 	rofmod			= 0.4,
 	modeldiameter	= 3 * 2.54,
+	bodydiameter     = 7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rotmult			= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
@@ -202,7 +205,7 @@ ACF_defineGun("Ataka ASM", { --id
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser", "Infrared"},
+	guidance	= {"Dumb", "Laser"},
 	fuses		= {"Contact", "Optical"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
@@ -234,7 +237,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	weight			= 27,										-- Don't scale down the weight though!
 	year			= 1969,
 	rofmod			= 0.4,
-	modeldiameter	= 3 * 2.54,
+	modeldiameter	= 2.8 * 2.54,
 	rotmult			= 1.5,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
@@ -311,7 +314,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 	fuses			= {"Contact", "Optical"},
 
-	seekcone		= 40,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone		= 5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 80,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {											-- a whitelist for racks that this missile can load into.
 					["1x Javelin"] = true

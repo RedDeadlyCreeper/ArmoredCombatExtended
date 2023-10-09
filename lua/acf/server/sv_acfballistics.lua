@@ -113,14 +113,16 @@ function ACF_CheckClips( Ent, HitPos )
 	local origin
 
 	for i = 1, #Ent.ClipData do
-		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward()
-		origin = Ent:LocalToWorld(Ent:OBBCenter()) + normal * Ent.ClipData[i]["d"]
-		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
-		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
+
+		local ClipData = Ent.ClipData[i]
+
+		normal = Ent:LocalToWorldAngles(ClipData.n):Forward()
+		origin = Ent:LocalToWorld(Ent:OBBCenter()) + normal * ClipData.d
+		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(ClipData["n"]), 15, Color(255,0,0,32) )
+		if not ClipData.physics and normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
 	end
 
 	return false
-
 end
 
 do

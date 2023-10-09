@@ -15,7 +15,7 @@ SWEP.ViewModelFlip = false
 SWEP.FireRate = 0.5
 
 SWEP.Primary.ClipSize = 1
-SWEP.Primary.DefaultClip = 8
+SWEP.Primary.DefaultClip = 16
 SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.Sound = "weapons/flaregun/fire.wav"
 SWEP.Primary.Automatic = false

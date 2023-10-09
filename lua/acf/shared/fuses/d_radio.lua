@@ -89,16 +89,18 @@ do
 
 		if not self:IsArmed() then return false end
 
-		local MissilePos = missile:GetPos()
+		local MissilePos = missile.CurPos
 		local Dist = self.Distance
 
 		local trace = {}
-		trace.start	= MissilePos
-		trace.endpos	= MissilePos + missile.LastVel * 0.5 --small compensation for incoming impacts.
-		trace.filter	= FilterFunction
-		trace.mins		= Vector(-Dist, -Dist, -Dist)
-		trace.maxs		= -trace.mins
-		trace.ignoreworld = true
+		trace.start         = missile.DPos or MissilePos print(MissilePos)
+		trace.endpos        = MissilePos --small compensation for incoming impacts.
+		trace.filter        = FilterFunction
+		trace.mins          = Vector(-Dist, -Dist, -Dist)
+		trace.maxs          = -trace.mins
+		trace.ignoreworld   = true
+
+		missile.DPos = MissilePos
 
 		local tr = util.TraceHull(trace)
 

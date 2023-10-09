@@ -3,6 +3,8 @@
 include("acf/client/cl_acfmenu_missileui.lua")
 
 
+local ACFEnts = ACF.Weapons
+
 function SetMissileGUIEnabled(_, enabled, gundata)
 
 	if enabled then
@@ -246,11 +248,11 @@ function ModifyACFMenu(panel)
 		oldAmmoSelect(panel, blacklist)
 
 		acfmenupanel.CData.CaliberSelect.OnSelect = function( _ , _ , data )
-			acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]
+			acfmenupanel.AmmoData["Data"] = ACFEnts["Guns"][data]["round"]
 			acfmenupanel:UpdateAttribs()
 			acfmenupanel:UpdateAttribs()	--Note : this is intentional
 
-			local gunTbl = acfmenupanel.WeaponData["Guns"][data]
+			local gunTbl = ACFEnts["Guns"][data]
 			local class = gunTbl.gunclass
 
 			local Classes = ACF.Classes
@@ -259,7 +261,7 @@ function ModifyACFMenu(panel)
 
 		local data = acfmenupanel.CData.CaliberSelect:GetValue()
 		if data then
-			local gunTbl = acfmenupanel.WeaponData["Guns"][data]
+			local gunTbl = ACFEnts["Guns"][data]
 			local class = gunTbl.gunclass
 
 			local Classes = ACF.Classes
@@ -274,13 +276,10 @@ function ModifyACFMenu(panel)
 
 	for _, node in pairs(rootNodes) do -- iterating though found folders
 
-				if node:GetText() == "Missiles" then	--Missile folder is the one that we need
-
-					gunsNode = node
-					break
-
-				end
-
+		if node:GetText() == "Missiles" then	--Missile folder is the one that we need
+			gunsNode = node
+			break
+		end
 	end
 
 	if gunsNode then

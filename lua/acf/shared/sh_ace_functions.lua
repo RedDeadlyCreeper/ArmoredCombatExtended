@@ -594,3 +594,13 @@ function ACE_Msg( type, txt )
 
 end
 ]]
+
+-- Helper function to check if a value exists in a table
+function ACE_table_contains(table, element)
+	for _, value in pairs(table) do
+		if value == element then
+			return true
+		end
+	end
+	return false
+end

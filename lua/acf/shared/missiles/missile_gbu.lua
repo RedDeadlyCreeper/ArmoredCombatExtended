@@ -33,6 +33,7 @@ ACF_defineGun("WalleyeGBU", {						-- id
 	year			= 1967,
 	rofmod			= 4.0963,
 	modeldiameter	= 30,					-- in cm
+	bodydiameter     = 18.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	round = {
 		model		= "models/bombs/gbu/agm62.mdl",
 		rackmdl		= "models/bombs/gbu/agm62.mdl",
@@ -50,7 +51,7 @@ ACF_defineGun("WalleyeGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "GPS"},
 	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -79,6 +80,8 @@ ACF_defineGun("227kgGBU", {						-- id
 	year			= 1976,
 	rofmod			= 1.6,
 	modeldiameter	= 12,					-- in cm
+	bodydiameter     = 12.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
 	round = {
 		model		= "models/bombs/gbu/gbu12.mdl",
 		rackmdl		= "models/bombs/gbu/gbu12.mdl",
@@ -96,7 +99,7 @@ ACF_defineGun("227kgGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "GPS"},
 	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -124,6 +127,8 @@ ACF_defineGun("454kgGBU", {						-- id
 	year			= 1976,
 	rofmod			= 1.5,
 	modeldiameter	= 13,					-- in cm
+	bodydiameter     = 13.8, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
 	round = {
 		model		= "models/bombs/gbu/gbu16.mdl",
 		rackmdl		= "models/bombs/gbu/gbu16.mdl",
@@ -141,7 +146,7 @@ ACF_defineGun("454kgGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "GPS"},
 	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -186,7 +191,7 @@ ACF_defineGun("909kgGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "GPS"},
 	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.'

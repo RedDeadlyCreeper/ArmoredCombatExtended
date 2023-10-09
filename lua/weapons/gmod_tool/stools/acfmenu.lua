@@ -73,6 +73,8 @@ function TOOL:LeftClick( trace )
 	if not TypeId then
 		if Type == "Ammo" then
 			entClass = "acf_ammo"
+		elseif Type == "FuelTanks" then
+			entClass = "acf_fueltanks"
 		end
 	else
 		entClass = TypeId["ent"]
@@ -104,9 +106,6 @@ function TOOL:LeftClick( trace )
 			-- Using the Duplicator entity register to find the right factory function
 			local Ent = DupeClass.Func( ply, unpack( ArgTable ) ) --aka function like MakeACF_Ammo
 			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
-
-			--PrintTable(DupeClass)
-			--PrintTable(ArgTable)
 
 			Ent:Activate()
 			Ent:DropToFloor()

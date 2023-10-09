@@ -245,5 +245,9 @@ end )
 
 hook.Add( "InitPostEntity", "ACFMissiles_AddLinkable", function()
 	-- Need to ensure this is called after InitPostEntity because Adv. Dupe 2 resets its whitelist upon this event.
-	timer.Simple(1, function() ACF_E2_LinkTables["acf_rack"] = {AmmoLink = false} end)
+	timer.Simple(1, function()
+		if ACF_E2_LinkTables and istable(ACF_E2_LinkTables) then
+			ACF_E2_LinkTables["acf_rack"] = {AmmoLink = false}
+		end
+	end)
 end )

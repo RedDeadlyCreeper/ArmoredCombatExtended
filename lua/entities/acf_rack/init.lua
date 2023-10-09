@@ -561,17 +561,10 @@ function ENT:AddMissile()
 	end
 
 	local NextIdx = #self.Missiles
-	timer.Simple(0.02, function()
-		if IsValid(missile) then
-			local _, _, muzzle = self:GetMuzzle( NextIdx , missile )
+	local _, _, pos = self:GetMuzzle( NextIdx , missile )
 
-			debugoverlay.Cross(muzzle.Pos, 5, 10, Color(255,255,255,255), true)
-
-			missile:SetPos(self:WorldToLocal(muzzle.Pos))
-			missile:SetAngles(self:GetAngles())
-
-		end
-	end)
+	missile:SetPos(pos)
+	missile:SetAngles(self:GetAngles())
 
 	missile:SetParent(self)
 	missile:SetParentPhysNum(0)
@@ -580,7 +573,6 @@ function ENT:AddMissile()
 	if self.ProtectMissile then missile:SetNotSolid(true) end
 
 	missile:SetNWEntity( "Launcher", missile.Launcher )
-
 	missile:Spawn()
 
 	self.Missiles[NextIdx + 1] = missile
@@ -669,14 +661,8 @@ function MakeACF_Rack(Owner, Pos, Angle, Id)
 	end
 
 	-- Custom BS for karbine. Magazine Size, Mag reload Time
-	Rack.MagSize = 1
-	if gundef["magsize"] then
-		Rack.MagSize = math.max(Rack.MagSize, gundef["magsize"] or 1)
-	end
-	Rack.MagReload = 0
-	if gundef["magreload"] then
-		Rack.MagReload = math.max(Rack.MagReload, gundef["magreload"])
-	end
+	Rack.MagSize = table.Count(gundef.mountpoints) or 1
+	Rack.MagReload = gundef.magreload or 0
 
 	local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
 
@@ -747,9 +733,9 @@ function ENT:FireMissile()
 
 			ReloadTime = self:GetFireDelay(missile)
 
-			local attach, inverted, muzzle = self:GetMuzzle(curShot - 1, missile)
+			local attach, inverted, pos = self:GetMuzzle(curShot - 1, missile)
 
-			local MuzzleVec		= muzzle.Ang:Forward()
+			local MuzzleVec		= self:GetAngles():Forward()
 
 			local coneAng		= math.tan(math.rad(self:GetInaccuracy()))
 			local randUnitSquare	= (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
@@ -771,7 +757,7 @@ function ENT:FireMissile()
 
 			local bdata = missile.BulletData
 
-			bdata.Pos = muzzle.Pos
+			bdata.Pos = pos
 			bdata.Flight = (self:GetAngles():Forward() + spread):GetNormalized() * (bdata.MuzzleVel or missile.MinimumSpeed or 1) * (inverted and -1 or 1)
 
 			if missile.RackModelApplied then
@@ -790,7 +776,7 @@ function ENT:FireMissile()
 				missile.BulletData.Pitch = self.SoundPitch
 			end
 
-			missile:DoFlight(bdata.Pos, ShootVec)
+			missile:DoFlight(pos, ShootVec)
 			missile:Launch()
 
 			self:SetLoadedWeight()

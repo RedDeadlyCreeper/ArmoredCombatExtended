@@ -242,6 +242,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 					end
 
 					if not (Occ.Hit and Occ.Entity:EntIndex() ~= Tar:EntIndex()) and not (not Occ.Hit and NewHitpos ~= NewHitat) then
+
 						BlastRes = ACF_Damage ( Tar	, Blast  , AreaAdjusted , 0	, Inflictor , 0	, Gun , "HE" )
 						FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
 
@@ -310,10 +311,20 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 	if SpallMul > 0 and Caliber * 10 > UsedArmor and Caliber > 3 then
 
 		-- Normal spalling core
-		local TotalWeight = PI * (Caliber / 2) ^ 2 * math.max(UsedArmor, 30) * 150
-		local Spall = math.min(math.floor((Caliber - 3) * ACF.KEtoSpall * SpallMul * 1.33) * ACF.SpallMult, 24)
+		--For better consistency against light armor, spall no longer cares about the thickness of the armor but moreso the hole the cannon punches through and the energy it uses doing so.
+
+		--Weight factor variable. Affects both the weight of the spall and indirectly affects the caliber of the spall
+		--0.75 results in 11mm spall with a 120mm SBC
+		--15 results in 20mm spall
+		local WeightFactor = 15
+
+		--Direct multiplier for spall velocity, used to fine-tune the spall penetration
+		local Velocityfactor = 300
+
+		local TotalWeight = PI * (Caliber / 2) ^ 2 * ArmorMul * WeightFactor
+		local Spall = math.min(math.floor((Caliber - 3) * ACF.KEtoSpall * SpallMul * 1.33) * ACF.SpallMult, 32)
 		local SpallWeight = TotalWeight / Spall * SpallMul
-		local SpallVel = (KE * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul
+		local SpallVel = (KE * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul * Velocityfactor
 		local SpallArea = (SpallWeight / 7.8) ^ 0.33
 		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, 800)
 
@@ -329,7 +340,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 
 			ACE.Spall[Index] = {}
 			ACE.Spall[Index].start  = HitPos
-			ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized() + VectorRand() / 3):GetNormalized() * math.max( SpallVel * 10, math.random(450,600) ) --I got bored of spall not going across the tank
+			ACE.Spall[Index].endpos = HitPos + ( HitVec:GetNormalized() + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVel, 600 ) --Spall endtrace. Used to determine spread and the spall trace length. Only adjust the value in the max to determine the minimum distance spall will travel. 600 should be fine.
 			ACE.Spall[Index].filter = table.Copy(Filter)
 			ACE.Spall[Index].mins	= Vector(0,0,0)
 			ACE.Spall[Index].maxs	= Vector(0,0,0)
@@ -1170,3 +1181,5 @@ function ACE_CalculateHERadius( HEWeight )
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 	return Radius
 end
+--
+

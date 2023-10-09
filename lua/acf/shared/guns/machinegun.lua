@@ -7,7 +7,7 @@ ACF_defineGunClass("MG", {
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.9,
 	year = 1910,
-	sound = "weapons/ACF_Gun/mg_fire4.wav",
+	sound = "ace_weapons/multi_sound/7_62mm_multi.mp3",
 	noloader = true,
 
 } )

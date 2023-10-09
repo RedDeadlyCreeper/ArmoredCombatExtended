@@ -664,3 +664,26 @@ r100
 *r162
 - Reverted a change that caused problems with traces.
 - Default sound level adjusted to 100%. by Cheezus
+
+*r163
+- Added scalable fueltanks. Included several shapes for any engineering issues.
+- Added Mine limit per user. New mines will remove the old one if passed.
+- Added legality checks to crewseats. Added penalties by angle.
+- Added new kornet launcher tubes (2x and 4x kornet tubes). Thanks GolemMan.
+- Added APFSDS to autoloaders.
+- Added GPS guidance. Included into several strike dedicated ordnances. By RDC.
+- Added Wind. Affects smoke. By KemGus.
+- Improved crewseats with nice features. Loaders have stamina and only one will provide the max rof
+- increased all autoloaders mag size to 12.
+- Rebalanced IRST. By RDC.
+- Rebalanced Spalling. By RDC.
+- Rebalanced several armor materials. Nerfed rubber and added extra parameters to damage. Coutersy of RDC.
+- Reduced plunging fuze penetration.
+- Re-added SWEP launchers. This time they take flares into account. Courtesy of RDC
+- Added new e2 functions.
+- Improved SA accuracy.
+- Fixed missile positioning on racks.
+- Fixed cases with scalable ents reseting its size by fullupdates/lag.
+- Alot of bug fixes
+- Removed IR from several ASM and ATGM. By RDC.
+- Removed old armor analyzer.

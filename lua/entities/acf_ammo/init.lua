@@ -244,17 +244,17 @@ do
 					Ammo.IsScalable = true
 
 					local Scale = CreateRealScale(Id)
+					local ModelData = ACE.ModelData["Box"]
 
-					Id		= Scale
-					Model	= "models/holograms/rcube_thin.mdl"
-					Weight	= (Scale.x * Scale.y * Scale.z) / 200
-					Dimensions  = Scale
+					Id           = Scale
+					Model        = ModelData.Model
+					Weight       = (Scale.x * Scale.y * Scale.z) / 200
+					Dimensions   = Scale
 
-					local ModelData = ACE.ModelData[Model]
-					local DefaultSize	= ModelData.DefaultSize
-					local Mesh		= ModelData.CustomMesh
-					local PhysMaterial  = ModelData.physMaterial
-					local EntityScale = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize)
+					local DefaultSize    = ModelData.DefaultSize
+					local Mesh           = ModelData.CustomMesh
+					local PhysMaterial   = ModelData.physMaterial
+					local EntityScale    = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize)
 
 					Ammo.ScaleData = {
 						Mesh = Mesh,

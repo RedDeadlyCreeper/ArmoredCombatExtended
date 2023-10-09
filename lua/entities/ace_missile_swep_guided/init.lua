@@ -17,13 +17,28 @@ function ENT:Initialize()
 	self.MissileBurnTime = 15
 	self.EnergyRetention = 0.98
 	self.MaxTurnRate = 30
+	self.LeadMul = 1 --A higher leadmul means it's easier to force the missile to bleed a missile's energy. Lower can potentially be more efficient by reducing overcorrection
+
+
+	self.DestructOnMiss = false --Detonate the missile the distance to the target increases(when the missile misses or runs out of energy)
 
 	self.SpecialHealth  = true  --If true, use the ACF_Activate function defined by this ent
 	self.SpecialDamage  = true  --If true, use the ACF_OnDamage function defined by this ent
 
-	self.Gravity = 0
-	self.lastTravelTime = 50000000
+	self.TopAttackGuidance = false
+	self.DirectFireDist = 125 * 39.37
 
+	self.MotorIncrements = 1 --Ramp up thrust, Percent rocket thrust per second
+
+	self.Gravity = 0
+	self.lastDistance = 50000000
+
+	self.SeekSensitivity = 1
+	self.HeatAboveAmbient = 21 --Minimum Seeker Temp
+	self.DecoyResiliance = 3
+	self.TrackCone = 30
+
+	self.CurrentFuse = 0
 	self.FuseTime = 10
 	self.LastTime = CurTime()
 	self.HeightOffset = Vector()
@@ -78,7 +93,7 @@ function ENT:Detonate()
 	self:DeleteOnRemove(self.FakeCrate)
 
 	self.Bulletdata["Flight"] = self:GetForward():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
-	self.Bulletdata.Pos = self:GetPos() + self:GetForward() * 2
+	self.Bulletdata.Pos = self:GetPos() + self:GetForward()
 	self.Bulletdata.Owner = self:CPPIGetOwner()
 
 	self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
@@ -97,7 +112,7 @@ function ENT:OnRemove()
 end
 
 function ENT:PhysicsCollide()
-	if self.FuseTime < 0 then return end
+	if self.CurrentFuse > self.FuseTime then return end
 
 	self:Detonate()
 end
@@ -107,16 +122,17 @@ function ENT:Think()
 	local DelTime = curtime-self.LastTime
 
 	local pos = self:GetPos()
+	local vel = self:GetVelocity()
 
-	self.FuseTime = self.FuseTime - DelTime
-	self.MissileBurnTime = self.MissileBurnTime - DelTime
+
+	self.CurrentFuse = self.CurrentFuse + DelTime
 	self.LastTime = curtime
 
 	-- These are needed for missile radars to work
 	self.LastVel = self:GetVelocity()
 	self.CurPos = pos
 
-	if self.IsJavelin and not self.StartDist and IsValid(self.tarent) then
+	if self.TopAttackGuidance and not self.StartDist and IsValid(self.tarent) then
 		local posDiff = (self.tarent:GetPos() - pos)
 		self.StartDist = Vector(posDiff.x, posDiff.y, 0):Length()
 	end
@@ -134,16 +150,18 @@ function ENT:Think()
 		self:SetPos(tr.HitPos + self:GetForward() * -18)
 		self:Detonate()
 	else
-		if self.MissileBurnTime < 0 then
-			if self.MissileBurnTime > -1 then
+		if self.CurrentFuse > self.MissileBurnTime then
 				self:StopParticles()
-			end
+
+		else
 
 			self.MissileThrust = self.MissileThrust * self.EnergyRetention
-			self.Gravity = 9.8 * 39.37 * DelTime
+
 		end
 
-		self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust + Vector(0, 0, -self.Gravity)))
+		self.Gravity = 9.8 * 39.37 * DelTime --Gravity is always active. Makes it harder for missiles to climb high.
+
+		self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust * math.Min( self.CurrentFuse * self.MotorIncrements,1 ) + Vector(0, 0, -self.Gravity)))
 
 		debugoverlay.Line(self.LastPos, pos, 10, Color(0, 0, 255))
 
@@ -157,44 +175,49 @@ function ENT:Think()
 		local distXY = Vector(posDiff.x, posDiff.y, 0):Length()
 		local travelTime = dist / self:GetVelocity():Length()
 		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime * (self.LeadMul or 1))
+		local tposDist = (TPos - pos):Length()
 
-		if self.IsJavelin then
+		if self.TopAttackGuidance then
 			-- Angle of attack increases with distance if we're in top attack mode, because the missile needs time to turn
 			-- Start at 15 degrees, max at 30 degrees, increase by 1 degree every 200 units
-			if self.TopAttack and math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - self.DirectFireDist) / 200 + 15, 15, 30) then
+			if math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - self.DirectFireDist) / 200 + 15, 15, 30) then
 				self.HeightOffset = Vector(0, 0, self.StartDist / 2)
 			else
 				self.HeightOffset = Vector()
 			end
 		end
 
-		local d = (TPos + self.HeightOffset) - pos
+		local d = (TPos + self.HeightOffset + Vector( 0,0, tposDist * 9.8 / (vel:Length() ) * 8 )) - pos
 
 		if self.RadioDist and d:Length() < self.RadioDist then
 			self:Detonate()
+			--print("Proxy Fuse")
 		end
 
-		local deltaTravelTime = self.lastTravelTime - travelTime
-		self.lastTravelTime = travelTime
+		local deltaDistance = self.lastDistance - dist --Use distance instead of traveltime because it is better indicitive of a miss and won't detonate a gliding missile still moving towards the target
+		self.lastDistance = dist
 
-		if deltaTravelTime > 0 then -- Missile is moving towards target
+		if deltaDistance > 0 then -- Missile is moving towards target
 			local AngAdjust = self:WorldToLocalAngles((d):Angle())
 			local adjustedrate = self.MaxTurnRate * DelTime
 			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
 
 			self:SetAngles(AngAdjust)
 		else
-			if not self.IsJavelin then
+			if self.DestructOnMiss then
 				self:Detonate()
-			else
-				self.FuseTime = self.FuseTime * 0.5
+				--print("Self Destruct")
 			end
 		end
+
+		self:RecalculateGuidance()
+
 	else
+		--print("No Target")
 		self:Detonate()
 	end
 
-	if self.FuseTime < 0 then
+	if self.CurrentFuse > self.FuseTime then
 		self:Detonate()
 	end
 end
@@ -266,3 +289,152 @@ function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )	--This f
 	end
 	return HitRes
 end
+
+
+
+
+
+
+
+
+--===========================================================================================
+----- Guidance Related
+--===========================================================================================
+
+
+
+
+function ENT:RecalculateGuidance()
+
+	self.tarent = self:AcquireLock()
+
+end
+
+
+
+
+
+
+
+
+
+function ENT:GetWhitelistedEntsInCone()
+
+	local ScanArray = ACE.contraptionEnts
+	if table.IsEmpty(ScanArray) then return {} end
+
+	local WhitelistEnts = {}
+	local LOSdata	= {}
+	local LOStr		= {}
+
+	local IRSTPos	= self:GetPos()
+
+	local entpos		= Vector()
+	local difpos		= Vector()
+	local dist		= 0
+
+	local MinimumDistance = 1	*  39.37
+	local MaximumDistance = 2400  *  39.37
+
+	for _, scanEnt in ipairs(ScanArray) do
+
+		-- skip any invalid entity
+		if IsValid(scanEnt) then
+
+			entpos  = scanEnt:GetPos()
+			difpos  = entpos - IRSTPos
+			dist	= difpos:Length()
+
+			if dist > MinimumDistance and dist < MaximumDistance then
+
+				LOSdata.start		= IRSTPos
+				LOSdata.endpos		= entpos
+				LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
+				LOSdata.filter		= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
+				LOSdata.mins			= vector_origin
+				LOSdata.maxs			= LOSdata.mins
+
+				LOStr = util.TraceHull( LOSdata )
+
+				--Trace did not hit world
+				if not LOStr.Hit then
+					table.insert(WhitelistEnts, scanEnt)
+				end
+			end
+		end
+	end
+
+	return WhitelistEnts
+
+end
+
+function ENT:AcquireLock()
+
+	local found			= self:GetWhitelistedEntsInCone()
+
+	local IRSTPos		= self:GetPos()
+
+	local besterr		= math.huge --Hugh mungus number
+
+	local entpos			= Vector()
+	local difpos			= Vector()
+	local nonlocang		= Angle()
+	local ang			= Angle()
+	local absang			= Angle()
+	local dist			= 0
+
+	local bestEnt		= NULL
+
+	local LockCone = self.TrackCone
+
+	for _, scanEnt in ipairs(found) do
+		entpos	= scanEnt:WorldSpaceCenter()
+		difpos	= (entpos - IRSTPos)
+
+		nonlocang	= difpos:Angle()
+		ang		= self:WorldToLocalAngles(nonlocang)	--Used for testing if inrange
+		absang	= Angle(math.abs(ang.p), math.abs(ang.y), 0)  --Since I like ABS so much
+
+		local physEnt = scanEnt:GetPhysicsObject()
+
+		if absang.p < LockCone and absang.y < LockCone then --Entity is within seeker cone
+			--if the target is a Heat Emitter, track its heat
+			if scanEnt.Heat then
+				Heat = self.SeekSensitivity * scanEnt.Heat
+			else --if is not a Heat Emitter, track the friction's heat
+
+				if IsValid(physEnt) and not physEnt:IsMoveable() then
+					continue
+				end
+
+				dist = difpos:Length()
+				Heat = ACE_InfraredHeatFromProp(self, scanEnt, dist)
+			end
+
+			--Skip if not Hotter than AmbientTemp in deg C.
+			if Heat > ACE.AmbientTemp + self.HeatAboveAmbient then
+
+				--Could do pythagorean stuff but meh, works 98% of time
+				local err = absang.p + absang.y
+
+				if self.tarent == scanEnt then
+					err = err / self.DecoyResiliance
+				end
+
+				err = err - Heat
+
+				--Sorts targets as closest to being directly in front of radar
+				if err < besterr then
+					besterr = err
+					bestEnt = scanEnt
+				end
+
+
+				--debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
+			end
+		end
+	end
+
+	return bestEnt or NULL
+end
+

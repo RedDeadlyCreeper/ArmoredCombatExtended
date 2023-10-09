@@ -36,13 +36,9 @@ SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
 SWEP.Primary.Delay			= 1
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 3
+SWEP.Primary.DefaultClip	= 11
 SWEP.Primary.Automatic		= 0
-SWEP.Primary.Ammo		= "Grenade"
-
-SWEP.Secondary.Ammo		= "none"
-SWEP.Secondary.ClipSize		= -1
-SWEP.Secondary.DefaultClip	= -1
+SWEP.Primary.Ammo		= "CombineHeavyCannon"
 
 SWEP.ReloadSoundEnabled = 1
 
@@ -76,37 +72,28 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	local owner = self:GetOwner()
+	local Owner = self:GetOwner()
 
-	self.BulletData.Owner = owner
+	self.BulletData.Owner = Owner
 	self.BulletData.Gun = self
 
-	if not owner:HasGodMode() then
-		local ent = ents.Create( "ace_boundingmine" )
+	if not Owner:HasGodMode() then
 
-		if ( IsValid( ent ) ) then
+		local Forward   = Owner:EyeAngles():Forward()
+		local Pos       = Owner:GetShootPos() + Forward * 32
+		local Angle     = Owner:EyeAngles()
 
-			local Forward = owner:EyeAngles():Forward()
+		ACE_CreateMine( "Bounding-APL", Pos, Angle, Owner )
 
-			ent:SetPos( owner:GetShootPos() + Forward * 32 )
-			ent:SetAngles( owner:EyeAngles() )
-			ent:Spawn()
-			ent:SetVelocity( Forward * 10 )
-			owner:AddCleanup( "aceexplosives", ent )
-
-			if CPPI then
-				ent:CPPISetOwner( Entity(0) )
-			end
-			ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
-		end
 	end
+
 	self.lastFire = CurTime()
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	owner:SetAnimation( PLAYER_ATTACK1 )
+	Owner:SetAnimation( PLAYER_ATTACK1 )
 
 	if self:Ammo1() > 0 then
-		owner:RemoveAmmo( 1, "Grenade")
+		Owner:RemoveAmmo( 1, "Grenade")
 	else
 		self:TakePrimaryAmmo(1)
 	end

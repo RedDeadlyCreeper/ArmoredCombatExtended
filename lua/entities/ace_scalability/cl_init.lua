@@ -11,13 +11,6 @@ function ENT:Initialize()
 	end
 end
 
---Really needed?
-function ENT:Draw()
-
-	self:DrawModel()
-
-end
-
 --Brought from ACF3. Fixes the physgun grabbing beam glitch
 function ENT:CalcAbsolutePosition() -- Faking sync
 	local PhysObj  = self:GetPhysicsObject()
@@ -64,6 +57,7 @@ local function BuildRealPhysics( entity, Scale )
 		local Mesh			= ModelData[Model].CustomMesh or PhysObj:GetMeshConvexes()
 		local PhysMaterial  = ModelData[Model].physMaterial or ""
 
+
 		if entity.ConvertMeshToScale then
 			Mesh = entity:ConvertMeshToScale(Mesh, Scale)
 		end
@@ -84,6 +78,23 @@ local function BuildRealPhysics( entity, Scale )
 	end
 end
 
+local function CreatePropVisualScale( entity, Scale )
+
+	BuildFakePhysics( entity )
+
+	--If no scale is provided, we will assume the matrix already has it.
+	if not Scale then
+		Scale = entity.Matrix:GetScale()
+	end
+
+	entity.Matrix = Matrix()
+	entity.Matrix:Scale(Scale)
+	entity:EnableMatrix("RenderMultiply", entity.Matrix)
+
+	BuildRealPhysics( entity, Scale )
+
+end
+
 net.Receive("ACE_Scalable_Network", function()
 
 	local x = net.ReadFloat()
@@ -93,16 +104,8 @@ net.Receive("ACE_Scalable_Network", function()
 	local entity = net.ReadEntity()
 
 	if IsValid(entity) then
-
-		BuildFakePhysics( entity )
-
 		local Scale = Vector(x,y,z)
-		entity.Matrix = Matrix()
-		entity.Matrix:Scale(Scale)
-		entity:EnableMatrix("RenderMultiply", entity.Matrix)
-
-		BuildRealPhysics( entity, Scale )
-
+		CreatePropVisualScale( entity, Scale )
 	end
 end)
 
@@ -151,3 +154,14 @@ do -- Dealing with visual clip's bullshit
 		return EntMeta.DisableMatrix(self, Type, ...)
 	end
 end
+
+--This workaround fixes the issue with scales being reseted after several lag or someone requesting a fullupdate.
+--Unlike the initial spawn, the scale matrix is already networked at this point. So we will just request the rebuild.
+hook.Remove( "NetworkEntityCreated", "ACE_RefreshScalables_FullUpdate" )
+hook.Add( "NetworkEntityCreated", "ACE_RefreshScalables_FullUpdate", function( entity )
+
+	if entity.Matrix then
+		CreatePropVisualScale( entity, nil )
+	end
+
+end )

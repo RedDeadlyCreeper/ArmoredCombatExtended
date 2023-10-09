@@ -84,15 +84,18 @@ end
 
 function this:PerformDetonation( missile, bdata, phys, pos )
 
-	--HEAT system breaks and it becomes unusable. THEAT cannot be used until a proof can justify it.
+	--HEAT system breaks and it becomes unusable. THEAT cannot be used until a proof can justify it. Really tandem doesn't exist since it's an Explosively formed penetrator.
 	if not missile.PlungingDetonation or bdata.Type == "THEAT" then
 		bdata.Type = "HE"
 	end
 
-	bdata.Flight = missile:GetUp() * - 100
+	bdata.Flight = missile:GetUp() * - 200
 
 	bdata.Owner = bdata.Owner or missile.Owner
 	bdata.Pos	= pos + (missile.DetonateOffset or bdata.Flight)
+
+	--Simple way to reduce penetration.
+	bdata.PenArea = bdata.PenArea * ACF.HEATPlungingReduction
 
 	bdata.NoOcc =	missile
 	bdata.Gun	=	missile

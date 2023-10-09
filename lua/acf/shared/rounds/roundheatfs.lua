@@ -113,6 +113,7 @@ function Round.convert( _, PlayerData )
 	Data.DetonatorAngle = 80
 
 	Data.Detonated = false
+	Data.HEATLastPos	= Vector(0,0,0)
 	Data.NotFirstPen = false
 	Data.BoomPower = Data.PropMass + Data.FillerMass
 
@@ -205,6 +206,7 @@ function Round.detonate( _, Bullet, HitPos, HitNormal )
 	local DeltaTime = SysTime() - Bullet.LastThink
 	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized() * (math.min(ACF.PhysMaxVel * DeltaTime,Bullet.FlightTime * Bullet.Flight:Length()) + 25)
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
+	Bullet.HEATLastPos = HitPos --Used to backtrack the HEAT's travel distance
 
 end
 
@@ -221,7 +223,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic * HitRes.Loss + 0.2) * 64 , Bullet.CannonCaliber * 2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic * HitRes.Loss + 0.2 , Bullet.CannonCaliber * 2 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37
 
 				return "Penetrated"
@@ -230,6 +232,11 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			end
 
 		else
+
+			local distanceTraveled = (HitPos-Bullet.HEATLastPos):Length()
+			Bullet.Flight = Bullet.Flight * (1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 ))
+--			print("Meters Traveled: "..distanceTraveled/39.37)
+--			print("Speed Reduction: "..(1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 )).."x") --
 
 			local Speed = Bullet.Flight:Length() / ACF.VelScale
 			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )

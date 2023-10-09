@@ -95,7 +95,7 @@ ACF_defineGun("70mmFFAR", { --id
 	},
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "GPS"},
 	fuses	= {"Contact", "Timed"},
 
 	racks	= {["70mm7xPOD"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'

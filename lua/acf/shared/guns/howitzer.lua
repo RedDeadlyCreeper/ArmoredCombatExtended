@@ -6,6 +6,7 @@ ACF_defineGunClass("HW", {
 	desc = ACFTranslation.GunClasses[8],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.5,
+	maxrof = 20, -- maximum rounds per minute
 	year = 1900,
 	sound = "ace_weapons/multi_sound/howitzer_multi.mp3",
 
@@ -18,8 +19,9 @@ ACF_defineGun("75mmHW", { --id
 	model = "models/howitzer/howitzer_75mm.mdl",
 	sound = "ace_weapons/multi_sound/howitzer_multi.mp3",
 	gunclass = "HW",
-	caliber = 7.5,
+	caliber = 24,
 	weight = 550,
+	maxrof = 20, -- maximum rounds per minute
 	year = 1900,
 	round = {
 		maxlength = 60,
@@ -35,6 +37,7 @@ ACF_defineGun("105mmHW", {
 	gunclass = "HW",
 	caliber = 10.5,
 	weight = 980,
+	maxrof = 14, -- maximum rounds per minute
 	year = 1900,
 	round = {
 		maxlength = 86,
@@ -50,6 +53,7 @@ ACF_defineGun("122mmHW", {
 	gunclass = "HW",
 	caliber = 12.2,
 	weight = 1450,
+	maxrof = 11, -- maximum rounds per minute
 	year = 1900,
 	round = {
 		maxlength = 106,
@@ -65,6 +69,7 @@ ACF_defineGun("155mmHW", {
 	gunclass = "HW",
 	caliber = 15.5,
 	weight = 2100,
+	maxrof = 9, -- maximum rounds per minute
 	year = 1900,
 	round = {
 		maxlength = 124,
@@ -79,6 +84,7 @@ ACF_defineGun("203mmHW", {
 	sound = "ace_weapons/multi_sound/howitzer_multi.mp3",
 	gunclass = "HW",
 	caliber = 20.3,
+	maxrof = 4, -- maximum rounds per minute
 	weight = 3900,
 	year = 1900,
 	round = {
@@ -96,6 +102,7 @@ ACF_defineGun("240mmHW", {
 	gunclass = "HW",
 	caliber = 24.0,
 	weight = 8000,
+	maxrof = 3, -- maximum rounds per minute
 	year = 1900,
 	round = {
 		maxlength = 192.0,
@@ -111,6 +118,7 @@ ACF_defineGun("290mmHW", {
 	gunclass = "HW",
 	caliber = 29,
 	weight = 26800,
+	maxrof = 2.1, -- maximum rounds per minute
 	year = 1900,
 	round = {
 		maxlength = 360,
@@ -126,6 +134,7 @@ ACF_defineGun("406mmHW", {
 	gunclass = "HW",
 	caliber = 40.6,
 	weight = 50000,
+	maxrof = 1.5, -- maximum rounds per minute
 	year = 1920,
 	round = {
 		maxlength = 540,

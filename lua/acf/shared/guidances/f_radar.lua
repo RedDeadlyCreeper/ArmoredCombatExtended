@@ -122,8 +122,11 @@ function this:GetWhitelistedEntsInCone(missile)
 		-- skip any invalid entity
 		if not scanEnt:IsValid() then continue end
 
-		-- skip any flare from vision
-		if scanEnt:GetClass() == "ace_flare" then continue end
+
+--No sir I will not ignore the flares. They "might" contain chaff
+
+--		-- skip any flare from vision.
+--		if scanEnt:GetClass() == "ace_flare" then continue end
 
 		local entpos = scanEnt:GetPos()
 		local difpos = entpos - missilePos
@@ -147,7 +150,7 @@ function this:GetWhitelistedEntsInCone(missile)
 				local ConeInducedGCTRSize = dist / 100 --2 meter wide tracehull for every 100m distance
 				local GCtr = util.TraceHull( {
 					start = entpos,
-					endpos = entpos + difpos:GetNormalized() * 1000 ,
+					endpos = entpos + difpos:GetNormalized() * 2000 ,
 					collisiongroup  = COLLISION_GROUP_WORLD,
 					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
 					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),

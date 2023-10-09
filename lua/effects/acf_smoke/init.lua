@@ -53,36 +53,44 @@ local smokes = {
 	"particle/smokesprites_0008"
 }
 
-local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, Density, i, wind, SmokeColor, DeploySpeed, Lifetime)
-	local Smoke = self.Emitter:Add( smokes[math.random(1, #smokes)], Ground.HitPos )
-	if (Smoke) then
-		Smoke:SetVelocity( (ShootVector + Vector(0, 0, 0.2)) * (Radius * RadiusMod) * DeploySpeed )
-		Smoke:SetLifeTime( 0 )
-		Smoke:SetDieTime( math.Clamp(Lifetime, 1, 60) )
-		Smoke:SetStartAlpha( math.Rand( 200, 255 ) )
-		Smoke:SetEndAlpha( 0 )
-		Smoke:SetStartSize( math.Clamp((Radius * RadiusMod) * DeploySpeed, 5, 1000) )
-		Smoke:SetEndSize( math.Clamp(Radius * RadiusMod * 4, 150, 4000) )
-		Smoke:SetRoll( math.Rand(0, 360) )
-		Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
-		Smoke:SetAirResistance( 100 * DeploySpeed )
-		Smoke:SetGravity( Vector( math.Rand( -10 , 10 ) + wind * 0.5 + (wind * i / Density), math.Rand( -10 , 10 ), math.Rand( 5 , 15 ) ) * DeploySpeed )
-		Smoke:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z )
+local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, SmokeColor, DeploySpeed, Lifetime)
+
+	local Smoke = self.Emitter:Add(smokes[math.random(1, #smokes)], Ground.HitPos)
+	if Smoke then
+		-- Calculate the wind effect on velocity and gravity
+		-- Apply wind effect based on wind direction and windStrength
+		local velocity = (ShootVector + Vector(0, 0, 0.2)) * DeploySpeed
+		local gravity = Vector(0, 0, 0) + ACF.Wind * 0.2
+
+
+		Smoke:SetVelocity(velocity)
+		Smoke:SetLifeTime(0)
+		Smoke:SetDieTime(math.Clamp(Lifetime, 1, 60))
+		Smoke:SetStartAlpha(math.Rand(200, 255))
+		Smoke:SetEndAlpha(0)
+		Smoke:SetStartSize(math.Clamp((Radius * RadiusMod) * DeploySpeed, 5, 1000))
+		Smoke:SetEndSize(math.Clamp(Radius * RadiusMod * 4, 150, 4000))
+		Smoke:SetRoll(math.Rand(0, 360))
+		Smoke:SetRollDelta(math.Rand(-0.2, 0.2))
+		Smoke:SetAirResistance(100)
+		Smoke:SetGravity(gravity)
+		Smoke:SetColor(SmokeColor.x, SmokeColor.y, SmokeColor.z)
 	end
 end
+
+
 
 
 function EFFECT:SmokeFiller( Ground, SmokeColor, Radius, DeploySpeed, Lifetime )
 
 	local Density = Radius / 18
 	local Angle = Ground.HitNormal:Angle()
-	local wind = ACF.SmokeWind or 0
 	local ShootVector = Ground.HitNormal * 0.5
 	--print(Radius .. ", " .. Density)
 
-	smokePuff(self, Ground, Vector(0, 0, 0.3), Radius, 1.5, Density, 0, wind, SmokeColor, DeploySpeed, Lifetime) --smoke filler initial upward puff
-	for i = 0, math.floor(Density) do
-		smokePuff(self, Ground, ShootVector, Radius, 1, Density, i, wind, SmokeColor, DeploySpeed, Lifetime)
+	smokePuff(self, Ground, Vector(0, 0, 0.3), Radius, 1.5, SmokeColor, DeploySpeed, Lifetime) --smoke filler initial upward puff
+	for _ = 0, math.floor(Density) do
+		smokePuff(self, Ground, ShootVector, Radius, 1, SmokeColor, DeploySpeed, Lifetime)
 
 		ShootVector = Angle and Angle:Up()
 		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)

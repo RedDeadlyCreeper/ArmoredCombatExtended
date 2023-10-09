@@ -110,6 +110,7 @@ function Round.convert( _, PlayerData )
 	Data.DetonatorAngle = 80
 
 	Data.Detonated		= false
+	Data.HEATLastPos	= Vector(0,0,0)
 	Data.NotFirstPen	= false
 	Data.BoomPower		= Data.PropMass + Data.FillerMass
 
@@ -201,6 +202,7 @@ function Round.detonate( _, Bullet, HitPos, HitNormal )
 	local DeltaTime		= SysTime() - Bullet.LastThink
 	Bullet.StartTrace	= Bullet.Pos - Bullet.Flight:GetNormalized() * math.min(ACF.PhysMaxVel * DeltaTime,Bullet.FlightTime * Bullet.Flight:Length())
 	Bullet.NextPos		= Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)	--Calculates the next shell position
+	Bullet.HEATLastPos = HitPos --Used to backtrack the HEAT's travel distance
 
 end
 
@@ -223,6 +225,13 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 		else --Bullet sends Jet
 
+			local distanceTraveled = (HitPos-Bullet.HEATLastPos):Length()
+			Bullet.Flight = Bullet.Flight * (1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 ))
+--			print("Meters Traveled: "..distanceTraveled/39.37)
+--			print("Speed Reduction: "..(1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 )).."x") --
+
+			Bullet.HEATLastPos = HitPos
+
 			Bullet.NotFirstPen = true
 
 			local Speed  = Bullet.Flight:Length() / ACF.VelScale
@@ -233,7 +242,9 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 				table.insert( Bullet.Filter , Target )
 
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic * HitRes.Loss + 0.2) * 64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic * HitRes.Loss + 0.2 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37
 
 				return "Penetrated"
@@ -429,8 +440,10 @@ function Round.guiupdate( Panel )
 	R3P = (ACF_Kinetic(Data.SlugMV * 39.37, Data.SlugMass, 999999).Penetration / Data.SlugPenArea) * ACF.KEtoRHA
 	local R4V, R4P = ACF_PenRanging(Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel, 800)
 	R4P = (ACF_Kinetic(Data.SlugMV * 39.37, Data.SlugMass, 999999).Penetration / Data.SlugPenArea) * ACF.KEtoRHA
+	local R5V, R5P = ACF_PenRanging(Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea * ACF.HEATPlungingReduction, Data.LimitVel, 100)
+	R5P = (ACF_Kinetic(Data.SlugMV * 39.37, Data.SlugMass, 999999).Penetration / Data.SlugPenArea / ACF.HEATPlungingReduction) * ACF.KEtoRHA
 
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : " .. (math.floor(Data.SlugMass * 10000) / 10) .. " g \nPenetrator Caliber : " .. (math.floor(Data.SlugCaliber * 100) / 10) .. " mm \nPenetrator Velocity : " .. math.floor(Data.MuzzleVel + Data.SlugMV) .. " m/s \nMax Penetration : " .. math.floor(Data.MaxPen) .. " mm RHA\n\n100m pen: " .. math.floor(R1P, 0) .. "mm @ " .. math.floor(R1V, 0) .. " m\\s\n200m pen: " .. math.floor(R2P, 0) .. "mm @ " .. math.floor(R2V, 0) .. " m\\s\n400m pen: " .. math.floor(R3P, 0) .. "mm @ " .. math.floor(R3V, 0) .. " m\\s\n800m pen: " .. math.floor(R4P, 0) .. "mm @ " .. math.floor(R4V, 0) .. " m\\s\n\nThe range data is an approximation and may not be entirely accurate.\n") --Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : " .. (math.floor(Data.SlugMass * 10000) / 10) .. " g \nPenetrator Caliber : " .. (math.floor(Data.SlugCaliber * 100) / 10) .. " mm \nPenetrator Velocity : " .. math.floor(Data.MuzzleVel + Data.SlugMV) .. " m/s \nMax Penetration : " .. math.floor(Data.MaxPen) .. " mm RHA\n\n100m pen: " .. math.floor(R1P, 0) .. "mm @ " .. math.floor(R1V, 0) .. " m\\s\n200m pen: " .. math.floor(R2P, 0) .. "mm @ " .. math.floor(R2V, 0) .. " m\\s\n400m pen: " .. math.floor(R3P, 0) .. "mm @ " .. math.floor(R3V, 0) .. " m\\s\n800m pen: " .. math.floor(R4P, 0) .. "mm @" .. math.floor(R4V, 0) .. " m\\s\n\nIf using Plunging Fuse: " .. math.floor(R5P, 0) .. "mm @ " .. math.floor(R5V, 0) .. " m\\s\n\nThe range data is an approximation and may not be entirely accurate.\n") --Proj muzzle penetration (Name, Desc)
 end
 
 list.Set("HERoundTypes", "HEAT", Round )

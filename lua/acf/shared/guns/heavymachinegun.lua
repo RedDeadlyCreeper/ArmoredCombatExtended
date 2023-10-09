@@ -7,7 +7,7 @@ ACF_defineGunClass("HMG", {
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.17,
 	year = 1935,
-	sound = "weapons/ACF_Gun/mg_fire3.wav",
+	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	noloader = true,
 
 	longbarrel = {

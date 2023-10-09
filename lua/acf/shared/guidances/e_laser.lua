@@ -57,22 +57,20 @@ function this:GetGuidance(missile)
 			return {TargetPos = nil}
 		end
 
-		local traceArgs =
-		{
+
+		local GCtr = util.TraceHull( {
 			start = missile:GetPos(),
-			endpos = posVec,
-			mask = MASK_SOLID_BRUSHONLY,
-			filter = {missile},
+			endpos = posVec ,
+			collisiongroup  = COLLISION_GROUP_WORLD,
 			mins = Vector(0,0,0),
-			maxs = Vector(0,0,0)
-		}
+			maxs = Vector(0,0,0),
+			filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
+		})
 
-		local res = util.TraceHull(traceArgs)
-
-		local dist = res.StartPos:Distance(res.HitPos)
-		if res.Hit and dist < 80 then
-			return {}
+		if (GCtr.Hit) then
+			return {TargetPos = nil}
 		end
+
 
 	end
 

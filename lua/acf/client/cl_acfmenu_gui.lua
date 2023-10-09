@@ -11,8 +11,33 @@
 local Classes = ACF.Classes
 local ACFEnts = ACF.Weapons
 
-local radarClasses = ACF.Classes.Radar
-local radars = ACF.Weapons.Radars
+local radarClasses    = Classes.Radar
+local radars          = ACFEnts.Radars
+
+local MainMenuIcon = "icon16/world.png"
+local ItemIcon = "icon16/brick.png"
+local ItemIcon2 = "icon16/newspaper.png"
+
+local function AmmoBuildList( ParentNode, NodeName, AmmoTable )
+
+	local AmmoNode = ParentNode:AddNode( NodeName, ItemIcon )
+
+	table.sort(AmmoTable, function(a,b) return a.id < b.id end )
+
+	for _,AmmoTable in pairs(AmmoTable) do
+
+		local EndNode = AmmoNode:AddNode( AmmoTable.name or "No Name" )
+		EndNode.mytable = AmmoTable
+
+		function EndNode:DoClick()
+			RunConsoleCommand( "acfmenu_type", self.mytable.type )
+			acfmenupanel:UpdateDisplay( self.mytable )
+		end
+
+		EndNode.Icon:SetImage( ItemIcon2 )
+
+	end
+end
 
 function PANEL:Init( )
 
@@ -22,129 +47,118 @@ function PANEL:Init( )
 	self:SetTall( ScrH() - 150 )
 
 	-- --Weapon Select
-	self.WeaponSelect = vgui.Create( "DTree", self )
-
-	-- --Tables definition
-	self.WeaponData = ACFEnts
-
+	local TreePanel = vgui.Create( "DTree", self )
 
 --[[=========================
 	Table distribution
 ]]--=========================
-	self.Classes			= Classes
+
 	self.GunClasses		= {}
 	self.MisClasses		= {}
 	self.ModClasses		= {}
 
-	for ID,Table in pairs(self.Classes) do
+	local FinalContainer = {}
 
-	self.GunClasses[ID] = {}
-	self.MisClasses[ID] = {}
-	self.ModClasses[ID] = {}
+	for ID,Table in pairs(Classes) do
 
-	for ClassID,Class in pairs(Table) do
+		self.GunClasses[ID] = {}
+		self.MisClasses[ID] = {}
+		self.ModClasses[ID] = {}
 
-		Class.id = ClassID
+		for ClassID,Class in pairs(Table) do
 
-		--Table content for Guns folder
-		if Class.type == "Gun" then
+			Class.id = ClassID
 
-			--print("Gun detected!")
-			table.insert(self.GunClasses[ID], Class)
+			--Table content for Guns folder
+			if Class.type == "Gun" then
 
-		--Table content for Missiles folder
-		elseif Class.type == "missile" then
+				--print("Gun detected!")
+				table.insert(self.GunClasses[ID], Class)
 
-			--print("Missile detected!")
-			table.insert(self.MisClasses[ID], Class)
+			--Table content for Missiles folder
+			elseif Class.type == "missile" then
 
+				--print("Missile detected!")
+				table.insert(self.MisClasses[ID], Class)
+
+			else
+
+				--print("Modded Gun detected!")
+				table.insert(self.ModClasses[ID], Class)
+
+			end
+
+		end
+
+		table.sort(self.GunClasses[ID], function(a,b) return a.id < b.id end )
+		table.sort(self.MisClasses[ID], function(a,b) return a.id < b.id end )
+		table.sort(self.ModClasses[ID], function(a,b) return a.id < b.id end )
+
+	end
+
+	for ID,Table in pairs(ACFEnts) do
+
+		FinalContainer[ID] = {}
+
+		for _,Data in pairs(Table) do
+			table.insert( FinalContainer[ID], Data )
+		end
+
+		if ID == "Guns" then
+			table.sort(FinalContainer[ID], function(a,b) if a.gunclass == b.gunclass then return a.caliber < b.caliber else return a.gunclass < b.gunclass end end)
 		else
-
-			--print("Modded Gun detected!")
-			table.insert(self.ModClasses[ID], Class)
-
+			table.sort(FinalContainer[ID], function(a,b) return a.id < b.id end )
 		end
 
 	end
 
-	table.sort(self.GunClasses[ID], function(a,b) return a.id < b.id end )
-	table.sort(self.MisClasses[ID], function(a,b) return a.id < b.id end )
-	table.sort(self.ModClasses[ID], function(a,b) return a.id < b.id end )
 
-	end
+	------------------- ACE information folder -------------------
 
-	self.WeaponDisplay = {}
-	local WeaponDisplay = ACFEnts
 
-	for ID,Table in pairs(WeaponDisplay) do
-	self.WeaponDisplay[ID] = {}
-	for _,Data in pairs(Table) do
-		table.insert(self.WeaponDisplay[ID], Data)
-	end
-
-	if ID == "Guns" then
-		table.sort(self.WeaponDisplay[ID], function(a,b) if a.gunclass == b.gunclass then return a.caliber < b.caliber else return a.gunclass < b.gunclass end end)
-	else
-		table.sort(self.WeaponDisplay[ID], function(a,b) return a.id < b.id end )
-	end
-
-	end
-
---[[=========================
-	ACE information folder
-]]--=========================
-
-	HomeNode = self.WeaponSelect:AddNode( "ACE Main Menu" , "icon16/world.png" ) --Main Menu folder
+	HomeNode = TreePanel:AddNode( "ACE Main Menu" , MainMenuIcon ) --Main Menu folder
 	HomeNode:SetExpanded(true)
 	HomeNode.mytable = {}
 	HomeNode.mytable.guicreate = (function( _, Table ) ACFHomeGUICreate( Table ) end or nil)
 	HomeNode.mytable.guiupdate = (function( _, Table ) ACFHomeGUIUpdate( Table ) end or nil)
 
 	function HomeNode:DoClick()
-	acfmenupanel:UpdateDisplay(self.mytable)
+		acfmenupanel:UpdateDisplay(self.mytable)
 	end
 
+	------------------- Guns folder -------------------
 
---[[=========================
-	Guns folder
-]]--=========================
 	local Guns = HomeNode:AddNode( "Guns" , "icon16/attach.png" ) --Guns folder
 
 	for _,Class in pairs(self.GunClasses["GunClass"]) do
 
-	local SubNode = Guns:AddNode( Class.name or "No Name" , "icon16/brick.png" )
+		local SubNode = Guns:AddNode( Class.name or "No Name" , ItemIcon )
 
-	for _, Ent in pairs(self.WeaponDisplay["Guns"]) do
-		if Ent.gunclass == Class.id then
+		for _, Ent in pairs(FinalContainer["Guns"]) do
+			if Ent.gunclass == Class.id then
 
-			local EndNode = SubNode:AddNode( Ent.name or "No Name")
-			EndNode.mytable = Ent
+				local EndNode = SubNode:AddNode( Ent.name or "No Name")
+				EndNode.mytable = Ent
 
-			function EndNode:DoClick()
-			RunConsoleCommand( "acfmenu_type", self.mytable.type )
-			acfmenupanel:UpdateDisplay( self.mytable )
+				function EndNode:DoClick()
+					RunConsoleCommand( "acfmenu_type", self.mytable.type )
+					acfmenupanel:UpdateDisplay( self.mytable )
+				end
+
+				EndNode.Icon:SetImage( "icon16/newspaper.png" )
 			end
-			EndNode.Icon:SetImage( "icon16/newspaper.png" )
 		end
 	end
 
-	end
+	------------------- Missiles folder -------------------
 
---[[=========================
-	Modded Guns folder
-]]--=========================
+	local Missiles = HomeNode:AddNode( "Missiles" , "icon16/wand.png" ) --Missiles folder
 
---print(table.Count(self.ModClasses))
+	for _,Class in pairs(self.MisClasses["GunClass"]) do
 
-	if next(self.ModClasses["GunClass"]) then	--this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder respectively!!
+		local SubNode = Missiles:AddNode( Class.name or "No Name" , ItemIcon )
 
-	local Mod = HomeNode:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
-
-		for _,Class in pairs(self.ModClasses["GunClass"]) do
-
-		local SubNode = Mod:AddNode( Class.name or "No Name" , "icon16/brick.png" )
-
-		for _, Ent in pairs(self.WeaponDisplay["Guns"]) do
+		for _, Ent in pairs(FinalContainer["Guns"]) do
 			if Ent.gunclass == Class.id then
 
 				local EndNode = SubNode:AddNode( Ent.name or "No Name")
@@ -156,262 +170,152 @@ function PANEL:Init( )
 				end
 				EndNode.Icon:SetImage( "icon16/newspaper.png" )
 			end
-
-		end
-
-	end
-
-	end
-
---[[=========================
-	Missiles folder
-]]--=========================
-
-	local Missiles = HomeNode:AddNode( "Missiles" , "icon16/wand.png" ) --Missiles folder
-
-	for _,Class in pairs(self.MisClasses["GunClass"]) do
-
-	local SubNode = Missiles:AddNode( Class.name or "No Name" , "icon16/brick.png" )
-
-	for _, Ent in pairs(self.WeaponDisplay["Guns"]) do
-		if Ent.gunclass == Class.id then
-
-			local EndNode = SubNode:AddNode( Ent.name or "No Name")
-			EndNode.mytable = Ent
-
-			function EndNode:DoClick()
-			RunConsoleCommand( "acfmenu_type", self.mytable.type )
-			acfmenupanel:UpdateDisplay( self.mytable )
-			end
-			EndNode.Icon:SetImage( "icon16/newspaper.png" )
 		end
 	end
 
-	end
 
---[[=========================
-	Ammo folder
-]]--=========================
+	------------------- Ammo folder -------------------
+
 	local Ammo = HomeNode:AddNode( "Ammo" , "icon16/box.png" ) --Ammo folder
 
-	local AP	= Ammo:AddNode("Armor Piercing Rounds", "icon16/brick.png" )
-	local HE	= Ammo:AddNode("High Explosive Rounds", "icon16/brick.png" )
-	local SPECS = Ammo:AddNode("Special Purpose Rounds" , "icon16/brick.png" )
-
---[[=========================
-	Ammo subfolder AP
-]]--=========================
-
-	local APAttribs = list.Get("APRoundTypes")
-	self.APAttribs = {}
-	for ID,Table in pairs(APAttribs) do
-	Table.id = ID
-	table.insert(self.APAttribs, Table)
-	end
-	table.sort(self.APAttribs, function(a,b) return a.id < b.id end )
-
-
-	for _,AmmoTable in pairs(self.APAttribs) do
-
-	local EndNode = AP:AddNode( AmmoTable.name or "No Name" )
-	EndNode.mytable = AmmoTable
-
-	function EndNode:DoClick()
-		RunConsoleCommand( "acfmenu_type", self.mytable.type )
-		acfmenupanel:UpdateDisplay( self.mytable )
-	end
-
-	EndNode.Icon:SetImage( "icon16/newspaper.png" )
-
-	end
-
---[[=========================
-	Ammo subfolder HE
-]]--=========================
-
-	local HEAttribs = list.Get("HERoundTypes")
-	self.HEAttribs = {}
-	for ID,Table in pairs(HEAttribs) do
-	Table.id = ID
-	table.insert(self.HEAttribs, Table)
-	end
-	table.sort(self.HEAttribs, function(a,b) return a.id < b.id end )
-
-
-	for _,AmmoTable in pairs(self.HEAttribs) do
-
-	local EndNode = HE:AddNode( AmmoTable.name or "No Name" )
-	EndNode.mytable = AmmoTable
-	function EndNode:DoClick()
-		RunConsoleCommand( "acfmenu_type", self.mytable.type )
-		acfmenupanel:UpdateDisplay( self.mytable )
-	end
-	EndNode.Icon:SetImage( "icon16/newspaper.png" )
-
-	end
-
---[[=========================
-	Ammo subfolder SPECS
-]]--=========================
-
-	local SPECSAttribs = list.Get("SPECSRoundTypes")
-	self.SPECSAttribs = {}
-	for ID,Table in pairs(SPECSAttribs) do
-	Table.id = ID
-	table.insert(self.SPECSAttribs, Table)
-	end
-	table.sort(self.SPECSAttribs, function(a,b) return a.id < b.id end )
-
-
-	for _,AmmoTable in pairs(self.SPECSAttribs) do
-
-	local EndNode = SPECS:AddNode( AmmoTable.name or "No Name" )
-	EndNode.mytable = AmmoTable
-	function EndNode:DoClick()
-		RunConsoleCommand( "acfmenu_type", self.mytable.type )
-		acfmenupanel:UpdateDisplay( self.mytable )
-	end
-	EndNode.Icon:SetImage( "icon16/newspaper.png" )
-
-	end
+	AmmoBuildList( Ammo, "Armor Piercing Rounds", list.Get("APRoundTypes") ) -- AP Content
+	AmmoBuildList( Ammo, "High Explosive Rounds", list.Get("HERoundTypes") )	-- HE/HEAT Content
+	AmmoBuildList( Ammo, "Special Purpose Rounds", list.Get("SPECSRoundTypes") ) -- Special Content
 
 	do
+		--[[==================================================
+							Mobility folder
+		]]--==================================================
 
-	--[[==================================================
-						Mobility folder
-	]]--==================================================
+		local Mobility    = HomeNode:AddNode( "Mobility" , "icon16/car.png" )	--Mobility folder
+		local Engines     = Mobility:AddNode( "Engines" , ItemIcon )
+		local Gearboxes   = Mobility:AddNode( "Gearboxes" , ItemIcon  )
+		local FuelTanks   = Mobility:AddNode( "Fuel Tanks" , ItemIcon  )
 
-	local Mobility	= HomeNode:AddNode( "Mobility" , "icon16/car.png" )	--Mobility folder
-	local Engines		= Mobility:AddNode( "Engines" , "icon16/brick.png" )
-	local Gearboxes	= Mobility:AddNode( "Gearboxes" , "icon16/brick.png"  )
-	local FuelTanks	= Mobility:AddNode( "Fuel Tanks" , "icon16/brick.png"  )
+		local EngineCatNodes    = {} --Stores all Engine Cats Nodes (V12, V8, I4, etc)
+		local GearboxCatNodes   = {} --Stores all Gearbox Cats Nodes (CVT, Transfer, etc)
 
-	local EngineCatNodes	= {} --Stores all Engine Cats Nodes (V12, V8, I4, etc)
-	local GearboxCatNodes	= {} --Stores all Gearbox Cats Nodes (CVT, Transfer, etc)
+		-------------------- Engine folder --------------------
 
-	-------------------- Engine folder --------------------
+		--TODO: Do a menu like fueltanks to engines & gearboxes? Would be cleaner.
 
-	--TODO: Do a menu like fueltanks to engines & gearboxes? Would be cleaner.
+		--Creates the engine category
+		for _, EngineData in pairs(FinalContainer["Engines"]) do
 
-	--Creates the engine category
-	for _, EngineData in pairs(self.WeaponDisplay["Engines"]) do
+			local category = EngineData.category or "Missing Cat?"
 
-		local category = EngineData.category or "Missing Cat?"
+			if not EngineCatNodes[category] then
 
-		if not EngineCatNodes[category] then
+				local Node = Engines:AddNode(category , ItemIcon)
 
-			local Node = Engines:AddNode(category , "icon16/brick.png")
+				EngineCatNodes[category] = Node
 
-			EngineCatNodes[category] = Node
-
-		end
-	end
-
-	--Populates engine categories
-	for _, EngineData in pairs(self.WeaponDisplay["Engines"]) do
-
-		local name = EngineData.name or "Missing Name"
-		local category = EngineData.category or ""
-
-		if EngineCatNodes[category] then
-			local Item = EngineCatNodes[category]:AddNode( name, "icon16/brick.png" )
-
-			function Item:DoClick()
-			RunConsoleCommand( "acfmenu_type", EngineData.type )
-			acfmenupanel:UpdateDisplay( EngineData )
 			end
 		end
-	end
 
-	-------------------- Gearbox folder --------------------
+		--Populates engine categories
+		for _, EngineData in pairs(FinalContainer["Engines"]) do
 
-	--Creates the gearbox category
-	for _, GearboxData in pairs(self.WeaponDisplay["Gearboxes"]) do
+			local name = EngineData.name or "Missing Name"
+			local category = EngineData.category or ""
 
-		local category = GearboxData.category
+			if EngineCatNodes[category] then
+				local Item = EngineCatNodes[category]:AddNode( name, ItemIcon )
 
-		if not GearboxCatNodes[category] then
-
-			local Node = Gearboxes:AddNode(category or "Missing?" , "icon16/brick.png")
-
-			GearboxCatNodes[category] = Node
-
-		end
-	end
-
-	--Populates gearbox categories
-	for _, GearboxData in pairs(self.WeaponDisplay["Gearboxes"]) do
-
-		local name = GearboxData.name or "Missing Name"
-		local category = GearboxData.category or ""
-
-		if GearboxCatNodes[category] then
-			local Item = GearboxCatNodes[category]:AddNode( name, "icon16/brick.png" )
-
-			function Item:DoClick()
-			RunConsoleCommand( "acfmenu_type", GearboxData.type )
-			acfmenupanel:UpdateDisplay( GearboxData )
+				function Item:DoClick()
+				RunConsoleCommand( "acfmenu_type", EngineData.type )
+				acfmenupanel:UpdateDisplay( EngineData )
+				end
 			end
 		end
-	end
 
-	-------------------- FuelTank folder --------------------
+		-------------------- Gearbox folder --------------------
 
-	--Creates the only button to access to fueltank config menu.
-	for _, FuelTankData in pairs(self.WeaponDisplay["FuelTanks"]) do
+		--Creates the gearbox category
+		for _, GearboxData in pairs(FinalContainer["Gearboxes"]) do
 
-		function FuelTanks:DoClick()
-			RunConsoleCommand( "acfmenu_type", FuelTankData.type )
-			acfmenupanel:UpdateDisplay( FuelTankData )
+			local category = GearboxData.category
+
+			if not GearboxCatNodes[category] then
+
+				local Node = Gearboxes:AddNode(category or "Missing?" , ItemIcon)
+
+				GearboxCatNodes[category] = Node
+
+			end
 		end
 
-		break
-	end
+		--Populates gearbox categories
+		for _, GearboxData in pairs(FinalContainer["Gearboxes"]) do
 
-	end
+			local name = GearboxData.name or "Missing Name"
+			local category = GearboxData.category or ""
 
+			if GearboxCatNodes[category] then
+				local Item = GearboxCatNodes[category]:AddNode( name, ItemIcon )
+
+				function Item:DoClick()
+				RunConsoleCommand( "acfmenu_type", GearboxData.type )
+				acfmenupanel:UpdateDisplay( GearboxData )
+				end
+			end
+		end
+
+		-------------------- FuelTank folder --------------------
+
+		--Creates the only button to access to fueltank config menu.
+		for _, FuelTankData in pairs(FinalContainer["FuelTanks"]) do
+
+			function FuelTanks:DoClick()
+				RunConsoleCommand( "acfmenu_type", FuelTankData.type )
+				acfmenupanel:UpdateDisplay( FuelTankData )
+			end
+
+			break
+		end
+	end
 	do
+		--[[==================================================
+							Sensor folder
+		]]--==================================================
 
-	--[[==================================================
-						Sensor folder
-	]]--==================================================
+		local sensors	= HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
 
-	local sensors	= HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
+		local antimissile = sensors:AddNode("Anti-Missile Radar" , ItemIcon  )
+		local tracking	= sensors:AddNode("Tracking Radar", ItemIcon)
+		local irst		= sensors:AddNode("IRST", ItemIcon)
 
-	local antimissile = sensors:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
-	local tracking	= sensors:AddNode("Tracking Radar", "icon16/brick.png")
-	local irst		= sensors:AddNode("IRST", "icon16/brick.png")
+		local nods = {}
 
-	local nods = {}
-
-	if radarClasses then
-		for k, v in pairs(radarClasses) do  --calls subfolders
-			if v.type == "Tracking-Radar" then
-			nods[k] = tracking:AddNode( v.name or "No Name" , "icon16/brick.png"	)
-			elseif v.type == "Anti-missile" then
-			nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"	)
-			elseif v.type == "IRST" then
-			nods[k] = irst:AddNode( v.name or "No Name" , "icon16/brick.png"	)
+		if radarClasses then
+			for k, v in pairs(radarClasses) do  --calls subfolders
+				if v.type == "Anti-missile" then
+					nods[k] = antimissile:AddNode( v.name or "No Name" , ItemIcon	)
+				elseif v.type == "Tracking-Radar" then
+					nods[k] = tracking
+				elseif v.type == "IRST" then
+					nods[k] = irst
+				end
 			end
+
+			--calls subfolders content
+			for _, Ent in pairs(radars) do
+
+				local curNode = nods[Ent.class]
+
+				if curNode then
+
+					local EndNode = curNode:AddNode( Ent.name or "No Name" )
+					EndNode.mytable = Ent
+
+					function EndNode:DoClick()
+						RunConsoleCommand( "acfmenu_type", self.mytable.type )
+						acfmenupanel:UpdateDisplay( self.mytable )
+					end
+					EndNode.Icon:SetImage( "icon16/newspaper.png" )
+				end
+			end --end radar folder
 		end
-
-		for _, Ent in pairs(radars) do --calls subfolders content
-
-			local curNode = nods[Ent.class]	--print(Ent.class)
-
-			if curNode then
-
-			local EndNode = curNode:AddNode( Ent.name or "No Name" )
-			EndNode.mytable = Ent
-
-			function EndNode:DoClick()
-				RunConsoleCommand( "acfmenu_type", self.mytable.type )
-				acfmenupanel:UpdateDisplay( self.mytable )
-			end
-				EndNode.Icon:SetImage( "icon16/newspaper.png" )
-			end
-		end --end radar folder
-	end
 
 	end
 
@@ -421,7 +325,7 @@ function PANEL:Init( )
 						Settings folder
 	]]--==================================================
 
-	local OptionsNode = self.WeaponSelect:AddNode( "Settings" ) --Options folder
+	local OptionsNode = TreePanel:AddNode( "Settings" ) --Options folder
 
 	local CLNod	= OptionsNode:AddNode("Client" , "icon16/user.png") --Client folder
 	local SVNod	= OptionsNode:AddNode("Server", "icon16/cog.png")  --Server folder
@@ -448,7 +352,7 @@ function PANEL:Init( )
 					Contact & Support folder
 	]]--==================================================
 
-	local Contact =  self.WeaponSelect:AddNode( "Contact Us" , "icon16/feed.png" ) --Options folder
+	local Contact =  TreePanel:AddNode( "Contact Us" , "icon16/feed.png" ) --Options folder
 	Contact.mytable = {}
 
 	Contact.mytable.guicreate = (function( _, Table ) ContactGUICreate( Table ) end or nil)
@@ -458,6 +362,8 @@ function PANEL:Init( )
 	end
 
 	end
+
+	self.WeaponSelect = TreePanel
 
 end
 
@@ -489,14 +395,6 @@ function PANEL:UpdateDisplay( Table )
 
 	acfmenupanel:PerformLayout()
 
-end
-
-function PANEL:CreateAttribs()
-	--You overwrite this with your own function, defined in the ammo definition file, so each ammotype creates it's own menu
-end
-
-function PANEL:UpdateAttribs()
-	--You overwrite this with your own function, defined in the ammo definition file, so each ammotype creates it's own menu
 end
 
 function PANEL:PerformLayout()
@@ -609,25 +507,24 @@ function ACFHomeGUIUpdate( Table )
 	local versionstring
 
 	if ACF.CurrentVersion > 0 then
-	if ACF.Version >= ACF.CurrentVersion then
-	versionstring = "Up To Date"
-	color = Color(0,225,0,255)
+		if ACF.Version >= ACF.CurrentVersion then
+			versionstring = "Up To Date"
+			color = Color(0,225,0,255)
+		else
+			versionstring = "Out Of Date"
+			color = Color(225,0,0,255)
+		end
 	else
-	versionstring = "Out Of Date"
-	color = Color(225,0,0,255)
-
-	end
-	else
-	versionstring = "No internet Connection available!"
-	color = Color(225,0,0,255)
+		versionstring = "No internet Connection available!"
+		color = Color(225,0,0,255)
 	end
 
 	local txt
 
 	if ACF.CurrentVersion > 0 then
-	txt = "ACE Is " .. versionstring .. "!\n\n"
+		txt = "ACE Is " .. versionstring .. "!\n\n"
 	else
-	txt = versionstring
+		txt = versionstring
 	end
 
 	acfmenupanel["CData"]["VersionText"]:SetText(txt)
@@ -646,15 +543,10 @@ function ACFChangelogHTTPCallBack(contents)
 
 	acfmenupanel.Changelog = {}  --changelog table
 	for _,String in pairs(Temp) do
-
-	acfmenupanel.Changelog[tonumber(string.sub(String,2,4))] = string.Trim(string.sub(String, 5))
-
+		acfmenupanel.Changelog[tonumber(string.sub(String,2,4))] = string.Trim(string.sub(String, 5))
 	end
 
 	table.SortByKey(acfmenupanel.Changelog,true)
-
-
-	--print('1.-' .. acfmenupanel.Changelog[100] .. '\n2.-' .. acfmenupanel.Changelog[101] .. '\n3.-' .. acfmenupanel.Changelog[102])
 
 	local Table = {}
 	Table.guicreate = (function( _, Table ) ACFHomeGUICreate( Table ) end or nil)
@@ -701,7 +593,7 @@ function ACFCLGUICreate()
 	local Effects = vgui.Create( "DForm" )
 	Effects:SetName("Rendering")
 
-	Effects:CheckBox("Allow lighting rendering", "ACFM_MissileLights")
+	Effects:CheckBox("Allow lighting rendering", "acf_enable_lighting")
 	Effects:ControlHelp( "Enables lighting for explosions, muzzle flashes and rocket motors, increasing the inmersion during combat, however, may impact heavily the performance and it's possible it doesn't render properly in certain map surfaces." )
 
 	Effects:CheckBox("Draw Mobility rope links", "ACF_MobilityRopeLinks")
@@ -722,6 +614,18 @@ function ACFCLGUICreate()
 
 end
 
+local function MenuNotifyError()
+
+	local Note = vgui.Create( "DLabel" )
+	Note:SetPos( 0, 0 )
+	Note:SetColor( Color(10,10,10) )
+	Note:SetText("Not available in this moment")
+	Note:SizeToContents()
+	acfmenupanel.CustomDisplay:AddItem( Note )
+
+end
+
+
 --[[=========================
 	Serverside folder content
 ]]--=========================
@@ -730,7 +634,7 @@ function ACFSVGUICreate()	--Serverside folder content
 	local ply = LocalPlayer()
 	if not IsValid(ply) then return end
 	if not ply:IsSuperAdmin() then return end
-	if game.IsDedicated() then ACFSVGUIERROR() return end
+	if game.IsDedicated() then MenuNotifyError() return end
 
 	local Server = acfmenupanel["CData"]["Options"]
 
@@ -821,17 +725,6 @@ function ACFSVGUICreate()	--Serverside folder content
 	acfmenupanel.CustomDisplay:AddItem( Legal )
 
 end
-function ACFSVGUIERROR()
-
-	local Note = vgui.Create( "DLabel" )
-	Note:SetPos( 0, 0 )
-	Note:SetColor( Color(10,10,10) )
-	Note:SetText("Not available in this moment")
-	Note:SizeToContents()
-	acfmenupanel.CustomDisplay:AddItem( Note )
-
-end
-
 
 --[[=========================
 	Contact folder content
@@ -886,20 +779,20 @@ do
 
 	local function CreateIdForCrate( self )
 
-	if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
+		if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
 
-		local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
-		local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
-		local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
+			local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
+			local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
+			local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
 
-		local Id = X .. ":" .. Y .. ":" .. Z
+			local Id = X .. ":" .. Y .. ":" .. Z
 
-		acfmenupanel.AmmoData["Id"] = Id
-		RunConsoleCommand( "acfmenu_id", Id )
+			acfmenupanel.AmmoData["Id"] = Id
+			RunConsoleCommand( "acfmenu_id", Id )
 
-	end
+		end
 
-	self:UpdateAttribs()
+		self:UpdateAttribs()
 
 	end
 
@@ -910,14 +803,13 @@ do
 
 	if not acfmenupanel.AmmoData then
 
-		acfmenupanel.AmmoData = {}
-		acfmenupanel.AmmoData["Id"]			= "10:10:10"  --default Ammo dimension on list
-		acfmenupanel.AmmoData["IdLegacy"]	= "Ammo2x4x4"
-		acfmenupanel.AmmoData["Type"]		= "Ammo"
-		acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass["MG"]["name"]
-		acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass["MG"]["id"]
-		acfmenupanel.AmmoData["Data"]	= acfmenupanel.WeaponData["Guns"]["12.7mmMG"]["round"]
-
+		acfmenupanel.AmmoData               = {}
+		acfmenupanel.AmmoData["Id"]         = "10:10:10"  --default Ammo dimension on list
+		acfmenupanel.AmmoData["IdLegacy"]   = "Ammo2x4x4"
+		acfmenupanel.AmmoData["Type"]       = "Ammo"
+		acfmenupanel.AmmoData["Classname"]  = Classes.GunClass["MG"]["name"]
+		acfmenupanel.AmmoData["ClassData"]  = Classes.GunClass["MG"]["id"]
+		acfmenupanel.AmmoData["Data"]       = ACFEnts["Guns"]["12.7mmMG"]["round"]
 	end
 
 	if not acfmenupanel.AmmoPanelConfig then
@@ -1056,7 +948,7 @@ do
 		local AmmoComboBox = vgui.Create( "DComboBox", CrateOldPanel )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
 		AmmoComboBox:SetSize(acfmenupanel.CustomDisplay:GetWide(), 30)
 
-		for Key, Value in pairs( acfmenupanel.WeaponDisplay["Ammo"] ) do
+		for Key, Value in pairs( ACFEnts.Ammo ) do
 
 			AmmoComboBox:AddChoice( Value.id , Key ) --Creates the list
 
@@ -1119,7 +1011,7 @@ do
 
 	local DComboList = {}
 
-	for _, GunTable in pairs( acfmenupanel.Classes.GunClass ) do
+	for _, GunTable in pairs( Classes.GunClass ) do
 
 		if not table.HasValue( Blacklist, GunTable.id ) then
 			acfmenupanel.CData.ClassSelect:AddChoice( GunTable.name , GunTable.id )
@@ -1135,14 +1027,14 @@ do
 
 		data = acfmenupanel.CData.ClassSelect:GetOptionData(index) -- Why?
 
-		acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass[data]["name"]
-		acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass[data]["id"]
+		acfmenupanel.AmmoData["Classname"] = Classes.GunClass[data]["name"]
+		acfmenupanel.AmmoData["ClassData"] = Classes.GunClass[data]["id"]
 
 		acfmenupanel.CData.ClassSelect:SetColor( Color(0,0,0) )
 
 		acfmenupanel.CData.CaliberSelect:Clear()
 
-		for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
+		for Key, Value in pairs( ACFEnts.Guns ) do
 
 			if acfmenupanel.AmmoData["ClassData"] == Value.gunclass then
 			acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
@@ -1165,7 +1057,7 @@ do
 
 	acfmenupanel.CData.CaliberSelect:SetText(acfmenupanel.AmmoData["Data"]["id"]  )
 
-	for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
+	for Key, Value in pairs( ACFEnts.Guns ) do
 
 		if acfmenupanel.AmmoData["ClassData"] == Value.gunclass then
 			acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )

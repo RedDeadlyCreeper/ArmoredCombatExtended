@@ -7,7 +7,7 @@ ACF_defineGunClass("SL", {
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod		= 45,
 	year		= 1941,
-	sound		= "weapons/acf_gun/smoke_launch.wav",
+	sound		= "ace_weapons/multi_sound/smoke_multi.mp3",
 	nolights	= true
 } )
 

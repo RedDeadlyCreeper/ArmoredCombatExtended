@@ -11,7 +11,6 @@ ACF_DefineRackClass("POD", {
 
 	hidemissile	= true,
 	protectmissile  = true,
-	armour		= 15,
 
 	reloadmul	= 8,
 } )
@@ -29,7 +28,6 @@ ACF_DefineRack("40mm7xPOD", {
 	weight	= 20,
 	year		= 1940,
 	magsize	= 7,
-	armour	= 15,
 	caliber	= 4,
 
 	reloadmul	= 150,
@@ -61,7 +59,6 @@ ACF_DefineRack("70mm7xPOD", {
 	weight	= 40,
 	year		= 1940,
 	magsize	= 7,
-	armour	= 24,
 	caliber	= 7,
 
 	reloadmul	= 150,
@@ -93,7 +90,6 @@ ACF_DefineRack("1x BGM-71E", {
 	weight = 10,
 	year = 1970,
 	magsize = 1,
-	armour  = 18,
 	caliber = 13,
 
 	whitelistonly	= true,
@@ -117,7 +113,6 @@ ACF_DefineRack("2x BGM-71E", {
 	weight = 60,
 	year = 1970,
 	magsize = 2,
-	armour  = 18,
 	caliber = 13,
 
 	whitelistonly	= true,
@@ -142,7 +137,6 @@ ACF_DefineRack("4x BGM-71E", {
 	weight = 100,
 	year = 1970,
 	magsize = 4,
-	armour  = 24,
 	caliber = 13,
 
 	whitelistonly	= true,
@@ -167,7 +161,6 @@ ACF_DefineRack("380mmRW61", {
 	weight	= 600,
 	year		= 1945,
 	magsize	= 1,
-	armour	= 24,
 	caliber	= 38,
 
 	hidemissile	= false,
@@ -192,7 +185,6 @@ ACF_DefineRack("3xUARRK", {
 	gunclass = "POD",
 	weight = 150,
 	year = 1941,
-	armour  = 30,
 	magsize = 3,
 
 	protectmissile  = true,
@@ -215,7 +207,6 @@ ACF_DefineRack("6xUARRK", {
 	gunclass = "POD",
 	weight = 600,
 	year = 1980,
-	armour  = 45,
 	magsize = 6,
 
 	protectmissile  = true,
@@ -245,7 +236,6 @@ ACF_DefineRack("1x FIM-92", {
 	weight = 10,
 	year = 1984,
 	magsize = 1,
-	armour  = 12,
 	caliber = 11,
 	protectmissile  = true,
 	hidemissile	= false,
@@ -265,7 +255,6 @@ ACF_DefineRack("2x FIM-92", {
 	weight = 30,
 	year = 1984,
 	magsize = 2,
-	armour  = 16,
 	caliber = 11,
 	rofmod = 3,
 
@@ -288,7 +277,6 @@ ACF_DefineRack("4x FIM-92", {
 	weight = 30,
 	year = 1984,
 	magsize = 4,
-	armour  = 20,
 	caliber = 11,
 
 	protectmissile  = true,
@@ -313,7 +301,6 @@ ACF_DefineRack("1x Strela-1", {
 	weight = 10,
 	year = 1968,
 	magsize = 1,
-	armour  = 50,
 	caliber = 12,
 
 	protectmissile  = true,
@@ -334,7 +321,6 @@ ACF_DefineRack("2x Strela-1", {
 	weight = 30,
 	year = 1968,
 	magsize = 2,
-	armour  = 80,
 	caliber = 12,
 
 	protectmissile  = true,
@@ -357,7 +343,6 @@ ACF_DefineRack("4x Strela-1", {
 	weight = 50,
 	year = 1968,
 	magsize = 4,
-	armour  = 100,
 	caliber = 12,
 
 	protectmissile  = true,
@@ -382,7 +367,6 @@ ACF_DefineRack("1x Ataka", {
 	weight = 10,
 	year = 1968,
 	magsize = 1,
-	armour  = 50,
 	caliber = 13,
 
 	protectmissile  = true,
@@ -404,7 +388,6 @@ ACF_DefineRack("1x SPG9", {
 	weight = 90,
 	year = 1968,
 	magsize = 1,
-	armour  = 30,
 	caliber = 7.3,
 	spread = 0.1,
 
@@ -418,27 +401,73 @@ ACF_DefineRack("1x SPG9", {
 	}
 } )
 
---Kornet tube
+-- 1 Kornet tube
 ACF_DefineRack("1x Kornet", {
-	name = "Kornet Launch Tube",
-	desc = "Launch tube for Kornet antitank missile.",
-	model = "models/kali/weapons/kornet/parts/9m133 kornet tube.mdl",
-	gunclass = "POD",
-	weight = 30,
-	year = 1994,
-	magsize = 1,
-	armour  = 20,
-	caliber = 15.2,
+	name       = "Kornet Launch Tube",
+	desc       = "Launch tube for Kornet antitank missile.",
+	model      = "models/kali/weapons/kornet/parts/9m133 kornet tube.mdl",
+	gunclass   = "POD",
+	weight     = 30,
+	year       = 1994,
+	magsize    = 1,
+	caliber    = 15.2,
 
-	protectmissile  = true,
-	hidemissile	= true,
-	whitelistonly	= true,
+	protectmissile   = true,
+	hidemissile      = true,
+	whitelistonly    = true,
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		missile1 = { pos = Vector(0,0,0), scaledir = Vector(0,0,0) }
 	}
 } )
+
+-- 2 Kornet tube
+ACF_DefineRack("2x Kornet", {
+	name       = "Kornet Launch Tube",
+	desc       = "A double Launch tube for 2 Kornet missiles.",
+	model      = "models/missiles/kornetrack2.mdl",
+	gunclass   = "POD",
+	weight     = 60,
+	year       = 1994,
+	magsize    = 2,
+	caliber    = 15.2,
+
+	protectmissile   = true,
+	hidemissile      = true,
+	whitelistonly    = true,
+
+	mountpoints =
+	{
+		missile1 = { pos = Vector(2,-7.3,-1), scaledir = Vector(0,0,0) },
+		missile2 = { pos = Vector(2,7.3,-1), scaledir = Vector(0,0,0) },
+	}
+} )
+
+-- 4 Kornet tube
+ACF_DefineRack("4x Kornet", {
+	name       = "Kornet Launch Tube",
+	desc       = "A Quad Launch tube for 4 Kornet missiles.",
+	model      = "models/missiles/kornetrack4.mdl",
+	gunclass   = "POD",
+	weight     = 120,
+	year       = 1994,
+	magsize    = 4,
+	caliber    = 15.2,
+
+	protectmissile   = true,
+	hidemissile      = true,
+	whitelistonly    = true,
+
+	mountpoints =
+	{
+		missile1 = { pos = Vector(-1,-7.3,4.5), scaledir = Vector(0,0,0) },
+		missile2 = { pos = Vector(-1,7.3,4.5), scaledir = Vector(0,0,0) },
+		missile3 = { pos = Vector(-1,-7.3,-6.5), scaledir = Vector(0,0,0) },
+		missile4 = { pos = Vector(-1,7.3,-6.5), scaledir = Vector(0,0,0) },
+	}
+} )
+
 
 --Zuni pod
 ACF_DefineRack("127mm4xPOD", {
@@ -449,7 +478,6 @@ ACF_DefineRack("127mm4xPOD", {
 	weight = 100,
 	year = 1957,
 	magsize = 4,
-	armour  = 40,
 	caliber = 12.7,
 
 	protectmissile  = true,
@@ -474,7 +502,6 @@ ACF_DefineRack("1x 9m311", {
 	weight = 10,
 	year = 1970,
 	magsize = 1,
-	armour  = 18,
 	caliber = 12,
 
 	whitelistonly	= true,
@@ -496,7 +523,6 @@ ACF_DefineRack("1x Javelin", {
 	weight = 6.4,
 	year = 1989,
 	magsize = 1,
-	armour  = 20,
 	caliber = 12.7,
 
 	protectmissile  = true,

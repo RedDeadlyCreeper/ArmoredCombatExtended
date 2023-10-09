@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APFSDS = { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR" , "MO" , "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist.APFSDS = { "AC", "SA","C","MG", "HMG" ,"RAC", "SC","ATR" , "MO" , "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
 local Round = {}
 
@@ -14,7 +14,6 @@ Round.netid = 16 --Unique ammotype ID for network transmission
 Round.Type  = "APFSDS"
 
 function Round.create( _, BulletData )
-
 	ACF_CreateBullet( BulletData )
 end
 
@@ -37,7 +36,7 @@ function Round.convert( _, PlayerData )
 
 	Data.MinCalMult		= 0.2
 	Data.MaxCalMult		= 1.0
-	Data.PenModifier		= 0.8
+	Data.PenModifier		= 1.08 --for 120mm. 726 @ 1.1. 630 @1.3
 	Data.VelModifier		= 1.1
 	Data.Ricochet		= 80
 

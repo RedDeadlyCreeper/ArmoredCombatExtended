@@ -36,13 +36,9 @@ SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
 SWEP.Primary.Delay			= 1
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 8
+SWEP.Primary.DefaultClip	= 11
 SWEP.Primary.Automatic		= 0
-SWEP.Primary.Ammo		= "Grenade"
-
-SWEP.Secondary.Ammo		= "none"
-SWEP.Secondary.ClipSize		= -1
-SWEP.Secondary.DefaultClip	= -1
+SWEP.Primary.Ammo		= "CombineHeavyCannon"
 
 SWEP.ReloadSoundEnabled = 1
 
@@ -66,8 +62,6 @@ SWEP.ZoomRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 SWEP.CrouchAccuracyImprovement = 0.4 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 
---
-
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
@@ -78,47 +72,31 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	local owner = self:GetOwner()
+	local Owner = self:GetOwner()
 
 	self.BulletData.Owner = owner
 	self.BulletData.Gun = self
-	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate * (CurTime() - self.lastFire), 1, self.MaxInaccuracyMult)
 
-	if not owner:HasGodMode() then
+	if not Owner:HasGodMode() then
 
-		local ent = ents.Create( "ace_antipersonelmine" )
+		local Forward   = Owner:EyeAngles():Forward()
+		local Pos       = Owner:GetShootPos() + Forward * 32
+		local Angle     = Owner:EyeAngles()
 
-		if ( IsValid( ent ) ) then
+		ACE_CreateMine( "APL", Pos, Angle, Owner )
 
-			local Forward = owner:EyeAngles():Forward()
-
-			ent:SetPos( owner:GetShootPos() + Forward * 32 )
-			ent:SetAngles( owner:EyeAngles() )
-			ent:Spawn()
-			ent:SetVelocity( Forward * 10 )
-			owner:AddCleanup( "aceexplosives", ent )
-
-			if CPPI then
-				ent:CPPISetOwner(Entity(0))
-			end
-			ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
-		end
 	end
 
 	self.lastFire = CurTime()
---	print("Inaccuracy: " .. self.InaccuracyAccumulation)
-
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	owner:SetAnimation( PLAYER_ATTACK1 )
+	Owner:SetAnimation( PLAYER_ATTACK1 )
 
 	if self:Ammo1() > 0 then
-		owner:RemoveAmmo( 1, "Grenade")
+		Owner:RemoveAmmo( 1, "Grenade")
 	else
 		self:TakePrimaryAmmo(1)
 	end
---	self:TakePrimaryAmmo(1)
-
 end
 
 function SWEP:SecondaryAttack()

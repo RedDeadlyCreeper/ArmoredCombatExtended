@@ -79,7 +79,7 @@ local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
 
 local function restrictInfo ( ent )
 	if not propProtectionInstalled then return false end
-	if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
+	if GetConVar("acf_restrictinfo"):GetInt() ~= 0 then
 		if ent:CPPIGetOwner() ~= instance.player then return true else return false end
 	end
 	return false
@@ -110,7 +110,7 @@ end
 -- @server
 -- @return boolean True if restriced, False if not
 function acf_library.infoRestricted()
-	return GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0
+	return GetConVar("acf_restrictinfo"):GetInt() ~= 0
 end
 
 --- Returns current ACF drag divisor
@@ -810,6 +810,42 @@ function acf_library.getAllAmmoBoxes()
 	return ammoBoxes
 end
 
+--- Returns latest version of acf
+-- @server
+-- @return number
+function acf_library.getVersion()
+	local version = ACF.CurrentVersion
+
+	return version
+end
+
+--- Returns server version of acf
+-- @server
+-- @return number
+function acf_library.getCurrentVersion()
+	local version = ACF.Version
+
+	return version
+end
+
+--- returns % velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks.
+-- @server
+-- @return number
+function acf_library.getHEATAirGapFactor()
+	local airgapfactor = ACF.HEATAirGapFactor
+
+	return airgapfactor
+end
+
+--- Returns acf wind direction(vector)
+-- @server
+-- @return vector
+function acf_library.getWindVector()
+	local windVector = ACF.Wind
+
+	return windVector
+end
+
 ----------------------------------------
 -- Entity Methods
 
@@ -818,7 +854,7 @@ end
 -- Moved to acf lib
 -- Returns true if functions returning sensitive info are restricted to owned props
 --[[function ents_methods:acfInfoRestricted ()
-	return GetConVar( "sbox_acf_restrictinfo" ):GetInt() ~= 0
+	return GetConVar( "acf_restrictinfo" ):GetInt() ~= 0
 end]]
 
 --- Returns true if this entity contains sensitive info and is not accessable to us
@@ -2226,6 +2262,51 @@ function ents_methods:acfDragCoef()
 	if restrictInfo( this ) then return 0 end
 	return ( this.BulletData[ "DragCoef" ] or 0 ) / ACF.DragDiv
 end
+
+--- Returns the heat of an ACF entity 
+-- @server
+-- @return number The heat value of the entity
+function ents_methods:acfHeat()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not (this and this:IsValid()) then
+		SF.Throw("Entity is not valid", 2)
+	end
+
+	local Heat
+	if isGun(this) then
+		Heat = ACE_HeatFromGun(this, this.Heat, this.DeltaTime)
+	elseif isEngine(this) then
+		Heat = ACE_HeatFromEngine(this)
+	else
+		Heat = ACE.AmbientTemp
+	end
+
+	return Heat
+end
+
+--- Returns all crewseats linked to an acf entity
+-- @server
+-- @return table crewseats entities
+function ents_methods:acfGetCrew()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not (this and this:IsValid()) then
+		SF.Throw("Entity is not valid", 2)
+	end
+
+	if restrictInfo( this ) then
+		return {}
+	end
+
+	local Crew = table.Copy(this.CrewLink)
+
+	return Crew
+end
+
+
 
 -- [ Armor Functions ] --
 

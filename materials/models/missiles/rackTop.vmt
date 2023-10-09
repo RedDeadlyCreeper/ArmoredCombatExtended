@@ -1,0 +1,23 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/rackTop_rgb"
+
+	$phong 1
+
+	$rimlight 1
+	$rimlightexponent 100
+	$rimlightboost 1
+
+	$rimmask 1
+
+	Proxies
+	{
+		MwEnvMapTint
+		{
+			min 0
+			max 1
+			envmap "\specularity_00"
+			color "[0.098 0.098 0.098]"
+		}
+	}
+}

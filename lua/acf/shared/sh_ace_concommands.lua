@@ -16,70 +16,31 @@ if SERVER then
 
 	end)
 
-	do
+	concommand.Add( "acf_mines_clear", function(ply)
 
-		local function msgToCaller( ply, hud, msg )
-			if IsValid(ply) then
-				ply:PrintMessage(hud, msg or "")
-			else
-				print(msg or "")
+		if IsValid(ply) and not ply:IsAdmin() then return end
+
+		if next(ACE.Mines) then
+			for _, mine in ipairs(ACE.Mines) do
+				if IsValid(mine) then
+					mine:Remove()
+				end
 			end
 		end
 
-		concommand.Add( "acf_smokewind", function(ply, _, args)
-			local validply = IsValid(ply)
-			local printmsg = msgToCaller
+	end)
 
-			if not args[1] then
+	concommand.Add( "acf_mines_explode_all", function(ply)
 
-				printmsg(ply, HUD_PRINTCONSOLE,
+		if IsValid(ply) and not ply:IsSuperAdmin() then return end
 
-					"Set the wind intensity upon all smoke munitions." ..
-					"\n	This affects the ability of smoke to be used for screening effect." ..
-					"\n	Example; acf_smokewind 300")
-
-				return false
+		if next(ACE.Mines) then
+			for _, mine in ipairs(ACE.Mines) do
+				if IsValid(mine) then
+					mine:Detonate()
+				end
 			end
-
-			if validply and not ply:IsAdmin() then
-
-				printmsg(ply, HUD_PRINTCONSOLE,
-					"You can't use this because you are not an admin.")
-				return false
-
-			else
-					local wind = tonumber(args[1])
-
-					if not wind then
-							printmsg(ply, HUD_PRINTCONSOLE, "Command unsuccessful: that wind value could not be interpreted as a number!")
-							return false
-					end
-
-					ACF.SmokeWind = wind
-
-					net.Start("acf_smokewind")
-					net.WriteFloat(wind)
-					net.Broadcast()
-
-					printmsg(ply, HUD_PRINTCONSOLE, "Command SUCCESSFUL: set smoke-wind to " .. wind .. "!")
-					return true
-			end
-		end)
-
-		local function sendSmokeWind(ply)
-			net.Start("acf_smokewind")
-				net.WriteFloat(ACF.SmokeWind)
-			net.Send(ply)
 		end
-		hook.Add( "PlayerInitialSpawn", "ACF_SendSmokeWind", sendSmokeWind )
 
-	end
-
-else
-
-	local function recvSmokeWind()
-		ACF.SmokeWind = net.ReadFloat()
-	end
-	net.Receive("acf_smokewind", recvSmokeWind)
-
+	end)
 end
