@@ -23,7 +23,7 @@ E2Helper.Descriptions["acfHeat"] = "Returns heat of an ACF entity."
 E2Helper.Descriptions["acfVersion"] = "Returns latest git version of ACE."
 E2Helper.Descriptions["acfCurVersion"] = "Returns current version of ACE."
 E2Helper.Descriptions["acfHEATAirGapFactor"] = "% velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks."
-E2Helper.Descriptions["acfWindVector()"] = "Returns acf wind direction(vector)"
+E2Helper.Descriptions["acfWindVector"] = "Returns acf wind direction(vector)"
 --engine
 E2Helper.Descriptions["acfMaxTorque"] = "Returns the maximum torque (in N/m) of an ACF engine."
 E2Helper.Descriptions["acfMaxPower"] = "Returns the maximum power (in kW) of an ACF engine."

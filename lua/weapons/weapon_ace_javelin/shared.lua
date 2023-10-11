@@ -422,14 +422,14 @@ function SWEP:PrimaryAttack()
 			end)
 
 			ent.MaxTurnRate = 80
-			ent.TrackCone = 60
+			ent.TrackCone = 180
 			ent.MissileThrust = 3500
 			ent.MotorIncrements = 0.55
 			ent.MissileBurnTime = 15
 			ent.FuseTime = 25
 			ent.tarent = self.TarEnt
 			ent.Bulletdata = self.BulletData
-			ent.LeadMul = 2
+			ent.LeadMul = 1.5
 			ent.TopAttackGuidance = topAttack
 			ent.DirectFireDist = self.DirectFireDist
 

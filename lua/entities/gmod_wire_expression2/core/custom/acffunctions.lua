@@ -782,7 +782,7 @@ do
 		if (this.MagSize > 1) then
 			return (this.MagSize - this.CurrentShot) or 1
 		end
-		if (this.Ready) then return 1 end
+		if (this.Ready and this.BulletData.Type ~= "Empty") then return 1 end
 		return 0
 	end
 	
@@ -804,7 +804,13 @@ do
 	e2function void entity:acfReload()
 		if not isGun(this) then return end
 		if not isOwner(self, this) then return end
-		this.Reloading = true
+
+		local isEmpty = this.BulletData.Type == "Empty"
+
+		if isEmpty and not this.Reloading then
+			this:LoadAmmo(false, true)
+			this.Reloading = true
+		end
 	end
 
 	__e2setcost( 1 )

@@ -11,11 +11,10 @@ function ENT:Initialize()
 	self.Active				= false
 
 	self.Inputs	= WireLib.CreateInputs( self, { "Active", "Cone" } )
-	self.Outputs	= WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
+	self.Outputs	= WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
 	self.OutputData = {
 		Detected		= 0,
 		Owner			= {},
-		Position		= {},
 		Angle			= {},
 		EffHeat			= {},
 		ClosestToBeam	= -1
@@ -23,17 +22,17 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
-	self.Heat				= 21	-- Heat
-	self.HeatAboveAmbient	= 5	-- How many degrees above Ambient Temperature this irst will start to track?
+	self.Heat                = 21	-- Heat
+	self.HeatAboveAmbient    = 5	-- How many degrees above Ambient Temperature this irst will start to track?
 
-	self.MinViewCone = 3
-	self.MaxViewCone = 45
+	self.MinViewCone         = 3
+	self.MaxViewCone         = 45
 
-	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal				= true
-	self.LegalIssues			= ""
+	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal               = true
+	self.LegalIssues         = ""
 
-	self.ClosestToBeam		= -1
+	self.ClosestToBeam       = -1
 
 	self:UpdateOverlayText()
 
@@ -301,8 +300,6 @@ function ENT:AcquireLock()
 			table.insert(Owners, IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName() or "")
 			table.insert(Temperatures, Heat)
 			table.insert(posTable, nonlocang * angerr)
-
-			debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255,255,0), true)
 
 		end
 

@@ -42,6 +42,8 @@ function ENT:Initialize()
 	self.FuseTime = 10
 	self.LastTime = CurTime()
 	self.HeightOffset = Vector()
+	self.LastVelTarget = Vector()
+	self.LastAccelTarget = Vector()
 
 	self.LastVel = Vector()
 	self.CurPos = self:GetPos()
@@ -174,7 +176,17 @@ function ENT:Think()
 		local dist = posDiff:Length()
 		local distXY = Vector(posDiff.x, posDiff.y, 0):Length()
 		local travelTime = dist / self:GetVelocity():Length()
-		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime * (self.LeadMul or 1))
+		local tarVel = GetRootVelocity(self.tarent)
+		--local relvel = tarVel - self:GetVelocity()
+
+		tarAccel = (tarVel-self.LastVelTarget) * DelTime
+		self.lastVelTarget = tarVel
+
+		tarJerk = (tarAccel-self.LastAccelTarget) * DelTime
+		self.LastAccelTarget = tarAccel
+
+		travelTime = travelTime * self.LeadMul
+		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime + 0.5 * tarAccel * travelTime^2 + 0.16 * tarJerk * travelTime^3)
 		local tposDist = (TPos - pos):Length()
 
 		if self.TopAttackGuidance then
@@ -204,7 +216,7 @@ function ENT:Think()
 
 			self:SetAngles(AngAdjust)
 		else
-			if self.DestructOnMiss then
+			if self.DestructOnMiss and self.CurrentFuse > 0.5 then
 				self:Detonate()
 				--print("Self Destruct")
 			end

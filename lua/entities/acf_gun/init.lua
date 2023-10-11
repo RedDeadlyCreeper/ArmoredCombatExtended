@@ -882,7 +882,7 @@ do
 				Wire_TriggerOutput(self, "Ready", 0)
 
 			else
-
+				self:EmitSound("weapons/shotgun/shotgun_empty.wav", 68, 100)
 				self.CurrentShot = 0
 				self.Ready = false
 				Wire_TriggerOutput(self, "Ready", 0)
@@ -1009,7 +1009,6 @@ function ENT:LoadAmmo( AddTime, Reload )
 			self.BulletData.PropMass = 0
 			self.BulletData.ProjMass = 0
 
-		self:EmitSound("weapons/shotgun/shotgun_empty.wav", 68, 100)
 		Wire_TriggerOutput(self, "Loaded", "Empty")
 
 		self.NextFire = curTime + 0.5

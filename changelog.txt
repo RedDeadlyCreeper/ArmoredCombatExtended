@@ -687,3 +687,9 @@ r100
 - Alot of bug fixes
 - Removed IR from several ASM and ATGM. By RDC.
 - Removed old armor analyzer.
+
+*r164
+- Added Acceleration and Jerk to swep missile code
+- Increased energy and agility of stinger
+- Increased track cone of javelin
+- Fixed IRST giving lua errors.

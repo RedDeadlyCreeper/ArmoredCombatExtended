@@ -368,17 +368,17 @@ function SWEP:PrimaryAttack()
 				ParticleEffectAttach("Rocket Motor FFAR", 4, ent, 1)
 			end)
 
-			ent.MissileThrust = 2500
-			ent.MissileAgilityMul = 50
+			ent.MissileThrust = 12000
 			ent.MissileBurnTime = 2
-			ent.EnergyRetention = 0.97
-			ent.MaxTurnRate = 15
-			ent.RadioDist = 500
-			ent.DestructOnMiss = false
+			ent.EnergyRetention = 0.98
+			ent.MaxTurnRate = 60
+			ent.RadioDist = 0
+			ent.DestructOnMiss = true
 			ent.FuseTime = 17
+			ent.TrackCone = 50
 			ent.tarent = self.TarEnt
 			ent.Bulletdata = self.BulletData
-			ent.LeadMul = 2 --A higher leadmul means it's easier to force the missile to bleed a missile's energy. Lower can potentially be more efficient by reducing overcorrection
+			ent.LeadMul = 1.5 --A higher leadmul means it's easier to force the missile to bleed a missile's energy. Lower can potentially be more efficient by reducing overcorrection
 
 			ent:SetOwner(owner)
 			ent:CPPISetOwner(owner)
