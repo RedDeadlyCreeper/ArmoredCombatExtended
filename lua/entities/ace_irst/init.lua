@@ -3,6 +3,8 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+local RadarTable = ACF.Weapons.Radars
+
 function ENT:Initialize()
 
 	self.ThinkDelay			= 0.1
@@ -24,6 +26,7 @@ function ENT:Initialize()
 
 	self.Heat                = 21	-- Heat
 	self.HeatAboveAmbient    = 5	-- How many degrees above Ambient Temperature this irst will start to track?
+	self.HeatNoLoss 	     = 200  -- Required heat to make the tracker not to lose accuracy. Below this value, inaccuracy starts to take effect.
 
 	self.MinViewCone         = 3
 	self.MaxViewCone         = 45
@@ -39,7 +42,7 @@ function ENT:Initialize()
 end
 
 local function SetConeParameter( IRST )
-	IRST.inac = math.max( (IRST.Cone / 15) ^ 2, 2 ) print(IRST.inac)
+	IRST.inac = math.max( (IRST.Cone / 15) ^ 2, 2 )
 end
 
 function MakeACE_IRST(Owner, Pos, Angle, Id)
@@ -48,45 +51,46 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 
 	Id = Id or "Small-IRST"
 
-	local radar = ACF.Weapons.Radars[Id]
-
+	local radar = RadarTable[Id]
 	if not radar then return false end
 
 	local IRST = ents.Create("ace_irst")
-	if not IsValid(IRST) then return false end
+	if IsValid(IRST) then
 
-	IRST:SetAngles(Angle)
-	IRST:SetPos(Pos)
+		IRST:SetAngles(Angle)
+		IRST:SetPos(Pos)
 
-	IRST.Model				= radar.model
-	IRST.Weight				= radar.weight
-	IRST.ACFName			= radar.name
-	IRST.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
-	IRST.Cone				= IRST.ICone
+		IRST.Model				= radar.model
+		IRST.Weight				= radar.weight
+		IRST.ACFName			= radar.name
+		IRST.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
+		IRST.Cone				= IRST.ICone
 
-	SetConeParameter( IRST )
+		SetConeParameter( IRST )
 
-	IRST.SeekSensitivity	= radar.SeekSensitivity
+		IRST.SeekSensitivity	= radar.SeekSensitivity
 
-	IRST.MinimumDistance	= radar.mindist
-	IRST.MaximumDistance	= radar.maxdist
+		IRST.MinimumDistance	= radar.mindist
+		IRST.MaximumDistance	= radar.maxdist
 
-	IRST.Id					= Id
-	IRST.Class				= radar.class
+		IRST.Id					= Id
+		IRST.Class				= radar.class
 
-	IRST:Spawn()
+		IRST:Spawn()
 
-	IRST:CPPISetOwner(Owner)
+		IRST:CPPISetOwner(Owner)
 
-	IRST:SetNWNetwork()
-	IRST:SetModelEasy(radar.model)
-	IRST:UpdateOverlayText()
+		IRST:SetNWNetwork()
+		IRST:SetModelEasy(radar.model)
+		IRST:UpdateOverlayText()
 
-	Owner:AddCount( "_acf_missileradar", IRST )
-	Owner:AddCleanup( "acfmenu", IRST )
+		Owner:AddCount( "_acf_missileradar", IRST )
+		Owner:AddCleanup( "acfmenu", IRST )
 
-	return IRST
+		return IRST
+	end
 
+	return false
 end
 list.Set( "ACFCvars", "ace_irst", {"id"} )
 duplicator.RegisterEntityClass("ace_irst", MakeACE_IRST, "Pos", "Angle", "Id" )
@@ -97,18 +101,16 @@ end
 
 function ENT:SetModelEasy(mdl)
 
-	local Rack = self
+	self:SetModel( mdl )
+	self.Model = mdl
 
-	Rack:SetModel( mdl )
-	Rack.Model = mdl
+	self:PhysicsInit( SOLID_VPHYSICS )
+	self:SetMoveType( MOVETYPE_VPHYSICS )
+	self:SetSolid( SOLID_VPHYSICS )
 
-	Rack:PhysicsInit( SOLID_VPHYSICS )
-	Rack:SetMoveType( MOVETYPE_VPHYSICS )
-	Rack:SetSolid( SOLID_VPHYSICS )
-
-	local phys = Rack:GetPhysicsObject()
-	if (phys:IsValid()) then
-		phys:SetMass(Rack.Weight)
+	local phys = self:GetPhysicsObject()
+	if IsValid(phys) then
+		phys:SetMass(self.Weight)
 	end
 
 end
@@ -123,13 +125,12 @@ function ENT:TriggerInput( inp, value )
 
 			SetConeParameter( self )
 
+			--You are not going from a wide to narrow beam in half a second deal with it.
 			local curTime = CurTime()
-			self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
+			self:NextThink(curTime + 10)
 		else
 			self.Cone = self.ICone
 		end
-
-
 
 		self:UpdateOverlayText()
 	end
@@ -169,7 +170,7 @@ end
 function ENT:GetWhitelistedEntsInCone()
 
 	local ScanArray = ACE.contraptionEnts
-	if table.IsEmpty(ScanArray) then return {} end
+	if not next(ScanArray) then return {} end
 
 	local WhitelistEnts    = {}
 	local LOSdata          = {}
@@ -187,7 +188,7 @@ function ENT:GetWhitelistedEntsInCone()
 		if not IsValid(scanEnt) then continue end
 
 		--Why IRST should track itself?
-		if scanEnt:EntIndex() == self:EntIndex() then continue end
+		if self == scanEnt then continue end
 
 		entpos  = scanEnt:GetPos()
 		difpos  = entpos - IRSTPos
@@ -212,55 +213,55 @@ function ENT:GetWhitelistedEntsInCone()
 		if not LOStr.Hit then
 			table.insert(WhitelistEnts, scanEnt)
 		end
-
-
 	end
 
 	return WhitelistEnts
+end
 
+local function IsInCone( Angle, Cone )
+	return Angle.p < Cone and Angle.y < Cone
 end
 
 function ENT:AcquireLock()
 
-	local found			= self:GetWhitelistedEntsInCone()
-
-	local IRSTPos		= self:GetPos()
-	local inac			= self.inac
+	local IRSTPos        = self:GetPos()
+	local inac           = self.inac
 
 	--Table definition
-	local Owners			= {}
-	local Temperatures	= {}
-	local posTable		= {}
+	local Owners         = {}
+	local Temperatures   = {}
+	local AngTable       = {}
 
-	self.ClosestToBeam = -1
-	local besterr		= math.huge --Hugh mungus number
+	self.ClosestToBeam   = -1
+	local besterr        = math.huge --Hugh mungus number
 
-	local entpos       = Vector()
-	local difpos       = Vector()
-	local nonlocang    = Angle()
-	local ang          = Angle()
-	local absang       = Angle()
-	local errorFromAng = 0
-	local dist         = 0
+	local entpos         = vector_origin
+	local difpos         = vector_origin
+
+	local nonlocang      = angle_zero
+	local ang            = angle_zero
+	local absang         = angle_zero
+	local errorFromAng   = 0
+	local dist           = 0
 
 	local physEnt		= NULL
 
-
-	for _, scanEnt in ipairs(found) do
+	for _, scanEnt in ipairs(self:GetWhitelistedEntsInCone()) do
 
 		local randanginac	= math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 		entpos	= scanEnt:WorldSpaceCenter()
 		difpos	= (entpos - IRSTPos)
 
-		nonlocang	= difpos:Angle()
-		ang		= self:WorldToLocalAngles(nonlocang)		--Used for testing if inrange
-		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
+		nonlocang   = difpos:Angle()
+		ang         = self:WorldToLocalAngles(nonlocang)		--Used for testing if inrange
+		absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.p / 90) ^ 2
+		errorFromAng = 0.4 * (absang.y / 90) ^ 2 + 0.4 * (absang.y / 90) ^ 2 + 0.4 * (absang.p / 90) ^ 2
 
-		if absang.p < self.Cone and absang.y < self.Cone then --Entity is within seeker cone
+		-- Check if the target is within the cone.
+		if IsInCone( absang, self.Cone ) then
 
 			--if the target is a Heat Emitter, track its heat
 			if scanEnt.Heat then
@@ -274,7 +275,7 @@ function ENT:AcquireLock()
 
 				--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
 				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-				if physEnt:IsValid() and not physEnt:IsMoveable() then continue end
+				if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
 				dist = difpos:Length()
 				Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
@@ -293,13 +294,14 @@ function ENT:AcquireLock()
 				besterr = err
 			end
 
-			local errorFromHeat = math.max((200 - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
-			local angerr = 1 + randanginac * (errorFromAng + errorFromHeat)
+			local errorFromHeat = math.max((self.HeatNoLoss - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
+			local finalerror = errorFromAng + errorFromHeat
+			local angerr = Angle(finalerror, finalerror, finalerror) * randanginac
 
 			--For Owner table
 			table.insert(Owners, IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName() or "")
 			table.insert(Temperatures, Heat)
-			table.insert(posTable, nonlocang * angerr)
+			table.insert(AngTable, -ang + angerr) -- Negative means that if the target is higher than irst = positive pitch
 
 		end
 
@@ -310,13 +312,13 @@ function ENT:AcquireLock()
 
 		WireLib.TriggerOutput( self, "Detected"	, 1 )
 		WireLib.TriggerOutput( self, "Owner"		, Owners )
-		WireLib.TriggerOutput( self, "Angle"		, posTable )
+		WireLib.TriggerOutput( self, "Angle"		, AngTable )
 		WireLib.TriggerOutput( self, "EffHeat"	, Temperatures )
 		WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
 
 		self.OutputData.Detected = 1
 		self.OutputData.Owner = Owners
-		self.OutputData.Angle = posTable
+		self.OutputData.Angle = AngTable
 		self.OutputData.EffHeat = Temperatures
 		self.OutputData.ClosestToBeam = self.ClosestToBeam
 	else --Nothing detected
@@ -333,16 +335,17 @@ function ENT:AcquireLock()
 		self.OutputData.EffHeat = {}
 		self.OutputData.ClosestToBeam = -1
 	end
+end
 
-
-
+function ENT:UpdateStatus()
+	self.Status = self.Active and "On" or "Off"
 end
 
 function ENT:Think()
 
 	local curTime = CurTime()
-	self:NextThink(curTime + self.ThinkDelay)
 
+	-- Legal check system
 	if ACF.CurTime > self.NextLegalCheck then
 
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
@@ -359,17 +362,15 @@ function ENT:Think()
 		self:AcquireLock()
 	end
 
-	if (self.LastStatusUpdate + self.StatusUpdateDelay < curTime) then
+	if (self.LastStatusUpdate + self.StatusUpdateDelay) < curTime then
 		self:UpdateStatus()
 		self.LastStatusUpdate = curTime
 	end
 
 	self:UpdateOverlayText()
 
-end
-
-function ENT:UpdateStatus()
-		self.Status = self.Active and "On" or "Off"
+	self:NextThink(curTime + self.ThinkDelay)
+	return true
 end
 
 function ENT:UpdateOverlayText()

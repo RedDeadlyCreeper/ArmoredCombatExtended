@@ -1,31 +1,31 @@
 
-local Material		= {}
+local Material    = {}
 
-Material.id			= "Texto"
-Material.name		= "Textolite"
-Material.sname		= "Textolite"
-Material.desc		= "Fiberglass based material, this material provides decent protection agaisnt both chemical especially and kinetic rounds, while taking reduced damage from explosions."
-Material.year		= 1955
+Material.id       = "Texto"
+Material.name     = "Textolite"
+Material.sname    = "Textolite"
+Material.desc     = "Fiberglass based material, this material provides decent protection agaisnt both chemical especially and kinetic rounds, while taking reduced damage from explosions."
+Material.year     = 1955
 
-Material.massMod		= 0.35
-Material.curve		= 0.94
+Material.massMod  = 0.35
+Material.curve    = 0.94
 
 --All effectiveness values multiply the Line of Sight armor values of armor.
 --All Resiliance values are damage multipliers. Higher = more damage. Lower = less damage.
 
-Material.effectiveness	= 0.5
-Material.HEATeffectiveness  = 1.2
-Material.HEeffectiveness	= 0.9
-Material.resiliance		= 50
-Material.HEATresiliance	= 0.5
-Material.HEresiliance	= 0.75
+Material.effectiveness        = 0.5
+Material.HEATeffectiveness    = 1.2
+Material.HEeffectiveness      = 0.9
+Material.resiliance           = 50
+Material.HEATresiliance       = 0.5
+Material.HEresiliance         = 0.75
 
-Material.spallarmor	= 1
-Material.spallresist	= 0.65
+Material.spallarmor           = 1
+Material.spallresist          = 0.65
 
-Material.spallmult	= 1.3
-Material.ArmorMul	= 0.23
-Material.NormMult	= 0.5
+Material.spallmult            = 1.3
+Material.ArmorMul             = 0.23
+Material.NormMult             = 0.5
 
 if SERVER then
 	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, _, Type)
@@ -42,16 +42,16 @@ if SERVER then
 		losArmor	= losArmor ^ curve
 
 		local HeatTypes = { -- 
-			["HEAT"] = true,
-			["THEAT"] = true,
-			["HEATFS"] = true,
-			["THEATFS"] = true,
+			HEAT = true,
+			THEAT = true,
+			HEATFS = true,
+			THEATFS = true,
 		}
 
 		local OtherImpactType = { -- 
-			["HE"] = true,
-			["Spall"] = true,
-			["HESH"] = true,
+			HE = true,
+			Spall = true,
+			HESH = true,
 		}
 
 		if HeatTypes[Type] then
@@ -97,7 +97,7 @@ if SERVER then
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 
-			return HitReHeatTypess
+			return HitRes
 
 		elseif OtherImpactType[Type] then
 
@@ -179,9 +179,10 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-			HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * resiliance * ductilitymult
-			HitRes.Overkill = 0
-			HitRes.Loss	= 1
+			HitRes.Damage    = ( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * resiliance * ductilitymult
+			HitRes.Overkill  = 0
+			HitRes.Loss      = 1
+
 			return HitRes
 
 		end

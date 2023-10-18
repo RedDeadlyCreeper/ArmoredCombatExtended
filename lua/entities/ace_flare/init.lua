@@ -3,32 +3,25 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-
 function ENT:Initialize()
 
 	self:SetModel( "models/Items/AR2_Grenade.mdl" )
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
+	self:SetGravity( 0.01 )
 
 	self.Heat		= self.Heat or 1
 	self.Life		= self.Life or 0.1
 
 	local phys = self:GetPhysicsObject()
-	phys:SetMass(3)
-	phys:EnableDrag( true )
-	phys:SetDragCoefficient( 50 )
-	phys:SetBuoyancyRatio( 2 )
-
-	self:SetGravity( 0.01 )
-
-	timer.Simple(0.1,function()
-		if not IsValid(self) then return end
-
-		table.insert( ACE.contraptionEnts, self )
-
-		ParticleEffectAttach("ACFM_Flare",4, self,1)
-	end)
+	if IsValid( phys ) then
+		phys:SetMass(3)
+		phys:EnableDrag( true )
+		phys:SetDragCoefficient( 50 )
+		phys:SetBuoyancyRatio( 2 )
+		phys:Wake()
+	end
 
 	timer.Simple(self.Life, function()
 		if IsValid(self) then
@@ -36,8 +29,7 @@ function ENT:Initialize()
 		end
 	end)
 
-	if ( IsValid( phys ) ) then phys:Wake() end
-
+	table.insert( ACE.contraptionEnts, self )
 end
 
 function ENT:Think()
@@ -61,13 +53,10 @@ function ENT:PhysicsCollide( Table )
 
 	if HitEnt:IsNPC() or (HitEnt:IsPlayer() and not HitEnt:HasGodMode()) then
 		if vFireInstalled then
-
 			CreateVFireEntFires(HitEnt, 3)
 		else
-
 			HitEnt:Ignite( self.Heat, 1 )
 		end
-
 	end
 end
 
