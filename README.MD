@@ -42,6 +42,4 @@ If you need contact, you can reach me on [ACE Discord](https://discord.gg/Y8aEYU
 
 As note: At the moment, ACE uses a modified version of ACF2 as base, however, it's possible that ACE uses [ACF-3](https://github.com/Stooberton/ACF-3) as its base in a near future.
 
-### for the older description, open the readme.txt - expect this content in wiki on future.
-
 **Visit our wiki [Here!](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki)**
