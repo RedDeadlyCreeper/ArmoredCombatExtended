@@ -699,3 +699,8 @@ r100
 - Fixed textolite spamming alot of errors if impacted by heat shells.
 - Fixed IRST angle return. Now its provided in a local angle relative to itself.
 - Updated armor analyzer
+
+*166
+- Fixed case where bullets could potentially pass through your armor under specific cases.
+- Temporally disabled smalls bullet to be able to pass through of fences. See gitlogs for more details.
+- Attempt to fix random issues regarding to effects (lua errors)

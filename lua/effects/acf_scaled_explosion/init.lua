@@ -2,65 +2,30 @@
 Initializes the effect. The data is a table of data
 which was passed from the server.
 ---------------------------------------------------------]]
+
+local function GetParticleMul()
+	return math.max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
+end
+
 function EFFECT:Init( data )
 
-	self.Origin		= data:GetOrigin()
-	self.DirVec		= data:GetNormal()
-	self.Radius		= math.max( data:GetRadius()  / 50 ,1)
-	self.Emitter		= ParticleEmitter( self.Origin )
-	self.ParticleMul	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
+	self.Origin        = data:GetOrigin()
+	self.DirVec        = data:GetNormal()
+	self.Radius        = math.max( data:GetRadius()  / 50 ,1)
+	self.Emitter       = ParticleEmitter( self.Origin )
+	self.ParticleMul   = GetParticleMul()
 
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius
 		GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 10
 		GroundTr.mask = MASK_NPCWORLDSTATIC
-		GroundTr.mins = Vector(0,0,0)
-		GroundTr.maxs = Vector(0,0,0)
-
-	local Ground = util.TraceHull( GroundTr )
+	local Ground = util.TraceLine( GroundTr )
 
 	local WaterTr = { }
-
-		local startposition = self.Origin + Vector(0,0,60 * self.Radius)
-		local endposition = self.Origin + Vector(0,0,1)
-
-		WaterTr.start = startposition
-		WaterTr.endpos = endposition
+		WaterTr.start = self.Origin + Vector(0,0,60 * self.Radius)
+		WaterTr.endpos = self.Origin + Vector(0,0,1)
 		WaterTr.mask = MASK_WATER
-		WaterTr.mins = Vector(0,0,0)
-		WaterTr.maxs = Vector(0,0,0)
-	local Water = util.TraceHull( WaterTr )
-
-	debugoverlay.Line( startposition, endposition, 10, Color(255,0,0))
-	debugoverlay.Cross( Water.HitPos, 10, 10, Color( 0, 0, 255 ))
-
-	self.HitWater = false
-	self.UnderWater = false
-	self.Normal = Ground.HitNormal
-
-	--print('Radius: ' .. self.Radius)
-	-- Material Enum
-	-- 65  ANTLION
-	-- 66 BLOODYFLESH
-	-- 67 CONCRETE / NODRAW
-	-- 68 DIRT
-	-- 70 FLESH
-	-- 71 GRATE
-	-- 72 ALIENFLESH
-	-- 73 CLIP
-	-- 76 PLASTIC
-	-- 77 METAL
-	-- 78 SAND
-	-- 79 FOLIAGE
-	-- 80 COMPUTER
-	-- 83 SLOSH
-	-- 84 TILE
-	-- 86 VENT
-	-- 87 WOOD
-	-- 89 GLASS
-
-	local Mat = Ground.MatType
-	local SmokeColor = Vector(100,100,100)
+	local Water = util.TraceLine( WaterTr )
 
 	if Water.HitWorld then
 
@@ -70,32 +35,25 @@ function EFFECT:Init( data )
 		end
 	end
 
+	self.HitWater = false
+	self.UnderWater = false
+	self.Normal = Ground.HitNormal
+
+	local Mat = Ground.MatType
+	local Material = ACE_GetMaterialName( Mat )
+	local SmokeColor = ACE.DustMaterialColor[Material] or ACE.DustMaterialColor["Concrete"]
+
 	if not self.HitWater then
 
 		-- when detonation is in midair
 		if Ground.HitSky or not Ground.Hit then
-
-			SmokeColor = Vector(100,100,100)
 			self:Airburst( SmokeColor )
-
-		-- Dirt
-		elseif Mat == 68 or Mat == 79 or Mat == 85 then
-
-			SmokeColor = Vector(117,101,70)
+		elseif Material == "Dirt" then
 			self:Dirt( SmokeColor )
-
-		-- Sand
-		elseif Mat == 78 then
-
-			SmokeColor = Vector(200,180,116)
+		elseif Material == "Sand" then
 			self:Sand( SmokeColor )
-
-		-- Nonspecific
-		else
-
-			SmokeColor = Vector(100,100,100)
+		else -- Nonspecific
 			self:Concrete( SmokeColor )
-
 		end
 	end
 
@@ -109,18 +67,16 @@ function EFFECT:Init( data )
 
 	--Main explosion
 	self:Core( self.HitWater )
-
-	if not self.HitWater then
-		ACF_RenderLight( game.GetWorld():EntIndex(), self.Radius * 1800, Color(255, 128, 48), self.Origin, 0.1)
-	end
-
 	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
+	ACF_RenderLight( Entity(0), self.Radius * 1800, Color(255, 128, 48), self.Origin, 0.1)
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
 
 
 function EFFECT:Core( HitWater )
+
+	if not self.Emitter then return end
 
 	local Radius = self.Radius
 	local PMul = self.ParticleMul
@@ -216,11 +172,13 @@ end
 
 function EFFECT:Shockwave( Ground, SmokeColor )
 
-	local PMul = self.ParticleMul
+	if not self.Emitter then return end
 
-	local Radius = (1-Ground.Fraction) * self.Radius
-	local Density = 15 * Radius
-	local Angle = Ground.HitNormal:Angle()
+	local PMul       = self.ParticleMul
+	local Radius     = (1-Ground.Fraction) * self.Radius
+	local Density    = 1 * Radius
+	local Angle      = Ground.HitNormal:Angle()
+
 	for _ = 0, Density * PMul do
 
 		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
@@ -241,7 +199,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 			Smoke:SetGravity( Vector( math.Rand( -20 , 20 ), math.Rand( -20 , 20 ), math.Rand( 25 , 100 ) ) )
 
 			local SMKColor = math.random( 0 , 50 )
-			Smoke:SetColor( SmokeColor.x-SMKColor,SmokeColor.y-SMKColor,SmokeColor.z-SMKColor )
+			Smoke:SetColor( SmokeColor.r-SMKColor,SmokeColor.g-SMKColor,SmokeColor.b-SMKColor )
 		end
 
 	end
@@ -249,6 +207,8 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 end
 
 function EFFECT:Water( Water )
+
+	if not self.Emitter then return end
 
 	local PMul = self.ParticleMul
 
@@ -326,6 +286,8 @@ end
 
 function EFFECT:Concrete( SmokeColor )
 
+	if not self.Emitter then return end
+
 	for _ = 0, 5 * self.Radius * self.ParticleMul do --Flying Debris
 
 		local Fragments = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
@@ -365,7 +327,7 @@ function EFFECT:Concrete( SmokeColor )
 			Smoke:SetAirResistance( 50 )
 			Smoke:SetGravity( Vector( math.random(-5,5) * self.Radius, math.random(-5,5) * self.Radius, -250 ) )
 
-			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
+			Smoke:SetColor(  SmokeColor.r,SmokeColor.g,SmokeColor.b  )
 		end
 
 	end
@@ -373,6 +335,8 @@ function EFFECT:Concrete( SmokeColor )
 end
 
 function EFFECT:Dirt( SmokeColor )
+
+	if not self.Emitter then return end
 
 	for _ = 0, 3 * self.Radius * self.ParticleMul do
 
@@ -399,13 +363,15 @@ function EFFECT:Dirt( SmokeColor )
 			Smoke:SetAirResistance( 100 )
 			Smoke:SetGravity( Vector( math.random(-2,2) * self.Radius, math.random(-2,2) * self.Radius, -300 ) )
 
-			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
+			Smoke:SetColor(  SmokeColor.r,SmokeColor.g,SmokeColor.b  )
 
 		end
 	end
 end
 
 function EFFECT:Sand( SmokeColor )
+
+	if not self.Emitter then return end
 
 	for _ = 0, 3 * self.Radius * self.ParticleMul * 2 do
 
@@ -432,12 +398,14 @@ function EFFECT:Sand( SmokeColor )
 			Smoke:SetAirResistance( 100 )
 			Smoke:SetGravity( Vector( math.random(-5,5) * self.Radius, math.random(-5,5) * self.Radius, -275 ) )
 
-			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
+			Smoke:SetColor(  SmokeColor.r,SmokeColor.g,SmokeColor.b  )
 		end
 	end
 end
 
 function EFFECT:Airburst()
+
+	if not self.Emitter then return end
 
 	local Radius = self.Radius
 	for _ = 0, 0.5 * Radius * self.ParticleMul do --Flying Debris

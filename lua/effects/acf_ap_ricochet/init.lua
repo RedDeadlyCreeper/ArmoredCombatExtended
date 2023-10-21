@@ -6,7 +6,7 @@ which was passed from the server.
 -----------------------------------------------------------]]
 
 --this is crucial for subcaliber, this will boost the dust's size.
-local SubCalBoost = {
+local RoundTypesSubCaliberBoost = {
 	APDS       = true,
 	APDSS      = true,
 	APFSDS     = true,
@@ -17,7 +17,7 @@ local SubCalBoost = {
 
 --the dust is for non-explosive rounds, so lets skip this.
 --Note that APHE variants are not listed here but they still require it in case of rico vs ground.
-local TypeIgnore = {
+local RoundTypesIgnore = {
 	HE       = true,
 	HEFS     = true,
 	HESH     = true,
@@ -27,28 +27,35 @@ local TypeIgnore = {
 	THEATFS  = true
 }
 
-function EFFECT:Init( data )
-	self.Origin        = data:GetOrigin()
-	self.DirVec        = data:GetNormal()
-	self.Velocity      = data:GetScale()			-- Velocity of the projectile in gmod units
-	self.Mass          = data:GetMagnitude()		-- Mass of the projectile in kg
-	self.AmmoCrate     = data:GetEntity()			-- the Ammocrate entity
+local function PerformDecalTrace( Effect )
+	local Tr = {}
+	Tr.start = Effect.Origin + Effect.DirVec
+	Tr.endpos = Effect.Origin - Effect.DirVec * 12000
+	return util.TraceLine( Tr )
+end
 
-	self.Emitter       = ParticleEmitter( self.Origin )
+local function GetParticleMul()
+	return math.max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
+end
+
+function EFFECT:Init( data )
+
+	self.AmmoCrate   = data:GetEntity() 		-- The ammo crate Entity of this round.
+	self.Origin      = data:GetOrigin() 		-- where the round did hit.
+	self.DirVec      = data:GetNormal() 		-- the direction of the shell when did hit
+	self.Velocity    = data:GetScale() 			-- Mass of the projectile in kg
+	self.Mass        = data:GetMagnitude() 		-- Velocity of the projectile in gmod units
+
 	self.Scale         = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
-	self.ParticleMul   = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
 	self.Id            = self.AmmoCrate:GetNWString( "AmmoType", "AP" )
 	self.Caliber       = self.AmmoCrate:GetNWFloat("Caliber", 2 )
+	self.Emitter       = ParticleEmitter( self.Origin )
+	self.ParticleMul   = GetParticleMul()
 
-	local Tr		= {}
-	Tr.start		= self.Origin + self.DirVec
-	Tr.endpos		= self.Origin - self.DirVec * 12000
-	local SurfaceTr	= util.TraceLine( Tr )
-
-	ACE_SRicochet( self.Origin, self.Caliber, self.Velocity, SurfaceTr.HitWorld )
+	local SurfaceTr	= PerformDecalTrace( self )
 
 	--do this if we are dealing with non-explosive rounds
-	if not TypeIgnore[self.Id] then
+	if not RoundTypesIgnore[self.Id] then
 
 		local Mat = SurfaceTr.MatType
 		local Material = ACE_GetMaterialName( Mat )
@@ -62,16 +69,19 @@ function EFFECT:Init( data )
 	end
 
 	util.Decal("Impact.Concrete", self.Origin + self.DirVec * 10, self.Origin - self.DirVec * 10 )
+	ACE_SRicochet( self.Origin, self.Caliber, self.Velocity, SurfaceTr.HitWorld )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
 
 function EFFECT:Dust( SmokeColor )
 
+	if not self.Emitter then return end
+
 	local Vel		= self.Velocity / 2500
 	local Mass		= self.Mass
 
-	local HalfArea	= ( SubCalBoost[self.Id] and 0.75) or 1
+	local HalfArea	= ( RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea	= 3.141 * (self.Caliber / 2) * HalfArea
 
 	--KE main formula
@@ -79,7 +89,7 @@ function EFFECT:Dust( SmokeColor )
 
 	for _ = 1, 3 do
 		local Dust = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
-		if (Dust) then
+		if Dust then
 			Dust:SetVelocity(VectorRand() * math.random( 20,30 * Energy) )
 			Dust:SetLifeTime( 0 )
 			Dust:SetDieTime( math.Rand( 1 , 2 ) * (Energy / 3)  )

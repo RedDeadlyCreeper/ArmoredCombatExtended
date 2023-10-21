@@ -3,8 +3,8 @@
 	which was passed from the server.
 -----------------------------------------------------------]]
 
-	--this is crucial for subcaliber, this will boost the dust's size.
-local SubCalBoost = {
+--this is crucial for subcaliber, this will boost the dust's size.
+local RoundTypesSubCaliberBoost = {
 	APDS    = true,
 	APDSS   = true,
 	APFSDS  = true,
@@ -13,8 +13,8 @@ local SubCalBoost = {
 	HVAP    = true
 }
 
-	--the dust is for non-explosive rounds, so lets skip this
-local TypeIgnore = {
+--the dust is for non-explosive rounds, so lets skip this
+local RoundTypesIgnore = {
 	APHE    = true,
 	APHECBC = true,
 	HE      = true,
@@ -30,26 +30,43 @@ local EntityFilter = {
 	player = true
 }
 
+local function PerformDecalTrace( Effect )
+	local Tr = {}
+	Tr.start = Effect.Origin - Effect.DirVec * 10
+	Tr.endpos = Effect.Origin + Effect.DirVec * 10
+	return util.TraceLine( Tr )
+end
+
+local function PerformBulletEffect( Effect )
+	local BulletEffect = {}
+	BulletEffect.Num       = 1
+	BulletEffect.Src       = Effect.Origin - Effect.DirVec
+	BulletEffect.Dir       = Effect.DirVec
+	BulletEffect.Spread    = Vector(0,0,0)
+	BulletEffect.Tracer    = 0
+	BulletEffect.Force     = 0
+	BulletEffect.Damage    = 0
+	LocalPlayer():FireBullets(BulletEffect)
+end
+
 function EFFECT:Init( data )
 
-	self.AmmoCrate   = data:GetEntity()
-	self.Origin      = data:GetOrigin()
-	self.DirVec      = data:GetNormal()
-	self.Velocity    = data:GetScale() --Mass of the projectile in kg
-	self.Mass        = data:GetMagnitude() --Velocity of the projectile in gmod units
+	self.AmmoCrate   = data:GetEntity() 		-- The ammo crate Entity of this round.
+	self.Origin      = data:GetOrigin() 		-- where the round did hit.
+	self.DirVec      = data:GetNormal() 		-- the direction of the shell when did hit
+	self.Velocity    = data:GetScale() 			-- Mass of the projectile in kg
+	self.Mass        = data:GetMagnitude() 		-- Velocity of the projectile in gmod units
 
-	self.Emitter     = ParticleEmitter( self.Origin )
 	self.Scale       = math.max(self.Mass * (self.Velocity / 39.37) / 100,1) ^ 0.3
 	self.Id          = self.AmmoCrate:GetNWString( "AmmoType", "AP" )
 	self.Caliber     = self.AmmoCrate:GetNWFloat( "Caliber", 2 )
+	self.Emitter     = ParticleEmitter( self.Origin )
 
-	local Tr = {}
-	Tr.start = self.Origin - self.DirVec * 10
-	Tr.endpos = self.Origin + self.DirVec * 10
-	local SurfaceTr = util.TraceLine( Tr )
+	local SurfaceTr = PerformDecalTrace( self )
+	local TraceEntity = SurfaceTr.Entity
 
 	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
-	if not TypeIgnore[self.Id] and self.Id and SurfaceTr.HitWorld or (IsValid(SurfaceTr.Entity) and not EntityFilter[SurfaceTr.Entity:GetClass()]) then
+	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) then
 
 		local Mat = SurfaceTr.MatType
 		local Material = ACE_GetMaterialName( Mat )
@@ -62,16 +79,7 @@ function EFFECT:Init( data )
 		end
 	end
 
-	local BulletEffect = {}
-	BulletEffect.Num       = 1
-	BulletEffect.Src       = self.Origin - self.DirVec
-	BulletEffect.Dir       = self.DirVec
-	BulletEffect.Spread    = Vector(0,0,0)
-	BulletEffect.Tracer    = 0
-	BulletEffect.Force     = 0
-	BulletEffect.Damage    = 0
-	LocalPlayer():FireBullets(BulletEffect)
-
+	PerformBulletEffect( self )
 	util.Decal("Impact.Concrete", SurfaceTr.StartPos, self.Origin + self.DirVec * 10 )
 
 	if self.Emitter then self.Emitter:Finish() end
@@ -79,10 +87,12 @@ end
 
 function EFFECT:Dust( SmokeColor )
 
+	if not self.Emitter then return end
+
 	local Vel = self.Velocity / 2500
 	local Mass = self.Mass
 
-	local HalfArea = (SubCalBoost[self.Id] and 0.75) or 1
+	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
 	--KE main formula
@@ -111,17 +121,19 @@ end
 
 function EFFECT:Metal( SmokeColor )
 
-	local SmokeAlpha = SmokeColor.a * 0.5
+	if not self.Emitter then return end
 
-	--local PMul = self.ParticleMul
 	local Vel = self.Velocity / 2500
 	local Mass = self.Mass
 
 	--this is the size boost fo subcaliber rounds
-	local Boost = ( SubCalBoost[self.Id] and 2) or 1
+	local Boost = ( RoundTypesSubCaliberBoost[self.Id] and 2) or 1
 
 	--KE main formula
 	local Energy = math.max(((Mass * (Vel ^ 2)) / 2) * 0.005 * Boost, 2)
+
+	-- Smoke Alpha
+	local SmokeAlpha = SmokeColor.a * 0.5
 
 	for _ = 0, math.max(self.Caliber / 3, 1) do
 		local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 5)

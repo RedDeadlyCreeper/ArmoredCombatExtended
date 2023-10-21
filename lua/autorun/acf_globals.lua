@@ -3,7 +3,7 @@ ACF = ACF or {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 490		-- ACE current version
+ACF.Version = 491		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
@@ -326,7 +326,7 @@ elseif CLIENT then
 	include("acf/client/cl_acfpermission.lua")
 	include("acf/client/gui/cl_acfsetpermission.lua")
 
-	CreateConVar("acf_cl_particlemul", 1)
+	CreateClientConVar("acf_cl_particlemul", "1", true )
 	CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
 
 end

@@ -298,8 +298,7 @@ function ENT:CalcFlight()
 					local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
 					local RootLauncher = self.Launcher.BaseEntity
 
-					if RootLauncher:EntIndex() == RootTarget:EntIndex() then
-
+					if RootLauncher == RootTarget then
 						IsPart = true
 					else
 
@@ -310,7 +309,7 @@ function ENT:CalcFlight()
 
 							if not IsValid(physEnt) then continue end
 
-							if physEnt:EntIndex() == RootLauncher:EntIndex() then
+							if physEnt == RootLauncher then
 
 								local mi, ma = physEnt:GetCollisionBounds()
 								debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
