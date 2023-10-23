@@ -9,7 +9,7 @@ local FlightTr = { output = FlightRes }
 --[[------------------------------------------------------------------------------------------------
 	DEBUG CONFIG
 ]]--------------------------------------------------------------------------------------------------
-local DebugTime = 5
+local DebugTime = 1
 
 --[[------------------------------------------------------------------------------------------------
 	creates a new bullet being fired
@@ -35,15 +35,13 @@ function ACF_CreateBullet( BulletData )
 	BulletData.FuseLength	= type(BulletData.FuseLength) == "number" and BulletData.FuseLength or 0
 
 	--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
-	if IsValid(BulletData.Gun) then
+	local Parent = ACF_GetPhysicalParent(BulletData.Gun)
 
-		local Gun = BulletData.Gun
-		local physobj = ACF_GetPhysicalParent(Gun):GetPhysicsObject()
-
-		if IsValid(physobj) then
-			BulletData.TraceBackComp = math.max(physobj:GetVelocity():Dot(BulletData.Flight:GetNormalized()),0)
+	if IsValid(Parent) then
+		local physObj = Parent:GetPhysicsObject()
+		if IsValid(physObj) then
+			BulletData.TraceBackComp = math.max(physObj:GetVelocity():Dot(BulletData.Flight:GetNormalized()),0)
 		end
-
 	end
 
 	if BulletData.Filter then
@@ -153,9 +151,9 @@ do
 		Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * Bullet.Flight:Length() - Bullet.TraceBackComp * Bullet.DeltaTime )
 		Bullet.EndTrace	= Bullet.NextPos + Flightnorm * PhysVel
 
-		debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255,32) ) --true start
-		debugoverlay.Line(Bullet.Pos, Bullet.NextPos, DebugTime, ColorRand() )
-		debugoverlay.Line(Bullet.StartTrace, Bullet.EndTrace, DebugTime, Color(0, 255, 0))
+		debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255) ) --true start
+		debugoverlay.Line(Bullet.Pos, Bullet.NextPos, DebugTime, Color(0,255,0), true ) -- the predicted trayectory.
+		debugoverlay.Line(Bullet.StartTrace, Bullet.EndTrace, DebugTime, Color(255, 255, 0)) -- the real trace detection.
 
 		--updating timestep timers
 		Bullet.LastThink = ACF.SysTime
@@ -176,6 +174,8 @@ end
 ]]--------------------------------------------------------------------------------------------------
 do
 
+	local MaxvisclipPerBullet = 50
+
 	local function ACF_PerformTrace( Bullet )
 
 		-- perform the trace for damage
@@ -185,10 +185,7 @@ do
 		FlightTr.start	= Bullet.StartTrace
 		FlightTr.endpos	= Bullet.EndTrace
 
-		debugoverlay.Cross( FlightTr.start, 10, 20, Color(255,0,0), true )
-		debugoverlay.Cross( FlightTr.endpos, 10, 20, Color(0,255,0), true )
-
-		-- Disabled since for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
+		-- Disabled since, for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
 		--FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 
 		--FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
@@ -196,6 +193,8 @@ do
 		local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 		FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
 		FlightTr.mins = -FlightTr.maxs
+
+		debugoverlay.Box( Bullet.Pos, FlightTr.mins, FlightTr.maxs, DebugTime, Color(255,100,0, 100) )
 
 		-- Table to hold temporary filter keys that should be removed after the below while loop is completed
 		if not Bullet.FilterKeysToRemove then Bullet.FilterKeysToRemove = {} end
@@ -206,29 +205,20 @@ do
 
 		FlightTr.filter	= Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 
-		local Iteration = 0
+		local visCount = 0
 
 		--if trace hits clipped part of prop, add prop to trace filter and retry
-		while RetryTrace do
+		while RetryTrace and visCount < MaxvisclipPerBullet do
 
 			-- Disables so we dont overloop it again
 			RetryTrace		= false
 
-			-- i temporally added this, because i crash this very often when testing.
-			Iteration = Iteration + 1
-			if Iteration > 100 then
-				print("FATAL ERROR")
-				break
-			end
-
-			-- Defining tracehull at first instance. If you want serious cases, change this to traceline
+			-- Defining tracehull at first instance.
 			util.TraceHull(FlightTr)
-			--util.TraceLine(FlightTr)
 
 			--if our shell hits visclips, convert the tracehull on traceline.
 			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
-				--print("") -- not wanting linter annoys me.
 				-- trace result is stored in supplied output FlightRes (at top of file)
 				util.TraceLine(FlightTr)
 
@@ -247,6 +237,9 @@ do
 
 				table.insert( Bullet.Filter, FlightRes.Entity )
 				RetryTrace = true	--re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
+
+				-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
+				visCount = visCount + 1
 			end
 
 			-- If we hit a player or NPC, we need to retry the trace as a TraceLine
@@ -263,9 +256,11 @@ do
 					table.insert(Bullet.FilterKeysToRemove, #Bullet.Filter)
 
 					RetryTrace = true
+
+					-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
+					visCount = visCount + 1
 				end
 			end
-
 		end
 	end
 

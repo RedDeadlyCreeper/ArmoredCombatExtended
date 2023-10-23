@@ -13,6 +13,8 @@ local RackClasses	= ACF.Classes.Rack
 local GunTable	= ACF.Weapons.Guns
 local RackTable	= ACF.Weapons.Racks
 
+local AmmoLinkDistBase = 512
+
 function ENT:GetReloadTime(nextMsl)
 
 	local Rack = RackTable[self.Id]
@@ -146,7 +148,7 @@ function ENT:CanLinkCrate(crate)
 
 
 	-- Dont't link if it's too far from this rack
-	if RetDist( self, crate ) >= 512 then
+	if RetDist( self, crate ) >= AmmoLinkDistBase then
 		return false, "That crate is too far to be connected with this rack!"
 	end
 
@@ -303,7 +305,7 @@ end
 function ENT:TrimDistantCrates()
 
 	for _, Crate in pairs(self.AmmoLink) do
-		if IsValid( Crate ) and Crate.Load and RetDist( self, Crate ) >= 512 then
+		if IsValid( Crate ) and Crate.Load and RetDist( self, Crate ) >= AmmoLinkDistBase then
 			self:Unlink( Crate )
 			soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
 			self:EmitSound(soundstr, 500, 100)

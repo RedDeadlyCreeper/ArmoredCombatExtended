@@ -305,9 +305,12 @@ function ENT:Think()
 									self.ClosestToBeam = #ownArray + 1
 									besterr = err
 								end
-								--print((entpos - thisPos):Length())
 
-								table.insert(ownArray , scanEnt:CPPIGetOwner():GetName() or "")
+								--For Owner table
+								local Owner = scanEnt:CPPIGetOwner()
+								local NickName = IsValid(Owner) and Owner:GetName() or ""
+
+								table.insert(ownArray , NickName)
 								table.insert(posArray ,entpos + randinac * errorFromAng * 2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis * 0.1 ))) --3
 
 								--IDK if this is more intensive than length

@@ -299,7 +299,11 @@ function ENT:AcquireLock()
 			local angerr = Angle(finalerror, finalerror, finalerror) * randanginac
 
 			--For Owner table
-			table.insert(Owners, IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName() or "")
+			local Owner = scanEnt:CPPIGetOwner()
+			local NickName = IsValid(Owner) and Owner:GetName() or ""
+
+
+			table.insert(Owners, NickName)
 			table.insert(Temperatures, Heat)
 			table.insert(AngTable, -ang + angerr) -- Negative means that if the target is higher than irst = positive pitch
 

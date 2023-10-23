@@ -496,28 +496,40 @@ function ACE_CreateLinkRope( Pos, Ent1, LPos1, Ent2, LPos2 )
 
 end
 
-local WireTable = { "gmod_wire_adv_pod", "gmod_wire_pod", "gmod_wire_keyboard", "gmod_wire_joystick", "gmod_wire_joystick_multi" }
+--[[----------------------------------------------------------------------
+	This function will look for the driver/operator of a gun/rack based
+	from the used gun inputs when firing. 
+	Meant for determining if the driver seat is legal.
+------------------------------------------------------------------------]]
+local WireTable = {
+	gmod_wire_adv_pod = true,
+	gmod_wire_pod = true,
+	gmod_wire_keyboard = true,
+	gmod_wire_joystick = true,
+	gmod_wire_joystick_multi = true
+}
 
 function ACE_GetWeaponUser( Weapon, inp )
-	if not inp then return nil end
+	if not IsValid(inp) then return end
+
 	if inp:GetClass() == "gmod_wire_adv_pod" then
-		if inp.Pod then
+		if IsValid(inp.Pod) then
 			return inp.Pod:GetDriver()
 		end
 	elseif inp:GetClass() == "gmod_wire_pod" then
-		if inp.Pod then
+		if IsValid(inp.Pod) then
 			return inp.Pod:GetDriver()
 		end
 	elseif inp:GetClass() == "gmod_wire_keyboard" then
-		if inp.ply then
+		if IsValid(inp.ply) then
 			return inp.ply
 		end
 	elseif inp:GetClass() == "gmod_wire_joystick" then
-		if inp.Pod then
+		if IsValid(inp.Pod) then
 			return inp.Pod:GetDriver()
 		end
 	elseif inp:GetClass() == "gmod_wire_joystick_multi" then
-		if inp.Pod then
+		if IsValid(inp.Pod) then
 			return inp.Pod:GetDriver()
 		end
 	elseif inp:GetClass() == "gmod_wire_expression2" then
@@ -527,12 +539,12 @@ function ACE_GetWeaponUser( Weapon, inp )
 			return ACE_GetWeaponUser( Weapon, inp.Inputs.Shoot.Src )
 		elseif inp.Inputs then
 			for _,v in pairs(inp.Inputs) do
-				if v.Src and table.HasValue(WireTable, v.Src:GetClass()) then
+				if IsValid(v.Src) and WireTable[v.Src:GetClass()] then
 					return ACE_GetWeaponUser( Weapon, v.Src )
 				end
 			end
 		end
 	end
-	return inp.Owner or inp:CPPIGetOwner()
 
+	return inp:CPPIGetOwner()
 end

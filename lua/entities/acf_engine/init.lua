@@ -6,6 +6,7 @@ AddCSLuaFile( "cl_init.lua" )
 include("shared.lua")
 
 local EngineTable = ACF.Weapons.Engines
+local FuelLinkDistBase = 512
 
 do
 
@@ -683,7 +684,7 @@ end
 --unlink fuel tanks out of range
 function ENT:CheckFuel()
 	for _,tank in pairs(self.FuelLink) do
-		if self:GetPos():Distance(tank:GetPos()) > 512 then
+		if self:GetPos():Distance(tank:GetPos()) > FuelLinkDistBase then
 			self:Unlink( tank )
 			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
 			self:EmitSound(soundstr,500,100)
@@ -864,7 +865,7 @@ function ENT:LinkFuel( Target )
 		end
 	end
 
-	if self:GetPos():Distance( Target:GetPos() ) > 512 then
+	if self:GetPos():Distance( Target:GetPos() ) > FuelLinkDistBase then
 		return false, "Fuel tank is too far away."
 	end
 

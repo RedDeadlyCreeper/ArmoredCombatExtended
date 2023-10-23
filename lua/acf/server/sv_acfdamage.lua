@@ -910,73 +910,79 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 	end
 end
 
-
+-- Creates a debris related to explosive destruction.
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	-- if it hasn't been processed yet, check for children
 	if not Entity.ACF_Killed then ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy ) end
 
 	do
-
 		--ERA props should not create debris
 		local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
 		local MatData = ACE_GetMaterialData( Mat )
 		if MatData.IsExplosive then return end
-
 	end
-
-	constraint.RemoveAll( Entity )
-	Entity:Remove()
 
 	if Entity:BoundingRadius() < ACF.DebrisScale then return nil end
 
+	-- Create a debris
 	local Debris = ents.Create( "ace_debris" )
-	Debris:SetModel( Entity:GetModel() )
-	Debris:SetAngles( Entity:GetAngles() )
-	Debris:SetPos( Entity:GetPos() )
-	Debris:SetMaterial("models/props_wasteland/metal_tram001a")
-	Debris:Spawn()
+	if IsValid(Debris) then
 
-	if math.random() < ACF.DebrisIgniteChance then Debris:Ignite(math.Rand(5,45),0) end
+		Debris:SetModel( Entity:GetModel() )
+		Debris:SetAngles( Entity:GetAngles() )
+		Debris:SetPos( Entity:GetPos() )
+		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
+		Debris:Spawn()
+		Debris:Activate()
 
-	Debris:Activate()
+		if math.random() < ACF.DebrisIgniteChance then
+			Debris:Ignite(math.Rand(5,45),0)
+		end
 
-	-- Applies force to this debris
-	local phys = Debris:GetPhysicsObject()
-	local physent = Entity:GetPhysicsObject()
+		-- Applies force to this debris
+		local phys = Debris:GetPhysicsObject()
+		local physent = Entity:GetPhysicsObject()
+		local Parent = ACF_GetPhysicalParent( Entity )
 
-	if phys:IsValid() and physent:IsValid() then
+		if IsValid(phys) and IsValid(physent) then
+			phys:SetDragCoefficient( -50 )
+			phys:SetMass( physent:GetMass() )
+			phys:SetVelocity( Parent:GetVelocity() )
+			phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:WorldSpaceCenter() + VectorRand() * 10  )
 
-		phys:SetDragCoefficient( -50 )
-		phys:SetMass( physent:GetMass() )
-		phys:SetVelocity( ACF_GetPhysicalParent( Entity ):GetVelocity() )
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:WorldSpaceCenter() + VectorRand() * 10  )
-
+			if IsValid(Parent) then
+				phys:SetVelocity(Parent:GetVelocity() )
+			end
+		end
 	end
+
+	-- Remove the entity
+	constraint.RemoveAll( Entity )
+	Entity:Remove()
 
 	return Debris
 end
 
+-- Creates a debris related to kinetic destruction.
 function ACF_APKill( Entity , HitVector , Power )
 
 	-- kill the children of this ent, instead of disappearing them from removing parent
 	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
 
 	do
-
 		--ERA props should not create debris
 		local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
 		local MatData = ACE_GetMaterialData( Mat )
 		if MatData.IsExplosive then return end
-
 	end
-
-	constraint.RemoveAll( Entity )
-	Entity:Remove()
 
 	if Entity:BoundingRadius() < ACF.DebrisScale then return nil end
 
+	-- Create a debris
 	local Debris = ents.Create( "ace_debris" )
+	if IsValid(Debris) then
+
 		Debris:SetModel( Entity:GetModel() )
 		Debris:SetAngles( Entity:GetAngles() )
 		Debris:SetPos( Entity:GetPos() )
@@ -985,17 +991,26 @@ function ACF_APKill( Entity , HitVector , Power )
 		Debris:Spawn()
 		Debris:Activate()
 
-	--Applies force to this debris
-	local phys = Debris:GetPhysicsObject()
-	local physent = Entity:GetPhysicsObject()
+		--Applies force to this debris
+		local phys = Debris:GetPhysicsObject()
+		local physent = Entity:GetPhysicsObject()
+		local Parent =  ACF_GetPhysicalParent( Entity )
 
-	if phys:IsValid() and physent:IsValid() then
-		phys:SetDragCoefficient( -50 )
-		phys:SetMass( physent:GetMass() )
-		phys:SetVelocity( ACF_GetPhysicalParent( Entity ):GetVelocity() )
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:WorldSpaceCenter() + VectorRand() * 10 )
+		if IsValid(phys) and IsValid(physent) then
+			phys:SetDragCoefficient( -50 )
+			phys:SetMass( physent:GetMass() )
+			phys:SetVelocity(Parent:GetVelocity() )
+			phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:WorldSpaceCenter() + VectorRand() * 10 )
 
+			if IsValid(Parent) then
+				phys:SetVelocity( Parent:GetVelocity() )
+			end
+		end
 	end
+
+	-- Remove the entity
+	constraint.RemoveAll( Entity )
+	Entity:Remove()
 
 	return Debris
 end
@@ -1017,7 +1032,7 @@ do
 		local MaxHE       = ACF.ScaledHEMax	-- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
 		local Inflictor   = ent.Inflictor or nil
-		local Owner       = CPPI and ent:CPPIGetOwner() or NULL
+		local Owner       = ent:CPPIGetOwner() or NULL
 
 		if ent:GetClass() == "acf_fueltank" then
 
@@ -1060,7 +1075,7 @@ do
 
 				if not Found.Exploding then
 
-					local EOwner = CPPI and Found:CPPIGetOwner() or NULL
+					local EOwner = Found:CPPIGetOwner() or NULL
 
 					--Don't detonate explosives which we are not allowed to.
 					if Owner ~= EOwner then continue end

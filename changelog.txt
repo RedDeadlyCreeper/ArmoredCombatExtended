@@ -704,3 +704,10 @@ r100
 - Fixed case where bullets could potentially pass through your armor under specific cases.
 - Temporally disabled smalls bullet to be able to pass through of fences. See gitlogs for more details.
 - Attempt to fix random issues regarding to effects (lua errors)
+
+*r167
+- Added ITPSV Tank into the ACE dupes folder. Thanks Chiyo.
+- fixed tracking radar giving errors
+- attempt to fix cases with rack giving errors if fired under some scenarios.
+- attempt to fix cases with debris returning errors under specific cases.
+- some unspecific changes regarding to code struct.
