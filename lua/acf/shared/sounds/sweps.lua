@@ -1,9 +1,17 @@
 if SERVER then
 	util.AddNetworkString("ACE_SWEPSounds")
 
-	function ACE_NetworkedSound(sourcePly, ent, snd, propmass)
-		if game.SinglePlayer() then return end
+	function ACE_NetworkSPEffects(ent, propmass)
 
+		net.Start("ACE_SWEPSounds", true)
+		net.WriteEntity(ent)
+		net.WriteFloat(propmass)
+		net.Send(ent:GetOwner())
+	end
+
+	-- The previous networking function. Removed owner from vars since ent (the swep) already has the owner and sounds networked in it. 
+	-- propmass is serverside so we must include it into client.
+	function ACE_NetworkMPEffects(sourcePly, ent, propmass)
 		local targets = {}
 
 		for _, v in ipairs(player.GetAll()) do
@@ -14,13 +22,24 @@ if SERVER then
 
 		net.Start("ACE_SWEPSounds", true)
 		net.WriteEntity(ent)
-		net.WriteString(snd)
 		net.WriteFloat(propmass)
 		net.Send(targets)
 	end
+
 else
+	-- We receive data from server. Perform actions according to game type.
 	net.Receive("ACE_SWEPSounds", function()
-		ACE_SGunFire(net.ReadEntity(), net.ReadString(), 1, net.ReadFloat())
+
+		local swep = net.ReadEntity()
+		local propmass = net.ReadFloat()
+		if IsValid(swep) then
+			if game.SinglePlayer() then
+				swep.ACEPropmass = propmass
+				swep:DoSPClientEffects()
+			else
+				ACE_SGunFire(swep:GetOwner(), swep.Primary.Sound, 1, propmass)
+			end
+		end
 	end)
 end
 

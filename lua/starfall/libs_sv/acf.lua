@@ -87,7 +87,7 @@ end
 
 local checktype = instance.CheckType
 local acf_library = instance.Libraries.acf
-local ents_methods, wrap, unwrap = instance.Types.Entity.Methods, instance.Types.Entity.Wrap, instance.Types.Entity.Unwrap
+local ents_methods, owrap, eunwrap = instance.Types.Entity.Methods, instance.WrapObject, instance.Types.Entity.Unwrap
 local ang_meta, aunwrap = instance.Types.Angle, instance.Types.Angle.Unwrap
 local vec_meta, vunwrap = instance.Types.Vector, instance.Types.Vector.Unwrap
 
@@ -862,7 +862,7 @@ end]]
 -- @return boolean Is the info restricted?
 function ents_methods:acfIsInfoRestricted ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -874,7 +874,7 @@ end
 -- @return string The short name
 function ents_methods:acfNameShort ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -892,7 +892,7 @@ end
 -- @return number The capacity
 function ents_methods:acfCapacity ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -906,7 +906,7 @@ end
 -- @return boolean Is the entity active?
 function ents_methods:acfGetActive ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -925,7 +925,7 @@ end
 -- @param boolean state The state to set the entity to
 function ents_methods:acfSetActive ( on )
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -941,7 +941,7 @@ end
 function ents_methods:acfHitClip( hitpos )
 	checktype( self, ents_metatable )
 	checktype( hitpos, vec_meta )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 	hitpos = vunwrap( hitpos )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
@@ -967,7 +967,7 @@ local function getLinks ( ent, enttype )
 
 		-- find all the links inside the resources
 		for _, link in pairs( ent[ entry ] ) do
-			ret[ #ret + 1 ] = mode and wrap( link.Ent ) or link
+			ret[ #ret + 1 ] = mode and owrap( link.Ent ) or owrap( link )
 		end
 	end
 
@@ -983,7 +983,7 @@ local function searchForGearboxLinks ( ent )
 		if IsValid( box ) then
 			for _, link in pairs( box.WheelLink ) do
 				if link.Ent == ent then
-					ret[ #ret + 1 ] = wrap( box )
+					ret[ #ret + 1 ] = owrap( box )
 					break
 				end
 			end
@@ -998,7 +998,7 @@ end
 -- @return table The links
 function ents_methods:acfLinks ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1016,7 +1016,7 @@ end
 -- @return string The full name
 function ents_methods:acfName ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1037,7 +1037,7 @@ end
 -- @return string The type
 function ents_methods:acfType ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1064,8 +1064,8 @@ function ents_methods:acfLinkTo ( target, notify )
 	checktype( self, ents_metatable )
 	checktype( target, ents_metatable )
 
-	local this = unwrap( self )
-	local tar = unwrap( target )
+	local this = eunwrap( self )
+	local tar = eunwrap( target )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	if not ( tar and tar:IsValid() ) then SF.Throw( "Invalid Link Entity", 2 ) end
@@ -1094,8 +1094,8 @@ function ents_methods:acfUnlinkFrom ( target, notify )
 	checktype( self, ents_metatable )
 	checktype( target, ents_metatable )
 
-	local this = unwrap( self )
-	local tar = unwrap( target )
+	local this = eunwrap( self )
+	local tar = eunwrap( target )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	if not ( tar and tar:IsValid() ) then SF.Throw( "Invalid Link Entity", 2 ) end
@@ -1119,14 +1119,14 @@ end
 -- @return table The linked wheels
 function ents_methods:acfGetLinkedWheels ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	if not ( isEngine(this) or isGearbox(this) ) then SF.Throw( "Target must be a engine, or gearbox", 2 ) end
 
 	local wheels = {}
 	for _, ent in pairs( ACF_GetLinkedWheels( this ) ) do
-		table.insert( wheels, wrap( ent ) )
+		table.insert( wheels, owrap( ent ) )
 	end
 
 	return wheels
@@ -1139,7 +1139,7 @@ end
 -- @return boolean Whether the entity is an ACF engine
 function ents_methods:acfIsEngine ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1151,7 +1151,7 @@ end
 -- @return boolean Whether the engine is electric
 function ents_methods:acfIsElectric ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1163,7 +1163,7 @@ end
 -- @return number The torque in N/m
 function ents_methods:acfMaxTorque ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1176,7 +1176,7 @@ end
 -- @return number The torque in N/m
 function ents_methods:acfMaxTorqueWithFuel ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1201,7 +1201,7 @@ end
 -- @return number The power in kW
 function ents_methods:acfMaxPower ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1213,7 +1213,7 @@ end
 -- @return number The power in kW
 function ents_methods:acfMaxPowerWithFuel ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1225,7 +1225,7 @@ end
 -- @return number The idle rpm
 function ents_methods:acfIdleRPM ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1239,7 +1239,7 @@ end
 -- @return number The powerband max
 function ents_methods:acfPowerband ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1252,7 +1252,7 @@ end
 -- @return number The powerband min
 function ents_methods:acfPowerbandMin ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1265,7 +1265,7 @@ end
 -- @return number The powerband max
 function ents_methods:acfPowerbandMax ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1278,7 +1278,7 @@ end
 -- @return number The redline rpm
 function ents_methods:acfRedline ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1291,7 +1291,7 @@ end
 -- @return number The current rpm
 function ents_methods:acfRPM ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1305,7 +1305,7 @@ end
 -- @return number The current torque
 function ents_methods:acfTorque ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1319,7 +1319,7 @@ end
 -- @return number The inertia of the flywheel
 function ents_methods:acfFlyInertia ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1333,7 +1333,7 @@ end
 -- @return number The mass of the flywheel
 function ents_methods:acfFlyMass ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1347,7 +1347,7 @@ end
 -- @return number The current power
 function ents_methods:acfPower ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1361,7 +1361,7 @@ end
 -- @return boolean True if the RPM is inside the powerband
 function ents_methods:acfInPowerband ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1378,7 +1378,7 @@ end
 -- @return number The throttle value
 function ents_methods:acfGetThrottle ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1393,7 +1393,7 @@ end
 function ents_methods:acfSetThrottle ( throttle )
 	checktype( self, ents_metatable )
 	checkluatype( throttle, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1407,7 +1407,7 @@ end
 -- @return number The fuel remaining, in litres or kilowatt-hours
 function ents_methods:acfFuelRemaining ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1423,7 +1423,7 @@ end
 -- @return boolean True if the entity is an ACF gearbox
 function ents_methods:acfIsGearbox ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1435,7 +1435,7 @@ end
 -- @return number The current gear
 function ents_methods:acfGear ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1449,7 +1449,7 @@ end
 -- @return number The number of gears
 function ents_methods:acfNumGears ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1463,7 +1463,7 @@ end
 -- @return number The final ratio
 function ents_methods:acfFinalRatio ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1477,7 +1477,7 @@ end
 -- @return number The total ratio
 function ents_methods:acfTotalRatio ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1491,7 +1491,7 @@ end
 -- @return number The max torque
 function ents_methods:acfTorqueRating ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1504,7 +1504,7 @@ end
 -- @return boolean True if the gearbox is dual clutch
 function ents_methods:acfIsDual ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1519,7 +1519,7 @@ end
 -- @return number The time in ms
 function ents_methods:acfShiftTime ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1532,7 +1532,7 @@ end
 -- @return boolean True if the gearbox is in gear
 function ents_methods:acfInGear ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1548,7 +1548,7 @@ end
 function ents_methods:acfGearRatio ( gear )
 	checktype( self, ents_metatable )
 	checkluatype( gear, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1563,7 +1563,7 @@ end
 -- @return number The current torque output
 function ents_methods:acfTorqueOut ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1577,7 +1577,7 @@ end
 function ents_methods:acfCVTRatio ( ratio )
 	checktype( self, ents_metatable )
 	checkluatype( ratio, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1594,7 +1594,7 @@ end
 function ents_methods:acfShift ( gear )
 	checktype( self, ents_metatable )
 	checkluatype( gear, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1608,7 +1608,7 @@ end
 -- @server
 function ents_methods:acfShiftUp ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1622,7 +1622,7 @@ end
 -- @server
 function ents_methods:acfShiftDown ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1638,7 +1638,7 @@ end
 function ents_methods:acfBrake ( brake )
 	checktype( self, ents_metatable )
 	checkluatype( brake, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1654,7 +1654,7 @@ end
 function ents_methods:acfBrakeLeft ( brake )
 	checktype( self, ents_metatable )
 	checkluatype( brake, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1671,7 +1671,7 @@ end
 function ents_methods:acfBrakeRight ( brake )
 	checktype( self, ents_metatable )
 	checkluatype( brake, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1688,7 +1688,7 @@ end
 function ents_methods:acfClutch ( clutch )
 	checktype( self, ents_metatable )
 	checkluatype( clutch, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1704,7 +1704,7 @@ end
 function ents_methods:acfClutchLeft( clutch )
 	checktype( self, ents_metatable )
 	checkluatype( clutch, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1721,7 +1721,7 @@ end
 function ents_methods:acfClutchRight ( clutch )
 	checktype( self, ents_metatable )
 	checkluatype( clutch, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1738,7 +1738,7 @@ end
 function ents_methods:acfSteerRate ( rate )
 	checktype( self, ents_metatable )
 	checkluatype( rate, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1755,7 +1755,7 @@ end
 function ents_methods:acfHoldGear( hold )
 	checktype( self, ents_metatable )
 	checkluatype( hold, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1772,7 +1772,7 @@ end
 function ents_methods:acfShiftPointScale( scale )
 	checktype( self, ents_metatable )
 	checkluatype( scale, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1791,7 +1791,7 @@ end
 -- @return boolean True if the entity is an ACF gun
 function ents_methods:acfIsGun ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1803,7 +1803,7 @@ end
 -- @return boolean True if the ACF gun is ready to fire
 function ents_methods:acfReady ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1818,7 +1818,7 @@ end
 -- @return number The magazine size
 function ents_methods:acfMagSize ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1831,7 +1831,7 @@ end
 -- @return number The spread, in degrees
 function ents_methods:acfSpread ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1849,7 +1849,7 @@ end
 -- @return boolean True if the ACF gun is reloading
 function ents_methods:acfIsReloading ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1864,7 +1864,7 @@ end
 -- @return number The rate of fire
 function ents_methods:acfFireRate ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1877,7 +1877,7 @@ end
 -- @return number The number of rounds left in the magazine
 function ents_methods:acfMagRounds ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1896,7 +1896,7 @@ end
 function ents_methods:acfFire ( fire )
 	checktype( self, ents_metatable )
 	checkluatype( fire, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1912,7 +1912,7 @@ end
 function ents_methods:acfSetROFLimit ( rate )
 	checktype( self, ents_metatable )
 	checkluatype( rate, TYPE_NUMBER )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1926,7 +1926,7 @@ end
 -- @server
 function ents_methods:acfUnload ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1940,7 +1940,7 @@ end
 -- @server
 function ents_methods:acfReload ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -1960,7 +1960,7 @@ end
 -- @return number The number of rounds in active ammo crates
 function ents_methods:acfAmmoCount ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -1980,7 +1980,7 @@ end
 -- @return number The number of rounds in all ammo crates
 function ents_methods:acfTotalAmmoCount ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2000,7 +2000,7 @@ end
 -- @return number The time to next shot
 function ents_methods:acfReloadTime ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2013,7 +2013,7 @@ end
 -- @return number The reloading progress
 function ents_methods:acfReloadProgress ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2038,7 +2038,7 @@ end
 -- @return number The time it takes to reload the magazine
 function ents_methods:acfMagReloadTime ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2053,7 +2053,7 @@ end
 -- @return boolean True if the entity is an ACF ammo crate
 function ents_methods:acfIsAmmo ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2065,7 +2065,7 @@ end
 -- @return number The rounds left in the crate
 function ents_methods:acfRounds ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2079,7 +2079,7 @@ end
 -- @return string The type of weapon the ammo in the crate loads into
 function ents_methods:acfRoundType () --cartridge?
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2094,7 +2094,7 @@ end
 -- @return string The type of ammo
 function ents_methods:acfAmmoType ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2108,7 +2108,7 @@ end
 -- @return number The caliber
 function ents_methods:acfCaliber ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2122,7 +2122,7 @@ end
 -- @return number The muzzle velocity
 function ents_methods:acfMuzzleVel ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2136,7 +2136,7 @@ end
 -- @return number The mass of the projectile
 function ents_methods:acfProjectileMass ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2150,7 +2150,7 @@ end
 -- @return number The number of projectiles
 function ents_methods:acfFLSpikes ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2165,7 +2165,7 @@ end
 -- @return number The mass of a single spike
 function ents_methods:acfFLSpikeMass ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2180,7 +2180,7 @@ end
 -- @return number The radius of the spikes in mm
 function ents_methods:acfFLSpikeRadius ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2195,7 +2195,7 @@ end
 -- @return number The penetration of the round
 function ents_methods:acfPenetration ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2239,7 +2239,7 @@ end
 -- @return number The blast radius of the round
 function ents_methods:acfBlastRadius ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2259,7 +2259,7 @@ end
 -- @return number The drag coef of the ammo
 function ents_methods:acfDragCoef()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2273,7 +2273,7 @@ end
 -- @return number The heat value of the entity
 function ents_methods:acfHeat()
 	checktype(self, ents_metatable)
-	local this = unwrap(self)
+	local this = eunwrap(self)
 
 	if not (this and this:IsValid()) then
 		SF.Throw("Entity is not valid", 2)
@@ -2296,7 +2296,7 @@ end
 -- @return table crewseats entities
 function ents_methods:acfGetCrew()
 	checktype(self, ents_metatable)
-	local this = unwrap(self)
+	local this = eunwrap(self)
 
 	if not (this and this:IsValid()) then
 		SF.Throw("Entity is not valid", 2)
@@ -2306,7 +2306,12 @@ function ents_methods:acfGetCrew()
 		return {}
 	end
 
-	local Crew = table.Copy(this.CrewLink)
+	local Crew = {}
+	for _, v in ipairs(this.CrewLink) do
+		if IsValid(v) then
+			Crew[#Crew + 1] = instance.WrapObject(v)
+		end
+	end
 
 	return Crew
 end
@@ -2320,7 +2325,7 @@ end
 -- @return number The current health
 function ents_methods:acfPropHealth ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2335,7 +2340,7 @@ end
 -- @return number The current armor
 function ents_methods:acfPropArmor ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2350,7 +2355,7 @@ end
 -- @return number The max health
 function ents_methods:acfPropHealthMax ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2365,7 +2370,7 @@ end
 -- @return number The max armor
 function ents_methods:acfPropArmorMax ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2380,7 +2385,7 @@ end
 -- @return number The ductility
 function ents_methods:acfPropDuctility ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2395,7 +2400,7 @@ end
 -- @return table A table with keys: Curve, Effectiveness, HEATEffectiveness, Material
 function ents_methods:acfPropArmorData()
 	checktype(self, ents_metatable)
-	local this = unwrap(self)
+	local this = eunwrap(self)
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2425,7 +2430,7 @@ end
 -- @return boolean True if the entity is an ACF fuel tank
 function ents_methods:acfIsFuel ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2437,7 +2442,7 @@ end
 -- @return boolean True if the current engine requires fuel to run
 function ents_methods:acfFuelRequired ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2451,7 +2456,7 @@ end
 -- @param[opt] boolean True to enable refuel duty, false to disable
 function ents_methods:acfRefuelDuty ( on )
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	checkpermission( instance, this, "entities.acf" )
@@ -2466,7 +2471,7 @@ end
 -- @return number The remaining fuel
 function ents_methods:acfFuel ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2493,7 +2498,7 @@ end
 -- @return number The fuel percentage
 function ents_methods:acfFuelLevel ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2524,7 +2529,7 @@ end
 -- @return number The fuel consumption
 function ents_methods:acfFuelUse ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2556,7 +2561,7 @@ end
 -- @return number The peak fuel consumption
 function ents_methods:acfPeakFuelUse ()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
@@ -2590,7 +2595,7 @@ end
 -- @return table The radar data - check radar wire outputs for key names
 function ents_methods:acfRadarData()
 	checktype( self, ents_metatable )
-	local this = unwrap( self )
+	local this = eunwrap( self )
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 	if not isRadar(this) then SF.Throw("Entity is not a radar", 2) end

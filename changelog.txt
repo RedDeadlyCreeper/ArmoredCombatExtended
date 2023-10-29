@@ -711,3 +711,10 @@ r100
 - attempt to fix cases with rack giving errors if fired under some scenarios.
 - attempt to fix cases with debris returning errors under specific cases.
 - some unspecific changes regarding to code struct.
+
+*r168
+- Added cv90. Thanks doitsu
+- Updated type 90. by doitsu.
+- fixed acflinks SF functions returning broken entity objects. by cheezus
+- fixed swep reload animation being broken on singleplayer.
+- removed 'Sendlua' from swep code. by cheezus.

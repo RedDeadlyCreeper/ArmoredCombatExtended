@@ -229,25 +229,29 @@ SWEP.NextReload = 0
 function SWEP:OnPrimaryAttack()
 end
 
-function SWEP:PrimaryAttack()
-	if self:Clip1() == 0 and self:Ammo1() > 0 then
-		self:Reload()
+-- Used as a workaround to CallOnClient function, since it didnt work properly in some aspects for singleplayer, like having a desync of 1 clip per shot.
+function SWEP:DoSPClientEffects()
 
-		return
+	local MainSound = self.Primary.Sound
+	local sounds = ACE.GSounds.GunFire[MainSound]
+
+	if next(sounds) then
+		self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
+	else
+		self:EmitSound(MainSound)
 	end
 
+	ACF_RenderLight(self:EntIndex(), self.Primary.LightScale, Color(255, 128, 48), self:GetPos())
+
+end
+
+function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 
 	self:OnPrimaryAttack()
 
 	if self.ShotgunReload then
 		self.Reloading = false
-	end
-
-	local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
-
-	if game.SinglePlayer() then
-		self:CallOnClient("PrimaryAttack")
 	end
 
 	if IsFirstTimePredicted() or game.SinglePlayer() then
@@ -257,18 +261,24 @@ function SWEP:PrimaryAttack()
 			self:Shoot()
 		end
 
-		if sounds then
-			if SERVER then
-				ACE_NetworkedSound(owner, owner, self.Primary.Sound, self.BulletData.PropMass)
-			else
-				self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
+		if game.SinglePlayer() then
+			ACE_NetworkSPEffects( self, self.BulletData.PropMass) -- singleplayer, this whole function is not called clientside, so we need to network the client here
+		else
+			--Client is called here. So lets go as usual.
+			local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
+			if next(sounds) then
+				if SERVER then
+					ACE_NetworkMPEffects(owner, self.Primary.Sound, self.BulletData.PropMass)
+				else
+					self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
+				end
+			elseif not next(sounds) and CLIENT then
+				self:EmitSound(self.Primary.Sound)
 			end
-		elseif not sounds and CLIENT then
-			self:EmitSound(self.Primary.Sound)
-		end
 
-		if CLIENT then
-			ACF_RenderLight(self:EntIndex(), self.Primary.LightScale, Color(255, 128, 48), self:GetPos())
+			if CLIENT then
+				ACF_RenderLight(self:EntIndex(), self.Primary.LightScale, Color(255, 128, 48), self:GetPos())
+			end
 		end
 
 		owner:ViewPunch(Angle(-self.ViewPunchAmount, 0, 0))

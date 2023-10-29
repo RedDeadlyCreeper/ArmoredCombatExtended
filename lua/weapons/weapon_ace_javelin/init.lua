@@ -34,5 +34,5 @@ function SWEP:DoAmmoStatDisplay()
 	sendInfo = sendInfo .. ", Burn time: 15s"
 
 
-	self:GetOwner():SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 10)", sendInfo))
+	ACE_SendNotification(self:GetOwner(), sendInfo, 10)
 end

@@ -24,9 +24,9 @@ function SWEP:DoDrawCrosshair(x, y)
 	local owner = self:GetOwner()
 	local inaccuracy = math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1)
 	inaccuracy = math.max(inaccuracy, self.Heat / self.HeatMax)
-	local fusedelay = XM25FuseDelay or 0
-	local fusedist = XM25Distance or 0
-	local Tx = XM25Px or 0
+	local fusedelay = self:GetFuseDelay()
+	local fusedist = self:GetDistance()
+	local Tx = self:GetPx()
 	local Ty = 0
 
 		if Zoom then

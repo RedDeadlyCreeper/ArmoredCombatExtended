@@ -195,6 +195,8 @@ do
 		FlightTr.mins = -FlightTr.maxs
 
 		debugoverlay.Box( Bullet.Pos, FlightTr.mins, FlightTr.maxs, DebugTime, Color(255,100,0, 100) )
+		--debugoverlay.Cross( FlightTr.start, 10, 20, Color(255,0,0), true )
+		--debugoverlay.Cross( FlightTr.endpos, 10, 20, Color(0,255,0), true )
 
 		-- Table to hold temporary filter keys that should be removed after the below while loop is completed
 		if not Bullet.FilterKeysToRemove then Bullet.FilterKeysToRemove = {} end
@@ -213,12 +215,14 @@ do
 			-- Disables so we dont overloop it again
 			RetryTrace		= false
 
-			-- Defining tracehull at first instance.
+			-- Defining tracehull at first instance. If you want serious cases, change this to traceline
 			util.TraceHull(FlightTr)
+			--util.TraceLine(FlightTr)
 
 			--if our shell hits visclips, convert the tracehull on traceline.
 			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
+				--print("") -- not wanting linter annoys me.
 				-- trace result is stored in supplied output FlightRes (at top of file)
 				util.TraceLine(FlightTr)
 
@@ -262,6 +266,8 @@ do
 				end
 			end
 		end
+
+		--print("Count: " .. visCount)
 	end
 
 	do

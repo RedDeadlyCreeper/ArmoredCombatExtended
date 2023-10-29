@@ -64,6 +64,16 @@ SWEP.FuseDelay = 0
 
 SWEP.CarrySpeedMul			= 0.6
 
+DEFINE_BASECLASS("weapon_ace_base")
+
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+
+	self:NetworkVar("Float", 0, "FuseDelay")
+	self:NetworkVar("Float", 1, "Distance")
+	self:NetworkVar("Float", 2, "Px")
+	self:NetworkVar("Float", 3, "Py")
+end
 
 function SWEP:OnPrimaryAttack()
 	self.BulletData.Owner = self:GetOwner()
@@ -98,10 +108,10 @@ function SWEP:SecondaryAttack()
 			local time = (XM25dist + 2.5) / 110
 
 			self.FuseDelay = time > 0.07 and time or 0
-			owner:SendLua( "XM25FuseDelay=" .. self.FuseDelay )
-			owner:SendLua( "XM25Distance=" .. XM25dist )
-			owner:SendLua( "XM25Px=" .. Xdist )
-			owner:SendLua( "XM25Py=" .. Ydist )
+			self:SetFuseDelay(self.FuseDelay)
+			self:SetDistance(XM25dist)
+			self:SetPx(Xdist)
+			self:SetPy(Ydist)
 		end
 
 		ACE_SendNotification(owner, "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None"), 2)

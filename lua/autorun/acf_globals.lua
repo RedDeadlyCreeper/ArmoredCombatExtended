@@ -3,7 +3,7 @@ ACF = ACF or {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 492		-- ACE current version
+ACF.Version = 493		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
