@@ -4,29 +4,36 @@ AddCSLuaFile()
 
 ACF = ACF or {}
 
-local GunClasses          = {}
-local RackClasses         = {}
-local RadarClasses        = {}
+local GunClasses        = {}
+local RackClasses       = {}
+local RadarClasses      = {}
 
-local GunTable            = {}
-local RackTable           = {}
-local Radars              = {}
+local GunTable          = {}
+local RackTable         = {}
+local Radars            = {}
 
-local EngineTable         = {}
-local GearboxTable        = {}
-local FuelTankTable       = {}
-local FuelTankSizeTable   = {}
+local AmmoTable         = {}
+local LegacyAmmoTable   = {}
 
-local MobilityTable       = {}
+local EngineTable       = {}
+local GearboxTable      = {}
+local FuelTankTable     = {}
+local FuelTankSizeTable = {}
 
-local GSoundData          = {}
-local ModelData           = {}
-local MineData 			  = {}
+local MobilityTable     = {}
+
+local GSoundData        = {}
+local ModelData         = {}
+local MineData          = {}
 
 -- setup base classes
 local gun_base = {
 	ent    = "acf_gun",
 	type   = "Guns"
+}
+local ammo_base = {
+	ent = "acf_ammo",
+	type = "Ammo"
 }
 local engine_base = {
 	ent    = "acf_engine",
@@ -99,6 +106,17 @@ function ACF_defineGun( id, data )
 		table.Inherit( data, gun_base )
 		GunTable[ id ] = data
 	end
+end
+
+function ACE_DefineAmmoCrate( id, data )
+	data.id = id
+	table.Inherit( data, ammo_base )
+	AmmoTable[ id ] = data
+end
+
+function ACE_DefineLegacyAmmoCrate( id, data )
+	data.id = id
+	LegacyAmmoTable[ id ] = data
 end
 
 -- Rack definition
@@ -296,6 +314,9 @@ ACF.Classes.GunClass        = GunClasses
 ACF.Classes.Rack            = RackClasses
 ACF.Classes.Radar           = RadarClasses
 
+ACF.Weapons.Ammo            = AmmoTable --end ammo containers listing
+ACF.Weapons.LegacyAmmo      = LegacyAmmoTable
+
 ACF.Weapons.Guns            = GunTable
 ACF.Weapons.Racks           = RackTable
 ACF.Weapons.Engines         = EngineTable
@@ -305,8 +326,8 @@ ACF.Weapons.FuelTanksSize   = FuelTankSizeTable
 ACF.Weapons.Radars          = Radars
 
 --Small reminder of Mobility table. Still being used in stuff like starfall/e2. This can change
-ACF.Weapons.Mobility        = MobilityTable
+ACF.Weapons.Mobility    = MobilityTable
 
-ACE.GSounds.GunFire         = GSoundData
-ACE.ModelData               = ModelData
-ACE.MineData  				= MineData
+ACE.GSounds.GunFire     = GSoundData
+ACE.ModelData           = ModelData
+ACE.MineData            = MineData

@@ -805,7 +805,7 @@ do
 
 		acfmenupanel.AmmoData               = {}
 		acfmenupanel.AmmoData["Id"]         = "10:10:10"  --default Ammo dimension on list
-		acfmenupanel.AmmoData["IdLegacy"]   = "Ammo2x4x4"
+		acfmenupanel.AmmoData["IdLegacy"]   = "Shell100mm"
 		acfmenupanel.AmmoData["Type"]       = "Ammo"
 		acfmenupanel.AmmoData["Classname"]  = Classes.GunClass["MG"]["name"]
 		acfmenupanel.AmmoData["ClassData"]  = Classes.GunClass["MG"]["id"]

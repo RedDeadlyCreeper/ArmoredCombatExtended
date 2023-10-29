@@ -8,6 +8,7 @@ local GunClasses = ACF.Classes.GunClass
 
 local GunTable  = ACF.Weapons.Guns
 local AmmoTable = ACF.Weapons.Ammo
+local LegacyAmmoTable = ACF.Weapons.LegacyAmmo
 
 function ENT:Initialize()
 
@@ -176,22 +177,33 @@ do
 
 end
 
+
 do
 
-	local function VerifyVector( vecstring )
-
-		if isvector( vecstring ) then return vecstring end
-		if not isstring(vecstring) then return end
-
-
-
-		local VecTbl = string.Explode( ":", vecstring )
-		local Scale = Vector(VecTbl[1],VecTbl[2],VecTbl[3])
-
-		return Scale
+	-- Checks if the provided string vector matches the desired format.
+	-- Define a pattern to match the format
+	local pattern = "^%d+%.?%d*:%d+%.?%d*:%d+%.?%d*$"
+	local function IsValidStringScale( Id )
+		if not isstring( Id ) then return false end
+		if not string.match(Id, pattern) then return false end
+		return true
 	end
 
-	local function VerifyScale( Scale )
+	-- Converts an already verified string vector into a valid vector scale.
+	local function ParseToVector( ScaleId )
+		if not isstring(ScaleId) then return end
+
+		local Result = string.Explode( ":", ScaleId )
+
+		local X = tonumber(Result[1])
+		local Y = tonumber(Result[2])
+		local Z = tonumber(Result[3])
+
+		return Vector(X, Y, Z)
+	end
+
+	-- Clamps the already converted scale so its within the size limits, defined on globals.
+	local function ClampScale( Scale )
 		if not isvector( Scale ) then return end
 
 		local MinSize = ACF.CrateMinimumSize
@@ -204,10 +216,22 @@ do
 		return Scale
 	end
 
-	local function CreateRealScale( Scale )
+	-- Tries to convert a scale id, having a string format, to a vector scale. If its already a vector, skip the process.
+	local function ConvertStringScale( ScaleId )
+		if isvector( ScaleId ) then return ScaleId end
+		if not IsValidStringScale( ScaleId ) then return end
 
-		Scale = VerifyVector( Scale )
-		Scale = VerifyScale( Scale )
+		local Scale = ParseToVector( ScaleId )
+		Scale = ClampScale( Scale )
+
+		return Scale
+	end
+
+	-- If the incoming Id belongs to an invalid ammo crate, but belongs to the legacy crates list, convert it into its scalable counterpart.
+	local function CreateLegacyScale( Id, Ammo )
+		local Content = LegacyAmmoTable[Id]
+		Scale = Vector( Content.Length, Content.Width, Content.Height )
+		Ammo:SetPos( Ammo:LocalToWorld( vector_up * Content.Offset ) ) -- necessary to do, since some old crates had not a coordinated origin at its center but the base of them.
 
 		return Scale
 	end
@@ -217,39 +241,36 @@ do
 		if not Owner:CheckLimit("_acf_ammo") then return false end
 
 		local Ammo = ents.Create("acf_ammo")
-
 		if IsValid(Ammo) then
 
 			local Model
 			local Weight
 			local Dimensions
 
+			Ammo:CPPISetOwner(Owner)
 			Ammo:SetAngles(Angle)
 			Ammo:SetPos(Pos)
 			Ammo:Spawn()
-			Ammo:SetPlayer(Owner)
 
-			--Look for scalable Id
+			-- If the crate is not valid in the system, but it could be in the LegacyAmmoTable o be scalable.
 			if not ACE_CheckAmmo( Id ) then
 
-				local Review
+				local Scale
 
-				--Verify if its a valid scale ID. Skips this test if its a vector
-				if isstring(Id) then
-					Review = string.find( Id, "[%a]")
+				if isstring(Id) and LegacyAmmoTable[Id] then
+					Scale = CreateLegacyScale(Id, Ammo)
+				else
+					Scale = ConvertStringScale(Id)
 				end
 
-				if Id and not Review then
+				if isvector(Scale) then
 
-					Ammo.IsScalable = true
-
-					local Scale = CreateRealScale(Id)
 					local ModelData = ACE.ModelData["Box"]
 
-					Id           = Scale
-					Model        = ModelData.Model
-					Weight       = (Scale.x * Scale.y * Scale.z) / 200
-					Dimensions   = Scale
+					Id = Scale
+					Model = ModelData.Model
+					Weight = (Scale.x * Scale.y * Scale.z) / 200
+					Dimensions = Scale
 
 					local DefaultSize    = ModelData.DefaultSize
 					local Mesh           = ModelData.CustomMesh
@@ -269,13 +290,15 @@ do
 					Ammo:SetMoveType( MOVETYPE_VPHYSICS )
 					Ammo:SetSolid( SOLID_VPHYSICS )
 
+					Ammo.IsScalable = true
 					Ammo:ACE_SetScale( Ammo.ScaleData )
 
 				else
-					Id = "Ammo2x4x4"
+					Id = "Shell100mm"
 				end
 			end
 
+			-- If the crate is legacy, but still valid in the system
 			if ACE_CheckAmmo( Id ) then
 
 				local AmmoData = AmmoTable[Id]
@@ -292,16 +315,14 @@ do
 			end
 
 			Ammo.Id = Id
-			Ammo:CPPISetOwner(Owner)
 			Ammo.Model = Model
 			Ammo.Dimensions = Dimensions
 
 			Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
-			Ammo.Ammo	= Ammo.Capacity
-			Ammo.EmptyMass  = Weight or 1
-
-			Ammo.AmmoMass	= Ammo.EmptyMass + Ammo.AmmoMassMax
+			Ammo.Ammo        = Ammo.Capacity
+			Ammo.EmptyMass   = Weight or 1
+			Ammo.AmmoMass    = Ammo.EmptyMass + Ammo.AmmoMassMax
 
 			Ammo.LastMass	= 1
 			Ammo:UpdateMass()
