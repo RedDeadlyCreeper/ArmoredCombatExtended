@@ -122,6 +122,8 @@ function ACE_GetMaterialName( Mat )
 		GroundMat = "Glass"
 	elseif Mat == 77 or Mat == 86 or Mat == 80 then
 		GroundMat = "Metal"
+	elseif Mat == 87 then
+		GroundMat = "Wood"
 	end
 
 	return GroundMat

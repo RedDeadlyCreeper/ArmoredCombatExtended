@@ -260,7 +260,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 end
 
-function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
+function Round.worldimpact( Index, Bullet, HitPos, HitNormal, MatType )
 
 	if not Bullet.Detonated then
 		Round.detonate( Index, Bullet, HitPos, HitNormal )
@@ -269,7 +269,7 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 
 	local Speed  = Bullet.Flight:Length() / ACF.VelScale
 	local Energy = ACF_Kinetic( Speed, Bullet.ProjMass, 999999 )
-	local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
+	local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal, MatType )
 
 	if HitRes.Penetrated then
 		return "Penetrated"

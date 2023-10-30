@@ -728,33 +728,33 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 end
 
 --Handles Ground penetrations
-function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
+function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal, MatType )
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
 
-	local MaxDig = (( Energy.Penetration * 1 / Bullet.PenArea ) * ACF.KEtoRHA / ACF.GroundtoRHA ) / 25.4
+	-- Ground Material
+	local GroundMaterial   = ACE_GetMaterialName( MatType )
+	local GroundCoef       = ACF.GroundtoRHAMaterials[GroundMaterial]
 
-	--print("Max Dig: ' .. MaxDig .. '\nEnergy Pen: ' .. Energy.Penetration .. '\n")
+	-- RHA Penetration
+	local maxPenetration   = (Energy.Penetration / Bullet.PenArea) * ACF.KEtoRHA
 
-	local HitRes = {Penetrated = false, Ricochet = false}
-	local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+	local MaxDig   = ( maxPenetration / GroundCoef ) / 25.4 -- Max dig distance, parsed from mm to inches.
+	local HitRes   = {Penetrated = false, Ricochet = false}
+	local TROffset = Bullet.TROffset --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 
-	local DigRes = util.TraceHull( {
-
-		start = HitPos + Bullet.Flight:GetNormalized() * 0.1,
-		endpos = HitPos + Bullet.Flight:GetNormalized() * (MaxDig + 0.1),
-		filter = Bullet.Filter,
-		mins = Vector( -TROffset, -TROffset, -TROffset ),
-		maxs = Vector( TROffset, TROffset, TROffset ),
-		mask = MASK_SOLID_BRUSHONLY
-
-		} )
-
-	--debugoverlay.Box( DigRes.StartPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
-	--debugoverlay.Box( DigRes.HitPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
-	--debugoverlay.Line( DigRes.StartPos, HitPos + Bullet.Flight:GetNormalized() * (MaxDig + 0.1), 5 , Color(0,math.random(100,255),0) )
-
+	local TraceData = {
+		start   = HitPos + Bullet.Flight:GetNormalized() * 0.1,
+		endpos  = HitPos + Bullet.Flight:GetNormalized() * MaxDig,
+		filter  = Bullet.Filter,
+		mins    = Vector( -TROffset, -TROffset, -TROffset ),
+		maxs    = Vector( TROffset, TROffset, TROffset ),
+		mask    = MASK_SOLID_BRUSHONLY
+	}
+	local DigRes = util.TraceHull( TraceData )
 	local loss = DigRes.FractionLeftSolid
+
+	debugoverlay.Line( TraceData.start, TraceData.endpos, 10, Color(255,100,0), true )
 
 	--couldn't penetrate
 	if loss == 1 or loss == 0 then

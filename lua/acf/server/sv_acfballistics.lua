@@ -14,6 +14,8 @@ local DebugTime = 1
 --[[------------------------------------------------------------------------------------------------
 	creates a new bullet being fired
 ]]--------------------------------------------------------------------------------------------------
+local sqrt2 = 1.14142 -- 1.14142 is an aproximation of sqrt 2
+
 function ACF_CreateBullet( BulletData )
 
 	-- Increment the index
@@ -33,6 +35,9 @@ function ACF_CreateBullet( BulletData )
 	BulletData.TraceBackComp = 0
 
 	BulletData.FuseLength	= type(BulletData.FuseLength) == "number" and BulletData.FuseLength or 0
+
+	--Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+	BulletData.TROffset = 0.235 * BulletData.Caliber / sqrt2
 
 	--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
 	local Parent = ACF_GetPhysicalParent(BulletData.Gun)
@@ -174,29 +179,25 @@ end
 ]]--------------------------------------------------------------------------------------------------
 do
 
+	--Note: the mask MASK_SHOT causes troubles when its trying to deal with parented props. Until gmod drops a fix, don't use it.
+
 	local MaxvisclipPerBullet = 50
 
 	local function ACF_PerformTrace( Bullet )
 
-		-- perform the trace for damage
-		local RetryTrace = true
+		local RetryTrace = true -- perform the trace for damage
+		local visCount = 0   	-- The visclip counter
 
-		--compensation
+		-- compensation
 		FlightTr.start	= Bullet.StartTrace
 		FlightTr.endpos	= Bullet.EndTrace
 
-		-- Disabled since, for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
-		--FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
-
-		--FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
-
-		local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+		-- Tracehull bullet volume calc
+		local TROffset = Bullet.TROffset
 		FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
 		FlightTr.mins = -FlightTr.maxs
 
 		debugoverlay.Box( Bullet.Pos, FlightTr.mins, FlightTr.maxs, DebugTime, Color(255,100,0, 100) )
-		--debugoverlay.Cross( FlightTr.start, 10, 20, Color(255,0,0), true )
-		--debugoverlay.Cross( FlightTr.endpos, 10, 20, Color(0,255,0), true )
 
 		-- Table to hold temporary filter keys that should be removed after the below while loop is completed
 		if not Bullet.FilterKeysToRemove then Bullet.FilterKeysToRemove = {} end
@@ -207,22 +208,18 @@ do
 
 		FlightTr.filter	= Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 
-		local visCount = 0
-
 		--if trace hits clipped part of prop, add prop to trace filter and retry
 		while RetryTrace and visCount < MaxvisclipPerBullet do
 
 			-- Disables so we dont overloop it again
 			RetryTrace		= false
 
-			-- Defining tracehull at first instance. If you want serious cases, change this to traceline
+			-- Defining tracehull at first instance.
 			util.TraceHull(FlightTr)
-			--util.TraceLine(FlightTr)
 
 			--if our shell hits visclips, convert the tracehull on traceline.
 			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
-				--print("") -- not wanting linter annoys me.
 				-- trace result is stored in supplied output FlightRes (at top of file)
 				util.TraceLine(FlightTr)
 
@@ -266,8 +263,6 @@ do
 				end
 			end
 		end
-
-		--print("Count: " .. visCount)
 	end
 
 	do
@@ -458,7 +453,7 @@ do
 
 				local ACF_BulletWorldImpact = ACF.RoundTypes[Bullet.Type]["worldimpact"]
 
-				local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
+				local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal, FlightRes.MatType )
 
 				--If we should do the same trace again, then do so
 				ACE_PerformHitResolution(Index, Bullet, FlightRes, Retry, "worldimpact")
