@@ -68,7 +68,7 @@ function EFFECT:Init( data )
 	--Main explosion
 	self:Core( self.HitWater )
 	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
-	ACF_RenderLight( Entity(0), self.Radius * 1800, Color(255, 128, 48), self.Origin, 0.1)
+	ACF_RenderLight( 0, self.Radius * 1800, Color(255, 128, 48), self.Origin, 0.1) -- idx 0: world
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end

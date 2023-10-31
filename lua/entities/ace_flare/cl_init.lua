@@ -21,7 +21,7 @@ function ENT:Draw()
 
 	if CurTime() > self.LightUpdate and not self.StopLight then
 		self.LightUpdate = CurTime() + 0.05
-		ACF_RenderLight(self:EntIndex(), 20000, Color(194, 145, 39), self:GetPos())
+		ACF_RenderLight(self:EntIndex(), 20000, Color(194, 145, 39), self:GetPos(), 0.1)
 	end
 end
 
