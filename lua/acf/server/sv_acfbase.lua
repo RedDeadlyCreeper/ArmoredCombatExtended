@@ -22,31 +22,47 @@ function ACF_GetPhysicalParent( obj )
 	return Parent
 end
 
-function ACF_UpdateVisualHealth(Entity)
+do
+	local SendDelay = 1 -- in miliseconds
+	local RenderProps = {
+		Entities = {},
+		Clock = 0
+	}
+	function ACF_UpdateVisualHealth( Entity )
+		if not Entity.ACF.OnRenderQueue then
+			table.insert(RenderProps.Entities, Entity )
+			Entity.ACF.OnRenderQueue = true
+		end
+	end
+	function ACF_SendVisualDamage()
 
-	if Entity.ACF.PrHealth == Entity.ACF.Health then return end
+		local Time = CurTime()
 
-	if not ACF_HealthUpdateList  then
-		ACF_HealthUpdateList = {}
-		timer.Create("ACF_HealthUpdateList", 1, 1, function() -- We should send things slowly to not overload traffic.
-			local Table = {}
-			for _, v in pairs(ACF_HealthUpdateList) do
-				if IsValid( v ) then
-					table.insert(Table, {ID = v:EntIndex(), Health = v.ACF.Health, MaxHealth = v.ACF.MaxHealth} )
+		if next(RenderProps.Entities) and Time >= RenderProps.Clock then
+
+			for k, Ent in ipairs(RenderProps.Entities) do
+				if not Ent:IsValid() then
+					table.remove( RenderProps.Entities, k )
 				end
 			end
-			net.Start("ACF_RenderDamage")
-				net.WriteTable(Table)
-			net.Broadcast()
-			ACF_HealthUpdateList = nil
-		end)
-	end
-	if #ACF_HealthUpdateList < 1000 then
-		table.insert(ACF_HealthUpdateList, Entity)
-	end
 
+			local Entity = RenderProps.Entities[1]
+			if IsValid(Entity) then
+				net.Start("ACF_RenderDamage", true) -- i dont care if the message is not received under extreme cases since its simply a visual effect only.
+					net.WriteUInt(Entity:EntIndex(), 13)
+					net.WriteFloat(Entity.ACF.MaxHealth)
+					net.WriteFloat(Entity.ACF.Health)
+				net.Broadcast()
+
+				Entity.ACF.OnRenderQueue = nil
+			end
+			table.remove( RenderProps.Entities, 1 )
+
+			RenderProps.Clock = Time + (SendDelay / 1000)
+		end
+	end
+	hook.Add("Think","ACF_RenderPropDamage", ACF_SendVisualDamage )
 end
-
 
 --Creates or updates the ACF entity data in a passive way. Meaning this entity wont be updated unless it really requires it (like a shot, damage, looking it using armor tool, etc)
 function ACF_Activate( Entity , Recalc )
@@ -359,7 +375,7 @@ end
 ----------------------------------------------------------
 function ACF_GetAllPhysicalConstraints( ent, ResultTable )
 
-	local ResultTable = ResultTable or {}
+	ResultTable = ResultTable or {}
 
 	if not IsValid( ent ) then return end
 	if ResultTable[ ent ] then return end
@@ -388,7 +404,7 @@ function ACF_GetAllChildren( ent, ResultTable )
 
 	--if not ent.GetChildren then return end  --shouldn't need to check anymore, built into glua now
 
-	local ResultTable = ResultTable or {}
+	ResultTable = ResultTable or {}
 
 	if not IsValid( ent ) then return end
 	if ResultTable[ ent ] then return end
@@ -498,7 +514,7 @@ end
 
 --[[----------------------------------------------------------------------
 	This function will look for the driver/operator of a gun/rack based
-	from the used gun inputs when firing. 
+	from the used gun inputs when firing.
 	Meant for determining if the driver seat is legal.
 ------------------------------------------------------------------------]]
 local WireTable = {
