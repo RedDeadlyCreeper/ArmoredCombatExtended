@@ -9,6 +9,9 @@ end
 
 function EFFECT:Init( data )
 
+	self.HitWater = false
+	self.UnderWater = false
+
 	self.Origin        = data:GetOrigin()
 	self.DirVec        = data:GetNormal()
 	self.Radius        = math.max( data:GetRadius()  / 50 ,1)
@@ -28,23 +31,18 @@ function EFFECT:Init( data )
 	local Water = util.TraceLine( WaterTr )
 
 	if Water.HitWorld then
-
 		self.HitWater = true
 		if Water.StartSolid then
 			self.UnderWater = true
 		end
 	end
 
-	self.HitWater = false
-	self.UnderWater = false
-	self.Normal = Ground.HitNormal
-
 	local Mat = Ground.MatType
 	local Material = ACE_GetMaterialName( Mat )
 	local SmokeColor = ACE.DustMaterialColor[Material] or ACE.DustMaterialColor["Concrete"]
+	self.HitNormal = Ground.HitNormal
 
 	if not self.HitWater then
-
 		-- when detonation is in midair
 		if Ground.HitSky or not Ground.Hit then
 			self:Airburst( SmokeColor )
@@ -58,6 +56,7 @@ function EFFECT:Init( data )
 	end
 
 	if Ground.HitWorld then
+
 		if self.HitWater and not self.UnderWater then
 			self:Water( Water )
 		else
@@ -89,7 +88,7 @@ function EFFECT:Core( HitWater )
 	for _ = 0, 3 * Radius * PMul do --Flying Debris
 
 		local Debris = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
-		if (Debris) then
+		if Debris then
 			Debris:SetVelocity ( VectorRand() * math.random(50 * Radius,100 * Radius) )
 			Debris:SetLifeTime( 0 )
 			Debris:SetDieTime( math.Rand( 1.5 , 4 ) * Radius / 3 )
@@ -111,7 +110,7 @@ function EFFECT:Core( HitWater )
 	for _ = 0, 2 * Radius * PMul do
 
 		local Whisp = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin + VectorRand() * Radius * 11 )
-		if (Whisp) then
+		if Whisp then
 			Whisp:SetVelocity(VectorRand() * math.random( 50,150 * Radius) )
 			Whisp:SetLifeTime( 0 )
 			Whisp:SetDieTime( math.Rand( 0.1 , 3 ) * Radius / 3  )
@@ -150,7 +149,7 @@ function EFFECT:Core( HitWater )
 	for _ = 0, Radius * PMul * 3 do --Explosion Core
 
 		local Flame = self.Emitter:Add( "particles/flamelet" .. math.random(1,5), self.Origin)
-		if (Flame) then
+		if Flame then
 			Flame:SetVelocity( VectorRand() * math.random(50,150 * Radius) )
 			Flame:SetLifeTime( 0 )
 			Flame:SetDieTime( 0.2 )
@@ -164,10 +163,7 @@ function EFFECT:Core( HitWater )
 			Flame:SetGravity( Vector( 0, 0, 4 ) )
 			Flame:SetColor( 255,255,255 )
 		end
-
 	end
-
-
 end
 
 function EFFECT:Shockwave( Ground, SmokeColor )
@@ -176,7 +172,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 
 	local PMul       = self.ParticleMul
 	local Radius     = (1-Ground.Fraction) * self.Radius
-	local Density    = 1 * Radius
+	local Density    = Radius
 	local Angle      = Ground.HitNormal:Angle()
 
 	for _ = 0, Density * PMul do
@@ -185,7 +181,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 		local ShootVector = Angle:Up()
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), Ground.HitPos )
 
-		if (Smoke) then
+		if Smoke then
 			Smoke:SetVelocity( ShootVector * math.Rand(5,300 * Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 1 , 2 ) * Radius / 3 )
@@ -201,10 +197,22 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 			local SMKColor = math.random( 0 , 50 )
 			Smoke:SetColor( SmokeColor.r-SMKColor,SmokeColor.g-SMKColor,SmokeColor.b-SMKColor )
 		end
-
 	end
-
 end
+
+local TextureTb = {
+	"effects/splash4",
+	"particle/smokesprites_0001",
+	"particle/smokesprites_0002",
+	"particle/smokesprites_0003",
+	"particle/smokesprites_0004",
+	"particle/smokesprites_0005",
+	"particle/smokesprites_0006",
+	"particle/smokesprites_0007",
+	"particle/smokesprites_0008",
+	"particle/smokesprites_0009",
+
+}
 
 function EFFECT:Water( Water )
 
@@ -214,27 +222,18 @@ function EFFECT:Water( Water )
 
 	local WaterColor = Color(255,255,255,100)
 
-	local Radius = self.Radius
-	local Density = 15 * Radius
-	local Angle = Water.HitNormal:Angle()
-
-	local Dist = math.max(math.abs((self.Origin - Water.HitPos):Length()) * 0.01,1)
-
-	--print('R: ' .. Radius)
-	--print('D: ' .. Dist)
+	local Radius   = self.Radius
+	local Density  = Radius * 15
+	local Angle    = Water.HitNormal:Angle()
+	local Dist     = math.max(math.abs((self.Origin - Water.HitPos):Length()) * 0.01,1)
 
 	for _ = 0, Density * PMul do
 
-		local TextureTb = {
-			"particle/smokesprites_000" .. math.random(1,9),
-			"effects/splash4"
-		}
-
 		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
 		local ShootVector = Angle:Up()
-		local Smoke = self.Emitter:Add( TextureTb[math.random(1,2)], Water.HitPos + Vector(0,0,5) )
+		local Smoke = self.Emitter:Add( TextureTb[math.random(#TextureTb)], Water.HitPos + Vector(0,0,5) )
 
-		if (Smoke) then
+		if Smoke then
 			Smoke:SetVelocity( ShootVector * math.Rand(5,100 * Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 2 , 6 ) * Radius / 3 )
@@ -254,14 +253,9 @@ function EFFECT:Water( Water )
 
 	for _ = 0, 2 * Radius * PMul do
 
-		local TextureTb = {
-			"particle/smokesprites_000" .. math.random(1,9),
-			"effects/splash4"
-		}
+		local Whisp = self.Emitter:Add( TextureTb[math.random(#TextureTb)], Water.HitPos )
 
-		local Whisp = self.Emitter:Add( TextureTb[math.random(1,2)], Water.HitPos )
-
-		if (Whisp) then
+		if Whisp then
 			local Randvec = VectorRand()
 			local absvec = math.abs(Randvec.y)
 
@@ -281,7 +275,6 @@ function EFFECT:Water( Water )
 			Whisp:SetColor( WaterColor.r-SMKColor,WaterColor.g-SMKColor,WaterColor.b-SMKColor )
 		end
 	end
-
 end
 
 function EFFECT:Concrete( SmokeColor )
@@ -291,7 +284,7 @@ function EFFECT:Concrete( SmokeColor )
 	for _ = 0, 5 * self.Radius * self.ParticleMul do --Flying Debris
 
 		local Fragments = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
-		if (Fragments) then
+		if Fragments then
 			Fragments:SetVelocity ( VectorRand() * math.random(50 * self.Radius,150 * self.Radius) )
 			Fragments:SetLifeTime( 0 )
 			Fragments:SetDieTime( math.Rand( 1 , 2 ) * self.Radius / 3 )
@@ -314,8 +307,8 @@ function EFFECT:Concrete( SmokeColor )
 	for _ = 0, 3 * self.Radius * self.ParticleMul do
 
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
-		if (Smoke) then
-			Smoke:SetVelocity( self.Normal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 30,60 * self.Radius) )
+		if Smoke then
+			Smoke:SetVelocity( self.HitNormal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 30,60 * self.Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 1 , 2 ) * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 50, 150 ) )
@@ -329,9 +322,7 @@ function EFFECT:Concrete( SmokeColor )
 
 			Smoke:SetColor(  SmokeColor.r,SmokeColor.g,SmokeColor.b  )
 		end
-
 	end
-
 end
 
 function EFFECT:Dirt( SmokeColor )
@@ -350,8 +341,8 @@ function EFFECT:Dirt( SmokeColor )
 		end
 
 		local Smoke = self.Emitter:Add( Texture, self.Origin )
-		if (Smoke) then
-			Smoke:SetVelocity( self.Normal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 40,80 * self.Radius) )
+		if Smoke then
+			Smoke:SetVelocity( self.HitNormal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 40,80 * self.Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 1 , 5 ) * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 150, 200 ) )
@@ -385,8 +376,8 @@ function EFFECT:Sand( SmokeColor )
 		end
 
 		local Smoke = self.Emitter:Add( Texture, self.Origin )
-		if (Smoke) then
-			Smoke:SetVelocity( self.Normal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 30,60 * self.Radius) )
+		if Smoke then
+			Smoke:SetVelocity( self.HitNormal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 30,60 * self.Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 1 , 5 ) * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 150, 200 ) )
@@ -411,7 +402,7 @@ function EFFECT:Airburst()
 	for _ = 0, 0.5 * Radius * self.ParticleMul do --Flying Debris
 
 		local Debris = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
-		if (Debris) then
+		if Debris then
 			Debris:SetVelocity ( VectorRand() * math.random(150 * Radius,450 * Radius) )
 			Debris:SetLifeTime( 0 )
 			Debris:SetDieTime( math.Rand( 0.2 , 0.4 ) * Radius / 3 )

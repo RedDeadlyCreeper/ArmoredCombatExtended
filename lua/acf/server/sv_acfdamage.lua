@@ -67,15 +67,15 @@ local PI = math.pi
 
 function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
-	local Power = FillerMass * ACF.HEPower -- Power in KiloJoules of the filler mass of  TNT
-	local Radius = ACE_CalculateHERadius(FillerMass) -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
-	local MaxSphere = 4 * PI * (Radius * 2.54) ^ 2 -- Surface Area of the sphere at maximum radius
-	local Amp = math.min(Power / 2000, 50)
+	local Radius       = ACE_CalculateHERadius(FillerMass) -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
+	local MaxSphere    = 4 * PI * (Radius * 2.54) ^ 2 -- Surface Area of the sphere at maximum radius
+	local Power        = FillerMass * ACF.HEPower -- Power in KiloJoules of the filler mass of  TNT
+	local Amp          = math.min(Power / 2000, 50)
 
-	local Fragments = math.max(math.floor((FillerMass / FragMass) * ACF.HEFrag), 2)
-	local FragWeight = FragMass / Fragments
-	local FragVel	= ( Power * 50000 / FragWeight / Fragments ) ^ 0.5
-	local FragArea = (FragWeight / 7.8) ^ 0.33
+	local Fragments    = math.max(math.floor((FillerMass / FragMass) * ACF.HEFrag), 2)
+	local FragWeight   = FragMass / Fragments
+	local FragVel      = ( Power * 50000 / FragWeight / Fragments ) ^ 0.5
+	local FragArea     = (FragWeight / 7.8) ^ 0.33
 
 	local OccFilter	= istable(NoOcc) and NoOcc or { NoOcc }
 	local LoopKill	= true
@@ -84,30 +84,32 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 	while LoopKill and Power > 0 do
 
-		LoopKill			= false
+		LoopKill = false
 
-		local PowerSpent	= 0
-		local Damage		= {}
-		local TotalArea	= 0
+		local PowerSpent    = 0
+		local Damage        = {}
+		local TotalArea     = 0
 
 		for i,Tar in ipairs(Targets) do
 
-			if not Tar:IsValid() then continue end
+			if not IsValid(Tar) then continue end
 			if Power <= 0 or Tar.Exploding then continue end
 
 			local Type = ACF_Check(Tar)
-
 			if Type then
 
+				local TargetPos = Tar:GetPos()
+				local TargetCenter = Tar:WorldSpaceCenter()
+
 				--Check if we have direct LOS with the victim prop. Laggiest part of HE
-				TraceInit.start	= Hitpos
-				TraceInit.endpos	= Tar:WorldSpaceCenter()
-				TraceInit.filter	= OccFilter
+				TraceInit.start    = Hitpos
+				TraceInit.endpos   = TargetCenter
+				TraceInit.filter   = OccFilter
+
 				util.TraceLine( TraceInit )
 
 				--if above failed getting the target. Try again by nearest point instead.
 				if not TraceRes.Hit then
-
 					local Hitat = Tar:NearestPoint( Hitpos )
 
 					--Done for dealing damage vs players and npcs
@@ -136,7 +138,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 							end
 						end
 
-						Tpos = Tar:WorldSpaceCenter()
+						Tpos = TargetCenter
 						Tdis = Hitpos:Distance( Tpos ) or hugenumber
 						if Tdis < cldist then
 							Hitat = Tpos
@@ -145,14 +147,14 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 					end
 
 					--if hitpos is inside of hitbox of the victim prop, nearest point will not work as intended
-					if Hitat == Hitpos then Hitat = Tar:GetPos() end
+					if Hitat == Hitpos then Hitat = TargetPos end
 
 					TraceInit.endpos	= Hitat + (Hitat-Hitpos):GetNormalized() * 100
 					util.TraceHull( TraceInit )
 				end
 
 				--HE has direct view with the prop, so lets damage it
-				if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
+				if TraceRes.Hit and TraceRes.Entity == Tar then
 
 					Targets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
 					local Table		= {}
@@ -160,11 +162,11 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 					Table.Ent		= Tar
 
 					if ACE.CritEnts[Tar:GetClass()] then
-						Table.LocalHitpos = WorldToLocal(Hitpos, Angle(0,0,0), Tar:GetPos(), Tar:GetAngles())
+						Table.LocalHitpos = WorldToLocal(Hitpos, Angle(0,0,0), TargetPos, Tar:GetAngles())
 					end
 
-					Table.Dist		= Hitpos:Distance(Tar:GetPos())
-					Table.Vec		= (Tar:GetPos() - Hitpos):GetNormalized()
+					Table.Dist		= Hitpos:Distance(TargetPos)
+					Table.Vec		= (TargetPos - Hitpos):GetNormalized()
 
 					local Sphere		= math.max(4 * PI * (Table.Dist * 2.54 ) ^ 2,1) --Surface Area of the sphere at the range of that prop
 					local AreaAdjusted  = Tar.ACF.Area
@@ -188,11 +190,12 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 		--Now that we have the props to damage, apply it here
 		for _, Table in ipairs(Damage) do
 
-			local Tar		= Table.Ent
-			local Feathering	= (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
-			local AreaFraction  = Table.Area / TotalArea
-			local PowerFraction = Power * AreaFraction  --How much of the total power goes to that prop
-			local AreaAdjusted  = (Tar.ACF.Area / ACF.Threshold) * Feathering
+			local Tar              = Table.Ent
+			local TargetPos        = Tar:GetPos()
+			local Feathering       = (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
+			local AreaFraction     = Table.Area / TotalArea
+			local PowerFraction    = Power * AreaFraction  --How much of the total power goes to that prop
+			local AreaAdjusted     = (Tar.ACF.Area / ACF.Threshold) * Feathering
 
 			--HE tends to pick some props where simply will not apply damage. So lets ignore it.
 			if AreaAdjusted <= 0 then continue end
@@ -217,27 +220,24 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 			-- Really required?
 
 			if ACE.CritEnts[Tar:GetClass()] then
+
 				timer.Simple(0.03, function()
 					if not IsValid(Tar) then return end
 
 					--recreate the hitpos and hitat, add slight jitter to hitpos and move it away some
-					local NewHitpos = LocalToWorld(Table.LocalHitpos + Table.LocalHitpos:GetNormalized() * 3, Angle(math.random(),math.random(),math.random()), Tar:GetPos(), Tar:GetAngles())
+					local NewHitpos = LocalToWorld(Table.LocalHitpos + Table.LocalHitpos:GetNormalized() * 3, Angle(math.random(),math.random(),math.random()), TargetPos, Tar:GetAngles())
 					local NewHitat  = Tar:NearestPoint( NewHitpos )
 
-					local Occlusion	= {}
-					Occlusion.start	= NewHitpos
-					Occlusion.endpos	= NewHitat + (NewHitat-NewHitpos):GetNormalized() * 100
-					Occlusion.filter	= NoOcc
-
+					local Occlusion	= {
+						start = NewHitpos,
+						endpos = NewHitat + (NewHitat-NewHitpos):GetNormalized() * 100,
+						filter = NoOcc,
+					}
 					local Occ	= util.TraceLine( Occlusion )
 
 					if not Occ.Hit and NewHitpos ~= NewHitat then
-						local NewHitat  = Tar:GetPos()
-
-						Occlusion.start	= NewHitpos
+						local NewHitat  = TargetPos
 						Occlusion.endpos	= NewHitat + (NewHitat-NewHitpos):GetNormalized() * 100
-						Occlusion.filter	= NoOcc
-
 						Occ = util.TraceLine( Occlusion )
 					end
 
@@ -247,9 +247,9 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 						FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
 
 						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
-							ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
+							ACF_HEKill( Tar, (TargetPos - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 20 * (GetConVar("acf_hepush"):GetFloat() or 1) ) --0.333
+							ACF_KEShove(Tar, NewHitpos, (TargetPos - NewHitpos):GetNormalized(), PowerFraction * 20 * (GetConVar("acf_hepush"):GetFloat() or 1) ) --0.333
 						end
 					end
 				end)
@@ -910,6 +910,12 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 	end
 end
 
+-- Remove the entity
+local function RemoveEntity( Entity )
+	constraint.RemoveAll( Entity )
+	Entity:Remove()
+end
+
 -- Creates a debris related to explosive destruction.
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
@@ -923,43 +929,45 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 		if MatData.IsExplosive then return end
 	end
 
-	if Entity:BoundingRadius() < ACF.DebrisScale then return nil end
+	local Debris
 
-	-- Create a debris
-	local Debris = ents.Create( "ace_debris" )
-	if IsValid(Debris) then
+	-- Create a debris only if the dead entity is greater than the specified scale.
+	if Entity:BoundingRadius() > ACF.DebrisScale then
 
-		Debris:SetModel( Entity:GetModel() )
-		Debris:SetAngles( Entity:GetAngles() )
-		Debris:SetPos( Entity:GetPos() )
-		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
-		Debris:Spawn()
-		Debris:Activate()
+		Debris = ents.Create( "ace_debris" )
+		if IsValid(Debris) then
 
-		if math.random() < ACF.DebrisIgniteChance then
-			Debris:Ignite(math.Rand(5,45),0)
-		end
+			Debris:SetModel( Entity:GetModel() )
+			Debris:SetAngles( Entity:GetAngles() )
+			Debris:SetPos( Entity:GetPos() )
+			Debris:SetMaterial("models/props_wasteland/metal_tram001a")
+			Debris:Spawn()
+			Debris:Activate()
 
-		-- Applies force to this debris
-		local phys = Debris:GetPhysicsObject()
-		local physent = Entity:GetPhysicsObject()
-		local Parent = ACF_GetPhysicalParent( Entity )
+			if math.random() < ACF.DebrisIgniteChance then
+				Debris:Ignite(math.Rand(5,45),0)
+			end
 
-		if IsValid(phys) and IsValid(physent) then
-			phys:SetDragCoefficient( -50 )
-			phys:SetMass( physent:GetMass() )
-			phys:SetVelocity( Parent:GetVelocity() )
-			phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:WorldSpaceCenter() + VectorRand() * 10  )
+			-- Applies force to this debris
+			local phys = Debris:GetPhysicsObject()
+			local physent = Entity:GetPhysicsObject()
+			local Parent = ACF_GetPhysicalParent( Entity )
 
-			if IsValid(Parent) then
-				phys:SetVelocity(Parent:GetVelocity() )
+			if IsValid(phys) and IsValid(physent) then
+				phys:SetDragCoefficient( -50 )
+				phys:SetMass( physent:GetMass() )
+				phys:SetVelocity( Parent:GetVelocity() )
+				phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:WorldSpaceCenter() + VectorRand() * 10  )
+
+				if IsValid(Parent) then
+					phys:SetVelocity(Parent:GetVelocity() )
+				end
 			end
 		end
 	end
 
 	-- Remove the entity
-	constraint.RemoveAll( Entity )
-	Entity:Remove()
+	RemoveEntity( Entity )
 
 	return Debris
 end
@@ -977,40 +985,42 @@ function ACF_APKill( Entity , HitVector , Power )
 		if MatData.IsExplosive then return end
 	end
 
-	if Entity:BoundingRadius() < ACF.DebrisScale then return nil end
+	local Debris
 
-	-- Create a debris
-	local Debris = ents.Create( "ace_debris" )
-	if IsValid(Debris) then
+	-- Create a debris only if the dead entity is greater than the specified scale.
+	if Entity:BoundingRadius() > ACF.DebrisScale then
 
-		Debris:SetModel( Entity:GetModel() )
-		Debris:SetAngles( Entity:GetAngles() )
-		Debris:SetPos( Entity:GetPos() )
-		Debris:SetMaterial(Entity:GetMaterial())
-		Debris:SetColor(Color(120,120,120,255))
-		Debris:Spawn()
-		Debris:Activate()
+		local Debris = ents.Create( "ace_debris" )
+		if IsValid(Debris) then
 
-		--Applies force to this debris
-		local phys = Debris:GetPhysicsObject()
-		local physent = Entity:GetPhysicsObject()
-		local Parent =  ACF_GetPhysicalParent( Entity )
+			Debris:SetModel( Entity:GetModel() )
+			Debris:SetAngles( Entity:GetAngles() )
+			Debris:SetPos( Entity:GetPos() )
+			Debris:SetMaterial(Entity:GetMaterial())
+			Debris:SetColor(Color(120,120,120,255))
+			Debris:Spawn()
+			Debris:Activate()
 
-		if IsValid(phys) and IsValid(physent) then
-			phys:SetDragCoefficient( -50 )
-			phys:SetMass( physent:GetMass() )
-			phys:SetVelocity(Parent:GetVelocity() )
-			phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:WorldSpaceCenter() + VectorRand() * 10 )
+			--Applies force to this debris
+			local phys = Debris:GetPhysicsObject()
+			local physent = Entity:GetPhysicsObject()
+			local Parent =  ACF_GetPhysicalParent( Entity )
 
-			if IsValid(Parent) then
-				phys:SetVelocity( Parent:GetVelocity() )
+			if IsValid(phys) and IsValid(physent) then
+				phys:SetDragCoefficient( -50 )
+				phys:SetMass( physent:GetMass() )
+				phys:SetVelocity(Parent:GetVelocity() )
+				phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:WorldSpaceCenter() + VectorRand() * 10 )
+
+				if IsValid(Parent) then
+					phys:SetVelocity( Parent:GetVelocity() )
+				end
 			end
 		end
 	end
 
 	-- Remove the entity
-	constraint.RemoveAll( Entity )
-	Entity:Remove()
+	RemoveEntity( Entity )
 
 	return Debris
 end
