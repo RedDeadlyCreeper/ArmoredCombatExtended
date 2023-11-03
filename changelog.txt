@@ -718,3 +718,9 @@ r100
 - fixed acflinks SF functions returning broken entity objects. by cheezus
 - fixed swep reload animation being broken on singleplayer.
 - removed 'Sendlua' from swep code. by cheezus.
+
+*r169
+- Added super tiny extra duration to flares light, to reduce epileptic light intermittence.
+- Fixed typo on dynamic lights causing errors in some cases.
+- Fixed typo on debris not deleting the destroyed props properly.
+- Fixed typo on water effects not being displayed as should.
