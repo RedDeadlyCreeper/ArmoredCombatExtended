@@ -720,6 +720,7 @@ r100
 - removed 'Sendlua' from swep code. by cheezus.
 
 *r169
+- Damaged prop textures should appear smoothly now.
 - Added super tiny extra duration to flares light, to reduce epileptic light intermittence.
 - Fixed typo on dynamic lights causing errors in some cases.
 - Fixed typo on debris not deleting the destroyed props properly.
