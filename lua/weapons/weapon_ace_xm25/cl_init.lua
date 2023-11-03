@@ -28,7 +28,7 @@ function SWEP:DoDrawCrosshair(x, y)
 	local fusedist = self:GetDistance()
 	local Tx = self:GetPx()
 	local Ty = 0
-	local Tg = self:GetPg() / 39.38
+	local Tg = self:GetPg() / 39.37
 
 		if Zoom then
 			surface.SetDrawColor(Color(255, 0, 0, 255 - inaccuracy * 150))
