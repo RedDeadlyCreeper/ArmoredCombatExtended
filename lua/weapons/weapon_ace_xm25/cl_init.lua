@@ -28,6 +28,7 @@ function SWEP:DoDrawCrosshair(x, y)
 	local fusedist = self:GetDistance()
 	local Tx = self:GetPx()
 	local Ty = 0
+	local Tg = self:GetPg() / 39.37
 
 		if Zoom then
 			surface.SetDrawColor(Color(255, 0, 0, 255 - inaccuracy * 150))
@@ -47,12 +48,14 @@ function SWEP:DoDrawCrosshair(x, y)
 			surface.SetTextPos( x + 250, y )
 			surface.DrawText( "RNG: " .. math.Round(fusedist,0) .. "m")
 
+			surface.SetTextPos( x + 180, y + 125 )
+			surface.SetTextColor( 230, 0, 0 )
+			surface.DrawText(self:Clip1())
+
 			local ARC = -1 -- +1 for high, -1 for direct fire
-			local G = 15
-			local GVel = 110
+			local GVel = 184.871
 
-
-			local calculatedAngle = (math.atan( (GVel^2 + ARC * math.sqrt(GVel^4 - G * ( G * Tx^2 + 2 * Ty * GVel^2))) / (G * Tx) )) * 180 / math.pi
+			local calculatedAngle = (math.atan( (GVel^2 + ARC * math.sqrt(GVel^4 - Tg * ( Tg * Tx^2 + 2 * Ty * GVel^2))) / (Tg * Tx) )) * 180 / math.pi
 
 			local eEye = owner:EyeAngles()
 			local VectorPos = Vector()
@@ -68,6 +71,8 @@ function SWEP:DoDrawCrosshair(x, y)
 			surface.DrawRect(x - 35 + (tarpos2d.x - x), y-1 + (tarpos2d.y - y), 30, 3)
 			surface.DrawRect(x + 6 + (tarpos2d.x - x), y-1 + (tarpos2d.y - y), 30, 3)
 			surface.DrawRect(x-1 + (tarpos2d.x - x), y + 6 + (tarpos2d.y - y), 3, 30)
+
+			surface.SetTextColor( 150, 0, 0 )
 
 			surface.SetTextPos( x + 250, y + 50 )
 			surface.DrawText( "ANG: " .. math.Round(calculatedAngle,3) .. "")
