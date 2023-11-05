@@ -149,136 +149,146 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	-
 
 end
 
-local function VerifyVector( vecstring )
+do
 
-	if isvector( vecstring ) then return vecstring end
-	if not isstring(vecstring) then return end
+	-- Checks if the provided string vector matches the desired format.
+	-- Define a pattern to match the format
+	local pattern = "^%d+%.?%d*:%d+%.?%d*:%d+%.?%d*$"
+	local function IsValidStringScale( Id )
+		if not isstring( Id ) then return false end
+		if not string.match(Id, pattern) then return false end
+		return true
+	end
 
+	-- Converts an already verified string vector into a valid vector scale.
+	local function ParseToVector( ScaleId )
+		if not isstring(ScaleId) then return end
 
+		local Result = string.Explode( ":", ScaleId )
 
-	local VecTbl = string.Explode( ":", vecstring )
-	local Scale = Vector(VecTbl[1],VecTbl[2],VecTbl[3])
+		local X = tonumber(Result[1])
+		local Y = tonumber(Result[2])
+		local Z = tonumber(Result[3])
 
-	return Scale
-end
+		return Vector(X, Y, Z)
+	end
 
-local function VerifyScale( Scale )
-	if not isvector( Scale ) then return end
+	-- Clamps the already converted scale so its within the size limits, defined on globals.
+	local function ClampScale( Scale )
+		if not isvector( Scale ) then return end
 
-	local MinSize = ACF.CrateMinimumSize or 5
-	local MaxSize = ACF.CrateMaximumSize
+		local MinSize = ACF.CrateMinimumSize
+		local MaxSize = ACF.CrateMaximumSize
 
-	Scale.x = math.Clamp( math.Round(Scale.x, 1), MinSize, MaxSize)
-	Scale.y = math.Clamp( math.Round(Scale.y, 1), MinSize, MaxSize)
-	Scale.z = math.Clamp( math.Round(Scale.z, 1), MinSize, MaxSize)
+		Scale.x = math.Clamp( math.Round(Scale.x, 1), MinSize, MaxSize)
+		Scale.y = math.Clamp( math.Round(Scale.y, 1), MinSize, MaxSize)
+		Scale.z = math.Clamp( math.Round(Scale.z, 1), MinSize, MaxSize)
 
-	return Scale
-end
+		return Scale
+	end
 
-local function CreateRealScale( Scale )
+	-- Tries to convert a scale id, having a string format, to a vector scale. If its already a vector, skip the process.
+	local function ConvertStringScale( ScaleId )
+		if isvector( ScaleId ) then return ScaleId end
+		if not IsValidStringScale( ScaleId ) then return end
 
-	Scale = VerifyVector( Scale )
-	Scale = VerifyScale( Scale )
+		local Scale = ParseToVector( ScaleId )
+		Scale = ClampScale( Scale )
 
-	return Scale
-end
+		return Scale
+	end
 
-function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3)
+	function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3)
 
-	if IsValid(Owner) and not Owner:CheckLimit("_acf_misc") then return false end
+		if IsValid(Owner) and not Owner:CheckLimit("_acf_misc") then return false end
 
-	local Tank = ents.Create("acf_fueltank")
-	if IsValid(Tank) then
+		local Tank = ents.Create("acf_fueltank")
+		if IsValid(Tank) then
 
-		local Model
-		local Dimensions
+			local Model
+			local Dimensions
 
-		Tank:SetAngles(Angle)
-		Tank:SetPos(Pos)
-		Tank:Spawn()
-		Tank:CPPISetOwner(Owner)
+			Tank:CPPISetOwner(Owner)
+			Tank:SetAngles(Angle)
+			Tank:SetPos(Pos)
+			Tank:Spawn()
 
-		--Look for scalable Id
-		if not ACE_CheckFuelTank( Data1 ) then
+			-- If the crate is not valid in the system, but it could be scalable.
+			if not ACE_CheckFuelTank( Data1 ) then
 
-			local Review
+				-- Reminder: When the legacy fueltanks get deleted. Do the same as ammo crates.
+				local Scale = ConvertStringScale(Data1)
 
-			--Verify if its a valid scale ID. Skips this test if its a vector
-			if isstring(Data1) then
-				Review = string.find( Data1, "[%a]")
+				if isvector(Scale) then
+
+					local ModelData = ACE.ModelData[Data3]
+
+					Data1 = Scale
+					Model = ModelData.Model
+					Weight = (Scale.x * Scale.y * Scale.z) / 200
+					Dimensions = Scale
+
+					local DefaultSize    = ModelData.DefaultSize
+					local Mesh           = ModelData.CustomMesh
+					local PhysMaterial   = ModelData.physMaterial
+					local EntityScale    = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize)
+
+					Tank.ScaleData = {
+						Mesh = Mesh,
+						Scale = EntityScale,
+						Size = DefaultSize,
+						Material = PhysMaterial,
+					}
+
+					Tank:SetMaterial("phoenix_storms/gear")
+					Tank:SetModel( Model ) --Sending the model to client
+					Tank:PhysicsInit( SOLID_VPHYSICS )
+					Tank:SetMoveType( MOVETYPE_VPHYSICS )
+					Tank:SetSolid( SOLID_VPHYSICS )
+
+					Tank.IsScalable = true
+					Tank:ACE_SetScale( Tank.ScaleData )
+
+				else
+					Data1 = "Tank_4x4x2"
+				end
 			end
 
-			if Data1 and not Review then
+			if ACE_CheckFuelTank( Data1 ) then
 
-				Tank.IsScalable = true
+				local TankData = TankTable[Data1]
 
-				local Scale = CreateRealScale(Data1)
-				local ModelData       = ACE.ModelData[Data3]
+				Model = TankData.model
+				Weight = TankData.weight
 
-				Data1         = Scale
-				Model         = ModelData.Model
-				Weight        = (Scale.x * Scale.y * Scale.z) / 200
-				Dimensions    = Scale
-
-				local DefaultSize     = ModelData.DefaultSize
-				local Mesh            = ModelData.CustomMesh
-				local PhysMaterial    = ModelData.physMaterial
-				local EntityScale     = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize)
-
-				Tank.ScaleData = {
-					Mesh = Mesh,
-					Scale = EntityScale,
-					Size = DefaultSize,
-					Material = PhysMaterial,
-				}
-
-				Tank:SetMaterial("phoenix_storms/gear")
-				Tank:SetModel( Model ) --Sending the model to client
+				Tank:SetModel( Model )
 				Tank:PhysicsInit( SOLID_VPHYSICS )
 				Tank:SetMoveType( MOVETYPE_VPHYSICS )
 				Tank:SetSolid( SOLID_VPHYSICS )
 
-				Tank:ACE_SetScale( Tank.ScaleData )
-
-			else
-				Data1 = "Tank_4x4x2"
 			end
+
+			Tank.Id           = Id
+			Tank.SizeId       = Data1
+			Tank.Shape 		  = Data3
+			Tank.Model        = Model
+			Tank.Dimensions   = Dimensions
+
+			Tank.LastMass = 1
+			Tank:UpdateFuelTank(Id, Data1, Data2)
+
+			Owner:AddCount( "_acf_misc", Tank )
+			Owner:AddCleanup( "acfmenu", Tank )
+
+			table.insert(ACF.FuelTanks, Tank)
+
+			return Tank
 		end
-
-		if ACE_CheckFuelTank( Data1 ) then
-
-			local TankData = TankTable[Data1]
-
-			Model = TankData.model
-			Weight = TankData.weight
-
-			Tank:SetModel( Model )
-			Tank:PhysicsInit( SOLID_VPHYSICS )
-			Tank:SetMoveType( MOVETYPE_VPHYSICS )
-			Tank:SetSolid( SOLID_VPHYSICS )
-
-		end
-
-		Tank.Id           = Id
-		Tank.SizeId       = Data1
-		Tank.Shape 		  = Data3
-		Tank.Model        = Model
-		Tank.Dimensions   = Dimensions
-
-		Tank.LastMass = 1
-		Tank:UpdateFuelTank(Id, Data1, Data2)
-
-		Owner:AddCount( "_acf_misc", Tank )
-		Owner:AddCleanup( "acfmenu", Tank )
-
-		table.insert(ACF.FuelTanks, Tank)
 
 		return Tank
 	end
-
-	return Tank
-
 end
+
 list.Set( "ACFCvars", "acf_fueltank", {"id", "data1", "data2", "data3"} )
 duplicator.RegisterEntityClass("acf_fueltank", MakeACF_FuelTank, "Pos", "Angle", "Id", "SizeId", "FuelType", "Shape" )
 
