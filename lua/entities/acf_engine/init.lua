@@ -12,40 +12,40 @@ do
 
 	local EngineWireDescs = {
 		--Inputs
-		["Throttle"]		= "Controls the amount of fuel which will be displaced to the engine.\n Increasing it will also increase RPM, Power and fuel consumption. Values go from 0-100.",
+		["Throttle"]    = "Controls the amount of fuel which will be displaced to the engine.\n Increasing it will also increase RPM, Power and fuel consumption. Values go from 0-100.",
 
 		--Outputs
-		["RPM"]			= "Returns the current RPM.",
-		["Torque"]		= "Returns the current Torque.",
-		["Power"]		= "Returns the current power of this engine.",
-		["Fuel Use"]		= "Gives the actual fuel consumption of the engine.",
-		["EngineHeat"]	= "Returns the engine's temperature."
+		["RPM"]         = "Returns the current RPM.",
+		["Torque"]      = "Returns the current Torque.",
+		["Power"]       = "Returns the current power of this engine.",
+		["Fuel Use"]    = "Gives the actual fuel consumption of the engine.",
+		["EngineHeat"]  = "Returns the engine's temperature."
 	}
 
 	function ENT:Initialize()
 
-		self.Throttle	= 0
-		self.Active		= false
-		self.IsMaster	= true
-		self.GearLink	= {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
-		self.FuelLink	= {}
+		self.Throttle       = 0
+		self.Active         = false
+		self.IsMaster       = true
+		self.GearLink       = {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
+		self.FuelLink       = {}
 
-		self.NextUpdate	= 0
-		self.LastThink	= 0
-		self.MassRatio	= 1
-		self.FuelTank	= 0
-		self.Heat		= ACE.AmbientTemp
-		self.TotalFuel	= 0
-		self.Efficiency	= 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
-		self.Legal		= true
-		self.CanUpdate	= true
-		self.RequiresFuel	= false
+		self.NextUpdate     = 0
+		self.LastThink      = 0
+		self.MassRatio      = 1
+		self.FuelTank       = 0
+		self.Heat           = ACE.AmbientTemp
+		self.TotalFuel      = 0
+		self.Efficiency     = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
+		self.Legal          = true
+		self.CanUpdate      = true
+		self.RequiresFuel   = false
 		self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-		self.Legal		= true
-		self.LegalIssues	= ""
-		self.LockOnActive	= false --used to turn on the engine in case of being lockdown by not legal
-		self.CrewLink	= {}
-		self.HasDriver	= 0
+		self.Legal          = true
+		self.LegalIssues    = ""
+		self.LockOnActive   = false --used to turn on the engine in case of being lockdown by not legal
+		self.CrewLink       = {}
+		self.HasDriver      = false
 
 		self.LastDamageTime = CurTime()
 
@@ -253,7 +253,7 @@ function ENT:UpdateOverlayText()
 		text = text .. "\nSupplied with " .. (self.EngineType == "Electric" and "Batteries" or "fuel")
 	end
 
-	if self.HasDriver > 0 then
+	if self.HasDriver then
 		text = text .. "\nDriver Provided"  --fuck yeah
 	end
 
@@ -346,16 +346,13 @@ function ENT:ACF_Activate()
 		Percent = Entity.ACF.Health / Entity.ACF.MaxHealth
 	end
 
-	Entity.ACF.Health = Health * Percent * ACF.EngineHPMult[self.EngineType]
+	Entity.ACF.Health    = Health * Percent * ACF.EngineHPMult[self.EngineType]
 	Entity.ACF.MaxHealth = Health * ACF.EngineHPMult[self.EngineType]
-	Entity.ACF.Armour = Armour * (0.5 + Percent / 2)
+	Entity.ACF.Armour    = Armour * (0.5 + Percent / 2)
 	Entity.ACF.MaxArmour = Armour * ACF.ArmorMod
-	Entity.ACF.Type = nil
-	Entity.ACF.Mass = PhysObj:GetMass()
-	--Entity.ACF.Density = (PhysObj:GetMass() * 1000)/Entity.ACF.Volume
-
-	Entity.ACF.Type = "Prop"
-	--print(Entity.ACF.Health)
+	Entity.ACF.Type      = nil
+	Entity.ACF.Mass      = PhysObj:GetMass()
+	Entity.ACF.Type      = "Prop"
 
 	Entity.ACF.Material	= not isstring(Entity.ACF.Material) and ACE.BackCompMat[Entity.ACF.Material] or Entity.ACF.Material or "RHA"
 
@@ -419,7 +416,6 @@ function ENT:Think()
 
 		self:UpdateOverlayText()
 		self.NextUpdate = ACF.CurTime + 0.5
-
 	end
 
 	if self.Active then
@@ -507,7 +503,6 @@ function ENT:ACFInit()
 end
 
 function ENT:GetMaxFuel()
-
 	local TFuel = 0
 
 	for _, Tank in pairs(self.FuelLink) do
@@ -515,41 +510,41 @@ function ENT:GetMaxFuel()
 		if not Tank.Active then continue end
 
 		TFuel = TFuel + Tank.Fuel
-
 	end
 
 	return TFuel
 end
 
+-- Checks if the fuel tank is valid, has fuel, is active and was not marked as illegal.
+local function IsValidfueltank( Tank )
+	return IsValid(Tank) and Tank.Fuel > 0 and Tank.Active and Tank.Legal
+end
+
+-- Literally, the engine main core. Here the RPMs, Torque and important stuff is calculated here.
 function ENT:CalcRPM()
 
-	local PhysObj = self:GetPhysicsObject()
 	local DeltaTime = CurTime() - self.LastThink
-	-- local AutoClutch = math.min(math.max(self.FlyRPM-self.IdleRPM,0)/(self.IdleRPM + self.LimitRPM/10),1)
-	--local ClutchRatio = math.min(Clutch/math.max(TorqueDiff,0.05),1)
 
-	--find next active tank with fuel
-	local Tank = nil
+	------------------------ Fuel check section ------------------------
+
+	--First, find the first active fuel tank on among the linked fuels.
+	local Tank
 	local boost = 1
-	local MaxTanks = #self.FuelLink
-
-	for i = 1, MaxTanks do
-		Tank = self.FuelLink[self.FuelTank + 1]
-		self.FuelTank = (self.FuelTank + 1) % MaxTanks
-		if IsValid(Tank) and Tank.Fuel > 0 and Tank.Active and Tank.Legal then
+	for _, FuelTank in ipairs(self.FuelLink) do
+		if IsValidfueltank( FuelTank ) then
+			Tank = FuelTank
 			break --return Tank
 		end
-		Tank = nil
-		i = i + 1
 	end
 
-	--calculate fuel usage
-	if Tank then
+	-- Calculate fuel usage. First condition is used if the fuel is optional and has bonus, 2nd is used for mandatory fuel requirement.
+	-- Concern: why is the fuel usage returning 0 when RPMs hit redline? Maybe the engine hits the redline and torque becomes 0 = no fuel usage??
+	if IsValid(Tank) then
 		local Consumption
 		if self.FuelType == "Electric" then
 			Consumption = (self.Torque * self.FlyRPM / 9548.8) * self.FuelUse * DeltaTime
 		else
-			local Load = 0.3 + self.Throttle * 0.7
+			local Load = 0.3 + self.Throttle * 0.7 -- the heck are these magic numbers?
 			Consumption = Load * self.FuelUse * (self.FlyRPM / self.PeakKwRPM) * DeltaTime / ACF.FuelDensity[Tank.FuelType]
 		end
 		Tank.Fuel = math.max(Tank.Fuel - Consumption,0)
@@ -562,37 +557,37 @@ function ENT:CalcRPM()
 		Wire_TriggerOutput(self, "Fuel Use", 0)
 	end
 
-	--adjusting performance based on damage
-	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
-	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1 + self.HasDriver * ACF.DriverTorqueBoost)
+	------------------------ Torque & RPM calculation ------------------------
 
-	-- Calculate the current torque from flywheel RPM
+	--adjusting performance based on damage
+	-- TorqueMult is a mutipler that affects the final Torque an engine can offer at its max.
+	-- PeakTorque is the final possible torque to get.
+	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
+	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * ( self.HasDriver and ACF.DriverTorqueBoost or 1 )
+
+	-- Calculate the current torque from flywheel RPM.
 	local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
 	self.Torque = boost * self.Throttle * ACF_CalcCurve(self.TorqueCurve, perc) * self.PeakTorque * (self.FlyRPM < self.LimitRPM and 1 or 0)
 
+	-- Let's accelerate the flywheel based on that torque.
+	-- Calculate drag
 	local Drag
-	if self.iselec == true then
+	if self.iselec then
 		Drag = self.PeakTorque * (math.max( self.FlyRPM - self.IdleRPM, 0) / self.FlywheelOverride) * (1 - self.Throttle) / self.Inertia
 	else
 		Drag = self.PeakTorque * (math.max( self.FlyRPM - self.IdleRPM, 0) / self.PeakMaxRPM) * ( 1 - self.Throttle) / self.Inertia
 	end
-
-	-- Let's accelerate the flywheel based on that torque
 	self.FlyRPM = math.Clamp( self.FlyRPM + self.Torque / self.Inertia - Drag, 0 , self.LimitRPM )
 
 	-- The gearboxes don't think on their own, it's the engine that calls them, to ensure consistent execution order
 	local Boxes = table.Count( self.GearLink )
-
 	local TotalReqTq = 0
-
 	-- Get the requirements for torque for the gearboxes (Max clutch rating minus any wheels currently spinning faster than the Flywheel)
 	for _, Link in pairs( self.GearLink ) do
-
 		if not Link.Ent.Legal then continue end
 
 		Link.ReqTq = Link.Ent:Calc( self.FlyRPM, self.Inertia )
 		TotalReqTq = TotalReqTq + Link.ReqTq
-
 	end
 
 	-- This is the presently available torque from the engine
@@ -603,25 +598,21 @@ function ENT:CalcRPM()
 
 	-- Split the torque fairly between the gearboxes who need it
 	for _, Link in pairs( self.GearLink ) do
-
 		if not Link.Ent.Legal then continue end
 
 		Link.Ent:Act( Link.ReqTq * AvailRatio * self.MassRatio, DeltaTime, self.MassRatio )
-
 	end
-
 	self.FlyRPM = self.FlyRPM - math.min( TorqueDiff, TotalReqTq ) / self.Inertia
 
-	local Mass = PhysObj:GetMass()
 
-	--print(self.Heat)
-
+	-- Heat Temperature calculation. Below is the damage caused by rpm if damaged.
 	self.Heat = ACE_HeatFromEngine( self )
 
 	local HealthRatio = self.ACF.Health / self.ACF.MaxHealth
-
 	if HealthRatio < 0.95 then
 		if HealthRatio > 0.025 then
+			local PhysObj = self:GetPhysicsObject()
+			local Mass = PhysObj:GetMass()
 			HitRes = ACF_Damage(self, {
 				Kinetic = (1 + math.max(Mass / 2, 20) / 2.5) / self.Throttle * 100,
 				Momentum = 0,
@@ -633,11 +624,11 @@ function ENT:CalcRPM()
 		end
 	end
 
---  743.2 Estimate for engine material, 35% weight steel, 65% weight aluminum
-
-	-- Then we calc a smoothed RPM value for the sound effects
+	--  743.2 Estimate for engine material, 35% weight steel, 65% weight aluminum
+	-- Then we calc a smoothed RPM value for the sound effects. For some reason this thing exists.
 	table.remove( self.RPM, 10 )
 	table.insert( self.RPM, 1, self.FlyRPM )
+
 	local SmoothRPM = 0
 	for _, RPM in pairs( self.RPM ) do
 		SmoothRPM = SmoothRPM + (RPM or 0)
@@ -648,7 +639,6 @@ function ENT:CalcRPM()
 	Wire_TriggerOutput(self, "Torque", math.Round(self.Torque))
 	Wire_TriggerOutput(self, "Power", math.Round(Power))
 	Wire_TriggerOutput(self, "RPM", math.Round(self.FlyRPM))
-	--Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
 
 	if self.Sound then
 		self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * (self.SoundPitch / 100)) / 50, 255 ), 0 )
@@ -658,42 +648,44 @@ function ENT:CalcRPM()
 	return RPM
 end
 
-function ENT:CheckRopes()
-
-	for _, Link in pairs( self.GearLink ) do
-
-		local Ent = Link.Ent
-
-		local OutPos = self:LocalToWorld( self.Out )
-		local InPos = Ent:LocalToWorld( Ent.In )
-
-		-- make sure it is not stretched too far
-		if OutPos:Distance( InPos ) > Link.RopeLen * 1.5 then
-			self:Unlink( Ent )
-		end
-
-		-- make sure the angle is not excessive
-		if not self:Checkdriveshaft( Ent ) then
-			self:Unlink( Ent )
-			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
-			self:EmitSound(soundstr,500,100)
-		end
-	end
-end
-
---unlink fuel tanks out of range
-function ENT:CheckFuel()
-	for _,tank in pairs(self.FuelLink) do
-		if self:GetPos():Distance(tank:GetPos()) > FuelLinkDistBase then
-			self:Unlink( tank )
-			local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
-			self:EmitSound(soundstr,500,100)
-			self:UpdateOverlayText()
-		end
-	end
-end
-
+-------------------------- Periodic Link Engine checks --------------------------
 do
+	-- Checks the current ropes linked to this engine complies with the requirements to be valid.
+	function ENT:CheckRopes()
+
+		for _, Link in pairs( self.GearLink ) do
+
+			local Ent = Link.Ent
+			local OutPos = self:LocalToWorld( self.Out )
+			local InPos = Ent:LocalToWorld( Ent.In )
+
+			-- make sure it is not stretched too far
+			if OutPos:Distance( InPos ) > Link.RopeLen * 1.5 then
+				self:Unlink( Ent )
+			end
+
+			-- make sure the angle is not excessive
+			if not self:Checkdriveshaft( Ent ) then
+				self:Unlink( Ent )
+				local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+				self:EmitSound(soundstr,500,100)
+			end
+		end
+	end
+
+	-- Check fueltanks are within the range with the engine.
+	function ENT:CheckFuel()
+		for _,tank in pairs(self.FuelLink) do
+			if self:GetPos():Distance(tank:GetPos()) > FuelLinkDistBase then
+				self:Unlink( tank )
+				local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+				self:EmitSound(soundstr,500,100)
+				self:UpdateOverlayText()
+			end
+		end
+	end
+
+
 	--[[
 	--HARDCODED. USE MODELDEFINITION INSTEAD
 	local TransAxialGearboxes = {
@@ -730,26 +722,125 @@ do
 
 		return true
 	end
-
 end
 
-function ENT:Link( Target )
+-------------------------- Link Logic --------------------------
+do
 
-	if not IsValid( Target ) or (Target:GetClass() ~= "acf_gearbox" and Target:GetClass() ~= "acf_fueltank" and Target:GetClass() ~= "ace_crewseat_driver") then
-		return false, "Can only link to gearboxes, fuel tanks, or driver crew seats!"
+	local AllowedEnts = {
+		acf_gearbox = true,
+		acf_fueltank = true,
+		ace_crewseat_driver = true,
+	}
+
+	function ENT:Link( Target )
+
+		if not IsValid( Target ) or not AllowedEnts[Target:GetClass()] then
+			return false, "You can only link gearboxes, fueltanks or crewseats!"
+		end
+
+		-- Gear links
+		if Target:GetClass() == "acf_gearbox" then
+			return self:LinkGearbox( Target )
+		end
+		-- Fuel links
+		if Target:GetClass() == "acf_fueltank" then
+			return self:LinkFuel( Target )
+		end
+		-- Crew links
+		if Target:GetClass() == "ace_crewseat_driver" then
+			return self:LinkCrew( Target )
+		end
 	end
 
-	if Target:GetClass() == "acf_fueltank" then
-		return self:LinkFuel( Target )
+	function ENT:Unlink( Target )
+
+		if not IsValid( Target ) or not AllowedEnts[Target:GetClass()] then
+			return false, "You can only unlink gearboxes, fueltanks or crewseats!"
+		end
+
+		-- Gear links
+		if Target:GetClass() == "acf_gearbox" then
+			return self:UnlinkGearbox( Target )
+		end
+		-- Fuel links
+		if Target:GetClass() == "acf_fueltank" then
+			return self:UnlinkFuel( Target )
+		end
+		-- Crew links
+		if Target:GetClass() == "ace_crewseat_driver" then
+			return self:UnlinkCrew( Target )
+		end
 	end
 
-	if Target:GetClass() == "ace_crewseat_driver" then
+	function ENT:LinkGearbox( Target )
+
+		-- Check if target is already linked
+		for _, Link in pairs( self.GearLink ) do
+			if Link.Ent == Target then
+				return false, "This gearbox is already linked to this engine!"
+			end
+		end
+
+		-- make sure the angle is not excessive
+		if not self:Checkdriveshaft( Target ) then
+			return false, "Cannot link due to excessive driveshaft angle!"
+		end
+
+		local InPos = Target:LocalToWorld( Target.In ) 	--gearbox to connect to engine
+		local OutPos = self:LocalToWorld( self.Out ) 	--the engine output
+
+		local Rope = nil
+		if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
+			Rope = ACE_CreateLinkRope( OutPos, self, self.Out, Target, Target.In )
+		end
+
+		local Link = {
+			Ent 	= Target, 						-- Linked Gearbox
+			Rope 	= Rope, 						-- Rope
+			RopeLen = ( OutPos - InPos ):Length(), 	-- The length between the Engine Point to the Gearbox Point
+			ReqTq 	= 0 							-- Possibly the requested torque from the gearbox to the engine?
+		}
+
+		table.insert( self.GearLink, Link )
+		table.insert( Target.Master, self )
+
+		return true, "Link successful!"
+	end
+
+	function ENT:UnlinkGearbox( Target )
+
+		for Key, Link in pairs( self.GearLink ) do
+
+			if Link.Ent == Target then
+
+				-- Remove any old physical ropes leftover from dupes
+				for _, Rope in pairs( constraint.FindConstraints( Link.Ent, "Rope" ) ) do
+					if Rope.Ent1 == self or Rope.Ent2 == self then
+						Rope.Constraint:Remove()
+					end
+				end
+
+				if IsValid( Link.Rope ) then
+					Link.Rope:Remove()
+				end
+
+				table.remove( self.GearLink,Key )
+
+				return true, "Unlink successful!"
+			end
+		end
+
+		return false, "That gearbox is not linked to this engine!"
+	end
+
+	function ENT:LinkCrew( Target )
 
 		if not Target.Legal then
 			return false, "The driver seat is illegal!"
 		end
 
-		if self.HasDriver == 1 then
+		if self.HasDriver then
 			return false, "The engine already has a driver!"
 		end
 
@@ -757,250 +848,170 @@ function ENT:Link( Target )
 		table.insert( Target.Master, self )
 
 		Target.LinkedEngine = self
-		self.HasDriver = 1
+		self.HasDriver = true
 		self:UpdateOverlayText()
 
 		return true, "Link successful!"
 	end
 
-	-- Check if target is already linked
-	for _, Link in pairs( self.GearLink ) do
-		if Link.Ent == Target then
-			return false, "That is already linked to this engine!"
-		end
-	end
+	function ENT:UnlinkCrew( Target )
 
-	-- make sure the angle is not excessive
-	if not self:Checkdriveshaft( Target ) then
-		return false, "Cannot link due to excessive driveshaft angle!"
-	end
-
-	local InPos = Target:LocalToWorld( Target.In ) 	--gearbox to connect to engine
-	local OutPos = self:LocalToWorld( self.Out ) 	--the engine output
-
-	local Rope = nil
-	if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
-		Rope = ACE_CreateLinkRope( OutPos, self, self.Out, Target, Target.In )
-	end
-
-	local Link = {
-		Ent 	= Target,
-		Rope 	= Rope,
-		RopeLen = ( OutPos - InPos ):Length(),
-		ReqTq 	= 0
-	}
-
-	table.insert( self.GearLink, Link )
-	table.insert( Target.Master, self )
-
-	return true, "Link successful!"
-end
-
-
-function ENT:Unlink( Target )
-
-	if Target:GetClass() == "acf_fueltank" then
-		return self:UnlinkFuel( Target )
-	end
-
-
-	if Target:GetClass() == "ace_crewseat_driver" then
-
-		self.HasDriver = 0
+		self.HasDriver = false
 		self:UpdateOverlayText()
 
-
 		for Key,Value in pairs(self.CrewLink) do
-		if Value == Target then
-			table.remove(self.CrewLink,Key)
-			Success = true
-			self.HasDriver = 0
-			Target.LinkedEngine = nil
-			return true, "Unlink successful!"
-		end
-	end
-
-	end
-
-	for Key, Link in pairs( self.GearLink ) do
-
-		if Link.Ent == Target then
-
-			-- Remove any old physical ropes leftover from dupes
-			for _, Rope in pairs( constraint.FindConstraints( Link.Ent, "Rope" ) ) do
-				if Rope.Ent1 == self or Rope.Ent2 == self then
-					Rope.Constraint:Remove()
-				end
+			if Value == Target then
+				Target.LinkedEngine = nil
+				table.remove(self.CrewLink,Key)
+				return true, "Unlink successful!"
 			end
+		end
+	end
 
-			if IsValid( Link.Rope ) then
-				Link.Rope:Remove()
+	function ENT:LinkFuel( Target )
+
+		if not (self.FuelType == "Multifuel" and Target.FuelType ~= "Electric") and self.FuelType ~= Target.FuelType then
+			return false, "Cannot link because fuel type is incompatible."
+		end
+
+		if Target.NoLinks then
+			return false, "This fuel tank doesn\'t allow linking."
+		end
+
+		for _, Value in pairs(self.FuelLink) do
+			if Value == Target then
+				return false, "That fuel tank is already linked to this engine!"
 			end
-
-			table.remove( self.GearLink,Key )
-
-			return true, "Unlink successful!"
-
 		end
 
+		if self:GetPos():Distance( Target:GetPos() ) > FuelLinkDistBase then
+			return false, "Fuel tank is too far away."
+		end
+
+		table.insert( self.FuelLink, Target )
+		table.insert( Target.Master, self )
+
+		return true, "Link successful!"
 	end
 
-	return false, "That gearbox is not linked to this engine!"
+	function ENT:UnlinkFuel( Target )
 
+		for Key, Value in pairs( self.FuelLink ) do
+			if Value == Target then
+				table.remove( self.FuelLink, Key )
+				return true, "Unlink successful!"
+			end
+		end
+
+		return false, "That fuel tank is not linked to this engine!"
+	end
 end
 
-function ENT:LinkFuel( Target )
+-------------------------- Duplicator related stuff --------------------------
+do
+	function ENT:PreEntityCopy()
 
-	if not (self.FuelType == "Multifuel" and Target.FuelType ~= "Electric") and self.FuelType ~= Target.FuelType then
-		return false, "Cannot link because fuel type is incompatible."
-	end
-
-	if Target.NoLinks then
-		return false, "This fuel tank doesn\'t allow linking."
-	end
-
-	for _, Value in pairs(self.FuelLink) do
-		if Value == Target then
-			return false, "That fuel tank is already linked to this engine!"
+		--Link Saving
+		local info = {}
+		local entids = {}
+		for Key, Link in pairs( self.GearLink ) do				--First clean the table of any invalid entities
+			if not IsValid( Link.Ent ) then
+				table.remove( self.GearLink, Key )
+			end
 		end
-	end
-
-	if self:GetPos():Distance( Target:GetPos() ) > FuelLinkDistBase then
-		return false, "Fuel tank is too far away."
-	end
-
-	table.insert( self.FuelLink, Target )
-	table.insert( Target.Master, self )
-
-	return true, "Link successful!"
-
-end
-
-function ENT:UnlinkFuel( Target )
-
-	for Key, Value in pairs( self.FuelLink ) do
-		if Value == Target then
-			table.remove( self.FuelLink, Key )
-			return true, "Unlink successful!"
+		for _, Link in pairs( self.GearLink ) do				--Then save it
+			table.insert( entids, Link.Ent:EntIndex() )
 		end
-	end
 
-	return false, "That fuel tank is not linked to this engine!"
-
-end
-
-function ENT:PreEntityCopy()
-
-	--Link Saving
-	local info = {}
-	local entids = {}
-	for Key, Link in pairs( self.GearLink ) do				--First clean the table of any invalid entities
-		if not IsValid( Link.Ent ) then
-			table.remove( self.GearLink, Key )
+		info.entities = entids
+		if info.entities then
+			duplicator.StoreEntityModifier( self, "GearLink", info )
 		end
-	end
-	for _, Link in pairs( self.GearLink ) do				--Then save it
-		table.insert( entids, Link.Ent:EntIndex() )
-	end
 
-	info.entities = entids
-	if info.entities then
-		duplicator.StoreEntityModifier( self, "GearLink", info )
-	end
-
-	--fuel tank link saving
-	local fuel_info = {}
-	local fuel_entids = {}
-	for _, Value in pairs(self.FuelLink) do				--First clean the table of any invalid entities
-		if not Value:IsValid() then
-			table.remove(self.FuelLink, Value)
+		--fuel tank link saving
+		local fuel_info = {}
+		local fuel_entids = {}
+		for _, Value in pairs(self.FuelLink) do				--First clean the table of any invalid entities
+			if not Value:IsValid() then
+				table.remove(self.FuelLink, Value)
+			end
 		end
-	end
-	for _, Value in pairs(self.FuelLink) do				--Then save it
-		table.insert(fuel_entids, Value:EntIndex())
-	end
-
-	fuel_info.entities = fuel_entids
-	if fuel_info.entities then
-		duplicator.StoreEntityModifier( self, "FuelLink", fuel_info )
-	end
-
-	--driver seat link saving
-	for _, Value in pairs(self.CrewLink) do				--First clean the table of any invalid entities
-		if not Value:IsValid() then
-			table.remove(self.CrewLink, Value)
+		for _, Value in pairs(self.FuelLink) do				--Then save it
+			table.insert(fuel_entids, Value:EntIndex())
 		end
+
+		fuel_info.entities = fuel_entids
+		if fuel_info.entities then
+			duplicator.StoreEntityModifier( self, "FuelLink", fuel_info )
+		end
+
+		--driver seat link saving
+		for _, Value in pairs(self.CrewLink) do				--First clean the table of any invalid entities
+			if not Value:IsValid() then
+				table.remove(self.CrewLink, Value)
+			end
+		end
+		for _, Value in pairs(self.CrewLink) do				--Then save it
+			table.insert(entids, Value:EntIndex())
+		end
+
+		info.entities = entids
+		if info.entities then
+			duplicator.StoreEntityModifier( self, "CrewLink", info )
+		end
+
+		--Wire dupe info
+		self.BaseClass.PreEntityCopy( self )
+
 	end
-	for _, Value in pairs(self.CrewLink) do				--Then save it
-		table.insert(entids, Value:EntIndex())
-	end
 
-	info.entities = entids
-	if info.entities then
-		duplicator.StoreEntityModifier( self, "CrewLink", info )
-	end
+	function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
-
-	--Wire dupe info
-	self.BaseClass.PreEntityCopy( self )
-
-end
-
-function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-
-	--Link Pasting
-	if Ent.EntityMods and Ent.EntityMods.GearLink and Ent.EntityMods.GearLink.entities then
-		local GearLink = Ent.EntityMods.GearLink
-		if GearLink.entities and next(GearLink.entities) then
-			timer.Simple( 0, function() -- this timer is a workaround for an ad2/makespherical issue https://github.com/nrlulz/ACF/issues/14#issuecomment-22844064
-				for _,ID in pairs(GearLink.entities) do
+		--Link Pasting
+		if Ent.EntityMods and Ent.EntityMods.GearLink and Ent.EntityMods.GearLink.entities then
+			local GearLink = Ent.EntityMods.GearLink
+			if GearLink.entities and next(GearLink.entities) then
+				timer.Simple( 0, function() -- this timer is a workaround for an ad2/makespherical issue https://github.com/nrlulz/ACF/issues/14#issuecomment-22844064
+					for _,ID in pairs(GearLink.entities) do
+						local Linked = CreatedEntities[ ID ]
+						if IsValid( Linked ) then
+							self:Link( Linked )
+						end
+					end
+				end )
+			end
+			Ent.EntityMods.GearLink = nil
+		end
+		--fuel tank link Pasting
+		if Ent.EntityMods and Ent.EntityMods.FuelLink and Ent.EntityMods.FuelLink.entities then
+			local FuelLink = Ent.EntityMods.FuelLink
+			if FuelLink.entities and next(FuelLink.entities) then
+				for _,ID in pairs(FuelLink.entities) do
 					local Linked = CreatedEntities[ ID ]
 					if IsValid( Linked ) then
 						self:Link( Linked )
 					end
 				end
-			end )
+			end
+			Ent.EntityMods.FuelLink = nil
 		end
-		Ent.EntityMods.GearLink = nil
-	end
-
---self.HasDriver
-	--fuel tank link Pasting
-	if Ent.EntityMods and Ent.EntityMods.FuelLink and Ent.EntityMods.FuelLink.entities then
-		local FuelLink = Ent.EntityMods.FuelLink
-		if FuelLink.entities and next(FuelLink.entities) then
-			for _,ID in pairs(FuelLink.entities) do
-				local Linked = CreatedEntities[ ID ]
-				if IsValid( Linked ) then
-					self:Link( Linked )
+		--ace_crewseat_gunner
+		if Ent.EntityMods and Ent.EntityMods.CrewLink and Ent.EntityMods.CrewLink.entities then
+			local CrewLink = Ent.EntityMods.CrewLink
+			if CrewLink.entities and next(CrewLink.entities) then
+				for _,ID in pairs(CrewLink.entities) do
+					local Linked = CreatedEntities[ ID ]
+					if IsValid( Linked ) then
+						self:Link( Linked )
+					end
 				end
 			end
+			Ent.EntityMods.CrewLink = nil
 		end
-		Ent.EntityMods.FuelLink = nil
+		--Wire dupe info
+		self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
 	end
---ace_crewseat_gunner
-	if Ent.EntityMods and Ent.EntityMods.CrewLink and Ent.EntityMods.CrewLink.entities then
-		local CrewLink = Ent.EntityMods.CrewLink
-		if CrewLink.entities and next(CrewLink.entities) then
-			for _,ID in pairs(CrewLink.entities) do
-				local Linked = CreatedEntities[ ID ]
-				if IsValid( Linked ) then
-					self:Link( Linked )
-				end
-			end
-		end
-		Ent.EntityMods.CrewLink = nil
-	end
-
-
-
-
-
-	--Wire dupe info
-	self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
-
 end
-
 function ENT:OnRemove()
 	if self.Sound then
 		self.Sound:Stop()
