@@ -8,9 +8,9 @@ Welcome to Armored Combat Framework Extended (ACE), your gateway to a world of r
 
 ## What Makes ACE Stand Out
 
-ACE is not just another addon; it's a game-changer for your building process. Here's why it's a must-have for your gaming experience:
+ACE is not just another addon; it's a game-changer for your building process. Here's why it's a must-have for your Garry's Mod experience:
 
-- **Guns and Weapons**: ACE provides a large arsenal of weaponry, including varios types of cannons, missiles, and bombs, giving you a spacios choice for your contraption's needs
+- **Guns and Weapons**: ACE provides a large arsenal of weaponry, including various types of cannons, missiles, and bombs, giving you a spacious choice for your contraption's needs
 
 - **Realistic Mobility System**: Experience the realistic mobility, allowing you to create vehicles that handle just like the real thing without any of the old-fashioned legacy tools(thrusters, wheel tool, hoverballs etc.).
 
@@ -40,7 +40,7 @@ ACE is not just another addon; it's a game-changer for your building process. He
 ACE requires you have the following addons before using:
 
 * **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)** 
-* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (optional, but you are granted with essentially necessary for beginners dupes/tools that are only visible with this tool )
+* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (almost essential for using ACE. You are granted with essentially necessary for beginners dupes/tools that are only visible with this tool as well as an ability to save your contraptions )
 
 ## Workshop Edition
 
