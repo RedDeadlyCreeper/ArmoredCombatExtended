@@ -60,4 +60,6 @@ To keep up with our progress, visit our [Trello board](https://trello.com/b/AW6l
 
 Explore our documentation and tutorials in the [ACE Wiki](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki).
 
+Use the [Dev Branch](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/tree/dev) for contribution
+
 
