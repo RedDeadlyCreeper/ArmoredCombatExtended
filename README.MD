@@ -4,26 +4,47 @@
 [![Repository Size](https://img.shields.io/github/repo-size/RedDeadlyCreeper/ArmoredCombatExtended?label=Repository%20Size&style=flat-square)](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/RedDeadlyCreeper/ArmoredCombatExtended?label=Commit%20Activity&style=flat-square)](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/graphs/commit-activity)
 
-The Armoured Combat Extended (as known as ACE), is an addon that brings you a realistic combat damage system, a several amount of weapons, like cannons, missiles or bombs and a great amount of engines and gearboxes, so you can build one of the most popular stuff on gmod; *tanks and cars*, although you can build whatever you want. To use this addon, wiremod basic knowledge is required.
+Welcome to Armored Combat Framework Extended (ACE), your gateway to a world of realistic building experience in your favorite game. ACE is more than just an addon; it's a journey into creating incredible machines, vehicles, and contraptions. Whether you're dreaming of armored tanks, high-speed cars, futuristic aircraft, or complex mechanisms, ACE empowers your creativity. All you need is a dash of Wiremod knowledge, and you're ready to conquer new frontiers.
 
-## ACE Features as following:
+## What Makes ACE Stand Out
 
-* Extended weaponry
-* More ammo types
-* Realistic composite armor
-* Temperature for almost everything (that can be tracked by Infrared guidance)
-* & much more. . .
+ACE is not just another addon; it's a game-changer for your building process. Here's why it's a must-have for your Garry's Mod experience:
+
+- **Guns and Weapons**: ACE provides a large arsenal of weaponry, including various types of cannons, missiles, and bombs, giving you a spacious choice for your contraption's needs
+
+- **Realistic Mobility System**: Experience the realistic mobility, allowing you to create vehicles that handle just like the real thing without any of the old-fashioned legacy tools(thrusters, wheel tool, hoverballs etc.).
+
+- **Diverse Ammo Types**: ACE offers various unique ammo types, adding depth and strategy to your combat scenarios, such as AP, APHE, APFSDS, HEAT, Smoke rounds etc.
+
+- **SWEPs**: It's always nice to shoot some NPCs down or maybe even enemy's tank?
+
+- **Realistic Damage and Armor**: ACE's damage system adds a layer of realism, making combat and destruction more immersive than ever. We have a proper prop damage as well as prop penetration system, that often leads to spalling that damages the internals of the contraption.
+
+- **Fire the Missiles!**: Launch missiles with ease, adding an exciting dimension to your gameplay. We have over 5 types of missiles with over 10 missile models.
+
+- **Sensors**: ACE incorporates various sensors with intricate details, giving you more capabilities to stand out. ACE provides 3 types of radars, each has its own purpose and its details
+
+- **VFX & Sound Ambience**: ACE is filled up with beautiful effects, dynamic lighting for explosions, flares, missile motors, and more. ACE brings dynamic sounds that take many factors into account, such as the speed of sound, delivering one of the most advanced and soul-thrilling sound ambiance systems in the Garry's Mod.
+
+- **Balanced gameplay**: While ACE trying to be realistic it is also trying to make sure that the gameplay is going to be fair and fun.
+
+- **Optimization and Future-Proofing**: We're committed to optimizing ACE and ensuring it stays up for a long time, so you can enjoy your creations for years to come. Although, sometimes some crucial required changes happen, we'll make sure to warn you about it.
+
+- **Open to community**: We're constantly listening to your feedback, participating in various discussions and making sure that all the hotifixes are coming out rapidly, that's why we keep in touch with server owners. Yet we also help active community members to release extensions to ACE.
+
+- **And Much More...**: ACE keeps evolving and has been evolving over 5 years. It has become its own open-source project with its own history. And stay in tune, so you'll find numerous other features and updates to explore.
+
 
 ## Requirements
 
 ACE requires you have the following addons before using:
 
 * **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)** 
-* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (Not required for general use, but you are granted with some dupes that are only visible with this tool )
+* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (almost essential for using ACE. You are granted with essentially necessary for beginners dupes/tools that are only visible with this tool as well as an ability to save your contraptions )
 
-## Workshop edition
+## Workshop Edition
 
-We have a **[workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2512558788)** branch! If you want, go and download it there instead!
+For a more straightforward installation process, consider grabbing the ACE Workshop edition. It's user-friendly and it includes automatic updates. [Get it here](https://steamcommunity.com/sharedfiles/filedetails/?id=2512558788).
 
 ## Manual Installation
 
@@ -33,10 +54,12 @@ If you dont like the methods above, you can use tortoiseGIT, which you can downl
 
 ## Contributions & Contact
 
-You are free to contribute to this repository. Make sure to send your contributions to our **[development branch](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/tree/dev)**.
+We welcome contributions to ACE. Please review our [contribution guidelines](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki/General-Coding-and-Style-Guidelines) on our wiki before getting started.
 
-Also, you can keep an eye on our [progress here](https://trello.com/b/AW6lxk7z/ace-development).
+To keep up with our progress, visit our [Trello board](https://trello.com/b/AW6lxk7z/ace-development) and join our [ACE Discord](https://discord.gg/Y8aEYU6).
 
-If you need contact, you can reach me on [ACE Discord](https://discord.gg/Y8aEYU6)
+Explore our documentation and tutorials in the [ACE Wiki](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki).
 
-**Visit our wiki [Here!](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki)**
+Use the [Dev Branch](https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/tree/dev) for contribution.
+
+
