@@ -199,7 +199,6 @@ end
 function SWEP:OnPrimaryAttack()
 	self.BulletData.Owner = self:GetOwner()
 	self.BulletData.Gun = self
-	self.BulletData.FuseLength = self.FuseDelay
 
 end
 
@@ -473,8 +472,6 @@ function SWEP:Reload()
 	self:SetNextPrimaryFire(nextFire) -- Stop reloads from resetting the fire delay
 end
 
-
-
 function SWEP:Shoot()
 
 
@@ -482,9 +479,6 @@ function SWEP:Shoot()
 		return
 		end
 
-		local ZS = self:GetZoomState()
-		if ZS then
-			print("Why won't you work?")
 			local owner = self:GetOwner()
 
 			local Xdist = self.TargetDistance
@@ -528,11 +522,65 @@ function SWEP:Shoot()
 			self.BulletData.DragCoef = 0
 			self:ACEFireBullet(owner:GetShootPos() + owner:GetVelocity() * engine.TickInterval(), VectorPos)
 
-	end
-
 end
 
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end
 
+	local ZS = self:GetZoomState()
+	if not ZS then return end
+
+	self:OnPrimaryAttack()
+
+	if self.ShotgunReload then
+		self.Reloading = false
+	end
+
+	if IsFirstTimePredicted() or game.SinglePlayer() then
+		local owner = self:GetOwner()
+
+		for _ = 1, self.Primary.BulletCount do
+			self:Shoot()
+		end
+
+		if game.SinglePlayer() then
+			ACE_NetworkSPEffects( self, self.BulletData.PropMass) -- singleplayer, this whole function is not called clientside, so we need to network the client here
+		else
+			--Client is called here. So lets go as usual.
+			local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
+			if next(sounds) then
+				if SERVER then
+					ACE_NetworkMPEffects(owner, self.Primary.Sound, self.BulletData.PropMass)
+				else
+					self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
+				end
+			elseif not next(sounds) and CLIENT then
+				self:EmitSound(self.Primary.Sound)
+			end
+
+			if CLIENT then
+				ACF_RenderLight(self:EntIndex(), self.Primary.LightScale, Color(255, 128, 48), self:GetPos())
+			end
+		end
+
+		owner:ViewPunch(Angle(-self.ViewPunchAmount, 0, 0))
+
+		self.Heat = math.min(self.Heat + self.HeatPerShot, self.HeatMax)
+	end
+
+	if SERVER then
+		self:TakePrimaryAmmo(1)
+	end
+	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+	self:SetNextPrimaryFire(CurTime() + math.Round(1 / self.FireRate, 2))
+
+	self.LastFired = CurTime()
+
+	if self.Primary.ClipSize == 1 and self:Clip1() == 0 and self:Ammo1() > 0 then
+		self:Reload()
+	end
+end
 
 
 
