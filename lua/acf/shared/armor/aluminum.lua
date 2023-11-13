@@ -53,7 +53,7 @@ if SERVER then
 		end
 
 		-- Breach probability, chance of a shell to shoot clean through without doing much structural damage ignoring richochet and LOS armor.
-		local breachProb = math.Clamp( (caliber * 10 / armor / effectiveness - 1.3) / 5.7 , 0, 1) -- If the caliber in mm is at least 1.3x the effective armor there is a chance to overmatch. At 7x the effective armor, 100% chance to overmatch.
+		local breachProb = math.Clamp( (caliber / armor / effectiveness - 1.3) / 5.7 , 0, 1) -- If the caliber in mm is at least 1.3x the effective armor there is a chance to overmatch. At 7x the effective armor, 100% chance to overmatch.
 
 		-- Penetration probability
 		--The larger the number on the inside, the lower the penetration probability
