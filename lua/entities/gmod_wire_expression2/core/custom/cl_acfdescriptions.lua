@@ -88,6 +88,7 @@ E2Helper.Descriptions["acfAmmoCount"] = "Returns the number of rounds in active 
 E2Helper.Descriptions["acfTotalAmmoCount"] = "Returns the number of rounds in all ammo crates linked to an ACF weapon."
 E2Helper.Descriptions["acfGetCrew"] = "Returns a list of all the crew seats of an ACF Entity."
 E2Helper.Descriptions["acfGetAmmoCrates"] = "Returns a list of all the ammo crates of an ACF Weapon."
+E2Helper.Descriptions["acfState"] = "Returns the state of an ACF weapon."
 
 --ammo
 E2Helper.Descriptions["acfRounds"] = "Returns the number of rounds in an ACF ammo crate."

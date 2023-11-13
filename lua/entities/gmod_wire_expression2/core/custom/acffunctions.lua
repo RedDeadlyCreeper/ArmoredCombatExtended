@@ -860,6 +860,28 @@ do
 		end
 		return Ammo
 	end
+
+	__e2setcost( 5 )
+
+	e2function string entity:acfState()
+		if not isGun(this) then return "" end
+		if restrictInfo(self, this) then return "" end
+		
+		local state = ""
+
+		local isEmpty = this.BulletData.Type == "Empty"
+		local isReloading = not isEmpty and CurTime() < this.NextFire and (this.MagSize == 1 or (this.LastLoadDuration > this.ReloadTime))
+
+		if isEmpty then
+			state = "Empty"
+		elseif isReloading or not this.Ready then
+			state = "Loading"
+		else
+			state = "Loaded"
+		end
+
+		return state
+	end
 end
 
 -- [ Ammo Functions ] --

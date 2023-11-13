@@ -767,6 +767,31 @@ do
 
 		return this.MagReload
 	end
+
+	--- Returns the state of an ACF weapon
+	-- @server
+	-- @return string The state of the weapon
+	function ents_methods:acfState()
+		local this = getent(self)
+
+		if not isGun(this) then return "" end
+		if restrictInfo(this) then return "" end
+
+		local state = ""
+
+		local isEmpty = this.BulletData.Type == "Empty"
+		local isReloading = not isEmpty and CurTime() < this.NextFire and (this.MagSize == 1 or (this.LastLoadDuration > this.ReloadTime))
+
+		if isEmpty then
+			state = "Empty"
+		elseif isReloading or not this.Ready then
+			state = "Loading"
+		else
+			state = "Loaded"
+		end
+
+		return state
+	end
 end
 
 -- Ammo functions
