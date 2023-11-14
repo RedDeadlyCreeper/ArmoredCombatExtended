@@ -93,7 +93,7 @@ do
 		local Dist = self.Distance
 
 		local trace = {}
-		trace.start         = missile.DPos or MissilePos print(MissilePos)
+		trace.start         = missile.DPos or MissilePos
 		trace.endpos        = MissilePos --small compensation for incoming impacts.
 		trace.filter        = FilterFunction
 		trace.mins          = Vector(-Dist, -Dist, -Dist)
