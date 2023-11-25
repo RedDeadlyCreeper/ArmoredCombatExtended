@@ -3,7 +3,7 @@ ACF = ACF or {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 495		-- ACE current version
+ACF.Version = 496		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
@@ -48,7 +48,7 @@ ACF.LiIonED             = 0.27					-- li-ion energy density: kw hours / liter --
 ACF.CuIToLiter          = 0.0163871				-- cubic inches to liters
 
 ACF.TorqueBoost         = 1.25					-- torque multiplier from using fuel
-ACF.DriverTorqueBoost   = 0.25					-- torque multiplier from having a driver
+ACF.DriverTorqueBoost   = 1.25					-- torque multiplier from having a driver
 ACF.FuelRate            = 10						-- multiplier for fuel usage, 1.0 is approx real world
 ACF.ElecRate            = 2						-- multiplier for electrics								--BEFORE to balance: 0.458
 ACF.TankVolumeMul       = 1						-- multiplier for fuel tank capacity, 1.0 is approx real world

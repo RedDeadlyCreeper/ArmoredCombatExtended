@@ -562,8 +562,9 @@ function ENT:CalcRPM()
 	--adjusting performance based on damage
 	-- TorqueMult is a mutipler that affects the final Torque an engine can offer at its max.
 	-- PeakTorque is the final possible torque to get.
+	local driverboost = self.HasDriver and ACF.DriverTorqueBoost or 1
 	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
-	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * ( self.HasDriver and ACF.DriverTorqueBoost or 1 )
+	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * driverboost
 
 	-- Calculate the current torque from flywheel RPM.
 	local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
