@@ -264,7 +264,7 @@ do
 		local this = getent(self)
 
 		local enttype = this:GetClass()
-		if not linkTables[enttype] then return searchForGearboxLinks(this) end
+		if not linkTables[enttype] then return sanitize(searchForGearboxLinks(this)) end
 
 		return sanitize(getLinks(this, enttype))
 	end
