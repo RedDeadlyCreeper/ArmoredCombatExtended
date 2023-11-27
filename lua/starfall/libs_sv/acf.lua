@@ -833,7 +833,7 @@ do
 	-- @return string The type of ammo
 	function ents_methods:acfAmmoType()
 		local this = getent(self)
-		if not isAmmo(this) or isGun(this) then return "" end
+		if not (isAmmo(this) or isGun(this)) then return "" end
 		if restrictInfo(this) then return "" end
 
 		return this.BulletData["Type"] or ""
