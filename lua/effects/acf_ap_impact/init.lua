@@ -57,9 +57,11 @@ function EFFECT:Init( data )
 	self.Velocity    = data:GetScale() 			-- Mass of the projectile in kg
 	self.Mass        = data:GetMagnitude() 		-- Velocity of the projectile in gmod units
 
+	local ValidCrate = IsValid(self.AmmoCrate)
+
 	self.Scale       = math.max(self.Mass * (self.Velocity / 39.37) / 100,1) ^ 0.3
-	self.Id          = self.AmmoCrate:GetNWString( "AmmoType", "AP" )
-	self.Caliber     = self.AmmoCrate:GetNWFloat( "Caliber", 2 )
+	self.Id          = ValidCrate and self.AmmoCrate:GetNWString( "AmmoType", "AP" ) or "AP"
+	self.Caliber     = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 2 ) or 2
 	self.Emitter     = ParticleEmitter( self.Origin )
 
 	local SurfaceTr = PerformDecalTrace( self )

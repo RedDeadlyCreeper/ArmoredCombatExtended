@@ -5,6 +5,9 @@ which was passed from the server.
 function EFFECT:Init( data )
 
 	local Missile    = data:GetEntity()
+
+	if not IsValid( Missile ) then return end
+
 	local Rack       = Missile:GetNWEntity( "Launcher", NULL )
 
 	if IsValid(Rack) then
