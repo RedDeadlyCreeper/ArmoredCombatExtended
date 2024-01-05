@@ -604,7 +604,7 @@ do
 		if not isGun(this) then return false end
 		if restrictInfo(this) then return false end
 
-		return this.Reloading
+		return this.Reloading or false
 	end
 
 	--- Returns the rate of fire of an acf gun
