@@ -50,9 +50,9 @@ if CLIENT then
 	language.Add("tool.acfmenu.left", "Create/Update entity")
 	language.Add("tool.acfmenu.right", "Link/Unlink entities")
 
-	language.Add("tool.acfmenu.stage1.link", "Link selected entities to first entity")
-	language.Add("tool.acfmenu.stage1.unlink", "(Hold Use) Unlink selected entities from first entity")
-	language.Add("tool.acfmenu.stage1.multiselect", "(Hold Shift) Select multiple entities to link")
+	language.Add("tool.acfmenu.stage1.link", "Link selected entities to this entity")
+	language.Add("tool.acfmenu.stage1.unlink", "(Hold Use) Unlink selected entities from this entity")
+	language.Add("tool.acfmenu.stage1.multiselect", "(Hold Shift) Select more entities")
 	language.Add("tool.acfmenu.stage1.reload", "Deselect all entities")
 
 	TOOL.Information = {
@@ -145,26 +145,6 @@ function TOOL:LeftClick( trace )
 
 end
 
-local canLinkTo = {
-	acf_engine = {
-		acf_fueltank = true,
-		acf_gearbox = true,
-		ace_crewseat_driver = true
-	},
-	acf_gearbox = {
-		acf_gearbox = true,
-		prop_physics = true
-	},
-	acf_gun = {
-		acf_ammo = true,
-		ace_crewseat_loader = true,
-		ace_crewseat_gunner = true
-	},
-	acf_rack = {
-		acf_ammo = true
-	}
-}
-
 function TOOL:SelectEntity(ent)
 	if CLIENT then return end
 
@@ -188,71 +168,79 @@ function TOOL:DeselectAll()
 	end
 end
 
+local function linkEnts(e1, e2, unlink)
+	if e1.IsMaster and e2:GetClass() ~= "acf_engine" and (e1:GetClass() ~= "acf_gearbox" or e2:GetClass() ~= "acf_gearbox") then
+		if unlink then
+			return e1:Unlink(e2)
+		else
+			return e1:Link(e2)
+		end
+	elseif e2.IsMaster then
+		if unlink then
+			return e2:Unlink(e1)
+		else
+			return e2:Link(e1)
+		end
+	else
+		return false, "Neither entity is a master entity"
+	end
+end
+
 function TOOL:RightClick( trace )
 	local ent = trace.Entity
-
 	local ply = self:GetOwner()
 	local validEnt = IsValid(ent)
+	local stage = self:GetStage()
 
-	if validEnt and self:GetStage() == 0 and canLinkTo[ent:GetClass()] and (CLIENT or ent.IsMaster) then
-		self.Master = ent
+	if validEnt and stage == 0 then
+		self:SelectEntity(ent)
 		self:SetStage(1)
 
 		return true
-	elseif self:GetStage() == 1 then
+	elseif stage == 1 then
+		if not validEnt then
+			self:DeselectAll()
+			self:SetStage(0)
+
+			return true
+		end
+
 		local holdingShift = ply:KeyDown(IN_SPEED)
 		local holdingUse = ply:KeyDown(IN_USE)
 
 		if holdingShift then
-			if canLinkTo[self.Master:GetClass()][ent:GetClass()] then
+			if validEnt then
 				self:SelectEntity(ent)
-
-				return true
 			end
 
-			return false
-		elseif SERVER then
-			local success, msg
+			return true
+		else
+			if SERVER then
+				for selected in pairs(self.SelectedEntities) do
+					if ent ~= selected then
+						local success, msg = linkEnts(ent, selected, holdingUse)
 
-			if next(self.SelectedEntities) then
-				for ent in pairs(self.SelectedEntities) do
-					if holdingUse then
-						success, msg = self.Master:Unlink(ent)
-					else
-						success, msg = self.Master:Link(ent)
+						ACF_SendNotify(ply, success, msg)
 					end
-
-					ACF_SendNotify(ply, success, msg)
 				end
-
-				self:DeselectAll()
-			else
-				if holdingUse then
-					success, msg = self.Master:Unlink(ent)
-				else
-					success, msg = self.Master:Link(ent)
-				end
-
-				ACF_SendNotify(ply, success, msg)
 			end
+
+			self:DeselectAll()
+			self:SetStage(0)
+
+			return true
 		end
-
-		self:SetStage(0)
-
-		return true
 	end
 end
 
 function TOOL:Holster()
 	self:SetStage(0)
 	self:DeselectAll()
-	self.Master = nil
 end
 
 function TOOL:Reload()
 	self:SetStage(0)
 	self:DeselectAll()
-	self.Master = nil
 
 	return self:GetStage() == 1
 end
