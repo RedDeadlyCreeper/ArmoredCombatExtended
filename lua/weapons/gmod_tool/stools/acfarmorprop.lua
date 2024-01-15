@@ -32,11 +32,6 @@ local function CalcArmor( Area, Ductility, Thickness, Mat )
 end
 
 if CLIENT then
-
-	language.Add( "tool.acfarmorprop.name", ACFTranslation.ArmorPropertiesText[1] )
-	language.Add( "tool.acfarmorprop.desc", ACFTranslation.ArmorPropertiesText[2] )
-	language.Add( "tool.acfarmorprop.0", ACFTranslation.ArmorPropertiesText[3] )
-
 	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
 
 	--Required in order to update material data inserted in client convars
@@ -121,11 +116,11 @@ if CLIENT then
 			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
 			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc .. "\n" )
 
-			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. MaterialData.curve )
-			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : " .. MaterialData.massMod .. "x RHA" )
-			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. MaterialData.effectiveness .. "x RHA" )
-			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
-			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MaterialData.year or "unknown") )
+			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve: " .. MaterialData.curve )
+			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass: " .. MaterialData.massMod .. "x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection: " .. MaterialData.effectiveness .. "x RHA" )
+			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection: " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
+			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year: " .. (MaterialData.year or "unknown") )
 
 			function ToolPanel.ComboMat:OnSelect(self, _, value )
 
@@ -145,11 +140,11 @@ if CLIENT then
 
 		panel:AddItem( Presets )
 
-		panel:NumSlider( ACFTranslation.ArmorPropertiesText[4], "acfarmorprop_thickness", 1, 5000 )
-		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[5] )
+		panel:NumSlider( "#tool.acfarmorprop.thickness", "acfarmorprop_thickness", 1, 5000 )
+		panel:ControlHelp( "#tool.acfarmorprop.thicknessdesc" )
 
-		panel:NumSlider( ACFTranslation.ArmorPropertiesText[6], "acfarmorprop_ductility", -80, 80 )
-		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[7] )
+		panel:NumSlider( "#tool.acfarmorprop.ductility", "acfarmorprop_ductility", -80, 80 )
+		panel:ControlHelp( "#tool.acfarmorprop.ductilitydesc" )
 
 		MaterialTable(panel)
 
