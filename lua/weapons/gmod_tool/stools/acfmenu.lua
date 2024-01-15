@@ -163,8 +163,9 @@ function TOOL:DeselectAll()
 	for ent, color in pairs(self.SelectedEntities) do
 		if IsValid(ent) then
 			ent:SetColor(color)
-			self.SelectedEntities[ent] = nil
 		end
+
+		self.SelectedEntities[ent] = nil
 	end
 end
 
@@ -217,7 +218,7 @@ function TOOL:RightClick( trace )
 		else
 			if SERVER then
 				for selected in pairs(self.SelectedEntities) do
-					if ent ~= selected then
+					if ent ~= selected and validEnt and IsValid(selected) then
 						local success, msg = linkEnts(ent, selected, holdingUse)
 
 						ACF_SendNotify(ply, success, msg)
