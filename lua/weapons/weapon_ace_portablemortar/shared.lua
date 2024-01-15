@@ -239,7 +239,7 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 	local Offset = self.IronSightsPos
 	local AngOffset = self.IronSightsAng
 
-	if ( self.IronSightsAng ) then
+	if self.IronSightsAng then
 		EyeAng = EyeAng * 1
 
 		EyeAng:RotateAroundAxis( EyeAng:Right(),	AngOffset.x * Mul )
