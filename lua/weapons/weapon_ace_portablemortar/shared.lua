@@ -620,15 +620,15 @@ function SWEP:Think()
 
 			if owner:KeyDown( IN_RELOAD ) then
 				if self.RoundType == 1 then
-				self.RoundType = 2
-				self:InitBulletData2()
-				self:UpdateFakeCrate()
-				self:SetPy(2)
+					self.RoundType = 2
+					self:InitBulletData2()
+					self:UpdateFakeCrate()
+					self:SetPy(2)
 				else
-				self.RoundType = 1
-				self:InitBulletData()
-				self:UpdateFakeCrate()
-				self:SetPy(1)
+					self.RoundType = 1
+					self:InitBulletData()
+					self:UpdateFakeCrate()
+					self:SetPy(1)
 				end
 			end
 
