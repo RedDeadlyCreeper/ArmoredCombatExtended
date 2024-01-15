@@ -609,7 +609,7 @@ function SWEP:Think()
 		end
 
 
-		if 	CT > self.RangeTick then --More of a secondary thing rate
+		if CT > self.RangeTick then --More of a secondary thing rate
 			self.RangeTick = CT + 0.1
 			self:SetPx(self.TargetDistance)
 			self.CurrentReplenishTicks = self.CurrentReplenishTicks + 1
