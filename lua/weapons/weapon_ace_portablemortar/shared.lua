@@ -113,27 +113,27 @@ if CLIENT then
 
 			if _Owner:Crouching() then
 
-			-- Specify a good position
-			offsetVecTube = Vector(16, 27, -11)
-			offsetAngTube = Angle(130, 65, 70)
+				-- Specify a good position
+				offsetVecTube = Vector(16, 27, -11)
+				offsetAngTube = Angle(130, 65, 70)
 
-			offsetVecBase = Vector(-10.5, 30, -3)
-			offsetAngBase = Angle(130, 65, 100)
+				offsetVecBase = Vector(-10.5, 30, -3)
+				offsetAngBase = Angle(130, 65, 100)
 
-			offsetVecBipod = Vector(7, 37.5, -15.5)
-			offsetAngBipod = Angle(130, 65, 100)
+				offsetVecBipod = Vector(7, 37.5, -15.5)
+				offsetAngBipod = Angle(130, 65, 100)
 
 			else
 
-			-- Specify a good position
-			offsetVecTube = Vector(5, -7, 0)
-			offsetAngTube = Angle(-90, -90, -90)
+				-- Specify a good position
+				offsetVecTube = Vector(5, -7, 0)
+				offsetAngTube = Angle(-90, -90, -90)
 
-			offsetVecBase = Vector(-23.5, -6, 0)
-			offsetAngBase = Angle(-90, 90, 140)
+				offsetVecBase = Vector(-23.5, -6, 0)
+				offsetAngBase = Angle(-90, 90, 140)
 
-			offsetVecBipod = Vector(-7.1, -10, 0)
-			offsetAngBipod = Angle(-90, 40, 140)
+				offsetVecBipod = Vector(-7.1, -10, 0)
+				offsetAngBipod = Angle(-90, 40, 140)
 
 			end
 
