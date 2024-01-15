@@ -46,15 +46,6 @@ if CLIENT then
 	language.Add( "SBoxLimit_acf_ammo", ACFTranslation.ACFMenuTool[13] )
 	language.Add( "SBoxLimit_acf_sensor", ACFTranslation.ACFMenuTool[14] )
 
-	-- These still need translations, hardcoding as english for now
-	language.Add("tool.acfmenu.left", "Create/Update entity")
-	language.Add("tool.acfmenu.right", "Link/Unlink entities")
-
-	language.Add("tool.acfmenu.stage1.link", "Link selected entities to this entity")
-	language.Add("tool.acfmenu.stage1.unlink", "(Hold Use) Unlink selected entities from this entity")
-	language.Add("tool.acfmenu.stage1.multiselect", "(Hold Shift) Select more entities")
-	language.Add("tool.acfmenu.stage1.reload", "Deselect all entities")
-
 	TOOL.Information = {
 		{ name = "left", stage = 0 },
 		{ name = "right", stage = 0 },
