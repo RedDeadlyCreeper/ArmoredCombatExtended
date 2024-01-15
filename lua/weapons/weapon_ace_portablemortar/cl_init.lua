@@ -43,11 +43,11 @@ function SWEP:DoDrawCrosshair(x, y)
 
 --			surface.SetDrawColor(Color(255, 0, 0, 255 - inaccuracy * 150))
 
-	if ST == 2 then
-		surface.SetDrawColor(Color(150, 150, 150, 255))
-	else
-		surface.SetDrawColor(Color(150, 30, 30, 255))
-	end
+		if ST == 2 then
+			surface.SetDrawColor(Color(150, 150, 150, 255))
+		else
+			surface.SetDrawColor(Color(150, 30, 30, 255))
+		end
 
 		surface.DrawCircle(x + 2, y + 2, 20)
 
