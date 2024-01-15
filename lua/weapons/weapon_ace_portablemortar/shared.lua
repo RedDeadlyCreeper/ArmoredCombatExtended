@@ -554,7 +554,7 @@ function SWEP:PrimaryAttack()
 				else
 					self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
 				end
-			elseif not next(sounds) and CLIENT then
+			elseif CLIENT then
 				self:EmitSound(self.Primary.Sound)
 			end
 
