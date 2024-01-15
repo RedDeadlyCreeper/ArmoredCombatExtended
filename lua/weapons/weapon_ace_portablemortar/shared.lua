@@ -203,15 +203,14 @@ function SWEP:OnPrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+	self:OnSecondaryAttack()
 
-		self:OnSecondaryAttack()
-
-		if SERVER then
-			local ZS = not self:GetZoomState()
-			self:SetZoomState(ZS)
-			self:SetOwnerZoomSpeed(ZS)
-			self:EmitSound("npc/turret_floor/click1.wav",35,75)
-		end
+	if SERVER then
+		local ZS = not self:GetZoomState()
+		self:SetZoomState(ZS)
+		self:SetOwnerZoomSpeed(ZS)
+		self:EmitSound("npc/turret_floor/click1.wav",35,75)
+	end
 end
 
 function SWEP:SetOwnerZoomSpeed(setSpeed)
