@@ -4,16 +4,11 @@ ACF = ACF or {}
 local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "ACF" or "Construction");
 
 TOOL.Category		= cat
-TOOL.Name			= "#Tool.acfsound.name"
+TOOL.Name			= "#tool.acfsound.name"
 TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
 TOOL.ClientConVar["pitch"] = "1"
-if CLIENT then
-	language.Add( "Tool.acfsound.name", ACFTranslation.SoundToolText[1] )
-	language.Add( "Tool.acfsound.desc", ACFTranslation.SoundToolText[2] )
-	language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
-end
 
 if CLIENT then
 
@@ -24,14 +19,6 @@ if CLIENT then
 		{ name = "reload", icon = "gui/r.png" },
 
 	}
-
-	language.Add( "Tool.acfsound.name", ACFTranslation.SoundToolText[1] )
-	language.Add( "Tool.acfsound.desc", ACFTranslation.SoundToolText[2] )
-	--language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
-
-	language.Add( "Tool.acfsound.left", "Apply the new sound. You can use empty sounds too." )
-	language.Add( "Tool.acfsound.right", "Copy the sound." )
-	language.Add( "Tool.acfsound.reload", "Reset to default sound." )
 
 end
 
@@ -181,12 +168,7 @@ local function IsReallyValid(trace, ply)
 
 	local class = trace.Entity:GetClass()
 	if not ACF.SoundToolSupport[class] then
-
-		if string.StartWith(class, "acf_") then
-			ACF_SendNotify( ply, false, class .. ACFTranslation.SoundToolText[4] )
-		else
-			ACF_SendNotify( ply, false, ACFTranslation.SoundToolText[5] )
-		end
+		ACF_SendNotify( ply, false, "#tool.acfsound.unsupported" )
 
 		return false
 	end
@@ -244,7 +226,7 @@ if CLIENT then
 	function TOOL.BuildCPanel(panel)
 		local wide = panel:GetWide()
 
-		panel:Help( "Replaces default sounds of certain ACE entities with this tool. You can replace the sounds of cannons, racks, engines and Anti-Missile Radar.\n" )
+		panel:Help( "#tool.acfsound.cpanel.info" )
 
 		local SoundNameText = vgui.Create("DTextEntry", ValuePanel)
 		SoundNameText:SetText("")
@@ -257,7 +239,7 @@ if CLIENT then
 		panel:AddItem(SoundNameText)
 
 		local SoundBrowserButton = vgui.Create("DButton")
-		SoundBrowserButton:SetText("Open Sound Browser")
+		SoundBrowserButton:SetText("#tool.acfsound.cpanel.openbrowser")
 		SoundBrowserButton:SetWide(wide)
 		SoundBrowserButton:SetTall(20)
 		SoundBrowserButton:SetVisible(true)
@@ -275,7 +257,7 @@ if CLIENT then
 		local SoundPreWide = SoundPre:GetWide()
 
 		local SoundPrePlay = vgui.Create("DButton", SoundPre)
-		SoundPrePlay:SetText("Play")
+		SoundPrePlay:SetText("#tool.acfsound.cpanel.play")
 		SoundPrePlay:SetWide(SoundPreWide / 2)
 		SoundPrePlay:SetPos(0, 0)
 		SoundPrePlay:SetTall(20)
@@ -286,7 +268,7 @@ if CLIENT then
 		end
 
 		local SoundPreStop = vgui.Create("DButton", SoundPre)
-		SoundPreStop:SetText("Stop")
+		SoundPreStop:SetText("#tool.acfsound.cpanel.stop")
 		SoundPreStop:SetWide(SoundPreWide / 2)
 		SoundPreStop:SetPos(SoundPreWide / 2, 0)
 		SoundPreStop:SetTall(20)
@@ -305,7 +287,7 @@ if CLIENT then
 		end
 
 		local CopyButton = vgui.Create("DButton")
-		CopyButton:SetText("Copy to clipboard")
+		CopyButton:SetText("#tool.acfsound.cpanel.copy")
 		CopyButton:SetWide(wide)
 		CopyButton:SetTall(20)
 		CopyButton:SetIcon( "icon16/page_copy.png" )
@@ -316,7 +298,7 @@ if CLIENT then
 		panel:AddItem(CopyButton)
 
 		local ClearButton = vgui.Create("DButton")
-		ClearButton:SetText("Clear Sound")
+		ClearButton:SetText("#tool.acfsound.cpanel.clear")
 		ClearButton:SetWide(wide)
 		ClearButton:SetTall(20)
 		ClearButton:SetIcon( "icon16/cancel.png" )
@@ -327,8 +309,8 @@ if CLIENT then
 		end
 		panel:AddItem(ClearButton)
 
-		panel:NumSlider( "Pitch", "acfsound_pitch", 10, 255, 0 )
-		panel:ControlHelp( "Adjust the pitch of the sound. Currently supports engines, guns, racks and missile radars. \n\nNote: This will not work with dynamic sounds atm." )
+		panel:NumSlider( "#tool.acfsound.cpanel.pitch", "acfsound_pitch", 10, 255, 0 )
+		panel:ControlHelp( "#tool.acfsound.cpanel.pitchdesc" )
 	end
 
 	--[[
