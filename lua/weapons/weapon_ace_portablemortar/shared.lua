@@ -99,7 +99,7 @@ if CLIENT then
 	function SWEP:DrawWorldModel()
 		local _Owner = self:GetOwner()
 
-		if (IsValid(_Owner)) then
+		if IsValid(_Owner) then
 
 
 			local offsetVecTube = Vector(0, 0, 0)
