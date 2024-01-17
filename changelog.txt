@@ -727,4 +727,5 @@ r100
 - Fixed typo on water effects not being displayed as should.
 
 *r170
-- blank
+- Fix armor analyzer
+- Multi link support for ACE Menu tool
