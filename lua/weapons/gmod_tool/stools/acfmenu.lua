@@ -25,6 +25,8 @@ TOOL.ClientConVar[ "data13" ] = 0
 TOOL.ClientConVar[ "data14" ] = 0
 TOOL.ClientConVar[ "data15" ] = 0
 
+TOOL.SelectedEntities = {}
+
 cleanup.Register( "acfmenu" )
 
 if CLIENT then
@@ -43,6 +45,25 @@ if CLIENT then
 	language.Add( "SBoxLimit_acf_rack", ACFTranslation.ACFMenuTool[12] )
 	language.Add( "SBoxLimit_acf_ammo", ACFTranslation.ACFMenuTool[13] )
 	language.Add( "SBoxLimit_acf_sensor", ACFTranslation.ACFMenuTool[14] )
+
+	-- These still need translations, hardcoding as english for now
+	language.Add("tool.acfmenu.left", "Create/Update entity")
+	language.Add("tool.acfmenu.right", "Link/Unlink entities")
+
+	language.Add("tool.acfmenu.stage1.link", "Link selected entities to this entity")
+	language.Add("tool.acfmenu.stage1.unlink", "(Hold Use) Unlink selected entities from this entity")
+	language.Add("tool.acfmenu.stage1.multiselect", "(Hold Shift) Select more entities")
+	language.Add("tool.acfmenu.stage1.reload", "Deselect all entities")
+
+	TOOL.Information = {
+		{ name = "left", stage = 0 },
+		{ name = "right", stage = 0 },
+
+		{ name = "stage1.link", stage = 1, icon = "gui/rmb.png" },
+		{ name = "stage1.unlink", stage = 1, icon = "gui/rmb.png", icon2 = "gui/info" },
+		{ name = "stage1.multiselect", icon = "gui/rmb.png", icon2 = "gui/info", stage = 1 },
+		{ name = "stage1.reload", stage = 1, icon = "gui/r.png" }
+	}
 
 	--[[------------------------------------
 		BuildCPanel
@@ -124,34 +145,103 @@ function TOOL:LeftClick( trace )
 
 end
 
--- Link/unlink functions
-function TOOL:RightClick( trace )
+function TOOL:SelectEntity(ent)
+	if CLIENT then return end
 
-	if not IsValid( trace.Entity ) then return false end
-	if CLIENT then return true end
+	if not self.SelectedEntities[ent] then
+		self.SelectedEntities[ent] = ent:GetColor()
+		ent:SetColor(Color(0, 255, 0))
+	else
+		ent:SetColor(self.SelectedEntities[ent])
+		self.SelectedEntities[ent] = nil
+	end
+end
 
-	local ply = self:GetOwner()
+function TOOL:DeselectAll()
+	if CLIENT then return end
 
-	if self:GetStage() == 0 and trace.Entity.IsMaster then
-		self.Master = trace.Entity
-		self:SetStage( 1 )
-		return true
-	elseif self:GetStage() == 1 then
-		local success, msg
-
-		if ply:KeyDown( IN_USE ) or ply:KeyDown( IN_SPEED ) then
-			success, msg = self.Master:Unlink( trace.Entity )
-		else
-			success, msg = self.Master:Link( trace.Entity )
+	for ent, color in pairs(self.SelectedEntities) do
+		if IsValid(ent) then
+			ent:SetColor(color)
 		end
 
-		ACF_SendNotify( ply, success, msg )
-
-		self:SetStage( 0 )
-		self.Master = nil
-		return true
-	else
-		return false
+		self.SelectedEntities[ent] = nil
 	end
+end
 
+local function linkEnts(e1, e2, unlink)
+	if e1.IsMaster and e2:GetClass() ~= "acf_engine" and (e1:GetClass() ~= "acf_gearbox" or e2:GetClass() ~= "acf_gearbox") then
+		if unlink then
+			return e1:Unlink(e2)
+		else
+			return e1:Link(e2)
+		end
+	elseif e2.IsMaster then
+		if unlink then
+			return e2:Unlink(e1)
+		else
+			return e2:Link(e1)
+		end
+	else
+		return false, "Neither entity is a master entity"
+	end
+end
+
+function TOOL:RightClick( trace )
+	local ent = trace.Entity
+	local ply = self:GetOwner()
+	local validEnt = IsValid(ent)
+	local stage = self:GetStage()
+
+	if validEnt and stage == 0 then
+		self:SelectEntity(ent)
+		self:SetStage(1)
+
+		return true
+	elseif stage == 1 then
+		if not validEnt then
+			self:DeselectAll()
+			self:SetStage(0)
+
+			return true
+		end
+
+		local holdingShift = ply:KeyDown(IN_SPEED)
+		local holdingUse = ply:KeyDown(IN_USE)
+
+		if holdingShift then
+			if validEnt then
+				self:SelectEntity(ent)
+			end
+
+			return true
+		else
+			if SERVER then
+				for selected in pairs(self.SelectedEntities) do
+					if ent ~= selected and validEnt and IsValid(selected) then
+						local success, msg = linkEnts(ent, selected, holdingUse)
+
+						ACF_SendNotify(ply, success, msg)
+					end
+				end
+			end
+
+			self:DeselectAll()
+			self:SetStage(0)
+
+			return true
+		end
+	end
+end
+
+function TOOL:Holster()
+	self:SetStage(0)
+	self:DeselectAll()
+end
+
+function TOOL:Reload()
+	self:SetStage(0)
+	self:DeselectAll()
+
+	return self:GetStage() == 1
 end
