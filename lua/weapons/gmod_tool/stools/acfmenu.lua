@@ -2,7 +2,7 @@
 local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "ACF" or "Construction");
 
 TOOL.Category		= cat
-TOOL.Name			= "#Tool.acfmenu.listname"
+TOOL.Name			= "#tool.acfmenu.name"
 TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
@@ -30,22 +30,6 @@ TOOL.SelectedEntities = {}
 cleanup.Register( "acfmenu" )
 
 if CLIENT then
-	language.Add( "Tool.acfmenu.listname", ACFTranslation.ACFMenuTool[1] )
-	language.Add( "Tool.acfmenu.name", ACFTranslation.ACFMenuTool[2] )
-	language.Add( "Tool.acfmenu.desc", ACFTranslation.ACFMenuTool[3] )
-	language.Add( "Tool.acfmenu.0", ACFTranslation.ACFMenuTool[4] )
-	language.Add( "Tool.acfmenu.1", ACFTranslation.ACFMenuTool[5] )
-
-	language.Add( "Undone_ACF Entity", ACFTranslation.ACFMenuTool[6] )
-	language.Add( "Undone_acf_engine",ACFTranslation.ACFMenuTool[7] )
-	language.Add( "Undone_acf_gearbox", ACFTranslation.ACFMenuTool[8] )
-	language.Add( "Undone_acf_ammo", ACFTranslation.ACFMenuTool[9] )
-	language.Add( "Undone_acf_gun", ACFTranslation.ACFMenuTool[10] )
-	language.Add( "SBoxLimit_acf_gun", ACFTranslation.ACFMenuTool[11] )
-	language.Add( "SBoxLimit_acf_rack", ACFTranslation.ACFMenuTool[12] )
-	language.Add( "SBoxLimit_acf_ammo", ACFTranslation.ACFMenuTool[13] )
-	language.Add( "SBoxLimit_acf_sensor", ACFTranslation.ACFMenuTool[14] )
-
 	TOOL.Information = {
 		{ name = "left", stage = 0 },
 		{ name = "right", stage = 0 },
@@ -117,7 +101,7 @@ function TOOL:LeftClick( trace )
 		else
 			-- Using the Duplicator entity register to find the right factory function
 			local Ent = DupeClass.Func( ply, unpack( ArgTable ) ) --aka function like MakeACF_Ammo
-			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
+			if not IsValid(Ent) then ACF_SendNotify(ply, false, "#tool.acfmenu.creationfailed") return false end
 
 			Ent:Activate()
 			Ent:DropToFloor()
@@ -131,7 +115,7 @@ function TOOL:LeftClick( trace )
 
 		return true
 	else
-		print(ACFTranslation.ACFMenuTool[16])
+		print("Didn't find entity duplicator records")
 	end
 
 end

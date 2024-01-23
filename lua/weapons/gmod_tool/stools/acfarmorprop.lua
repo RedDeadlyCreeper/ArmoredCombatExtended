@@ -31,8 +31,166 @@ local function CalcArmor( Area, Ductility, Thickness, Mat )
 
 end
 
+
+-- Apply settings to prop and store dupe info
+local function ApplySettings( _, ent, data )
+
+	if not SERVER then return end
+
+	if data.Mass then
+		local phys = ent:GetPhysicsObject()
+		if IsValid( phys ) then phys:SetMass( data.Mass ) end
+		duplicator.StoreEntityModifier( ent, "mass", { Mass = data.Mass } )
+	end
+
+	if data.Ductility then
+		ent.ACF = ent.ACF or {}
+		ent.ACF.Ductility = data.Ductility / 100
+		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
+	end
+
+	if data.Material then
+		ent.ACF = ent.ACF or {}
+		ent.ACF.Material = data.Material
+		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
+	end
+
+end
+
+duplicator.RegisterEntityModifier( "acfsettings", ApplySettings )
+duplicator.RegisterEntityModifier( "mass", ApplySettings )
+
+-- Apply settings to prop
+function TOOL:LeftClick( trace )
+
+	local ent = trace.Entity
+
+	if not IsValid( ent ) or ent:IsPlayer() then return false end
+	if CLIENT then return true end
+	if not ACF_Check( ent ) then return false end
+
+	local ply		= self:GetOwner()
+
+	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
+	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
+	local material  = self:GetClientInfo( "material" ) or "RHA"
+
+	local mass		= CalcArmor( ent.ACF.Area, ductility / 100, thickness , material)
+
+	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = material} )
+
+	-- this invalidates the entity and forces a refresh of networked armor values
+	self.AimEntity = nil
+
+	return true
+
+end
+
+-- Suck settings from prop
+function TOOL:RightClick( trace )
+
+	local ent = trace.Entity
+
+	if not IsValid( ent ) or ent:IsPlayer() then return false end
+	if CLIENT then return true end
+	if not ACF_Check( ent ) then return false end
+
+	local ply = self:GetOwner()
+
+	ply:ConCommand( "acfarmorprop_ductility " .. (ent.ACF.Ductility or 0) * 100 )
+	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
+	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or "RHA") )
+
+	-- this invalidates the entity and forces a refresh of networked armor values
+	self.AimEntity = nil
+
+	return true
+
+end
+
+-- Total up mass of constrained ents
+function TOOL:Reload( trace )
+
+	local ent = trace.Entity
+
+	if not IsValid( ent ) or ent:IsPlayer() then return false end
+	if CLIENT then return true end
+
+	local data		= ACF_CalcMassRatio(ent, true)
+
+	local total		= ent.acftotal
+	local phystotal	= ent.acfphystotal
+	local parenttotal	= ent.acftotal - ent.acfphystotal
+	local physratio	= 100 * ent.acfphystotal / ent.acftotal
+
+	local power		= data.Power
+	local fuel		= data.Fuel
+
+	local GeneralTb	= { data.MaterialMass, data.MaterialPercent }
+	local ToJSON		= util.TableToJSON( GeneralTb )
+	local Compressed	= util.Compress(ToJSON)
+
+	net.Start("ACE_ArmorSummary")
+		net.WriteFloat(total)
+		net.WriteFloat(phystotal)
+		net.WriteFloat(parenttotal)
+		net.WriteFloat(physratio)
+		net.WriteFloat(power)
+		net.WriteFloat(fuel)
+
+		net.WriteData(Compressed)
+	net.Send(self:GetOwner())
+
+end
+
+function TOOL:Think()
+
+	if CLIENT then return end
+
+	local ply	= self:GetOwner()
+
+	local tr	= util.GetPlayerTrace(ply)
+	tr.mins	= Vector(0,0,0)
+	tr.maxs	= tr.mins
+	local trace = util.TraceHull(tr)
+
+	local ent = trace.Entity
+	if ent == self.AimEntity then return end
+
+	if ACF_Check( ent ) then
+
+		local Mat = ent.ACF.Material or "RHA"
+		local MatData =  ACE_GetMaterialData( Mat )
+
+		if not MatData then return end
+
+		ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Area )
+		self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
+		self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
+		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
+		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
+		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
+		self.Weapon:SetNWString( "Material", MatData.sname or "RHA")
+
+	else
+
+		ply:ConCommand( "acfarmorprop_area 0" )
+		self.Weapon:SetNWFloat( "WeightMass", 0 )
+		self.Weapon:SetNWFloat( "HP", 0 )
+		self.Weapon:SetNWFloat( "Armour", 0 )
+		self.Weapon:SetNWFloat( "MaxHP", 0 )
+		self.Weapon:SetNWFloat( "MaxArmour", 0 )
+		self.Weapon:SetNWString( "Material", "RHA" )
+	end
+
+	self.AimEntity = ent
+
+end
+
 if CLIENT then
 	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
+
+	local getPhrase = language.GetPhrase
 
 	--Required in order to update material data inserted in client convars
 	local function ACE_MaterialCheck( Material )
@@ -69,7 +227,7 @@ if CLIENT then
 
 		if not PanelTxt then PanelTxt = {} end
 
-		if not PanelTxt[name .. "_aText"] then
+		if not IsValid(PanelTxt[name .. "_aText"]) then
 			PanelTxt[name .. "_aText"] = panel:Help(desc)
 			PanelTxt[name .. "_aText"]:SetContentAlignment( TEXT_ALIGN_CENTER )
 			PanelTxt[name .. "_aText"]:SetAutoStretchVertical(true)
@@ -97,7 +255,7 @@ if CLIENT then
 
 		ArmorPanelText( "ComboBox", panel, "Material" )
 
-		if not ToolPanel.ComboMat then
+		if not IsValid(ToolPanel.ComboMat) then
 
 			ToolPanel.panel = panel
 
@@ -228,120 +386,7 @@ if CLIENT then
 
 			end
 	end )
-end
 
--- Apply settings to prop and store dupe info
-local function ApplySettings( _, ent, data )
-
-	if not SERVER then return end
-
-	if data.Mass then
-		local phys = ent:GetPhysicsObject()
-		if IsValid( phys ) then phys:SetMass( data.Mass ) end
-		duplicator.StoreEntityModifier( ent, "mass", { Mass = data.Mass } )
-	end
-
-	if data.Ductility then
-		ent.ACF = ent.ACF or {}
-		ent.ACF.Ductility = data.Ductility / 100
-		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
-	end
-
-	if data.Material then
-		ent.ACF = ent.ACF or {}
-		ent.ACF.Material = data.Material
-		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
-	end
-
-end
-
-duplicator.RegisterEntityModifier( "acfsettings", ApplySettings )
-duplicator.RegisterEntityModifier( "mass", ApplySettings )
-
--- Apply settings to prop
-function TOOL:LeftClick( trace )
-
-	local ent = trace.Entity
-
-	if not IsValid( ent ) or ent:IsPlayer() then return false end
-	if CLIENT then return true end
-	if not ACF_Check( ent ) then return false end
-
-	local ply		= self:GetOwner()
-
-	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
-	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
-	local material  = self:GetClientInfo( "material" ) or "RHA"
-
-	local mass		= CalcArmor( ent.ACF.Area, ductility / 100, thickness , material)
-
-	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = material} )
-
-	-- this invalidates the entity and forces a refresh of networked armor values
-	self.AimEntity = nil
-
-	return true
-
-end
-
--- Suck settings from prop
-function TOOL:RightClick( trace )
-
-	local ent = trace.Entity
-
-	if not IsValid( ent ) or ent:IsPlayer() then return false end
-	if CLIENT then return true end
-	if not ACF_Check( ent ) then return false end
-
-	local ply = self:GetOwner()
-
-	ply:ConCommand( "acfarmorprop_ductility " .. (ent.ACF.Ductility or 0) * 100 )
-	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
-	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or "RHA") )
-
-	-- this invalidates the entity and forces a refresh of networked armor values
-	self.AimEntity = nil
-
-	return true
-
-end
-
--- Total up mass of constrained ents
-function TOOL:Reload( trace )
-
-	local ent = trace.Entity
-
-	if not IsValid( ent ) or ent:IsPlayer() then return false end
-	if CLIENT then return true end
-
-	local data		= ACF_CalcMassRatio(ent, true)
-
-	local total		= ent.acftotal
-	local phystotal	= ent.acfphystotal
-	local parenttotal	= ent.acftotal - ent.acfphystotal
-	local physratio	= 100 * ent.acfphystotal / ent.acftotal
-
-	local power		= data.Power
-	local fuel		= data.Fuel
-
-	local GeneralTb	= { data.MaterialMass, data.MaterialPercent }
-	local ToJSON		= util.TableToJSON( GeneralTb )
-	local Compressed	= util.Compress(ToJSON)
-
-	net.Start("ACE_ArmorSummary")
-		net.WriteFloat(total)
-		net.WriteFloat(phystotal)
-		net.WriteFloat(parenttotal)
-		net.WriteFloat(physratio)
-		net.WriteFloat(power)
-		net.WriteFloat(fuel)
-
-		net.WriteData(Compressed)
-	net.Send(self:GetOwner())
-
-end
-
-if CLIENT then
 	net.Receive("ACE_ArmorSummary", function()
 
 		local Color1 = Color(175,0,0)
@@ -391,130 +436,93 @@ if CLIENT then
 		chat.AddText(unpack(Tabletxt))
 
 	end)
-end
 
-function TOOL:Think()
+	local overlayTextFormat = getPhrase("tool.acfarmorprop.current") .. ":\n" ..
+		getPhrase("tool.acfarmorprop.mass") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.armor") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.health") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.material") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.after") .. ":\n" ..
+		getPhrase("tool.acfarmorprop.mass") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.armor") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.health") .. ": %s\n" ..
+		getPhrase("tool.acfarmorprop.material") .. ": %s"
 
-	if CLIENT then return end
+	function TOOL:DrawHUD()
 
-	local ply	= self:GetOwner()
+		local ent = self:GetOwner():GetEyeTrace().Entity
+		if not IsValid( ent ) or ent:IsPlayer() then return end
 
-	local tr	= util.GetPlayerTrace(ply)
-	tr.mins	= Vector(0,0,0)
-	tr.maxs	= tr.mins
-	local trace = util.TraceHull(tr)
+		local curmass	= self.Weapon:GetNWFloat( "WeightMass" )
+		local curarmor	= self.Weapon:GetNWFloat( "MaxArmour" )
+		local curhealth	= self.Weapon:GetNWFloat( "MaxHP" )
+		local material	= self.Weapon:GetNWString( "Material" )
 
-	local ent = trace.Entity
-	if ent == self.AimEntity then return end
+		local area		= GetConVar( "acfarmorprop_area" ):GetFloat()
+		local ductility	= GetConVar( "acfarmorprop_ductility" ):GetFloat()
+		local thickness	= GetConVar( "acfarmorprop_thickness" ):GetFloat()
+		local mat		= GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
 
-	if ACF_Check( ent ) then
+		local MatData	= ACE_GetMaterialData( mat )
 
-		local Mat = ent.ACF.Material or "RHA"
-		local MatData =  ACE_GetMaterialData( Mat )
+		local mass, armor, health = CalcArmor( area, ductility / 100, thickness , mat)
+		mass = math.min( mass, 50000 )
 
-		if not MatData then return end
+		local text = string.format(overlayTextFormat,
+			math.Round(curmass, 2),
+			math.Round(curarmor, 2),
+			math.Round(curhealth, 2),
+			material,
+			math.Round(mass, 2),
+			math.Round(armor, 2),
+			math.Round(health, 2),
+			MatData.sname
+		)
 
-		ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Area )
-		self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
-		self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
-		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
-		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
-		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
-		self.Weapon:SetNWString( "Material", MatData.sname or "RHA")
+		local pos = ent:WorldSpaceCenter()
+		AddWorldTip( nil, text, nil, pos, nil )
 
-	else
-
-		ply:ConCommand( "acfarmorprop_area 0" )
-		self.Weapon:SetNWFloat( "WeightMass", 0 )
-		self.Weapon:SetNWFloat( "HP", 0 )
-		self.Weapon:SetNWFloat( "Armour", 0 )
-		self.Weapon:SetNWFloat( "MaxHP", 0 )
-		self.Weapon:SetNWFloat( "MaxArmour", 0 )
-		self.Weapon:SetNWString( "Material", "RHA" )
 	end
 
-	self.AimEntity = ent
+	function TOOL:DrawToolScreen()
 
-end
+		local Health	= math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
+		local MaxHealth = math.Round( self.Weapon:GetNWFloat( "MaxHP", 0 ), 2 )
+		local Armour	= math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
+		local MaxArmour = math.Round( self.Weapon:GetNWFloat( "MaxArmour", 0 ), 2 )
 
-function TOOL:DrawHUD()
+		local HealthTxt = Health .. "/" .. MaxHealth
+		local ArmourTxt = Armour .. "/" .. MaxArmour
 
-	if not CLIENT then return end
+		cam.Start2D()
+			render.Clear( 0, 0, 0, 0 )
 
-	local ent = self:GetOwner():GetEyeTrace().Entity
-	if not IsValid( ent ) or ent:IsPlayer() then return end
+			surface.SetMaterial( Material( "models/props_combine/combine_interface_disp" ) )
+			surface.SetDrawColor( color_white )
+			surface.DrawTexturedRect( 0, 0, 256, 256 )
+			surface.SetFont( "Torchfont" )
 
-	local curmass	= self.Weapon:GetNWFloat( "WeightMass" )
-	local curarmor	= self.Weapon:GetNWFloat( "MaxArmour" )
-	local curhealth	= self.Weapon:GetNWFloat( "MaxHP" )
-	local material	= self.Weapon:GetNWString( "Material" )
+			-- header
+			draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[19], "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 
-	local area		= GetConVar( "acfarmorprop_area" ):GetFloat()
-	local ductility	= GetConVar( "acfarmorprop_ductility" ):GetFloat()
-	local thickness	= GetConVar( "acfarmorprop_thickness" ):GetFloat()
-	local mat		= GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
+			-- armor bar
+			draw.RoundedBox( 6, 10, 83, 236, 64, Color( 200, 200, 200, 255 ) )
+			if Armour ~= 0 and MaxArmour ~= 0 then
+				draw.RoundedBox( 6, 15, 88, Armour / MaxArmour * 226, 54, Color( 0, 0, 200, 255 ) )
+			end
 
-	local MatData	= ACE_GetMaterialData( mat )
+			draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[20], "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+			draw.SimpleTextOutlined( ArmourTxt, "Torchfont", 128, 130, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 
-	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , mat)
-	mass = math.min( mass, 50000 )
+			-- health bar
+			draw.RoundedBox( 6, 10, 183, 236, 64, Color( 200, 200, 200, 255 ) )
+			if Health ~= 0 and MaxHealth ~= 0 then
+				draw.RoundedBox( 6, 15, 188, Health / MaxHealth * 226, 54, Color( 200, 0, 0, 255 ) )
+			end
 
-	local text = ""
-	text = text .. ACFTranslation.ArmorPropertiesText[14] .. math.Round( curmass, 2 )
-	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( curarmor, 2 )
-	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( curhealth, 2 )
-	text = text .. ACFTranslation.ArmorPropertiesText[17] .. material
+			draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[21], "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+			draw.SimpleTextOutlined( HealthTxt, "Torchfont", 128, 230, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+		cam.End2D()
 
-	text = text .. ACFTranslation.ArmorPropertiesText[18] .. math.Round( mass, 2 )
-	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( armor, 2 )
-	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( health, 2 )
-	text = text .. ACFTranslation.ArmorPropertiesText[17] .. MatData.sname
-
-	local pos = ent:WorldSpaceCenter()
-	AddWorldTip( nil, text, nil, pos, nil )
-
-end
-
-function TOOL:DrawToolScreen()
-
-	if not CLIENT then return end
-
-	local Health	= math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
-	local MaxHealth = math.Round( self.Weapon:GetNWFloat( "MaxHP", 0 ), 2 )
-	local Armour	= math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
-	local MaxArmour = math.Round( self.Weapon:GetNWFloat( "MaxArmour", 0 ), 2 )
-
-	local HealthTxt = Health .. "/" .. MaxHealth
-	local ArmourTxt = Armour .. "/" .. MaxArmour
-
-	cam.Start2D()
-		render.Clear( 0, 0, 0, 0 )
-
-		surface.SetMaterial( Material( "models/props_combine/combine_interface_disp" ) )
-		surface.SetDrawColor( color_white )
-		surface.DrawTexturedRect( 0, 0, 256, 256 )
-		surface.SetFont( "Torchfont" )
-
-		-- header
-		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[19], "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-
-		-- armor bar
-		draw.RoundedBox( 6, 10, 83, 236, 64, Color( 200, 200, 200, 255 ) )
-		if Armour ~= 0 and MaxArmour ~= 0 then
-			draw.RoundedBox( 6, 15, 88, Armour / MaxArmour * 226, 54, Color( 0, 0, 200, 255 ) )
-		end
-
-		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[20], "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-		draw.SimpleTextOutlined( ArmourTxt, "Torchfont", 128, 130, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-
-		-- health bar
-		draw.RoundedBox( 6, 10, 183, 236, 64, Color( 200, 200, 200, 255 ) )
-		if Health ~= 0 and MaxHealth ~= 0 then
-			draw.RoundedBox( 6, 15, 188, Health / MaxHealth * 226, 54, Color( 200, 0, 0, 255 ) )
-		end
-
-		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[21], "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-		draw.SimpleTextOutlined( HealthTxt, "Torchfont", 128, 230, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-	cam.End2D()
-
+	end
 end
