@@ -207,7 +207,7 @@ function EFFECT:ApplyMovement( Bullet, Index )
 
 		local value = 2.5
 
-		if Bullet.Counter <= 1 then value = 1.85 end
+--		if Bullet.Counter <= 1 then value = 1.85 end
 
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
 		local Length =  math.min(-DeltaPos:Length() * value,-1)
@@ -222,13 +222,14 @@ function EFFECT:ApplyMovement( Bullet, Index )
 			Light:SetAngles( Bullet.SimFlight:Angle() )
 			Light:SetVelocity( Bullet.SimFlight:GetNormalized() )
 			Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
-			Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.1,0.2) ) -- 0.075, 0.1
+			Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.0275,0.05625) ) -- 0.075, 0.1
 			Light:SetStartAlpha( 180 )
 			Light:SetEndAlpha( 0 )
 			Light:SetStartSize( 30 * Bullet.Caliber ) -- 5
-			Light:SetEndSize( 1 * Bullet.Caliber ) --15 * Bullet.Caliber
+			Light:SetEndSize( 30 * Bullet.Caliber ) --15 * Bullet.Caliber
 			Light:SetStartLength( Length )
-			Light:SetEndLength( 1 ) --Length
+			Light:SetEndLength( Length ) --Length
+			Light:SetLighting( false )
 		end
 
 		if MaxSprites > 0 then
