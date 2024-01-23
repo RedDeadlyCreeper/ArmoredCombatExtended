@@ -683,7 +683,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 		local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
 
 		--Guarenteed Richochet
-		if Angle > 85 then
+		if Angle > Bullet.Ricochet or 85 then
 			ricoProb = 0
 
 		--Guarenteed to not richochet
@@ -697,7 +697,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
 	-- Checking for ricochet. The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
 	if ricoProb < math.random() and Angle < 90 then
-		Ricochet	= math.Clamp(Angle / 90, 0.1, 1) -- atleast 10% of energy is kept
+		Ricochet	= math.Clamp( Angle / 90, 0.05, 0.20) -- atleast 5% of energy is kept, but no more than 20%
 		HitRes.Loss	= 1 - Ricochet
 		Energy.Kinetic = Energy.Kinetic * HitRes.Loss
 	end
@@ -707,12 +707,13 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 		table.insert( Bullet["Filter"] , Debris )
 	end
 
-	if Ricochet > 0 and Bullet.Ricochets < 3 and IsValid(Target) then
+	if Ricochet > 0 and Bullet.Ricochets < 5 and IsValid(Target) then
 
 		Bullet.Ricochets	= Bullet.Ricochets + 1
-		Bullet["Pos"]	= HitPos + HitNormal * 0.75
+		Bullet["Pos"]	= HitPos + HitNormal * 1
 		Bullet.FlightTime	= 0
-		Bullet.Flight	= (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand() * 0.025):GetNormalized() * Speed * Ricochet
+		Bullet.Flight = Bullet.Flight * 0.05 --~35 m/s for a 700 m/s projectile
+		Bullet.Flight	= (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand() * 0.05):GetNormalized() * Ricochet
 
 		if IsValid( ACF_GetPhysicalParent(Target):GetPhysicsObject() ) then
 			Bullet.TraceBackComp = math.max(ACF_GetPhysicalParent(Target):GetPhysicsObject():GetVelocity():Dot(Bullet["Flight"]:GetNormalized()),0)
