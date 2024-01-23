@@ -309,6 +309,7 @@ if CLIENT then
 	end
 
 	-- clamp thickness if the change in ductility puts mass out of range
+	cvars.RemoveChangeCallback( "acfarmorprop_ductility", "acfarmorprop_ductility" ) -- Reload support
 	cvars.AddChangeCallback( "acfarmorprop_ductility", function( _, _, value )
 
 		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
@@ -333,9 +334,10 @@ if CLIENT then
 		thickness = mass * 1000 / ( area + area * ductility ) / 0.78
 		RunConsoleCommand( "acfarmorprop_thickness", thickness )
 
-	end )
+	end, "acfarmorprop_ductility")
 
 	-- clamp ductility if the change in thickness puts mass out of range
+	cvars.RemoveChangeCallback( "acfarmorprop_thickness", "acfarmorprop_thickness" )
 	cvars.AddChangeCallback( "acfarmorprop_thickness", function( _, _, value )
 
 		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
@@ -360,9 +362,10 @@ if CLIENT then
 		ductility = -( 39 * area * thickness - mass * 50000 ) / ( 39 * area * thickness )
 		RunConsoleCommand( "acfarmorprop_ductility", math.Clamp( ductility * 100, -80, 80 ) )
 
-	end )
+	end, "acfarmorprop_thickness")
 
 	-- Refresh Armor material info on menu
+	cvars.RemoveChangeCallback( "acfarmorprop_material", "acfarmorprop_material" )
 	cvars.AddChangeCallback( "acfarmorprop_material", function( _, _, value )
 
 			if ToolPanel.panel then
@@ -385,7 +388,7 @@ if CLIENT then
 				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MatData.year or "unknown") )
 
 			end
-	end )
+	end, "acfarmorprop_material")
 
 	net.Receive("ACE_ArmorSummary", function()
 
