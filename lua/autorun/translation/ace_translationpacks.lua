@@ -59,6 +59,7 @@ ACFTranslation.CopyToolText = {
 
 }
 
+--[[
 ACFTranslation.SoundToolText = {
 	----------/Tool Display description--------/--
 
@@ -74,7 +75,6 @@ ACFTranslation.SoundToolText = {
 
 }
 
---[[
 ACFTranslation.ACFMenuTool = {
 
 	"ACE Menu", -- Tool Name (1)
@@ -95,7 +95,6 @@ ACFTranslation.ACFMenuTool = {
 	"Didn't find entity duplicator records", -- No duplicator record error (16)
 
 }
---]]
 
 ACFTranslation.ACFCuttingTorch = {
 
@@ -104,6 +103,7 @@ ACFTranslation.ACFCuttingTorch = {
 	"Primary to repair.\nSecondary to damage."-- Description 2 (3)
 
 }
+--]]
 
 ACFTranslation.GunClasses = {
 
