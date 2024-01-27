@@ -210,7 +210,7 @@ function ENT:Think()
 		self.LastStatusUpdate = curTime
 	end
 
-	self.Heat = ACE_HeatFromRadar(self, self.LastStatusUpdate)
+	self.Heat = ACE_HeatFromRadar(self, self.ThinkDelay)
 	WireLib.TriggerOutput(self, "Heat", self.Heat)
 	self:GetOverlayText()
 

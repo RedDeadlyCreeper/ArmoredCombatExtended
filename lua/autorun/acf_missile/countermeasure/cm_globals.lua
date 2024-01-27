@@ -120,7 +120,7 @@ function ACFM_GetMissilesInCone(radar, dir, degs)
 		local traceData = {
 			start = pos,
 			endpos = missilePos,
-			mask = MASK_SOLID_WORLD,
+			mask = MASK_SOLID_BRUSHONLY,
 			filter = radar
 		}
 
@@ -129,7 +129,7 @@ function ACFM_GetMissilesInCone(radar, dir, degs)
 		--debugoverlay.Line(pos, traceResult.HitPos, 10, Color(255, 0, 0), true) -- radar to missile
 		--debugoverlay.Box(pos, Vector(-5, -5, -5), Vector(5, 5, 5), 10, Color(0, 255, 0, 150)) -- radar pos 
 
-		if traceResult.Entity == missile and ACFM_ConeContainsPos(pos, dir, degs, missilePos) then
+		if traceResult.Fraction == 1 and ACFM_ConeContainsPos(pos, dir, degs, missilePos) then
 			ret[#ret + 1] = missile
 		end
 
@@ -160,7 +160,7 @@ function ACFM_GetMissilesInSphere(radar, radius)
 			local traceData = {
 				start = pos,
 				endpos = missilePos,
-				mask = MASK_SOLID_WORLD,
+				mask = MASK_SOLID_BRUSHONLY,
 				filter = radar
 			}
 
@@ -169,7 +169,7 @@ function ACFM_GetMissilesInSphere(radar, radius)
 			--debugoverlay.Line(pos, traceResult.HitPos, 10, Color(255, 0, 0), true) -- radar to missile
 			--debugoverlay.Box(pos, Vector(-5, -5, -5), Vector(5, 5, 5), 10, Color(0, 255, 0, 150)) -- radar pos 
 
-			if traceResult.Entity == missile then
+			if traceResult.Fraction == 1 then
 				ret[#ret + 1] = missile
 			end
 		end
