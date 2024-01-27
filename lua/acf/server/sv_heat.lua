@@ -155,6 +155,30 @@ function ACE_HeatFromEngine( Engine )
 
 end
 
+function ACE_HeatFromRadar(Radar, Delta)
+	local CurHeat = Radar.Heat
+	local AmbientTemp = ACE.AmbientTemp
+
+	local HeatWhileActive = 7 -- Degrees increase per second while active
+	local CoolingCoefficient = 0.1 -- Degrees decrease per second per degree above ambient
+
+	local CoolingRate = (CurHeat - AmbientTemp) * CoolingCoefficient * Delta
+	local HeatingRate = 0
+
+	if Radar.Active then
+		HeatingRate = HeatWhileActive * Delta
+	end
+
+	local NewHeat = CurHeat + HeatingRate - CoolingRate
+
+	return NewHeat
+end
+
+
+
+
+
+
 --[[-------------------------------------------------------------------------------------
 	ACE_HeatFromGearbox( Gearbox )  --used mostly by gearboxes. Not used atm
 

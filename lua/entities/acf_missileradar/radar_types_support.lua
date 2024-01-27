@@ -5,7 +5,7 @@ ACFM.DefaultRadarSound = ACFM.DefaultRadarSound or "buttons/button16.wav"
 ACFM.RadarBehaviour["DIR-AM"] =
 {
 	GetDetectedEnts = function(self)
-		return ACFM_GetMissilesInCone(self:GetPos(), self:GetForward(), self.ConeDegs)
+		return ACFM_GetMissilesInCone(self, self:GetForward(), self.ConeDegs)
 	end
 }
 
@@ -13,6 +13,6 @@ ACFM.RadarBehaviour["DIR-AM"] =
 ACFM.RadarBehaviour["OMNI-AM"] =
 {
 	GetDetectedEnts = function(self)
-		return ACFM_GetMissilesInSphere(self:GetPos(), self.Range)
+		return ACFM_GetMissilesInSphere(self, self.Range)
 	end
 }
