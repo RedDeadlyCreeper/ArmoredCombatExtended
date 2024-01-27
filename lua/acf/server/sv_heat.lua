@@ -155,6 +155,29 @@ function ACE_HeatFromEngine( Engine )
 
 end
 
+function ACE_HeatFromRadar(Radar, Delta)
+	local Cur_Heat = Radar.Heat
+	local Temperature = ACE.AmbientTemp
+
+	local HeatingUp = 0.65 * 10^-6
+	local CoolingDown = 0.5 * 10^-5
+	local MaxTemperature = 120
+
+	if Radar.Active then
+		Temperature = math.Clamp(Cur_Heat + Delta * HeatingUp, ACE.AmbientTemp, MaxTemperature)
+	else
+		local CoolingRate = Delta * CoolingDown
+		Temperature = math.Clamp(Cur_Heat - CoolingRate, ACE.AmbientTemp, MaxTemperature)
+	end
+
+	return Temperature
+end
+
+
+
+
+
+
 --[[-------------------------------------------------------------------------------------
 	ACE_HeatFromGearbox( Gearbox )  --used mostly by gearboxes. Not used atm
 

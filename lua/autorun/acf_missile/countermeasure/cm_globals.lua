@@ -106,15 +106,33 @@ end
 
 
 
-function ACFM_GetMissilesInCone(pos, dir, degs)
+function ACFM_GetMissilesInCone(radar, dir, degs)
 
 	local ret = {}
+	local pos = radar:GetPos()
 
 	for missile, _ in pairs(ACF_ActiveMissiles) do
 
 		if not IsValid(missile) then continue end
 
-		if ACFM_ConeContainsPos(pos, dir, degs, missile:GetPos()) then
+		local missilePos = missile:GetPos()
+
+		local traceData = {
+			start = pos,
+			endpos = missilePos,
+			mask = MASK_SOLID_WORLD,
+			filter = function(ent)
+				return ent ~= radar
+			end
+		}
+
+		local traceResult = util.TraceLine(traceData)
+
+		--debugoverlay.Line(pos, traceResult.HitPos, 10, Color(255, 0, 0), true) -- radar to missile
+		--debugoverlay.Box(pos, Vector(-5, -5, -5), Vector(5, 5, 5), 10, Color(0, 255, 0, 150)) -- radar pos 
+		local traceHitMissile = traceResult.Entity == missile and traceResult.Hit
+
+		if ACFM_ConeContainsPos(pos, dir, degs, missilePos) and traceHitMissile then
 			ret[#ret + 1] = missile
 		end
 
@@ -127,9 +145,10 @@ end
 
 
 
-function ACFM_GetMissilesInSphere(pos, radius)
+function ACFM_GetMissilesInSphere(radar, radius)
 
 	local ret = {}
+	local pos = radar:GetPos()
 
 	local radSqr = radius * radius
 
@@ -137,15 +156,35 @@ function ACFM_GetMissilesInSphere(pos, radius)
 
 		if not IsValid(missile) then continue end
 
-		if pos:DistToSqr(missile:GetPos()) <= radSqr then
-			ret[#ret + 1] = missile
-		end
+		local missilePos = missile:GetPos()
 
+		if pos:DistToSqr(missilePos) <= radSqr then
+
+			local traceData = {
+				start = pos,
+				endpos = missilePos,
+				mask = MASK_SOLID_WORLD,
+				filter = function(ent)
+					return ent ~= radar
+				end
+			}
+
+			local traceResult = util.TraceLine(traceData)
+
+			--debugoverlay.Line(pos, traceResult.HitPos, 10, Color(255, 0, 0), true) -- radar to missile
+			--debugoverlay.Box(pos, Vector(-5, -5, -5), Vector(5, 5, 5), 10, Color(0, 255, 0, 150)) -- radar pos 
+			local traceHitMissile = traceResult.Entity == missile and traceResult.Hit
+
+			if pos:DistToSqr(missile:GetPos()) <= radSqr and traceHitMissile then
+				ret[#ret + 1] = missile
+			end
+		end
 	end
 
 	return ret
 
 end
+
 
 
 
