@@ -25,7 +25,15 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 
 	self.Inputs				= WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs			= WireLib.CreateOutputs( self, {"Detected (" .. RadarWireDescs["Detected"] .. ")", "ClosestDistance", "Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]", "Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]", "Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]"} )
+	self.Outputs			= WireLib.CreateOutputs( self, {
+		"Detected (" .. RadarWireDescs["Detected"] .. ")",
+		"ClosestDistance",
+		"Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]",
+		"Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]",
+		"Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]",
+		"Heat"
+	} )
+
 	self.OutputData = {
 		Detected = 0,
 		ClosestDistance = 0,

@@ -159,7 +159,7 @@ function ACE_HeatFromRadar(Radar, Delta)
 	local CurHeat = Radar.Heat
 	local AmbientTemp = ACE.AmbientTemp
 
-	local HeatWhileActive = 10 -- Degrees increase per second while active
+	local HeatWhileActive = 7 -- Degrees increase per second while active
 	local CoolingCoefficient = 0.1 -- Degrees decrease per second per degree above ambient
 
 	local CoolingRate = (CurHeat - AmbientTemp) * CoolingCoefficient * Delta
