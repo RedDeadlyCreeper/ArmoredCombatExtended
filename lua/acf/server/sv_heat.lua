@@ -156,21 +156,22 @@ function ACE_HeatFromEngine( Engine )
 end
 
 function ACE_HeatFromRadar(Radar, Delta)
-	local Cur_Heat = Radar.Heat
-	local Temperature = ACE.AmbientTemp
+	local CurHeat = Radar.Heat
+	local AmbientTemp = ACE.AmbientTemp
 
-	local HeatingUp = 0.65 * 10^-6
-	local CoolingDown = 0.5 * 10^-5
-	local MaxTemperature = 120
+	local HeatWhileActive = 10 -- Degrees increase per second while active
+	local CoolingCoefficient = 0.1 -- Degrees decrease per second per degree above ambient
+
+	local CoolingRate = (CurHeat - AmbientTemp) * CoolingCoefficient * Delta
+	local HeatingRate = 0
 
 	if Radar.Active then
-		Temperature = math.Clamp(Cur_Heat + Delta * HeatingUp, ACE.AmbientTemp, MaxTemperature)
-	else
-		local CoolingRate = Delta * CoolingDown
-		Temperature = math.Clamp(Cur_Heat - CoolingRate, ACE.AmbientTemp, MaxTemperature)
+		HeatingRate = HeatWhileActive * Delta
 	end
 
-	return Temperature
+	local NewHeat = CurHeat + HeatingRate - CoolingRate
+
+	return NewHeat
 end
 
 
