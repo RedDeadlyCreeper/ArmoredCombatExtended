@@ -164,6 +164,7 @@ function this:GetDisplayConfig()
 	return
 	{
 		["Arming delay"] = math.Round(self.Primer, 3) .. " s",
+		["Ignition Delay"] = math.Round(self.StartDelay, 3) .. " s",
 		["Distance"] = math.Round(self.Distance / 39.37, 1) .. " m"
 	}
 end

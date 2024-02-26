@@ -126,6 +126,20 @@ do
 		return false
 	end
 
+	--Gives the approaching speed of an object at a position moving a speed.
+	function ACE_Approaching( Pos, Flight )
+
+		local ply    = LocalPlayer()
+
+		local entply = ACE_SGetHearingEntity( ply )
+		local plyPos = entply:IsPlayer() and GetHeadPos( ply ) or entply:GetPos()
+
+		local CurDist = (plyPos - Pos):Length()
+		local NextDist = (plyPos - (Pos + Flight * 0.025)):Length()
+
+		return NextDist-CurDist
+	end
+
 	--Used to see if the player has line of sight with the event
 	function ACE_SHasLOS( EventPos )
 
@@ -200,7 +214,7 @@ do
 						local Sound
 
 						--This defines the distance between areas for close, mid and far sounds
-						local CloseDist = Radius * 275 * ACE.DistanceMultipler
+						local CloseDist = Radius * 300 * ACE.DistanceMultipler
 
 						--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be 4250 units
 						local MediumDist = CloseDist * 4.25
@@ -213,20 +227,20 @@ do
 						--Close distance
 						if Dist < CloseDist then --NOTE: I KNOW ABOUT THIS CANCEROUS LONG NAME FOR THE STRING, JUST IGNORE FOR THIS TIME.
 
-							if Radius >= ACE.SoundHugeEx then
+							if Radius > ACE.SoundHugeEx then
 								VolFix = 2000000  -- rip your ears
 								PitchFix = 3
 								Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
-							elseif Radius >= ACE.SoundLargeEx then
-								VolFix = 8
-								PitchFix = 1
+							elseif Radius > ACE.SoundLargeEx then
+								VolFix = 35
+								PitchFix = 1.5
 								Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
-							elseif Radius >= ACE.SoundMediumEx then
-								VolFix = 8
-								PitchFix = 1
+							elseif Radius > ACE.SoundMediumEx then
+								VolFix = 6
+								PitchFix = 1.15
 								Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
-							elseif Radius >= ACE.SoundSmallEx then
-								VolFix = 8
+							elseif Radius > ACE.SoundSmallEx then
+								VolFix = 12
 								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
 							else
@@ -236,18 +250,18 @@ do
 							end
 
 						--Medium distance
-						elseif Dist >= CloseDist and Dist < MediumDist then
+						elseif Dist < MediumDist then
 
 							if Radius >= ACE.SoundLargeEx then
-								VolFix = 8
-								PitchFix = 1
+								VolFix = 3
+								PitchFix = 1.25
 								Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
 							elseif Radius >= ACE.SoundMediumEx then
-								VolFix = 8
+								VolFix = 2
 								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
 							elseif Radius >= ACE.SoundSmallEx then
-								VolFix = 8
+								VolFix = 6
 								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
 							else
@@ -257,18 +271,18 @@ do
 							end
 
 						--Far distance
-						elseif Dist >= MediumDist then
+						elseif Dist > MediumDist then
 
 							if Radius >= ACE.SoundLargeEx then
-								VolFix = 17
+								VolFix = 5.5
 								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
 							elseif Radius >= ACE.SoundMediumEx then
-								VolFix = 17
+								VolFix = 12
 								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
 							elseif Radius >= ACE.SoundSmallEx then
-								VolFix = 17
+								VolFix = 13
 								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
 							else
@@ -327,7 +341,7 @@ do
 	end
 
 	--Handles penetration sounds
-	function ACE_SPenetration( HitPos, Velocity, Mass )
+	function ACE_SPenetration( HitPos, Caliber, Velocity, HitWorld, Mat, Mass )
 
 		--Don't start this without a player
 		local ply = LocalPlayer()
@@ -356,8 +370,80 @@ do
 
 					Emitted = true
 
-					local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])] or ""
-					local VolFix = 0.5
+					if not HitWorld then --Only these richochets when hitting non world things
+
+						Sound = "acf_other/penetratingshots/penetrations/large/close/pen" .. math.random(1,3) .. ".mp3"
+						--lower than 20mm
+						if Caliber <= 2 then
+							VolFix = 30
+							PitchFix = 0.9
+
+						--50mm guns and below
+						elseif Caliber <= 5 then
+							VolFix = 155
+							PitchFix = 0.7
+
+						--any big gun above 50mm
+						elseif Caliber > 5 then
+							VolFix = 20
+							PitchFix = 0.4
+						end
+
+						--I'd rather have different material types than distance based richochet/impact sounds
+						--[[
+							--lower than 20mm
+							if Caliber <= 2 then
+								Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
+								VolFix = 1.5
+								PitchFix = 1
+
+							--50mm guns and below
+							elseif Caliber <= 5 then
+								Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
+								VolFix = 2
+								PitchFix = 1
+
+							--any big gun above 50mm
+							elseif Caliber > 5 then
+								Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
+								VolFix = 4
+								PitchFix = 1
+							end
+						]]--
+
+					else
+
+						if Mat == "Metal" then
+							Sound = "acf_other/impact/Metal/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Dirt" or Mat == "Sand" or Mat == "Snow"  then
+							Sound = "acf_other/impact/Soil/impact" .. math.random(1,3) .. ".mp3"
+						elseif Mat == "Concrete" then
+							Sound = "acf_other/impact/Concrete/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Wood"  then
+							Sound = "acf_other/impact/Wood/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Glass"  then
+							Sound = "acf_other/impact/Glass/impact" .. math.random(1,3) .. ".mp3"
+						else
+							Sound = "acf_other/impact/Concrete/impact" .. math.random(1,4) .. ".mp3"
+						end
+
+						--lower than 20mm
+						if Caliber <= 2 then
+							VolFix = 2
+							PitchFix = 1.15
+
+						--50mm guns and below
+						elseif Caliber <= 5 then
+							VolFix = 4
+							PitchFix = 1.05
+
+						--any big gun above 50mm
+						elseif Caliber > 5 then
+							VolFix = 10
+							PitchFix = 0.95
+						end
+
+					end
 
 					--If a wall is in front of the player and is indoor, reduces its vol at 50%
 					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
@@ -375,7 +461,7 @@ do
 	end
 
 	--Handles ricochet sounds
-	function ACE_SRicochet( HitPos, Caliber, Velocity, HitWorld )
+	function ACE_SRicochet( HitPos, Caliber, Velocity, HitWorld, Material )
 
 		local ply = LocalPlayer()
 
@@ -397,6 +483,7 @@ do
 			local Volume    = 1 / (Dist / 500) * Velocity / 130000
 			local Pitch     = math.Clamp(Velocity * 0.001, 90, 150)
 			local Delay     = ACE_GetDistanceTime( Dist )
+			local Mat		= Material or "invalid"
 
 			if count > Delay then
 
@@ -405,34 +492,84 @@ do
 					Emitted = true
 
 					local Sound = ""
-					local VolFix = 0
+					local VolFix = 1
+					local PitchFix = 1
 
-					if not HitWorld then
+					if not HitWorld then --Only these richochets when hitting non world things
 
-						--any big gun above 50mm
-						Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
-						VolFix = 4
+						--lower than 20mm
+						if Caliber <= 2 then
+							Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
+							VolFix = 35
+							PitchFix = 1
 
 						--50mm guns and below
-						if Caliber <= 5 then
+						elseif Caliber <= 5 then
 							Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
-							VolFix = 1
+							VolFix = 35
+							PitchFix = 1
 
+						--any big gun above 50mm
+						elseif Caliber > 5 then
+							Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
+							VolFix = 35
+							PitchFix = 1
+						end
+
+						--I'd rather have different material types than distance based richochet/impact sounds
+						--[[
 							--lower than 20mm
 							if Caliber <= 2 then
 								Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
-								VolFix = 1.25
+								VolFix = 1.5
+								PitchFix = 1
+
+							--50mm guns and below
+							elseif Caliber <= 5 then
+								Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
+								VolFix = 2
+								PitchFix = 1
+
+							--any big gun above 50mm
+							elseif Caliber > 5 then
+								Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
+								VolFix = 4
+								PitchFix = 1
 							end
-						end
+						]]--
 
 					else
 
-						--Small weapons sound
-						if Caliber <= 2 then
-							Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
-							VolFix = 1.25
-
+						if Mat == "Metal" then
+							Sound = "acf_other/impact/Metal/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Dirt" or Mat == "Sand" or Mat == "Snow"  then
+							Sound = "acf_other/impact/Soil/impact" .. math.random(1,3) .. ".mp3"
+						elseif Mat == "Concrete" then
+							Sound = "acf_other/impact/Concrete/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Wood"  then
+							Sound = "acf_other/impact/Wood/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Glass"  then
+							Sound = "acf_other/impact/Glass/impact" .. math.random(1,3) .. ".mp3"
+						else
+							Sound = "acf_other/impact/Concrete/impact" .. math.random(1,4) .. ".mp3"
 						end
+
+						--lower than 20mm
+						if Caliber <= 2 then
+							VolFix = 3
+							PitchFix = 1.15
+
+						--50mm guns and below
+						elseif Caliber <= 5 then
+							VolFix = 15
+							PitchFix = 1.3
+
+						--any big gun above 50mm
+						elseif Caliber > 5 then
+							VolFix = 200
+							PitchFix = 0.95
+						end
+
 					end
 
 					--If a wall is in front of the player and is indoor, reduces its vol at 50%
@@ -442,7 +579,7 @@ do
 					end
 
 					if Sound ~= "" then
-						ACE_EmitSound( Sound or "", entply, 75, Pitch, Volume * VolFix )
+						ACE_EmitSound( Sound or "", entply, 100, Pitch * PitchFix, Volume * VolFix )
 					end
 				end
 
@@ -618,6 +755,73 @@ do
 		end )
 	end
 
+	--TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
+	function ACE_SBulletWhistle( BulletData )
+
+		debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
+
+		local ply = LocalPlayer()
+		local count    = 1
+		local Emitted  = false --Was the sound played?
+
+		local ide      = "ACECrack#" .. math.random(1,100000)
+
+		--flag this, so we are not playing this sound for this bullet next time
+		BulletData.HasWhistled = true
+
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
+
+			count = count + 1
+
+			local entply = ACE_SGetHearingEntity( ply )
+			local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
+
+			--Delayed event report.
+--			local CrackPos    = BulletData.SimPos - BulletData.SimFlight:GetNormalized() * 5000
+--			local Dist        = (plyPos - CrackPos):Length()
+--			local Volume      = 10000 / Dist
+--			local Delay       = ACE_GetDistanceTime( Dist )
+
+			local CrackPos    = BulletData.SimPos
+			local Dist        = (plyPos - CrackPos):Length()
+			local Volume      = 10000
+			local Delay       = ACE_GetDistanceTime( Dist ) * 1
+			if count > Delay then
+
+				if not Emitted then
+
+					Emitted = true
+
+					local VolFix = 1
+
+					--Small arm guns
+					local Sound = "acf_extra/ACE/SoundsMaccnificient/IncomingShell/whistle_arty_0" .. math.random( 1, 3 ) .. ".wav"
+
+
+					local ShellVel = BulletData.SimFlight:Length()
+--					local Pitch = 30
+
+					local Pitch = math.Clamp( ShellVel / 3 / 39.37, 30, 165 )
+
+--					if ShellVelSQR < 900 then
+--						Pitch = 30
+--					end
+
+					--If a wall is in front of the player and is indoor, reduces its vol
+					if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
+						--print("Inside of building")
+						VolFix = VolFix * 0.5
+					end
+
+					ACE_EmitSound( Sound or "" , entply, 75, Pitch, Volume * VolFix )
+				end
+				timer.Stop( ide )
+				timer.Remove( ide )
+			end
+		end )
+	end
+
 	--For any miscellaneous sound. BaseDistVolume is the Max dist where Volume will be 1. The volume will start losing dbs beyond this distance. In Units.
 	function ACE_SimpleSound( Sound, Origin, Pitch, BaseDistVolume  )
 
@@ -662,9 +866,113 @@ do
 
 	end
 
-	--Coming soon
-	--function ACE_SBulletImpact()
-	--end
+	--Handles ricochet sounds
+	function ACE_SBulletImpact( HitPos, Caliber, Velocity, HitWorld, Material )
+
+		local ply = LocalPlayer()
+
+		local count	= 1
+		local Emitted	= false --Was the sound played?
+
+		local ide	= "ACE_Impact#" .. math.random(1,100000)
+
+		--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
+
+			count = count + 1
+
+			local entply = ACE_SGetHearingEntity( ply )
+
+			local plyPos    = entply.aceposoverride or entply:GetPos()
+			local Dist      = (plyPos - HitPos):Length()
+			local Volume    = 1 / (Dist / 500) * Velocity / 130000
+			local Pitch     = math.Clamp(Velocity * 0.001, 90, 150)
+			local Delay     = ACE_GetDistanceTime( Dist )
+			local Mat		= Material or "invalid"
+
+			if count > Delay then
+
+				if not Emitted then --print('timer has emitted the sound in the time: ' .. count)
+
+					Emitted = true
+
+					local Sound = ""
+					local VolFix = 15
+					local PitchFix = 1
+
+					if not HitWorld then --Only these richochets when hitting non world things
+
+						Sound = "acf_other/impact/Metal/impact" .. math.random(1,3) .. ".mp3"
+
+						--lower than 20mm
+						if Caliber <= 2 then
+							VolFix = 9
+							PitchFix = 1.15
+
+						--50mm guns and below
+						elseif Caliber <= 5 then
+							VolFix = 12
+							PitchFix = 1.10
+
+						--any big gun above 50mm
+						elseif Caliber > 5 then
+							VolFix = 55
+							PitchFix = 0.95
+						end
+
+					else
+
+						if Mat == "Metal" then
+							Sound = "acf_other/impact/Metal/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Dirt" or Mat == "Sand" or Mat == "Snow"  then
+							Sound = "acf_other/impact/Soil/impact" .. math.random(1,3) .. ".mp3"
+						elseif Mat == "Concrete" then
+							Sound = "acf_other/impact/Concrete/impact" .. math.random(1,4) .. ".mp3"
+						elseif  Mat == "Wood"  then
+							Sound = "acf_other/impact/Wood/impact" .. math.random(1,3) .. ".mp3"
+						elseif  Mat == "Glass"  then
+							Sound = "acf_other/impact/Glass/impact" .. math.random(1,3) .. ".mp3"
+						else
+							Sound = "acf_other/impact/Concrete/impact" .. math.random(1,3) .. ".mp3"
+						end
+
+						--lower than 20mm
+						if Caliber <= 2 then
+							VolFix = 2
+							PitchFix = 1.15
+
+						--50mm guns and below
+						elseif Caliber <= 5 then
+							VolFix = 15
+							PitchFix = 1.3
+
+						--any big gun above 50mm
+						elseif Caliber > 5 then
+							VolFix = 300
+							PitchFix = 0.95
+						end
+
+					end
+
+					--If a wall is in front of the player and is indoor, reduces its vol at 50%
+					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+						--print("Inside of building")
+						VolFix = VolFix * 0.5
+					end
+
+					if Sound ~= "" then
+						ACE_EmitSound( Sound or "", entply, 100, Pitch * PitchFix, Volume * VolFix )
+					end
+				end
+
+				timer.Stop( ide )
+				timer.Remove( ide )
+			end
+		end )
+	end
+
+
 
 end
 

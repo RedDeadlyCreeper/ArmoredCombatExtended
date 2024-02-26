@@ -140,15 +140,34 @@ do
 		if BackTraceOverride then Bullet.FlightTime = 0 end
 		Bullet.DeltaTime = ACF.SysTime - Bullet.LastThink
 
+		local NormFlight = Bullet.Flight:GetNormalized()
+		local FlightLength = Bullet.Flight:Length()
+
+		local WaterTr = { }
+		WaterTr.start = Bullet.Pos
+		WaterTr.endpos = Bullet.Pos + NormFlight * 1
+		WaterTr.mask = MASK_WATER
+		local Water = util.TraceLine( WaterTr )
+
+
+		Bullet.UnderWater = false
+
+		if Water.HitWorld and Water.StartSolid then
+				Bullet.UnderWater = true
+		end
+
 		--actual motion of the bullet
-		local Drag		= Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+		local Drag		= NormFlight * (Bullet.DragCoef * FlightLength^2) / ACF.DragDiv
+		if Bullet.UnderWater then
+			Drag = Drag * 800
+		end
 		Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)																								-- Calculates the next shell position
 		Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag) * Bullet.DeltaTime
 
 		-- Used for trace
-		local Flightnorm  = Bullet.Flight:GetNormalized()
+		local Flightnorm  = NormFlight
 
-		Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * Bullet.Flight:Length() - Bullet.TraceBackComp * Bullet.DeltaTime )
+		Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * FlightLength - Bullet.TraceBackComp * Bullet.DeltaTime )
 		Bullet.EndTrace	= Bullet.NextPos + Flightnorm * PhysVel
 
 		debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255) ) --true start

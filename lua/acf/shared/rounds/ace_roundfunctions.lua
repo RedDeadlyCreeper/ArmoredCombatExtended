@@ -7,17 +7,6 @@ do
 	local MaxValue = math.max
 	local PI = math.pi
 
-	local function OldShapedShellsAdjust( PlayerData, Data, GUIData, lengthFactor )
-		PlayerData.PropLength = math.max(0.01 + Data.Caliber * lengthFactor, PlayerData.PropLength )
-
-		-- check if current lenght exceeds the max lenght available
-		if PlayerData.PropLength + PlayerData.ProjLength > GUIData.MaxTotalLength then
-
-			PlayerData.ProjLength = GUIData.MaxTotalLength - PlayerData.PropLength
-
-		end
-	end
-
 	function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 		local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
@@ -31,13 +20,6 @@ do
 		Data.Tracer               = PlayerData.Tracer > 0 and math.min(Data.Caliber / 5, 3) or 0 --Tracer space calcs
 		Data.TwoPiece             = PlayerData.TwoPiece > 0 and 1 or 0
 
-		-- created to adapt old ammos to the new heatfs speed
-		if Type == "HEATFS" or Type == "THEATFS" then
-			OldShapedShellsAdjust( PlayerData, Data, GUIData, 3.9 )
-		-- same as above, but for hefs
-		elseif Type == "HEFS" then
-			OldShapedShellsAdjust( PlayerData, Data, GUIData, 4.5 )
-		end
 
 		local PropMax = (BulletMax.propweight * 1000 / ACF.PDensity) / Data.FrArea	--Current casing absolute max propellant capacity
 		local CurLength = (PlayerData.ProjLength + math.min(PlayerData.PropLength,PropMax) + Data.Tracer )

@@ -97,14 +97,14 @@ function SWEP:InitBulletData()
 	--		print("SlugMV: " .. self.BulletData.SlugMV)
 	local SlugFrArea = 3.1416 * (self.BulletData.SlugCaliber / 2) ^ 2
 	self.BulletData.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
-	self.BulletData.SlugDragCoef = ((SlugFrArea / 10000) / self.BulletData.SlugMass) * 1000
+	self.BulletData.SlugDragCoef = ((SlugFrArea / 10000) / self.BulletData.SlugMass)
 	self.BulletData.SlugRicochet = 500 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 	self.BulletData.CasingMass = self.BulletData.ProjMass - self.BulletData.FillerMass - ConeVol * 7.9 / 1000
 	self.BulletData.Fragments = math.max(math.floor((self.BulletData.BoomFillerMass / self.BulletData.CasingMass) * ACF.HEFrag), 2)
 	self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
 	--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
 	self.BulletData.DragCoef = ((self.BulletData.FrArea / 10000) / self.BulletData.ProjMass)
-	print(self.BulletData.SlugDragCoef)
+	--print(self.BulletData.SlugDragCoef)
 	--Don't touch below here
 	self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
 	self.BulletData.ShovePower = 0.2
@@ -130,4 +130,65 @@ function SWEP:InitBulletData()
 	self.DragCoef = self.BulletData.DragCoef
 	self.Colour = self.BulletData.Colour
 	self.DetonatorAngle = 80
+end
+
+
+function SWEP:PrimaryAttack()
+
+	if self:Clip1() == 0 and self:Ammo1() > 0 then
+		self:Reload()
+
+		return
+	end
+
+	if not self:CanPrimaryAttack() then return end
+
+	if IsFirstTimePredicted() or game.SinglePlayer() then
+		self:GetOwner():ViewPunch(Angle(-5, 0, 0))
+	end
+
+	self:SetNextPrimaryFire( CurTime() + (1 / self.FireRate) )
+
+	if SERVER then
+		local ent = ents.Create( "ace_missile_swep_guided" )
+
+		local owner = self:GetOwner()
+
+		if IsValid( ent ) then
+			ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 75)
+			ent:SetAngles(owner:GetAimVector():Angle() + Angle(0, 0, 0))
+			ent:Spawn()
+			ent:SetOwner(Gun)
+			ent:SetModel("models/weapons/w_missile.mdl")
+
+			timer.Simple(0.1, function()
+				ParticleEffectAttach("Rocket Motor FFAR", 4, ent, 1)
+			end)
+
+			ent.MissileThrust = 84000
+			ent.MissileBurnTime = 0.15
+			ent.EnergyRetention = 0.999
+			ent.RadioDist = 0
+			ent.HasGuidance = false
+			ent.FuseTime = 17
+			ent.Bulletdata = self.BulletData
+
+			ent:SetOwner(owner)
+			ent:CPPISetOwner(owner)
+		end
+
+		self:EmitSound(self.Primary.Sound)
+		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+		self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+
+		if self:Ammo1() > 0 then
+			self:GetOwner():RemoveAmmo( 1, "RPG_Round")
+			self:SetZoomState(false)
+			self:SetOwnerZoomSpeed(false)
+		else
+			self:TakePrimaryAmmo(1)
+		end
+
+
+	end
 end

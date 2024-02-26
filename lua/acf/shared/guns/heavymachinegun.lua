@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("HMG", {
 	type = "Gun",
-	spread = 0.4,
+	spread = 0.25,
 	name = "Heavy Machinegun",
 	desc = ACFTranslation.GunClasses[7],
 	muzzleflash = "50cal_muzzleflash_noscale",

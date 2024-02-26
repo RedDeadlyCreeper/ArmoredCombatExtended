@@ -20,12 +20,12 @@ ACF_defineGun("50mmM", { --id
 	gunclass = "MO",
 	caliber = 5.0,
 	weight = 40,
-	rofmod = 1.25,
+	rofmod = 1.05,
 	maxrof = 50, -- maximum rounds per minute
 	year = 1930,
 	round = {
-		maxlength = 25,
-		propweight = 0.03
+		maxlength = 50,
+		propweight = 0.06
 	}
 } )
 
@@ -37,12 +37,12 @@ ACF_defineGun("60mmM", { --id
 	gunclass = "MO",
 	caliber = 6.0,
 	weight = 80,
-	rofmod = 1.25,
+	rofmod = 0.95,
 	maxrof = 35, -- maximum rounds per minute
 	year = 1930,
 	round = {
-		maxlength = 30,
-		propweight = 0.037
+		maxlength = 65,
+		propweight = 0.1
 	}
 } )
 
@@ -54,11 +54,12 @@ ACF_defineGun("80mmM", {
 	gunclass = "MO",
 	caliber = 8.0,
 	weight = 210,
+	rofmod = 0.7,
 	maxrof = 27, -- maximum rounds per minute
 	year = 1915,
 	round = {
-		maxlength = 38,
-		propweight = 0.055
+		maxlength = 85,
+		propweight = 0.25
 	}
 } )
 
@@ -70,11 +71,12 @@ ACF_defineGun("120mmM", {
 	gunclass = "MO",
 	caliber = 12.0,
 	weight = 440,
+	rofmod = 0.6,
 	maxrof = 16, -- maximum rounds per minute
 	year = 1935,
 	round = {
-		maxlength = 45,
-		propweight = 0.175
+		maxlength = 80,
+		propweight = 0.4
 	}
 } )
 
@@ -86,11 +88,12 @@ ACF_defineGun("150mmM", {
 	gunclass = "MO",
 	caliber = 15.0,
 	weight = 680,
+	rofmod = 0.55,
 	maxrof = 9, -- maximum rounds per minute
 	year = 1945,
 	round = {
-		maxlength = 60,
-		propweight = 0.235
+		maxlength = 110,
+		propweight = 0.8
 	}
 } )
 
@@ -105,8 +108,8 @@ ACF_defineGun("200mmM", {
 	maxrof = 5, -- maximum rounds per minute
 	year = 1940,
 	round = {
-		maxlength = 90,
-		propweight = 0.330
+		maxlength = 125,
+		propweight = 1.7
 	}
 } )
 
@@ -122,13 +125,13 @@ ACF_defineGun("280mmM", {
 	year = 1945,
 	round = {
 		maxlength = 150,
-		propweight = 0.462
+		propweight = 3
 	}
 } )
 
 ACF_defineGun("380mmM", {
 	name = "380mm Mortar",
-	desc = "Massive payload, with a reload time to match. Found in rare WW2 siege artillery pieces.",
+	desc = "Massive payload, with a reload time to match. Found in rare WW2 siege artillery pieces.", --Coastal artillery, Rail artillery, and battleship guns
 	model = "models/mortar/mortar_300mm.mdl",
 	sound = "ace_weapons/multi_sound/howitzer_multi.mp3",
 	gunclass = "MO",
@@ -138,6 +141,6 @@ ACF_defineGun("380mmM", {
 	year = 1941,
 	round = {
 		maxlength = 180,
-		propweight = 0.562
+		propweight = 5
 	}
 } )

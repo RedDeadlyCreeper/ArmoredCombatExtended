@@ -63,22 +63,24 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 	timer.Simple(0, function()
 		if not IsValid(Ent) then return end
 
+		local Eclass = Ent:GetClass() 
+
 		-- check if ent class is in whitelist
-		if AllowedEnts[Ent:GetClass()] then
+		if AllowedEnts[Eclass] then
 			-- include any ECM to this table
-			if Ent:GetClass() == "ace_ecm" then
+			if Eclass == "ace_ecm" then
 				table.insert(ACE.ECMPods, Ent) --print('[ACE | INFO]- ECM registered count: ' .. table.Count( ACE.ECMPods ))
 				-- include any Tracking Radar to this table
-			elseif Ent:GetClass() == "ace_trackingradar" then
+			elseif Eclass == "ace_trackingradar" or Eclass == "acf_missileradar" then
 				table.insert(ACE.radarEntities, Ent) --print('[ACE | INFO]- Tracking radar registered count: ' .. table.Count( ACE.radarEntities ))
 
 				for id, ent in pairs(ACE.radarEntities) do
 					ACE.radarIDs[ent] = id
 				end
-			elseif Ent:GetClass() == "acf_opticalcomputer" then
+			elseif Eclass == "acf_opticalcomputer" then
 				--Optical Computers go here
 				table.insert(ACE.Opticals, Ent) --print('[ACE | INFO]- GLATGM optical computer registered count: ' .. table.Count( ACE.Opticals ))
-			elseif ACE.ExplosiveEnts[Ent:GetClass()] then
+			elseif ACE.ExplosiveEnts[Eclass] then
 				--Insert Ammocrates and other explosive stuff here
 				table.insert(ACE.Explosives, Ent) --print('[ACE | INFO]- Explosive registered count: ' .. table.Count( ACE.Explosives ))
 			end
@@ -90,12 +92,12 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 			-- Finally, include the whitelisted entity to the main table ( contraptionEnts )
 			if not IsValid(Ent:GetParent()) then
 				table.insert(ACE.contraptionEnts, Ent)
-				--print("[ACE | INFO]- an entity ' .. Ent:GetClass() .. ' has been registered!")
+				--print("[ACE | INFO]- an entity ' .. Eclass .. ' has been registered!")
 				--print('Total Ents registered count: ' .. table.Count( ACE.contraptionEnts ))
 			end
-		elseif Ent:GetClass() == "ace_debris" then
+		elseif Eclass == "ace_debris" then
 			table.insert(ACE.Debris, Ent) --print('Adding - Count: ' .. #ACE.Debris)
-		elseif Ent:GetClass() == "ace_mine" then
+		elseif Eclass == "ace_mine" then
 			table.insert(ACE.Mines, Ent) print("Adding - Count: " .. #ACE.Mines)
 		end
 	end)
@@ -104,14 +106,16 @@ end)
 -- Remove any entity of the Contraption List that has been removed from map
 hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 
+	local Eclass = Ent:GetClass() 
+
 	--Assuming that our table has whitelisted ents
-	if AllowedEnts[Ent:GetClass()] then
+	if AllowedEnts[Eclass] then
 
 		for i, ent in ipairs(ACE.contraptionEnts) do
 			if not IsValid(ent) or not IsValid(Ent) then continue end
 
 			-- Remove this ECM from list if deleted
-			if Ent:GetClass() == "ace_ecm" then
+			if Eclass == "ace_ecm" then
 
 				for i, ecm in ipairs(ACE.ECMPods) do
 
@@ -122,7 +126,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 					end
 				end
 			-- Remove this Tracking Radar from list if deleted
-			elseif Ent:GetClass() == "ace_trackingradar" then
+			elseif Eclass == "ace_trackingradar" or Eclass == "acf_missileradar" then
 
 				for i, radar in ipairs(ACE.radarEntities) do
 					if IsValid(radar) and radar == Ent then
@@ -135,7 +139,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 					end
 				end
 			-- Remove this GLATGM optical Computer from list if deleted
-			elseif Ent:GetClass() == "acf_opticalcomputer" then
+			elseif Eclass == "acf_opticalcomputer" then
 
 				for i, optical in ipairs(ACE.Opticals) do
 					if IsValid(optical) and optical == Ent then
@@ -145,7 +149,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 					end
 				end
 
-			elseif ACE.ExplosiveEnts[Ent:GetClass()] then
+			elseif ACE.ExplosiveEnts[Eclass] then
 
 				for i, explosive in ipairs(ACE.Explosives) do
 					if IsValid(explosive) and explosive == Ent then
@@ -174,14 +178,14 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 			end
 		end
 
-	elseif Ent:GetClass() == "ace_debris" then
+	elseif Eclass == "ace_debris" then
 		for i, debris in ipairs(ACE.Debris) do
 			if IsValid(debris) and debris == Ent then
 				table.remove(ACE.Debris, i)
 				--print("Debris registered count: " .. #ACE.Debris )
 			end
 		end
-	elseif Ent:GetClass() == "ace_mine" then
+	elseif Eclass == "ace_mine" then
 
 		local Owner = Ent.DamageOwner
 

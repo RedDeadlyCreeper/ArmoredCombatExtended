@@ -10,6 +10,7 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetGravity( 0.01 )
+	self:SetNoDraw(true)
 
 	self.Heat		= self.Heat or 1
 	self.Life		= self.Life or 0.1

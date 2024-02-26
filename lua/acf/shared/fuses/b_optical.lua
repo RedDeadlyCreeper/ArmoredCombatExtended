@@ -58,7 +58,7 @@ function this:GetDetonate(missile)
 	}
 	local trace = util.TraceHull(tracedata)
 
-	if IsValid(trace.Entity) and (trace.Entity:GetClass() == "acf_missile" or trace.Entity:GetClass() == "ace_missile_swep_guided") then return false end
+	if IsValid(trace.Entity) and (trace.Entity:GetClass() == "acf_missile" ) then return false end
 
 	return trace.Hit
 
@@ -70,6 +70,7 @@ function this:GetDisplayConfig()
 	return
 	{
 		["Arming delay"] = math.Round(self.Primer, 3) .. " s",
+		["Ignition Delay"] = math.Round(self.StartDelay, 3) .. " s",
 		["Distance"] = math.Round(self.Distance / 39.37, 1) .. " m"
 	}
 end

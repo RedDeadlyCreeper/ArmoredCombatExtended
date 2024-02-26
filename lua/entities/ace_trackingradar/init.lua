@@ -218,7 +218,7 @@ function ENT:Think()
 				if scanEnt:IsValid() then
 
 					--skip any flare from vision
-					if scanEnt:GetClass() == "ace_flare" then continue end
+					--if scanEnt:GetClass() == "ace_flare" then continue end
 
 					--skip the tracking itself
 					if scanEnt:EntIndex() == self:EntIndex() then continue end

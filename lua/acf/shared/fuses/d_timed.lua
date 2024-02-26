@@ -51,6 +51,7 @@ function this:GetDisplayConfig()
 	return
 	{
 		["Arming delay"] = tostring(math.Round(self.Primer, 3)) .. " s",
+		["Ignition Delay"] = math.Round(self.StartDelay, 3) .. " s",
 		["Timer"] = tostring(math.Round(self.Timer, 1)) .. " s"
 	}
 end

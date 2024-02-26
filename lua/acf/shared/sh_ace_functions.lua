@@ -114,16 +114,30 @@ function ACE_GetMaterialName( Mat )
 	-- Dirt
 	if Mat == 68 or Mat == 79 or Mat == 85 then
 		GroundMat = "Dirt"
-	-- Sand
+	--Sand
 	elseif Mat == 78 then
-		GroundMat = "Sand"
-	-- Glass
+	GroundMat = "Sand"
+	--Metal
+	elseif Mat == 77 or Mat == 86 or Mat == 80 then
+	GroundMat = "Metal"
+	--Snow
+	elseif Mat == 74 then
+	GroundMat = "Snow"
+	--Glass
 	elseif Mat == 89 then
 		GroundMat = "Glass"
-	elseif Mat == 77 or Mat == 86 or Mat == 80 then
-		GroundMat = "Metal"
+	elseif Mat == 87 then
+		GroundMat = "Wood"
 	end
 
+	--[[
+	if GroundMat != "Concrete" then
+	--print("GMat: "..GroundMat)
+	else
+	print("ID: "..Mat)
+	end
+	]]--
+	
 	return GroundMat
 end
 

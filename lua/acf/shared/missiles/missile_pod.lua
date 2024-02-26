@@ -22,7 +22,8 @@ ACF_defineGun("40mmFFAR", { --id
 	name		= "40mm Pod Rocket",
 	desc		= "A tiny, unguided rocket.  Useful for anti-infantry, smoke and suppression.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
 	model	= "models/missiles/launcher7_40mm.mdl",
-	effect	= "Rocket Motor FFAR",
+	effect           = "Rocket_Smoke_Trail",
+	effectbooster	= "Rocket Motor FFAR",
 	caliber	= 4,
 	gunclass	= "FFAR",
 	rack		= "40mm7xPOD",  -- Which rack to spawn this missile on?
@@ -33,20 +34,41 @@ ACF_defineGun("40mmFFAR", { --id
 	modeldiameter	= 2,
 	round	=
 	{
-		model	= "models/missiles/ffar_40mm.mdl",
-		rackmdl	= "models/missiles/ffar_40mm_closed.mdl",
-		maxlength	= 60,
-		casing	= 0.2,		-- thickness of missile casing, cm
-		armour	= 5,			-- effective armour thickness of casing, in mm
-		propweight  = 0.2,		-- motor mass - motor casing
-		thrust	= 10000,		-- average thrust - kg * in/s ^ 2
-		burnrate	= 120,		-- cm ^ 3/s at average chamber pressure
-		starterpct  = 0.15,		-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 5000,		-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
-		dragcoefflight  = 0.02,				-- drag coefficient during flight
-		finmul	= 0.003,		-- fin multiplier (mostly used for unpropelled guidance)
-		penmul	= math.sqrt(1)
+		rocketmdl				= "models/missiles/ffar_40mm.mdl",
+		rackmdl				= "models/missiles/ffar_40mm_closed.mdl",
+		firedelay			= 0.075,
+		reloadspeed			= 0.2,
+		reloaddelay			= 15.0,
+		inaccuracy			= 1.5,
+
+		maxlength			= 60,							-- Length of missile. Used for ammo properties.
+		propweight			= 0.2,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 0,							-- Acceleration in m/s.
+		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 200,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 1.1,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.003,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		penmul	= math.sqrt(0.5)
 	},
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -66,32 +88,54 @@ ACF_defineGun("70mmFFAR", { --id
 	name		= "70mm Pod Rocket",
 	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
 	model	= "models/missiles/launcher7_70mm.mdl",
-	effect	= "Rocket Motor FFAR",
+	effect           = "Rocket_Smoke_Trail",
+	effectbooster	= "Rocket Motor FFAR",
 	caliber	= 7,
 	gunclass	= "FFAR",
 	rack		= "70mm7xPOD",  -- Which rack to spawn this missile on?
 	weight	= 12,
 	length	= 115,
 	year		= 1960,
-	rofmod	= 0.06,
 	roundclass  = "Rocket",
 	modeldiameter	= 3,
 	round	=
 	{
-		model	= "models/missiles/ffar_70mm.mdl",
-		rackmdl	= "models/missiles/ffar_70mm_closed.mdl",
-		maxlength	= 90,
-		casing	= 0.2,		-- thickness of missile casing, cm
-		armour	= 8,			-- effective armour thickness of casing, in mm
-		propweight  = 0.7,		-- motor mass - motor casing
-		thrust	= 15000,		-- average thrust - kg * in/s ^ 2
-		burnrate	= 300,		-- cm ^ 3/s at average chamber pressure
-		starterpct  = 0.15,
-		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
-		dragcoefflight  = 0.02,				-- drag coefficient during flight
-		finmul	= 0.004,			-- fin multiplier (mostly used for unpropelled guidance)
-		penmul	= math.sqrt(0.8)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+
+		rocketmdl				= "models/missiles/ffar_70mm.mdl",
+		rackmdl				= "models/missiles/ffar_70mm_closed.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 20.0,
+		inaccuracy			= 2,
+
+		maxlength			= 90,							-- Length of missile. Used for ammo properties.
+		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 0,						-- Acceleration in m/s.
+		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 160,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 1.1,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.002,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		penmul	= math.sqrt(0.65)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -100,11 +144,74 @@ ACF_defineGun("70mmFFAR", { --id
 
 	racks	= {["70mm7xPOD"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	agility	= 0.08,	-- multiplier for missile turn-rate.
-
 	seekcone	= 30,	-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
 	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
 
 	armdelay	= 0.00	-- minimum fuse arming delay
 } )
+
+ACF_defineGun("Zuni ASR", { --id
+	name             = "Zuni Rocket",
+	desc             = "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.",
+	model            = "models/ghosteh/zuni.mdl",
+	effect           = "Rocket_Smoke_Trail",
+	effectbooster	= "Rocket Motor FFAR",
+	caliber          = 12.7,
+	gunclass         = "FFAR",
+	rack             = "127mm4xPOD",
+	weight           = 36.1,
+	length           = 298,
+	year             = 1957,
+	roundclass       = "Rocket",
+	modeldiameter    = 5.26,
+	bodydiameter     = 6.7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+
+	round	=
+	{
+		rocketmdl			= "models/ghosteh/zuni.mdl",
+		rackmdl				= "models/ghosteh/zuni_folded.mdl",
+		firedelay			= 0.25,
+		reloadspeed			= 0.3,
+		reloaddelay			= 45.0,
+		inaccuracy			= 0.2,
+
+		maxlength			= 70,							-- Length of missile. Used for ammo properties.
+		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 7,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 0,						-- Acceleration in m/s.
+		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 180,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 1.8,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.0025,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		penmul	= math.sqrt(0.825)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+	},
+	ent        = "acf_missile_to_rack",
+	guidance   = {"Dumb", "Laser", "GPS"},
+	fuses      = {"Contact", "Timed", "Optical", "Radio"},
+	racks      = {["127mm4xPOD"] = true},
+
+	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay   = 0.0
+
+})

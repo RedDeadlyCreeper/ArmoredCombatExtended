@@ -237,6 +237,7 @@ function ACF_PropDamage( Entity , Energy , FrArea , Angle , _, _, Type)
 	local HitRes = ACF_CalcDamage( Entity , Energy , FrArea , Angle  , Type)
 
 	HitRes.Kill = false
+	Entity:TakeDamage(HitRes.Damage * 15) --Felt about right. Allows destroying physically destructible props.
 	if HitRes.Damage >= Entity.ACF.Health then
 		HitRes.Kill = true
 	else

@@ -42,7 +42,7 @@ ACF_DefineRack("40mm7xPOD", {
 		["missile2"] = { ["pos"] = Vector(0,-2,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile3"] = { ["pos"] = Vector(0,-1,-1.733), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile4"] = { ["pos"] = Vector(0,1,-1.733), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile5"] = { ["pos"] = Vector(0,2,0),  ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(0,2,0),  ["offset"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile6"] = { ["pos"] = Vector(0,1,1.736), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile7"] = { ["pos"] = Vector(0,-1,1.736), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
@@ -337,7 +337,7 @@ ACF_DefineRack("2x Strela-1", {
 --strela-1
 ACF_DefineRack("4x Strela-1", {
 	name = "Quad Munition 9M31 Rack",
-	desc = "An 9m31 rack designed to carry until 4 missiles.",
+	desc = "An 9m31 rack designed to carry 4 missiles.",
 	model	= "models/missiles/9m31_rk4.mdl",
 	gunclass = "POD",
 	weight = 50,
@@ -497,20 +497,20 @@ ACF_DefineRack("127mm4xPOD", {
 ACF_DefineRack("1x 9m311", {
 	name = "9m311 Round",
 	desc = "A single 9m311 round.",
-	model = "models/missiles/bgm_71e_round.mdl",
+	model = "models/kali/weapons/kornet/parts/9m133 kornet tube.mdl",
 	gunclass = "POD",
-	weight = 10,
+	weight = 30,
 	year = 1970,
 	magsize = 1,
 	caliber = 12,
 
 	whitelistonly	= true,
 	protectmissile  = true,
-	hidemissile	= true,
+	hidemissile		= true,
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(15.759,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		missile1 = { pos = Vector(0,0,0), scaledir = Vector(0,0,0) }
 	}
 } )
 
@@ -532,5 +532,49 @@ ACF_DefineRack("1x Javelin", {
 	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,-1.38,2.4), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+
+--TOR pod
+ACF_DefineRack("1x9M331 Pod", {
+	name = "9M331 Pod",
+	desc = "Launch Pod for TOR misiles.",
+	model	= "models/missiles/9m31_rk1.mdl", --Placeholder
+	gunclass = "POD",
+	weight = 100,
+	year = 1986,
+	magsize = 1,
+	caliber = 23.9,
+
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(-26.5,2.75,0.132), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+
+ACF_DefineRack("2x9M331 Pod", {
+	name = "Double 9M331 Pod",
+	desc = "TOR missile pod designed to carry 2 missiles.",
+	model	= "models/missiles/9m31_rk2.mdl",
+	gunclass = "POD",
+	weight = 200,
+	year = 1986,
+	magsize = 2,
+	caliber = 23.9,
+
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(-26.5,-5.5,0.132), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(-26.5,11.05,0.132), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )

@@ -273,7 +273,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				else
 
 					--Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
-					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 20 * (GetConVar("acf_hepush"):GetFloat() or 1) )
+					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 5 * (GetConVar("acf_hepush"):GetFloat() or 1) )
 
 				end
 			end
@@ -285,8 +285,18 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 		Power = math.max(Power - PowerSpent,0)
 	end
+					--Pos      Amp     FREQ  Duration    radius   airshake
+	--util.ScreenShake( Hitpos, Amp * 100, 1 / Amp, Amp / 5, Radius * 5, true )
+--	util.ScreenShake( Hitpos, Amp*1.5, Amp, Amp / 15, Radius * 10 , true)
+	util.ScreenShake( Hitpos, 400 * Amp, 1.5 / Amp, Amp/12, Radius * 5 , true)
 
-	util.ScreenShake( Hitpos, Amp, Amp, Amp / 15, Radius * 10 )
+		--There was an attempt
+		--There has got to be a better way. Too bad viewpunches aren't clientside.
+		for i,Tar in ipairs(player.GetAll()) do
+			local PlayerDist = (Tar:GetPos()-Hitpos):LengthSqr()
+			Tar:ViewPunch( Angle( Amp*-500000/PlayerDist * (math.random(0,1)-0.5) * math.Rand(0.1,1), 0, 0 ) )
+		end
+
 	--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see
 
 end
@@ -683,11 +693,11 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 		local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
 
 		--Guarenteed Richochet
-		if Angle > Bullet.Ricochet or 85 then
+		if Angle > (Bullet.Ricochet or 85) then
 			ricoProb = 0
 
 		--Guarenteed to not richochet
-		elseif Bullet.Caliber * 3.33 > Target.ACF.Armour / math.max(math.sin(90-Angle),0.0001)  then
+		elseif Bullet.Caliber * 3.33 > Target.ACF.Armour  then -- / math.max(math.sin(90-Angle),0.0001)
 			ricoProb = 1
 
 		else
@@ -696,8 +706,8 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	end
 
 	-- Checking for ricochet. The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
-	if ricoProb < math.random() and Angle < 90 then
-		Ricochet	= math.Clamp( Angle / 90, 0.05, 0.20) -- atleast 5% of energy is kept, but no more than 20%
+	if ricoProb < math.Rand(0,1) and Angle < 90 then
+		Ricochet	= math.Clamp( Angle / 90, 0.05, 0.2) -- atleast 5% of energy is kept, but no more than 20%
 		HitRes.Loss	= 1 - Ricochet
 		Energy.Kinetic = Energy.Kinetic * HitRes.Loss
 	end
@@ -710,9 +720,9 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	if Ricochet > 0 and Bullet.Ricochets < 5 and IsValid(Target) then
 
 		Bullet.Ricochets	= Bullet.Ricochets + 1
-		Bullet["Pos"]	= HitPos + HitNormal * 1
+		Bullet["Pos"]	= HitPos + HitNormal * 0.05
 		Bullet.FlightTime	= 0
-		Bullet.Flight = Bullet.Flight * 0.05 --~35 m/s for a 700 m/s projectile
+		Bullet.Flight = Bullet.Flight * 0.05 --0.05 = ~35 m/s for a 700 m/s projectile
 		Bullet.Flight	= (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand() * 0.05):GetNormalized() * Ricochet
 
 		if IsValid( ACF_GetPhysicalParent(Target):GetPhysicsObject() ) then
@@ -723,7 +733,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
 	end
 
-	ACF_KEShove( Target, HitPos, Bullet["Flight"]:GetNormalized(), Energy.Kinetic * HitRes.Loss * 1000 * Bullet["ShovePower"] * (GetConVar("acf_recoilpush"):GetFloat() or 1))
+	ACF_KEShove( Target, HitPos, Bullet["Flight"]:GetNormalized(), Energy.Kinetic * HitRes.Loss * 4000 * Bullet["ShovePower"] * (GetConVar("acf_recoilpush"):GetFloat() or 1))
 
 	return HitRes
 end
@@ -820,9 +830,9 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	local Scaling = 1
 
 	--Scale down the offset relative to chassis if the gun is parented
-	if Target:EntIndex() ~= parent:EntIndex() then
-		Scaling = 87.5
-	end
+--	if Target:EntIndex() ~= parent:EntIndex() then
+--		Scaling = 87.5
+--	end
 
 	local Local	= parent:WorldToLocal(Pos) / Scaling
 	local Res	= Local + phys:GetMassCenter()
@@ -955,14 +965,15 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 			local Parent = ACF_GetPhysicalParent( Entity )
 
 			if IsValid(phys) and IsValid(physent) then
-				phys:SetDragCoefficient( -50 )
-				phys:SetMass( physent:GetMass() )
+				phys:SetDragCoefficient( 5 )
+				phys:SetMass( math.max(physent:GetMass()*3,300) )
 				phys:SetVelocity( Parent:GetVelocity() )
-				phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:WorldSpaceCenter() + VectorRand() * 10  )
 
 				if IsValid(Parent) then
 					phys:SetVelocity(Parent:GetVelocity() )
 				end
+
+				phys:ApplyForceCenter( (HitVector:GetNormalized()+VectorRand()*0.25) * Energy * 5  )
 			end
 		end
 	end
@@ -1008,14 +1019,13 @@ function ACF_APKill( Entity , HitVector , Power )
 			local Parent =  ACF_GetPhysicalParent( Entity )
 
 			if IsValid(phys) and IsValid(physent) then
-				phys:SetDragCoefficient( -50 )
-				phys:SetMass( physent:GetMass() )
+				phys:SetDragCoefficient( 15 )
+				phys:SetMass( math.max(physent:GetMass()*3,300) )
 				phys:SetVelocity(Parent:GetVelocity() )
-				phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:WorldSpaceCenter() + VectorRand() * 10 )
-
 				if IsValid(Parent) then
 					phys:SetVelocity( Parent:GetVelocity() )
 				end
+				phys:ApplyForceCenter( HitVector:GetNormalized() * Power * 50)
 			end
 		end
 	end

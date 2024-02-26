@@ -25,12 +25,18 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 0.25 -- Re-seek drastically reduced cost so we can re-seek
+
+--Whether the missile has IRCCM. Will disable seeking when the locked target would have been a countermeasure.
+this.HasIRCCM = false
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m
 
 this.desc = "This guidance package detects a target-position infront of itself, and guides the munition towards it."
+
+--Multiplier for the ground clutter effect.
+this.GCMultiplier = 1
 
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
@@ -44,7 +50,8 @@ function this:Configure(missile)
 	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
-
+	self.GCMultiplier	= ACF_GetGunValue(missile.BulletData, "groundclutterfactor") or this.GCMultiplier
+	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 end
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
@@ -61,21 +68,38 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
+	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
+		self.Target = nil
+		return {}
+	end
+
 	local missilePos = missile:GetPos()
 	--local missileForward = missile:GetForward()
 	--local targetPhysObj = self.Target:GetPhysicsObject()
-	local targetPos = self.Target:GetPos() + Vector(0,0,25)
-
+	local Lastpos = self.TPos or Vector()
+	self.TPos = self.Target:GetPos()
 	local mfo	= missile:GetForward()
-	local mdir	= (targetPos - missilePos):GetNormalized()
+	local mdir	= (self.TPos - missilePos):GetNormalized()
 	local dot	= mfo:Dot(mdir)
 
 	if dot < self.ViewConeCos then
 		self.Target = nil
 		return {}
 	else
-		self.TargetPos = targetPos
-		return {TargetPos = targetPos, ViewCone = self.ViewCone}
+		local LastDist = self.Dist or 0
+		self.Dist = (self.TPos - missilePos):Length()
+		DeltaDist = (self.Dist - LastDist)/engine.TickInterval()
+
+		if DeltaDist < 0 then --More accurate traveltime calculation. Only works when closing on target.
+			self.TTime = math.Clamp(math.abs(self.Dist/DeltaDist),0,5)
+		else
+			self.TTime = (self.Dist/missile.Speed/39.37)
+		end
+
+		local TarVel = (self.TPos - Lastpos)/engine.TickInterval()
+		missile.TargetVelocity = TarVel --Used for Inertial Guidance
+		self.TargetPos = self.TPos + TarVel * self.TTime  * (missile.MissileActive and 1 or 0) --Don't lead the target on the rail
+		return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 	end
 
 end
@@ -147,10 +171,10 @@ function this:GetWhitelistedEntsInCone(missile)
 			--Trace did not hit world
 			if not LOStr.Hit then
 
-				local ConeInducedGCTRSize = dist / 100 --2 meter wide tracehull for every 100m distance
+				local ConeInducedGCTRSize = dist / 100 * self.GCMultiplier --2 meter wide tracehull for every 100m distance
 				local GCtr = util.TraceHull( {
 					start = entpos,
-					endpos = entpos + difpos:GetNormalized() * 2000 ,
+					endpos = entpos + difpos:GetNormalized() * 4000 * self.GCMultiplier ,
 					collisiongroup  = COLLISION_GROUP_WORLD,
 					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
 					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
@@ -165,7 +189,7 @@ function this:GetWhitelistedEntsInCone(missile)
 				local Dopplertest2 = math.min(math.abs(entvel:Length() / math.max(math.abs(DPLR.Z), 0.01)) * 100, 10000)
 
 				--Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
-				if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880)) and ((math.abs(DPLR.X / entvel:Length()) > 0.3) or (not GCtr.Hit)) then
+				if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880)) and ((math.abs(DPLR.X / entvel:Length()) > 0.3) or (not (GCtr.Hit and not GCtr.HitSky))) then
 					--print("PassesDoppler")
 					--Valid target
 					--print(scanEnt)
@@ -187,9 +211,9 @@ function this:AcquireLock(missile)
 	local curTime = CurTime()
 
 	--We make sure that its seeking between the defined delay
-	if self.LastSeek + self.SeekDelay > curTime then return nil end
+	if self.LastSeek > curTime then return nil end
 
-	self.LastSeek = curTime
+	self.LastSeek = curTime + self.SeekDelay
 
 	-- Part 1: get all whitelisted entities in seek-cone.
 	local found = self:GetWhitelistedEntsInCone(missile)
@@ -200,12 +224,31 @@ function this:AcquireLock(missile)
 	local bestAng = math.huge
 	local bestent = nil
 
+	if missile.TargetPos then
+		--print("HasTpos")
+		self.OffBoreAng = missile:WorldToLocalAngles((missile.TargetPos - missilePos):Angle()) or Angle()
+		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
+	end
+
 	for _, classifyent in pairs(found) do
 
 
 
 		local entpos = classifyent:GetPos()
-		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+		local ang = Angle()
+
+		if missile.TargetPos then --Initialized. Work from here.
+			--print("Offbore")
+			ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle()) - self.OffBoreAng	--Used for testing if inrange
+
+			--print(missile.TargetPos)
+		else
+
+			ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+
+		end
+
+
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
 		--print(absang.p)

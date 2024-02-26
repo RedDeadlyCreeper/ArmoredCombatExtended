@@ -81,7 +81,7 @@ ACF.HEATAirGapFactor  = 0.15						--% velocity loss for every meter traveled. 0.
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
 ACF.HEATPlungingReduction = 4					--Multiplier for the penarea of HEAT shells. 2x is a 50% reduction in penetration, 4x 25% and so on.
 
-ACF.ScaledHEMax       = 50
+ACF.ScaledHEMax       = 75
 ACF.ScaledEntsMax     = 5
 
 ---------------------------------- Ballistic config ----------------------------------
@@ -101,7 +101,7 @@ ACF.TraceFilter       = {		-- entities that cause issue with acf and should be n
 
 }
 
-ACF.DragDiv           = 80						-- Drag fudge factor
+ACF.DragDiv           = 40						-- Drag fudge factor
 ACF.VelScale          = 1						-- Scale factor for the shell velocities in the game world
 ACF.PBase             = 1050					-- 1KG of propellant produces this much KE at the muzzle, in kj
 ACF.PScale            = 1						-- Gun Propellant power expotential
@@ -146,6 +146,8 @@ ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(ang
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
+ACF.MissileVelocityMul	= 7					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
+
 
 --Math in globals????
 
@@ -157,10 +159,12 @@ ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45
 ---------------------------------- Particle colors  ----------------------------------
 
 ACE.DustMaterialColor = {
-	Concrete   = Color(100,100,100,150),
+	Concrete   = Color(130,130,130,150),
 	Dirt       = Color(117,101,70,150),
-	Sand       = Color(200,180,116,150),
+	Sand       = Color(225,202,130,150),
 	Glass      = Color(255,255,255,50),
+	Snow      = Color(255,255,255,50),
+	Wood       = Color(117,101,70,150)
 }
 
 --------------------------------------------------------------------------------------
@@ -266,7 +270,7 @@ if SERVER then
 elseif CLIENT then
 ---------------------------------- Clientside Convars ----------------------------------
 
-	CreateClientConVar( "acf_enable_lighting", 0, true ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
+	CreateClientConVar( "acf_enable_lighting", 1, true ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
 	CreateClientConVar( "acf_sens_irons", 0.5, true, false, "Reduce mouse sensitivity by this amount when zoomed in with iron sights on ACE SWEPs.", 0.01, 1)
 	CreateClientConVar( "acf_sens_scopes", 0.2, true, false, "Reduce mouse sensitivity by this amount when zoomed in with scopes on ACE SWEPs.", 0.01, 1)
 	CreateClientConVar( "acf_tinnitus", 1, true, false, "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat.", 0, 1 )
