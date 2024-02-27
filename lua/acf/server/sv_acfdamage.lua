@@ -285,9 +285,6 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 		Power = math.max(Power - PowerSpent,0)
 	end
-					--Pos      Amp     FREQ  Duration    radius   airshake
-	--util.ScreenShake( Hitpos, Amp * 100, 1 / Amp, Amp / 5, Radius * 5, true )
---	util.ScreenShake( Hitpos, Amp*1.5, Amp, Amp / 15, Radius * 10 , true)
 
 		--There was an attempt
 		--There has got to be a better way. Too bad viewpunches aren't clientside.
@@ -298,10 +295,6 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 			if PlayerDist > RadiusSQ then continue end
 			--Tar:ViewPunch( Angle( math.Clamp(Amp*-500000/PlayerDist * (math.random(0,1)-0.5) * math.Rand(0.1,1),-360,360), 0, 0 ) )
 			Tar:ViewPunch( Angle( math.Clamp(Amp * -350000/PlayerDist * 1 * math.Rand(0.3,2),-360,360), 0, 0 ) )
-			--util.ScreenShake( Hitpos, Amp * 100, 1 / Amp, Amp / 5, Radius * 5, true )
-			--util.ScreenShake( Hitpos, Amp*1.5, Amp, Amp / 15, Radius * 10 , true)
-			util.ScreenShake( Hitpos, 400 * Amp, 1.5 / Amp, Amp/12, Radius * 5 , true)
-
 
 		end
 

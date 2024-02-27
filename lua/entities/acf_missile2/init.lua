@@ -17,9 +17,9 @@ function ENT:Initialize()
 
 	self.BaseClass.Initialize(self)
 
-	if not IsValid(self:CPPIGetOwner()) then
-		self:CPPISetOwner(player.GetAll()[1])
-	end
+	--if not IsValid(self:CPPIGetOwner()) then
+	--	self:CPPISetOwner(player.GetAll()[1])
+	--end
 
 	self.PhysObj:EnableGravity( false )
 	self.PhysObj:EnableMotion( false )
@@ -50,14 +50,13 @@ function ENT:Initialize()
 	self.CanDetonate = false
 
 	self.P = Angle(0,0,0)
-	self.Plast = Angle(0,0,0) --Last P variable used in derivitive calculation
 	self.I = Angle(0,0,0)
 	self.D = Angle(0,0,0)
 
 	self.Pm = 0.75 --2 0.05
 	self.Im = 0.25 --0.25
 	self.IaccumulateMod = 0.1 --40
-	self.Dm = 0.05
+	self.Dm = 0.5
 
 	--[[
 	self.Pm = 2 --2 0.05
@@ -262,7 +261,7 @@ function ENT:Think()
 				self.I = self.I + self.P * DeltaTime * self.IaccumulateMod
 				self.I = Angle(math.Clamp( self.I.pitch, -10, 10 ), math.Clamp( self.I.yaw, -10, 10 ),0)
 
-				self.D = (self.P - self.Plast) / (DeltaTime+0.001)
+				self.D = (self.P - Plast) / (DeltaTime+0.001)
 				self.D = Angle(math.Clamp( self.D.pitch, -100, 100 ), math.Clamp( self.D.yaw, -100, 100 ),0)
 
 					local PID = self.P + self.I * self.Im + self.D * self.Dm
@@ -385,13 +384,17 @@ function ENT:Detonate()
 	local HEWeight = self.Bulletdata2.BoomFillerMass
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
+
+	self.Bulletdata2["Gun"]			= self
+
 	self.FakeCrate = ents.Create("acf_fakecrate2")
 	self.FakeCrate:RegisterTo(self.Bulletdata2)
 	self.Bulletdata2["Crate"] = self.FakeCrate:EntIndex()
 	self:DeleteOnRemove(self.FakeCrate)
 
-	self.Bulletdata2["Flight"] = self:GetForward():GetNormalized() * self.Flight * 39.37 * ACF.MissileVelocityMul
-	self.Bulletdata2.Pos = self:GetPos() + self:GetForward()
+--	self.Bulletdata2["Flight"] = self:GetForward():GetNormalized() * self.Flight * 39.37 * ACF.MissileVelocityMul
+	self.Bulletdata2["Flight"] = self.Flight * 39.37 * ACF.MissileVelocityMul
+	self.Bulletdata2.Pos = self:GetPos()
 	self.Bulletdata2.Owner = self:CPPIGetOwner()
 
 	self.CreateShell = ACF.RoundTypes[self.Bulletdata2.Type].create

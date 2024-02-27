@@ -490,7 +490,8 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	local ply = self:CPPIGetOwner()
 
 	local missile = ents.Create("acf_missile2")
-	missile:CPPISetOwner(ply)
+	--missile:CPPISetOwner(ply) --What could possibly go wrong :/
+	self.DamageOwner = ply
 	missile.DoNotDuplicate  = true
 	missile.Launcher		= self
 
@@ -964,6 +965,7 @@ do
 
 	local InstantDetTable = {
 		HE		= true,
+		--CHE		= true,
 		HEAT	= true,
 		THEAT	= true
 	}
@@ -980,7 +982,7 @@ do
 		if InstantDetTable[self.Bulletdata2.Type] then
 			self.Bulletdata2.FuseLength = 0.001
 		else
-			self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
+			--self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
 		end
 
 		self.Bulletdata2.Id = self.BulletData.Id
@@ -995,7 +997,9 @@ do
 		self.Bulletdata2.Data10 = self.BulletData.Data10 -- Tracer
 		self.Bulletdata2.Data13 = self.BulletData.Data13 or 55 --THEAT ConeAng2
 		self.Bulletdata2.Data14 = self.BulletData.Data14 or 0.05 --THEAT HE Allocation
-		print(self.BulletData.Data14)
+
+		--print(self.BulletData.Data14)
+
 		self.Bulletdata2.HEAllocation	= self.Bulletdata2.Data14
 		self.Bulletdata2.Data15 = self.BulletData.Data15
 		self.Bulletdata2.Colour = self:GetColor() or Color(255, 255, 255)
@@ -1021,6 +1025,11 @@ do
 		local Rad = math.rad(self.Bulletdata2.Data6 / 2)
 		self.Bulletdata2.SlugCaliber = self.Bulletdata2.Caliber - self.Bulletdata2.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
 			  Rad = math.rad(self.Bulletdata2.Data13 / 2)
+
+		if self.Bulletdata2.Type ~= "THEAT" then
+			self.Bulletdata2.HEAllocation = 0
+		end
+
 		self.Bulletdata2.SlugCaliber2 = self.Bulletdata2.Caliber - self.Bulletdata2.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
 		self.Bulletdata2.SlugMV = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * (1 - self.Bulletdata2.HEAllocation) * math.sin(math.rad(10 + self.Bulletdata2.Data6) / 2) / self.Bulletdata2.SlugMass) ^ ACF.HEATMVScale) * (ACF_GetRackValue(self.BulletData, "penmul") or ACF_GetGunValue(self.BulletData.Id, "penmul") or 1) / ACF.KEtoRHA
 		self.Bulletdata2.SlugMV2 = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * self.Bulletdata2.HEAllocation * math.sin(math.rad(10 + self.Bulletdata2.Data13) / 2) / self.Bulletdata2.SlugMass2) ^ ACF.HEATMVScaleTan) --keep fillermass/2 so that penetrator stays the same

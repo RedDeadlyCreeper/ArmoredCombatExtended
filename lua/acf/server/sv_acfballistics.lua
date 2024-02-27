@@ -411,6 +411,11 @@ do
 			return
 		end
 
+		ACF_DoOnBulletFlight = ACF.RoundTypes[Bullet.Type]["onbulletflight"]
+		if ACF_DoOnBulletFlight then
+			ACF_DoOnBulletFlight( Index, Bullet)
+		end
+
 		--if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
 		if Bullet.SkyLvL then
 

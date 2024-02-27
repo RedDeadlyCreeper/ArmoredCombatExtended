@@ -41,7 +41,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 
 		armour				= 20,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 120,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 320,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 70,							-- Acceleration in m/s.

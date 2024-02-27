@@ -48,7 +48,7 @@ ACF_defineGun("50kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -102,7 +102,7 @@ ACF_defineGun("100kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -155,7 +155,7 @@ ACF_defineGun("250kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -208,7 +208,7 @@ ACF_defineGun("500kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -258,7 +258,7 @@ ACF_defineGun("1000kgBOMB", {					-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -303,12 +303,12 @@ ACF_defineGun("100kgGBOMB", {					-- id
 		armour				= 25,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -358,12 +358,12 @@ ACF_defineGun("250kgGBOMB", {					-- id
 		armour				= 25,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)

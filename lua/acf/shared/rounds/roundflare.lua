@@ -9,7 +9,7 @@ Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "[FLR] - " .. ACFTranslation.ShellFLR[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellFLR[2]
-Round.netid = 8 --Unique ammotype ID for network transmission
+Round.netid = 23 --Unique ammotype ID for network transmission
 
 Round.Type  = "FLR"
 

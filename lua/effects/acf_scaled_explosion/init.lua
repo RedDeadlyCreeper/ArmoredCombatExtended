@@ -91,6 +91,16 @@ function EFFECT:Init( data )
 	end
 	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
+
+	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 39.4 + 0.001 --Divide by 0 is death
+
+	if PlayerDist < self.Radius*10 then
+		local Amp          = math.min(self.Radius * 0.5 / math.max(PlayerDist,1),40)
+		print(Amp)
+		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, self.Radius/7.5, 0 , true)
+	end
+
+
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
 
