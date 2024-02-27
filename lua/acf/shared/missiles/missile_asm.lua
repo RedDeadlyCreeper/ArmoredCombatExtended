@@ -43,7 +43,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 13,							-- Armour effectiveness of casing, in mm
+		armour				= 21,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection

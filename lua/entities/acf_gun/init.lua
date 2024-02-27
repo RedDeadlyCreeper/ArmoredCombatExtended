@@ -186,7 +186,7 @@ do
 			Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)
 			local Cal = Gun.Caliber
 
-			if Cal >= 4 then
+			if Cal >= 3 then
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse )
 			else
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse )

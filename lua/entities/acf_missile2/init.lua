@@ -91,7 +91,7 @@ function ENT:Think()
 	local Pos = self:GetPos()
 	local DeltaPos = (Pos - self.LastPos)/DeltaTime
 
-	self.LastVel = self.Flight
+	self.LastVel = self.Flight * 39.37
 	self.CurPos = Pos
 
 	if self.FirstThink == true then
@@ -294,7 +294,7 @@ function ENT:Think()
 		--------------------------
 
 		--CT > self.TimeOfLaunch + self.MinArmingDelay
-		if not self.CanDetonate and self.Fuse:IsArmed() then
+		if not self.CanDetonate and (self.Fuse:IsArmed() or CT > self.ActivationTime + self.Lifetime) then
 			self.CanDetonate = true
 		end
 
@@ -310,9 +310,10 @@ function ENT:Think()
 
 				self:SetPos(tr.HitPos + self:GetForward() * -30)
 				self:Detonate()
+				return
 			end
 
-			if self.Fuse:GetDetonate(self, self.Guidance) then
+			if self.Fuse:GetDetonate(self, self.Guidance) or CT > self.ActivationTime + self.Lifetime then
 				self:Detonate()
 				return
 			end
@@ -431,12 +432,19 @@ do
 
 	function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	--This function needs to return HitRes
 
-		local Mul	= (( HEtbl[Type] and 0.65 ) or 1) --Heat penetrators deal bonus damage to ammo
-		local HitRes	= ACF_PropDamage( Entity, Energy, FrArea * Mul, Angle, Inflictor ) --Calling the standard damage prop function
+		local Mul	= (( HEtbl[Type] and 0.1 ) or 1) --HE penetrators better penetrate the armor of missiles
+		local HitRes	= ACF_PropDamage( Entity, Energy , FrArea * Mul, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
 
-		if HitRes.Kill or HitRes.Overkill > 0 then
+		--print(math.Round(HitRes.Damage * 100))
+		--print(HitRes.Loss * 100)
 
-			self:Detonate()
+		if HitRes.Kill or HitRes.Loss < 1 then
+
+			--self:Detonate()
+
+			self.Lifetime = 0 --Instantly scuttle as soon as can execute.
+
+			return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }
 
 		end
 

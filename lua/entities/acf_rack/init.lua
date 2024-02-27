@@ -443,7 +443,7 @@ function ENT:Reload()
 	   self.NextFire = ReloadTest
 	end
 
-	print(self.ReloadDelay * self.ReloadMultiplierBonus)
+	--print(self.ReloadDelay * self.ReloadMultiplierBonus)
 
 	self.NextFire = CT + self.ReloadDelay * self.ReloadMultiplierBonus
 
@@ -545,6 +545,7 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 
 	missile.BoostKick = ACF_GetRackValue(BulletData, "launchkick") or ACF_GetGunValue(BulletData.Id, "launchkick") or 0
 
+	missile.Lifetime = ACF_GetRackValue(BulletData, "fusetime") or ACF_GetGunValue(BulletData.Id, "fusetime") or 20
 
 	missile.TurnRate = ACF_GetRackValue(BulletData, "turnrate") or ACF_GetGunValue(BulletData.Id, "turnrate") or 50
 	missile.FinMul = ACF_GetRackValue(BulletData, "finefficiency") or ACF_GetGunValue(BulletData.Id, "finefficiency") or 0.2
@@ -959,99 +960,124 @@ function ENT:TrimDistantCrates()
 
 end
 
---Jank terrible bad hardcoded function to copy bullet data over so it can be spawned by the missle. Has variables to convert every type of round data. There has to be a better way.
-function BulletDataMath(self)
+do
+
+	local InstantDetTable = {
+		HE		= true,
+		HEAT	= true,
+		THEAT	= true
+	}
+
+	--Jank terrible bad hardcoded function to copy bullet data over so it can be spawned by the missle. Has variables to convert every type of round data. There has to be a better way.
+	function BulletDataMath(self)
 
 
-	self.Bulletdata2 = {}
-	self.Bulletdata2.Type = self.BulletData.Type
+		self.Bulletdata2 = {}
+		self.Bulletdata2.Type = self.BulletData.Type
 
-	--print(self.Bulletdata2.Type)
+		--print(self.Bulletdata2.Type)
 
-	if self.Bulletdata2.Type == "HE" then
-		self.Bulletdata2.FuseLength = 0.001
+		if InstantDetTable[self.Bulletdata2.Type] then
+			self.Bulletdata2.FuseLength = 0.001
+		else
+			self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
+		end
+
+		self.Bulletdata2.Id = self.BulletData.Id
+		self.Bulletdata2.Caliber = self.BulletData.Caliber
+		self.Bulletdata2.PropLength = self.BulletData.PropLength --Volume of the case as a cylinder * Powder density converted from g to kg
+		self.Bulletdata2.ProjLength = self.BulletData.ProjLength --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+		self.Bulletdata2.Data5 = self.BulletData.BoomFillerMass or self.BulletData.FillerMass or 0 --He Filler or Flechette count
+		self.Bulletdata2.Data6 = self.BulletData.Data6 or 55 --HEAT ConeAng or Flechette Spread
+		self.Bulletdata2.Data7 = self.BulletData.Data7
+		self.Bulletdata2.Data8 = self.BulletData.Data8
+		self.Bulletdata2.Data9 = self.BulletData.Data9
+		self.Bulletdata2.Data10 = self.BulletData.Data10 -- Tracer
+		self.Bulletdata2.Data13 = self.BulletData.Data13 or 55 --THEAT ConeAng2
+		self.Bulletdata2.Data14 = self.BulletData.Data14 or 0.05 --THEAT HE Allocation
+		print(self.BulletData.Data14)
+		self.Bulletdata2.HEAllocation	= self.Bulletdata2.Data14
+		self.Bulletdata2.Data15 = self.BulletData.Data15
+		self.Bulletdata2.Colour = self:GetColor() or Color(255, 255, 255)
+
+		--
+		self.Bulletdata2.AmmoType = self.Bulletdata2.Type
+		self.Bulletdata2.FrArea = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
+		self.Bulletdata2.ProjMass = self.BulletData.FrArea * (self.BulletData.ProjLength * 7.9 / 1000)
+		self.Bulletdata2.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
+
+
+		self.Bulletdata2.FillerMass = self.Bulletdata2.Data5
+		local ConeThick = self.Bulletdata2.Caliber / 50
+		local Radius = (self.Bulletdata2.Caliber / 2)
+		local ConeLength = math.tan(math.rad(self.Bulletdata2.Data6)) * Radius
+		local ConeArea = 3.1416 * Radius * (Radius ^ 2 + ConeLength ^ 2) ^ 0.5
+		local ConeVol = ConeArea * ConeThick
+		self.Bulletdata2.SlugMass = ConeVol * 7.9 / 1000
+			ConeLength = math.tan(math.rad(self.Bulletdata2.Data13)) * Radius
+			ConeArea = 3.1416 * Radius * (Radius ^ 2 + ConeLength ^ 2) ^ 0.5
+			ConeVol = ConeArea * ConeThick
+		self.Bulletdata2.SlugMass2 = ConeVol * 7.9 / 1000
+		local Rad = math.rad(self.Bulletdata2.Data6 / 2)
+		self.Bulletdata2.SlugCaliber = self.Bulletdata2.Caliber - self.Bulletdata2.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
+			  Rad = math.rad(self.Bulletdata2.Data13 / 2)
+		self.Bulletdata2.SlugCaliber2 = self.Bulletdata2.Caliber - self.Bulletdata2.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
+		self.Bulletdata2.SlugMV = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * (1 - self.Bulletdata2.HEAllocation) * math.sin(math.rad(10 + self.Bulletdata2.Data6) / 2) / self.Bulletdata2.SlugMass) ^ ACF.HEATMVScale) * (ACF_GetRackValue(self.BulletData, "penmul") or ACF_GetGunValue(self.BulletData.Id, "penmul") or 1) / ACF.KEtoRHA
+		self.Bulletdata2.SlugMV2 = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * self.Bulletdata2.HEAllocation * math.sin(math.rad(10 + self.Bulletdata2.Data13) / 2) / self.Bulletdata2.SlugMass2) ^ ACF.HEATMVScaleTan) --keep fillermass/2 so that penetrator stays the same
+
+
+		local BoomMul = 1
+		if self.Bulletdata2.Type == "HEAT" or self.Bulletdata2.Type == "THEAT" then
+			BoomMul = 1/4
+		end
+		self.Bulletdata2.FillerMass = self.Bulletdata2.FillerMass * BoomMul
+		self.Bulletdata2.BoomFillerMass = self.Bulletdata2.FillerMass
+		self.Bulletdata2.FillerVol = self.Bulletdata2.BoomFillerMass or self.Bulletdata2.FillerMass
+
+		--data.SlugMV = (slugMV or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
+		--data.SlugMV2 = (slugMV2 or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
+
+		--		print("SlugMV: " .. self.BulletData.SlugMV)
+		local SlugFrArea = 3.1416 * (self.Bulletdata2.SlugCaliber / 2) ^ 2
+		self.Bulletdata2.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
+		self.Bulletdata2.SlugDragCoef = ((SlugFrArea / 10000) / self.Bulletdata2.SlugMass)
+			SlugFrArea = 3.1416 * (self.Bulletdata2.SlugCaliber2 / 2) ^ 2
+			self.Bulletdata2.SlugPenArea2 = SlugFrArea ^ ACF.PenAreaMod
+			self.Bulletdata2.SlugDragCoef2 = ((SlugFrArea / 10000) / self.Bulletdata2.SlugMass2)
+		self.Bulletdata2.SlugRicochet = 500 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
+		self.Bulletdata2.CasingMass = self.Bulletdata2.ProjMass - self.Bulletdata2.FillerMass - ConeVol * 7.9 / 1000
+		self.Bulletdata2.Fragments = math.max(math.floor((self.Bulletdata2.BoomFillerMass / self.Bulletdata2.CasingMass) * ACF.HEFrag), 2)
+		self.Bulletdata2.FragMass = self.Bulletdata2.CasingMass / self.Bulletdata2.Fragments
+		--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
+		self.Bulletdata2.DragCoef = ((self.Bulletdata2.FrArea / 10000) / self.Bulletdata2.ProjMass)
+		--print(self.BulletData.SlugDragCoef)
+		--Don't touch below here
+		self.Bulletdata2.MuzzleVel = ACF_MuzzleVelocity(self.Bulletdata2.PropMass, self.Bulletdata2.ProjMass, self.Bulletdata2.Caliber)
+		self.Bulletdata2.ShovePower = 0.1
+		self.Bulletdata2.KETransfert = 0.3
+		self.Bulletdata2.PenArea = self.Bulletdata2.FrArea ^ ACF.PenAreaMod
+		self.Bulletdata2.Pos = Vector(0, 0, 0)
+		self.Bulletdata2.LimitVel = 800
+		self.Bulletdata2.Ricochet = 999
+		self.Bulletdata2.Flight = Vector(0, 0, 0)
+		self.Bulletdata2.BoomPower = self.Bulletdata2.PropMass + self.Bulletdata2.FillerMass
+		--		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37 , self.BulletData.SlugMass, 999999 )
+		local SlugEnergy = ACF_Kinetic(self.Bulletdata2.SlugMV * 39.37, self.Bulletdata2.SlugMass, 999999)
+		self.Bulletdata2.MaxPen = (SlugEnergy.Penetration / self.Bulletdata2.SlugPenArea) * ACF.KEtoRHA
+				--print(((SlugEnergy.Penetration / self.Bulletdata2.SlugPenArea) * ACF.KEtoRHA))
+		--For Fake Crate
+		self.BoomFillerMass = self.Bulletdata2.BoomFillerMass
+		self.Type = self.Bulletdata2.Type
+		self.Bulletdata2.Tracer = self.Bulletdata2.Data10
+		self.Tracer = self.Bulletdata2.Data10
+		self.Caliber = self.Bulletdata2.Caliber
+		self.ProjMass = self.Bulletdata2.ProjMass
+		self.FillerMass = self.Bulletdata2.FillerMass
+		self.DragCoef = self.Bulletdata2.DragCoef
+		self.Colour = self.Bulletdata2.Colour
+		self.DetonatorAngle = 80
 	end
 
-	self.Bulletdata2.Id = self.BulletData.Id
-	self.Bulletdata2.Caliber = self.BulletData.Caliber
-	self.Bulletdata2.PropLength = self.BulletData.PropLength --Volume of the case as a cylinder * Powder density converted from g to kg
-	self.Bulletdata2.ProjLength = self.BulletData.ProjLength --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-	self.Bulletdata2.Data5 = self.BulletData.BoomFillerMass or self.BulletData.FillerMass or 0 --He Filler or Flechette count
-	self.Bulletdata2.Data6 = self.BulletData.Data6 or 55 --HEAT ConeAng or Flechette Spread
-	self.Bulletdata2.Data7 = self.BulletData.Data7
-	self.Bulletdata2.Data8 = self.BulletData.Data8
-	self.Bulletdata2.Data9 = self.BulletData.Data9
-	self.Bulletdata2.Data10 = self.BulletData.Data10 -- Tracer
-	self.Bulletdata2.Data13 = self.BulletData.Data13 --THEAT ConeAng2
-	self.Bulletdata2.Data14 = self.BulletData.Data14 --THEAT HE Allocation
-	self.Bulletdata2.Data15 = self.BulletData.Data15
-	self.Bulletdata2.Colour = self:GetColor() or Color(255, 255, 255)
-
-	--
-	self.Bulletdata2.AmmoType = self.Bulletdata2.Type
-	self.Bulletdata2.FrArea = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
-	self.Bulletdata2.ProjMass = self.BulletData.FrArea * (self.BulletData.ProjLength * 7.9 / 1000)
-	self.Bulletdata2.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-
-	self.Bulletdata2.HEAllocation	= self.Bulletdata2.Data14
-	self.Bulletdata2.FillerMass = self.Bulletdata2.Data5
-	local ConeThick = self.Bulletdata2.Caliber / 50
-	local Radius = (self.Bulletdata2.Caliber / 2)
-	local ConeLength = math.tan(math.rad(self.Bulletdata2.Data6)) * Radius
-	local ConeArea = 3.1416 * Radius * (Radius ^ 2 + ConeLength ^ 2) ^ 0.5
-	local ConeVol = ConeArea * ConeThick
-	self.Bulletdata2.SlugMass = ConeVol * 7.9 / 1000
-	local Rad = math.rad(self.Bulletdata2.Data6 / 2)
-	self.Bulletdata2.SlugCaliber = self.Bulletdata2.Caliber - self.Bulletdata2.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
-	self.Bulletdata2.SlugMV = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + self.Bulletdata2.Data6) / 2) / self.Bulletdata2.SlugMass) ^ ACF.HEATMVScale) * (ACF_GetRackValue(self.BulletData, "penmul") or ACF_GetGunValue(self.BulletData.Id, "penmul") or 1) / ACF.KEtoRHA
-
-	local BoomMul = 1
-	if self.Bulletdata2.Type == "HEAT" or self.Bulletdata2.Type == "THEAT" then
-		BoomMul = 1/3
-	end
-	self.Bulletdata2.FillerMass = self.Bulletdata2.FillerMass * BoomMul
-	self.Bulletdata2.BoomFillerMass = self.Bulletdata2.FillerMass
-	self.Bulletdata2.FillerVol = self.Bulletdata2.BoomFillerMass or self.Bulletdata2.FillerMass
-
-	--data.SlugMV = (slugMV or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
-	--data.SlugMV2 = (slugMV2 or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
-
-	--		print("SlugMV: " .. self.BulletData.SlugMV)
-	local SlugFrArea = 3.1416 * (self.Bulletdata2.SlugCaliber / 2) ^ 2
-	self.Bulletdata2.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
-	self.Bulletdata2.SlugDragCoef = ((SlugFrArea / 10000) / self.Bulletdata2.SlugMass)
-	self.Bulletdata2.SlugRicochet = 500 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
-	self.Bulletdata2.CasingMass = self.Bulletdata2.ProjMass - self.Bulletdata2.FillerMass - ConeVol * 7.9 / 1000
-	self.Bulletdata2.Fragments = math.max(math.floor((self.Bulletdata2.BoomFillerMass / self.Bulletdata2.CasingMass) * ACF.HEFrag), 2)
-	self.Bulletdata2.FragMass = self.Bulletdata2.CasingMass / self.Bulletdata2.Fragments
-	--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
-	self.Bulletdata2.DragCoef = ((self.Bulletdata2.FrArea / 10000) / self.Bulletdata2.ProjMass)
-	--print(self.BulletData.SlugDragCoef)
-	--Don't touch below here
-	self.Bulletdata2.MuzzleVel = ACF_MuzzleVelocity(self.Bulletdata2.PropMass, self.Bulletdata2.ProjMass, self.Bulletdata2.Caliber)
-	self.Bulletdata2.ShovePower = 0.1
-	self.Bulletdata2.KETransfert = 0.3
-	self.Bulletdata2.PenArea = self.Bulletdata2.FrArea ^ ACF.PenAreaMod
-	self.Bulletdata2.Pos = Vector(0, 0, 0)
-	self.Bulletdata2.LimitVel = 800
-	self.Bulletdata2.Ricochet = 999
-	self.Bulletdata2.Flight = Vector(0, 0, 0)
-	self.Bulletdata2.BoomPower = self.Bulletdata2.PropMass + self.Bulletdata2.FillerMass
-	--		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37 , self.BulletData.SlugMass, 999999 )
-	local SlugEnergy = ACF_Kinetic(self.Bulletdata2.SlugMV * 39.37, self.Bulletdata2.SlugMass, 999999)
-	self.Bulletdata2.MaxPen = (SlugEnergy.Penetration / self.Bulletdata2.SlugPenArea) * ACF.KEtoRHA
-			--print(((SlugEnergy.Penetration / self.Bulletdata2.SlugPenArea) * ACF.KEtoRHA))
-	--For Fake Crate
-	self.BoomFillerMass = self.Bulletdata2.BoomFillerMass
-	self.Type = self.Bulletdata2.Type
-	self.Bulletdata2.Tracer = self.Bulletdata2.Data10
-	self.Tracer = self.Bulletdata2.Data10
-	self.Caliber = self.Bulletdata2.Caliber
-	self.ProjMass = self.Bulletdata2.ProjMass
-	self.FillerMass = self.Bulletdata2.FillerMass
-	self.DragCoef = self.Bulletdata2.DragCoef
-	self.Colour = self.Bulletdata2.Colour
-	self.DetonatorAngle = 80
 end
 
 function UpdateMissileSkin(Missile)
