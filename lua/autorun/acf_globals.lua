@@ -417,6 +417,13 @@ hook.Add( "Think", "Update ACF Internal Clock", function()
 	ACF.SysTime = SysTime()
 end )
 
+if CLIENT then
+	hook.Add("InitPostEntity", "ACE_CFWCheck", function()
+		if not CFW then
+			chat.AddText(Color(255,0,0), "[ACE] Contraption Framework is not installed, some features may not work properly. Check the ACE workshop or GitHub a download link.")
+		end
+	end)
+end
 
 if SERVER then
 
