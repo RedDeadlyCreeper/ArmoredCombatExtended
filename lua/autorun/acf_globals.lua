@@ -420,7 +420,7 @@ end )
 if CLIENT then
 	hook.Add("InitPostEntity", "ACE_CFWCheck", function()
 		if not CFW then
-			chat.AddText(Color(255,0,0), "[ACE] Contraption Framework is not installed, some features may not work properly. Check the ACE workshop or GitHub a download link.")
+			chat.AddText(Color(255,0,0), "[ACE] Contraption Framework is not installed, some features may not work properly. Check the ACE workshop or GitHub for a download link.")
 		end
 	end)
 end
