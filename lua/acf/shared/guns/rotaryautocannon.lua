@@ -4,7 +4,7 @@ ACF_defineGunClass("RAC", {
 	spread = 0.4,
 	name = "Rotary Autocannon",
 	desc = ACFTranslation.GunClasses[11],
-	muzzleflash = "50cal_muzzleflash_noscale",
+	muzzleflash = "RAC",
 	rofmod = 0.07,
 	year = 1962,
 	sound = "weapons/acf_gun/mg_fire2.wav",

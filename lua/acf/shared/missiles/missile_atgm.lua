@@ -38,7 +38,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 10,							-- Armour effectiveness of casing, in mm
+		armour				= 15,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 70,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
@@ -106,7 +106,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 13,							-- Armour effectiveness of casing, in mm
+		armour				= 20,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 3,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
@@ -176,7 +176,7 @@ ACF_defineGun("AT-3 ASM", { --id
 		maxlength			= 55,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 7,							-- Armour effectiveness of casing, in mm
+		armour				= 13,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.6,							--Fraction of speed redirected every second at max deflection
@@ -246,7 +246,7 @@ ACF_defineGun("AT-2 ASM", { --id
 		maxlength			= 55,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 7,							-- Armour effectiveness of casing, in mm
+		armour				= 15,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.6,							--Fraction of speed redirected every second at max deflection
@@ -315,7 +315,7 @@ ACF_defineGun("FGM-148 ASM", {
 		maxlength			= 110,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 5,							-- Armour effectiveness of casing, in mm
+		armour				= 13,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 60,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection

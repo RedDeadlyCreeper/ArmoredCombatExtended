@@ -1,27 +1,5 @@
 --visual concept: Here's where should be every acf function
 
--- returns last parent in chain, which has physics
-function ACF_GetPhysicalParent( obj )
-	if not IsValid(obj) then return nil end
-
-	--check for fresh cached parent
-	if obj.acfphysparent and ACF.CurTime < obj.acfphysstale then
-		return obj.acfphysparent
-	end
-
-	local Parent = obj
-
-	while IsValid(Parent:GetParent()) do
-		Parent = Parent:GetParent()
-	end
-
-	--update cached parent
-	obj.acfphysparent = Parent
-	obj.acfphysstale = ACF.CurTime + 10 --when cached parent is considered stale and needs updating
-
-	return Parent
-end
-
 do
 	local SendDelay = 1 -- in miliseconds
 	local RenderProps = {

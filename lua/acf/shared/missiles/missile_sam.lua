@@ -31,7 +31,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	round = {
 		rocketmdl				= "models/missiles/fim_92.mdl",
 		rackmdl				= "models/missiles/fim_92_folded.mdl",
-		firedelay			= 0.75,
+		firedelay			= 0.5,
 		reloadspeed			= 1.0,
 		reloaddelay			= 25,
 
@@ -41,14 +41,14 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 
 		armour				= 20,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 320,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 240,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 70,							-- Acceleration in m/s.
+		thrust				= 120,							-- Acceleration in m/s.
 		burntime			= 2.5,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0.3,
 
-		launchkick			= 50,							-- Speed missile starts with on launch in m/s
+		launchkick			= 30,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -74,7 +74,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 			},
 
 	seekcone           = 7.5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
-	viewcone           = 27.5,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
+	viewcone           = 42,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity    = 1,
 	irccm				= true,
 
@@ -100,7 +100,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/fim_92.mdl",
 		rackmdl				= "models/missiles/fim_92_folded.mdl",
-		firedelay			= 1.0,
+		firedelay			= 0.75,
 		reloadspeed			= 1.0,
 		reloaddelay			= 30.0,
 
@@ -110,14 +110,14 @@ ACF_defineGun("Mistral SAM", {								-- id
 
 		armour				= 20,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.3,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 90,							-- Acceleration in m/s.
+		thrust				= 140,							-- Acceleration in m/s.
 		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0.2,
 
-		launchkick			= 50,							-- Speed missile starts with on launch in m/s
+		launchkick			= 30,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -141,7 +141,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 				},
 
 	seekcone			= 7.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
-	viewcone			= 27.5,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
+	viewcone			= 42,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity		= 1,
 	irccm				= true,
 
@@ -176,17 +176,17 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 		maxlength			= 145,							-- Length of missile. Used for ammo properties.
 		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 60,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 60,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 30,							-- Speed missile starts with on launch in m/s
+		launchkick			= 50,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -249,26 +249,26 @@ ACF_defineGun("9M311 SAM", {										-- id
 		maxlength			= 140,							-- Length of missile. Used for ammo properties.
 		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
-		turnrate			= 55,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 120,							-- Acceleration in m/s.
-		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 100,							-- Acceleration in m/s.
+		burntime			= 1,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 75,							-- Speed missile starts with on launch in m/s
+		launchkick			= 30,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
 		--Should be around 1.5s. Set to 1/4th boost time.
 		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.25,							-- Time in seconds for booster runtime
+		boostertime			= 0.35,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.0003,						-- percent speed loss per second
+		dragcoef			= 0.00035,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
@@ -282,7 +282,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 			},
 
 	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone           = 60,									-- getting outside this cone will break the lock.  Divided by 2.
+	viewcone           = 80,									-- getting outside this cone will break the lock.  Divided by 2.
 
 	armdelay           = 0.00,									-- minimum fuse arming delay
 	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
@@ -317,10 +317,10 @@ ACF_defineGun("9M331 SAM", {								-- id
 		maxlength			= 55,							-- Length of missile. Used for ammo properties.
 		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 35,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 5,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 20,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.1,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 90,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 110,							-- Acceleration in m/s.
@@ -332,14 +332,14 @@ ACF_defineGun("9M331 SAM", {								-- id
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
 		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.5,							-- Time in seconds for booster runtime
+		boostertime			= 0.65,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 2							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 0.65							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.

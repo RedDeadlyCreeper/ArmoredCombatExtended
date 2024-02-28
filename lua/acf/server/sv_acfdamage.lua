@@ -289,13 +289,20 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 		--There was an attempt
 		--There has got to be a better way. Too bad viewpunches aren't clientside.
 		local RadiusSQ = 15 * Radius^2
-		for _,Tar in player.Iterator() do
-			local PlayerDist = (Tar:GetPos() - Hitpos):LengthSqr() + 0.001 --Divide by 0 is death
+		for _,Tar in ipairs(player.GetAll()) do --ipairs(player.GetAll()), player.Iterator()
+			if Tar:HasGodMode() then continue end
+			local Difpos = (Tar:GetPos() - Hitpos)
+			local PlayerDist = Difpos:LengthSqr() + 0.001 --Divide by 0 is death
 
 			if PlayerDist > RadiusSQ then continue end
-			--Tar:ViewPunch( Angle( math.Clamp(Amp*-500000/PlayerDist * (math.random(0,1)-0.5) * math.Rand(0.1,1),-360,360), 0, 0 ) )
-			Tar:ViewPunch( Angle( math.Clamp(Amp * -350000/PlayerDist * 1 * math.Rand(0.3,2),-360,360), 0, 0 ) )
+			local DifAngle = Difpos:Angle()
+			local RelAngle = (Angle(-DifAngle.pitch,DifAngle.yaw,0)) - Tar:EyeAngles() + Angle(360,-180,0)
+			RelAngle = Angle(math.NormalizeAngle(RelAngle.pitch), math.NormalizeAngle(RelAngle.yaw))
+			RelAngle = Angle(RelAngle.pitch > 0 and 1 or (RelAngle.pitch == 0 and 0 or -1),RelAngle.yaw > 0 and 1 or (RelAngle.yaw == 0 and 0 or -1),0) --Converts to signs
 
+			PlayerDist = math.max(PlayerDist,13949) --Will never go below 3 meters.
+
+			Tar:ViewPunch( Angle( RelAngle.pitch * math.Clamp(Amp * -350000/PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * -300000/PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * 100000/PlayerDist * math.Rand(0.5,1),-180,180) ) )
 		end
 
 	--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see

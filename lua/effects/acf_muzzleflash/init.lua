@@ -14,6 +14,21 @@ function EFFECT:Init( data )
 	local Gun = data:GetEntity()
 	if not IsValid(Gun) then return end
 
+	if not Gun.Parent then
+		Gun.Parent = ACF_GetPhysicalParent(Gun) or Gun
+	--	print(Gun.Parent)
+	end
+
+	self.GunVelocity = Vector()
+
+	if IsValid(Gun.Parent) then
+		self.GunVelocity = Gun.Parent:GetVelocity()
+	else
+		self.GunVelocity = Gun:GetVelocity()
+	end
+
+	--print(self.GunVelocity:Length())
+
 	local Propellant   = data:GetScale()
 	local ReloadTime   = data:GetMagnitude()
 
@@ -92,10 +107,27 @@ function EFFECT:Init( data )
 
 			self.HitNormal = Ground.HitNormal
 
-			self:Shockwave( Ground, SMKColor )
-			self:MuzzleSmoke( Ground, Color( 150, 150, 150, 100 ) )
+
+			if MuzzleEffect == "RAC" then
+				self:Shockwave( Ground, SMKColor )
+				self:MuzzleSmokeRAC( Ground, Color( 150, 150, 150, 100 ) )
+			else
+				self:Shockwave( Ground, SMKColor )
+				self:MuzzleSmoke( Ground, Color( 150, 150, 150, 100 ) )
+			end
+
 
 		end
+
+
+		local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 39.4 + 0.001 --Divide by 0 is death
+
+		if PlayerDist < self.Radius*10 and not LocalPlayer():HasGodMode() then
+			local Amp          = math.min(Propellant * 3 / math.max(PlayerDist,1),40)
+			util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, Propellant  / 1, 0 , true)
+		end
+
+
 
 		if Gun.Animate then
 			Gun:Animate( Class, ReloadTime, false )
@@ -105,6 +137,7 @@ function EFFECT:Init( data )
 			Gun:Animate( Class, ReloadTime, true )
 		end
 	end
+
 
 end
 
@@ -178,7 +211,7 @@ function EFFECT:MuzzleSmokeRAC( Ground, SmokeColor )
 		local Smoke = self.Emitter:Add( "particles/smokey", AdjOrigin)
 
 		if Smoke then
-			Smoke:SetVelocity( ShootVector * 45 * size + self.DirVec * 30 * size * math.Rand(0.8, 1.0) )
+			Smoke:SetVelocity( ShootVector * 45 * size + self.DirVec * 30 * size * math.Rand(0.8, 1.0) + self.GunVelocity * 1.5 )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime(  1.75 * size/4 )
 			Smoke:SetStartAlpha( 25 )
@@ -204,7 +237,7 @@ function EFFECT:MuzzleSmokeRAC( Ground, SmokeColor )
 		local Dust = self.Emitter:Add("particles/smokey", AdjOrigin + self.DirVec * size * (-10 + 25 * (i/ParticleCount)) )
 
 		if Dust then
-			Dust:SetVelocity(self.DirVec * DustSpeed * size * 15)
+			Dust:SetVelocity(self.DirVec * DustSpeed * size * 15 + self.GunVelocity * 1.5)
 			DustSpeed = DustSpeed + (2) * (i/ParticleCount)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(1 * (size / 3))
@@ -223,7 +256,7 @@ function EFFECT:MuzzleSmokeRAC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/muzzleflash".. math.random(1,4), self.Origin - self.DirVec * size * 10 )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 55)
+		Dust:SetVelocity(self.DirVec * size * 55 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.2 * (size / 3))
 		Dust:SetStartAlpha(255)
@@ -243,7 +276,7 @@ function EFFECT:MuzzleSmokeRAC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/muzzleflash".. math.random(1,4), self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 35)
+		Dust:SetVelocity(self.DirVec * size * 35 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.15 * (size / 3))
 		Dust:SetStartAlpha(200)
@@ -260,7 +293,7 @@ function EFFECT:MuzzleSmokeRAC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 15)
+		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.1 * (size / 3))
 		Dust:SetStartAlpha(60)
@@ -277,7 +310,7 @@ function EFFECT:MuzzleSmokeRAC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 10)
+		Dust:SetVelocity(self.DirVec * size * 10 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.1 * (size / 3))
 		Dust:SetStartAlpha(100)
@@ -310,7 +343,7 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 		local Smoke = self.Emitter:Add( "particles/smokey", self.Origin )
 
 		if Smoke then
-			Smoke:SetVelocity( ShootVector * 45 * size - self.DirVec * 40 * size * math.Rand(0.8, 1.0) )
+			Smoke:SetVelocity( ShootVector * 45 * size - self.DirVec * 40 * size * math.Rand(0.8, 1.0) + self.GunVelocity * 1.5 )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime(  1.75 * size/4 )
 			Smoke:SetStartAlpha( 25 )
@@ -331,7 +364,7 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 
 	local DustSpeed = 1
 	for i = 1, ParticleCount do
-		local Dust = self.Emitter:Add("particles/smokey", self.Origin + self.DirVec * size * (-10 + 25 * (i/ParticleCount)) )
+		local Dust = self.Emitter:Add("particles/smokey", self.Origin + self.DirVec * size * (-10 + 25 * (i/ParticleCount)) + self.GunVelocity * 1.5 )
 
 		if Dust then
 			Dust:SetVelocity(self.DirVec * DustSpeed * size * 15)
@@ -353,7 +386,7 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/muzzleflash".. math.random(1,4), self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 55)
+		Dust:SetVelocity(self.DirVec * size * 55 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.2 * (size / 3))
 		Dust:SetStartAlpha(255)
@@ -373,7 +406,7 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/muzzleflash".. math.random(1,4), self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 15)
+		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.15 * (size / 3))
 		Dust:SetStartAlpha(200)
@@ -390,7 +423,7 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 15)
+		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.1 * (size / 3))
 		Dust:SetStartAlpha(60)
@@ -407,7 +440,7 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 15)
+		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.1 * (size / 3))
 		Dust:SetStartAlpha(100)

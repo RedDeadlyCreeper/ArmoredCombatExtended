@@ -44,7 +44,7 @@ ACF_defineGun("40mmFFAR", { --id
 		maxlength			= 60,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.2,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 40,							-- Armour effectiveness of casing, in mm
+		armour				= 20,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
@@ -111,7 +111,7 @@ ACF_defineGun("70mmFFAR", { --id
 		maxlength			= 90,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 40,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection

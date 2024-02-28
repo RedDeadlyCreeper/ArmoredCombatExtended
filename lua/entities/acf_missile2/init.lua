@@ -59,9 +59,9 @@ function ENT:Initialize()
 	self.Dm = 0.5
 
 	--[[
-	self.Pm = 2 --2 0.05
-	self.Im = 0.025 --0.25
-	self.IaccumulateMod = 200 --40
+	self.Pm = 0.75 --2 0.05
+	self.Im = 0.25 --0.25
+	self.IaccumulateMod = 0.1 --40
 	self.Dm = 0.5
 	]]--
 
@@ -385,12 +385,12 @@ function ENT:Detonate()
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
 
-	self.Bulletdata2["Gun"]			= self
+	self.Bulletdata2["Gun"]			= self.Launcher
 
-	self.FakeCrate = ents.Create("acf_fakecrate2")
-	self.FakeCrate:RegisterTo(self.Bulletdata2)
-	self.Bulletdata2["Crate"] = self.FakeCrate:EntIndex()
-	self:DeleteOnRemove(self.FakeCrate)
+	self.Launcher.FakeCrate = ents.Create("acf_fakecrate2")
+	self.Launcher.FakeCrate:RegisterTo(self.Bulletdata2)
+	self.Bulletdata2["Crate"] = self.Launcher.FakeCrate:EntIndex()
+	self.Launcher:DeleteOnRemove(self.Launcher)
 
 --	self.Bulletdata2["Flight"] = self:GetForward():GetNormalized() * self.Flight * 39.37 * ACF.MissileVelocityMul
 	self.Bulletdata2["Flight"] = self.Flight * 39.37 * ACF.MissileVelocityMul

@@ -112,7 +112,7 @@ ACF_defineGun("Ataka ASM", { --id
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.7,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 10,							-- Armour effectiveness of casing, in mm
+		armour				= 21,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 2,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
@@ -186,7 +186,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 40,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
@@ -261,7 +261,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		maxlength			= 140,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 		turnrate			= 120,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.75,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
@@ -332,7 +332,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		maxlength			= 220,							-- Length of missile. Used for ammo properties.
 		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 60,							-- Armour effectiveness of casing, in mm
 								--320
 		turnrate			= 120,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection

@@ -94,7 +94,7 @@ ACF_defineGun("100kgBOMB", {						-- id
 		maxlength			= 400,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 25,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
@@ -147,7 +147,7 @@ ACF_defineGun("250kgBOMB", {						-- id
 		maxlength			= 750,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 25,							-- Armour effectiveness of casing, in mm
+		armour				= 40,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
@@ -200,7 +200,7 @@ ACF_defineGun("500kgBOMB", {						-- id
 		maxlength			= 300,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 25,							-- Armour effectiveness of casing, in mm
+		armour				= 50,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
@@ -250,7 +250,7 @@ ACF_defineGun("1000kgBOMB", {					-- id
 		maxlength			= 700,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 25,							-- Armour effectiveness of casing, in mm
+		armour				= 60,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection

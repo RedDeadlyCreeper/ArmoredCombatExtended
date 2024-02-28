@@ -42,7 +42,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 		maxlength			= 130,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 								--320
 		turnrate			= 240,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.75,							--Fraction of speed redirected every second at max deflection
@@ -114,7 +114,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 		maxlength			= 100,							-- Length of missile. Used for ammo properties.
 		propweight			= 9,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
@@ -186,7 +186,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 		maxlength			= 120,							-- Length of missile. Used for ammo properties.
 		propweight			= 45,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 20,							-- Armour effectiveness of casing, in mm
+		armour				= 40,							-- Armour effectiveness of casing, in mm
 								--320
 		turnrate			= 11,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection

@@ -44,7 +44,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 		maxlength			= 240,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 40,							-- Armour effectiveness of casing, in mm
+		armour				= 15,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 7,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
@@ -112,7 +112,7 @@ ACF_defineGun("RS82 ASR", { --id
 		maxlength			= 50,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 40,							-- Armour effectiveness of casing, in mm
+		armour				= 15,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 7,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
@@ -180,7 +180,7 @@ ACF_defineGun("HVAR ASR", { --id
 		maxlength			= 90,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 40,							-- Armour effectiveness of casing, in mm
+		armour				= 25,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 7,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
@@ -247,7 +247,7 @@ ACF_defineGun("S-24 ASR", { --id
 		maxlength			= 80,							-- Length of missile. Used for ammo properties.
 		propweight			= 20,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 40,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 7,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection

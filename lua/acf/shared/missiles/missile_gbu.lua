@@ -45,7 +45,7 @@ ACF_defineGun("227kgGBU", {						-- id
 		maxlength			= 850,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 200,							-- Armour effectiveness of casing, in mm
+		armour				= 25,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
@@ -103,7 +103,7 @@ ACF_defineGun("454kgGBU", {						-- id
 		maxlength			= 830,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 200,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
@@ -158,7 +158,7 @@ ACF_defineGun("909kgGBU", {						-- id
 		maxlength			= 1400,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 200,							-- Armour effectiveness of casing, in mm
+		armour				= 40,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
@@ -214,7 +214,7 @@ ACF_defineGun("WalleyeGBU", {						-- id
 		maxlength			= 600,							-- Length of missile. Used for ammo properties.
 		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
 
-		armour				= 200,							-- Armour effectiveness of casing, in mm
+		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection

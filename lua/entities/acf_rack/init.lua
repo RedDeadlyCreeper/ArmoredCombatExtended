@@ -965,7 +965,7 @@ do
 
 	local InstantDetTable = {
 		HE		= true,
-		--CHE		= true,
+		CHE		= true,
 		HEAT	= true,
 		THEAT	= true
 	}
@@ -982,7 +982,7 @@ do
 		if InstantDetTable[self.Bulletdata2.Type] then
 			self.Bulletdata2.FuseLength = 0.001
 		else
-			--self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
+			self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
 		end
 
 		self.Bulletdata2.Id = self.BulletData.Id

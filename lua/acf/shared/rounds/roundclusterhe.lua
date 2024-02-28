@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.CHE = { "MG", "SL", "ECM","ATR","SBC" }
+ACF.AmmoBlacklist.CHE = { "MG", "HMG","RAC","ATR", "SL", "GL", "AAM", "FFAR", "POD", "UAR", "ATGM", "FGL", "SAM", "ECM","ATR", "SBC", "ASM" }
 
 local Round = {}
 
@@ -12,12 +12,6 @@ Round.desc  = ACFTranslation.ShellHE[2]
 Round.netid = 24 --Unique ammotype ID for network transmission
 
 Round.Type  = "CHE"
-
-function Round.create( _, BulletData )
-
-	ACF_CreateBullet( BulletData )
-
-end
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( _, PlayerData )
@@ -137,11 +131,6 @@ function Round.worldimpact()
 	return false
 end
 
-function Round.endflight( Index, Bullet, HitPos, HitNormal )
-	ACF_HE( HitPos - Bullet.Flight:GetNormalized() * 3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
-	ACF_RemoveBullet( Index )
-end
-
 do
 
 	local WhiteList = {
@@ -149,37 +138,35 @@ do
 		HEAT	= true,
 	}
 
-	local function CreateCluster(bullet, bdata)
+	local function GenerateCluster(bdata)
 
 		local RoundType = bdata.Type
 
 		--Make cluster to fail. Allow with rounds on whitelist only.
 		--if not WhiteList[RoundType] then return end
 
-		local Bomblets  = math.Clamp(math.Round(bdata.FillerMass * 0.25),3,30)	--30 bomblets original
-		--print(Bomblets)
-		--local Bomblets  = 10	--30 bomblets original
-		--local MuzzlePos = missile:LocalToWorld(Vector(10,0,0))
-		local MuzzleVec = bullet.Flight:GetNormalized()
+		local Bomblets  = math.Clamp(math.Round(bdata.FillerMass * 1.5),3,60)	--30 bomblets original
 
 		if bdata.Type == "HEAT" then
 			Bomblets = math.Clamp(Bomblets,3,25)
 		end
 
-		local GEnt = bullet.Gun
+		local GEnt = bdata.Gun
 
 		GEnt.BulletDataC = {}
+
+		GEnt.BulletDataC.Bomblets = Bomblets
 
 		GEnt.BulletDataC["Accel"]			= Vector(0,0,-600)
 		GEnt.BulletDataC["BoomPower"]		= bdata.BoomPower
 
-		GEnt.BulletDataC["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 10, 0.05, bdata.Caliber * 0.8) --Controls visual size, does nothing else
+		GEnt.BulletDataC["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 30, 0.05, bdata.Caliber ) --Controls visual size, does nothing else
 		GEnt.BulletDataC["Crate"]			= bdata.Crate
 		GEnt.BulletDataC["DragCoef"]		= bdata.DragCoef / Bomblets / 2
-		GEnt.BulletDataC["FillerMass"]	= bdata.FillerMass / Bomblets / 0.5 	--nan armor ocurrs when this value is > 1
+		GEnt.BulletDataC["FillerMass"]	= bdata.FillerMass / Bomblets / 1.5 	--nan armor ocurrs when this value is > 1
 
 		--print(GEnt.BulletDataC["FillerMass"])
-		print(Bomblets)
+		--print(Bomblets)
 		--print(missile.BulletDataC["FillerMass"])
 
 		GEnt.BulletDataC["Filter"]		= GEnt
@@ -191,7 +178,7 @@ do
 		GEnt.BulletDataC["Id"]			= bdata.Id
 		GEnt.BulletDataC["KETransfert"]	= bdata.KETransfert
 		GEnt.BulletDataC["LimitVel"]		= 700
-		GEnt.BulletDataC["MuzzleVel"]		= 300
+		GEnt.BulletDataC["MuzzleVel"]		= 250
 		--GEnt.BulletDataC["MuzzleVel"]		= bdata.MuzzleVel * 20
 		GEnt.BulletDataC["Owner"]			= bdata.Owner
 		GEnt.BulletDataC["PenArea"]		= bdata.PenArea
@@ -231,13 +218,21 @@ do
 
 		end
 
-		--GEnt.FakeCrate = ents.Create("acf_fakecrate2")
+		GEnt.FakeCrate = GEnt.FakeCrate or ents.Create("acf_fakecrate2")
 
-		--GEnt.FakeCrate:RegisterTo(GEnt.BulletDataC)
-		--GEnt.BulletDataC["Crate"] = GEnt.FakeCrate:EntIndex()
+		GEnt.FakeCrate:RegisterTo(GEnt.BulletDataC)
+		GEnt.BulletDataC["Crate"] = GEnt.FakeCrate:EntIndex()
+
+		GEnt:DeleteOnRemove(GEnt.FakeCrate)
+
+	end
+
+	local function CreateCluster(bullet, bdata)
+
+		local GEnt = bullet.Gun
 
 		local MuzzleVec = bullet.Flight:GetNormalized()
-		for I = 1,Bomblets do
+		for I = 1,GEnt.BulletDataC.Bomblets do
 			--print("Bobm")
 			timer.Simple(0.01 * I, function()
 				if IsValid(GEnt) then
@@ -245,7 +240,7 @@ do
 					local Spread = VectorRand()
 					--Spread = Spread
 					Spread = Vector(Spread.x * math.abs(Spread.x), Spread.y * math.abs(Spread.y), Spread.z * math.abs(Spread.z))
-					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4 )):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37
+					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * math.min((GEnt.BulletDataC.Bomblets/10) * 0.1 , 0.65))):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0)
 
 					local MuzzlePos = bullet.Pos
 					GEnt.BulletDataC.Pos = MuzzlePos
@@ -255,6 +250,14 @@ do
 				end
 			end)
 		end
+
+	end
+
+	function Round.create( _, BulletData )
+
+		ACF_CreateBullet( BulletData )
+
+		GenerateCluster(BulletData)
 
 	end
 
@@ -278,6 +281,18 @@ do
 		end
 
 
+	end
+
+	function Round.endflight( Index, Bullet, HitPos, HitNormal )
+		ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
+
+		ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.FillerMass/20, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+		local GunEnt = Bullet.Gun
+		if IsValid(GunEnt) then
+			--print("Valid")
+			CreateCluster(Bullet,GunEnt.BulletData) --(bullet, bdata)
+		end
+		ACF_RemoveBullet( Index )
 	end
 
 end
