@@ -47,6 +47,7 @@ function ENT:Initialize()
 	self.BulletData.ProjMass = 0
 
 	self.Inaccuracy          = 1
+	self.KERecoil			 = 0
 	self.LastThink           = 0
 
 end
@@ -723,10 +724,10 @@ function ENT:Think()
 	self.LastThink = ACF.CurTime
 	self:NextThink(Time)
 
-	if self.CurrentRecoil > 0.1 then
-		self.CurrentRecoil = self.CurrentRecoil * 0.7
+	if self.CurrentRecoil > 0 then
+		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime/0.5,0) --Divided by time to dissipate recoil
 		local Dir = -self:GetForward()
-		ACF_KEShove(self, self:GetPos() , Dir , self.CurrentRecoil )
+		ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil * self.CurrentRecoil )
 	end
 
 	return true
@@ -873,11 +874,12 @@ do
 				self:CreateShell( self.BulletData )
 
 				local Dir = -self:GetForward()
-				local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 2500 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1)
 
-				self.CurrentRecoil = self.CurrentRecoil + KE
+				self.CurrentRecoil = 1
 
-				ACF_KEShove(self, self:GetPos() , Dir , KE )
+				self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) / 10
+
+				ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil )
 
 				self.Ready = false
 				self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
@@ -992,6 +994,8 @@ function ENT:LoadAmmo( AddTime, Reload )
 		Wire_TriggerOutput(self, "Fire Rate", self.RateOfFire)
 		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
 		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
+
+		--self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass /2000 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1)
 
 		self.NextFire = curTime + self.ReloadTime
 		local reloadTime = self.ReloadTime

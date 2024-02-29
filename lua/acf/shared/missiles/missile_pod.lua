@@ -140,7 +140,7 @@ ACF_defineGun("70mmFFAR", { --id
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "GPS"},
-	fuses	= {"Contact", "Timed"},
+	fuses	= {"Contact", "Timed", "Optical"},
 
 	racks	= {["70mm7xPOD"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -149,6 +149,75 @@ ACF_defineGun("70mmFFAR", { --id
 	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
 
 	armdelay	= 0.00	-- minimum fuse arming delay
+} )
+
+ACF_defineGun("S8KO", { --id
+
+	name        = "S-8KO Unguided Rockets",
+	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
+	model       = "models/missiles/S-8KO.mdl",
+	effect           = "Rocket_Smoke_Trail",
+	effectbooster	= "Rocket Motor FFAR",
+	caliber	= 8,
+	gunclass	= "FFAR",
+	rack		= "20x S8KO",  -- Which rack to spawn this missile on?
+	weight	= 12,
+	length	= 115,
+	year		= 1960,
+	roundclass  = "Rocket",
+	modeldiameter	= 3,
+	round	=
+	{
+
+		rocketmdl			= "models/missiles/arend/s-8ko.mdl",
+		rackmdl				= "models/missiles/arend/s-8ko.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.1,
+		reloaddelay			= 20.0,
+		inaccuracy			= 2,
+
+		maxlength			= 90,							-- Length of missile. Used for ammo properties.
+		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 30,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 0,						-- Acceleration in m/s.
+		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.35,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.001,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		penmul	= math.sqrt(0.65)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+	},
+
+	ent        = "acf_missile_to_rack",
+	guidance   = {"Dumb"},
+	fuses      = {"Contact", "Timed", "Optical"},
+	racks      = {["20x S8KO"] = true},
+
+	seekcone	= 30,	-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
+	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
+
+	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay   = 0.0
+
 } )
 
 ACF_defineGun("Zuni ASR", { --id

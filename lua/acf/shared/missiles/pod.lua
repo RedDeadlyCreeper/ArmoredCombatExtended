@@ -495,22 +495,23 @@ ACF_DefineRack("127mm4xPOD", {
 
 --9m311 pod
 ACF_DefineRack("1x 9m311", {
-	name = "9m311 Round",
-	desc = "A single 9m311 round.",
-	model = "models/kali/weapons/kornet/parts/9m133 kornet tube.mdl",
+	name = "Single 9M311 Launch Tube",
+	desc = "A single 9M311 round.",
+	model = "models/missiles/arend/9m311_tube.mdl",
 	gunclass = "POD",
-	weight = 30,
-	year = 1970,
+	weight = 10,
+	year = 1982,
 	magsize = 1,
+	armour  = 18,
 	caliber = 12,
 
-	whitelistonly	= true,
+	whitelistonly   = true,
 	protectmissile  = true,
-	hidemissile		= true,
+	hidemissile     = false,
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(0,0,0), scaledir = Vector(0,0,0) }
+		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )
 
@@ -557,24 +558,41 @@ ACF_DefineRack("1x9M331 Pod", {
 	}
 } )
 
-
-ACF_DefineRack("2x9M331 Pod", {
-	name = "Double 9M331 Pod",
-	desc = "TOR missile pod designed to carry 2 missiles.",
-	model	= "models/missiles/9m31_rk2.mdl",
+ACF_DefineRack("20x S8KO", {
+	name = "S-8KO Rocket Pod",
+	desc = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
+	model = "models/missiles/S8KOLauncher.mdl",
 	gunclass = "POD",
-	weight = 200,
-	year = 1986,
-	magsize = 2,
-	caliber = 23.9,
-
+	weight = 100,
+	year = 1970,
+	magsize = 20,
+	armour  = 20,
+	caliber = 8,
+	whitelistonly   = true,
 	protectmissile  = true,
-	hidemissile	= false,
-	whitelistonly	= true,
+	hidemissile     = false,
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(-26.5,-5.5,0.132), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile2"] = { ["pos"] = Vector(-26.5,11.05,0.132), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		["missile1"] = { ["pos"] = Vector(0,-3.6086,6.968),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(0,3.525,-3.435),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(0,3.6086,6.968),    ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(0,-3.525,-3.435),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(0,6.493,4.704),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile6"] = { ["pos"] = Vector(0,-6.493,4.704),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile7"] = { ["pos"] = Vector(0,6.488,-5.649),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile8"] = { ["pos"] = Vector(0,-6.488,-5.649),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile9"] = { ["pos"] = Vector(0,2.286,3.424),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile10"] = { ["pos"] = Vector(0,-3.594,-7.954),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile11"] = { ["pos"] = Vector(0,-2.286,3.424),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile12"] = { ["pos"] = Vector(0,3.594,-7.954),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile13"] = { ["pos"] = Vector(0,-8.047,1.336),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile14"] = { ["pos"] = Vector(0,0,-5.04),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile15"] = { ["pos"] = Vector(0,8.047,1.336),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile16"] = { ["pos"] = Vector(0,-4.4812,0.288),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile17"] = { ["pos"] = Vector(0,8.047,-2.351),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile18"] = { ["pos"] = Vector(0,-8.047,-2.351),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile19"] = { ["pos"] = Vector(0,4.4812,0.288),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile20"] = { ["pos"] = Vector(0,0,-8.824),		["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 	}
 } )

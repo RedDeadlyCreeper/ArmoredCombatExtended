@@ -229,17 +229,17 @@ ACF_defineGun("9M311 SAM", {										-- id
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass         = "SAM",
 	rack             = "1x 9m311",								-- Which rack to spawn this missile on?
-	length           = 215,										-- Used for the physics calculations
+	length           = 253,										-- Used for the physics calculations
 	caliber          = 12,
 	weight           = 71,										-- Don't scale down the weight though!
 	year             = 1982,
 	rofmod           = 0.3,
-	modeldiameter    = 3 * 2.54,
+	modeldiameter    = 16,
 	rotmult          = 1,
 
 	round = {
-		rocketmdl			= "models/missiles/aim9.mdl",
-		rackmdl				= "models/missiles/aim9.mdl",
+		rocketmdl			= "models/missiles/arend/9m311_unfolded.mdl",
+		rackmdl				= "models/missiles/arend/9m311_folded.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 2.0,
 		reloaddelay			= 40.0,
@@ -347,8 +347,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
-						["1x9M331 Pod"] = true,
-						["2x9M331 Pod"] = true
+						["1x9M331 Pod"] = true
 				},
 
 	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)

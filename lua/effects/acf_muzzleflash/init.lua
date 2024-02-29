@@ -364,10 +364,10 @@ function EFFECT:MuzzleSmoke( Ground, SmokeColor )
 
 	local DustSpeed = 1
 	for i = 1, ParticleCount do
-		local Dust = self.Emitter:Add("particles/smokey", self.Origin + self.DirVec * size * (-10 + 25 * (i/ParticleCount)) + self.GunVelocity * 1.5 )
+		local Dust = self.Emitter:Add("particles/smokey", self.Origin + self.DirVec * size * (-10 + 25 * (i/ParticleCount)) )
 
 		if Dust then
-			Dust:SetVelocity(self.DirVec * DustSpeed * size * 15)
+			Dust:SetVelocity(self.DirVec * DustSpeed * size * 15 + self.GunVelocity * 1.5)
 			DustSpeed = DustSpeed + (2) * (i/ParticleCount)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(2 * (size / 3))

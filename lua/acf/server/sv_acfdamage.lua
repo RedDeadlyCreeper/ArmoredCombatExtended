@@ -807,7 +807,7 @@ end
 --helper function to replace ENT:ApplyForceOffset()
 --Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
 local m_insq = 1 / 39.37 ^ 2
-local function ACF_ApplyForceOffset(Phys, Force, Pos)
+local function ACF_ApplyForceOffset(Phys, Force, Pos) --For some reason this function somestimes reverses the impulse. I don't know why.
 	Phys:ApplyForceCenter(Force)
 	local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
 	local angf = off:Cross(Force) * m_insq * 360 / (2 * 3.1416)
@@ -834,13 +834,15 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	if not Target.acfphystotal then return end
 
 	local physratio = Target.acfphystotal / Target.acftotal
+	--local physratio = 0.03
+	--print(KE)
 
 	local Scaling = 1
 
 	--Scale down the offset relative to chassis if the gun is parented
---	if Target:EntIndex() ~= parent:EntIndex() then
---		Scaling = 87.5
---	end
+	--if Target:EntIndex() ~= parent:EntIndex() then
+	--Scaling = 87.5
+	--end
 
 	local Local	= parent:WorldToLocal(Pos) / Scaling
 	local Res	= Local + phys:GetMassCenter()
