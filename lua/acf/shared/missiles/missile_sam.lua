@@ -220,22 +220,87 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 	ghosttime          = 0.5									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
 
+ACF_defineGun("VT-1 SAM", {										-- id
+	name             = "VT-1 Missile",
+	desc             = "Powerful command guided SAM. Great range, good agility, and a powerful warhead. Has datalink.",
+	model            = "models/missiles/arend/vt1.mdl",
+	effect           = "Rocket Motor",
+	effectbooster	= "Rocket Motor Missile1",
+	gunclass         = "SAM",
+	rack             = "1x VT-1",								-- Which rack to spawn this missile on?
+	length           = 92*2.53, --Convert to ammocrate units
+	caliber          = 12,
+	weight           = 73,										-- Don't scale down the weight though!
+	year             = 1960,
+	modeldiameter    = 8,--Already in ammocrate units
+
+	round = {
+		rocketmdl			= "models/missiles/arend/vt1.mdl",
+		rackmdl				= "models/missiles/arend/vt1_folded.mdl",
+		firedelay			= 0.75,
+		reloadspeed			= 2.0,
+		reloaddelay			= 40.0,
+
+		--Formerly 190 and 1. Reduced blast from 213j to 120Mj. For reference a 100kg bomb has 117Kj.
+		maxlength			= 145,							-- Length of missile. Used for ammo properties.
+		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 30,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 60,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.3,							--Fraction of speed redirected every second at max deflection
+
+		thrust				= 60,							-- Acceleration in m/s.
+		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 50,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.25,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.002,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
+		predictiondelay		= 0.25							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+	},
+
+	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb", "Laser"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+
+	racks = {										-- a whitelist for racks that this missile can load into.
+				["1x VT-1"] = true
+			},
+
+	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone           = 80,									-- getting outside this cone will break the lock.  Divided by 2.
+
+	armdelay           = 0.00,									-- minimum fuse arming delay
+	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
+	ghosttime          = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	SeekSensitivity    = 2
+} )
+
 --Tunguska Missile
 ACF_defineGun("9M311 SAM", {										-- id
 	name             = "9M311 Tunguska",
-	desc             = "The 9M311 missile is a supersonic Anti Air missile that while is not agile enough to hit maneuvering planes, excels against helicopters.",
-	model            = "models/missiles/aim9.mdl",
+	desc             = "The 9M311 missile is a supersonic Anti Air missile that while is not agile enough to hit maneuvering planes, excels against helicopters. Has datalink.",
+	model            = "models/missiles/arend/9m311_unfolded.mdl",
 	effect           = "Rocket Motor",
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass         = "SAM",
 	rack             = "1x 9m311",								-- Which rack to spawn this missile on?
-	length           = 253,										-- Used for the physics calculations
+	length           = 100*2.53, --Convert to ammocrate units
 	caliber          = 12,
 	weight           = 71,										-- Don't scale down the weight though!
 	year             = 1982,
-	rofmod           = 0.3,
-	modeldiameter    = 16,
-	rotmult          = 1,
+	modeldiameter    = 7,--Already in ammocrate units
 
 	round = {
 		rocketmdl			= "models/missiles/arend/9m311_unfolded.mdl",
@@ -270,11 +335,12 @@ ACF_defineGun("9M311 SAM", {										-- id
 
 		dragcoef			= 0.00035,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 0.25							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "Radar", "Infrared"},
+	guidance   = {"Dumb", "Laser"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
@@ -294,22 +360,22 @@ ACF_defineGun("9M311 SAM", {										-- id
 --TOR Missile. This is going to be fun.
 ACF_defineGun("9M331 SAM", {								-- id
 	name             = "9M331 TOR",
-	desc             = "The TOR Missile. Medium range SAM. This vertically Launched medium range missile is fast reacting making it good for missile intercepts, agile, and deadly. The missile is first kicked out of the tube, spun towards the target, then launched.",
-	model            = "models/missiles/9m31.mdl",
+	desc             = "The TOR Missile. Medium range SAM. This vertically Launched medium range missile is fast reacting making it good for missile intercepts, agile, and deadly. The missile is first kicked out of the tube, spun towards the target, then launched. Has datalink.",
+	model            = "models/missiles/arend/9m331_unfolded.mdl",
 	effect           = "Rocket Motor Missile1",
 	effectbooster	 = "Rocket_Smoke_Trail",
 	gunclass         = "SAM",
 	rack             = "1x9M331 Pod",							-- Which rack to spawn this missile on?
-	length           = 250,
+	length           = 118*2.53, --Convert to ammocrate units
 	caliber          = 23.9,
 	weight           = 167,									-- 15.1,	-- Don't scale down the weight though!
 	year             = 1986,
-	modeldiameter    = 13.66,
+	modeldiameter    = 10,
 	bodydiameter     = 7.62, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
-		rocketmdl			= "models/missiles/aim120.mdl",
-		rackmdl				= "models/missiles/aim120.mdl",
+		rocketmdl			= "models/missiles/arend/9m331_unfolded.mdl",
+		rackmdl				= "models/missiles/arend/9m331_folded.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 2.0,
 		reloaddelay			= 45,
@@ -339,6 +405,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 0.65							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 

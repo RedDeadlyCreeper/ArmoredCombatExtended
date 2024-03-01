@@ -812,10 +812,10 @@ do
 	local FusedRounds = {
 		HE	= true,
 		HEFS	= true,
-		HESH	= true,
-		HEAT	= true,
-		HEATFS  = true,
-		SM	= true
+		SM	= true,
+		CHE	= true,
+		CHEAT	= true,
+		CAP	= true
 	}
 
 	function ENT:FireShell()

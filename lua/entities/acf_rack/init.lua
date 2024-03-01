@@ -552,6 +552,7 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.FinMul = ACF_GetRackValue(BulletData, "finefficiency") or ACF_GetGunValue(BulletData.Id, "finefficiency") or 0.2
 	missile.ThrustTurnRate = ACF_GetRackValue(BulletData, "thrusterturnrate") or ACF_GetGunValue(BulletData.Id, "thrusterturnrate") or 0
 	missile.HasInertial = ACF_GetRackValue(BulletData, "inertialcapable") or ACF_GetGunValue(BulletData.Id, "inertialcapable") or false
+	missile.HasDatalink = ACF_GetRackValue(BulletData, "datalink") or ACF_GetGunValue(BulletData.Id, "datalink") or false
 
 	missile.StraightRunning = ACF_GetRackValue(BulletData, "predictiondelay") or ACF_GetGunValue(BulletData.Id, "predictiondelay") or 1.25
 	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .." - " .. BulletData.Type

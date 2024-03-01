@@ -64,7 +64,7 @@ function EFFECT:Init( data )
 
 		--ParticleEffect( MuzzleEffect , Muzzle.Pos, Muzzle.Ang, Gun )
 
-		if Gun:WaterLevel() ~= 3 and not ClassData.nolights then
+		if Gun:WaterLevel() ~= 3 then
 
 			self.Origin 		= Muzzle.Pos
 			self.DirVec        = Muzzle.Ang:Forward()
@@ -78,7 +78,7 @@ function EFFECT:Init( data )
 
 			local GroundTr = { }
 			GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius
-			GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 10
+			GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 15
 			GroundTr.mask = MASK_NPCWORLDSTATIC
 			local Ground = util.TraceLine( GroundTr )
 
@@ -119,12 +119,12 @@ function EFFECT:Init( data )
 
 		end
 
+		local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
 
-		local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 39.4 + 0.001 --Divide by 0 is death
-
-		if PlayerDist < self.Radius*10 and not LocalPlayer():HasGodMode() then
-			local Amp          = math.min(Propellant * 3 / math.max(PlayerDist,1),40)
-			util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, Propellant  / 1, 0 , true)
+		if PlayerDist < self.Radius*4 and not LocalPlayer():HasGodMode() then
+			local Amp          = math.min(Propellant * 1.5 / math.max(PlayerDist,5),40)
+			--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
+			util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,self.Radius/20), 0 , true)
 		end
 
 

@@ -28,7 +28,12 @@ function Round.create( Gun, BulletData )
 
 		local phys = ent:GetPhysicsObject()
 		phys:SetVelocity( BulletData.Flight )
-		ent.Heat = (BulletData.FillerMass or 1) * 10000--250 -- Reverted to solar levels while i can bring a better system...
+		local avgFac = 1 - (math.Rand(0.1,0.5)^2)
+		ent.Heat = (BulletData.FillerMass or 1) * 1028.8 * avgFac -- 1028.8 is 600 temperature for a standard 40mm flare. This is twice an aircraft moving at 300 mph. I've added some extra measure.
+		ent.FirstHeat = ent.Heat
+		ent.RadarSig = 0.25 --Flares have a quarter of the radar signiture of a normal target
+		--print(avgFac)
+		--print(ent.Heat)
 
 	end
 
@@ -197,6 +202,8 @@ function Round.guicreate( Panel, Table )
 	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Dual Spectrum Filler", "") --Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("TempDisplay", "")	--Temperature of flares
+	acfmenupanel:CPanelText("RSigDisplay", "")	--Radar signiture of flares
 	acfmenupanel:CPanelText("BurnRateDisplay", "")	--Proj muzzle penetration (Name, Desc)
 	acfmenupanel:CPanelText("BurnDurationDisplay", "")	--HE Blast data (Name, Desc)
 	--acfmenupanel:CPanelText("DistractChanceDisplay", "")	--HE Fragmentation data (Name, Desc)
@@ -236,6 +243,10 @@ function Round.guiupdate( Panel )
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + Data.Tracer) * 100) / 100) .. "/" .. Data.MaxTotalLength .. " cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : " .. math.floor(Data.MuzzleVel * ACF.VelScale) .. " m/s")	--Proj muzzle velocity (Name, Desc)
+
+
+	acfmenupanel:CPanelText("RSigDisplay", "Radar Signiture : 0.25x")
+	acfmenupanel:CPanelText("TempDisplay", "Avg Heat : " .. math.Round(Data.FillerMass * 1028.8, 1) .. " C")
 
 	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
 	acfmenupanel:CPanelText("BurnDurationDisplay", "Burn Duration : " .. math.Round(Data.BurnTime, 1) .. " s")

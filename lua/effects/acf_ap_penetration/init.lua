@@ -16,15 +16,9 @@ local RoundTypesSubCaliberBoost = {
 
 --the dust is for non-explosive rounds, so lets skip this
 local RoundTypesIgnore = {
-	APHE    = true,
-	APHECBC = true,
 	HE      = true,
 	HEFS    = true,
-	HESH    = true,
-	HEAT    = true,
-	HEATFS  = true,
-	THEAT   = true,
-	THEATFS = true
+	HESH    = true
 }
 
 local function PerformDecalTrace( Effect )
@@ -83,55 +77,59 @@ function EFFECT:Init( data )
 	local TraceEntity = SurfaceTr.Entity
 	self.HitNorm = SurfaceTr.HitNormal
 
-	local Mat = SurfaceTr.MatType or 0
-	MatVal = ACE_GetMaterialName( Mat )
+	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
+	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) then
+
+		local Mat = SurfaceTr.MatType or 0
+		MatVal = ACE_GetMaterialName( Mat )
 
 
-	if SurfaceTr.HitNonWorld then --Overide with ACE prop material
-		Mat = Mat
-		self.HitNorm = -self.HitNorm
-		self.DirVec = -self.DirVec
-		local TEnt = SurfaceTr.Entity
-			--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
-			--TODO: Add clienside way to get ACF Material
-			MatVal = "Metal"
+		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
+			Mat = Mat
+			self.HitNorm = -self.HitNorm
+			self.DirVec = -self.DirVec
+			local TEnt = SurfaceTr.Entity
+				--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
+				--TODO: Add clienside way to get ACF Material
+				MatVal = "Metal"
+		end
+
+		local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
+		local SMKColor = Color( SmokeColor.r, SmokeColor.g, SmokeColor.b, 255 ) --Used to prevent it from overwriting the global smokecolor :/
+		local AmbLight = render.GetLightColor( self.Origin ) * 2 + render.GetAmbientLightColor()
+		SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ))
+		SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 ))
+		SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 ))
+
+		local FTrace, BTrace, BackTraceFilter = DoubleSidedTraceResult( self )
+
+		local DecalMat = "Impact.Concrete"
+
+		if MatVal == "Metal" then
+			self:Metal( SMKColor )
+			DecalMat = "Impact.Metal"
+		elseif  MatVal == "Dirt" or MatVal == "Sand"  then
+			self:Dust( SMKColor )
+			DecalMat = DecalMat --For some reason Impact.Sand breaks on any prop brush but not world brushes. I don't get it?
+		elseif MatVal == "Concrete" then
+			self:Concrete( SMKColor )
+			DecalMat = DecalMat
+		elseif  MatVal == "Snow"  then
+			self:Dust( SMKColor )
+			DecalMat = "Impact.Sand"
+		elseif  MatVal == "Wood"  then
+			self:Wood( SMKColor )
+			DecalMat = "Impact.Wood"
+		elseif  MatVal == "Glass"  then
+			self:Glass( SMKColor )
+			DecalMat = "Impact.Glass"
+		else
+			self:Dust( SMKColor )
+		end
+
+		util.Decal(DecalMat, FTrace.StartPos, FTrace.HitPos + self.DirVec * 50, nil )
+		util.Decal(DecalMat, BTrace.StartPos, BTrace.HitPos - self.DirVec * 50, BackTraceFilter )
 	end
-
-	local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
-	local SMKColor = Color( SmokeColor.r, SmokeColor.g, SmokeColor.b, 255 ) --Used to prevent it from overwriting the global smokecolor :/
-	local AmbLight = render.GetLightColor( self.Origin ) * 2 + render.GetAmbientLightColor()
-	SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ))
-	SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 ))
-	SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 ))
-
-	local FTrace, BTrace, BackTraceFilter = DoubleSidedTraceResult( self )
-
-	local DecalMat = "Impact.Concrete"
-
-	if MatVal == "Metal" then
-		self:Metal( SMKColor )
-		DecalMat = "Impact.Metal"
-	elseif  MatVal == "Dirt" or MatVal == "Sand"  then
-		self:Dust( SMKColor )
-		DecalMat = DecalMat --For some reason Impact.Sand breaks on any prop brush but not world brushes. I don't get it?
-	elseif MatVal == "Concrete" then
-		self:Concrete( SMKColor )
-		DecalMat = DecalMat
-	elseif  MatVal == "Snow"  then
-		self:Dust( SMKColor )
-		DecalMat = "Impact.Sand"
-	elseif  MatVal == "Wood"  then
-		self:Wood( SMKColor )
-		DecalMat = "Impact.Wood"
-	elseif  MatVal == "Glass"  then
-		self:Glass( SMKColor )
-		DecalMat = "Impact.Glass"
-	else
-		self:Dust( SMKColor )
-	end
-
-	util.Decal(DecalMat, FTrace.StartPos, FTrace.HitPos + self.DirVec * 50, nil )
-	util.Decal(DecalMat, BTrace.StartPos, BTrace.HitPos - self.DirVec * 50, BackTraceFilter )
 
 	self.Normal = FTrace.HitNormal
 	if IsValid(FTrace.Entity) then
@@ -140,6 +138,16 @@ function EFFECT:Init( data )
 
 --	self:CreatePenetrationEffect()
 	ACE_SPenetration( self.Origin, self.Caliber, self.Velocity, SurfaceTr.HitWorld, MatVal, self.Mass )
+
+	local Energy = (self.Mass * (self.Velocity/39.37)^2)/500000
+
+	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
+	
+	if PlayerDist < Energy*8 and not LocalPlayer():HasGodMode() then
+		local Amp          = math.min(Energy * 1.5 / math.max(PlayerDist,5),40)
+		--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
+		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy/10 , false) --Energy/20
+	end
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end

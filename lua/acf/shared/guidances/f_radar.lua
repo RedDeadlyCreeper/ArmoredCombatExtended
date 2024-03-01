@@ -122,13 +122,13 @@ end
 
 function this:CheckTarget(missile)
 
-	if not (self.Target or self.Override) then
+	--if not (self.Target or self.Override) then
 		local target = self:AcquireLock(missile)
 
 		if IsValid(target) then
 			self.Target = target
 		end
-	end
+	--end
 
 end
 
@@ -147,10 +147,10 @@ function this:GetWhitelistedEntsInCone(missile)
 		if not scanEnt:IsValid() then continue end
 
 
---No sir I will not ignore the flares. They "might" contain chaff
+		--No sir I will not ignore the flares. They "might" contain chaff
 
---		-- skip any flare from vision.
---		if scanEnt:GetClass() == "ace_flare" then continue end
+		--		-- skip any flare from vision.
+		--		if scanEnt:GetClass() == "ace_flare" then continue end
 
 		local entpos = scanEnt:GetPos()
 		local difpos = entpos - missilePos
@@ -258,8 +258,15 @@ function this:AcquireLock(missile)
 
 			debugoverlay.Sphere(entpos, 100, 5, Color(255,100,0,255))
 
+			local Multiplier = 1
+
+			if classifyent:GetClass() == "ace_flare" then 
+				Multiplier = classifyent.RadarSig
+				print("FlareSeen")
+			end
+
 			--Could do pythagorean stuff but meh, works 98% of time
-			local testang = absang.p + absang.y
+			local testang = (absang.p + absang.y) * Multiplier
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then

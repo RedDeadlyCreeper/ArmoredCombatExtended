@@ -25,14 +25,11 @@ this.ViewCone = 25
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.25 -- Re-seek drastically reduced cost so we can re-seek
 
---Sensitivity of the IR Seeker, higher sensitivity is for aircraft
-this.SeekSensitivity = 1
-
 --Whether the missile has IRCCM. Will disable seeking when the locked target would have been a countermeasure.
 this.HasIRCCM = false
 
 --Defines how many degrees are required above the ambient one to consider a target
-this.HeatAboveAmbient = 5
+this.HeatAboveAmbient = 120
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 200  -- ~5m
@@ -56,7 +53,8 @@ function this:Configure(missile)
 	self.ViewCone		= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)
 	self.ViewConeCos		= (math.cos(math.rad(self.ViewCone)))
 	self.SeekCone		= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)
-	self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
+	self.HeatAboveAmbient = self.HeatAboveAmbient / (ACF_GetGunValue(missile.BulletData, "seeksensitivity") or 1)
+	--self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 
 end
@@ -228,6 +226,8 @@ function this:AcquireLock(missile)
 		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
 	end
 
+	local CheckTemp = ACE.AmbientTemp + self.HeatAboveAmbient
+
 	for _, classifyent in ipairs(found) do
 
 		entpos  = classifyent:WorldSpaceCenter()
@@ -238,7 +238,14 @@ function this:AcquireLock(missile)
 		--if the target is a Heat Emitter, track its heat
 		if classifyent.Heat then
 
-			Heat = self.SeekSensitivity * classifyent.Heat
+			physEnt = classifyent:GetPhysicsObject()
+
+			if IsValid(physEnt) and physEnt:IsMoveable() then
+				ACE_InfraredHeatFromProp( self, classifyent , dist )
+			else
+				Heat = classifyent.Heat
+			end
+
 
 		--if is not a Heat Emitter, track the friction's heat
 		else
@@ -253,8 +260,17 @@ function this:AcquireLock(missile)
 
 		end
 
+		--0.25x heat @ 1200m
+		--0.75x heat @ 900m
+		--0.5x heat @ 600m
+		--0.25x heat @ 300m
+		--1.0x heat @ 0m
+
+		local HeatMulFromDist = 1 - math.min((dist/1200),1)
+		Heat = Heat * HeatMulFromDist
+
 		--Skip if not Hotter than AmbientTemp in deg C.
-		if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
+		if Heat <= CheckTemp then continue end
 
 
 		if missile.TargetPos then --Initialized. Work from here.
@@ -274,11 +290,15 @@ function this:AcquireLock(missile)
 
 			testang = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
-			if self.Target == scanEnt then
-				testang = testang / self.SeekSensitivity
-			end
+			--if self.Target == scanEnt then
+			--	testang = testang / self.SeekSensitivity
+			--end
 
-			testang = testang - Heat
+			--180 is from 90deg + 90deg, assuming the target is fully offbore.
+			--4x heat fully front and center. 1x heat fully offbore
+			local BoreHeatMul = 4 - ((absang.p + absang.y)/180*3)
+
+			testang = -Heat * BoreHeatMul
 
 
 

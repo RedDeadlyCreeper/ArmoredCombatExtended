@@ -114,7 +114,8 @@ function ENT:Think()
 	self.TargetAcquired = false
 	self.TargetDir = Vector()
 
-	if self.GuidanceActive then
+	--
+	if self.GuidanceActive and (self.Guidance.Name ~= "Dumb") then
 		--print("Active")
 		-- Guidance calculations
 		local Guidance  = self.Guidance:GetGuidance(self)
@@ -130,6 +131,11 @@ function ENT:Think()
 		if TestPos then --Guidance location is valid. Update the target position.
 			self.TargetPos = TestPos or nil
 			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
+		elseif self.HasDatalink and self.Launcher.TargPos then --Guidance location is not valid. Use datalink position if available.
+
+			self.TargetPos = self.Launcher.TargPos
+			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
+
 		elseif self.HasInertial and self.TargetPos then --Guidance location is not valid. Update inertial position.
 			self.TargetVelocity = self.TargetVelocity or Vector()
 			self.TargetPos = self.TargetPos + self.TargetVelocity * DeltaTime

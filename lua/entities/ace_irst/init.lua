@@ -249,6 +249,8 @@ function ENT:AcquireLock()
 	for _, scanEnt in ipairs(self:GetWhitelistedEntsInCone()) do
 
 		local randanginac	= math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+		dist	= difpos:Length()
+
 
 		entpos	= scanEnt:WorldSpaceCenter()
 		difpos	= (entpos - IRSTPos)
@@ -263,24 +265,40 @@ function ENT:AcquireLock()
 		-- Check if the target is within the cone.
 		if IsInCone( absang, self.Cone ) then
 
-			--if the target is a Heat Emitter, track its heat
-			if scanEnt.Heat then
 
-				Heat = self.SeekSensitivity * scanEnt.Heat
+			--if the target is a Heat Emitter, track its heat
+			if classifyent.Heat then
+
+				physEnt = classifyent:GetPhysicsObject()
+
+				if IsValid(physEnt) and physEnt:IsMoveable() then
+					ACE_InfraredHeatFromProp( self, classifyent , dist )
+				else
+					Heat = classifyent.Heat
+				end
+
 
 			--if is not a Heat Emitter, track the friction's heat
 			else
 
-				physEnt = scanEnt:GetPhysicsObject()
+				physEnt = classifyent:GetPhysicsObject()
 
 				--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
 				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
 				if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
-				dist = difpos:Length()
-				Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
+				Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
 
 			end
+
+			--0.25x heat @ 1200m
+			--0.75x heat @ 900m
+			--0.5x heat @ 600m
+			--0.25x heat @ 300m
+			--1.0x heat @ 0m
+
+			local HeatMulFromDist = 1 - math.min((dist/1200),1)
+			Heat = Heat * HeatMulFromDist
 
 			--Skip if not Hotter than AmbientTemp in deg C.
 			if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end

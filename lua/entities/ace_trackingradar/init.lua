@@ -217,8 +217,11 @@ function ENT:Think()
 				--check if ent is valid
 				if scanEnt:IsValid() then
 
-					--skip any flare from vision
-					--if scanEnt:GetClass() == "ace_flare" then continue end
+					--No sir I will not ignore the flares. They "might" contain chaff
+
+					--		-- skip any flare from vision.
+					--		if scanEnt:GetClass() == "ace_flare" then continue end
+
 
 					--skip the tracking itself
 					if scanEnt:EntIndex() == self:EntIndex() then continue end
@@ -297,8 +300,15 @@ function ENT:Think()
 							if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X / (Espeed + 0.0001)) > 0.3) or (GCFr >= 0.4) ) then
 								--1000 u = ~57 mph
 
+								--Chaff can be used to gunk up radars.
+								local Multiplier = 1
+
+								if scanEnt:GetClass() == "ace_flare" then 
+									Multiplier = scanEnt.RadarSig
+								end
+
 								--Could do pythagorean stuff but meh, works 98% of time
-								local err = absang.p + absang.y
+								local err = (absang.p + absang.y) * Multiplier
 
 								--Sorts targets as closest to being directly in front of radar
 								if err < besterr then

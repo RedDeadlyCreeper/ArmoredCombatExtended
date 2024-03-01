@@ -15,15 +15,9 @@ local RoundTypesSubCaliberBoost = {
 
 --the dust is for non-explosive rounds, so lets skip this
 local RoundTypesIgnore = {
-	APHE    = true,
-	APHECBC = true,
 	HE      = true,
 	HEFS    = true,
-	HESH    = true,
-	HEAT    = true,
-	HEATFS  = true,
-	THEAT   = true,
-	THEATFS = true
+	HESH    = true
 }
 
 local EntityFilter = {
@@ -71,7 +65,7 @@ function EFFECT:Init( data )
 	self.HitNorm = SurfaceTr.HitNormal
 
 	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
---	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) then
+	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) then
 
 		local Mat = SurfaceTr.MatType or 0
 		MatVal = ACE_GetMaterialName( Mat )
@@ -120,7 +114,17 @@ function EFFECT:Init( data )
 		util.Decal(DecalMat, SurfaceTr.StartPos, self.Origin + self.DirVec * 10 )
 		ACE_SBulletImpact( self.Origin, self.Caliber, self.Velocity, SurfaceTr.HitWorld, MatVal )
 
---	end
+	end
+
+local Energy = (self.Mass * (self.Velocity/39.37)^2)/1000000
+
+local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
+
+if PlayerDist < Energy*8 and not LocalPlayer():HasGodMode() then
+	local Amp          = math.min(Energy * 1.5 / math.max(PlayerDist,5),40)
+	--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
+	util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy/10 , false) --Energy/20
+end
 
 	PerformBulletEffect( self )
 

@@ -15,18 +15,6 @@ local RoundTypesSubCaliberBoost = {
 	HVAP       = true
 }
 
---the dust is for non-explosive rounds, so lets skip this.
---Note that APHE variants are not listed here but they still require it in case of rico vs ground.
-local RoundTypesIgnore = {
-	HE       = true,
-	HEFS     = true,
-	HESH     = true,
-	HEAT     = true,
-	HEATFS   = true,
-	THEAT    = true,
-	THEATFS  = true
-}
-
 local function PerformDecalTrace( Effect )
 	local Tr = {}
 	Tr.start = Effect.Origin + Effect.DirVec
@@ -59,9 +47,6 @@ function EFFECT:Init( data )
 	self.HitNorm = SurfaceTr.HitNormal
 
 	local DecalMat = "Impact.Concrete"
-
-	--do this if we are dealing with non-explosive rounds
-	if not RoundTypesIgnore[self.Id] then
 
 		local Mat = SurfaceTr.MatType
 		MatVal = ACE_GetMaterialName( Mat )
@@ -101,10 +86,18 @@ function EFFECT:Init( data )
 			self:Dust( SMKColor )
 		end
 
-	end
-
 	util.Decal(DecalMat, self.Origin + self.DirVec * 10, self.Origin - self.DirVec * 10 )
 	ACE_SRicochet( self.Origin, self.Caliber, self.Velocity, SurfaceTr.HitWorld, MatVal )
+
+	local Energy = (self.Mass * (self.Velocity/39.37)^2)/1700000
+
+	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
+
+	if PlayerDist < Energy*10 and not LocalPlayer():HasGodMode() then
+		local Amp          = math.min(Energy * 1.5 / math.max(PlayerDist,5),40)
+		--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
+		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy/10 , false) --Energy/20
+	end
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end

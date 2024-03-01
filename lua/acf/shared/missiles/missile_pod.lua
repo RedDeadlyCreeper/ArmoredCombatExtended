@@ -31,7 +31,7 @@ ACF_defineGun("40mmFFAR", { --id
 	length	= 65, -- Length affects inertia calculations
 	rofmod	= 0.1,
 	year		= 1960,
-	modeldiameter	= 2,
+	modeldiameter	= 1.6,--Already in ammocrate units
 	round	=
 	{
 		rocketmdl				= "models/missiles/ffar_40mm.mdl",
@@ -94,10 +94,10 @@ ACF_defineGun("70mmFFAR", { --id
 	gunclass	= "FFAR",
 	rack		= "70mm7xPOD",  -- Which rack to spawn this missile on?
 	weight	= 12,
-	length	= 115,
+	length	= 45.5*2.53, --Convert to ammocrate units
 	year		= 1960,
 	roundclass  = "Rocket",
-	modeldiameter	= 3,
+	modeldiameter	= 2.9,
 	round	=
 	{
 
@@ -162,10 +162,10 @@ ACF_defineGun("S8KO", { --id
 	gunclass	= "FFAR",
 	rack		= "20x S8KO",  -- Which rack to spawn this missile on?
 	weight	= 12,
-	length	= 115,
+	length	= 60.5*2.53, --Convert to ammocrate units
 	year		= 1960,
 	roundclass  = "Rocket",
-	modeldiameter	= 3,
+	modeldiameter	= 3.3,--Already in ammocrate units
 	round	=
 	{
 

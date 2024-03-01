@@ -13,7 +13,11 @@ function ENT:Initialize()
 	self:SetNoDraw(true)
 
 	self.Heat		= self.Heat or 1
+	self.FirstHeat		= self.Heat
 	self.Life		= self.Life or 0.1
+	self.RadarSig   = self.RadarSig or 1
+
+	self.FirstTime = ACF.CurTime
 
 	local phys = self:GetPhysicsObject()
 	if IsValid( phys ) then
@@ -41,6 +45,11 @@ function ENT:Think()
 
 		return false
 	end
+
+	local AliveTime = (ACF.CurTime - self.FirstTime)
+	self.Heat = self.FirstHeat * (1 - (AliveTime / self.Life))
+	--print(self.Heat)
+	--print(self.RadarSig)
 
 	self:NextThink( CurTime() + 0.1 )
 	return true

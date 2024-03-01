@@ -16,150 +16,6 @@ ACF_defineGunClass("ASM", {
 	reloadmul      = 8
 } )
 
-
--- The AGM-114, a laser guided missile with high anti-tank effectiveness.
-ACF_defineGun("AGM-114 ASM", {						--id
-	name 			= "AGM-114 Hellfire Missile",
-	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.",
-	model 			= "models/missiles/agm_114.mdl",
-	effect			= "Rocket Motor ATGM",
-	effectbooster	= "Rocket Motor Missile1",
-	gunclass 		= "ASM",
-	rack 			= "2x AGM-114",					-- Which rack to spawn this missile on?
-	length 			= 163,
-	caliber 		= 16,
-	weight 			= 45,							-- Don't scale down the weight though!
-	modeldiameter	= 3 * 2.54,					-- in cm
-	bodydiameter	= 8.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
-	year			= 1984,
-
-	round = {
-		model				= "models/missiles/agm_114.mdl",
-		rackmdl				= "models/missiles/agm_114.mdl",
-		firedelay			= 0.5,
-		reloadspeed			= 1.0,
-		reloaddelay			= 60.0,
-
-		maxlength			= 150,							-- Length of missile. Used for ammo properties.
-		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
-
-		armour				= 21,							-- Armour effectiveness of casing, in mm
-
-		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
-
-		thrust				= 0,							-- Acceleration in m/s.
-		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0,
-
-		launchkick			= 30,							-- Speed missile starts with on launch in m/s
-
-		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
-
-		boostacceleration	= 60,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 2.5,							-- Time in seconds for booster runtime
-		boostdelay			= 0,							-- Delay in seconds before booster activates.
-
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
-
-		dragcoef			= 0.001,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-
-		penmul				= math.sqrt(0.518)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-	},
-
-	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "Radar"},
-	fuses      = {"Contact", "Optical"},
-
-	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,
-					["2x AGM-114"] = true,
-					["4x AGM-114"] = true,
-
-				},
-
-	seekcone   = 2,
-	viewcone   = 30,								-- getting outside this cone will break the lock.  Divided by 2.
-	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
-	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
-
-	armdelay   = 0.00								-- minimum fuse arming delay
-} )
-
--- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
-ACF_defineGun("Ataka ASM", { --id
-	name			= "9M120 Ataka Missile",
-	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads",
-	model			= "models/missiles/9m120.mdl",
-	effect			= "Rocket Motor ATGM",
-	gunclass		= "ASM",
-	rack			= "1x Ataka",							-- Which rack to spawn this missile on?
-	length			= 174,
-	caliber			= 13,
-	weight			= 198,									-- Don't scale down the weight though!
-	year			= 1984,
-	modeldiameter	= 3 * 2.54,
-
-	round = {
-		model				= "models/missiles/9m120.mdl",
-		rackmdl				= "models/missiles/9m120.mdl",
-		firedelay			= 0.5,
-		reloadspeed			= 1.0,
-		reloaddelay			= 40.0,
-
-		maxlength			= 105,							-- Length of missile. Used for ammo properties.
-		propweight			= 1.7,							-- Motor mass - motor casing. Used for ammo properties.
-
-		armour				= 21,							-- Armour effectiveness of casing, in mm
-
-		turnrate			= 2,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 14,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
-
-		thrust				= 70,							-- Acceleration in m/s.
-		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0,
-
-		launchkick			= 70,							-- Speed missile starts with on launch in m/s
-
-		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
-
-		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0,							-- Time in seconds for booster runtime
-		boostdelay			= 0,							-- Delay in seconds before booster activates.
-
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
-
-		dragcoef			= 0.001,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-
-		penmul			= math.sqrt(1.148)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
-	},
-
-	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
-	fuses		= {"Contact", "Optical"},
-
-	racks	= {											-- a whitelist for racks that this missile can load into.
-					["1x Ataka"] = true,
-					["1xRK"] = true,
-					["2xRK"] = true,
-					["3xRK"] = true,
-					["4xRK"] = true
-				},
-
-	seekcone		= 20,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone		= 40,										-- getting outside this cone will break the lock.  Divided by 2.
-
-	guidanceInac	= 1, --50								-- How much inaccuracy this missile will have when its being guided. In units
-	ghosttime		= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
-
-	armdelay		= 0.00										-- minimum fuse arming delay
-} )
-
 --Sidearm, a lightweight anti-radar missile used by helicopters in the 80s
 ACF_defineGun("AGM-122 ASM", {						-- id
 	name             = "AGM-122 Sidearm Missile",
@@ -241,10 +97,10 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 	effect           = "Rocket Motor Missile1",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 383,
+	length           = 146*2.53, --Convert to ammocrate units
 	caliber          = 20.3,
 	weight           = 177,							-- Don't scale down the weight though!
-	modeldiameter    = 4 * 2.54,					-- in cm
+	modeldiameter    = 30,--Already in ammocrate units
 	bodydiameter     = 9.7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	year             = 1969,
@@ -307,15 +163,15 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
 ACF_defineGun("AGM-88 ASM", {						-- id
 	name             = "AGM-88 HARM",
-	desc             = "Advanced long range anti-radiation missile with improved guidance. Significantly heavier but makes up for it in range and tracking.",
+	desc             = "Advanced long range anti-radiation missile with improved guidance. Significantly heavier but makes up for it in range and tracking. Has datalink.",
 	model            = "models/missiles/arend/agm-88.mdl",
 	effect           = "Rocket Motor Missile1",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 383,
+	length           = 160*2.53, --Convert to ammocrate units
 	caliber          = 25.4,
 	weight           = 360,							-- Don't scale down the weight though!
-	modeldiameter    = 5 * 2.54,					-- in cm
+	modeldiameter    = 28,--Already in ammocrate units
 	bodydiameter     = 11.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	year             = 1969,
@@ -353,6 +209,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 
 		dragcoef			= 0.0025,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		penmul            = math.sqrt(0.6)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -377,17 +234,17 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 
 ACF_defineGun("KH-31 ASM", {						-- id
 	name             = "KH-31A",
-	desc             = "Massive turbojet Antiradiation missile also used as antiship missile. It may be slower to get there but it HURTS. Mini Moskit.",
+	desc             = "Massive turbojet Antiradiation missile also used as antiship missile. It may be slower to get there but it HURTS. Mini Moskit. Has datalink.",
 	model            = "models/missiles/arend/kh31.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	 = "Rocket Motor",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 469,
+	length           = 185*2.53, --Convert to ammocrate units
 	caliber          = 35.56,
 	weight           = 610,							-- Don't scale down the weight though!
 	year             = 1974,
-	modeldiameter    = 29.35,					-- in cm
+	modeldiameter    = 32, --Already in ammocrate units
 	bodydiameter     = 15.4, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
@@ -423,6 +280,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 
 		dragcoef			= 0.005,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -454,11 +312,11 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 	effect           = "Rocket Motor Missile1",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 253,
+	length           = 99*2.53, --Convert to ammocrate units
 	caliber          = 30.5,
 	weight           = 300,							-- Don't scale down the weight though!
 	year             = 1974,
-	modeldiameter    = 15.29,					-- in cm
+	modeldiameter    = 21,--Already in ammocrate units
 	bodydiameter     = 14.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
