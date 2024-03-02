@@ -122,8 +122,8 @@ function ENT:Think()
 					local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 					local absang2 = Angle(math.abs(ang2.p),math.abs(ang2.y),0) --Since I like ABS so much
 
-
-					if absang.p < (scanEnt.Cone + 8)  and absang.y < (scanEnt.Cone + 8) and absang2.p < self.Cone and absang2.y < self.Cone then --Entity is within radar cone
+					local ScanCone = (scanEnt.Cone or 30)+8
+					if absang.p < ScanCone  and absang.y < ScanCone and absang2.p < self.Cone and absang2.y < self.Cone then --Entity is within radar cone
 
 						local LOStr = util.TraceLine( {
 							start = thisPos ,

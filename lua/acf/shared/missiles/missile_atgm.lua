@@ -81,7 +81,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 
 	ghosttime		= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay		= 0.00										-- minimum fuse arming delay
+	armdelay	= 0.15										-- minimum fuse arming delay
 } )
 
 ACF_defineGun("9M113 ASM", {									-- id
@@ -147,7 +147,7 @@ ACF_defineGun("9M113 ASM", {									-- id
 
 	viewcone		= 25,										-- getting outside this cone will break the lock.  Divided by 2.
 
-	armdelay		= 0.00										-- minimum fuse arming delay
+	armdelay	= 0.15										-- minimum fuse arming delay
 } )
 
 ACF_defineGun("9M133 ASM", {									-- id
@@ -215,7 +215,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 
 	viewcone		= 25,										-- getting outside this cone will break the lock.  Divided by 2.
 
-	armdelay		= 0.00										-- minimum fuse arming delay
+	armdelay	= 0.15										-- minimum fuse arming delay
 } )
 
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
@@ -287,7 +287,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	agility			= 0.1, --0.3										-- multiplier for missile turn-rate.
 	ghosttime		= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay		= 0.00										-- minimum fuse arming delay
+	armdelay	= 0.15										-- minimum fuse arming delay
 } )
 
 ACF_defineGun("AT-2 ASM", { --id
@@ -355,7 +355,7 @@ ACF_defineGun("AT-2 ASM", { --id
 					["4x AGM-114"] = true
 					},
 	ghosttime		= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
-	armdelay		= 0.00									-- minimum fuse arming delay
+	armdelay	= 0.15									-- minimum fuse arming delay
 } )
 
 ACF_defineGun("FGM-148 ASM", {
@@ -493,7 +493,7 @@ ACF_defineGun("Spike-LR ASM", {
 						["4x AGM-114"] = true
 					},
 
-	armdelay		= 0.00,										-- minimum fuse arming delay
+	armdelay	= 0.15,										-- minimum fuse arming delay
 	SeekSensitivity    = 2
 
 } )
@@ -565,7 +565,7 @@ ACF_defineGun("Ataka ASM", { --id
 	seekcone		= 20,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 40,										-- getting outside this cone will break the lock.  Divided by 2
 
-	armdelay		= 0.00										-- minimum fuse arming delay
+	armdelay	= 0.15										-- minimum fuse arming delay
 } )
 
 -- The AGM-114, a laser guided missile with high anti-tank effectiveness.
@@ -701,5 +701,5 @@ ACF_defineGun("Vikhr ASM", { --id
 	seekcone		= 20,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 40,										-- getting outside this cone will break the lock.  Divided by 2.
 
-	armdelay		= 0.00										-- minimum fuse arming delay
+	armdelay	= 0.15										-- minimum fuse arming delay
 } )

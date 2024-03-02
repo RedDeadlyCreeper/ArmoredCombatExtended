@@ -73,12 +73,12 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 				["4x FIM-92"] = true
 			},
 
-	seekcone           = 7.5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
-	viewcone           = 62,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
+	seekcone           = 15,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
+	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity    = 1,
 	irccm				= true,
 
-	armdelay           = 0.00,									-- minimum fuse arming delay		-was 0.3
+	armdelay	= 0.15,									-- minimum fuse arming delay		-was 0.3
 	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.5									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -140,8 +140,8 @@ ACF_defineGun("Mistral SAM", {								-- id
 					["2x FIM-92"] = true
 				},
 
-	seekcone			= 7.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
-	viewcone			= 42,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
+	seekcone			= 15,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
+	viewcone			= 70,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity		= 1,
 	irccm				= true,
 
@@ -211,11 +211,11 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 						["4x Strela-1"] = true
 					},
 
-	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone           = 60,									-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,									-- minimum fuse arming delay
+	armdelay	= 0.15,									-- minimum fuse arming delay
 	guidelay           = 0.75,									-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.5									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -278,10 +278,10 @@ ACF_defineGun("VT-1 SAM", {										-- id
 				["1x VT-1"] = true
 			},
 
-	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone           = 80,									-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
 
-	armdelay           = 0.00,									-- minimum fuse arming delay
+	armdelay	= 0.15,									-- minimum fuse arming delay
 	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	SeekSensitivity    = 2
@@ -347,10 +347,10 @@ ACF_defineGun("9M311 SAM", {										-- id
 				["1x 9m311"] = true
 			},
 
-	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone           = 80,									-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
 
-	armdelay           = 0.00,									-- minimum fuse arming delay
+	armdelay	= 0.15,									-- minimum fuse arming delay
 	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	SeekSensitivity    = 2
@@ -417,11 +417,11 @@ ACF_defineGun("9M331 SAM", {								-- id
 						["1x9M331 Pod"] = true
 				},
 
-	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone           = 65,									-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,									-- minimum fuse arming delay
+	armdelay	= 0.15,									-- minimum fuse arming delay
 	guidelay           = 0.75,									-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.5									-- Time where this missile will be unable to hit surfaces, in seconds
 } )

@@ -78,7 +78,7 @@ function EFFECT:Init( data )
 
 			local GroundTr = { }
 			GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius
-			GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 15
+			GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 25
 			GroundTr.mask = MASK_NPCWORLDSTATIC
 			local Ground = util.TraceLine( GroundTr )
 
@@ -162,8 +162,10 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 
 	if not self.Emitter then return end
 
+	if not Ground.Hit then return end
+
 	local PMul       = self.ParticleMul
-	local Radius     = (1-Ground.Fraction) * self.Radius * 1
+	local Radius     = self.Radius * 0.5 --Removed (1-Ground.Fraction)
 	local Density    = Radius * 6
 	local Angle      = Ground.HitNormal:Angle()
 

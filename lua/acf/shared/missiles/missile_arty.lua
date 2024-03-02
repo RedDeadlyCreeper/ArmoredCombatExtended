@@ -91,7 +91,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 
 	viewcone   = 30,									-- cone radius, 180 = full 360 tracking
 	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
-	armdelay   = 0.00									-- minimum fuse arming delay
+	armdelay	= 0.15									-- minimum fuse arming delay
 } )
 
 
@@ -165,7 +165,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 	viewcone   = 20,
 	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00									-- minimum fuse arming delay
+	armdelay	= 0.15									-- minimum fuse arming delay
 } )
 
 
@@ -240,7 +240,7 @@ ACF_defineGun("SS-40 RA", {								-- id
 	viewcone   = 180,
 	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00									-- minimum fuse arming delay
+	armdelay	= 0.15									-- minimum fuse arming delay
 } )
 
 
@@ -315,5 +315,5 @@ ACF_defineGun("RW61 RA", {								-- id
 	agility    = 1,										-- multiplier for missile turn-rate.
 	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00									-- minimum fuse arming delay
+	armdelay	= 0.15									-- minimum fuse arming delay
 } )

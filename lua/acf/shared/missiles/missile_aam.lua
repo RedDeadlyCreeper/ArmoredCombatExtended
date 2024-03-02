@@ -78,12 +78,12 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 24,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15,								-- minimum fuse arming delay		--was 0.4
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -150,12 +150,12 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 4,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
-	viewcone           = 27.5,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
+	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= true,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -219,12 +219,12 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 4,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
-	viewcone           = 22.5,								-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
 	agility            = 3,									-- multiplier for missile turn-rate.  --was 0.7
-	armdelay           = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.5,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.05									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -288,11 +288,11 @@ ACF_defineGun("SRAAM AAM", {								-- id
 			},
 
 
-	seekcone           = 5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 35,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15,								-- minimum fuse arming delay		--was 0.4
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -359,12 +359,12 @@ ACF_defineGun("Magic AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 4,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 42,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15,								-- minimum fuse arming delay		--was 0.4
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -433,12 +433,12 @@ ACF_defineGun("MICA AAM", {								-- id
 			},
 
 
-	seekcone           = 4,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 45,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	seekcone           = 8,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15,								-- minimum fuse arming delay		--was 0.4
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -504,12 +504,12 @@ ACF_defineGun("Meteor AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 4,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
-	viewcone           = 27.5,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
+	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= true,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -575,11 +575,11 @@ ACF_defineGun("R-60 AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 40,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15,								-- minimum fuse arming delay		--was 0.4
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -649,10 +649,10 @@ ACF_defineGun("R-73 AAM", {								-- id
 
 	--Doesn't use the IRCCM system. Instead has a narrower seek cone that makes it better able to filter flares.
 	seekcone           = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 45,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15,								-- minimum fuse arming delay		--was 0.4
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -723,7 +723,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 	viewcone           = 27.5,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -790,10 +790,10 @@ ACF_defineGun("R-27 AAM", {							-- id
 					},
 
 	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
-	viewcone           = 50,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
+	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 
-	armdelay           = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
@@ -857,12 +857,12 @@ ACF_defineGun("R-33 AAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 4,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
-	viewcone           = 22.5,								-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
 	agility            = 3,									-- multiplier for missile turn-rate.  --was 0.7
-	armdelay           = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.5,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.05									-- Time where this missile will be unable to hit surfaces, in seconds
 } )

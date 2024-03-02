@@ -86,7 +86,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
 } )
 
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
@@ -157,7 +157,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 	agility    = 0.03,								-- multiplier for missile turn-rate.  --was 0.08
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00								-- minimum fuse arming delay
+	armdelay           = 0.15								-- minimum fuse arming delay
 } )
 
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
@@ -229,7 +229,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 	agility    = 0.03,								-- multiplier for missile turn-rate.  --was 0.08
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00								-- minimum fuse arming delay
+	armdelay           = 0.15								-- minimum fuse arming delay
 } )
 
 ACF_defineGun("KH-31 ASM", {						-- id
@@ -300,7 +300,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 
 } )
 
@@ -369,6 +369,6 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay   = 0.00,								-- minimum fuse arming delay --was 0.3
+	armdelay	= 0.15,								-- minimum fuse arming delay --was 0.3
 
 } )

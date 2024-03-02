@@ -877,7 +877,7 @@ do
 
 				self.CurrentRecoil = 1
 
-				self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) / 10
+				self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) / 20
 
 				ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil )
 

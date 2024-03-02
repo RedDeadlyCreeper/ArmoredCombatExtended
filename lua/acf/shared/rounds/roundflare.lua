@@ -246,7 +246,7 @@ function Round.guiupdate( Panel )
 
 
 	acfmenupanel:CPanelText("RSigDisplay", "Radar Signiture : 0.25x")
-	acfmenupanel:CPanelText("TempDisplay", "Avg Heat : " .. math.Round(Data.FillerMass * 1028.8, 1) .. " C")
+	acfmenupanel:CPanelText("TempDisplay", "Avg Heat : " .. math.Round(Data.FillerMass * 1368, 1) .. " C")
 
 	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
 	acfmenupanel:CPanelText("BurnDurationDisplay", "Burn Duration : " .. math.Round(Data.BurnTime, 1) .. " s")

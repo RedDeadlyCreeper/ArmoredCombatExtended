@@ -28,6 +28,10 @@ local function PerformDecalTrace( Effect )
 	return util.TraceLine( Tr )
 end
 
+local EntityFilter = {
+	player = true
+}
+
 local function DoubleSidedTraceResult( Effect )
 
 	local BackTraceFilter = {}

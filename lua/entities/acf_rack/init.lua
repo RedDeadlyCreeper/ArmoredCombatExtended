@@ -7,10 +7,10 @@ include("shared.lua")
 
 DEFINE_BASECLASS( "base_wire_entity" )
 
-local GunClasses	= ACF.Classes.GunClass
+--local GunClasses	= ACF.Classes.GunClass
 local RackClasses	= ACF.Classes.Rack
 
-local GunTable	= ACF.Weapons.Guns
+--local GunTable	= ACF.Weapons.Guns
 local RackTable	= ACF.Weapons.Racks
 
 local GuidanceTable = ACF.Guidance
@@ -36,7 +36,7 @@ function ENT:Initialize()
 	self:CPPISetOwner(self)
 
 	--self.NextLegalCheck  = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.NextLegalCheck  = ACF.CurTime +3 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck  = ACF.CurTime + 3 -- give any spawning issues time to iron themselves out
 	self.Legal			= true
 	self.LegalIssues	= ""
 	self.SpecialHealth	= false	--If true needs a special ACF_Activate function
@@ -158,7 +158,7 @@ function MakeACF_Rack(Owner, Pos, Angle, Id)
 	Rack.SoundPitch        = 100
 	Rack.Inaccuracy        = gundef["spread"]	or gunclass["spread"]	or 0
 
-	
+
 	Rack.HideMissile       = ACF_GetRackValue(Id, "hidemissile")			or false
 	Rack.ProtectMissile    = gundef.protectmissile or gunclass.protectmissile  or false
 	Rack.CustomArmour      = gundef.armour		or gunclass.armour		or 1
@@ -262,7 +262,7 @@ function ENT:UpdateValidMissiles()
 
 	--Find the next available missile in the stack.
 	--Used to pass guidance info to and from the missile to the launcher and back.
-	local MissileToShoot = nil
+--	local MissileToShoot = nil
 	for i = 1, self.MaxMissile do
 		local MissileTest = self.Missiles[i][2] or false
 		if MissileTest then
@@ -315,7 +315,8 @@ function ENT:Think()
 	if CT > self.UpdateNextMissile then
 		self.UpdateNextMissile = CT + 0.75
 
-		local ValidCount = self:UpdateValidMissiles()
+		self:UpdateValidMissiles()
+		--local ValidCount = self:UpdateValidMissiles()
 
 	end
 
@@ -400,7 +401,7 @@ function ENT:ShootMissile()
 	end
 	self.Missiles[MissileToShoot][1].LastThink = CurTime()
 	self.Missiles[MissileToShoot][1].ActivationTime = CurTime()
-	self.Missiles[MissileToShoot][1].Flight = self.Parent:GetVelocity()/39.37
+	self.Missiles[MissileToShoot][1].Flight = self.Parent:GetVelocity() / 39.37
 
 	self.Missiles[MissileToShoot][1]:SetNoDraw(false)
 	self.Missiles[MissileToShoot][1]:SetNotSolid(false)
@@ -482,6 +483,8 @@ function ENT:Reload()
 
 end
 
+
+--Technically a MUCH more efficient way to do this would be to cache the data every time the ammocrate gets swapped instead of redoing it every reload.
 function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramaters are initialized. Also sets launcher properties by the most recent missile.
 
 	local Crate = self:FindNextCrate(true)
@@ -555,7 +558,7 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.HasDatalink = ACF_GetRackValue(BulletData, "datalink") or ACF_GetGunValue(BulletData.Id, "datalink") or false
 
 	missile.StraightRunning = ACF_GetRackValue(BulletData, "predictiondelay") or ACF_GetGunValue(BulletData.Id, "predictiondelay") or 1.25
-	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .." - " .. BulletData.Type
+	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .. " - " .. BulletData.Type
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8
@@ -1038,7 +1041,7 @@ do
 
 		local BoomMul = 1
 		if self.Bulletdata2.Type == "HEAT" or self.Bulletdata2.Type == "THEAT" then
-			BoomMul = 1/4
+			BoomMul = 1 / 4
 		end
 		self.Bulletdata2.FillerMass = self.Bulletdata2.FillerMass * BoomMul
 		self.Bulletdata2.BoomFillerMass = self.Bulletdata2.FillerMass
@@ -1106,7 +1109,7 @@ function UpdateMissileSkin(Missile)
 	end
 end
 
-function UpdateMissileBodygroups(Missile)--Guidance
+function UpdateMissileBodygroups(Missile) --Guidance
 
 
 

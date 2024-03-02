@@ -302,7 +302,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 			PlayerDist = math.max(PlayerDist,13949) --Will never go below 3 meters.
 
-			Tar:ViewPunch( Angle( RelAngle.pitch * math.Clamp(Amp * -350000/PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * -300000/PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * 100000/PlayerDist * math.Rand(0.5,1),-180,180) ) )
+			Tar:ViewPunch( Angle( RelAngle.pitch * math.Clamp(Amp * -350000 / PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * -300000 / PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * 100000 / PlayerDist * math.Rand(0.5,1),-180,180) ) )
 		end
 
 	--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see
@@ -848,7 +848,14 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	local Res	= Local + phys:GetMassCenter()
 	Pos			= parent:LocalToWorld(Res)
 
-	ACF_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos )
+	--ACF_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos ) --Had a lot of odd quirks including reversing torque angles.
+
+	if Target ~= parent then
+		phys:ApplyForceOffset(Vec * KE, Pos)
+	else
+		phys:ApplyForceCenter(Vec * KE)
+	end
+
 end
 
 -- helper function to process children of an acf-destroyed prop
@@ -976,14 +983,14 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 			if IsValid(phys) and IsValid(physent) then
 				phys:SetDragCoefficient( 5 )
-				phys:SetMass( math.max(physent:GetMass()*3,300) )
+				phys:SetMass( math.max(physent:GetMass() * 3,300) )
 				phys:SetVelocity( Parent:GetVelocity() )
 
 				if IsValid(Parent) then
 					phys:SetVelocity(Parent:GetVelocity() )
 				end
 
-				phys:ApplyForceCenter( (HitVector:GetNormalized()+VectorRand()*0.25) * Energy * 5  )
+				phys:ApplyForceCenter( (HitVector:GetNormalized() + VectorRand() * 0.25) * Energy * 5  )
 			end
 		end
 	end
@@ -1030,7 +1037,7 @@ function ACF_APKill( Entity , HitVector , Power )
 
 			if IsValid(phys) and IsValid(physent) then
 				phys:SetDragCoefficient( 15 )
-				phys:SetMass( math.max(physent:GetMass()*3,300) )
+				phys:SetMass( math.max(physent:GetMass() * 3,300) )
 				phys:SetVelocity(Parent:GetVelocity() )
 				if IsValid(Parent) then
 					phys:SetVelocity( Parent:GetVelocity() )

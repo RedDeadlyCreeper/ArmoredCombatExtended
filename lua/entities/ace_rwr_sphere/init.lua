@@ -110,8 +110,8 @@ function ENT:Think()
 
 					local ang = scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
 					local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
-
-					if (absang.p < scanEnt.Cone and absang.y < scanEnt.Cone) then --Entity is within radar cone
+					local ScanCone = scanEnt.Cone or 30
+					if (absang.p < ScanCone and absang.y < ScanCone) then --Entity is within radar cone
 
 						local LOStr = util.TraceLine( {
 							start = thisPos,

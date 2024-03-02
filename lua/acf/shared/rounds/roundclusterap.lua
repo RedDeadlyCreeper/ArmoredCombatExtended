@@ -1,17 +1,15 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.CHE = { "MG", "HMG","RAC", "ATR", "SL", "GL", "FFAR", "POD", "FGL", "ECM", "ATR" }
-
 local Round = {}
 
 Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name  = "[CLUSTER-HE] - " .. ACFTranslation.ShellHE[1] --Human readable name
+Round.name  = "[CLUSTER-AP] - " .. ACFTranslation.ShellAP[1] --Human readable name
 Round.model = "models/missiles/glatgm/9m112f.mdl" --Shell flight model
-Round.desc  = ACFTranslation.ShellHE[2]
-Round.netid = 24 --Unique ammotype ID for network transmission
+Round.desc  = ACFTranslation.ShellAP[2]
+Round.netid = 25 --Unique ammotype ID for network transmission
 
-Round.Type  = "CHE"
+Round.Type  = "CAP"
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( _, PlayerData )
@@ -24,7 +22,6 @@ function Round.convert( _, PlayerData )
 	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
-	PlayerData.Data5		= math.max(PlayerData.Data5 or 0, 0) --HEFiller
 	PlayerData.Data13		= math.max(PlayerData.Data13 or 0, 5) --ClusterMult
 	PlayerData.Data14		= math.max(PlayerData.Data14 or 2000, 500) --ExplodeDistance
 
@@ -33,25 +30,14 @@ function Round.convert( _, PlayerData )
 	--Shell sturdiness calcs
 
 	--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
-	Data.ProjMass		= math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9 / 1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * ACF.HEDensity / 1000
+	Data.ProjMass		= math.max(GUIData.ProjVolume,0) * 7.9 / 1000 * 2 --Tungsten carbide is roughly twice as dense as steel.
 	Data.MuzzleVel		= ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
-	local Energy			= ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
-	local MaxVol			= ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
-
 
 	GUIData.ClusterMult = math.Clamp(PlayerData.Data13, 10, 100)
 	Data.ClusterMult = GUIData.ClusterMult
 
 	GUIData.FuseDistance = math.Clamp(PlayerData.Data14, 500, 6000)
 	Data.FuseDistance = GUIData.FuseDistance
-
-	GUIData.MinFillerVol	= 0
-	GUIData.MaxFillerVol	= math.min(GUIData.ProjVolume,MaxVol)
-	GUIData.FillerVol	= math.min(PlayerData.Data5,GUIData.MaxFillerVol)
-	Data.FillerMass		= GUIData.FillerVol * ACF.HEDensity / 1000
-
-	Data.ProjMass		= math.max(GUIData.ProjVolume-GUIData.FillerVol,0) * 7.9 / 1000 + Data.FillerMass
-	Data.MuzzleVel		= ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 
 	--Random bullshit left
 	Data.ShovePower		= 0.1
@@ -62,7 +48,7 @@ function Round.convert( _, PlayerData )
 	Data.Ricochet		= 70										-- Base ricochet angle
 	Data.DetonatorAngle	= 70
 
-	Data.BoomPower		= Data.PropMass + Data.FillerMass
+	Data.BoomPower		= Data.PropMass
 
 	if SERVER then --Only the crates need this part
 		ServerData.Id	= PlayerData.Id
@@ -81,25 +67,17 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 	GUIData.FuseDistance = Data.FuseDistance
-	GUIData.BombletCount = math.Round(math.Clamp(math.Round(Data.FillerMass * 1.5),5,80) * Data.ClusterMult/100)
-	GUIData.AdjFillerMass = Data.FillerMass / GUIData.BombletCount / 1.5
-	local AdjProjMass = Data.ProjMass / 2
-	GUIData.BlastRadius = GUIData.AdjFillerMass ^ 0.33 * 8
-	local FragMass = AdjProjMass - GUIData.AdjFillerMass
-	GUIData.Fragments = math.max(math.floor((GUIData.AdjFillerMass / FragMass) * ACF.HEFrag),2)
-	GUIData.FragMass = FragMass / GUIData.Fragments
-	GUIData.FragVel = (GUIData.AdjFillerMass * ACF.HEPower * 1000 / GUIData.FragMass / GUIData.Fragments) ^ 0.5
+	GUIData.BombletCount = math.Round(math.Clamp(math.Round(Data.ProjMass * 0.2),5,120) * Data.ClusterMult / 100)
 	return GUIData
 end
 
 
 function Round.network( Crate, BulletData )
 
-	Crate:SetNWString( "AmmoType", "CHE" )
+	Crate:SetNWString( "AmmoType", "CAP" )
 	Crate:SetNWString( "AmmoID", BulletData.Id )
 	Crate:SetNWFloat( "Caliber", BulletData.Caliber )
 	Crate:SetNWFloat( "ProjMass", BulletData.ProjMass )
-	Crate:SetNWFloat( "FillerMass", BulletData.FillerMass )
 	Crate:SetNWFloat( "PropMass", BulletData.PropMass )
 	Crate:SetNWFloat( "DragCoef", BulletData.DragCoef )
 	Crate:SetNWFloat( "MuzzleVel", BulletData.MuzzleVel )
@@ -117,9 +95,7 @@ function Round.cratetxt( BulletData )
 	local str =
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
-		"Bomblet Count: ", DData.BombletCount, "\n",
-		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor(DData.AdjFillerMass * ACF.HEPower), " KJ"
+		"Submunition Count: ", DData.BombletCount, "\n"
 	}
 
 	return table.concat(str)
@@ -130,7 +106,7 @@ function Round.propimpact( _, Bullet, Target, HitNormal, HitPos, Bone )
 
 	if ACF_Check( Target ) then
 		local Speed	= Bullet.Flight:Length() / ACF.VelScale
-		local Energy	= ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
+		local Energy	= ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
 		local HitRes	= ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 
 		if HitRes.Ricochet then
@@ -147,11 +123,6 @@ end
 
 do
 
-	local WhiteList = {
-		HE	= true,
-		HEAT	= true,
-	}
-
 	local function GenerateCluster(bdata)
 
 		local RoundType = bdata.Type
@@ -159,11 +130,7 @@ do
 		--Make cluster to fail. Allow with rounds on whitelist only.
 		--if not WhiteList[RoundType] then return end
 
-		local Bomblets  = math.Round(math.Clamp(math.Round(bdata.FillerMass * 1.5),5,80) * (bdata.ClusterMult or 100) / 100)	--30 bomblets original
-
-		if bdata.Type == "HEAT" then
-			Bomblets = math.Clamp(Bomblets,3,25)
-		end
+		local Bomblets  = math.Round(math.Clamp(math.Round(bdata.ProjMass * 0.2),5,120) * (bdata.ClusterMult or 100) / 100)	--30 bomblets original
 
 		local GEnt = bdata.Gun
 
@@ -174,10 +141,9 @@ do
 		GEnt.BulletDataC["Accel"]			= Vector(0,0,-600)
 		GEnt.BulletDataC["BoomPower"]		= bdata.BoomPower
 
-		GEnt.BulletDataC["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 30, 0.05, bdata.Caliber ) --Controls visual size, does nothing else
+		GEnt.BulletDataC["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 12, 0.1, bdata.Caliber * 0.5 ) --Controls visual size, does nothing else
 		GEnt.BulletDataC["Crate"]			= bdata.Crate
-		GEnt.BulletDataC["DragCoef"]		= bdata.DragCoef / Bomblets / 2
-		GEnt.BulletDataC["FillerMass"]	= bdata.FillerMass / Bomblets / 1.5 	--nan armor ocurrs when this value is > 1
+		GEnt.BulletDataC["DragCoef"]		= 0
 
 		--print(GEnt.BulletDataC["FillerMass"])
 		--print(Bomblets)
@@ -192,18 +158,20 @@ do
 		GEnt.BulletDataC["Id"]			= bdata.Id
 		GEnt.BulletDataC["KETransfert"]	= bdata.KETransfert
 		GEnt.BulletDataC["LimitVel"]		= 700
-		GEnt.BulletDataC["MuzzleVel"]		= 250
+		GEnt.BulletDataC["MuzzleVel"]		= 30
 		--GEnt.BulletDataC["MuzzleVel"]		= bdata.MuzzleVel * 20
 		GEnt.BulletDataC["Owner"]			= bdata.Owner
 		GEnt.BulletDataC["PenArea"]		= bdata.PenArea
 		GEnt.BulletDataC["Pos"]			= bdata.Pos
 		GEnt.BulletDataC["ProjLength"]	= bdata.ProjLength / Bomblets / 2
-		GEnt.BulletDataC["ProjMass"]		= bdata.ProjMass / Bomblets / 2
+		GEnt.BulletDataC["ProjMass"]		= bdata.ProjMass / Bomblets * 15
 		GEnt.BulletDataC["PropLength"]	= bdata.PropLength
 		GEnt.BulletDataC["PropMass"]		= bdata.PropMass
 		GEnt.BulletDataC["Ricochet"]		= 90--bdata.Ricochet
 
-		GEnt.BulletDataC.FuseLength = 1.0 --Cluster munitions shouldn't travel that far
+		GEnt.BulletDataC["Filter"] = {}
+
+		GEnt.BulletDataC.FuseLength = 1 --Cluster munitions shouldn't travel that far
 		--print(bdata.Ricochet)
 
 		GEnt.BulletDataC["RoundVolume"]	= bdata.RoundVolume
@@ -212,25 +180,7 @@ do
 
 
 		--GEnt.BulletDataC["Type"]		= bdata.Type
-		GEnt.BulletDataC["Type"]		= "HE"
-
-		if GEnt.BulletDataC.Type == "HEAT" then
-
-			GEnt.BulletDataC["SlugMass"] 		= bdata.SlugMass / (Bomblets / 6)
-			GEnt.BulletDataC["SlugCaliber"] 	= bdata.SlugCaliber / (Bomblets / 6)
-			GEnt.BulletDataC["SlugDragCoef"] 	= bdata.SlugDragCoef / (Bomblets / 6)
-			GEnt.BulletDataC["SlugMV"] 		= bdata.SlugMV / (Bomblets / 6)
-			GEnt.BulletDataC["SlugPenArea"] 	= bdata.SlugPenArea / (Bomblets / 6)
-			GEnt.BulletDataC["SlugRicochet"] 	= bdata.SlugRicochet
-			GEnt.BulletDataC["ConeVol"] 		= bdata.SlugMass * 1000 / 7.9 / (Bomblets / 6)
-			GEnt.BulletDataC["CasingMass"] 	= GEnt.BulletDataC.ProjMass + GEnt.BulletDataC.FillerMass + (GEnt.BulletDataC.ConeVol * 1000 / 7.9)
-			GEnt.BulletDataC["BoomFillerMass"] = GEnt.BulletDataC.FillerMass / 1.5
-
-			--local SlugEnergy = ACF_Kinetic( missile.BulletDataC.MuzzleVel * 39.37 + missile.BulletDataC.SlugMV * 39.37 , missile.BulletDataC.SlugMass, 999999 )
-			--local  MaxPen = (SlugEnergy.Penetration/missile.BulletDataC.SlugPenArea) * ACF.KEtoRHA
-			--print(MaxPen)
-
-		end
+		GEnt.BulletDataC["Type"]		= "AP"
 
 		GEnt.FakeCrate = GEnt.FakeCrate or ents.Create("acf_fakecrate2")
 
@@ -246,6 +196,7 @@ do
 		local GEnt = bullet.Gun
 
 		local MuzzleVec = bullet.Flight:GetNormalized()
+		local MuzzleSpeed = bullet.Flight:Length() + GEnt.BulletDataC["MuzzleVel"]*39.37
 		for I = 1,GEnt.BulletDataC.Bomblets do
 			--print("Bobm")
 			timer.Simple(0.01 * I, function()
@@ -255,7 +206,7 @@ do
 					--Spread = Spread
 					Spread = Vector(Spread.x * math.abs(Spread.x), Spread.y * math.abs(Spread.y), Spread.z * math.abs(Spread.z))
 					--GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * math.min((GEnt.BulletDataC.Bomblets/10) * 0.1 , 0.65))):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0)
-					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4)):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0) --Fixed scatter pattern since we're using the detonate offset to control spread.
+					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4)):GetNormalized() * MuzzleSpeed --Fixed scatter pattern since we're using the detonate offset to control spread.
 
 					local MuzzlePos = bullet.Pos
 					GEnt.BulletDataC.Pos = MuzzlePos
@@ -284,7 +235,7 @@ do
 
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-			ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.FillerMass/20, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+			ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass/100, Bullet.ProjMass - Bullet.ProjMass/100, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 			local GunEnt = Bullet.Gun
 			if IsValid(GunEnt) then
 				--print("Valid")
@@ -301,7 +252,7 @@ do
 	function Round.endflight( Index, Bullet, HitPos, HitNormal )
 		ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-		ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.FillerMass/20, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+		ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass/100, Bullet.ProjMass - Bullet.ProjMass/100, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 		local GunEnt = Bullet.Gun
 		if IsValid(GunEnt) then
 			--print("Valid")
@@ -314,7 +265,7 @@ end
 
 function Round.endeffect( _, Bullet )
 
-	local Radius = (Bullet.FillerMass/20) ^ 0.33 * 8 * 39.37 --Fillermass reduced by 20 because it's the seperation charge.
+	local Radius = (Bullet.RoundMass/50) ^ 0.33 * 8 * 39.37 --Fillermass reduced by 20 because it's the seperation charge.
 	local Flash = EffectData()
 		Flash:SetOrigin( Bullet.SimPos )
 		Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
@@ -372,15 +323,11 @@ function Round.guicreate( Panel, Table )
 
 	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "HE Filler", "")			--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:AmmoSlider("ClusterMult",0,0,100,1, "Cluster Multiplier (%)", "")
 	acfmenupanel:AmmoSlider("FuseDistance",0,500,6000,2, "Cluster Fuse Distance", "")
 
 	ACE_Checkboxes()
-
-	acfmenupanel:CPanelText("BlastDisplay", "") --HE Blast data (Name, Desc)
-	acfmenupanel:CPanelText("FragDisplay", "")  --HE Fragmentation data (Name, Desc)
 
 	Round.guiupdate( Panel, Table )
 
@@ -390,10 +337,9 @@ function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData.Id		= acfmenupanel.AmmoData.Data.id		--AmmoSelect GUI
-		PlayerData.Type		= "CHE"									--Hardcoded, match as Round.Type instead
+		PlayerData.Type		= "CAP"									--Hardcoded, match as Round.Type instead
 		PlayerData.PropLength	= acfmenupanel.AmmoData.PropLength  --PropLength slider
 		PlayerData.ProjLength	= acfmenupanel.AmmoData.ProjLength  --ProjLength slider
-		PlayerData.Data5		= acfmenupanel.AmmoData.FillerVol
 		PlayerData.Data13		= acfmenupanel.AmmoData.ClusterMult
 		PlayerData.Data14		= acfmenupanel.AmmoData.FuseDistance
 		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
@@ -405,7 +351,6 @@ function Round.guiupdate( Panel )
 	RunConsoleCommand( "acfmenu_data2", PlayerData.Type )
 	RunConsoleCommand( "acfmenu_data3", Data.PropLength )	--For Gun ammo, Data3 should always be Propellant
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )	--And Data4 total round mass
-	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data13", Data.ClusterMult )
 	RunConsoleCommand( "acfmenu_data14", Data.FuseDistance )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
@@ -418,7 +363,6 @@ function Round.guiupdate( Panel )
 
 	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : " .. (math.floor(Data.PropMass * 1000)) .. " g" .. "/ " .. (math.Round(Data.PropMass, 1)) .. " kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : " .. (math.floor(Data.ProjMass * 1000)) .. " g" .. "/ " .. (math.Round(Data.ProjMass, 1)) .. " kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : " .. (math.floor(Data.FillerMass * 1000)) .. " g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:AmmoSlider("ClusterMult",Data.ClusterMult,10,100,1, "Cluster Multiplier (%)", "Bomblets: " .. Data.BombletCount)	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FuseDistance",Data.FuseDistance,500,6000,2, "Cluster Fuse Distance", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
@@ -427,8 +371,6 @@ function Round.guiupdate( Panel )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc) --Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + (math.floor(Data.Tracer * 5) / 10)) * 100) / 100) .. "/" .. Data.MaxTotalLength .. " cm") --Total round length (Name, Desc)
-	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : " .. (math.floor(Data.BlastRadius * 100) / 100) .. " m") --Proj muzzle velocity (Name, Desc)
-	acfmenupanel:CPanelText("FragDisplay", "Fragments : " .. Data.Fragments .. "\n Average Fragment Weight : " .. (math.floor(Data.FragMass * 10000) / 10) .. " g \n Average Fragment Velocity : " .. math.floor(Data.FragVel) .. " m/s") --Proj muzzle penetration (Name, Desc)
 
 	---------------------------Chance of Ricochet table----------------------------
 

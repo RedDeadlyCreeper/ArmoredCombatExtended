@@ -12,7 +12,7 @@
 ACE = ACE or {}
 
 --Defines the delay time caused by the distance between the event and you. Increasing it will increment the required time to hear a distant event
-ACE.DelayMultipler            = 1
+ACE.DelayMultipler            = 5 --5x longer than speed of sound.
 
 --Defines the distance range for close, mid and far sounds. Incrementing it will increase the distances between sounds
 ACE.DistanceMultipler         = 1
@@ -102,8 +102,10 @@ do
 		return ply
 	end
 
+
+
 	function ACE_GetDistanceTime( Dist )
-		return (Dist / 1500) * ACE.DelayMultipler
+		return (Dist / 13503) * ACE.DelayMultipler
 	end
 
 	local function GetHeadPos( ply )
@@ -229,23 +231,23 @@ do
 
 							if Radius > ACE.SoundHugeEx then
 								VolFix = 2000000  -- rip your ears
-								PitchFix = 3
+								PitchFix = 1
 								Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
 							elseif Radius > ACE.SoundLargeEx then
-								VolFix = 35
-								PitchFix = 1.5
+								VolFix = 55
+								PitchFix = 1.8
 								Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
 							elseif Radius > ACE.SoundMediumEx then
-								VolFix = 6
+								VolFix = 7
 								PitchFix = 1.15
 								Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
 							elseif Radius > ACE.SoundSmallEx then
-								VolFix = 12
-								PitchFix = 1
+								VolFix = 6
+								PitchFix = 0.85
 								Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
 							else
-								VolFix = 8
-								PitchFix = 1
+								VolFix = 4.25
+								PitchFix = 0.75
 								Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
 							end
 
@@ -253,20 +255,20 @@ do
 						elseif Dist < MediumDist then
 
 							if Radius >= ACE.SoundLargeEx then
-								VolFix = 3
-								PitchFix = 1.25
+								VolFix = 4
+								PitchFix = 1.6
 								Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
 							elseif Radius >= ACE.SoundMediumEx then
-								VolFix = 2
-								PitchFix = 1
+								VolFix = 6
+								PitchFix = 1.05
 								Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
 							elseif Radius >= ACE.SoundSmallEx then
-								VolFix = 6
-								PitchFix = 1
+								VolFix = 8
+								PitchFix = 1.1
 								Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
 							else
 								VolFix = 8
-								PitchFix = 1
+								PitchFix = 1.3
 								Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
 							end
 
@@ -274,20 +276,20 @@ do
 						elseif Dist > MediumDist then
 
 							if Radius >= ACE.SoundLargeEx then
-								VolFix = 5.5
-								PitchFix = 1
+								VolFix = 5
+								PitchFix = 1.3
 								Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
 							elseif Radius >= ACE.SoundMediumEx then
-								VolFix = 12
-								PitchFix = 1
+								VolFix = 5
+								PitchFix = 0.95
 								Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
 							elseif Radius >= ACE.SoundSmallEx then
-								VolFix = 13
-								PitchFix = 1
+								VolFix = 14
+								PitchFix = 1.2
 								Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
 							else
-								VolFix = 17
-								PitchFix = 1
+								VolFix = 13
+								PitchFix = 1.4
 								Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
 							end
 
@@ -375,17 +377,17 @@ do
 						Sound = "acf_other/penetratingshots/penetrations/large/close/pen" .. math.random(1,3) .. ".mp3"
 						--lower than 20mm
 						if Caliber <= 2 then
-							VolFix = 30
+							VolFix = 15
 							PitchFix = 0.9
 
 						--50mm guns and below
 						elseif Caliber <= 5 then
-							VolFix = 155
+							VolFix = 23
 							PitchFix = 0.7
 
 						--any big gun above 50mm
 						elseif Caliber > 5 then
-							VolFix = 20
+							VolFix = 30
 							PitchFix = 0.4
 						end
 
@@ -429,12 +431,12 @@ do
 
 						--lower than 20mm
 						if Caliber <= 2 then
-							VolFix = 2
+							VolFix = 4
 							PitchFix = 1.15
 
 						--50mm guns and below
 						elseif Caliber <= 5 then
-							VolFix = 4
+							VolFix = 7
 							PitchFix = 1.05
 
 						--any big gun above 50mm
@@ -500,19 +502,19 @@ do
 						--lower than 20mm
 						if Caliber <= 2 then
 							Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
-							VolFix = 35
+							VolFix = 5
 							PitchFix = 1
 
 						--50mm guns and below
 						elseif Caliber <= 5 then
 							Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
-							VolFix = 35
+							VolFix = 6
 							PitchFix = 1
 
 						--any big gun above 50mm
 						elseif Caliber > 5 then
 							Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
-							VolFix = 35
+							VolFix = 7
 							PitchFix = 1
 						end
 
@@ -561,12 +563,12 @@ do
 
 						--50mm guns and below
 						elseif Caliber <= 5 then
-							VolFix = 15
+							VolFix = 6
 							PitchFix = 1.3
 
 						--any big gun above 50mm
 						elseif Caliber > 5 then
-							VolFix = 200
+							VolFix = 12
 							PitchFix = 0.95
 						end
 
@@ -907,17 +909,17 @@ do
 
 						--lower than 20mm
 						if Caliber <= 2 then
-							VolFix = 9
+							VolFix = 4
 							PitchFix = 1.15
 
 						--50mm guns and below
 						elseif Caliber <= 5 then
-							VolFix = 12
+							VolFix = 9
 							PitchFix = 1.10
 
 						--any big gun above 50mm
 						elseif Caliber > 5 then
-							VolFix = 55
+							VolFix = 13
 							PitchFix = 0.95
 						end
 

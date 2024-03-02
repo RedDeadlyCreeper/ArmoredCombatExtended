@@ -262,13 +262,10 @@ function EFFECT:ApplyMovement( Bullet, Index )
 
 	if IsValid(Bullet.Tracer) then
 
-		local value = 2.5
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
-		local Length =  math.min(-DeltaPos:Length() * value,-1)
+		local Length =  math.min(-DeltaPos:Length() * 2.5,-1)
 
-		if self.hasTracer then
-
-			if Bullet.Counter <= 1 then value = 1.45 end
+		if self.hasTracer and Bullet.Counter > 1 then
 
 			local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos + Bullet.SimFlight * 0.01 )
 
@@ -329,7 +326,7 @@ function EFFECT:ApplyMovement( Bullet, Index )
 
 
 
-		local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos + (DeltaPos) )
+		local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos + DeltaPos )
 		if (Smoke) then
 			Smoke:SetAngles( Bullet.SimFlight:Angle() )
 			Smoke:SetVelocity( Bullet.SimFlight * 0.05 )
@@ -339,8 +336,8 @@ function EFFECT:ApplyMovement( Bullet, Index )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( Bullet.Caliber * 3 )
 			Smoke:SetEndSize( Bullet.Caliber * 3 )
-			Smoke:SetStartLength( Length*0.75 )
-			Smoke:SetEndLength( Length*0.75 ) --Length
+			Smoke:SetStartLength( Length * 0.75 )
+			Smoke:SetEndLength( Length * 0.75 ) --Length
 			Smoke:SetRollDelta( 0.1 )
 			Smoke:SetAirResistance( 150 )
 			Smoke:SetGravity( Vector(0,0,20) )

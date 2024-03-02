@@ -77,7 +77,7 @@ ACF_defineGun("40mmFFAR", { --id
 
 	racks	= {["40mm7xPOD"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	armdelay	= 0.00	-- minimum fuse arming delay
+	armdelay	= 0.15	-- minimum fuse arming delay
 } )
 
 
@@ -148,7 +148,7 @@ ACF_defineGun("70mmFFAR", { --id
 	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
 	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
 
-	armdelay	= 0.00	-- minimum fuse arming delay
+	armdelay	= 0.15	-- minimum fuse arming delay
 } )
 
 ACF_defineGun("S8KO", { --id
@@ -216,7 +216,7 @@ ACF_defineGun("S8KO", { --id
 	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
 
 	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
-	armdelay   = 0.0
+	armdelay   = 0.15
 
 } )
 
@@ -281,6 +281,6 @@ ACF_defineGun("Zuni ASR", { --id
 	racks      = {["127mm4xPOD"] = true},
 
 	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
-	armdelay   = 0.0
+	armdelay   = 0.15
 
 })
