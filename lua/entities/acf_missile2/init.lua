@@ -390,10 +390,11 @@ function ENT:Detonate()
 	local HEWeight = self.Bulletdata2.BoomFillerMass
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
+	if not IsValid(self.Launcher) then return end
 
 	self.Bulletdata2["Gun"]			= self.Launcher
 
-	self.Launcher.FakeCrate = ents.Create("acf_fakecrate2")
+	self.Launcher.FakeCrate = self.Launcher.FakeCrate or ents.Create("acf_fakecrate2")
 	self.Launcher.FakeCrate:RegisterTo(self.Bulletdata2)
 	self.Bulletdata2["Crate"] = self.Launcher.FakeCrate:EntIndex()
 	self.Launcher:DeleteOnRemove(self.Launcher)

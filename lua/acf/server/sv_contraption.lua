@@ -222,11 +222,16 @@ function ACE_refreshdata(Data)
 	--print("[ACE | INFO]- Starting Refreshing. . .")
 	for index, Ent in ipairs(ACE.contraptionEnts) do
 		-- check if the entity is valid
-		if not IsValid(Ent) then continue end
+		if not IsValid(Ent) then --Clean up the nullentities
+			--print("Delete")
+			--print(Ent)
+			table.remove(ACE.contraptionEnts, index)
+			continue
+		end
 
 		-- check if it has parent
 		-- if parented, check if it's not a Heat emitter
-		if Ent:GetParent():IsValid() and not Ent.Heat then
+		if Ent:GetParent():IsValid() and not Ent.Heat then --(not Ent.Heat and not AllowedEnts[Eclass])
 			-- if not, remove it. Removing most of parented props will decrease cost of guidances
 			--print("[ACE | INFO]- Parented prop! removing. . .")
 			table.remove(ACE.contraptionEnts, index)
@@ -236,5 +241,7 @@ function ACE_refreshdata(Data)
 	--print("[ACE | INFO]- Finished refreshing!")
 	--print('Total Ents registered count: ' .. table.Count( ACE.contraptionEnts ))
 end
+
+timer.Create( "PeriodicCleanup", 3, 0, ACE_refreshdata )
 
 hook.Add("AdvDupe_FinishPasting", "ACE_refresh", ACE_refreshdata)

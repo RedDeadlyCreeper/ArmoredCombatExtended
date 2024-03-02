@@ -23,13 +23,13 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 0.25 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
 
 --Whether the missile has IRCCM. Will disable seeking when the locked target would have been a countermeasure.
 this.HasIRCCM = false
 
 --Defines how many degrees are required above the ambient one to consider a target
-this.HeatAboveAmbient = 120
+this.HeatAboveAmbient = 100
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 200  -- ~5m
@@ -57,6 +57,11 @@ function this:Configure(missile)
 	--self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 
+	--print("CEent")
+	--for i, ent in ipairs(ACE.contraptionEnts) do
+	--	print(ent)
+	--end
+
 end
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
@@ -74,6 +79,7 @@ function this:GetGuidance(missile)
 	end
 
 	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
+		--print("IRCCM reject")
 		self.Target = nil
 		return {}
 	end
@@ -241,11 +247,10 @@ function this:AcquireLock(missile)
 			physEnt = classifyent:GetPhysicsObject()
 
 			if IsValid(physEnt) and physEnt:IsMoveable() then
-				ACE_InfraredHeatFromProp( self, classifyent , dist )
+				Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
 			else
 				Heat = classifyent.Heat
 			end
-
 
 		--if is not a Heat Emitter, track the friction's heat
 		else
@@ -260,13 +265,13 @@ function this:AcquireLock(missile)
 
 		end
 
-		--0.25x heat @ 1200m
-		--0.75x heat @ 900m
+		--0x heat @ 1200m
+		--0.25x heat @ 900m
 		--0.5x heat @ 600m
-		--0.25x heat @ 300m
+		--0.75x heat @ 300m
 		--1.0x heat @ 0m
 
-		local HeatMulFromDist = 1 - math.min((dist/1200),1)
+		local HeatMulFromDist = 1 - math.min((dist/47244),1) --39.37 * 1200 = 47244
 		Heat = Heat * HeatMulFromDist
 
 		--Skip if not Hotter than AmbientTemp in deg C.
@@ -314,6 +319,9 @@ function this:AcquireLock(missile)
 
 
 	end
+
+	--if IsValid(bestent) and bestent:GetClass( ) == "ace_flare" then print("SQUIRREL") end
+	--print(bestent)
 
 	return bestent
 end

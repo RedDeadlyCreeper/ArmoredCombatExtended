@@ -25,7 +25,7 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 0.25 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
 
 --Whether the missile has IRCCM. Will disable seeking when the locked target would have been a countermeasure.
 this.HasIRCCM = false

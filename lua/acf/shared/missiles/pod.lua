@@ -602,7 +602,7 @@ ACF_DefineRack("1x VT-1", {
 	year = 1970,
 	magsize = 1,
 	armour  = 18,
-	caliber = 16.3,
+	caliber = 12,
 
 	whitelistonly   = true,
 	protectmissile  = true,
@@ -645,7 +645,7 @@ ACF_DefineRack("1x 9M113", {
 	year = 1970,
 	magsize = 1,
 	armour  = 18,
-	caliber = 13.5,
+	caliber = 15.2,
 
 	whitelistonly   = true,
 	protectmissile  = true,

@@ -30,7 +30,8 @@ function Round.create( Gun, BulletData )
 		ent.Heat = 0 --No thermal signiture for chaff.
 		ent.FirstHeat = ent.Heat
 
-		ent.RadarSig = (BulletData.FillerMass or 1) * 2.1375 * avgFac --1.71 is 1x. 2.1375 is 1.25x radar signiture avg at full filler.
+		ent.RadarSig = (BulletData.FillerMass or 1) * 2.565 * avgFac --1.71 is 1x. 2.1375 is 1.25x radar signiture avg at full filler.
+		ent.FirstRadarSig = ent.RadarSig
 		--print(avgFac)
 		--print(ent.Heat)
 

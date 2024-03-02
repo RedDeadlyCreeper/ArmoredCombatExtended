@@ -129,11 +129,12 @@ function EFFECT:Init( data )
 
 		util.Decal(DecalMat, FTrace.StartPos, FTrace.HitPos + self.DirVec * 50, nil )
 		util.Decal(DecalMat, BTrace.StartPos, BTrace.HitPos - self.DirVec * 50, BackTraceFilter )
-	end
 
-	self.Normal = FTrace.HitNormal
-	if IsValid(FTrace.Entity) then
-		debugoverlay.Text(self.Origin - self.DirVec * 20, FTrace.Entity:GetClass(), 5)
+		self.Normal = FTrace.HitNormal
+		if IsValid(FTrace.Entity) then
+			debugoverlay.Text(self.Origin - self.DirVec * 20, FTrace.Entity:GetClass(), 5)
+		end
+
 	end
 
 --	self:CreatePenetrationEffect()
@@ -142,7 +143,7 @@ function EFFECT:Init( data )
 	local Energy = (self.Mass * (self.Velocity/39.37)^2)/500000
 
 	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
-	
+
 	if PlayerDist < Energy*8 and not LocalPlayer():HasGodMode() then
 		local Amp          = math.min(Energy * 1.5 / math.max(PlayerDist,5),40)
 		--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)

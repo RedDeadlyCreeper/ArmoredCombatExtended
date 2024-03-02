@@ -59,7 +59,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.4							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
@@ -74,7 +74,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 			},
 
 	seekcone           = 7.5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
-	viewcone           = 42,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
+	viewcone           = 62,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity    = 1,
 	irccm				= true,
 

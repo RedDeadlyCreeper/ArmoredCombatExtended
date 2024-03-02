@@ -16,6 +16,7 @@ function ENT:Initialize()
 	self.FirstHeat		= self.Heat
 	self.Life		= self.Life or 0.1
 	self.RadarSig   = self.RadarSig or 1
+	self.FirstRadarSig = self.RadarSig
 
 	self.FirstTime = ACF.CurTime
 
@@ -47,11 +48,13 @@ function ENT:Think()
 	end
 
 	local AliveTime = (ACF.CurTime - self.FirstTime)
-	self.Heat = self.FirstHeat * (1 - (AliveTime / self.Life))
+	local EffectivenessMul = (1 - (AliveTime / self.Life))
+	self.Heat = self.FirstHeat * EffectivenessMul
+	self.RadarSig = self.FirstRadarSig * EffectivenessMul
 	--print(self.Heat)
 	--print(self.RadarSig)
 
-	self:NextThink( CurTime() + 0.1 )
+	self:NextThink( CurTime() + 0.2 )
 	return true
 end
 
