@@ -105,6 +105,7 @@ end
 
 function MakeACF_Rack(Owner, Pos, Angle, Id)
 
+
 	if not Owner:CheckLimit("_acf_rack") then return false end
 
 	local Rack = ents.Create("acf_rack")
@@ -190,7 +191,7 @@ function MakeACF_Rack(Owner, Pos, Angle, Id)
 end
 
 list.Set( "ACFCvars", "acf_rack" , {"id"} )
-duplicator.RegisterEntityClass("acf_rack", MakeACF_Rack, "Pos", "Angle", "Id")
+--duplicator.RegisterEntityClass("acf_rack", MakeACF_Rack, "Pos", "Angle", "Id") --
 
 
 function ENT:TriggerInput( iname , value )
@@ -315,9 +316,8 @@ function ENT:Think()
 	if CT > self.UpdateNextMissile then
 		self.UpdateNextMissile = CT + 0.75
 
-		self:UpdateValidMissiles()
-		--local ValidCount = self:UpdateValidMissiles()
-
+		self.CurMissile = self:UpdateValidMissiles()
+		Wire_TriggerOutput(self, "Shots Left", self.CurMissile)
 	end
 
 	if self.GuidanceActive then
@@ -385,7 +385,7 @@ function ENT:ShootMissile()
 
 	local ShotMissile = self.Missiles[MissileToShoot][1] or nil
 
-	if not ShotMissile:IsValid() then self:UpdateValidMissiles() return end
+	if not ShotMissile:IsValid() then self.CurMissile = self:UpdateValidMissiles() return end
 
 
 	self.NextReload = CT + self.ReloadTime
@@ -427,17 +427,19 @@ function ENT:ShootMissile()
 	local ValidCount = self:UpdateValidMissiles()
 	self.CurMissile = ValidCount
 
+
+	Wire_TriggerOutput(self, "Shots Left", self.CurMissile)
+
 	self.Ready = false
 	self.NextFire = CT + self.FireDelay
 end
 
-function ENT:Reload()
+function ENT:Reload() --
 	local CT = CurTime()
 
 --	if self.CurMissile >= self.MaxMissile then return end--a
 
 	local ValidCount = self:UpdateValidMissiles()
-	self.CurMissile = ValidCount
 
 	local ReloadTest = ACF.CurTime + self.ReloadDelay * self.ReloadMultiplierBonus
 	if self.NextFire > ReloadTest then
@@ -445,8 +447,6 @@ function ENT:Reload()
 	end
 
 	--print(self.ReloadDelay * self.ReloadMultiplierBonus)
-
-	self.NextFire = CT + self.ReloadDelay * self.ReloadMultiplierBonus
 
 	if ValidCount >= self.MaxMissile then return end--a
 
@@ -460,23 +460,25 @@ function ENT:Reload()
 			break
 		end
 	end
-	self:EmitSound("acf_extra/tankfx/gnomefather/reload12.wav", 500, 110)
+
 	local Reloaded = false
 
 	if MissileToReload ~= -1 then
 		Reloaded = self:AddMissile(MissileToReload)
-		self.Ready = false
 	end
 
 	--self.Missiles = {}
 	--Self.Missiles[ID] Stores entity in 1 and whether missile exists and is valid in 2
 
 	if Reloaded then
+		self:EmitSound("acf_extra/tankfx/gnomefather/reload12.wav", 500, 110)
 		self.NextReload = CT + self.ReloadTime
 		self.NextFire = CT + self.ReloadDelay * self.ReloadMultiplierBonus or 1
 		self.Ready = false
 		Wire_TriggerOutput(self, "Ready", 0)
 		self.CurMissile = ValidCount + 1
+
+		Wire_TriggerOutput(self, "Shots Left", self.CurMissile)
 	else
 		self.NextReload = CT + 1
 	end
@@ -775,10 +777,17 @@ function ENT:GetOverlayText()
 	local FireRate	= self.FireDelay or 1	-- How many time take one lauch from another. in secs
 	local Reload		= self.ReloadTime		-- reload time. in secs
 	local ReloadDelay   = self.ReloadDelay
-	local ReloadBonus	= 1 - self.ReloadMultiplierBonus  -- the word explains by itself
+	local ReloadBonus	= 1-self.ReloadMultiplierBonus  -- the word explains by itself
 	local Status		= self.RackStatus				-- this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
+	local txt = ""
 
-	local txt = "-  " .. Status .. "  -"
+	txt = "-  " .. Status
+	if self.RackStatus == "Loading" then
+		local reloadtime = math.max(math.Round(self.NextFire - ACF.CurTime),0)
+		txt = txt .. " (Seconds left: " .. reloadtime .. ")"
+	end
+
+	txt = txt .. "  -"
 
 	if Ammo > 0 then
 		if Ammo == 1 then

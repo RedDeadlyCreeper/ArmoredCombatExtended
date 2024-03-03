@@ -725,9 +725,14 @@ function ENT:Think()
 	self:NextThink(Time)
 
 	if self.CurrentRecoil > 0 then
-		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime/0.5,0) --Divided by time to dissipate recoil
 		local Dir = -self:GetForward()
-		ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil * self.CurrentRecoil )
+		local MuzzlePos		= self:LocalToWorld(self.Muzzle)
+		--local MuzzlePos		= self:GetForward() * self.Muzzle.x + self:GetRight()  * self.Muzzle.y + self:GetUp() * self.Muzzle.z
+		--local MuzzlePos		= self:GetPos()
+		ACF_KEShove(self, MuzzlePos , Dir , self.KERecoil * self.CurrentRecoil )
+
+		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime/0.5,0) --Divided by time to dissipate recoil. Currently 0.5
+		--self.CurrentRecoil = 0
 	end
 
 	return true
@@ -873,13 +878,12 @@ do
 				self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 				self:CreateShell( self.BulletData )
 
-				local Dir = -self:GetForward()
-
 				self.CurrentRecoil = 1
 
-				self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) / 20
+				--self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) / 20
+				self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 1000
 
-				ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil )
+				--ACF_KEShove(self, self:GetPos() - MuzzlePos , Dir , self.KERecoil )
 
 				self.Ready = false
 				self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)

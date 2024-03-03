@@ -16,6 +16,10 @@ local RoundTypesSubCaliberBoost = {
 
 --the dust is for non-explosive rounds, so lets skip this
 local RoundTypesIgnore = {
+	--HEAT      = true,
+	--THEAT      = true,
+	--HEATFS      = true,
+	--THEATFS      = true,
 	HE      = true,
 	HEFS    = true,
 	HESH    = true
@@ -146,10 +150,10 @@ function EFFECT:Init( data )
 
 	local Energy = (self.Mass * (self.Velocity/39.37)^2)/500000
 
-	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
+	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
 
 	if PlayerDist < Energy*8 and not LocalPlayer():HasGodMode() then
-		local Amp          = math.min(Energy * 1.5 / math.max(PlayerDist,5),40)
+		local Amp          = math.min(Energy / 250 / math.max(PlayerDist,5),40)
 		--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
 		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy/10 , false) --Energy/20
 	end

@@ -215,16 +215,16 @@ function ENT:Think()
 
 		if self.TargetPos then
 
-
+			local OffsetTPos = self.TargetPos + VectorRand():GetNormalized() * 5 --Apply your noise here. I was thinking of putting noise multipliers in the guidance sections.
 			local Tarang = Angle()
-			local Heading = (self.TargetPos-Pos):Angle()
+			local Heading = (OffsetTPos-Pos):Angle()
 			local LHeading = self:WorldToLocalAngles(Heading)
 
 			--if false then
 			--if true then
 			if self.StraightRunning <= 0 then
 				--Smart guidance. Doesn't work at high convergences. Use backup alternative outside safe range.
-				local TDif = self.TargetPos - Pos
+				local TDif = OffsetTPos - Pos
 
 				local TTime = TDif:Length()/self.Speed
 

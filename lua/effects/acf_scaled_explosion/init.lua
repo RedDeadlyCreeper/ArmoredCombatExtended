@@ -92,7 +92,7 @@ function EFFECT:Init( data )
 	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
 
-	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 39.4 + 0.001 --Divide by 0 is death
+	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
 
 	if PlayerDist < self.Radius*10 and not LocalPlayer():HasGodMode() then
 		local Amp          = math.min(self.Radius * 0.5 / math.max(PlayerDist,1),40)

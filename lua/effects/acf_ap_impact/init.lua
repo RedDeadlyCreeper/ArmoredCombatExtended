@@ -15,6 +15,10 @@ local RoundTypesSubCaliberBoost = {
 
 --the dust is for non-explosive rounds, so lets skip this
 local RoundTypesIgnore = {
+	--HEAT      = true,
+	--THEAT      = true,
+	--HEATFS      = true,
+	--THEATFS      = true,
 	HE      = true,
 	HEFS    = true,
 	HESH    = true
@@ -118,12 +122,12 @@ function EFFECT:Init( data )
 
 local Energy = (self.Mass * (self.Velocity/39.37)^2)/1000000
 
-local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 80 + 0.001 --Divide by 0 is death
+local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
 
-if PlayerDist < Energy*8 and not LocalPlayer():HasGodMode() then
-	local Amp          = math.min(Energy * 1.5 / math.max(PlayerDist,5),40)
+if PlayerDist < Energy * 8 and not LocalPlayer():HasGodMode() then
+	local Amp          = math.min(Energy / 350 / math.max(PlayerDist,5),40)
 	--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
-	util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy/10 , false) --Energy/20
+	util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy / 10 , false) --Energy/20
 end
 
 	PerformBulletEffect( self )
@@ -565,7 +569,7 @@ function EFFECT:Metal( SmokeColor )
 
 	if Flash then
 		Flash:SetLifeTime(0)
-		Flash:SetDieTime(0.2 * (Energy / 3))
+		Flash:SetDieTime(0.3)
 		Flash:SetStartAlpha(255)
 		Flash:SetEndAlpha(255)
 		Flash:SetStartSize(15 * self.Caliber)
@@ -580,7 +584,7 @@ function EFFECT:Metal( SmokeColor )
 
 	if Glow then
 			Glow:SetLifeTime( 0 )
-			Glow:SetDieTime( 0.2 * (Energy / 3) )
+			Glow:SetDieTime(0.3)
 			Glow:SetStartAlpha( math.Rand( 25, 50 ) )
 			Glow:SetEndAlpha( 0 )
 			Glow:SetStartSize( 50 * self.Caliber )

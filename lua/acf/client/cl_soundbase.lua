@@ -377,17 +377,17 @@ do
 						Sound = "acf_other/penetratingshots/penetrations/large/close/pen" .. math.random(1,3) .. ".mp3"
 						--lower than 20mm
 						if Caliber <= 2 then
-							VolFix = 15
+							VolFix = 0.5
 							PitchFix = 0.9
 
 						--50mm guns and below
 						elseif Caliber <= 5 then
-							VolFix = 23
+							VolFix = 0.5
 							PitchFix = 0.7
 
 						--any big gun above 50mm
 						elseif Caliber > 5 then
-							VolFix = 30
+							VolFix = 0.5
 							PitchFix = 0.4
 						end
 

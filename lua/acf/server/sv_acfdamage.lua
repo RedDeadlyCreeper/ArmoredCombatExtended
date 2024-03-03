@@ -807,11 +807,24 @@ end
 --helper function to replace ENT:ApplyForceOffset()
 --Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
 local m_insq = 1 / 39.37 ^ 2
-local function ACF_ApplyForceOffset(Phys, Force, Pos) --For some reason this function somestimes reverses the impulse. I don't know why.
+local function ACE_ApplyForceOffset(Phys, Force, Pos, ForceVal) --For some reason this function somestimes reverses the impulse. I don't know why.
+	--Old
 	Phys:ApplyForceCenter(Force)
-	local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
-	local angf = off:Cross(Force) * m_insq * 360 / (2 * 3.1416)
-	Phys:ApplyTorqueCenter(angf)
+	--local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
+	--local angf = off:Cross(Force) * m_insq * 360 / (2 * 3.1416)
+
+	--local LocalizedPos = Phys:WorldToLocal(Pos)
+	--Ang1 = (LocalizedPos):Angle() --angle to gun center
+	--Ang2 = (LocalizedPos + Phys:WorldToLocal(Phys:GetPos()+Force:GetNormalized()) * 50):Angle() --Angle created by adding force
+	--DelAngle = Ang1 - Ang2
+	--print(DelAngle)
+
+	--Ang1 + Phys
+
+	--local angf = Vector(DelAngle.pitch , 0 , DelAngle.yaw) * 500 * m_insq * ForceVal -- -Pitch, Roll, yaw
+
+	--local angf = Vector(math.sin(Ang1.yaw) , math.cos(Ang1.yaw) , 0) * 500 * m_insq * ForceVal -- -Pitch, Roll, yaw
+	--Phys:ApplyTorqueCenter(angf)
 end
 
 --Handles ACE forces (HE Push, Recoil, etc)
@@ -844,17 +857,17 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	--Scaling = 87.5
 	--end
 
-	local Local	= parent:WorldToLocal(Pos) / Scaling
-	local Res	= Local + phys:GetMassCenter()
-	Pos			= parent:LocalToWorld(Res)
+	--local Local	= parent:WorldToLocal(Pos) / Scaling
+	--local Res	= Local + phys:GetMassCenter()
+	--Pos			= parent:LocalToWorld(Res)
 
-	--ACF_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos ) --Had a lot of odd quirks including reversing torque angles.
+	ACE_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos, KE ) --Had a lot of odd quirks including reversing torque angles.
 
-	if Target ~= parent then
-		phys:ApplyForceOffset(Vec * KE, Pos)
-	else
-		phys:ApplyForceCenter(Vec * KE)
-	end
+	--if Target ~= parent then
+	--	phys:ApplyForceOffset(Vec * KE, Pos)
+	--else
+	--	phys:ApplyForceCenter(Vec * KE)
+	--end
 
 end
 
