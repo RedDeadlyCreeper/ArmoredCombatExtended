@@ -726,10 +726,10 @@ function ENT:Think()
 
 	if self.CurrentRecoil > 0 then
 		local Dir = -self:GetForward()
-		local MuzzlePos		= self:LocalToWorld(self.Muzzle)
+		--local MuzzlePos		= self:LocalToWorld(self.Muzzle)
 		--local MuzzlePos		= self:GetForward() * self.Muzzle.x + self:GetRight()  * self.Muzzle.y + self:GetUp() * self.Muzzle.z
 		--local MuzzlePos		= self:GetPos()
-		ACF_KEShove(self, MuzzlePos , Dir , self.KERecoil * self.CurrentRecoil )
+		ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil * self.CurrentRecoil )
 
 		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime/0.5,0) --Divided by time to dissipate recoil. Currently 0.5
 		--self.CurrentRecoil = 0
@@ -880,11 +880,6 @@ do
 
 				self.CurrentRecoil = 1
 
-				--self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) / 20
-				self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 1000
-
-				--ACF_KEShove(self, self:GetPos() - MuzzlePos , Dir , self.KERecoil )
-
 				self.Ready = false
 				self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
 
@@ -999,7 +994,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
 		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
 
-		--self.KERecoil = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass /2000 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1)
+		self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 1000
 
 		self.NextFire = curTime + self.ReloadTime
 		local reloadTime = self.ReloadTime
