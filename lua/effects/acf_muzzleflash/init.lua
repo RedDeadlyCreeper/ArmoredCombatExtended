@@ -1079,26 +1079,26 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 
 	local Offset = self.DirVec * size * -2
 
-
-	local ParticleCount = math.ceil( math.Clamp( size * 2 , 6, 150 ) * PMul )
+	local ParticleCount = math.ceil( math.Clamp( size * 2 , 6, 300 ) * PMul )
 
 	local DustSpeed = 4
 	for i = 1, ParticleCount do
 		local Dust = self.Emitter:Add("particles/smokey", self.Origin  + Offset )
 
 		if Dust then
-			Dust:SetVelocity(self.DirVec * DustSpeed * size * 35 + self.GunVelocity * 1.5)
+			Dust:SetVelocity((self.DirVec+ VectorRand()*0.15):GetNormalized() * DustSpeed * size * 30 + self.GunVelocity * 1.5)
 			DustSpeed = DustSpeed + (6) * (i/ParticleCount)
-			Dust:SetLifeTime(0)
+			Dust:SetLifeTime(-0.125)
 			Dust:SetDieTime(6 * (size / 4))
-			Dust:SetStartAlpha(75)
+			Dust:SetStartAlpha(35)
 			Dust:SetEndAlpha(5)
-			Dust:SetStartSize(60 * size * (i/ParticleCount))
-			Dust:SetEndSize(250 * size * (i/ParticleCount))
+			Dust:SetStartSize(30 * size * (i/ParticleCount))
+			Dust:SetEndSize(350 * size * (i/ParticleCount))
 			Dust:SetRoll(math.Rand(150, 360))
-			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
-			Dust:SetAirResistance(600)
-			Dust:SetGravity(Vector(0, 0, -150))
+			Dust:SetRollDelta(math.Rand(-0.5, 0.5))
+			Dust:SetAirResistance(1000)
+			Dust:SetGravity(Vector(0, 0, -250))
+			Dust:SetCollide( true )
 			Dust:SetColor(SmokeColor.r, SmokeColor.g, SmokeColor.b)
 		end
 	end
@@ -1106,12 +1106,13 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local ParticleCount = math.ceil( math.Clamp( size , 5, 600 ) * PMul )
 
 
+
 	for _ = 1, ParticleCount do
 
 		local Dust = self.Emitter:Add("particles/smokey", self.Origin  + Offset + self.DirVec * size * 10 )
 
 		if Dust then
-			Dust:SetVelocity((self.DirVec+ VectorRand()*0.7):GetNormalized() * size * -70 + self.GunVelocity * 1.5)
+			Dust:SetVelocity((self.DirVec+ VectorRand()*0.7):GetNormalized() * size * -15 + self.GunVelocity * 1.5)
 			DustSpeed = DustSpeed + (6)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(12 * (size / 4))
@@ -1128,6 +1129,7 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 		end
 	end
 
+
 	local ParticleCount = math.ceil( math.Clamp( size * 5, 5, 600 ) * PMul )
 
 
@@ -1135,8 +1137,8 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 		local Dust = self.Emitter:Add("effects/spark", self.Origin + Offset )
 
 		if Dust then
-			Dust:SetVelocity((self.DirVec + VectorRand()*1) * 200 * size)
-			local Lifetime = math.Rand(0.4, 0.9)
+			Dust:SetVelocity((self.DirVec + VectorRand()*0.5) * 200 * size)
+			local Lifetime = math.Rand(0.5, 1.0)
 			Dust:SetLifeTime(-0.0)
 			Dust:SetDieTime(Lifetime)
 			Dust:SetStartAlpha(100)
@@ -1146,7 +1148,7 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 			Dust:SetEndSize(size*0.5 * size)
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
-			Dust:SetGravity(Vector(0, 0, -440))
+			Dust:SetGravity(Vector(0, 0, -640))
 			Dust:SetLighting( false )
 			Dust:SetCollide( true )
 			Dust:SetBounce( 0.4 )	
@@ -1161,16 +1163,16 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 
 	size = size * 3
 
-	local ParticleCount = math.ceil( math.Clamp( size * 3, 5, 600 ) * PMul )
+	local ParticleCount = math.ceil( math.Clamp( size * 1, 5, 600 ) * PMul )
 
 
 	for _ = 1, ParticleCount do
 	local Dust = self.Emitter:Add("effects/fire_cloud".. math.random(1,2), self.Origin  + Offset)
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 30 + self.GunVelocity + (self.DirAng:Right() * math.Rand (-1,1) + self.DirAng:Up() * math.Rand (-1,1)):GetNormalized() * 20 * size)
+		Dust:SetVelocity(self.DirVec * size * 70 + self.GunVelocity + (self.DirAng:Right() * math.Rand (-1,1) + self.DirAng:Up() * math.Rand (-1,1)):GetNormalized() * 25 * size)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(255)
 		Dust:SetEndAlpha(255)
 		Dust:SetStartSize(1.0 * size)
@@ -1187,9 +1189,9 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 30 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 70 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(255)
 		Dust:SetEndAlpha(255)
 		Dust:SetStartSize(4 * size)
@@ -1206,9 +1208,9 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 30 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 70 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(100)
 		Dust:SetEndAlpha(15)
 		Dust:SetStartSize(2* size)
@@ -1224,13 +1226,13 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/fire_cloud".. math.random(1,2), self.Origin  + Offset )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 10 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 50 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(150)
 		Dust:SetEndAlpha(150)
 		Dust:SetStartSize(0)
-		Dust:SetEndSize(3 * size)
+		Dust:SetEndSize(6 * size)
 		Dust:SetRoll(math.Rand(150, 360))
 		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 		Dust:SetAirResistance( 0 )
@@ -1240,13 +1242,13 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 10 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 50 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(255)
 		Dust:SetEndAlpha(255)
 		Dust:SetStartSize(0)
-		Dust:SetEndSize(8 * size)
+		Dust:SetEndSize(12 * size)
 		Dust:SetRoll(math.Rand(150, 360))
 		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 		Dust:SetAirResistance( 0 )
@@ -1258,13 +1260,13 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/fire_cloud".. math.random(1,2), self.Origin  + Offset )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 55 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 100 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(150)
 		Dust:SetEndAlpha(150)
 		Dust:SetStartSize(0)
-		Dust:SetEndSize(6 * size)
+		Dust:SetEndSize(8 * size)
 		Dust:SetRoll(math.Rand(150, 360))
 		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 		Dust:SetAirResistance( 0 )
@@ -1275,13 +1277,13 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 55 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 100 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(150)
 		Dust:SetEndAlpha(150)
 		Dust:SetStartSize(5  * size)
-		Dust:SetEndSize(18 * size)
+		Dust:SetEndSize(25 * size)
 		Dust:SetRoll(math.Rand(150, 360))
 		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 		Dust:SetAirResistance( 0 )
@@ -1292,13 +1294,13 @@ function EFFECT:MuzzleSmokeC( Ground, SmokeColor )
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
 
 	if Dust then
-		Dust:SetVelocity(self.DirVec * size * 55 + self.GunVelocity)
+		Dust:SetVelocity(self.DirVec * size * 100 + self.GunVelocity)
 		Dust:SetLifeTime(0)
-		Dust:SetDieTime(0.25)
+		Dust:SetDieTime(0.3)
 		Dust:SetStartAlpha(255)
 		Dust:SetEndAlpha(255)
 		Dust:SetStartSize(0)
-		Dust:SetEndSize(15 * size)
+		Dust:SetEndSize(10 * size)
 		Dust:SetRoll(math.Rand(150, 360))
 		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 		Dust:SetAirResistance( 0 )
