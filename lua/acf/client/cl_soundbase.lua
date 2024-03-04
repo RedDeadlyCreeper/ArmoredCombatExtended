@@ -12,7 +12,7 @@
 ACE = ACE or {}
 
 --Defines the delay time caused by the distance between the event and you. Increasing it will increment the required time to hear a distant event
-ACE.DelayMultipler            = 1 --5x longer than speed of sound.
+ACE.DelayMultipler            = 5 --5x longer than speed of sound.
 
 --Defines the distance range for close, mid and far sounds. Incrementing it will increase the distances between sounds
 ACE.DistanceMultipler         = 1
