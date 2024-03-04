@@ -4,7 +4,7 @@ ACF_defineGunClass("HW", {
 	spread = 0.3,
 	name = "Howitzer",
 	desc = ACFTranslation.GunClasses[8],
-	muzzleflash = "120mm_muzzleflash_noscale",
+	muzzleflash = "C",
 	rofmod = 1.5,
 	maxrof = 20, -- maximum rounds per minute
 	year = 1900,

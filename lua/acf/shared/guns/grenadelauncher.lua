@@ -4,7 +4,7 @@ ACF_defineGunClass("GL", {
 	spread = 0.4,
 	name = "Grenade Launcher",
 	desc = ACFTranslation.GunClasses[6],
-	muzzleflash = "40mm_muzzleflash_noscale",
+	muzzleflash = "MO",
 	rofmod = 1,
 	year = 1970,
 	sound = "ace_weapons/multi_sound/12_7mm_multi.mp3",

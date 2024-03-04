@@ -4,7 +4,7 @@ ACF_defineGunClass("AC", {
 	spread = 0.2,
 	name = "Autocannon",
 	desc = ACFTranslation.GunClasses[2],
-	muzzleflash = "30mm_muzzleflash_noscale",
+	muzzleflash = "AC",
 	rofmod = 0.35,
 	year = 1930,
 	sound = "ace_weapons/multi_sound/30mm_multi.mp3",

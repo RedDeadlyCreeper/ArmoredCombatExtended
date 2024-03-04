@@ -159,8 +159,8 @@ ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45
 ---------------------------------- Particle colors  ----------------------------------
 
 ACE.DustMaterialColor = {
-	Concrete   = Color(130,130,130,150),
-	Dirt       = Color(117,101,70,150),
+	Concrete   = Color(150,130,130,150),
+	Dirt       = Color(93,80,56,150),
 	Sand       = Color(225,202,130,150),
 	Glass      = Color(255,255,255,50),
 	Snow      = Color(255,255,255,50),

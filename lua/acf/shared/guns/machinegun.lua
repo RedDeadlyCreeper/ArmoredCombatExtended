@@ -4,7 +4,7 @@ ACF_defineGunClass("MG", {
 	spread = 0.16,
 	name = "Machinegun",
 	desc = ACFTranslation.GunClasses[9],
-	muzzleflash = "50cal_muzzleflash_noscale",
+	muzzleflash = "MG",
 	rofmod = 0.9,
 	year = 1910,
 	sound = "ace_weapons/multi_sound/7_62mm_multi.mp3",

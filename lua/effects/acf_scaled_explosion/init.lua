@@ -444,25 +444,26 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 	local PMul       = self.ParticleMul
 	local Radius     = (1-Ground.Fraction) * self.Radius
 	local Density    = Radius
-	local Angle      = Ground.HitNormal:Angle()
+	local Angle      = self.HitNormal:Angle()
 
 	for _ = 0, Density * PMul do
 
 		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
 		local ShootVector = Angle:Up()
-		local Smoke = self.Emitter:Add( "particle/warp2_warp", Ground.HitPos )
+		local Smoke = self.Emitter:Add( "particle/warp2_warp", Ground.HitPos + self.HitNormal * (5 + Radius * 5) )
 
 		if Smoke then
 			Smoke:SetVelocity( ShootVector * 400 * Radius )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime(  0.6 * Radius/4 )
-			Smoke:SetStartAlpha( 30 )
+			Smoke:SetStartAlpha( 20 )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 45 * Radius )
 			Smoke:SetEndSize( 0 * Radius )
 			Smoke:SetRoll( math.Rand(0, 360) )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
 			Smoke:SetAirResistance( 200 )
+			Smoke:SetCollide( true )
 
 			local SMKColor = math.random( 0 , 50 )
 			--Smoke:SetColor( SmokeColor.r-SMKColor,SmokeColor.g-SMKColor,SmokeColor.b-SMKColor )
@@ -471,27 +472,28 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 
 	PMul       = self.ParticleMul
 	Radius     = (1-Ground.Fraction) * self.Radius * 0.75
-	Density    = Radius * 6
-	Angle      = Ground.HitNormal:Angle()
+	Density    = Radius * 12
+	Angle      = self.HitNormal:Angle()
 
 	for _ = 0, Density * PMul do
 
 		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
 		local ShootVector = Angle:Up()
-		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), Ground.HitPos )
+		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), Ground.HitPos + self.HitNormal * (5 + Radius * 5) )
 
 		if Smoke then
 			Smoke:SetVelocity( ShootVector * 500 * Radius * math.Rand(0.5, 1) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime(  0.2 * Radius/4 )
-			Smoke:SetStartAlpha( 50 )
+			Smoke:SetDieTime(  0.4 * Radius/4 )
+			Smoke:SetStartAlpha( 40 )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 5 * Radius )
 			Smoke:SetEndSize( 35 * Radius )
 			Smoke:SetRoll( math.Rand(0, 360) )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
 			Smoke:SetAirResistance( 150 )
-			Smoke:SetGravity(Vector(0, 0, 1000))
+			Smoke:SetCollide( true )
+			Smoke:SetGravity(Vector(0, 0, 400))
 			local SMKColor = math.random( 0 , 20 )
 			Smoke:SetColor( SmokeColor.r + SMKColor, SmokeColor.g + SMKColor, SmokeColor.b + SMKColor )
 		end

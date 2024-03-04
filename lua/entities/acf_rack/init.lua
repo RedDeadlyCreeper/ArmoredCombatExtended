@@ -191,7 +191,7 @@ function MakeACF_Rack(Owner, Pos, Angle, Id)
 end
 
 list.Set( "ACFCvars", "acf_rack" , {"id"} )
---duplicator.RegisterEntityClass("acf_rack", MakeACF_Rack, "Pos", "Angle", "Id") --
+duplicator.RegisterEntityClass("acf_rack", MakeACF_Rack, "Pos", "Angle", "Id")
 
 
 function ENT:TriggerInput( iname , value )
@@ -318,6 +318,7 @@ function ENT:Think()
 
 		self.CurMissile = self:UpdateValidMissiles()
 		Wire_TriggerOutput(self, "Shots Left", self.CurMissile)
+		self:TrimDistantCrates()
 	end
 
 	if self.GuidanceActive then

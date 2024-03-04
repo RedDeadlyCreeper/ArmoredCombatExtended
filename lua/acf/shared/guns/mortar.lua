@@ -4,7 +4,7 @@ ACF_defineGunClass("MO", {
 	spread = 0.7,
 	name = "Mortar",
 	desc = ACFTranslation.GunClasses[10],
-	muzzleflash = "40mm_muzzleflash_noscale",
+	muzzleflash = "MO",
 	rofmod = 2,
 	maxrof = 35, -- maximum rounds per minute
 	year = 1915,

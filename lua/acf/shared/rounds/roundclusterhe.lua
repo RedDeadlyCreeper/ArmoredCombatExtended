@@ -192,7 +192,7 @@ do
 		GEnt.BulletDataC["Id"]			= bdata.Id
 		GEnt.BulletDataC["KETransfert"]	= bdata.KETransfert
 		GEnt.BulletDataC["LimitVel"]		= 700
-		GEnt.BulletDataC["MuzzleVel"]		= 250
+		GEnt.BulletDataC["MuzzleVel"]		= 150
 		--GEnt.BulletDataC["MuzzleVel"]		= bdata.MuzzleVel * 20
 		GEnt.BulletDataC["Owner"]			= bdata.Owner
 		GEnt.BulletDataC["PenArea"]		= bdata.PenArea
