@@ -460,7 +460,7 @@ function ENT:AcquireLock()
 				end
 
 				dist = difpos:Length()
-				Heat = ACE_InfraredHeatFromProp(self, scanEnt, dist)
+				Heat = ACE_InfraredHeatFromProp(scanEnt, dist)
 			end
 
 			--Skip if not Hotter than AmbientTemp in deg C.

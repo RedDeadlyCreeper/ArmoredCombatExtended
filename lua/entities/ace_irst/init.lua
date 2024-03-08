@@ -272,7 +272,7 @@ function ENT:AcquireLock()
 				physEnt = classifyent:GetPhysicsObject()
 
 				if IsValid(physEnt) and physEnt:IsMoveable() then
-					ACE_InfraredHeatFromProp( self, classifyent , dist )
+					ACE_InfraredHeatFromProp( classifyent , dist )
 				else
 					Heat = classifyent.Heat
 				end
@@ -287,7 +287,7 @@ function ENT:AcquireLock()
 				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
 				if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
-				Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
+				Heat = ACE_InfraredHeatFromProp( classifyent , dist )
 
 			end
 

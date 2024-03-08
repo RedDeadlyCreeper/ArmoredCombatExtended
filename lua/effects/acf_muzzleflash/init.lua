@@ -110,20 +110,20 @@ function EFFECT:Init( data )
 
 
 			if MuzzleEffect == "RAC" then
-				self:MuzzleSmokeRAC( Ground, Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmokeRAC( Color( 150, 150, 150, 100 ) )
 			elseif MuzzleEffect == "AC" then
-				self:MuzzleSmokeAC( Ground, Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmokeAC( Color( 150, 150, 150, 100 ) )
 			elseif MuzzleEffect == "MO" then
 				self:Shockwave( Ground, SMKColor, 0.875, 0.5  )
-				self:MuzzleSmokeMO( Ground, Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmokeMO( Color( 150, 150, 150, 100 ) )
 			elseif MuzzleEffect == "MG" then
-				self:MuzzleSmokeMG( Ground, Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmokeMG( Color( 150, 150, 150, 100 ) )
 			elseif MuzzleEffect == "C" then
 				self:Shockwave( Ground, SMKColor, 1.3, 0.5 ) --1.3, 0.5
-				self:MuzzleSmokeC( Ground, Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmokeC( Color( 150, 150, 150, 100 ) )
 			else
 				--self:Shockwave( Ground, SMKColor, 1, 1  )
-				self:MuzzleSmokeC( Ground, Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmokeC( Color( 150, 150, 150, 100 ) )
 			end
 
 

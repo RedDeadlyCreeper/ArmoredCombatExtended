@@ -440,7 +440,7 @@ do
 		HEFS	= true
 	}
 
-	function ENT:ACF_OnDamage( Entity, Energy, FrArea, Inflictor, _, Type )	--This function needs to return HitRes
+	function ENT:ACF_OnDamage( Entity, Energy, FrArea, _, Inflictor, _, Type )	--This function needs to return HitRes
 
 		local Mul	= (( HEtbl[Type] and 0.1 ) or 1) --HE penetrators better penetrate the armor of missiles
 		local HitRes	= ACF_PropDamage( Entity, Energy , FrArea * Mul, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
