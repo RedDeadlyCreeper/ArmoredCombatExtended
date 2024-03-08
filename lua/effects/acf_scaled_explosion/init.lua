@@ -19,8 +19,8 @@ function EFFECT:Init( data )
 	self.ParticleMul   = GetParticleMul()
 
 	local GroundTr = { }
-		GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius
-		GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 10
+		GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius * 0.1
+		GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 3
 		GroundTr.mask = MASK_NPCWORLDSTATIC
 	local Ground = util.TraceLine( GroundTr )
 
@@ -65,11 +65,12 @@ function EFFECT:Init( data )
 		elseif Material == "Dirt" or Material == "Sand"  then
 			self:Dirt( SMKColor )
 		else -- Nonspecific
+			self:Dirt( SMKColor )
 --			self:Concrete( SMKColor )
 		end
 	end
 
-	if Ground.HitWorld then
+	if Ground.HitWorld and not Ground.HitSky then
 
 		if self.HitWater and not self.UnderWater then
 			self:Water( Water )

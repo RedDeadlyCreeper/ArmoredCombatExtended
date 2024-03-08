@@ -28,6 +28,7 @@ local AllowedEnts = {
 	["prop_physics"]              = true,
 	["ace_ecm"]                   = true,
 	["ace_trackingradar"]         = true,
+	["ace_searchradar"]           = true,
 	["ace_irst"]                  = true,
 	["acf_gun"]                   = true,
 	["acf_ammo"]                  = true,
@@ -71,7 +72,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 			if Eclass == "ace_ecm" then
 				table.insert(ACE.ECMPods, Ent) --print('[ACE | INFO]- ECM registered count: ' .. table.Count( ACE.ECMPods ))
 				-- include any Tracking Radar to this table
-			elseif Eclass == "ace_trackingradar" or Eclass == "acf_missileradar" then
+			elseif Eclass == "ace_trackingradar" or Eclass == "acf_missileradar" or Eclass == "ace_searchradar" then
 				table.insert(ACE.radarEntities, Ent) --print('[ACE | INFO]- Tracking radar registered count: ' .. table.Count( ACE.radarEntities ))
 
 				for id, ent in pairs(ACE.radarEntities) do

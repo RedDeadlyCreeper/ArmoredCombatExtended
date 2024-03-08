@@ -262,7 +262,7 @@ function this:AcquireLock(missile)
 
 			if classifyent:GetClass() == "ace_flare" then 
 				Multiplier = classifyent.RadarSig
-				print("FlareSeen")
+				--print("FlareSeen")
 			end
 
 			--Could do pythagorean stuff but meh, works 98% of time

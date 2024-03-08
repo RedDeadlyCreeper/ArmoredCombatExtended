@@ -146,7 +146,7 @@ ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(ang
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
-ACF.MissileVelocityMul	= 7					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
+ACF.MissileVelocityMul	= 3					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
 
 
 --Math in globals????

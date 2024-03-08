@@ -88,6 +88,77 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
 
+ACF_defineGun("AIM-7 AAM", {							-- id
+	name             = "AIM-7 Sparrow",
+	desc             = "While not as advanced as its modern counterparts, the Sparrow makes up for it in thrust and plentiful speed. Do not underestimate it.",
+	model            = "models/missiles/arend/aim7f.mdl",
+	effect           = "Rocket Motor",
+	effectbooster    = "Rocket Motor Missile1",
+	gunclass         = "AAM",
+	rack             = "1xRK",							-- Which rack to spawn this missile on?
+	length           = 146*2.53, --Convert to ammocrate units
+	caliber          = 20.3,
+	weight           = 230,							-- Don't scale down the weight though!
+	year             = 1969,
+	modeldiameter    = 30,--Already in ammocrate units
+	bodydiameter     = 9.7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/missiles/arend/aim7f.mdl",
+		rackmdl				= "models/missiles/arend/aim7f.mdl",
+		firedelay			= 1.0,
+		reloadspeed			= 1.5,
+		reloaddelay			= 60.0,
+
+		--Formerly 370 and 1. Reduced blast from 1059Mj to 215Mj. For reference a 250kg bomb has 224Kj.
+		maxlength			= 100,							-- Length of missile. Used for ammo properties.
+		propweight			= 9,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 30,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
+
+		thrust				= 110,							-- Acceleration in m/s.
+		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
+		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 0,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.2,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.001,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
+		predictiondelay		= 0.35							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+	},
+
+	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb", "Semiactive"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+
+	racks		= {									-- a whitelist for racks that this missile can load into.
+						["1xRK"] = true,
+						["2xRK"] = true
+					},
+
+	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
+	SeekSensitivity    = 1,
+	irccm				= false,
+
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+	guidelay           = 0.25,								-- Required time (in seconds) for missile to start guiding at target once launched
+	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
+} )
+
 --AIM-120 Sparrow. A medium-Range AAM missile, perfect for those who really need a decent boom in a single pass. Just remember that this is not an AIM-9 and is better to aim before.
 ACF_defineGun("AIM-120 AAM", {							-- id
 	name             = "AIM-120 AMRAAM",
@@ -344,7 +415,7 @@ ACF_defineGun("Magic AAM", {								-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.00075,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
@@ -422,7 +493,7 @@ ACF_defineGun("MICA AAM", {								-- id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Infrared", "Antimissile"},
+	guidance   = {"Dumb", "Infrared", "Antimissile", "Radar"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
@@ -775,7 +846,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.0005,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},

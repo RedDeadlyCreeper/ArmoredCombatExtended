@@ -317,3 +317,78 @@ ACF_defineGun("RW61 RA", {								-- id
 
 	armdelay	= 0.15									-- minimum fuse arming delay
 } )
+
+
+
+ACF_defineGun("ATACMS RA", {						-- id
+	name             = "MGM-140 ATACMS",
+	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!!",
+	model            = "models/macc/MGM-140.mdl",
+	effect           = "Rocket Motor Arty",
+	effectbooster	 = "Rocket Motor",
+	gunclass         = "ARTY",
+	rack             = "1xRK",						-- Which rack to spawn this missile on?
+	length           = 145*2.53, --Convert to ammocrate units
+	caliber          = 61,
+	weight           = 1670,							-- Don't scale down the weight though!
+	year             = 1974,
+	modeldiameter    = 25, --Already in ammocrate units
+	bodydiameter     = 21, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	rofmod           = 0.3,
+	round = {
+		rocketmdl			= "models/macc/MGM-140.mdl",
+		rackmdl				= "models/macc/mgm-140_closed.mdl",
+		firedelay			= 0.5,
+		reloadspeed			= 2.0,
+		reloaddelay			= 80.0,
+
+
+		maxlength			= 220,							-- Length of missile. Used for ammo properties.
+		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 7,							-- Armour effectiveness of casing, in mm
+								--320
+		turnrate			= 20,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.7,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 2,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 60,							-- Acceleration in m/s.
+
+		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 0,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.01,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+	},
+
+	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance	= {"Dumb", "Laser", "GPS"},
+	fuses      = {"Contact", "Optical"},
+	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
+
+	racks	= {									-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true
+				},
+
+	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone   = 30,								-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
+
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+
+} )

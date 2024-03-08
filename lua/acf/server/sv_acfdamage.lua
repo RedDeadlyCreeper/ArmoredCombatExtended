@@ -753,7 +753,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
 	local MaxDig = (( Energy.Penetration * 1 / Bullet.PenArea ) * ACF.KEtoRHA / ACF.GroundtoRHA ) / 25.4
 
-	--print("Max Dig: ' .. MaxDig .. '\nEnergy Pen: ' .. Energy.Penetration .. '\n")
+	--print("Max Dig: " .. MaxDig .. "\nEnergy Pen: " .. Energy.Penetration .. "\n")
 
 	local HitRes = {Penetrated = false, Ricochet = false}
 	local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
@@ -796,6 +796,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
 	--penetrated
 	else
+		--print("Pen")
 		Bullet.Flight	= Bullet.Flight * (1 - loss)
 		Bullet.Pos		= DigRes.StartPos + Bullet.Flight:GetNormalized() * 0.25 --this is actually where trace left brush
 		HitRes.Penetrated	= true

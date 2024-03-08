@@ -162,7 +162,7 @@ function EFFECT:Think()
 	if self.Alive and Bullet and self.CreateTime > ACF.CurTime-30 then
 
 		--We require this so the tracer is not spawned in middle of the gun (when initially fired)
-		if self.hasTracer and IsValid(Bullet.Tracer) and Bullet.Counter < 3 then Bullet.Counter = Bullet.Counter + 1 end
+		if self.hasTracer and IsValid(Bullet.Tracer) and Bullet.Counter < 4 then Bullet.Counter = Bullet.Counter + 1 end
 
 		return true
 	end
@@ -263,13 +263,11 @@ function EFFECT:ApplyMovement( Bullet, Index )
 	if IsValid(Bullet.Tracer) then
 
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
-		local Length =  math.min(-DeltaPos:Length() * 2.5,-1)
+		local Length =  math.min(-DeltaPos:Length() * 3.125,-1)
 
-		if self.hasTracer and Bullet.Counter > 1 then
+		if self.hasTracer and Bullet.Counter > 3 then
 
-			local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos + Bullet.SimFlight * 0.01 )
-
-			--debugoverlay.Cross(setPos,3,1,Color(255,255,255,10), true)
+			local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos )
 
 			if (Light) then
 				Light:SetAngles( Bullet.SimFlight:Angle() )
@@ -285,7 +283,7 @@ function EFFECT:ApplyMovement( Bullet, Index )
 				Light:SetLighting( false )
 			end
 
-			Light = Bullet.Tracer:Add( "effects/ar2_altfire1b", setPos + Bullet.SimFlight * 0.01 )
+			Light = Bullet.Tracer:Add( "effects/ar2_altfire1b", setPos )
 
 			--debugoverlay.Cross(setPos,3,1,Color(255,255,255,10), true)
 

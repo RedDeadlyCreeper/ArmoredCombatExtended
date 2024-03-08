@@ -408,7 +408,7 @@ function ENT:ShootMissile()
 	self.Missiles[MissileToShoot][1]:SetNotSolid(false)
 	self.Missiles[MissileToShoot][1]:SetModelEasy( self.Missiles[MissileToShoot][1].OutSideRackModel )
 
-	self.Missiles[MissileToShoot][1]:EmitSound(self.Sound, 107, self.SoundPitch)
+	self.Missiles[MissileToShoot][1]:EmitSound(self.Sound, 500, self.SoundPitch, 1, CHAN_WEAPON ) --Formerly 107
 	self.Missiles[MissileToShoot][1].MotorSound = self.Sound
 
 	--Shamelessly stolen from the gun code
@@ -497,7 +497,7 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 
 	local missile = ents.Create("acf_missile2")
 	--missile:CPPISetOwner(ply) --What could possibly go wrong :/
-	self.DamageOwner = ply
+	missile.DamageOwner = ply
 	missile.DoNotDuplicate  = true
 	missile.Launcher		= self
 
@@ -510,7 +510,6 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.Bulletdata2 = Crate.BulletData --Sets non compacted bulletdata for spawning a shell. I guarantee there's a better way to do this.
 
 	BulletDataMath(missile)
-
 
 	missile.OutSideRackModel = ACF_GetRackValue(self.Id, "rocketmdl") or ACF_GetGunValue(BulletData.Id, "rocketmdl")
 

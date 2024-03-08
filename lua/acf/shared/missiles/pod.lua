@@ -507,7 +507,7 @@ ACF_DefineRack("1x 9m311", {
 
 	whitelistonly   = true,
 	protectmissile  = true,
-	hidemissile     = false,
+	hidemissile     = true,
 
 	mountpoints =
 	{
@@ -539,7 +539,7 @@ ACF_DefineRack("1x Javelin", {
 ACF_DefineRack("20x S8KO", {
 	name = "S-8KO Rocket Pod",
 	desc = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
-	model = "models/missiles/S8KOLauncher.mdl",
+	model = "models/missiles/arend/s8kolauncher.mdl",
 	gunclass = "POD",
 	weight = 100,
 	year = 1970,

@@ -246,7 +246,10 @@ do
 		local GEnt = bullet.Gun
 
 		local MuzzleVec = bullet.Flight:GetNormalized()
-		for I = 1,GEnt.BulletDataC.Bomblets do
+		local GunBData = GEnt.BulletDataC or {}
+		local CCount = GunBData.Bomblets or 0
+
+		for I = 1, CCount do
 			--print("Bobm")
 			timer.Simple(0.01 * I, function()
 				if IsValid(GEnt) then

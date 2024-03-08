@@ -155,7 +155,7 @@ ACF_defineGun("S8KO", { --id
 
 	name        = "S-8KO Unguided Rockets",
 	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
-	model       = "models/missiles/S-8KO.mdl",
+	model       = "models/missiles/arend/s-8ko.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "Rocket Motor FFAR",
 	caliber	= 8,

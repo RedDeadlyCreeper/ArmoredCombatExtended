@@ -322,7 +322,8 @@ do
 				else
 
 					ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
-					ACF_CalcBulletFlight( Index, Bullet, true )		--The world ain't going to move, so we say True for the backtrace override
+					--ACF_CalcBulletFlight( Index, Bullet, true )		--The world ain't going to move, so we say True for the backtrace override
+					ACF_CalcBulletFlight( Index, Bullet, true )		--Backtrace needed for world penetration effects
 				end
 			end,
 
@@ -539,24 +540,24 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 		end
 
 		Effect:SetScale( Hit )  --Hit Type
-	util.Effect( "ACF_BulletEffect", Effect, true, true )
+		util.Effect( "ACF_BulletEffect", Effect, true, true )
 
 	elseif Type == "Init" then
 
-	local IsMissile
+		local IsMissile
 
-	if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
-		IsMissile = 1
-	end
+		if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
+			IsMissile = 1
+		end
 
-	local Effect = EffectData()
-		Effect:SetMaterialIndex( Index )	--Bullet Index
-		Effect:SetStart( Bullet.Flight / 10 )	--Bullet Direction
-		Effect:SetOrigin( Bullet.Pos )
-		Effect:SetEntity( Entity(Bullet["Crate"]) )
-		Effect:SetScale( 0 )
-		Effect:SetAttachment( IsMissile or 0 )
-	util.Effect( "ACF_BulletEffect", Effect, true, true )
+		local Effect = EffectData()
+			Effect:SetMaterialIndex( Index )	--Bullet Index
+			Effect:SetStart( Bullet.Flight / 10 )	--Bullet Direction
+			Effect:SetOrigin( Bullet.Pos )
+			Effect:SetEntity( Entity(Bullet["Crate"]) )
+			Effect:SetScale( 0 )
+			Effect:SetAttachment( IsMissile or 0 )
+		util.Effect( "ACF_BulletEffect", Effect, true, true )
 
 	end
 end

@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+ "$basetexture" "macc/Buk_Warhead"
+ 
+ "$BumpMap" "macc/Buk_Warhead_Normal"
+  
+ $ssbump 1
+
+}

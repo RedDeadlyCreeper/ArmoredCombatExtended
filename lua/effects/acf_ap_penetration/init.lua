@@ -67,6 +67,7 @@ function EFFECT:Init( data )
 	self.Origin      = data:GetOrigin() 		-- where the round did hit.
 	self.DirVec      = data:GetNormal() 		-- the direction of the shell when did hit
 	self.Velocity    = data:GetScale() 			-- Mass of the projectile in kg
+
 	self.Mass        = data:GetMagnitude() 		-- Velocity of the projectile in gmod units
 
 	local ValidCrate = IsValid( self.AmmoCrate )
@@ -75,7 +76,7 @@ function EFFECT:Init( data )
 	if self.AmmoCrate:IsValid() then
 		self.Caliber     = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 10 ) or 10
 	else
-	self.Caliber = 1
+		self.Caliber = 1
 	end
 
 	self.Emitter     = ParticleEmitter( self.Origin )
@@ -84,9 +85,10 @@ function EFFECT:Init( data )
 	local SurfaceTr = PerformDecalTrace( self )
 	local TraceEntity = SurfaceTr.Entity
 	self.HitNorm = SurfaceTr.HitNormal
+	--print(SurfaceTr.Hitworld)
 
 	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
-	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) then
+	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) or SurfaceTr.HitWorld then
 
 		local Mat = SurfaceTr.MatType or 0
 		MatVal = ACE_GetMaterialName( Mat )
@@ -195,63 +197,136 @@ function EFFECT:Concrete( SmokeColor )
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 4, 100 ) * Pmul )
+
+	--[[
 	local DustSpeed = 50
-	for _ = 1, 3 do
-		local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 15)
+	for _ = 1, ParticleCount do
+		local Dust = self.Emitter:Add("particles/smokey", self.Origin - self.DirVec * 15)
 
 		if Dust then
-			Dust:SetVelocity(self.DirVec * DustSpeed * (self.Caliber + 1))
+			Dust:SetVelocity(-self.HitNorm * DustSpeed * Energy / ParticleCount * 0.75)
 			DustSpeed = DustSpeed + 50
 			--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
 			Dust:SetLifeTime(0)
-			Dust:SetDieTime(math.Rand(1, 2) * (Energy / 3))
+			Dust:SetDieTime(1 * (Energy / 6))
 			Dust:SetStartAlpha(200)
-			Dust:SetEndAlpha(20)
-			Dust:SetStartSize(8 * (self.Caliber + 1))
-			Dust:SetEndSize(25 * (self.Caliber + 1) * (DustSpeed / 50))
+			Dust:SetEndAlpha(0)
+			Dust:SetStartSize(0.1 * Energy)
+			Dust:SetEndSize(7 * Energy * (DustSpeed/50))
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
-			Dust:SetAirResistance(150 / self.Caliber)
-			Dust:SetGravity(Vector(0, 0, -540))
+			Dust:SetAirResistance(15)
+			Dust:SetGravity(Vector(0, 0, -320))
+			Dust:SetColor(SmokeColor.r, SmokeColor.g, SmokeColor.b)
+		end
+	end
+	]]--
+
+	local DustSpeed = 50
+	for _ = 1, ParticleCount do
+		local Dust = self.Emitter:Add("particles/smokey", self.Origin)
+
+		if Dust then
+			Dust:SetVelocity(self.HitNorm * DustSpeed * Energy / ParticleCount * 0.75)
+			DustSpeed = DustSpeed + 50
+			--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
+			Dust:SetLifeTime(0)
+			Dust:SetDieTime(1 * (Energy / 6))
+			Dust:SetStartAlpha(200)
+			Dust:SetEndAlpha(0)
+			Dust:SetStartSize(0.1 * Energy)
+			Dust:SetEndSize(7 * Energy * (DustSpeed/50))
+			Dust:SetRoll(math.Rand(150, 360))
+			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
+			Dust:SetAirResistance(15)
+			Dust:SetGravity(Vector(0, 0, -320))
 			Dust:SetColor(SmokeColor.r, SmokeColor.g, SmokeColor.b)
 		end
 	end
 
-	DustSpeed = 50
-	for _ = 1, 3 do
-		local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 15)
+	local DustSpeed = 50
+	for _ = 1, ParticleCount do
+		local Dust = self.Emitter:Add("particles/smokey", self.Origin)
 
 		if Dust then
-			Dust:SetVelocity(self.DirVec * -DustSpeed * (self.Caliber + 1))
+			Dust:SetVelocity(self.HitNorm * -DustSpeed * Energy / ParticleCount * 0.75)
 			DustSpeed = DustSpeed + 50
 			--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
 			Dust:SetLifeTime(0)
-			Dust:SetDieTime(math.Rand(1, 2) * (Energy / 3))
+			Dust:SetDieTime(1 * (Energy / 6))
 			Dust:SetStartAlpha(200)
-			Dust:SetEndAlpha(20)
-			Dust:SetStartSize(8 * (self.Caliber + 1))
-			Dust:SetEndSize(25 * (self.Caliber + 1) * (DustSpeed / 50))
+			Dust:SetEndAlpha(0)
+			Dust:SetStartSize(0.1 * Energy)
+			Dust:SetEndSize(7 * Energy * (DustSpeed/50))
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
-			Dust:SetAirResistance(150 / self.Caliber)
-			Dust:SetGravity(Vector(0, 0, -540))
+			Dust:SetAirResistance(15)
+			Dust:SetGravity(Vector(0, 0, -320))
 			Dust:SetColor(SmokeColor.r, SmokeColor.g, SmokeColor.b)
 		end
 	end
+
+	--Old dust didn't scale well.
+	--[[
+		local DustSpeed = 50
+		for _ = 1, 3 do
+			local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 15)
+
+			if Dust then
+				Dust:SetVelocity(self.DirVec * DustSpeed * (self.Caliber + 1))
+				DustSpeed = DustSpeed + 50
+				--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
+				Dust:SetLifeTime(0)
+				Dust:SetDieTime(math.Rand(1, 2) * (Energy / 3))
+				Dust:SetStartAlpha(200)
+				Dust:SetEndAlpha(20)
+				Dust:SetStartSize(8 * (self.Caliber + 1))
+				Dust:SetEndSize(25 * (self.Caliber + 1) * (DustSpeed / 50))
+				Dust:SetRoll(math.Rand(150, 360))
+				Dust:SetRollDelta(math.Rand(-0.2, 0.2))
+				Dust:SetAirResistance(150 / self.Caliber)
+				Dust:SetGravity(Vector(0, 0, -540))
+				Dust:SetColor(SmokeColor.r, SmokeColor.g, SmokeColor.b)
+			end
+		end
+
+		DustSpeed = 50
+		for _ = 1, 3 do
+			local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 15)
+
+			if Dust then
+				Dust:SetVelocity(self.DirVec * -DustSpeed * (self.Caliber + 1))
+				DustSpeed = DustSpeed + 50
+				--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
+				Dust:SetLifeTime(0)
+				Dust:SetDieTime(math.Rand(1, 2) * (Energy / 3))
+				Dust:SetStartAlpha(200)
+				Dust:SetEndAlpha(20)
+				Dust:SetStartSize(8 * (self.Caliber + 1))
+				Dust:SetEndSize(25 * (self.Caliber + 1) * (DustSpeed / 50))
+				Dust:SetRoll(math.Rand(150, 360))
+				Dust:SetRollDelta(math.Rand(-0.2, 0.2))
+				Dust:SetAirResistance(150 / self.Caliber)
+				Dust:SetGravity(Vector(0, 0, -540))
+				Dust:SetColor(SmokeColor.r, SmokeColor.g, SmokeColor.b)
+			end
+		end
+	]]--
 
 	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 3, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
-		local Debris = self.Emitter:Add("effects/fleck_tile" .. math.random(1,2), self.Origin)
+		local Debris = self.Emitter:Add("effects/fleck_tile" .. math.random(1,2), self.Origin - self.DirVec * 25)
 
 		if Debris then
-			Debris:SetVelocity((self.DirVec + VectorRand() * 0.5) * 75 * Energy)
+			Debris:SetVelocity((self.HitNorm + VectorRand() * 0.3) * 60 * Energy)
 			Debris:SetLifeTime(0)
 			Debris:SetDieTime(math.Rand(1, 2) * (Energy / 3))
 			Debris:SetStartAlpha(255)
 			Debris:SetEndAlpha(255)
-			Debris:SetStartSize(1.25 * (self.Caliber + 2))
-			Debris:SetEndSize(1.25 * (self.Caliber + 2))
+			Debris:SetStartSize(0.75 * (self.Caliber + 2))
+			Debris:SetEndSize(0.75 * (self.Caliber + 2))
 			Debris:SetRoll(math.Rand(150, 360))
 			Debris:SetRollDelta(math.Rand(-0.2, 0.2))
 			Debris:SetAirResistance(15)
@@ -262,19 +337,19 @@ function EFFECT:Concrete( SmokeColor )
 		end
 	end
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 3, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 3, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
-		local Debris = self.Emitter:Add("effects/fleck_tile" .. math.random(1,2), self.Origin)
+		local Debris = self.Emitter:Add("effects/fleck_tile" .. math.random(1,2), self.Origin + self.DirVec * 100)
 
 		if Debris then
-			Debris:SetVelocity((self.DirVec + VectorRand() * 0.3) * -50 * Energy)
+			Debris:SetVelocity((self.HitNorm + VectorRand() * 0.3) * -30 * Energy)
 			Debris:SetLifeTime(0)
 			Debris:SetDieTime(math.Rand(1, 2) * (Energy / 3))
 			Debris:SetStartAlpha(255)
 			Debris:SetEndAlpha(255)
-			Debris:SetStartSize(1.25 * (self.Caliber + 2))
-			Debris:SetEndSize(1.25 * (self.Caliber + 2))
+			Debris:SetStartSize(0.75 * (self.Caliber + 2))
+			Debris:SetEndSize(0.75 * (self.Caliber + 2))
 			Debris:SetRoll(math.Rand(150, 360))
 			Debris:SetRollDelta(math.Rand(-0.2, 0.2))
 			Debris:SetAirResistance(15)

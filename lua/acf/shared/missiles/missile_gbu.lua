@@ -63,8 +63,8 @@ ACF_defineGun("227kgGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser", "GPS", "Infrared"},
-	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
+	guidance	= {"Dumb", "Laser", "GPS"},
+	fuses	= {"Contact", "Timed", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -120,8 +120,8 @@ ACF_defineGun("454kgGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser", "GPS", "Infrared"},
-	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
+	guidance	= {"Dumb", "Laser", "GPS"},
+	fuses	= {"Contact", "Timed", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -175,8 +175,8 @@ ACF_defineGun("909kgGBU", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser", "GPS", "Infrared"},
-	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
+	guidance	= {"Dumb", "Laser", "GPS"},
+	fuses	= {"Contact", "Timed", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.'
 					["1xRK"] = true
@@ -232,7 +232,7 @@ ACF_defineGun("WalleyeGBU", {						-- id
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "GPS", "Infrared"},
-	fuses	= {"Contact", "Timed", "Optical", "Cluster"},
+	fuses	= {"Contact", "Timed", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
