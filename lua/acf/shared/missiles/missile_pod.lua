@@ -94,7 +94,7 @@ ACF_defineGun("70mmFFAR", { --id
 	gunclass	= "FFAR",
 	rack		= "70mm7xPOD",  -- Which rack to spawn this missile on?
 	weight	= 12,
-	length	= 45.5*2.53, --Convert to ammocrate units
+	length	= 45.5 * 2.53, --Convert to ammocrate units
 	year		= 1960,
 	roundclass  = "Rocket",
 	modeldiameter	= 2.9,
@@ -162,7 +162,7 @@ ACF_defineGun("S8KO", { --id
 	gunclass	= "FFAR",
 	rack		= "20x S8KO",  -- Which rack to spawn this missile on?
 	weight	= 12,
-	length	= 60.5*2.53, --Convert to ammocrate units
+	length	= 60.5 * 2.53, --Convert to ammocrate units
 	year		= 1960,
 	roundclass  = "Rocket",
 	modeldiameter	= 3.3,--Already in ammocrate units

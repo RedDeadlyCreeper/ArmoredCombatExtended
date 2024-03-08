@@ -97,7 +97,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 	effect           = "Rocket Motor Missile1",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 146*2.53, --Convert to ammocrate units
+	length           = 146 * 2.53, --Convert to ammocrate units
 	caliber          = 20.3,
 	weight           = 177,							-- Don't scale down the weight though!
 	modeldiameter    = 30,--Already in ammocrate units
@@ -168,7 +168,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 	effect           = "Rocket Motor Missile1",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 160*2.53, --Convert to ammocrate units
+	length           = 160 * 2.53, --Convert to ammocrate units
 	caliber          = 25.4,
 	weight           = 360,							-- Don't scale down the weight though!
 	modeldiameter    = 28,--Already in ammocrate units
@@ -240,7 +240,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 	effectbooster	 = "Rocket Motor",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 185*2.53, --Convert to ammocrate units
+	length           = 185 * 2.53, --Convert to ammocrate units
 	caliber          = 35.56,
 	weight           = 610,							-- Don't scale down the weight though!
 	year             = 1974,
@@ -312,7 +312,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 	effect           = "Rocket Motor Missile1",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 99*2.53, --Convert to ammocrate units
+	length           = 99 * 2.53, --Convert to ammocrate units
 	caliber          = 30.5,
 	weight           = 300,							-- Don't scale down the weight though!
 	year             = 1974,
@@ -381,7 +381,7 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 	effectbooster	 = "Rocket Motor",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 205*2.53, --Convert to ammocrate units
+	length           = 205 * 2.53, --Convert to ammocrate units
 	caliber          = 35.56,
 	weight           = 1300,							-- Don't scale down the weight though!
 	year             = 1974,

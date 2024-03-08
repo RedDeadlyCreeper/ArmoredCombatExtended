@@ -99,19 +99,19 @@ function this:GetGuidance(missile)
 	else
 		local LastDist = self.Dist or 0
 		self.Dist = (self.TPos - missilePos):Length()
-		DeltaDist = (self.Dist - LastDist)/engine.TickInterval()
+		DeltaDist = (self.Dist - LastDist) / engine.TickInterval()
 
 		if DeltaDist < 0 then --More accurate traveltime calculation. Only works when closing on target.
-			self.TTime = math.Clamp(math.abs(self.Dist/DeltaDist),0,5)
+			self.TTime = math.Clamp(math.abs(self.Dist / DeltaDist), 0, 5)
 		else
-			self.TTime = (self.Dist/missile.Speed/39.37)
+			self.TTime = (self.Dist / missile.Speed / 39.37)
 		end
 
 --		if self.Target:GetClass( ) == "ace_flare" and this.HasIRCCM then
 
 
 
-		local TarVel = (self.TPos - Lastpos)/engine.TickInterval()
+		local TarVel = (self.TPos - Lastpos) / engine.TickInterval()
 		missile.TargetVelocity = TarVel --Used for Inertial Guidance
 		self.TargetPos = self.TPos + TarVel * self.TTime * (missile.MissileActive and 1 or 0) --Don't lead the target on the rail
 		return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
@@ -261,7 +261,7 @@ function this:AcquireLock(missile)
 			--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
 			if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
-			Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
+			Heat = ACE_InfraredHeatFromProp( self, classifyent, dist )
 
 		end
 
@@ -271,7 +271,7 @@ function this:AcquireLock(missile)
 		--0.75x heat @ 300m
 		--1.0x heat @ 0m
 
-		local HeatMulFromDist = 1 - math.min((dist/47244),1) --39.37 * 1200 = 47244
+		local HeatMulFromDist = 1 - math.min(dist / 47244, 1) --39.37 * 1200 = 47244
 		Heat = Heat * HeatMulFromDist
 
 		--Skip if not Hotter than AmbientTemp in deg C.
@@ -301,7 +301,7 @@ function this:AcquireLock(missile)
 
 			--180 is from 90deg + 90deg, assuming the target is fully offbore.
 			--4x heat fully front and center. 1x heat fully offbore
-			local BoreHeatMul = 4 - ((absang.p + absang.y)/180*3)
+			local BoreHeatMul = 4 - ((absang.p + absang.y) / 180 * 3)
 
 			testang = -Heat * BoreHeatMul
 

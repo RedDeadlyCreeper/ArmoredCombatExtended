@@ -297,7 +297,7 @@ function ENT:AcquireLock()
 			--0.75x heat @ 300m
 			--1.0x heat @ 0m
 
-			local HeatMulFromDist = 1 - math.min((dist/47244),1) --39.37 * 1200 = 47244
+			local HeatMulFromDist = 1 - math.min(dist / 47244, 1) --39.37 * 1200 = 47244
 			Heat = Heat * HeatMulFromDist
 
 			--Skip if not Hotter than AmbientTemp in deg C.

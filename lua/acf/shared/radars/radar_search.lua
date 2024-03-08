@@ -20,7 +20,7 @@ ACF_DefineTrackRadar("Large-SEARCH", {
 	model		= "models/radar/radar_sp_big.mdl",
 	class		= "DIR-SEARCH",
 	weight		= 2400,
-	viewcone	= 360/2,				--sets the horizontal search cone of the radar in degrees. 360/4 is 90 deg/s scanning
+	viewcone	= 360 / 2,				--sets the horizontal search cone of the radar in degrees. 360/4 is 90 deg/s scanning
 	burnthrough = 4,					--Burn through power at 1 degree seeker. x4 means burn through at 400m when fully in the center of a jam beam and set to 1 degree cone.
 	powerid		= 4,					--Power ranking of radar for RWR identification
 
@@ -35,7 +35,7 @@ ACF_DefineTrackRadar("Medium-SEARCH", {
 	model		= "models/radar/radar_sp_mid.mdl",
 	class		= "DIR-SEARCH",
 	weight		= 900,
-	viewcone	= 360/4,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
+	viewcone	= 360 / 4,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	burnthrough = 2.5,					--Burn through power at 1 degree seeker. x2.5 means burn through at 250m when fully in the center of a jam beam and set to 1 degree cone.
 	powerid		= 5,					--Power ranking of radar for RWR identification
 
@@ -51,7 +51,7 @@ ACF_DefineTrackRadar("Small-SEARCH", { --Does not burn through.
 	model		= "models/radar/radar_sp_sml.mdl",
 	class		= "DIR-SEARCH",
 	weight		= 300,
-	viewcone	= 360/7,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
+	viewcone	= 360 / 7,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	burnthrough = 0,					--Will not burn through.
 	powerid		= 6,					--Power ranking of radar for RWR identification
 

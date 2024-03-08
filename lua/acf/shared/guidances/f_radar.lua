@@ -88,15 +88,15 @@ function this:GetGuidance(missile)
 	else
 		local LastDist = self.Dist or 0
 		self.Dist = (self.TPos - missilePos):Length()
-		DeltaDist = (self.Dist - LastDist)/engine.TickInterval()
+		DeltaDist = (self.Dist - LastDist) / engine.TickInterval()
 
 		if DeltaDist < 0 then --More accurate traveltime calculation. Only works when closing on target.
-			self.TTime = math.Clamp(math.abs(self.Dist/DeltaDist),0,5)
+			self.TTime = math.Clamp(math.abs(self.Dist / DeltaDist), 0, 5)
 		else
-			self.TTime = (self.Dist/missile.Speed/39.37)
+			self.TTime = (self.Dist / missile.Speed / 39.37)
 		end
 
-		local TarVel = (self.TPos - Lastpos)/engine.TickInterval()
+		local TarVel = (self.TPos - Lastpos) / engine.TickInterval()
 		missile.TargetVelocity = TarVel --Used for Inertial Guidance
 		self.TargetPos = self.TPos + TarVel * self.TTime  * (missile.MissileActive and 1 or 0) --Don't lead the target on the rail
 		return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
@@ -260,7 +260,7 @@ function this:AcquireLock(missile)
 
 			local Multiplier = 1
 
-			if classifyent:GetClass() == "ace_flare" then 
+			if classifyent:GetClass() == "ace_flare" then
 				Multiplier = classifyent.RadarSig
 				--print("FlareSeen")
 			end

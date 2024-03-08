@@ -41,10 +41,10 @@ function EFFECT:Init( data )
 		Mat = Mat
 		--self.HitNorm = -self.HitNorm
 		--self.DirVec = -self.DirVec
-		local TEnt = Ground.Entity
+		--local TEnt = Ground.Entity
 			--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
 			--TODO: Add clienside way to get ACF Material
-			MatVal = "Metal"
+		MatVal = "Metal"
 	end
 
 	local Mat = Ground.MatType or 0
@@ -52,17 +52,15 @@ function EFFECT:Init( data )
 	local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
 	local SMKColor = Color( SmokeColor.r, SmokeColor.g, SmokeColor.b, 150 ) --Used to prevent it from overwriting the global smokecolor :/
 	local AmbLight = render.GetLightColor( self.Origin + self.DirVec * -3 ) * 2 + render.GetAmbientLightColor()
-	SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 )*1)
-	SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 )*1)
-	SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 )*1)
+	SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ) * 1)
+	SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 ) * 1)
+	SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 ) * 1)
 
 	self.HitNormal = Ground.HitNormal
 
 	if not self.HitWater then
 		-- when detonation is in midair
-		if Ground.HitSky or not Ground.Hit then
---			self:Airburst( SMKColor )
-		elseif Material == "Dirt" or Material == "Sand"  then
+		if Material == "Dirt" or Material == "Sand"  then
 			self:Dirt( SMKColor )
 		else -- Nonspecific
 			self:Dirt( SMKColor )
@@ -95,9 +93,9 @@ function EFFECT:Init( data )
 
 	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
 
-	if PlayerDist < self.Radius*10 and not LocalPlayer():HasGodMode() then
+	if PlayerDist < self.Radius * 10 and not LocalPlayer():HasGodMode() then
 		local Amp          = math.min(self.Radius * 0.5 / math.max(PlayerDist,1),40)
-		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, self.Radius/7.5, 0 , true)
+		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, self.Radius / 7.5, 0 , true)
 	end
 
 
@@ -105,15 +103,15 @@ function EFFECT:Init( data )
 end
 
 
-function EFFECT:ExplosionSmall( HitWater )
+function EFFECT:ExplosionSmall()
 
 	if not self.Emitter then return end
 
 	local Radius = self.Radius
 	local PMul = self.ParticleMul * 0.5
 
-	local RandColor = 0
-	local WaterColor = Color(255,255,255,100)
+	--local RandColor = 0
+	--local WaterColor = Color(255,255,255,100)
 
 	--Radius Debugging Circle
 	--[[
@@ -143,7 +141,7 @@ function EFFECT:ExplosionSmall( HitWater )
 			Glow:SetColor( 255, 225, 225 )
 	end
 
-	local Flash = self.Emitter:Add("effects/fire_cloud".. math.random(1,2), self.Origin - self.DirVec * (25 + 1.5 * Radius))
+	local Flash = self.Emitter:Add("effects/fire_cloud" .. math.random(1,2), self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
 	if Flash then
 		Flash:SetLifeTime(0)
@@ -157,7 +155,7 @@ function EFFECT:ExplosionSmall( HitWater )
 		Flash:SetLighting( false )
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*6, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 6, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -171,20 +169,20 @@ function EFFECT:ExplosionSmall( HitWater )
 			Dust:SetEndAlpha(20)
 			local size = math.Rand(0.45, 3.375) * Radius
 			Dust:SetStartSize(size)
-			Dust:SetEndSize(size*0.25)
+			Dust:SetEndSize(size * 0.25)
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 			Dust:SetGravity(Vector(0, 0, -340))
 			Dust:SetAirResistance(250)
 			Dust:SetLighting( false )
-			local ColorRandom = VectorRand()*15
+			local ColorRandom = VectorRand() * 15
 			Dust:SetColor(240 + ColorRandom.x, 205 + ColorRandom.y, 135 + ColorRandom.z)
 			local Length = math.Rand(15, 37.5) * Radius
 			Dust:SetStartLength( Length )
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*10, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 10, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/splash4", self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -198,20 +196,20 @@ function EFFECT:ExplosionSmall( HitWater )
 			Dust:SetEndAlpha(50)
 			local size = math.Rand(4.5, 22.5) * Radius
 			Dust:SetStartSize(size)
-			Dust:SetEndSize(size*0.25)
+			Dust:SetEndSize(size * 0.25)
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 			Dust:SetGravity(Vector(0, 0, -340))
 			Dust:SetAirResistance(250)
 			Dust:SetLighting( false )
-			local ColorRandom = VectorRand()*10
+			local ColorRandom = VectorRand() * 10
 			Dust:SetColor(100 - ColorRandom.x, 100 - ColorRandom.y, 100 - ColorRandom.z)
 			local Length = math.Rand(15, 37.5) * Radius
 			Dust:SetStartLength( Length )
 		end
 	end
 
-	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec*5)
+	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 5)
 
 	if Dust then
 		Dust:SetLifeTime(0)
@@ -226,7 +224,7 @@ function EFFECT:ExplosionSmall( HitWater )
 		Dust:SetColor(50, 50, 50)
 	end
 
-	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec*5)
+	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 5)
 
 	if Dust then
 		Dust:SetLifeTime(-0.15)
@@ -243,15 +241,15 @@ function EFFECT:ExplosionSmall( HitWater )
 
 end
 
-function EFFECT:ExplosionMedium( HitWater )
+function EFFECT:ExplosionMedium()
 
 	if not self.Emitter then return end
 
 	local Radius = self.Radius
 	local PMul = self.ParticleMul * 0.5
 
-	local RandColor = 0
-	local WaterColor = Color(255,255,255,100)
+	--local RandColor = 0
+	--local WaterColor = Color(255,255,255,100)
 
 	--Radius Debugging Circle
 
@@ -292,7 +290,7 @@ function EFFECT:ExplosionMedium( HitWater )
 			Glow:SetColor( 255, 255, 255 )
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*5, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 5, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Flash = self.Emitter:Add("effects/fire_cloud" .. math.random(1,2), self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -332,7 +330,7 @@ function EFFECT:ExplosionMedium( HitWater )
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*15, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 15, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -346,21 +344,21 @@ function EFFECT:ExplosionMedium( HitWater )
 			Dust:SetEndAlpha(20)
 			local size = math.Rand(0.45, 3.375) * Radius
 			Dust:SetStartSize(size)
-			Dust:SetEndSize(size*0.25)
+			Dust:SetEndSize(size * 0.25)
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 			Dust:SetGravity(Vector(0, 0, -740))
 			Dust:SetAirResistance(250)
 			Dust:SetLighting( false )
-			local ColorRandom = VectorRand()*15
+			local ColorRandom = VectorRand() * 15
 			Dust:SetColor(240 + ColorRandom.x, 205 + ColorRandom.y, 135 + ColorRandom.z)
 			local Length = math.Rand(15, 37.5) * Radius
 			Dust:SetStartLength( Length )
-			Dust:SetEndLength( Length*0.2 )
+			Dust:SetEndLength( Length * 0.2 )
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*15, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 15, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/fire_embers" .. math.random(1,2), self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -374,18 +372,18 @@ function EFFECT:ExplosionMedium( HitWater )
 			Dust:SetEndAlpha(50)
 			local size = math.Rand(2, 7.5) * Radius
 			Dust:SetStartSize(size)
-			Dust:SetEndSize(size*0.25)
+			Dust:SetEndSize(size * 0.25)
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 			Dust:SetGravity(Vector(0, 0, -840))
 			Dust:SetAirResistance(150)
 			Dust:SetLighting( false )
-			local ColorRandom = VectorRand()*15
+			local ColorRandom = VectorRand() * 15
 			Dust:SetColor(240 + ColorRandom.x, 205 + ColorRandom.y, 135 + ColorRandom.z)
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*2, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 2, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/splash4", self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -405,7 +403,7 @@ function EFFECT:ExplosionMedium( HitWater )
 			Dust:SetGravity(Vector(0, 0, -540))
 			Dust:SetAirResistance(150)
 			Dust:SetLighting( false )
-			local ColorRandom = VectorRand()*10
+			local ColorRandom = VectorRand() * 10
 			Dust:SetColor(100 + ColorRandom.x, 100 + ColorRandom.y, 100 + ColorRandom.z)
 			local Length = math.Rand(15, 45) * Radius
 			Dust:SetStartLength( Length * 1.5 )
@@ -413,7 +411,7 @@ function EFFECT:ExplosionMedium( HitWater )
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius*3, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 3, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Flash = self.Emitter:Add("particle/smokesprites_000" .. math.random(1,9), self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -430,7 +428,7 @@ function EFFECT:ExplosionMedium( HitWater )
 			Flash:SetRollDelta(math.Rand(-0.3, 0.3))
 			Flash:SetGravity(Vector(0, 0, -540))
 			Flash:SetAirResistance(200)
-			local ColorRandom = VectorRand()*3
+			local ColorRandom = VectorRand() * 3
 			Flash:SetColor(50 + ColorRandom.x, 50 + ColorRandom.y, 50 + ColorRandom.z)
 		end
 	end
@@ -456,7 +454,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 		if Smoke then
 			Smoke:SetVelocity( ShootVector * 400 * Radius )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime(  0.6 * Radius/4 )
+			Smoke:SetDieTime(  0.6 * Radius / 4 )
 			Smoke:SetStartAlpha( 20 )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 45 * Radius )
@@ -466,7 +464,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 			Smoke:SetAirResistance( 200 )
 			Smoke:SetCollide( true )
 
-			local SMKColor = math.random( 0 , 50 )
+			--local SMKColor = math.random( 0 , 50 )
 			--Smoke:SetColor( SmokeColor.r-SMKColor,SmokeColor.g-SMKColor,SmokeColor.b-SMKColor )
 		end
 	end
@@ -485,7 +483,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 		if Smoke then
 			Smoke:SetVelocity( ShootVector * 500 * Radius * math.Rand(0.5, 1) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime(  0.4 * Radius/4 )
+			Smoke:SetDieTime(  0.4 * Radius / 4 )
 			Smoke:SetStartAlpha( 40 )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 5 * Radius )
@@ -640,8 +638,6 @@ function EFFECT:Dirt( SmokeColor )
 			ScaleMul = 1.5
 		elseif self.Radius < 20 then
 			ScaleMul = 1
-		else
-
 		end
 
 	for _ = 0, 9 * self.Radius * self.ParticleMul do
@@ -650,7 +646,7 @@ function EFFECT:Dirt( SmokeColor )
 
 		local Smoke = self.Emitter:Add( Texture, self.Origin )
 		if Smoke then
-			Smoke:SetVelocity( self.HitNormal * math.random( 100,300 ) * self.Radius + VectorRand() * math.random( 30,80 )* self.Radius )
+			Smoke:SetVelocity( self.HitNormal * math.random( 100,300 ) * self.Radius + VectorRand() * math.random( 30, 80 ) * self.Radius )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( 2 * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 5, 100 ) )
@@ -675,17 +671,17 @@ function EFFECT:Dirt( SmokeColor )
 
 		local Smoke = self.Emitter:Add( Texture, self.Origin )
 		if Smoke then
-			Smoke:SetVelocity( self.HitNormal * math.random( 75,175 ) * self.Radius*ScaleMul + VectorRand() * math.random( 10,35) * self.Radius*ScaleMul )
+			Smoke:SetVelocity( self.HitNormal * math.random( 75, 175 ) * self.Radius * ScaleMul + VectorRand() * math.random( 10,35) * self.Radius *  ScaleMul )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( 0.3 * self.Radius*ScaleMul / 3  )
+			Smoke:SetDieTime( 0.3 * self.Radius * ScaleMul / 3  )
 			Smoke:SetStartAlpha( 50 )
 			Smoke:SetEndAlpha( 0 )
-			Smoke:SetStartSize( 5 * self.Radius*ScaleMul )
-			Smoke:SetEndSize( 25 * self.Radius*ScaleMul )
+			Smoke:SetStartSize( 5 * self.Radius * ScaleMul )
+			Smoke:SetEndSize( 25 * self.Radius * ScaleMul )
 			Smoke:SetRoll( math.Rand(150, 360) )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
 			Smoke:SetAirResistance( 100 )
-			Smoke:SetGravity( Vector( math.random( -35,35 ) * self.Radius*ScaleMul, math.random( -35,35 ) * self.Radius*ScaleMul, -500 ) )
+			Smoke:SetGravity( Vector( math.random( -35,35 ) * self.Radius * ScaleMul, math.random( -35,35 ) * self.Radius * ScaleMul, -500 ) )
 
 			Smoke:SetColor(  SmokeColor.r,SmokeColor.g,SmokeColor.b  )
 
