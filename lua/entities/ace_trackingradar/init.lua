@@ -231,7 +231,7 @@ function ENT:Think()
 
 	if self.Active and self.Legal then
 
-		local radID = ACE.radarIDs[self]
+		--local radID = ACE.radarIDs[self]
 
 		WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
 		self.OutputData.IsJammed = self.IsJammed
@@ -241,7 +241,7 @@ function ENT:Think()
 
 			local thisPos	= self:GetPos()
 			--local thisforward	= self:GetForward()
-			local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
+			--local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 			local ownArray	= {}
 			local posArray	= {}
@@ -336,7 +336,7 @@ function ENT:Think()
 								--Chaff can be used to gunk up radars.
 								local Multiplier = 1
 
-								if scanEnt:GetClass() == "ace_flare" then 
+								if scanEnt:GetClass() == "ace_flare" then
 									Multiplier = scanEnt.RadarSig
 								end
 
@@ -362,7 +362,7 @@ function ENT:Think()
 								table.insert(ownArray , NickName)
 								table.insert(posArray ,entpos + BaseInacc * OffboreInacc ) --3 --Inaccuracy goes hereValidTargets
 								table.insert(self.AcquiredTargets , scanEnt)
-	
+
 								--IDK if this is more intensive than length
 								local finalvel = Vector(0,0,0)
 
