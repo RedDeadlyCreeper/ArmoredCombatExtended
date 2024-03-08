@@ -25,7 +25,7 @@
 	dist - distance between the missile and the Target
 
 ]]---------------------------------------------------------------------------------------
-function ACE_InfraredHeatFromProp( guidance, Target , dist )
+function ACE_InfraredHeatFromProp( Target, dist )
 
 	if not IsValid(Target) then print("[ACE | WARN]- Unable to track Heat. Target Entity not valid!") return 0 end
 	if not dist then print("[ACE | WARN]- Unable to track Heat. dist not valid!") return end

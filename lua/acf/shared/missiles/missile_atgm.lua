@@ -92,7 +92,7 @@ ACF_defineGun("9M113 ASM", {									-- id
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass		= "ATGM",
 	rack			= "1x 9M113",							-- Which rack to spawn this missile on?
-	length			= 51*2.53, --Convert to ammocrate units
+	length			= 51 * 2.53, --Convert to ammocrate units
 	caliber			= 15.2,
 	weight			= 14.6,									-- Don't scale down the weight though!
 	year			= 1970,
@@ -433,7 +433,7 @@ ACF_defineGun("Spike-LR ASM", {
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass		= "ATGM",
 	rack			= "1x Javelin",								-- Which rack to spawn this missile on?
-	length			= 67*2.53, --Convert to ammocrate units
+	length			= 67 * 2.53, --Convert to ammocrate units
 	caliber			= 12.7,										-- caliber
 	weight			= 13,										-- Don't scale down the weight though!  --was 97.2
 	year			= 1997,										-- year
@@ -484,12 +484,12 @@ ACF_defineGun("Spike-LR ASM", {
 	seekcone		= 2,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {									-- a whitelist for racks that this missile can load into.
-						["1xRK"] = true, 
-						["2xRK"] = true, 
-						["3xRK"] = true, 
+						["1xRK"] = true,
+						["2xRK"] = true,
+						["3xRK"] = true,
 						["4xRK"] = true,
 						["1xRK_small"] = true,
-						["2x AGM-114"] = true, 
+						["2x AGM-114"] = true,
 						["4x AGM-114"] = true
 					},
 
@@ -647,7 +647,7 @@ ACF_defineGun("Vikhr ASM", { --id
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass		= "ATGM",
 	rack			= "6x 9K121",							-- Which rack to spawn this missile on?
-	length			= 112*2.53, --Convert to ammocrate units
+	length			= 112 * 2.53, --Convert to ammocrate units
 	caliber			= 13,
 	weight			= 198,									-- Don't scale down the weight though!
 	year			= 1984,

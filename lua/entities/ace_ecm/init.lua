@@ -145,7 +145,7 @@ function ENT:Think()
 						--Center beam 1x strength
 						--1 axis off (90 deg) - 1/3x
 						--2 axis off (180deg) - 1/6x
-						local JamStrength = 1 / (1 + (absang.p/5 + absang.y/5) * 3)
+						local JamStrength = 1 / (1 + (absang.p / 5 + absang.y / 5) * 3)
 
 						scanEnt.IsJammed			= 1
 						scanEnt.JamStrength		= JamStrength

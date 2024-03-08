@@ -138,7 +138,7 @@ function ENT:Think()
 						--absang	= Angle(math.abs(math.NormalizeAngle(ang.p)),math.abs(math.NormalizeAngle(ang.y)),0)  --Since I like ABS so much
 						absang	= Angle(0,math.abs(math.NormalizeAngle(ang.y)),0)  --Because elevation limits are disabled on search radars
 						ScanCone1 = 99999
-						ScanCone2 = scanEnt.Cone / 4 + 8 
+						ScanCone2 = scanEnt.Cone / 4 + 8
 					end
 
 

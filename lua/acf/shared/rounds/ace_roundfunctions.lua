@@ -10,7 +10,7 @@ do
 	function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 		local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
-		local Type = PlayerData.Type or ""
+		--local Type = PlayerData.Type or ""
 
 		GUIData.MaxTotalLength    = BulletMax.maxlength * (Data.LengthAdj or 1)
 

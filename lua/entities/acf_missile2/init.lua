@@ -5,9 +5,9 @@ include("shared.lua")
 
 DEFINE_BASECLASS("acf_explosive")
 
-local GunTable	= ACF.Weapons.Guns
-local GuidanceTable = ACF.Guidance
-local FuseTable	= ACF.Fuse
+--local GunTable	= ACF.Weapons.Guns
+--local GuidanceTable = ACF.Guidance
+--local FuseTable	= ACF.Fuse
 
 function ENT:Initialize()
 
@@ -88,7 +88,7 @@ function ENT:Think()
 	self:NextThink( CT + self.ThinkDelay )
 
 	local Pos = self:GetPos()
-	local DeltaPos = (Pos - self.LastPos)/DeltaTime
+	--local DeltaPos = (Pos - self.LastPos)/DeltaTime
 
 	self.LastVel = self.Flight * 39.37
 	self.CurPos = Pos
@@ -218,7 +218,7 @@ function ENT:Think()
 			local OffsetTPos = self.TargetPos + VectorRand():GetNormalized() * 5 --Apply your noise here. I was thinking of putting noise multipliers in the guidance sections.
 			local Tarang = Angle()
 			local Heading = (OffsetTPos-Pos):Angle()
-			local LHeading = self:WorldToLocalAngles(Heading)
+			--local LHeading = self:WorldToLocalAngles(Heading)
 
 			--if false then
 			--if true then
@@ -226,7 +226,7 @@ function ENT:Think()
 				--Smart guidance. Doesn't work at high convergences. Use backup alternative outside safe range.
 				local TDif = OffsetTPos - Pos
 
-				local TTime = TDif:Length()/self.Speed
+				--local TTime = TDif:Length()/self.Speed
 
 				--local TarAng = (TDif + Vector(0,0,15*39.37*9.8*TTime^2)):Angle() --Angle we want to steer our velocity towards
 
@@ -267,7 +267,7 @@ function ENT:Think()
 				self.I = self.I + self.P * DeltaTime * self.IaccumulateMod
 				self.I = Angle(math.Clamp( self.I.pitch, -10, 10 ), math.Clamp( self.I.yaw, -10, 10 ),0)
 
-				self.D = (self.P - Plast) / (DeltaTime+0.001)
+				self.D = (self.P - Plast) / (DeltaTime + 0.001)
 				self.D = Angle(math.Clamp( self.D.pitch, -100, 100 ), math.Clamp( self.D.yaw, -100, 100 ),0)
 
 					local PID = self.P + self.I * self.Im + self.D * self.Dm
@@ -285,7 +285,7 @@ function ENT:Think()
 
 			local AngAdjust = Tarang
 
-			local adjustedrate = self.TurnRate * DeltaTime * (self.Speed^2/10000) * math.cos(AngleOfAttack) + self.ThrustTurnRate * DeltaTime
+			local adjustedrate = self.TurnRate * DeltaTime * (self.Speed^2 / 10000) * math.cos(AngleOfAttack) + self.ThrustTurnRate * DeltaTime
 			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
 			self:SetAngles(AngAdjust + Angle(math.Clamp( DifFacing.pitch, 0, 100 ), math.Clamp( DifFacing.yaw, -100, 100 ),0) * 0.075 * DeltaTime)
 
@@ -332,7 +332,7 @@ function ENT:Think()
 		self:SetPos( Pos + self.Flight * 39.37 * DeltaTime )
 
 		--25 is the result of dividing 2500 by a magic number to compress the speed variable to something nice. 25 = 2500/100
-		self.Flight = self.Flight + (self:GetForward() * (self.Speed^2/25) * math.cos(AngleOfAttack) - FlightDir * (self.Speed^2/25) * math.cos(AngleOfAttack)) * DeltaTime * self.FinMul --Adjusts a portion of the flgiht by the fin efficiency multiplier
+		self.Flight = self.Flight + (self:GetForward() * (self.Speed ^2 / 25) * math.cos(AngleOfAttack) - FlightDir * (self.Speed^2 / 25) * math.cos(AngleOfAttack)) * DeltaTime * self.FinMul --Adjusts a portion of the flgiht by the fin efficiency multiplier
 
 		self.Flight = self.Flight - (self.Flight:GetNormalized() * self.Drag * self.Flight:LengthSqr()) * DeltaTime --Simple drag multiplier
 
@@ -358,9 +358,9 @@ end
 
 function ENT:ConfigureMissile()
 
-	local BulletData	= self.BulletData
-	local GunData	= GunTable[BulletData.Id]
-	local Round		= GunData.round
+	--local BulletData	= self.BulletData
+	--local GunData	= GunTable[BulletData.Id]
+	--local Round		= GunData.round
 
 	if not IsValid(self.PhysObj) then self.PhysObj = self:GetPhysicsObject() end
 
@@ -427,20 +427,20 @@ end
 
 do
 
-	local HEATtbl = {
+	--[[local HEATtbl = {
 		HEAT	= true,
 		THEAT	= true,
 		HEATFS  = true,
 		THEATFS = true
 	}
-
+	]]--
 	local HEtbl = {
 		HE	= true,
 		HESH	= true,
 		HEFS	= true
 	}
 
-	function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	--This function needs to return HitRes
+	function ENT:ACF_OnDamage( Entity, Energy, FrArea, Inflictor, _, Type )	--This function needs to return HitRes
 
 		local Mul	= (( HEtbl[Type] and 0.1 ) or 1) --HE penetrators better penetrate the armor of missiles
 		local HitRes	= ACF_PropDamage( Entity, Energy , FrArea * Mul, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.

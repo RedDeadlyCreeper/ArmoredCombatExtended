@@ -202,7 +202,7 @@ local txt = "Status: " .. status
 txt = txt .. "\n\nRotation Rate: " .. math.Round(cone, 2) .. " deg/s"
 --txt = txt .. "\nElevation: +" .. math.Round(self.MaxElev, 2) .. " / " .. math.Round(self.MinElev, 2) .. " degrees"
 
-txt = txt .. "\n\n360 Sweep Time: " .. math.Round(360/cone, 2) .. " sec"
+txt = txt .. "\n\n360 Sweep Time: " .. math.Round(360 / cone, 2) .. " sec"
 
 --txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
 
@@ -247,7 +247,7 @@ function ENT:Think()
 
 	if self.Active and self.Legal then
 
-		local radID = ACE.radarIDs[self]
+		--local radID = ACE.radarIDs[self]
 
 		WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
 		self.OutputData.IsJammed = self.IsJammed
@@ -257,7 +257,7 @@ function ENT:Think()
 
 			local thisPos	= self:GetPos()
 			--local thisforward	= self:GetForward()
-			local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
+			--local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 			local ownArray	= {}
 			local posArray	= {}
@@ -354,7 +354,7 @@ function ENT:Think()
 								--Chaff can be used to gunk up radars.
 								local Multiplier = 1
 
-								if scanEnt:GetClass() == "ace_flare" then 
+								if scanEnt:GetClass() == "ace_flare" then
 									Multiplier = scanEnt.RadarSig
 								end
 

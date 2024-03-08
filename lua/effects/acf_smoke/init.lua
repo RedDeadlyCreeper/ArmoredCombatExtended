@@ -32,7 +32,7 @@ function EFFECT:Init( data )
 	local SmokeColor = self.Colour or Vector(255,255,255)
 	if not Ground.HitWorld then Ground.HitNormal = Vector(0,0,1) end
 
-	--if adjusting, update display data / crate text in smoke round
+	--[[if adjusting, update display data / crate text in smoke round
 	if self.Magnitude > 0 then
 		--self:SmokeFiller( Ground, SmokeColor, self.Magnitude * 1.25, 1.0, 6 + self.Magnitude / 10 ) --quick build and dissipate
 	end
@@ -40,7 +40,7 @@ function EFFECT:Init( data )
 	if self.Radius > 0 then
 		--self:SmokeFiller( Ground, SmokeColor, self.Radius * 1.25, 0.15, 20 + self.Radius / 4 ) --slow build but long lasting
 	end
-
+	]]--
 	local SmokeMul = 3
 
 	self:StartSmoke(Ground, SmokeColor, self.DirVec, self.Magnitude * SmokeMul, math.max(self.Radius * 4,self.Magnitude) * SmokeMul ) --The initial puff and streamers before the smoke gets up to size
@@ -60,7 +60,7 @@ end
 --"particle/smokesprites_000" .. math.random(1,6)
 
 
-function EFFECT:StartSmoke( Ground, SmokeColor, ShootVector, WPRadius, SRadius )
+function EFFECT:StartSmoke( SmokeColor, ShootVector, WPRadius, SRadius )
 
 	local SmokeRadiusMul = 40 --Size multiplier for smoke particles to be 1 meter
 	local StartTime = 0.5
@@ -68,9 +68,9 @@ function EFFECT:StartSmoke( Ground, SmokeColor, ShootVector, WPRadius, SRadius )
 	-- Calculate the wind effect on velocity and gravity
 	-- Apply wind effect based on wind direction and windStrength
 	local snorm = ShootVector:GetNormalized()
-	local velocity = snorm * 7*39.37
+	local velocity = snorm * 7 * 39.37
 	local gravity1 = Vector(0, 0, -75) --Used for initial smoke puff. Meant to be predictable.
-	local gravity2 = gravity1 + ACF.Wind * 0.2 
+	local gravity2 = gravity1 + ACF.Wind * 0.2
 	--velocity = Vector(0, 0, 0)
 	--gravity = Vector(0, 0, 0)
 

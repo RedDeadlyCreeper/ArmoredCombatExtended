@@ -662,7 +662,7 @@ function ENT:Think()
 	self:Heat_Function()
 
 	local Time = CurTime()
-	if self.LastSend + 1 <= Time then 
+	if self.LastSend + 1 <= Time then
 
 		local Ammo = 0
 
@@ -731,7 +731,7 @@ function ENT:Think()
 		--local MuzzlePos		= self:GetPos()
 		ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil * self.CurrentRecoil )
 
-		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime/0.5,0) --Divided by time to dissipate recoil. Currently 0.5
+		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime / 0.5,0) --Divided by time to dissipate recoil. Currently 0.5
 		--self.CurrentRecoil = 0
 	end
 
@@ -868,7 +868,7 @@ do
 				self.BulletData.Owner = self.User
 				self.BulletData.Gun = self
 
-				local Cal = self.Caliber
+				--local Cal = self.Caliber
 
 				--using fusetime via wire will override the ammo fusetime!
 				if FusedRounds[self.BulletData.Type] and FusedRounds[self.BulletData.Type] and self.OverrideFuse then

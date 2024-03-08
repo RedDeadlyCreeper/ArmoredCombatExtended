@@ -328,7 +328,7 @@ ACF_defineGun("ATACMS RA", {						-- id
 	effectbooster	 = "Rocket Motor",
 	gunclass         = "ARTY",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
-	length           = 145*2.53, --Convert to ammocrate units
+	length           = 145 * 2.53, --Convert to ammocrate units
 	caliber          = 61,
 	weight           = 1670,							-- Don't scale down the weight though!
 	year             = 1974,

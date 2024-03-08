@@ -166,7 +166,7 @@ ACF_DefineRack("1x9M331 Pod", {
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(-8.3,0,-6.2),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}, 
+		["missile1"] = { ["pos"] = Vector(-8.3,0,-6.2),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 
 	}
 } )

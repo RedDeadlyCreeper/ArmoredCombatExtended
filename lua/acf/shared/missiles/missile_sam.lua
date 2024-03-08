@@ -228,7 +228,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass         = "SAM",
 	rack             = "1x VT-1",								-- Which rack to spawn this missile on?
-	length           = 92*2.53, --Convert to ammocrate units
+	length           = 92 * 2.53, --Convert to ammocrate units
 	caliber          = 12,
 	weight           = 73,										-- Don't scale down the weight though!
 	year             = 1960,
@@ -296,7 +296,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 	effectbooster	= "Rocket Motor Missile1",
 	gunclass         = "SAM",
 	rack             = "1x 9m311",								-- Which rack to spawn this missile on?
-	length           = 100*2.53, --Convert to ammocrate units
+	length           = 100 * 2.53, --Convert to ammocrate units
 	caliber          = 12,
 	weight           = 71,										-- Don't scale down the weight though!
 	year             = 1982,
@@ -366,7 +366,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 	effectbooster	 = "Rocket_Smoke_Trail",
 	gunclass         = "SAM",
 	rack             = "1x9M331 Pod",							-- Which rack to spawn this missile on?
-	length           = 118*2.53, --Convert to ammocrate units
+	length           = 118 * 2.53, --Convert to ammocrate units
 	caliber          = 23.9,
 	weight           = 167,									-- 15.1,	-- Don't scale down the weight though!
 	year             = 1986,
@@ -436,7 +436,7 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 	effectbooster	 = "Rocket Motor Arty",
 	gunclass         = "SAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 220*2.53, --Convert to ammocrate units
+	length           = 220 * 2.53, --Convert to ammocrate units
 	caliber          = 40.0,
 	weight           = 710,								-- Don't scale down the weight though!
 	year             = 1981,

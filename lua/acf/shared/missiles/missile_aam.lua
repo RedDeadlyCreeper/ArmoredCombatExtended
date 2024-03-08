@@ -96,7 +96,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 146*2.53, --Convert to ammocrate units
+	length           = 146 * 2.53, --Convert to ammocrate units
 	caliber          = 20.3,
 	weight           = 230,							-- Don't scale down the weight though!
 	year             = 1969,
@@ -240,7 +240,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 	effect           = "Rocket Motor Arty",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 153*2.53, --Convert to ammocrate units
+	length           = 153 * 2.53, --Convert to ammocrate units
 	caliber          = 38.1,
 	weight           = 463,								-- Don't scale down the weight though!
 	year             = 1974,
@@ -308,7 +308,7 @@ ACF_defineGun("SRAAM AAM", {								-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "2x SRAAM",							-- Which rack to spawn this missile on?
-	length           = 115*2.53, --Convert to ammocrate units
+	length           = 115 * 2.53, --Convert to ammocrate units
 	caliber          = 16.5,
 	weight           = 70,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1984,
@@ -377,7 +377,7 @@ ACF_defineGun("Magic AAM", {								-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 115*2.53, --Convert to ammocrate units
+	length           = 115 * 2.53, --Convert to ammocrate units
 	caliber          = 15.7,
 	weight           = 89,								-- Don't scale down the weight though!
 	year             = 1968,
@@ -449,7 +449,7 @@ ACF_defineGun("MICA AAM", {								-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 122*2.53, --Convert to ammocrate units
+	length           = 122 * 2.53, --Convert to ammocrate units
 	caliber          = 16.0,
 	weight           = 112,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1984,
@@ -522,7 +522,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 143*2.53, --Convert to ammocrate units
+	length           = 143 * 2.53, --Convert to ammocrate units
 	caliber          = 17.8,
 	weight           = 190,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1991,
@@ -593,7 +593,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 85*2.53, --Convert to ammocrate units,
+	length           = 85 * 2.53, --Convert to ammocrate units,
 	caliber          = 12.0,
 	weight           = 44,								-- Don't scale down the weight though!
 	year             = 1953,
@@ -664,7 +664,7 @@ ACF_defineGun("R-73 AAM", {								-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 116*2.53, --Convert to ammocrate units
+	length           = 116 * 2.53, --Convert to ammocrate units
 	caliber          = 16.5,
 	weight           = 105,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1984,
@@ -736,7 +736,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 142*2.53, --Convert to ammocrate units
+	length           = 142 * 2.53, --Convert to ammocrate units
 	caliber          = 20,
 	weight           = 175,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1994,
@@ -807,7 +807,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 	effectbooster    = "Rocket Motor Missile1",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 180*2.53, --Convert to ammocrate units
+	length           = 180 * 2.53, --Convert to ammocrate units
 	caliber          = 20,
 	weight           = 253,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1994,
@@ -878,7 +878,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 	effect           = "Rocket Motor Arty",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 163*2.53, --Convert to ammocrate units
+	length           = 163 * 2.53, --Convert to ammocrate units
 	caliber          = 38.0,
 	weight           = 490,								-- Don't scale down the weight though!
 	year             = 1981,

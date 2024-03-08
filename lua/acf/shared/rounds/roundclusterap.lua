@@ -125,7 +125,7 @@ do
 
 	local function GenerateCluster(bdata)
 
-		local RoundType = bdata.Type
+		--local RoundType = bdata.Type
 
 		--Make cluster to fail. Allow with rounds on whitelist only.
 		--if not WhiteList[RoundType] then return end
@@ -191,12 +191,12 @@ do
 
 	end
 
-	local function CreateCluster(bullet, bdata)
+	local function CreateCluster(bullet)
 
 		local GEnt = bullet.Gun
 
 		local MuzzleVec = bullet.Flight:GetNormalized()
-		local MuzzleSpeed = bullet.Flight:Length() + GEnt.BulletDataC["MuzzleVel"]*39.37
+		local MuzzleSpeed = bullet.Flight:Length() + GEnt.BulletDataC["MuzzleVel"] * 39.37
 		local GunBData = GEnt.BulletDataC or {}
 		local CCount = GunBData.Bomblets or 0
 
@@ -238,7 +238,8 @@ do
 
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-			ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass/100, Bullet.ProjMass - Bullet.ProjMass/100, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+			local ACF_HE_Math = Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass / 100
+			ACF_HE(ACF_HE_Math, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 			local GunEnt = Bullet.Gun
 			if IsValid(GunEnt) then
 				--print("Valid")
@@ -252,10 +253,11 @@ do
 
 	end
 
-	function Round.endflight( Index, Bullet, HitPos, HitNormal )
-		ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
+	function Round.endflight(Index, Bullet)
+		ACF_BulletClient( Index, Bullet, "Update", 1, Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-		ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass/100, Bullet.ProjMass - Bullet.ProjMass/100, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+		local ACF_HE_Math = Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass / 100, Bullet.ProjMass - Bullet.ProjMass / 100
+		ACF_HE(ACF_HE_Math, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 		local GunEnt = Bullet.Gun
 		if IsValid(GunEnt) then
 			--print("Valid")
@@ -268,7 +270,7 @@ end
 
 function Round.endeffect( _, Bullet )
 
-	local Radius = (Bullet.RoundMass/50) ^ 0.33 * 8 * 39.37 --Fillermass reduced by 20 because it's the seperation charge.
+	local Radius = (Bullet.RoundMass / 50) ^ 0.33 * 8 * 39.37 --Fillermass reduced by 20 because it's the seperation charge.
 	local Flash = EffectData()
 		Flash:SetOrigin( Bullet.SimPos )
 		Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
