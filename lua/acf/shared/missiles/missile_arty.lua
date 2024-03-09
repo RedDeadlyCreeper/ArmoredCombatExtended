@@ -41,7 +41,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 		firedelay			= 0.15,
 		reloadspeed			= 0.5,
 		reloaddelay			= 30.0,
-		inaccuracy			= 2.0,
+		inaccuracy			= 3.0,
 
 		maxlength			= 200,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
@@ -60,13 +60,13 @@ ACF_defineGun("Type 63 RA", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 120,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 1.25,							-- Time in seconds for booster runtime
+		boostacceleration	= 100,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00025,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
@@ -77,7 +77,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "GPS"},
+	guidance   = {"Dumb"},
 	fuses      = {"Contact", "Timed", "Optical"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
@@ -119,7 +119,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 		firedelay			= 0.15,
 		reloadspeed			= 1.0,
 		reloaddelay			= 40.0,
-		inaccuracy			= 2.0,
+		inaccuracy			= 3.0,
 
 		maxlength			= 210,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
@@ -127,8 +127,8 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 0,							-- Acceleration in m/s.
 		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
@@ -138,20 +138,20 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 150,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 1.25,							-- Time in seconds for booster runtime
+		boostacceleration	= 130,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.00025,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "GPS"},
+	guidance   = {"Dumb"},
 	fuses      = {"Contact", "Timed", "Optical"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
@@ -163,81 +163,6 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 				},
 
 	viewcone   = 20,
-	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
-
-	armdelay	= 0.15									-- minimum fuse arming delay
-} )
-
-
-
-ACF_defineGun("SS-40 RA", {								-- id
-
-	name             = "SS-40 Rocket",
-	desc             = "A large, heavy, guided artillery rocket for taking out stationary or dug-in targets.  Slow to load, slow to fire, slow to guide, and slow to arrive.",
-	model            = "models/missiles/aim120.mdl",
-	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor Arty",
-	caliber          = 18.0,
-	gunclass         = "ARTY",
-	rack             = "1xRK",								-- Which rack to spawn this missile on?
-	weight           = 320,
-	length           = 383,
-	year             = 1983,
-	roundclass       = "Rocket",
-	modeldiameter    = 4 * 2.54,
-	bodydiameter     = 9.2, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
-
-	round	=	{
-		rocketmdl			= "models/missiles/aim120.mdl",
-		rackmdl				= "models/missiles/aim120.mdl",
-		firedelay			= 0.15,
-		reloadspeed			= 0.5,
-		reloaddelay			= 50.0,
-		inaccuracy			= 0.5,
-
-		maxlength			= 180,							-- Length of missile. Used for ammo properties.
-		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
-
-		armour				= 40,							-- Armour effectiveness of casing, in mm
-
-		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.1,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 15,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
-
-		thrust				= 0,							-- Acceleration in m/s.
-		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0,
-
-		launchkick			= 20,							-- Speed missile starts with on launch in m/s
-
-		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
-
-		boostacceleration	= 120,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 3,							-- Time in seconds for booster runtime
-		boostdelay			= 0,							-- Delay in seconds before booster activates.
-
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
-
-		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-
-		penmul            = math.sqrt(0.2)					-- 139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-	},
-
-	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "GPS"},
-	fuses      = {"Contact", "Timed", "Optical"},
-
-	racks	= {										-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,
-					["2xRK"] = true,
-					["3xRK"] = true,
-					["4xRK"] = true,
-					["6xUARRK"] = true
-				},
-
-	viewcone   = 180,
 	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.15									-- minimum fuse arming delay
@@ -318,10 +243,150 @@ ACF_defineGun("RW61 RA", {								-- id
 	armdelay	= 0.15									-- minimum fuse arming delay
 } )
 
+ACF_defineGun("M26 RA", {							-- id
+
+	name             = "M26 MLRS",
+	desc             = "Long range unguided rocket built for the M270 MLRS.",
+	model            = "models/missiles/gmlrs.mdl",
+	effect           = "ACE_MissileMedium",
+	effectbooster	= "ACE_MissileMedium",
+	caliber          = 22.7,
+	gunclass         = "ARTY",
+	rack             = "6xUARRK",								-- Which rack to spawn this missile on?
+	weight           = 308,
+	length           = 219, --320
+	year             = 1980,
+	roundclass       = "Rocket",
+	modeldiameter    = 10,
+	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round	=	{
+		rocketmdl			= "models/missiles/gmlrs.mdl",
+		rackmdl				= "models/missiles/gmlrs.mdl",
+		firedelay			= 0.33,
+		reloadspeed			= 1.0,
+		reloaddelay			= 30.0,
+		inaccuracy			= 3,
+
+		maxlength			= 210,							-- Length of missile. Used for ammo properties.
+		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 0,							-- Acceleration in m/s.
+		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 30,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 200,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.35,							-- Time in seconds for booster runtime
+		boostdelay			= 0.2,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00025,						-- percent speed loss per second
+		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+	},
+
+	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb"},
+	fuses      = {"Contact", "Timed", "Optical"},
+
+	racks	= {										-- a whitelist for racks that this missile can load into.
+					["6xUARRK"] = true
+				},
+
+	viewcone   = 30,
+	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+
+	armdelay	= 0.2									-- minimum fuse arming delay
+} )
+
+ACF_defineGun("SS-40 RA", {								-- id
+
+	name             = "SS-40 Rocket",
+	desc             = "A large, heavy, guided artillery rocket for taking out stationary or dug-in targets.  Slow to load, slow to fire, slow to guide, and slow to arrive.",
+	model            = "models/missiles/aim120.mdl",
+	effect           = "Rocket_Smoke_Trail",
+	effectbooster	= "Rocket Motor Arty",
+	caliber          = 18.0,
+	gunclass         = "ARTY",
+	rack             = "1xRK",								-- Which rack to spawn this missile on?
+	weight           = 320,
+	length           = 383,
+	year             = 1983,
+	roundclass       = "Rocket",
+	modeldiameter    = 4 * 2.54,
+	bodydiameter     = 9.2, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round	=	{
+		rocketmdl			= "models/missiles/aim120.mdl",
+		rackmdl				= "models/missiles/aim120.mdl",
+		firedelay			= 0.5,
+		reloadspeed			= 7,
+		reloaddelay			= 10.0,
+		inaccuracy			= 0,
+
+		maxlength			= 180,							-- Length of missile. Used for ammo properties.
+		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 3,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 0,							-- Acceleration in m/s.
+		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 500,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 4,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.0025,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		penmul            = math.sqrt(0.2)					-- 139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+	},
+
+	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb", "GPS"},
+	fuses      = {"Contact", "Timed", "Optical"},
+
+	racks	= {										-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true,
+					["2xRK"] = true,
+					["3xRK"] = true,
+					["4xRK"] = true,
+					["6xUARRK"] = true
+				},
+
+	viewcone   = 180,
+	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+
+	armdelay	= 0.15									-- minimum fuse arming delay
+} )
+
 ACF_defineGun("M31 RA", {							-- id
 
 	name             = "M31 GMLRS",
-	desc             = "Long range precision strike missile found in the M270 MLRS.",
+	desc             = "Long range precision strike missile found in the M270 MLRS. Guided to give better precision and control over trajectory. Has datalink.",
 	model            = "models/missiles/gmlrs.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "Rocket Motor Arty",
@@ -338,42 +403,43 @@ ACF_defineGun("M31 RA", {							-- id
 	round	=	{
 		rocketmdl			= "models/missiles/gmlrs.mdl",
 		rackmdl				= "models/missiles/gmlrs.mdl",
-		firedelay			= 0.2,
-		reloadspeed			= 1.0,
-		reloaddelay			= 40.0,
-		inaccuracy			= 2.0,
+		firedelay			= 0.6,
+		reloadspeed			= 10,
+		reloaddelay			= 12,
+		inaccuracy			= 0.0,
 
 		maxlength			= 210,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 10,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 5,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		turnrate			= 35,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 3,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 30,							-- Acceleration in m/s.
+		thrust				= 0,							-- Acceleration in m/s.
 		burntime			= 25,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 40,							-- Speed missile starts with on launch in m/s
+		launchkick			= 30,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 150,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 1.25,							-- Time in seconds for booster runtime
+		boostacceleration	= 60,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 3,							-- Time in seconds for booster runtime
 		boostdelay			= 0.25,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.003,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "GPS"},
+	guidance   = {"Dumb", "GPS"},
 	fuses      = {"Contact", "Timed", "Optical"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
@@ -388,10 +454,10 @@ ACF_defineGun("M31 RA", {							-- id
 
 ACF_defineGun("ATACMS RA", {						-- id
 	name             = "MGM-140 ATACMS",
-	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!!",
+	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!! Has datalink.",
 	model            = "models/macc/MGM-140.mdl",
-	effect           = "Rocket Motor Arty",
-	effectbooster	 = "Rocket Motor",
+	effect           = "ACE_MissileMedium",
+	effectbooster	 = "ACE_MissileMedium",
 	gunclass         = "ARTY",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 145 * 2.53, --Convert to ammocrate units
@@ -406,7 +472,7 @@ ACF_defineGun("ATACMS RA", {						-- id
 		rackmdl				= "models/macc/mgm-140_closed.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 2.0,
-		reloaddelay			= 80.0,
+		reloaddelay			= 50.0,
 
 
 		maxlength			= 220,							-- Length of missile. Used for ammo properties.

@@ -318,6 +318,7 @@ function EFFECT:MuzzleSmokeRAC( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  )
@@ -525,7 +526,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
@@ -540,6 +541,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
@@ -577,7 +579,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 		Dust:SetLighting( false )
 	end
 	--[[
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 28 + self.GunVelocity)
@@ -629,7 +631,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 42 + self.GunVelocity)
@@ -644,6 +646,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
@@ -759,7 +762,7 @@ function EFFECT:MuzzleSmokeMO( SmokeColor )
 		end
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
@@ -774,6 +777,7 @@ function EFFECT:MuzzleSmokeMO( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 
@@ -846,7 +850,7 @@ function EFFECT:MuzzleSmokeMO( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 40 + self.GunVelocity)
@@ -861,6 +865,7 @@ function EFFECT:MuzzleSmokeMO( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
@@ -958,7 +963,7 @@ function EFFECT:MuzzleSmokeMG( SmokeColor )
 	end
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
@@ -973,6 +978,7 @@ function EFFECT:MuzzleSmokeMG( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 
@@ -1045,7 +1051,7 @@ function EFFECT:MuzzleSmokeMG( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 40 + self.GunVelocity)
@@ -1060,6 +1066,7 @@ function EFFECT:MuzzleSmokeMG( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
@@ -1190,7 +1197,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 	end
 	]]--
 
-	local ParticleCount = math.ceil( math.Clamp( size * 5, 5, 600 ) * PMul )
+	local ParticleCount = math.ceil( math.Clamp( size * 2, 5, 600 ) * PMul )
 
 
 	for _ = 1, ParticleCount do
@@ -1311,7 +1318,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 	end
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 70 + self.GunVelocity)
@@ -1325,6 +1332,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 
@@ -1361,7 +1369,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 85 + self.GunVelocity)
@@ -1375,6 +1383,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
@@ -1660,7 +1669,7 @@ function EFFECT:MuzzleSmoke( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 15 + self.GunVelocity)
@@ -1675,6 +1684,7 @@ function EFFECT:MuzzleSmoke( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
@@ -1712,7 +1722,7 @@ function EFFECT:MuzzleSmoke( SmokeColor )
 		Dust:SetLighting( false )
 	end
 	--[[
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 28 + self.GunVelocity)
@@ -1764,7 +1774,7 @@ function EFFECT:MuzzleSmoke( SmokeColor )
 		Dust:SetLighting( false )
 	end
 
-	local Dust = self.Emitter:Add("sprites/redglow1", self.Origin  + Offset )
+	local Dust = self.Emitter:Add("sprites/orangeflare1", self.Origin  + Offset )
 
 	if Dust then
 		Dust:SetVelocity(self.DirVec * size * 42 + self.GunVelocity)
@@ -1779,6 +1789,7 @@ function EFFECT:MuzzleSmoke( SmokeColor )
 		Dust:SetAirResistance( 0 )
 		Dust:SetGravity(Vector(0, 0, 0))
 		Dust:SetLighting( false )
+		Dust:SetColor( 255, 0, 0 )
 	end
 
 	local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin  + Offset )
