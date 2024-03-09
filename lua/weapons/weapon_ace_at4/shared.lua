@@ -86,7 +86,7 @@ function SWEP:InitBulletData()
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.FillerVol = self.BulletData.Data5
 	self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 130
+	self.BulletData.BoomFillerMass = self.BulletData.FillerMass
 	local ConeArea = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
 	local ConeThick = self.BulletData.Caliber / 50
 	local ConeVol = ConeArea * ConeThick
@@ -104,6 +104,8 @@ function SWEP:InitBulletData()
 	self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
 	--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
 	self.BulletData.DragCoef = ((self.BulletData.FrArea / 10000) / self.BulletData.ProjMass)
+	self.BulletData.FillerMass = self.BulletData.FillerMass / 130
+	self.BulletData.BoomFillerMass = self.BulletData.FillerMass
 	--print(self.BulletData.SlugDragCoef)
 	--Don't touch below here
 	self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)

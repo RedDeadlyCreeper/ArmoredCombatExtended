@@ -200,7 +200,7 @@ ACF_DefineRack("3xUARRK", {
 } )
 
 ACF_DefineRack("6xUARRK", {
-	name = "M27 6x Artillery Launcher",
+	name = "M270 6x Artillery Launcher",
 	desc = "6-pack of death, used to efficiently carry artillery rockets",
 	model	= "models/missiles/6pod_rk.mdl",
 	rackmdl	= "models/missiles/6pod_cover.mdl",
@@ -608,7 +608,7 @@ ACF_DefineRack("1x VT-1", {
 	protectmissile  = true,
 	hidemissile     = false,
 
-	mountpoints = 
+	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}

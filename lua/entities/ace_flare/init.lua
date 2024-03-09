@@ -10,7 +10,7 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetGravity( 0.01 )
-	self:SetNoDraw(true)
+	--self:SetNoDraw(true)
 
 	self.Heat		= self.Heat or 1
 	self.FirstHeat		= self.Heat
@@ -34,6 +34,11 @@ function ENT:Initialize()
 			self:Remove()
 		end
 	end)
+
+	self:SetRenderMode( RENDERMODE_TRANSCOLOR )
+
+
+	self:SetColor( Color( 255, 255, 255, 1 ) )
 
 	table.insert( ACE.contraptionEnts, self )
 end

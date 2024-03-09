@@ -116,6 +116,9 @@ function EFFECT:Init( data )
 
 		local DecalMat = "Impact.Concrete"
 
+
+		if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
+
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )
 			DecalMat = "Impact.Metal"
@@ -586,7 +589,7 @@ function EFFECT:Dust( SmokeColor )
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 5, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 3, 100 ) * Pmul )
 
 
 	local DustSpeed = 50
@@ -594,7 +597,7 @@ function EFFECT:Dust( SmokeColor )
 		local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 15)
 
 		if Dust then
-			Dust:SetVelocity(self.HitNorm * DustSpeed * Energy / ParticleCount * 2)
+			Dust:SetVelocity(self.HitNorm * DustSpeed * Energy / ParticleCount * 1.5)
 			DustSpeed = DustSpeed + 50
 			--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
 			Dust:SetLifeTime(0)
@@ -636,9 +639,9 @@ function EFFECT:Dust( SmokeColor )
 	local Radius = (1.25 * self.Caliber)
 	local Angle      = self.HitNorm:Angle()
 
-	for _ = 0, 12 do
+	for _ = 0, 6 do
 
-		Angle:RotateAroundAxis(Angle:Forward(), 30 )
+		Angle:RotateAroundAxis(Angle:Forward(), 60 )
 		local ShootVector = Angle:Up()
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin + self.DirVec * 1 )
 

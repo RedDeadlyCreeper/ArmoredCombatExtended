@@ -40,7 +40,7 @@ function ENT:Initialize()
 	self.Legal			= true
 	self.LegalIssues	= ""
 	self.SpecialHealth	= false	--If true needs a special ACF_Activate function
-	self.SpecialDamage	= false	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
+	self.SpecialDamage	= true	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
 
 	self.ReloadTime		= 1
 	self.ReloadDelay	= 1 --Delay before can fire again. Decreased by refills. Set to 30 for now.
@@ -1191,5 +1191,43 @@ function ENT:UpdateRefillBonus()
 	--self:SetNWFloat(  "ReloadBonus", self.ReloadMultiplierBonus)
 
 	return self.ReloadMultiplierBonus
+
+end
+
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, _, Inflictor, _, _ )	--This function needs to return HitRes
+
+	local HitRes	= ACF_PropDamage( Entity, Energy , FrArea, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
+
+	--print(math.Round(HitRes.Damage * 100))
+	--print(HitRes.Loss * 100)
+
+	if HitRes.Kill then
+
+
+
+		for i = 1, self.MaxMissile do
+
+			local MissileArray = self.Missiles[i] or {}
+			local MissileTest = MissileArray[1] or NULL
+
+			if MissileTest:IsValid() then
+				MissileTest.MissileActive = true
+				MissileTest.ActivationTime = 0
+				MissileTest.Lifetime = 0 --Instantly scuttle as soon as can execute.
+				MissileTest:SetParent(NULL)
+			end
+
+		end
+
+		--self:Detonate()
+		self.MissileActive = true
+		self.ActivationTime = 0
+		self.Lifetime = 0 --Instantly scuttle as soon as can execute.
+
+		return { Damage = 1, Overkill = 0, Loss = 0, Kill = true }
+
+	end
+
+	return HitRes --This function needs to return HitRes
 
 end

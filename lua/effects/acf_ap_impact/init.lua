@@ -13,6 +13,7 @@ local RoundTypesSubCaliberBoost = {
 	HVAP    = true
 }
 
+
 --the dust is for non-explosive rounds, so lets skip this
 local RoundTypesIgnore = {
 	--HEAT      = true,
@@ -70,6 +71,8 @@ function EFFECT:Init( data )
 
 	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
 	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) then
+
+		if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
 
 		local Mat = SurfaceTr.MatType or 0
 		MatVal = ACE_GetMaterialName( Mat )
@@ -383,7 +386,7 @@ function EFFECT:Dust( SmokeColor )
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 5, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 3, 100 ) * Pmul )
 
 
 	local DustSpeed = 50
@@ -391,7 +394,7 @@ function EFFECT:Dust( SmokeColor )
 		local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 15)
 
 		if Dust then
-			Dust:SetVelocity(self.HitNorm * DustSpeed * Energy / ParticleCount * 2)
+			Dust:SetVelocity(self.HitNorm * DustSpeed * Energy / ParticleCount * 1.75)
 			DustSpeed = DustSpeed + 50
 			--			Dust:SetVelocity(VectorRand() * math.random(20, 30 * Energy))
 			Dust:SetLifeTime(0)
@@ -399,7 +402,7 @@ function EFFECT:Dust( SmokeColor )
 			Dust:SetStartAlpha(255)
 			Dust:SetEndAlpha(0)
 			Dust:SetStartSize(0.5 * Energy)
-			Dust:SetEndSize(20 * Energy * (DustSpeed / 50))
+			Dust:SetEndSize(10 * Energy * (DustSpeed / 50))
 			Dust:SetRoll(math.Rand(150, 360))
 			Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 			Dust:SetAirResistance(15)
@@ -411,9 +414,9 @@ function EFFECT:Dust( SmokeColor )
 	local Radius = (1.25 * self.Caliber)
 	local Angle      = self.HitNorm:Angle()
 
-	for _ = 0, 12 do
+	for _ = 0, 3 do
 
-		Angle:RotateAroundAxis(Angle:Forward(), 30 )
+		Angle:RotateAroundAxis(Angle:Forward(), 60 )
 		local ShootVector = Angle:Up()
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin - self.DirVec * 15 )
 
@@ -434,7 +437,7 @@ function EFFECT:Dust( SmokeColor )
 		end
 	end
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber, 5, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber, 2, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Debris = self.Emitter:Add("effects/fleck_cement" .. math.random(1,2), self.Origin - self.DirVec * 1)

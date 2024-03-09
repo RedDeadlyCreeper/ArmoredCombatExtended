@@ -192,7 +192,8 @@ function this:AcquireLock(missile)
 
 	for _, classifyent in pairs(found) do
 
-
+		--skip the tracking itself
+		if classifyent.IsJammed ~= 0 then continue end --Wouldn't be needed with CFRAME
 
 		local entpos = classifyent:GetPos()
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange

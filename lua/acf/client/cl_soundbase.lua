@@ -12,7 +12,7 @@
 ACE = ACE or {}
 
 --Defines the delay time caused by the distance between the event and you. Increasing it will increment the required time to hear a distant event
-ACE.DelayMultipler            = 5 --5x longer than speed of sound.
+ACE.DelayMultipler            = 1 --5x longer than speed of sound.
 
 --Defines the distance range for close, mid and far sounds. Incrementing it will increase the distances between sounds
 ACE.DistanceMultipler         = 1
@@ -699,7 +699,8 @@ do
 
 			self.Origin = hearingPos + (Origin - hearingPos):GetNormalized() * 64
 			self.Volume = BaseDistVolume / (EyePos() - Origin):Length() * volFix
-			self.Pitch = math.Clamp(Velocity * 0.001, 90, 150)
+			--self.Pitch = Pitch * math.Clamp(Velocity * 0.001, 90, 150) -Unfinished doppler code.
+			self.Pitch = Pitch
 
 			self.HearingEntity = hearingEntity
 		end

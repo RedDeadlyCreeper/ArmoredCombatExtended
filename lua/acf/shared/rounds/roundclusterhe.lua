@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.CHE = { "MG", "HMG","RAC", "ATR", "SL", "GL", "FFAR", "POD", "FGL", "ECM", "ATR" }
+ACF.AmmoBlacklist.CHE = { "MG", "AC", "HMG","RAC", "ATR", "SL", "GL", "FFAR", "FGL", "ATR", "SBC", "AAM", "ATGM", "ASR", "SAM" }
 
 local Round = {}
 
@@ -287,8 +287,9 @@ do
 
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-			local ACF_HE_Math = Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.FillerMass / 20, Bullet.ProjMass - Bullet.FillerMass
-			ACF_HE(ACF_HE_Math, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+			--local ACF_HE_Math = Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.FillerMass / 20, Bullet.ProjMass - Bullet.FillerMass
+			--ACF_HE(ACF_HE_Math, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+			ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.FillerMass / 20, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 			local GunEnt = Bullet.Gun
 			if IsValid(GunEnt) then
 				--print("Valid")

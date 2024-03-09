@@ -448,10 +448,13 @@ do
 		--print(math.Round(HitRes.Damage * 100))
 		--print(HitRes.Loss * 100)
 
-		if HitRes.Kill or HitRes.Loss < 1 then
+		print(HitRes.Overkill)
+
+		if HitRes.Kill or HitRes.Overkill > 1 then
 
 			--self:Detonate()
-
+			self.MissileActive = true
+			self.ActivationTime = 0
 			self.Lifetime = 0 --Instantly scuttle as soon as can execute.
 
 			return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }

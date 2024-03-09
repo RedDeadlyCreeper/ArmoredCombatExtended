@@ -267,27 +267,27 @@ function ENT:AcquireLock()
 
 
 			--if the target is a Heat Emitter, track its heat
-			if classifyent.Heat then
+			if scanEnt.Heat then
 
-				physEnt = classifyent:GetPhysicsObject()
+				physEnt = scanEnt:GetPhysicsObject()
 
 				if IsValid(physEnt) and physEnt:IsMoveable() then
-					ACE_InfraredHeatFromProp( classifyent , dist )
+					ACE_InfraredHeatFromProp( scanEnt , dist )
 				else
-					Heat = classifyent.Heat
+					Heat = scanEnt.Heat
 				end
 
 
 			--if is not a Heat Emitter, track the friction's heat
 			else
 
-				physEnt = classifyent:GetPhysicsObject()
+				physEnt = scanEnt:GetPhysicsObject()
 
 				--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
 				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
 				if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
-				Heat = ACE_InfraredHeatFromProp( classifyent , dist )
+				Heat = ACE_InfraredHeatFromProp( scanEnt , dist )
 
 			end
 

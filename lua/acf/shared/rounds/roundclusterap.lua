@@ -3,6 +3,8 @@ AddCSLuaFile()
 
 local Round = {}
 
+ACF.AmmoBlacklist.CAP = { "MG", "HMG","RAC", "ATR", "SL", "GL", "FFAR", "FGL", "ATR", "ATGM", "ASR"  }
+
 Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name  = "[CLUSTER-AP] - " .. ACFTranslation.ShellAP[1] --Human readable name
 Round.model = "models/missiles/glatgm/9m112f.mdl" --Shell flight model
@@ -238,8 +240,7 @@ do
 
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-			local ACF_HE_Math = Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass / 100
-			ACF_HE(ACF_HE_Math, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+			ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass / 100, Bullet.ProjMass - Bullet.ProjMass / 100, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 			local GunEnt = Bullet.Gun
 			if IsValid(GunEnt) then
 				--print("Valid")
@@ -256,8 +257,7 @@ do
 	function Round.endflight(Index, Bullet)
 		ACF_BulletClient( Index, Bullet, "Update", 1, Bullet.Pos  ) --Ends the bullet flight on the clientside
 
-		local ACF_HE_Math = Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass / 100, Bullet.ProjMass - Bullet.ProjMass / 100
-		ACF_HE(ACF_HE_Math, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
+		ACF_HE( Bullet.Pos - Bullet.Flight:GetNormalized() * 3, Bullet.Flight:GetNormalized(), Bullet.ProjMass / 100, Bullet.ProjMass - Bullet.ProjMass / 100, Bullet.Owner, nil, Bullet.Gun ) --Seperation airbursts. Fillermass reduced by 20 because it's the seperation charge.
 		local GunEnt = Bullet.Gun
 		if IsValid(GunEnt) then
 			--print("Valid")
@@ -315,7 +315,7 @@ end
 
 function Round.guicreate( Panel, Table )
 
-	acfmenupanel:AmmoSelect(ACF.AmmoBlacklist.CHE)
+	acfmenupanel:AmmoSelect(ACF.AmmoBlacklist.CAP)
 
 	acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
 
