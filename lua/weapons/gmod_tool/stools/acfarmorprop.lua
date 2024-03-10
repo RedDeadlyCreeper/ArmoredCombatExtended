@@ -10,6 +10,14 @@ TOOL.ClientConVar["thickness"]  = 1
 TOOL.ClientConVar["ductility"]  = 0
 TOOL.ClientConVar["material"]	= "RHA"
 
+if CLIENT then
+	TOOL.Information = {
+		{ name = "left" },
+		{ name = "right" },
+		{ name = "reload" }
+	}
+end
+
 --Used by the panel. If i can to use the TOOL itself for this, i would be really appreciated
 local ToolPanel = ToolPanel or {}
 
@@ -274,11 +282,11 @@ if CLIENT then
 			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
 			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc .. "\n" )
 
-			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve: " .. MaterialData.curve )
-			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass: " .. MaterialData.massMod .. "x RHA" )
-			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection: " .. MaterialData.effectiveness .. "x RHA" )
-			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection: " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
-			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year: " .. (MaterialData.year or "unknown") )
+			ArmorPanelText( "ComboCurve", ToolPanel.panel, getPhrase("tool.acfarmorprop.curve") .. ": " .. MaterialData.curve )
+			ArmorPanelText( "ComboMass" , ToolPanel.panel, getPhrase("tool.acfarmorprop.mass") .. ": " .. MaterialData.massMod .. "x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, getPhrase("tool.acfarmorprop.keprot") .. ": " .. MaterialData.effectiveness .. "x RHA" )
+			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, getPhrase("tool.acfarmorprop.chemprot") .. ": " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
+			ArmorPanelText( "ComboYear" , ToolPanel.panel, getPhrase("tool.acfarmorprop.year") .. ": " .. (MaterialData.year or "unknown") )
 
 			function ToolPanel.ComboMat:OnSelect(self, _, value )
 
@@ -368,7 +376,7 @@ if CLIENT then
 	cvars.RemoveChangeCallback( "acfarmorprop_material", "acfarmorprop_material" )
 	cvars.AddChangeCallback( "acfarmorprop_material", function( _, _, value )
 
-			if ToolPanel.panel then
+			if IsValid(ToolPanel.panel) then
 
 				local MatData = ACE_GetMaterialData( value )
 
@@ -381,11 +389,11 @@ if CLIENT then
 				ArmorPanelText( "ComboTitle", ToolPanel.panel, MatData.name , "DermaDefaultBold" )
 				ArmorPanelText( "ComboDesc" , ToolPanel.panel, MatData.desc .. "\n" )
 
-				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. MatData.curve )
-				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: " .. MatData.massMod .. "x RHA")
-				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. MatData.effectiveness .. "x RHA" )
-				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MatData.HEATeffectiveness or MatData.effectiveness) .. "x RHA" )
-				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MatData.year or "unknown") )
+				ArmorPanelText( "ComboCurve", ToolPanel.panel, getPhrase("tool.acfarmorprop.curve") .. ": " .. MatData.curve )
+				ArmorPanelText( "ComboMass" , ToolPanel.panel, getPhrase("tool.acfarmorprop.mass_scale") .. ": " .. MatData.massMod .. "x RHA")
+				ArmorPanelText( "ComboKE"	, ToolPanel.panel, getPhrase("tool.acfarmorprop.keprot") .. " : " .. MatData.effectiveness .. "x RHA" )
+				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, getPhrase("tool.acfarmorprop.chemprot") .. ": " .. (MatData.HEATeffectiveness or MatData.effectiveness) .. "x RHA" )
+				ArmorPanelText( "ComboYear" , ToolPanel.panel, getPhrase("tool.acfarmorprop.year") .. ": " .. (MatData.year or "unknown") )
 
 			end
 	end, "acfarmorprop_material")
@@ -506,7 +514,7 @@ if CLIENT then
 			surface.SetFont( "Torchfont" )
 
 			-- header
-			draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[19], "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+			draw.SimpleTextOutlined( "#tool.acfarmorprop.armorinfo", "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 
 			-- armor bar
 			draw.RoundedBox( 6, 10, 83, 236, 64, Color( 200, 200, 200, 255 ) )
@@ -514,7 +522,7 @@ if CLIENT then
 				draw.RoundedBox( 6, 15, 88, Armour / MaxArmour * 226, 54, Color( 0, 0, 200, 255 ) )
 			end
 
-			draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[20], "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+			draw.SimpleTextOutlined( "#tool.acfarmorprop.armor", "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 			draw.SimpleTextOutlined( ArmourTxt, "Torchfont", 128, 130, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 
 			-- health bar
@@ -523,7 +531,7 @@ if CLIENT then
 				draw.RoundedBox( 6, 15, 188, Health / MaxHealth * 226, 54, Color( 200, 0, 0, 255 ) )
 			end
 
-			draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[21], "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+			draw.SimpleTextOutlined( "#tool.acfarmorprop.health", "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 			draw.SimpleTextOutlined( HealthTxt, "Torchfont", 128, 230, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
 		cam.End2D()
 
