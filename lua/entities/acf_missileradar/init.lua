@@ -17,7 +17,6 @@ local RadarWireDescs = {
 	["Entities"]  = "Returns all the detected missiles into an array.",
 	["Position"]  = "Returns the current position of all the flying missiles of this radar",
 	["Velocity"]  = "Returns the velocity of all the active missiles into an array.",
-	["Owner"]     = "Returns the owner of the missile.",
 
 }
 
@@ -26,23 +25,13 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 
 	self.Inputs				= WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs			= WireLib.CreateOutputs( self, {
-		"Detected (" .. RadarWireDescs["Detected"] .. ")",
-		"ClosestDistance",
-		"Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]",
-		"Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]",
-		"Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]",
-		"Owner (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]",
-		"Heat"
-	} )
-
+	self.Outputs			= WireLib.CreateOutputs( self, {"Detected (" .. RadarWireDescs["Detected"] .. ")", "ClosestDistance", "Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]", "Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]", "Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]"} )
 	self.OutputData = {
 		Detected = 0,
 		ClosestDistance = 0,
 		Entities = {},
 		Position = {},
 		Velocity = {},
-		Owner = {},
 	}
 
 	self.ThinkDelay			= 0.1
@@ -52,8 +41,6 @@ function ENT:Initialize()
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
 	self.LegalIssues		= ""
-
-	self.Heat 				= ACE.AmbientTemp
 
 	self.Active				= false
 
@@ -206,7 +193,7 @@ function ENT:Think()
 
 	if ACF.CurTime > self.NextLegalCheck then
 
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
 		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
 		if not self.Legal then
@@ -221,8 +208,6 @@ function ENT:Think()
 		self.LastStatusUpdate = curTime
 	end
 
-	self.Heat = ACE_HeatFromRadar(self, self.ThinkDelay)
-	WireLib.TriggerOutput(self, "Heat", self.Heat)
 	self:GetOverlayText()
 
 	return true
@@ -246,10 +231,10 @@ end
 function ENT:ScanForMissiles()
 
 	local missiles = self:GetDetectedEnts() or {}
+
 	local entArray = {}
 	local posArray = {}
 	local velArray = {}
-	local ownArray = {}
 
 	local i = 0
 
@@ -263,7 +248,6 @@ function ENT:ScanForMissiles()
 		i = i + 1
 
 		entArray[i] = missile
-		ownArray[i] = missile.DamageOwner
 		posArray[i] = missile.CurPos
 		velArray[i] = missile.TrueVel or missile.LastVel
 
@@ -284,14 +268,12 @@ function ENT:ScanForMissiles()
 	WireLib.TriggerOutput( self, "Entities", entArray )
 	WireLib.TriggerOutput( self, "Position", posArray )
 	WireLib.TriggerOutput( self, "Velocity", velArray )
-	WireLib.TriggerOutput( self, "Owner", ownArray )
 
 	self.OutputData.Detected = i
 	self.OutputData.ClosestDistance = closestOutput
 	self.OutputData.Entities = entArray
 	self.OutputData.Position = posArray
 	self.OutputData.Velocity = velArray
-	self.OutputData.Owners = ownArray
 
 	if i > (self.LastMissileCount or 0) then
 		self:EmitRadarSound()
@@ -311,9 +293,7 @@ function ENT:ClearOutputs()
 
 	if #self.Outputs.Entities.Value > 0 then
 		WireLib.TriggerOutput( self, "Entities", {} )
-		WireLib.TriggerOutput( self, "Owner", {} )
 		self.OutputData.Entities = {}
-		self.OutputData.Owners = {}
 	end
 
 	if #self.Outputs.Position.Value > 0 then
@@ -360,8 +340,6 @@ function ENT:GetOverlayText()
 	if not self.Legal then
 		txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	end
-
-	txt = txt .. "\nTemp: " .. math.Round(self.Heat) .. " °C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. " °F"
 
 	self:SetOverlayText(txt)
 

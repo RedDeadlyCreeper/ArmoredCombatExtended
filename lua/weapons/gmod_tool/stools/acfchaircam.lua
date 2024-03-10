@@ -10,6 +10,13 @@ if CLIENT then
 
 	}
 
+	language.Add( "tool.acfchaircam.name", "ACE 3rd person View Fixer" )
+	language.Add( "tool.acfchaircam.desc", "Allows 3rd person view to pass through all type of entities while seated. Useful when cam controllers are not used." )
+	language.Add( "tool.acfchaircam.disclaimer", "Use it ONLY with contraptions!" )
+
+	language.Add( "tool.acfchaircam.left", "Sets the override to the desired seat" )
+	language.Add( "tool.acfchaircam.reload", "Removes the override from the chosen seat" )
+
 end
 
 do

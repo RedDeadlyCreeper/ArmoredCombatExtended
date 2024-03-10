@@ -99,7 +99,7 @@ function Round.convert( _, PlayerData )
 
 	local SlugFrArea = 3.1416 * (Data.SlugCaliber / 2) ^ 2
 	Data.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
-	Data.SlugDragCoef = ((SlugFrArea / 10000) / Data.SlugMass)
+	Data.SlugDragCoef = ((SlugFrArea / 10000) / Data.SlugMass) * 800
 	Data.SlugRicochet = 500 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
 	--Random bullshit left
@@ -238,20 +238,16 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 --			print("Meters Traveled: "..distanceTraveled/39.37)
 --			print("Speed Reduction: "..(1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 )).."x") --
 
+			local Speed = Bullet.Flight:Length() / ACF.VelScale
+			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
+			local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 
-			--Linter :)
-			--local Speed = Bullet.Flight:Length() / ACF.VelScale
-			--local Energy = ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
-			--local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-
-
-			--Breaks effect hitnormal. Though HEAT failing to fuse is nice.
-			--if HitRes.Ricochet then
-			--	return "Ricochet"
-			--else
+			if HitRes.Ricochet then
+				return "Ricochet"
+			else
 				Round.detonate( Index, Bullet, HitPos, HitNormal )
 				return "Penetrated"
-			--end
+			end
 
 		end
 	else
@@ -294,13 +290,26 @@ end
 
 function Round.endeffect( _, Bullet )
 
-	local Impact = EffectData()
-		Impact:SetEntity( Bullet.Crate )
-		Impact:SetOrigin( Bullet.SimPos )
-		Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
-		Impact:SetScale( Bullet.SimFlight:Length() )
-		Impact:SetMagnitude( Bullet.RoundMass )
-	util.Effect( "acf_ap_impact", Impact )
+	if not Bullet.Detonated then
+
+		local Radius = Bullet.FillerMass ^ 0.33 * 8 * 39.37
+		local Flash = EffectData()
+			Flash:SetOrigin( Bullet.SimPos )
+			Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
+			Flash:SetRadius( math.max( Radius, 1 ) )
+		util.Effect( "ACF_Scaled_Explosion", Flash )
+
+	else
+
+		local Impact = EffectData()
+			Impact:SetEntity( Bullet.Crate )
+			Impact:SetOrigin( Bullet.SimPos )
+			Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
+			Impact:SetScale( Bullet.SimFlight:Length() )
+			Impact:SetMagnitude( Bullet.RoundMass )
+		util.Effect( "acf_ap_impact", Impact )
+
+	end
 
 end
 
@@ -327,8 +336,6 @@ function Round.pierceeffect( Effect, Bullet )
 
 		Bullet.Detonated = true
 		Effect:SetModel("models/Gibs/wood_gib01e.mdl")
-
-		Round.pierceeffect( Effect, Bullet )
 
 	end
 

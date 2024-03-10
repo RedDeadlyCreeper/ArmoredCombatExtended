@@ -1,10 +1,10 @@
 --define the class
 ACF_defineGunClass("RAC", {
 	type = "Gun",
-	spread = 0.4,
+	spread = 0.35,
 	name = "Rotary Autocannon",
 	desc = ACFTranslation.GunClasses[11],
-	muzzleflash = "RAC",
+	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.07,
 	year = 1962,
 	sound = "weapons/acf_gun/mg_fire2.wav",
@@ -20,9 +20,9 @@ ACF_defineGun("14.5mmRAC", { --id
 	sound = "ace_weapons/multi_sound/12_7mm_multi.mp3",
 	gunclass = "RAC",
 	caliber = 1.45,
-	weight = 400,
+	weight = 160,
 	year = 1962,
-	rofmod = 2,
+	rofmod = 2.6,
 	round = {
 		maxlength = 25,
 		propweight = 0.06
@@ -36,9 +36,9 @@ ACF_defineGun("20mmRAC", {
 	sound = "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 	gunclass = "RAC",
 	caliber = 2.0,
-	weight = 1220,
+	weight = 420,
 	year = 1965,
-	rofmod = 1.2,
+	rofmod = 1.65,
 	round = {
 		maxlength = 36,
 		propweight = 0.12
@@ -52,9 +52,9 @@ ACF_defineGun("30mmRAC", {
 	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	gunclass = "RAC",
 	caliber = 3.0,
-	weight = 1830, --1830 Gau 8 total system weight.
+	weight = 610,
 	year = 1975,
-	rofmod = 0.65,
+	rofmod = 0.93,
 	round = {
 		maxlength = 45,
 		propweight = 0.350

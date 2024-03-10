@@ -4,7 +4,7 @@ ACF_defineGunClass("SA", {
 	spread = 0.11,
 	name = "Semiautomatic Cannon",
 	desc = ACFTranslation.GunClasses[12],
-	muzzleflash = "AC",
+	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.5,
 	year = 1935,
 	sound = "ace_weapons/multi_sound/20mm_multi.mp3",

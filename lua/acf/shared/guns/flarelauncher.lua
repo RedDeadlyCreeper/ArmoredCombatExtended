@@ -4,10 +4,10 @@ ACF_defineGunClass("FGL", {
 	spread = 3,
 	name = "Flare Launcher",
 	desc = ACFTranslation.GunClasses[5],
-	muzzleflash = "MO",
+	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 0.6,
 	year = 1970,
-	sound = "acf_new/weapons/skyfire/close/close (1).wav",
+	sound = "acf_extra/tankfx/flare_launch.wav",
 
 	ammoBlacklist	= {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
 } )
@@ -22,28 +22,10 @@ ACF_defineGun("40mmFGL", { --id
 	caliber = 4.0,
 	weight = 75,
 	magsize = 30,
-	magreload = 30,
+	magreload = 40,
 	year = 1970,
 	round = {
 		maxlength = 9,
 		propweight = 0.007
-	}
-} )
-
---add a gun to the class
-ACF_defineGun("60mmFGL", { --id
-	name = "60mm Flare Launcher",
-	desc = "Large countermeasure shooting out heavy flares. Has fewer shots than the its 40mm counterpart but reloads faster and is much better for distracting.",
-	model = "models/launcher/40mmgl.mdl",
-	sound = "acf_extra/tankfx/flare_launch.wav",
-	gunclass = "FGL",
-	caliber = 6.0,
-	weight = 125,
-	magsize = 6,
-	magreload = 20,
-	year = 1970,
-	round = {
-		maxlength = 3,
-		propweight = 0.014
 	}
 } )

@@ -1,13 +1,12 @@
 include("shared.lua")
 
-local FlareSound = "ambient/gas/steam2.wav"
+local FlareSound = "weapons/flaregun/burn.wav"
 
 function ENT:Initialize()
 
 	self.LightUpdate = CurTime() + 0.05
-	ACE_EmitSound( FlareSound, self, 70, 100, 1 )
-
-	ParticleEffectAttach("ACFM_Flare",4, self,1) --TODO: Create a way to identify chaff/flare.  And make effects scale with flare filler.
+	ACE_EmitSound( FlareSound, self, 80, 100, 1 )
+	ParticleEffectAttach("ACFM_Flare",4, self,1)
 
 end
 
@@ -20,9 +19,9 @@ function ENT:Draw()
 		self.StopLight = true
 	end
 
-	if CurTime() > self.LightUpdate then
+	if CurTime() > self.LightUpdate and not self.StopLight then
 		self.LightUpdate = CurTime() + 0.05
-		ACF_RenderLight(self:EntIndex(), 20000, Color(255, 196, 0), self:GetPos(), 0.1)
+		ACF_RenderLight(self:EntIndex(), 20000, Color(194, 145, 39), self:GetPos(), 0.1)
 	end
 end
 

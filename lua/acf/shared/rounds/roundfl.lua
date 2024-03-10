@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-ACF.AmmoBlacklist["FL"] = { "ATR", "RAC", "RM", "SL", "GL", "MG", "SC", "BOMB", "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
+ACF.AmmoBlacklist["FL"] = { "ATR", "MO", "RAC", "RM", "SL", "GL", "MG", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
 
 local Round = {}
@@ -87,13 +87,13 @@ function Round.convert( _, PlayerData )
 
 
 	if GunClass == "SA" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2),1,128)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 7-4),1,128)
 	elseif GunClass == "MO" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2),1,128)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 7) - 12,1,128)
 	elseif GunClass == "HW" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2),1,128)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 7) - 10,1,128)
 	else
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2) ,1,128)
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 7) - 8,1,128)
 	end
 
 

@@ -4,7 +4,7 @@ ACF_defineGunClass("GL", {
 	spread = 0.4,
 	name = "Grenade Launcher",
 	desc = ACFTranslation.GunClasses[6],
-	muzzleflash = "MO",
+	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 1,
 	year = 1970,
 	sound = "ace_weapons/multi_sound/12_7mm_multi.mp3",
@@ -18,12 +18,11 @@ ACF_defineGun("40mmGL", { --id
 	name = "40mm Grenade Launcher",
 	desc = "The 40mm chews up infantry but is about as useful as tits on a nun for fighting armor.  Often found on 4x4s rolling through the third world.",
 	model = "models/launcher/40mmgl.mdl",
-	sound = "ace_weapons/multi_sound/12_7mm_multi.mp3",
+	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	gunclass = "GL",
 	caliber = 4.0,
 	weight = 55,
-	magsize = 48,
-	rofmod = 0.45,
+	magsize = 6,
 	magreload = 7.5,
 	year = 1970,
 	round = {
@@ -40,13 +39,12 @@ ACF_defineGun("20mmGL", { --id
 	gunclass = "GL",
 	caliber = 3.01,
 	weight = 10,
-	magsize = 72,
-	rofmod = 0.55,
+	magsize = 24,
 	magreload = 8,
 	year = 1970,
 	round = {
-		maxlength = 7,
-		propweight = 0.005
+		maxlength = 5,
+		propweight = 0.007
 	}
 } )
 
@@ -58,7 +56,7 @@ ACF_defineGun("40mmGLSingle", { --id
 	gunclass = "GL",
 	caliber = 4.0,
 	weight = 5,
-	rofmod = 6,
+	rofmod = 12,
 	year = 1940,
 	round = {
 		maxlength = 35,

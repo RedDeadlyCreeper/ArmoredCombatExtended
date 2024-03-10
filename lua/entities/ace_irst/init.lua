@@ -249,8 +249,6 @@ function ENT:AcquireLock()
 	for _, scanEnt in ipairs(self:GetWhitelistedEntsInCone()) do
 
 		local randanginac	= math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-		dist	= difpos:Length()
-
 
 		entpos	= scanEnt:WorldSpaceCenter()
 		difpos	= (entpos - IRSTPos)
@@ -265,18 +263,10 @@ function ENT:AcquireLock()
 		-- Check if the target is within the cone.
 		if IsInCone( absang, self.Cone ) then
 
-
 			--if the target is a Heat Emitter, track its heat
 			if scanEnt.Heat then
 
-				physEnt = scanEnt:GetPhysicsObject()
-
-				if IsValid(physEnt) and physEnt:IsMoveable() then
-					ACE_InfraredHeatFromProp( scanEnt , dist )
-				else
-					Heat = scanEnt.Heat
-				end
-
+				Heat = self.SeekSensitivity * scanEnt.Heat
 
 			--if is not a Heat Emitter, track the friction's heat
 			else
@@ -287,18 +277,10 @@ function ENT:AcquireLock()
 				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
 				if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
-				Heat = ACE_InfraredHeatFromProp( scanEnt , dist )
+				dist = difpos:Length()
+				Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
 
 			end
-
-			--0x heat @ 1200m
-			--0.25x heat @ 900m
-			--0.5x heat @ 600m
-			--0.75x heat @ 300m
-			--1.0x heat @ 0m
-
-			local HeatMulFromDist = 1 - math.min(dist / 47244, 1) --39.37 * 1200 = 47244
-			Heat = Heat * HeatMulFromDist
 
 			--Skip if not Hotter than AmbientTemp in deg C.
 			if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end

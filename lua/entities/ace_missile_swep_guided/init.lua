@@ -38,8 +38,6 @@ function ENT:Initialize()
 	self.DecoyResiliance = 3
 	self.TrackCone = 30
 
-	self.HasGuidance = true
-
 	self.CurrentFuse = 0
 	self.FuseTime = 10
 	self.LastTime = CurTime()
@@ -55,13 +53,13 @@ function ENT:Initialize()
 
 	if IsValid( phys ) then
 		phys:EnableMotion( true )
-		phys:SetMass(30)
+		phys:SetMass(20)
 		phys:Wake()
 		phys:SetBuoyancyRatio( 5 )
 		phys:SetDragCoefficient( 0 )
 		phys:SetDamping( 0, 0 )
 		phys:SetMaterial( "grenade" )
-		phys:EnableGravity(false) --Enabling gravity makes the aim really wonky
+		phys:EnableGravity(false)
 		phys:SetInertia(Vector(100))
 	end
 
@@ -136,117 +134,26 @@ function ENT:Think()
 	self.LastVel = self:GetVelocity()
 	self.CurPos = pos
 
-	if self.HasGuidance then
+	if self.TopAttackGuidance and not self.StartDist and IsValid(self.tarent) then
+		local posDiff = (self.tarent:GetPos() - pos)
+		self.StartDist = Vector(posDiff.x, posDiff.y, 0):Length()
+	end
 
-		if self.TopAttackGuidance and not self.StartDist and IsValid(self.tarent) then
-			local posDiff = (self.tarent:GetPos() - pos)
-			self.StartDist = Vector(posDiff.x, posDiff.y, 0):Length()
-		end
+	if not self.LastPos then
+		self.LastPos = pos
+	end
 
-		if not self.LastPos then
-			self.LastPos = pos
-		end
+	local tr = util.QuickTrace(pos + self:GetForward() * -30, self:GetVelocity() * DelTime * 1.25, {self})
 
-		local tr = util.QuickTrace(pos + self:GetForward() * -30, self:GetVelocity() * DelTime * 1.25, {self})
+	if tr.Hit then
+		debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
+		debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
 
-		if tr.Hit then
-			debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
-			debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
-
-			self:SetPos(tr.HitPos + self:GetForward() * -18)
-			self:Detonate()
-		else
-			if self.CurrentFuse > self.MissileBurnTime then
-					self:StopParticles()
-
-			else
-
-				self.MissileThrust = self.MissileThrust * self.EnergyRetention
-
-			end
-
-			self.Gravity = 9.8 * 39.37 * DelTime --Gravity is always active. Makes it harder for missiles to climb high.
-
-			self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust * math.Min( self.CurrentFuse * self.MotorIncrements,1 ) + Vector(0, 0, -self.Gravity)))
-
-			debugoverlay.Line(self.LastPos, pos, 10, Color(0, 0, 255))
-
-			self.LastPos = pos
-		end
-
-
-		if IsValid( self.tarent ) then
-			local posDiff = (self.tarent:GetPos() - pos)
-			local dist = posDiff:Length()
-			local distXY = Vector(posDiff.x, posDiff.y, 0):Length()
-			local travelTime = dist / self:GetVelocity():Length()
-			local tarVel = GetRootVelocity(self.tarent)
-			--local relvel = tarVel - self:GetVelocity()
-
-			tarAccel = (tarVel-self.LastVelTarget) * DelTime
-			self.lastVelTarget = tarVel
-
-			tarJerk = (tarAccel-self.LastAccelTarget) * DelTime
-			self.LastAccelTarget = tarAccel
-
-			travelTime = travelTime * self.LeadMul
-			local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime + 0.5 * tarAccel * travelTime^2 + 0.16 * tarJerk * travelTime^3)
-			local tposDist = (TPos - pos):Length()
-
-			if self.TopAttackGuidance then
-				-- Angle of attack increases with distance if we're in top attack mode, because the missile needs time to turn
-				-- Start at 15 degrees, max at 30 degrees, increase by 1 degree every 200 units
-				if math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - self.DirectFireDist) / 200 + 15, 15, 30) then
-					self.HeightOffset = Vector(0, 0, self.StartDist / 2)
-				else
-					self.HeightOffset = Vector()
-				end
-			end
-
-			local d = (TPos + self.HeightOffset + Vector( 0,0, tposDist * 9.8 / (vel:Length() ) * 8 )) - pos
-
-			if self.RadioDist and d:Length() < self.RadioDist then
-				self:Detonate()
-				--print("Proxy Fuse")
-			end
-
-			local deltaDistance = self.lastDistance - dist --Use distance instead of traveltime because it is better indicitive of a miss and won't detonate a gliding missile still moving towards the target
-			self.lastDistance = dist
-
-			if deltaDistance > 0 then -- Missile is moving towards target
-				local AngAdjust = self:WorldToLocalAngles((d):Angle())
-				local adjustedrate = self.MaxTurnRate * DelTime
-				AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
-
-				self:SetAngles(AngAdjust)
-			else
-				if self.DestructOnMiss and self.CurrentFuse > 0.5 then
-					self:Detonate()
-					--print("Self Destruct")
-				end
-			end
-
-			self:RecalculateGuidance()
-
-		else
-			--print("No Target")
-			self:Detonate()
-		end
-
-		if self.CurrentFuse > self.FuseTime then
-			self:Detonate()
-		end
-
+		self:SetPos(tr.HitPos + self:GetForward() * -18)
+		self:Detonate()
 	else
-
-		if not self.LastPos then
-			self.LastPos = pos
-		end
-
 		if self.CurrentFuse > self.MissileBurnTime then
-			self:StopParticles()
-
-			self.MissileThrust = 0
+				self:StopParticles()
 
 		else
 
@@ -256,21 +163,74 @@ function ENT:Think()
 
 		self.Gravity = 9.8 * 39.37 * DelTime --Gravity is always active. Makes it harder for missiles to climb high.
 
-		self.phys:ApplyForceCenter(30 * (self:GetForward() * self.MissileThrust * math.Min( self.CurrentFuse * self.MotorIncrements,1 ) + Vector(0, 0, -self.Gravity) ))
+		self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust * math.Min( self.CurrentFuse * self.MotorIncrements,1 ) + Vector(0, 0, -self.Gravity)))
 
 		debugoverlay.Line(self.LastPos, pos, 10, Color(0, 0, 255))
 
 		self.LastPos = pos
+	end
 
-		local tr = util.QuickTrace(pos + self:GetForward() * -30, self:GetVelocity() * DelTime * 2, {self})
 
-		if tr.Hit then
-			debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
-			debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
+	if IsValid( self.tarent ) then
+		local posDiff = (self.tarent:GetPos() - pos)
+		local dist = posDiff:Length()
+		local distXY = Vector(posDiff.x, posDiff.y, 0):Length()
+		local travelTime = dist / self:GetVelocity():Length()
+		local tarVel = GetRootVelocity(self.tarent)
+		--local relvel = tarVel - self:GetVelocity()
 
-			self:SetPos(tr.HitPos + self:GetForward() * -30)
-			self:Detonate()
+		tarAccel = (tarVel-self.LastVelTarget) * DelTime
+		self.lastVelTarget = tarVel
+
+		tarJerk = (tarAccel-self.LastAccelTarget) * DelTime
+		self.LastAccelTarget = tarAccel
+
+		travelTime = travelTime * self.LeadMul
+		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime + 0.5 * tarAccel * travelTime^2 + 0.16 * tarJerk * travelTime^3)
+		local tposDist = (TPos - pos):Length()
+
+		if self.TopAttackGuidance then
+			-- Angle of attack increases with distance if we're in top attack mode, because the missile needs time to turn
+			-- Start at 15 degrees, max at 30 degrees, increase by 1 degree every 200 units
+			if math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - self.DirectFireDist) / 200 + 15, 15, 30) then
+				self.HeightOffset = Vector(0, 0, self.StartDist / 2)
+			else
+				self.HeightOffset = Vector()
+			end
 		end
+
+		local d = (TPos + self.HeightOffset + Vector( 0,0, tposDist * 9.8 / (vel:Length() ) * 8 )) - pos
+
+		if self.RadioDist and d:Length() < self.RadioDist then
+			self:Detonate()
+			--print("Proxy Fuse")
+		end
+
+		local deltaDistance = self.lastDistance - dist --Use distance instead of traveltime because it is better indicitive of a miss and won't detonate a gliding missile still moving towards the target
+		self.lastDistance = dist
+
+		if deltaDistance > 0 then -- Missile is moving towards target
+			local AngAdjust = self:WorldToLocalAngles((d):Angle())
+			local adjustedrate = self.MaxTurnRate * DelTime
+			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
+
+			self:SetAngles(AngAdjust)
+		else
+			if self.DestructOnMiss and self.CurrentFuse > 0.5 then
+				self:Detonate()
+				--print("Self Destruct")
+			end
+		end
+
+		self:RecalculateGuidance()
+
+	else
+		--print("No Target")
+		self:Detonate()
+	end
+
+	if self.CurrentFuse > self.FuseTime then
+		self:Detonate()
 	end
 end
 
@@ -460,7 +420,7 @@ function ENT:AcquireLock()
 				end
 
 				dist = difpos:Length()
-				Heat = ACE_InfraredHeatFromProp(scanEnt, dist)
+				Heat = ACE_InfraredHeatFromProp(self, scanEnt, dist)
 			end
 
 			--Skip if not Hotter than AmbientTemp in deg C.

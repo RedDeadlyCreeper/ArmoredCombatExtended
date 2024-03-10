@@ -4,7 +4,7 @@ ACF_defineGunClass("C", {
 	spread = 0.1,
 	name = "Cannon",
 	desc = ACFTranslation.GunClasses[4],
-	muzzleflash = "C",
+	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.5,
 	maxrof = 19, -- maximum rounds per minute
 	sound = "ace_weapons/multi_sound/100mm_multi.mp3",

@@ -13,6 +13,9 @@ this.Name = ClassName
 -- Cone to retain targets within.
 this.ViewCone = 30
 
+-- An entity with a Position wire-output
+this.InputSource = nil
+
 this.desc = "This guidance package reads a target-position from the launcher and guides the munition towards it."
 
 
@@ -39,7 +42,7 @@ end
 
 function this:GetGuidance(missile)
 
-	local posVec = missile.Launcher.TargPos
+	local posVec = self:GetWireTarget()
 
 	if not posVec or type(posVec) ~= "Vector" or posVec == Vector() then
 		return {TargetPos = nil}

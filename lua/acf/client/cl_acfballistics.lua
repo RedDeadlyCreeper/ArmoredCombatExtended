@@ -19,24 +19,7 @@ function ACF_SimBulletFlight( Bullet, Index )
 
 	local DeltaTime = CurTime() - Bullet.LastThink --intentionally not using cached curtime value
 
-	local WaterTr = { }
-	WaterTr.start = Bullet.SimPos
-	WaterTr.endpos = Bullet.SimPos + Vector(0,0,1)
-	WaterTr.mask = MASK_WATER
-	local Water = util.TraceLine( WaterTr )
-
-
-	Bullet.UnderWater = false
-
-	if Water.HitWorld and Water.StartSolid then
-			Bullet.UnderWater = true
-	end
-
 	local Drag = Bullet.SimFlight:GetNormalized() * ( Bullet.DragCoef * Bullet.SimFlight:LengthSqr() ) / ACF.DragDiv
-
-	if Bullet.UnderWater then
-		Drag = Drag * 800
-	end
 
 	Bullet.SimPosLast	= Bullet.SimPos
 	Bullet.SimPos		= Bullet.SimPos + (Bullet.SimFlight * ACF.VelScale * DeltaTime)		--Calculates the next shell position

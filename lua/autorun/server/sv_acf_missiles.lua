@@ -128,7 +128,6 @@ ACF.FillerDensity =
 {
 	SM =	2000,
 	HE =	1000,
-	CHE =	1000,
 	HEAT =  1450,
 	THEAT =  1450,
 }
@@ -184,7 +183,6 @@ function ResetVelocity.AP(bdata)
 end
 
 ResetVelocity.HE = ResetVelocity.AP
-ResetVelocity.CHE = ResetVelocity.AP
 ResetVelocity.HEP = ResetVelocity.AP
 ResetVelocity.SM = ResetVelocity.AP
 

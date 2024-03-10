@@ -45,7 +45,7 @@ function ENT:Think()
 
 
 		local Res = MakeACF_Rack(self:CPPIGetOwner(), pos, ang, rackId)
-		if not IsValid(Res) then ACF_SendNotify(self:CPPIGetOwner(), false, "#tool.acfmenu.creationfailed") end
+		if not IsValid(Res) then ACF_SendNotify(self:CPPIGetOwner(), false, ACFTranslation.ACFMenuTool[15]) end
 
 	end
 

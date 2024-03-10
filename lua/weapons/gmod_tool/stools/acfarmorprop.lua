@@ -10,14 +10,6 @@ TOOL.ClientConVar["thickness"]  = 1
 TOOL.ClientConVar["ductility"]  = 0
 TOOL.ClientConVar["material"]	= "RHA"
 
-if CLIENT then
-	TOOL.Information = {
-		{ name = "left" },
-		{ name = "right" },
-		{ name = "reload" }
-	}
-end
-
 --Used by the panel. If i can to use the TOOL itself for this, i would be really appreciated
 local ToolPanel = ToolPanel or {}
 
@@ -39,6 +31,209 @@ local function CalcArmor( Area, Ductility, Thickness, Mat )
 
 end
 
+if CLIENT then
+
+	language.Add( "tool.acfarmorprop.name", ACFTranslation.ArmorPropertiesText[1] )
+	language.Add( "tool.acfarmorprop.desc", ACFTranslation.ArmorPropertiesText[2] )
+	language.Add( "tool.acfarmorprop.0", ACFTranslation.ArmorPropertiesText[3] )
+
+	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
+
+	--Required in order to update material data inserted in client convars
+	local function ACE_MaterialCheck( Material )
+
+		--Convert old numeric IDs to the new string IDs
+		local BackCompMat = {
+			"RHA",
+			"CHA",
+			"Cer",
+			"Rub",
+			"ERA",
+			"Alum",
+			"Texto"
+		}
+
+		--Refreshing the data, so we can replace non valid data with the callback.
+		if isnumber(tonumber(Material)) then
+
+			local Mat_ID = math.Clamp(Material + 1, 1,7)
+			Material = BackCompMat[Mat_ID]
+
+			--Updates the convar with the proper material
+			RunConsoleCommand( "acfarmorprop_material", Material )
+		end
+	end
+
+	--Looks like client convars are not initialized very quickly, so we will wait a bit until they become valid.
+	timer.Simple(0.1, function()
+		ACE_MaterialCheck( GetConVar("acfarmorprop_material"):GetString() )
+	end )
+
+	--Replicated from PANEL:CPanelText(Name, Desc, Font). No idea why this doesnt work with this function out of this file
+	local function ArmorPanelText( name, panel, desc, font )
+
+		if not PanelTxt then PanelTxt = {} end
+
+		if not PanelTxt[name .. "_aText"] then
+			PanelTxt[name .. "_aText"] = panel:Help(desc)
+			PanelTxt[name .. "_aText"]:SetContentAlignment( TEXT_ALIGN_CENTER )
+			PanelTxt[name .. "_aText"]:SetAutoStretchVertical(true)
+			if font then PanelTxt[name .. "_aText"]:SetFont( font ) end
+			PanelTxt[name .. "_aText"]:SizeToContents()
+
+			panel:AddItem(PanelTxt[name .. "_aText"])
+
+		end
+
+		PanelTxt[name .. "_aText"]:SetText( desc )
+		PanelTxt[name .. "_aText"]:SetSize( panel:GetWide(), 10 )
+		PanelTxt[name .. "_aText"]:SizeToContentsY()
+
+	end
+
+	-- Material ComboBox creation
+	local function MaterialTable( panel )
+
+		local MaterialTypes = ACE.ArmorTypes
+		if not MaterialTypes then return end
+
+		local Material = GetConVar("acfarmorprop_material"):GetString()
+		local MaterialData  = MaterialTypes[Material] or MaterialTypes["RHA"]
+
+		ArmorPanelText( "ComboBox", panel, "Material" )
+
+		if not ToolPanel.ComboMat then
+
+			ToolPanel.panel = panel
+
+			ToolPanel.ComboMat = vgui.Create( "DComboBox" )
+			ToolPanel.ComboMat:SetPos( 5, 30 )
+			ToolPanel.ComboMat:SetSize( 100, 20 )
+			ToolPanel.ComboMat:SetValue( MaterialData.sname )
+			ToolPanel.panel:AddItem(ToolPanel.ComboMat)
+
+			for _, Mat  in pairs(MaterialTypes) do
+				if ACF.Year >= Mat.year then
+					ToolPanel.ComboMat:AddChoice(Mat.sname, Mat.id )
+				end
+			end
+
+			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
+			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc .. "\n" )
+
+			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. MaterialData.curve )
+			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : " .. MaterialData.massMod .. "x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. MaterialData.effectiveness .. "x RHA" )
+			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
+			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MaterialData.year or "unknown") )
+
+			function ToolPanel.ComboMat:OnSelect(self, _, value )
+
+				RunConsoleCommand( "acfarmorprop_material", value )
+			end
+		end
+	end
+
+	--Main menu building
+	function TOOL.BuildCPanel( panel )
+		local Presets = vgui.Create( "ControlPresets" )
+
+		Presets:AddConVar( "acfarmorprop_thickness" )
+		Presets:AddConVar( "acfarmorprop_ductility" )
+		Presets:AddConVar( "acfarmorprop_material" )
+		Presets:SetPreset( "acfarmorprop" )
+
+		panel:AddItem( Presets )
+
+		panel:NumSlider( ACFTranslation.ArmorPropertiesText[4], "acfarmorprop_thickness", 1, 5000 )
+		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[5] )
+
+		panel:NumSlider( ACFTranslation.ArmorPropertiesText[6], "acfarmorprop_ductility", -80, 80 )
+		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[7] )
+
+		MaterialTable(panel)
+
+	end
+
+	-- clamp thickness if the change in ductility puts mass out of range
+	cvars.AddChangeCallback( "acfarmorprop_ductility", function( _, _, value )
+
+		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
+
+		-- don't bother recalculating if we don't have a valid ent
+		if area == 0 then return end
+
+		local ductility = math.Clamp( ( tonumber( value ) or 0 ) / 100, -0.8, 0.8 )
+		local thickness = math.Clamp( GetConVar( "acfarmorprop_thickness" ):GetFloat(), 0.1, 5000 )
+		local material  = GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
+
+		local mass		= CalcArmor( area, ductility, thickness , material )
+
+		if mass > 50000 then
+			mass = 50000
+		elseif mass < 0.1 then
+			mass = 0.1
+		else
+			return
+		end
+
+		thickness = mass * 1000 / ( area + area * ductility ) / 0.78
+		RunConsoleCommand( "acfarmorprop_thickness", thickness )
+
+	end )
+
+	-- clamp ductility if the change in thickness puts mass out of range
+	cvars.AddChangeCallback( "acfarmorprop_thickness", function( _, _, value )
+
+		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
+
+		-- don't bother recalculating if we don't have a valid ent
+		if area == 0 then return end
+
+		local thickness = math.Clamp( tonumber( value ) or 0, 0.1, 5000 )
+		local ductility = math.Clamp( GetConVar( "acfarmorprop_ductility" ):GetFloat() / 100, -0.8, 0.8 )
+		local material  = GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
+
+		local mass		= CalcArmor( area, ductility, thickness , material )
+
+		if mass > 50000 then
+			mass = 50000
+		elseif mass < 0.1 then
+			mass = 0.1
+		else
+			return
+		end
+
+		ductility = -( 39 * area * thickness - mass * 50000 ) / ( 39 * area * thickness )
+		RunConsoleCommand( "acfarmorprop_ductility", math.Clamp( ductility * 100, -80, 80 ) )
+
+	end )
+
+	-- Refresh Armor material info on menu
+	cvars.AddChangeCallback( "acfarmorprop_material", function( _, _, value )
+
+			if ToolPanel.panel then
+
+				local MatData = ACE_GetMaterialData( value )
+
+				--Use RHA if the choosen material is invalid or doesnt exist
+				if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
+
+				--Too redundant, ik, but looks like the unique way to have it working even when right clicking a prop
+				ToolPanel.ComboMat:SetText(MatData.sname)
+
+				ArmorPanelText( "ComboTitle", ToolPanel.panel, MatData.name , "DermaDefaultBold" )
+				ArmorPanelText( "ComboDesc" , ToolPanel.panel, MatData.desc .. "\n" )
+
+				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. MatData.curve )
+				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: " .. MatData.massMod .. "x RHA")
+				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. MatData.effectiveness .. "x RHA" )
+				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MatData.HEATeffectiveness or MatData.effectiveness) .. "x RHA" )
+				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MatData.year or "unknown") )
+
+			end
+	end )
+end
 
 -- Apply settings to prop and store dupe info
 local function ApplySettings( _, ent, data )
@@ -151,253 +346,7 @@ function TOOL:Reload( trace )
 
 end
 
-function TOOL:Think()
-
-	if CLIENT then return end
-
-	local ply	= self:GetOwner()
-
-	local tr	= util.GetPlayerTrace(ply)
-	tr.mins	= Vector(0,0,0)
-	tr.maxs	= tr.mins
-	local trace = util.TraceHull(tr)
-
-	local ent = trace.Entity
-	if ent == self.AimEntity then return end
-
-	if ACF_Check( ent ) then
-
-		local Mat = ent.ACF.Material or "RHA"
-		local MatData =  ACE_GetMaterialData( Mat )
-
-		if not MatData then return end
-
-		ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Area )
-		self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
-		self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
-		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
-		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
-		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
-		self.Weapon:SetNWString( "Material", MatData.sname or "RHA")
-
-	else
-
-		ply:ConCommand( "acfarmorprop_area 0" )
-		self.Weapon:SetNWFloat( "WeightMass", 0 )
-		self.Weapon:SetNWFloat( "HP", 0 )
-		self.Weapon:SetNWFloat( "Armour", 0 )
-		self.Weapon:SetNWFloat( "MaxHP", 0 )
-		self.Weapon:SetNWFloat( "MaxArmour", 0 )
-		self.Weapon:SetNWString( "Material", "RHA" )
-	end
-
-	self.AimEntity = ent
-
-end
-
 if CLIENT then
-	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
-
-	local getPhrase = language.GetPhrase
-
-	--Required in order to update material data inserted in client convars
-	local function ACE_MaterialCheck( Material )
-
-		--Convert old numeric IDs to the new string IDs
-		local BackCompMat = {
-			"RHA",
-			"CHA",
-			"Cer",
-			"Rub",
-			"ERA",
-			"Alum",
-			"Texto"
-		}
-
-		--Refreshing the data, so we can replace non valid data with the callback.
-		if isnumber(tonumber(Material)) then
-
-			local Mat_ID = math.Clamp(Material + 1, 1,7)
-			Material = BackCompMat[Mat_ID]
-
-			--Updates the convar with the proper material
-			RunConsoleCommand( "acfarmorprop_material", Material )
-		end
-	end
-
-	--Looks like client convars are not initialized very quickly, so we will wait a bit until they become valid.
-	timer.Simple(0.1, function()
-		ACE_MaterialCheck( GetConVar("acfarmorprop_material"):GetString() )
-	end )
-
-	--Replicated from PANEL:CPanelText(Name, Desc, Font). No idea why this doesnt work with this function out of this file
-	local function ArmorPanelText( name, panel, desc, font )
-
-		if not PanelTxt then PanelTxt = {} end
-
-		if not IsValid(PanelTxt[name .. "_aText"]) then
-			PanelTxt[name .. "_aText"] = panel:Help(desc)
-			PanelTxt[name .. "_aText"]:SetContentAlignment( TEXT_ALIGN_CENTER )
-			PanelTxt[name .. "_aText"]:SetAutoStretchVertical(true)
-			if font then PanelTxt[name .. "_aText"]:SetFont( font ) end
-			PanelTxt[name .. "_aText"]:SizeToContents()
-
-			panel:AddItem(PanelTxt[name .. "_aText"])
-
-		end
-
-		PanelTxt[name .. "_aText"]:SetText( desc )
-		PanelTxt[name .. "_aText"]:SetSize( panel:GetWide(), 10 )
-		PanelTxt[name .. "_aText"]:SizeToContentsY()
-
-	end
-
-	-- Material ComboBox creation
-	local function MaterialTable( panel )
-
-		local MaterialTypes = ACE.ArmorTypes
-		if not MaterialTypes then return end
-
-		local Material = GetConVar("acfarmorprop_material"):GetString()
-		local MaterialData  = MaterialTypes[Material] or MaterialTypes["RHA"]
-
-		ArmorPanelText( "ComboBox", panel, "Material" )
-
-		if not IsValid(ToolPanel.ComboMat) then
-
-			ToolPanel.panel = panel
-
-			ToolPanel.ComboMat = vgui.Create( "DComboBox" )
-			ToolPanel.ComboMat:SetPos( 5, 30 )
-			ToolPanel.ComboMat:SetSize( 100, 20 )
-			ToolPanel.ComboMat:SetValue( MaterialData.sname )
-			ToolPanel.panel:AddItem(ToolPanel.ComboMat)
-
-			for _, Mat  in pairs(MaterialTypes) do
-				if ACF.Year >= Mat.year then
-					ToolPanel.ComboMat:AddChoice(Mat.sname, Mat.id )
-				end
-			end
-
-			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
-			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc .. "\n" )
-
-			ArmorPanelText( "ComboCurve", ToolPanel.panel, getPhrase("tool.acfarmorprop.curve") .. ": " .. MaterialData.curve )
-			ArmorPanelText( "ComboMass" , ToolPanel.panel, getPhrase("tool.acfarmorprop.mass") .. ": " .. MaterialData.massMod .. "x RHA" )
-			ArmorPanelText( "ComboKE"	, ToolPanel.panel, getPhrase("tool.acfarmorprop.keprot") .. ": " .. MaterialData.effectiveness .. "x RHA" )
-			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, getPhrase("tool.acfarmorprop.chemprot") .. ": " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
-			ArmorPanelText( "ComboYear" , ToolPanel.panel, getPhrase("tool.acfarmorprop.year") .. ": " .. (MaterialData.year or "unknown") )
-
-			function ToolPanel.ComboMat:OnSelect(self, _, value )
-
-				RunConsoleCommand( "acfarmorprop_material", value )
-			end
-		end
-	end
-
-	--Main menu building
-	function TOOL.BuildCPanel( panel )
-		local Presets = vgui.Create( "ControlPresets" )
-
-		Presets:AddConVar( "acfarmorprop_thickness" )
-		Presets:AddConVar( "acfarmorprop_ductility" )
-		Presets:AddConVar( "acfarmorprop_material" )
-		Presets:SetPreset( "acfarmorprop" )
-
-		panel:AddItem( Presets )
-
-		panel:NumSlider( "#tool.acfarmorprop.thickness", "acfarmorprop_thickness", 1, 5000 )
-		panel:ControlHelp( "#tool.acfarmorprop.thicknessdesc" )
-
-		panel:NumSlider( "#tool.acfarmorprop.ductility", "acfarmorprop_ductility", -80, 80 )
-		panel:ControlHelp( "#tool.acfarmorprop.ductilitydesc" )
-
-		MaterialTable(panel)
-
-	end
-
-	-- clamp thickness if the change in ductility puts mass out of range
-	cvars.RemoveChangeCallback( "acfarmorprop_ductility", "acfarmorprop_ductility" ) -- Reload support
-	cvars.AddChangeCallback( "acfarmorprop_ductility", function( _, _, value )
-
-		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
-
-		-- don't bother recalculating if we don't have a valid ent
-		if area == 0 then return end
-
-		local ductility = math.Clamp( ( tonumber( value ) or 0 ) / 100, -0.8, 0.8 )
-		local thickness = math.Clamp( GetConVar( "acfarmorprop_thickness" ):GetFloat(), 0.1, 5000 )
-		local material  = GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
-
-		local mass		= CalcArmor( area, ductility, thickness , material )
-
-		if mass > 50000 then
-			mass = 50000
-		elseif mass < 0.1 then
-			mass = 0.1
-		else
-			return
-		end
-
-		thickness = mass * 1000 / ( area + area * ductility ) / 0.78
-		RunConsoleCommand( "acfarmorprop_thickness", thickness )
-
-	end, "acfarmorprop_ductility")
-
-	-- clamp ductility if the change in thickness puts mass out of range
-	cvars.RemoveChangeCallback( "acfarmorprop_thickness", "acfarmorprop_thickness" )
-	cvars.AddChangeCallback( "acfarmorprop_thickness", function( _, _, value )
-
-		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
-
-		-- don't bother recalculating if we don't have a valid ent
-		if area == 0 then return end
-
-		local thickness = math.Clamp( tonumber( value ) or 0, 0.1, 5000 )
-		local ductility = math.Clamp( GetConVar( "acfarmorprop_ductility" ):GetFloat() / 100, -0.8, 0.8 )
-		local material  = GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
-
-		local mass		= CalcArmor( area, ductility, thickness , material )
-
-		if mass > 50000 then
-			mass = 50000
-		elseif mass < 0.1 then
-			mass = 0.1
-		else
-			return
-		end
-
-		ductility = -( 39 * area * thickness - mass * 50000 ) / ( 39 * area * thickness )
-		RunConsoleCommand( "acfarmorprop_ductility", math.Clamp( ductility * 100, -80, 80 ) )
-
-	end, "acfarmorprop_thickness")
-
-	-- Refresh Armor material info on menu
-	cvars.RemoveChangeCallback( "acfarmorprop_material", "acfarmorprop_material" )
-	cvars.AddChangeCallback( "acfarmorprop_material", function( _, _, value )
-
-			if IsValid(ToolPanel.panel) then
-
-				local MatData = ACE_GetMaterialData( value )
-
-				--Use RHA if the choosen material is invalid or doesnt exist
-				if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
-
-				--Too redundant, ik, but looks like the unique way to have it working even when right clicking a prop
-				ToolPanel.ComboMat:SetText(MatData.sname)
-
-				ArmorPanelText( "ComboTitle", ToolPanel.panel, MatData.name , "DermaDefaultBold" )
-				ArmorPanelText( "ComboDesc" , ToolPanel.panel, MatData.desc .. "\n" )
-
-				ArmorPanelText( "ComboCurve", ToolPanel.panel, getPhrase("tool.acfarmorprop.curve") .. ": " .. MatData.curve )
-				ArmorPanelText( "ComboMass" , ToolPanel.panel, getPhrase("tool.acfarmorprop.mass_scale") .. ": " .. MatData.massMod .. "x RHA")
-				ArmorPanelText( "ComboKE"	, ToolPanel.panel, getPhrase("tool.acfarmorprop.keprot") .. " : " .. MatData.effectiveness .. "x RHA" )
-				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, getPhrase("tool.acfarmorprop.chemprot") .. ": " .. (MatData.HEATeffectiveness or MatData.effectiveness) .. "x RHA" )
-				ArmorPanelText( "ComboYear" , ToolPanel.panel, getPhrase("tool.acfarmorprop.year") .. ": " .. (MatData.year or "unknown") )
-
-			end
-	end, "acfarmorprop_material")
-
 	net.Receive("ACE_ArmorSummary", function()
 
 		local Color1 = Color(175,0,0)
@@ -447,93 +396,130 @@ if CLIENT then
 		chat.AddText(unpack(Tabletxt))
 
 	end)
+end
 
-	local overlayTextFormat = getPhrase("tool.acfarmorprop.current") .. ":\n" ..
-		getPhrase("tool.acfarmorprop.mass") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.armor") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.health") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.material") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.after") .. ":\n" ..
-		getPhrase("tool.acfarmorprop.mass") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.armor") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.health") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.material") .. ": %s"
+function TOOL:Think()
 
-	function TOOL:DrawHUD()
+	if CLIENT then return end
 
-		local ent = self:GetOwner():GetEyeTrace().Entity
-		if not IsValid( ent ) or ent:IsPlayer() then return end
+	local ply	= self:GetOwner()
 
-		local curmass	= self.Weapon:GetNWFloat( "WeightMass" )
-		local curarmor	= self.Weapon:GetNWFloat( "MaxArmour" )
-		local curhealth	= self.Weapon:GetNWFloat( "MaxHP" )
-		local material	= self.Weapon:GetNWString( "Material" )
+	local tr	= util.GetPlayerTrace(ply)
+	tr.mins	= Vector(0,0,0)
+	tr.maxs	= tr.mins
+	local trace = util.TraceHull(tr)
 
-		local area		= GetConVar( "acfarmorprop_area" ):GetFloat()
-		local ductility	= GetConVar( "acfarmorprop_ductility" ):GetFloat()
-		local thickness	= GetConVar( "acfarmorprop_thickness" ):GetFloat()
-		local mat		= GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
+	local ent = trace.Entity
+	if ent == self.AimEntity then return end
 
-		local MatData	= ACE_GetMaterialData( mat )
+	if ACF_Check( ent ) then
 
-		local mass, armor, health = CalcArmor( area, ductility / 100, thickness , mat)
-		mass = math.min( mass, 50000 )
+		local Mat = ent.ACF.Material or "RHA"
+		local MatData =  ACE_GetMaterialData( Mat )
 
-		local text = string.format(overlayTextFormat,
-			math.Round(curmass, 2),
-			math.Round(curarmor, 2),
-			math.Round(curhealth, 2),
-			material,
-			math.Round(mass, 2),
-			math.Round(armor, 2),
-			math.Round(health, 2),
-			MatData.sname
-		)
+		if not MatData then return end
 
-		local pos = ent:WorldSpaceCenter()
-		AddWorldTip( nil, text, nil, pos, nil )
+		ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Area )
+		self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
+		self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
+		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
+		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
+		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
+		self.Weapon:SetNWString( "Material", MatData.sname or "RHA")
 
+	else
+
+		ply:ConCommand( "acfarmorprop_area 0" )
+		self.Weapon:SetNWFloat( "WeightMass", 0 )
+		self.Weapon:SetNWFloat( "HP", 0 )
+		self.Weapon:SetNWFloat( "Armour", 0 )
+		self.Weapon:SetNWFloat( "MaxHP", 0 )
+		self.Weapon:SetNWFloat( "MaxArmour", 0 )
+		self.Weapon:SetNWString( "Material", "RHA" )
 	end
 
-	function TOOL:DrawToolScreen()
+	self.AimEntity = ent
 
-		local Health	= math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
-		local MaxHealth = math.Round( self.Weapon:GetNWFloat( "MaxHP", 0 ), 2 )
-		local Armour	= math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
-		local MaxArmour = math.Round( self.Weapon:GetNWFloat( "MaxArmour", 0 ), 2 )
+end
 
-		local HealthTxt = Health .. "/" .. MaxHealth
-		local ArmourTxt = Armour .. "/" .. MaxArmour
+function TOOL:DrawHUD()
 
-		cam.Start2D()
-			render.Clear( 0, 0, 0, 0 )
+	if not CLIENT then return end
 
-			surface.SetMaterial( Material( "models/props_combine/combine_interface_disp" ) )
-			surface.SetDrawColor( color_white )
-			surface.DrawTexturedRect( 0, 0, 256, 256 )
-			surface.SetFont( "Torchfont" )
+	local ent = self:GetOwner():GetEyeTrace().Entity
+	if not IsValid( ent ) or ent:IsPlayer() then return end
 
-			-- header
-			draw.SimpleTextOutlined( "#tool.acfarmorprop.armorinfo", "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+	local curmass	= self.Weapon:GetNWFloat( "WeightMass" )
+	local curarmor	= self.Weapon:GetNWFloat( "MaxArmour" )
+	local curhealth	= self.Weapon:GetNWFloat( "MaxHP" )
+	local material	= self.Weapon:GetNWString( "Material" )
 
-			-- armor bar
-			draw.RoundedBox( 6, 10, 83, 236, 64, Color( 200, 200, 200, 255 ) )
-			if Armour ~= 0 and MaxArmour ~= 0 then
-				draw.RoundedBox( 6, 15, 88, Armour / MaxArmour * 226, 54, Color( 0, 0, 200, 255 ) )
-			end
+	local area		= GetConVar( "acfarmorprop_area" ):GetFloat()
+	local ductility	= GetConVar( "acfarmorprop_ductility" ):GetFloat()
+	local thickness	= GetConVar( "acfarmorprop_thickness" ):GetFloat()
+	local mat		= GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
 
-			draw.SimpleTextOutlined( "#tool.acfarmorprop.armor", "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-			draw.SimpleTextOutlined( ArmourTxt, "Torchfont", 128, 130, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+	local MatData	= ACE_GetMaterialData( mat )
 
-			-- health bar
-			draw.RoundedBox( 6, 10, 183, 236, 64, Color( 200, 200, 200, 255 ) )
-			if Health ~= 0 and MaxHealth ~= 0 then
-				draw.RoundedBox( 6, 15, 188, Health / MaxHealth * 226, 54, Color( 200, 0, 0, 255 ) )
-			end
+	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , mat)
+	mass = math.min( mass, 50000 )
 
-			draw.SimpleTextOutlined( "#tool.acfarmorprop.health", "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-			draw.SimpleTextOutlined( HealthTxt, "Torchfont", 128, 230, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
-		cam.End2D()
+	local text = ""
+	text = text .. ACFTranslation.ArmorPropertiesText[14] .. math.Round( curmass, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( curarmor, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( curhealth, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[17] .. material
 
-	end
+	text = text .. ACFTranslation.ArmorPropertiesText[18] .. math.Round( mass, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( armor, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( health, 2 )
+	text = text .. ACFTranslation.ArmorPropertiesText[17] .. MatData.sname
+
+	local pos = ent:WorldSpaceCenter()
+	AddWorldTip( nil, text, nil, pos, nil )
+
+end
+
+function TOOL:DrawToolScreen()
+
+	if not CLIENT then return end
+
+	local Health	= math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
+	local MaxHealth = math.Round( self.Weapon:GetNWFloat( "MaxHP", 0 ), 2 )
+	local Armour	= math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
+	local MaxArmour = math.Round( self.Weapon:GetNWFloat( "MaxArmour", 0 ), 2 )
+
+	local HealthTxt = Health .. "/" .. MaxHealth
+	local ArmourTxt = Armour .. "/" .. MaxArmour
+
+	cam.Start2D()
+		render.Clear( 0, 0, 0, 0 )
+
+		surface.SetMaterial( Material( "models/props_combine/combine_interface_disp" ) )
+		surface.SetDrawColor( color_white )
+		surface.DrawTexturedRect( 0, 0, 256, 256 )
+		surface.SetFont( "Torchfont" )
+
+		-- header
+		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[19], "Torchfont", 128, 30, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+
+		-- armor bar
+		draw.RoundedBox( 6, 10, 83, 236, 64, Color( 200, 200, 200, 255 ) )
+		if Armour ~= 0 and MaxArmour ~= 0 then
+			draw.RoundedBox( 6, 15, 88, Armour / MaxArmour * 226, 54, Color( 0, 0, 200, 255 ) )
+		end
+
+		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[20], "Torchfont", 128, 100, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+		draw.SimpleTextOutlined( ArmourTxt, "Torchfont", 128, 130, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+
+		-- health bar
+		draw.RoundedBox( 6, 10, 183, 236, 64, Color( 200, 200, 200, 255 ) )
+		if Health ~= 0 and MaxHealth ~= 0 then
+			draw.RoundedBox( 6, 15, 188, Health / MaxHealth * 226, 54, Color( 200, 0, 0, 255 ) )
+		end
+
+		draw.SimpleTextOutlined( ACFTranslation.ArmorPropertiesText[21], "Torchfont", 128, 200, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+		draw.SimpleTextOutlined( HealthTxt, "Torchfont", 128, 230, Color( 224, 224, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, color_black )
+	cam.End2D()
+
 end

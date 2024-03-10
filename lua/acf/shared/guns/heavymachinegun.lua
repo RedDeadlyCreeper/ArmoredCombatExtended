@@ -1,10 +1,10 @@
 --define the class
 ACF_defineGunClass("HMG", {
 	type = "Gun",
-	spread = 0.25,
+	spread = 0.4,
 	name = "Heavy Machinegun",
 	desc = ACFTranslation.GunClasses[7],
-	muzzleflash = "AC",
+	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.17,
 	year = 1935,
 	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",

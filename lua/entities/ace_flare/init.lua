@@ -10,15 +10,9 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetGravity( 0.01 )
-	--self:SetNoDraw(true)
 
 	self.Heat		= self.Heat or 1
-	self.FirstHeat		= self.Heat
 	self.Life		= self.Life or 0.1
-	self.RadarSig   = self.RadarSig or 1
-	self.FirstRadarSig = self.RadarSig
-
-	self.FirstTime = ACF.CurTime
 
 	local phys = self:GetPhysicsObject()
 	if IsValid( phys ) then
@@ -35,11 +29,6 @@ function ENT:Initialize()
 		end
 	end)
 
-	self:SetRenderMode( RENDERMODE_TRANSCOLOR )
-
-
-	self:SetColor( Color( 255, 255, 255, 1 ) )
-
 	table.insert( ACE.contraptionEnts, self )
 end
 
@@ -52,14 +41,7 @@ function ENT:Think()
 		return false
 	end
 
-	local AliveTime = (ACF.CurTime - self.FirstTime)
-	local EffectivenessMul = (1 - (AliveTime / self.Life))
-	self.Heat = self.FirstHeat * EffectivenessMul
-	self.RadarSig = self.FirstRadarSig * EffectivenessMul
-	--print(self.Heat)
-	--print(self.RadarSig)
-
-	self:NextThink( CurTime() + 0.2 )
+	self:NextThink( CurTime() + 0.1 )
 	return true
 end
 

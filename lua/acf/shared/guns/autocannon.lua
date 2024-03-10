@@ -1,10 +1,10 @@
 --define the class
 ACF_defineGunClass("AC", {
 	type = "Gun",
-	spread = 0.2,
+	spread = 0.14,
 	name = "Autocannon",
 	desc = ACFTranslation.GunClasses[2],
-	muzzleflash = "AC",
+	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.35,
 	year = 1930,
 	sound = "ace_weapons/multi_sound/30mm_multi.mp3",

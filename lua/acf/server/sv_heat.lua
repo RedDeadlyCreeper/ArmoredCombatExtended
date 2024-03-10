@@ -25,29 +25,14 @@
 	dist - distance between the missile and the Target
 
 ]]---------------------------------------------------------------------------------------
-function ACE_InfraredHeatFromProp( Target, dist )
+function ACE_InfraredHeatFromProp( guidance, Target , dist )
 
+	if not guidance.SeekSensitivity then print("[ACE | WARN]- Unable to track Heat. SeekSensitivity not found!") return 0 end
 	if not IsValid(Target) then print("[ACE | WARN]- Unable to track Heat. Target Entity not valid!") return 0 end
 	if not dist then print("[ACE | WARN]- Unable to track Heat. dist not valid!") return end
 
-	local entpos = Target:GetPos()
-	local GroundTr = util.TraceHull( {
-		start = entpos,
-		endpos = entpos + Vector(0,0,-500) , --12 meters off ground
-		collisiongroup  = COLLISION_GROUP_WORLD,
-		mins = Vector( 0, 0, 0 ),
-		maxs = Vector( 0, 0, 0 ),
-		filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
-	}) --Hits anything in the world.
-
 	local Speed = Target:GetVelocity():Length()
-	local Heat = Target.Heat or ACE.AmbientTemp --Take the heat of the entity if there is one
-	Heat = Heat + (Speed / 35.2 ) --35.2 is 150 heat from 300 mph. 17.6 formula. 300mph / 2 mph per heat / 17.6 units/mph
-	if not GroundTr.Hit then Heat = Heat + 150 end --Add 150C if the target is above the ground
-
-	--A tank going 60mph will generate 30 extra heat plus engine heat
-	--An aircraft going 200 mph will generate 100 heat plus 150
-	--An aircraft going 300 mph will generate 150 heat plus 150
+	local Heat = ((guidance.SeekSensitivity * Speed) / dist * 1000 / ACE.HeatDistanceLoss) + ACE.AmbientTemp
 
 	return Heat
 end
@@ -169,30 +154,6 @@ function ACE_HeatFromEngine( Engine )
 	return Temp
 
 end
-
-function ACE_HeatFromRadar(Radar, Delta)
-	local CurHeat = Radar.Heat
-	local AmbientTemp = ACE.AmbientTemp
-
-	local HeatWhileActive = 7 -- Degrees increase per second while active
-	local CoolingCoefficient = 0.1 -- Degrees decrease per second per degree above ambient
-
-	local CoolingRate = (CurHeat - AmbientTemp) * CoolingCoefficient * Delta
-	local HeatingRate = 0
-
-	if Radar.Active then
-		HeatingRate = HeatWhileActive * Delta
-	end
-
-	local NewHeat = CurHeat + HeatingRate - CoolingRate
-
-	return NewHeat
-end
-
-
-
-
-
 
 --[[-------------------------------------------------------------------------------------
 	ACE_HeatFromGearbox( Gearbox )  --used mostly by gearboxes. Not used atm

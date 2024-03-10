@@ -4,7 +4,7 @@ ACF_defineGunClass("ATR", {
 	spread = 0.02,
 	name = "Anti-Tank Rifle",
 	desc = ACFTranslation.GunClasses[1],
-	muzzleflash = "MG",
+	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 10,
 	year = 1917,
 	sound = "ace_weapons/multi_sound/7_62mm_multi.mp3",

@@ -283,7 +283,6 @@ function PANEL:Init( )
 
 		local antimissile = sensors:AddNode("Anti-Missile Radar" , ItemIcon  )
 		local tracking	= sensors:AddNode("Tracking Radar", ItemIcon)
-		local search	= sensors:AddNode("Search Radar", ItemIcon)
 		local irst		= sensors:AddNode("IRST", ItemIcon)
 
 		local nods = {}
@@ -294,8 +293,6 @@ function PANEL:Init( )
 					nods[k] = antimissile:AddNode( v.name or "No Name" , ItemIcon	)
 				elseif v.type == "Tracking-Radar" then
 					nods[k] = tracking
-				elseif v.type == "Search-Radar" then
-					nods[k] = search
 				elseif v.type == "IRST" then
 					nods[k] = irst
 				end

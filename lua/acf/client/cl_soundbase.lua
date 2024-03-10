@@ -12,7 +12,7 @@
 ACE = ACE or {}
 
 --Defines the delay time caused by the distance between the event and you. Increasing it will increment the required time to hear a distant event
-ACE.DelayMultipler            = 1 --5x longer than speed of sound.
+ACE.DelayMultipler            = 1
 
 --Defines the distance range for close, mid and far sounds. Incrementing it will increase the distances between sounds
 ACE.DistanceMultipler         = 1
@@ -102,10 +102,8 @@ do
 		return ply
 	end
 
-
-
 	function ACE_GetDistanceTime( Dist )
-		return (Dist / 13503) * ACE.DelayMultipler
+		return (Dist / 1500) * ACE.DelayMultipler
 	end
 
 	local function GetHeadPos( ply )
@@ -126,20 +124,6 @@ do
 		if ACE_InDist( plyPos, Pos, Distance ) then return true end
 
 		return false
-	end
-
-	--Gives the approaching speed of an object at a position moving a speed.
-	function ACE_Approaching( Pos, Flight )
-
-		local ply    = LocalPlayer()
-
-		local entply = ACE_SGetHearingEntity( ply )
-		local plyPos = entply:IsPlayer() and GetHeadPos( ply ) or entply:GetPos()
-
-		local CurDist = (plyPos - Pos):Length()
-		local NextDist = (plyPos - (Pos + Flight * 0.025)):Length()
-
-		return NextDist-CurDist
 	end
 
 	--Used to see if the player has line of sight with the event
@@ -178,543 +162,510 @@ do
 end
 
 do
-	local SpeedOfSoundEvents = {}
-
-	local eventBase = {
-		Duration = 0,
-		Origin = Vector(0, 0, 0),
-		Sound = "vo/k_lab/kl_ahhhh.wav", -- Just for fun lol
-		SoundLevel = 75,
-		Pitch = 100,
-		Volume = 1
-	}
-
-	function eventBase:OnArrived()
-		self.HearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-	end
-
-	function eventBase:Play()
-		ACE_EmitSound(self.Sound, self.HearingEntity, self.SoundLevel, self.Pitch, self.Volume)
-	end
-
-	local function newSoundEvent(event)
-		event = table.Inherit(event ,eventBase)
-		event.Time = event.Duration + RealTime()
-
-		table.insert(SpeedOfSoundEvents, event)
-
-		return event
-	end
-
-	local function getHearingPos(hearingEntity)
-		return hearingEntity.aceposoverride or hearingEntity:GetPos()
-	end
-
-
-	local function getBlastScale(radius)
-		if radius > ACE.SoundHugeEx then return "huge" end
-		if radius > ACE.SoundLargeEx then return "large" end
-		if radius > ACE.SoundMediumEx then return "medium" end
-		if radius > ACE.SoundSmallEx then return "small" end
-
-		return "tiny"
-	end
-
-	local closeFixTable = {
-		huge = {2000000, 1},
-		large = {55, 1.8},
-		medium = {7, 1.15},
-		small = {6, 0.85},
-		tiny = {4.25, 0.75}
-	}
-
-	local mediumFixTable = {
-		large = {4, 1.6},
-		medium = {6, 1.05},
-		small = {8, 1.1},
-		tiny = {8, 1.3},
-	}
-
-	local farFixTable = {
-		large = {5, 1.3},
-		medium = {5, 0.95},
-		small = {14, 1.2},
-		tiny = {13, 1.4}
-	}
-
-	local function getBlastSoundAboveWater(distance, radius)
-		local closeDistance = radius * 300 * ACE.DistanceMultipler
-		local mediumDistance = closeDistance * 4.25
-
-		if distance < closeDistance then
-			local scale = getBlastScale(radius)
-			local soundTable = ACE.Sounds["Blasts"][scale]["close"]
-
-			local Sound = soundTable[math.random(#soundTable)]
-			local volFix, pitchFix = unpack(closeFixTable[scale])
-
-			return Sound, volFix, pitchFix
-		end
-
-		if distance < mediumDistance then
-			local scale = getBlastScale(radius)
-			local soundTable = ACE.Sounds["Blasts"][scale]["mid"]
-
-			local Sound = soundTable[math.random(#soundTable)]
-			local volFix, pitchFix = unpack(mediumFixTable[scale])
-
-			return Sound, volFix, pitchFix
-		end
-
-		local scale = getBlastScale(radius)
-		local soundTable = ACE.Sounds["Blasts"][scale]["far"]
-
-		local Sound = soundTable[math.random(#soundTable)]
-		local volFix, pitchFix = unpack(farFixTable[scale])
-
-		return Sound, volFix, pitchFix
-	end
 
 	--Handles Explosion sounds
 	function ACE_SBlast( HitPos, Radius, HitWater, HitWorld )
-		local event = newSoundEvent({
-			Origin = HitPos,
 
-			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - HitPos):Length())
-		})
+		local ply = LocalPlayer()
 
-		-- doing it in a hacky way, since it needs more then one sound, but should be no isuess
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-			local hearingPos = getHearingPos(hearingEntity)
-			local distance = (hearingPos - HitPos):Length()
+		local count		= 1
+		local Emitted	= false --Was the sound played?
+		local ide		= "ACE_Explosion#" .. math.random(1,100000)
 
-			local volume = 1 / ((hearingEntity:GetPos() - self.Origin):Length() / 500) * Radius * 0.2
-			local pitch = math.Clamp(1000 / Radius, 25, 130)
+		--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
 
-			if not HitWater then
-				local Sound, volFix, pitchFix = getBlastSoundAboveWater(distance, Radius)
+			count = count + 1
 
-				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-					volFix = volFix * 0.5
+			local entply    = ACE_SGetHearingEntity( ply )
+
+			local plyPos    = entply.aceposoverride or entply:GetPos()
+			local Dist      = (plyPos - HitPos):Length()
+			local Volume    = 1 / (Dist / 500) * Radius * 0.2
+			local Pitch     = math.Clamp(1000 / Radius, 25, 130)
+			local Delay     = ACE_GetDistanceTime( Dist )
+
+			if count > Delay then
+
+				--if its not already emitted
+				if not Emitted then
+
+					Emitted = true
+
+					--Ground explosions
+					if not HitWater then
+
+						--the sound definition. Strings are below
+						local Sound
+
+						--This defines the distance between areas for close, mid and far sounds
+						local CloseDist = Radius * 275 * ACE.DistanceMultipler
+
+						--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be 4250 units
+						local MediumDist = CloseDist * 4.25
+
+						--this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
+						local VolFix
+						local PitchFix
+
+						--TODO: Make a way to use tables instead
+						--Close distance
+						if Dist < CloseDist then --NOTE: I KNOW ABOUT THIS CANCEROUS LONG NAME FOR THE STRING, JUST IGNORE FOR THIS TIME.
+
+							if Radius >= ACE.SoundHugeEx then
+								VolFix = 2000000  -- rip your ears
+								PitchFix = 3
+								Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
+							elseif Radius >= ACE.SoundLargeEx then
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
+							elseif Radius >= ACE.SoundMediumEx then
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
+							elseif Radius >= ACE.SoundSmallEx then
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
+							else
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
+							end
+
+						--Medium distance
+						elseif Dist >= CloseDist and Dist < MediumDist then
+
+							if Radius >= ACE.SoundLargeEx then
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
+							elseif Radius >= ACE.SoundMediumEx then
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
+							elseif Radius >= ACE.SoundSmallEx then
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
+							else
+								VolFix = 8
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
+							end
+
+						--Far distance
+						elseif Dist >= MediumDist then
+
+							if Radius >= ACE.SoundLargeEx then
+								VolFix = 17
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
+							elseif Radius >= ACE.SoundMediumEx then
+								VolFix = 17
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
+							elseif Radius >= ACE.SoundSmallEx then
+								VolFix = 17
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
+							else
+								VolFix = 17
+								PitchFix = 1
+								Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
+							end
+
+						end
+
+						--Tinnitus function
+						if not ply:HasGodMode() then
+							local TinZone = math.max(Radius * 80, 50) * ACE.TinnitusZoneMultipler
+
+							if Dist <= TinZone and ACE_SHasLOS(HitPos) and entply == ply and not ply.aceposoverride then
+
+								entply:SetDSP(33, true)
+
+								if GetConVar("acf_tinnitus"):GetInt() == 1 then
+
+									--See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
+									entply:StopSound("acf_other/explosions/ring/tinnitus.mp3")
+									ACE_EmitSound("acf_other/explosions/ring/tinnitus.mp3", entply, 75, 100, 1 )
+
+								end
+							end
+							--debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
+						end
+
+						--If a wall is in front of the player and is indoor, reduces its vol
+						if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+							--print("Inside of building")
+							VolFix = VolFix * 0.05
+						end
+
+						ACE_EmitSound( Sound or "", entply, 75, Pitch * PitchFix, Volume * VolFix )
+
+						--play dirt sounds
+						if Radius >= ACE.SoundSmallEx and HitWorld then
+							ACE_EmitSound( ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, Pitch * PitchFix, Volume * VolFix / 20 )
+							ACE_EmitSound( ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20 )
+						end
+
+						--Underwater Explosions
+					else
+						ACE_EmitSound( "ambient/water/water_splash" .. math.random(1,3) .. ".wav", entply, 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+						ACE_EmitSound( "^weapons/underwater_explode3.wav", entply, 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+					end
 				end
 
-				volume = volume * volFix
-				pitch = pitch * pitchFix
+				timer.Stop( ide )
+				timer.Remove( ide )
+			end
+		end )
 
-				-- Tinnitus function
-				local ply = LocalPlayer()
-				if not ply:HasGodMode() then
-					local tinZone = math.max(Radius * 80, 50) * ACE.TinnitusZoneMultipler
+	end
 
-					if distance <= tinZone and ACE_SHasLOS(HitPos) and hearingEntity == ply and not ply.aceposoverride then
+	--Handles penetration sounds
+	function ACE_SPenetration( HitPos, Velocity, Mass )
 
-						hearingEntity:SetDSP(33, true)
+		--Don't start this without a player
+		local ply = LocalPlayer()
 
-						if GetConVar("acf_tinnitus"):GetInt() == 1 then
+		local count    = 1
+		local Emitted  = false --Was the sound played?
+		local ide      = "ACE_Penetration#" .. math.random(1,100000)
 
-							-- See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
-							hearingEntity:StopSound("acf_other/explosions/ring/tinnitus.mp3")
-							ACE_EmitSound("acf_other/explosions/ring/tinnitus.mp3", hearingEntity, 75, 100, 1 )
+		--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
+
+			count = count + 1
+
+			local entply = ACE_SGetHearingEntity( ply )
+
+			local plyPos    = entply.aceposoverride or entply:GetPos()
+			local Dist      = (plyPos - HitPos):Length()
+			local Volume    = 1 / (Dist / 500) * Mass / 17.5
+			local Pitch     = math.Clamp(Velocity * 1, 90, 150)
+			local Delay     = ACE_GetDistanceTime( Dist )
+
+			if count > Delay then
+
+				if not Emitted then
+
+					Emitted = true
+
+					local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])] or ""
+					local VolFix = 0.5
+
+					--If a wall is in front of the player and is indoor, reduces its vol at 50%
+					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+						--print("Inside of building")
+						VolFix = VolFix * 0.5
+					end
+
+					ACE_EmitSound( Sound, entply, 75, Pitch, Volume * VolFix )
+				end
+
+				timer.Stop( ide )
+				timer.Remove( ide )
+			end
+		end )
+	end
+
+	--Handles ricochet sounds
+	function ACE_SRicochet( HitPos, Caliber, Velocity, HitWorld )
+
+		local ply = LocalPlayer()
+
+		local count	= 1
+		local Emitted	= false --Was the sound played?
+
+		local ide	= "ACE_Ricochet#" .. math.random(1,100000)
+
+		--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
+
+			count = count + 1
+
+			local entply = ACE_SGetHearingEntity( ply )
+
+			local plyPos    = entply.aceposoverride or entply:GetPos()
+			local Dist      = (plyPos - HitPos):Length()
+			local Volume    = 1 / (Dist / 500) * Velocity / 130000
+			local Pitch     = math.Clamp(Velocity * 0.001, 90, 150)
+			local Delay     = ACE_GetDistanceTime( Dist )
+
+			if count > Delay then
+
+				if not Emitted then --print('timer has emitted the sound in the time: ' .. count)
+
+					Emitted = true
+
+					local Sound = ""
+					local VolFix = 0
+
+					if not HitWorld then
+
+						--any big gun above 50mm
+						Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
+						VolFix = 4
+
+						--50mm guns and below
+						if Caliber <= 5 then
+							Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
+							VolFix = 1
+
+							--lower than 20mm
+							if Caliber <= 2 then
+								Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
+								VolFix = 1.25
+							end
+						end
+
+					else
+
+						--Small weapons sound
+						if Caliber <= 2 then
+							Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
+							VolFix = 1.25
 
 						end
 					end
 
-					--debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
+					--If a wall is in front of the player and is indoor, reduces its vol at 50%
+					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+						--print("Inside of building")
+						VolFix = VolFix * 0.5
+					end
+
+					if Sound ~= "" then
+						ACE_EmitSound( Sound or "", entply, 75, Pitch, Volume * VolFix )
+					end
 				end
 
-				ACE_EmitSound( Sound or "", hearingEntity, 75, pitch, volume)
-
-				--play dirt sounds
-				if Radius >= ACE.SoundSmallEx and HitWorld then
-					ACE_EmitSound( ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", hearingPos + (HitPos - hearingPos):GetNormalized() * 64, 80, pitch * pitchFix, volume * volFix / 20 )
-					ACE_EmitSound( ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", hearingPos + (HitPos - hearingPos):GetNormalized() * 64, 80, (pitch * pitchFix) / 0.5, volume * volFix / 20 )
-				end
-
-				return
+				timer.Stop( ide )
+				timer.Remove( ide )
 			end
-
-			-- underwater
-			ACE_EmitSound( "ambient/water/water_splash" .. math.random(1,3) .. ".wav", hearingEntity, 75, math.max(pitch * 0.75,65), volume * 0.075 )
-			ACE_EmitSound( "^weapons/underwater_explode3.wav", hearingEntity, 75, math.max(pitch * 0.75,65), volume * 0.075 )
-		end
-
-		function event:Play() end
+		end )
 	end
-
-	-- impact sounds index by surface material
-	local impactSounds = {
-		Metal = "acf_other/impact/Metal/impact%s.mp3",
-
-		Glass = "acf_other/impact/Glass/impact%s.mp3",
-
-		Wood = "acf_other/impact/Woold/impact%s.mp3",
-
-		Dirt = "acf_other/impact/Soil/impact%s.mp3",
-		Sand = "acf_other/impact/Soil/impact%s.mp3",
-		Snow = "acf_other/impact/Soil/impact%s.mp3",
-
-		Concrete = "acf_other/impact/Concrete/impact%s.mp3",
-		invalid = "acf_other/impact/Concrete/impact%s.mp3",
-	}
-
-	local function getImpactSound(material)
-		return string.format(impactSounds[material], math.random(3))
-	end
-
-
-	local function bulletImpactCaliberFix(caliber)
-		if caliber <= 2 then return 4, 1.15 end --lower than 20mm
-		if caliber <= 5 then return 9, 1.10 end --50mm guns and below
-
-		return 13, 0.95 --any gun above 50mm
-	end
-
-	--Handles ricochet sounds
-	function ACE_SBulletImpact( HitPos, Caliber, Velocity, HitWorld, Material )
-		local event = newSoundEvent({
-			Origin = HitPos,
-
-			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - HitPos):Length())
-		})
-
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-
-			local volFix, pitchFix = bulletImpactCaliberFix(Caliber)
-			if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.5
-			end
-
-			self.Volume = 1 / ((hearingEntity:GetPos() - self.Origin):Length() / 500) * Velocity / 130000 * volFix
-			self.Pitch = math.Clamp(Velocity * 0.001, 90, 150) * pitchFix
-
-			self.HearingEntity = hearingEntity
-
-			if not HitWorld then
-				self.Sound = getImpactSound("Metal")
-
-				return
-			end
-
-			self.Sound = getImpactSound(Material or "invalid")
-		end
-	end
-
-
-	-- when ricochet on world, return volFix, pitchFix
-	local function bulletRicochetWorldSoundData(caliber)
-		if caliber <= 2 then return 3, 1.15 end --lower than 20mm
-		if caliber <= 5 then return 6, 1.3 end --50mm guns and below
-
-		return 12, 0.95 --any gun above 50mm
-	end
-
-	-- when ricochet on entity, return sound path, volFix, pitchFix
-	local function bulletRicochetEntitySoundData(caliber)
-		-- 20mm guns and below
-		if caliber <= 2 then
-			return ACE.Sounds["Ricochets"]["small"]["close"][math.random(#ACE.Sounds["Ricochets"]["small"]["close"])], 5, 1
-		end
-
-		-- 50mm guns and below
-		if caliber <= 5 then
-			return ACE.Sounds["Ricochets"]["medium"]["close"][math.random(#ACE.Sounds["Ricochets"]["medium"]["close"])], 6, 1
-		end
-
-		-- above 50mm guns
-		return ACE.Sounds["Ricochets"]["large"]["close"][math.random(#ACE.Sounds["Ricochets"]["large"]["close"])], 7, 1
-	end
-
-	--Handles ricochet sounds 
-	function ACE_SRicochet( HitPos, Caliber, Velocity, HitWorld, Material )
-		local event = newSoundEvent({
-			Origin = HitPos,
-
-			SoundLevel = 100,
-			Pitch = math.Clamp(Velocity * 0.001, 90, 150),
-
-			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - HitPos):Length())
-		})
-
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-
-			self.Origin = hearingEntity
-			self.HearingEntity = hearingEntity
-
-			local volFix, pitchFix = 1, 1
-			if not HitWorld then
-				local Sound, vf, pf = bulletRicochetEntitySoundData(Caliber)
-
-				volFix = vf
-				pitchFix = pf
-
-				self.Sound = Sound
-			else
-				volFix, pitchFix = bulletRicochetWorldSoundData(Caliber)
-
-				-- same as impact sound right now
-				self.Sound = getImpactSound(Material or "invalid")
-			end
-
-			if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.5
-			end
-
-			self.Volume = 1 / ((getHearingPos(hearingEntity) - HitPos):Length() / 500) * Velocity / 130000 * volFix
-			self.Pitch = self.Pitch * pitchFix
-		end
-	end
-
-
-	-- when penetrated world, return volFix, pitchFix
-	local function bulletPenetrateWorldSoundData(caliber)
-		if caliber <= 2 then return 4, 1.15 end --lower than 20mm
-		if caliber <= 5 then return 7, 1.05 end --50mm guns and below
-
-		return 10, 0.95 --any gun above 50mm
-	end
-
-	-- when penetrated entity, return volFix, pitchFix
-	local function bulletPenetrateEntitySoundData(caliber)
-		if caliber <= 2 then return 0.5, 0.9 end --lower than 20mm
-		if caliber <= 5 then return 0.5, 0.7 end --50mm guns and below
-
-		return 0.5, 0.4 --any gun above 50mm
-	end
-
-	--Handles penetration sounds
-	function ACE_SPenetration( HitPos, Caliber, Velocity, HitWorld, Material, Mass )
-		local event = newSoundEvent({
-			Sound = "acf_other/penetratingshots/penetrations/large/close/pen" .. math.random(3) .. ".mp3",
-
-			Origin = HitPos,
-
-			Pitch = math.Clamp(Velocity * 1, 90, 150),
-
-			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - HitPos):Length())
-		})
-
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-
-			self.Origin = hearingEntity
-			self.HearingEntity = hearingEntity
-
-			local volFix, pitchFix = 1, 1
-			if not HitWorld then
-				volFix, pitchFix = bulletPenetrateEntitySoundData(Caliber)
-			else
-				volFix, pitchFix = bulletPenetrateWorldSoundData(Caliber)
-
-				-- same as impact sound right now
-				self.Sound = getImpactSound(Material or "invalid")
-			end
-
-			if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.5
-			end
-
-			self.Volume = 1 / ((getHearingPos(hearingEntity) - HitPos):Length() / 500) * Mass / 17.5 * volFix
-			self.Pitch = self.Pitch * pitchFix
-		end
-	end
-
-
-	local function getFireSoundDistance(distance, closeDist)
-		if distance > closeDist * 4.25 then return "far" end
-		if distance > closeDist then return "mid" end
-
-		return "main"
-	end
-
-	-- Use a local table to replace the global one
-	-- Nothing is accessing it so avoid globals everywhere
-	local fireSoundPackageIndex = {}
 
 	function ACE_SGunFire( Gun, Sound, PitchOverride, Propellant )
+
 		if not IsValid(Gun) then return end
 		if not Sound or Sound == "" then return end
 
 		Propellant = math.max(Propellant,50)
 
-		local hearingPos = getHearingPos(ACE_SGetHearingEntity( LocalPlayer() ))
+		local ply = LocalPlayer()
 
-		local event = newSoundEvent({
-			Sound = Sound or "",
+		local count	= 1
+		local Emitted   = false
+		local ide	= "ACEFire#" .. math.random(1,100000)
 
-			SoundLevel = 100,
-			Pitch = PitchOverride,
+		local Pos	= Gun:GetPos() -- Getting the position of the emitter now before the emitter ent stops existing.
+		local GunId	= Gun:EntIndex() -- Using Ids to ensure that code doesnt fuck up if the gun is removed from the map during sound late report.
 
-			Duration = ACE_GetDistanceTime((hearingPos - Gun:GetPos()):Length()),
+		--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
 
-			Origin = Gun:GetPos()
-		})
+			count = count + 1
 
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-			local hearingPos = getHearingPos(ACE_SGetHearingEntity( LocalPlayer() ))
-			local origin = self.Origin
+			local entply = ACE_SGetHearingEntity( ply )
 
-			local dist = (hearingPos - origin):Length()
+			local plyPos    = entply.aceposoverride or entply:GetPos()
+			local Dist      = (plyPos - Pos):Length()
+			local Volume    = 1 / (Dist / 500) * Propellant / 18
+			local Delay     = ACE_GetDistanceTime( Dist )
 
-			-- get the "State" which is what distance the sound should use
-			local soundDistance = getFireSoundDistance(dist, Propellant * 40 * ACE.DistanceMultipler)
-			local soundData = ACE.GSounds["GunFire"][Sound]
-			local volFix = 1
-			local gunID	= Gun:EntIndex()
+			if count > Delay then
 
-			-- using the old gunid, but wont that cause memory leak?
-			if soundData then
-				local distancedSoundData = soundData[soundDistance]
-				local soundPackage = distancedSoundData["Package"]
-				local index = (fireSoundPackageIndex[gunID] or 0) + 1
+				if not Emitted then
 
-				if index > #soundPackage then
-					index = 1
+					Emitted = true
+
+					--This defines the distance between areas for close, mid and far sounds
+					local CloseDist	= Propellant * 40 * ACE.DistanceMultipler
+
+					--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be 4250 units
+					local MediumDist	= CloseDist * 4.25
+
+					--local FarDist	= MediumDist * 2
+
+					--this variable fixes the vol for a better volume scale. Overrided normally
+					local VolFix		= 1
+
+					--Adjustable Pitch. Overrided normally
+					local Pitch		= 100
+
+					local SoundData	= ACE.GSounds["GunFire"][Sound]
+
+					if SoundData then
+
+						local State = "main"
+						if Dist >= CloseDist and Dist < MediumDist then
+
+							State	= "mid"
+						elseif Dist >= MediumDist then
+
+							State	= "far"
+						end
+
+						ACE.Sounds.GunTb[GunId] = (ACE.Sounds.GunTb[GunId] or 0) + 1
+
+						if SoundData[State] then
+							if ACE.Sounds.GunTb[GunId] > #SoundData[State]["Package"] then
+								ACE.Sounds.GunTb[GunId] = 1
+							end
+
+							Sound	= SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]]
+							VolFix  = SoundData[State]["Volume"]
+							Pitch	= SoundData[State]["Pitch"]
+						end
+
+					else
+						Pitch = PitchOverride
+					end
+
+					--If a wall is in front of the player and is indoor, reduces its vol at 50%
+					if not ACE_SHasLOS( Pos ) and ACE_SIsInDoor() then
+						--print("Inside of building")
+						VolFix = VolFix * 0.5
+					end
+
+					--Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
+					ACE_EmitSound( Sound or "", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix )
+
 				end
 
-				self.Sound = soundPackage[index]
-				self.Pitch = distancedSoundData.Pitch
-				volFix = distancedSoundData.Volume
-
-				fireSoundPackageIndex[gunID] = index
+				timer.Stop( ide )
+				timer.Remove( ide )
 			end
-
-			if not ACE_SHasLOS( origin ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.025
-			end
-
-			self.Origin = hearingPos + (origin - hearingPos):GetNormalized() * 64
-			self.Volume = (1 / (dist / 500) * Propellant / 18) * volFix
-
-			self.HearingEntity = hearingEntity
-		end
-	end
-
-
-	-- return sound path and volFix based on caliber
-	local function getBulletCrackSound(caliber)
-		-- Some fly sounds don´t fit really well. Special case here.
-		if caliber >= 20 then
-			return ACE.Sounds["Cracks"]["large"]["close"][math.random(#ACE.Sounds["Cracks"]["large"]["close"])], 0.5
-		end
-
-		-- above 100mm cannons
-		if caliber >= 10 then
-			return ACE.Sounds["Cracks"]["large"]["close"][math.random(#ACE.Sounds["Cracks"]["large"]["close"])], 1
-		end
-
-		-- 30mm gun and above
-		if caliber >= 3 then
-			return ACE.Sounds["Cracks"]["medium"]["close"][math.random(#ACE.Sounds["Cracks"]["medium"]["close"])], 0.1
-		end
-
-		-- small arms
-		return ACE.Sounds["Cracks"]["small"]["close"][math.random(#ACE.Sounds["Cracks"]["small"]["close"])], 0.1
+		end )
 	end
 
 	--TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
 	function ACE_SBulletCrack( BulletData, Caliber )
-		-- flag this, so we are not playing this sound for this bullet next time
+
+		debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
+
+		local ply = LocalPlayer()
+		local count    = 1
+		local Emitted  = false --Was the sound played?
+
+		local ide      = "ACECrack#" .. math.random(1,100000)
+
+		--flag this, so we are not playing this sound for this bullet next time
 		BulletData.CrackCreated = true
 
-		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized() * 5000
-		local distance = (getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - CrackPos):Length()
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
 
-		local event = newSoundEvent({
-			Volume = 10000 / distance,
+			count = count + 1
 
-			Duration = ACE_GetDistanceTime(distance)
-		})
+			local entply = ACE_SGetHearingEntity( ply )
+			local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
 
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
+			--Delayed event report.
+			local CrackPos    = BulletData.SimPos - BulletData.SimFlight:GetNormalized() * 5000
+			local Dist        = (plyPos - CrackPos):Length()
+			local Volume      = 10000 / Dist
+			local Delay       = ACE_GetDistanceTime( Dist )
 
-			local Sound, volFix = getBulletCrackSound(Caliber)
-			self.Sound = Sound
+			if count > Delay then
 
-			if not ACE_SHasLOS( BulletData.SimPos ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.025
+				if not Emitted then
+
+					Emitted = true
+
+					local VolFix = 0.1
+
+					--Small arm guns
+					local Sound = ACE.Sounds["Cracks"]["small"]["close"][math.random(1,#ACE.Sounds["Cracks"]["small"]["close"])]
+
+					--30mm gun and above
+					if Caliber >= 3 then
+						Sound = ACE.Sounds["Cracks"]["medium"]["close"][math.random(1,#ACE.Sounds["Cracks"]["medium"]["close"])]
+
+						--above 100mm cannons
+						if Caliber >= 10 then
+							Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+							VolFix = 1
+
+
+							--Some fly sounds don´t fit really well. Special case here.
+							if Caliber >= 20 then
+								Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+								VolFix = 0.5
+							end
+						end
+					end
+
+					--If a wall is in front of the player and is indoor, reduces its vol
+					if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
+						--print("Inside of building")
+						VolFix = VolFix * 0.025
+					end
+
+					ACE_EmitSound( Sound or "" , entply, 75, 100, Volume * VolFix )
+				end
+				timer.Stop( ide )
+				timer.Remove( ide )
 			end
-			self.Volume = self.Volume * volFix
-
-			self.HearingEntity = hearingEntity
-		end
-
-		debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
+		end )
 	end
-
-
-	--TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
-	function ACE_SBulletWhistle( BulletData )
-		-- flag this, so we are not playing this sound for this bullet next time
-		BulletData.HasWhistled = true
-
-		local event = newSoundEvent({
-			Sound = "acf_extra/ACE/SoundsMaccnificient/IncomingShell/whistle_arty_0" .. math.random(3) .. ".wav",
-
-			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - BulletData.SimPos):Length())
-		})
-
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-
-			local volFix = 1
-			if not ACE_SHasLOS( BulletData.SimPos ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.5
-			end
-			self.Volume = 10000 * volFix
-
-			local ShellVel = BulletData.SimFlight:Length()
-			self.Pitch = math.Clamp( ShellVel / 3 / 39.37, 30, 165 )
-
-			self.HearingEntity = hearingEntity
-		end
-
-		debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
-	end
-
 
 	--For any miscellaneous sound. BaseDistVolume is the Max dist where Volume will be 1. The volume will start losing dbs beyond this distance. In Units.
 	function ACE_SimpleSound( Sound, Origin, Pitch, BaseDistVolume  )
-		local event = newSoundEvent({
-			Sound = Sound or "",
 
-			SoundLevel = 100,
-			Pitch = Pitch,
+		local ply = LocalPlayer()
+		local count    = 1
+		local Emitted  = false --Was the sound played?
 
-			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - Origin):Length())
-		})
+		local ide = "ACESimpleSound#" .. math.random(1,100000)
 
-		function event:OnArrived()
-			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-			local hearingPos = getHearingPos(hearingEntity)
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
 
-			local volFix = 1
-			if not ACE_SHasLOS( Origin ) and ACE_SIsInDoor() then
-				volFix = volFix * 0.025
+			count = count + 1
+
+			local entply = ACE_SGetHearingEntity( ply )
+			local plyPos = entply.aceposoverride or entply:GetPos()
+
+			--Delayed event report.
+			local Dist        = (plyPos - Origin):Length()
+			local Delay       = ACE_GetDistanceTime( Dist )
+			local Volume      = BaseDistVolume / Dist
+
+			if count > Delay then
+
+				if not Emitted then
+
+					Emitted = true
+
+					local VolFix = 1
+
+					--If a wall is in front of the player and is indoor, reduces its vol
+					if not ACE_SHasLOS( Origin ) and ACE_SIsInDoor() then
+						VolFix = VolFix * 0.025
+					end
+
+					ACE_EmitSound( Sound or "" , plyPos + (Origin - plyPos):GetNormalized() * 64, 100, Pitch, Volume * VolFix )
+				end
+				timer.Stop( ide )
+				timer.Remove( ide )
 			end
+		end )
 
-			self.Origin = hearingPos + (Origin - hearingPos):GetNormalized() * 64
-			self.Volume = BaseDistVolume / (EyePos() - Origin):Length() * volFix
-			--self.Pitch = Pitch * math.Clamp(Velocity * 0.001, 90, 150) -Unfinished doppler code.
-			self.Pitch = Pitch
-
-			self.HearingEntity = hearingEntity
-		end
 	end
 
-	-- running all the sound events
-	hook.Add("Think", "ACE_Think_SpeedOfSound", function()
-		for index, event in ipairs(SpeedOfSoundEvents) do
-			if event.Time < RealTime() then
-				event:OnArrived()
-				event:Play()
+	--Coming soon
+	--function ACE_SBulletImpact()
+	--end
 
-				table.remove(SpeedOfSoundEvents, index)
-			end
-		end
-	end)
 end
+
+

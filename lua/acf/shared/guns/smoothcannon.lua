@@ -4,7 +4,7 @@ ACF_defineGunClass("SBC", {
 	spread = 0.095,
 	name = "Smooth-Bore Cannon",
 	desc = ACFTranslation.GunClasses[15],
-	muzzleflash = "C",
+	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.7,
 	maxrof = 20, -- maximum rounds per minute
 	sound = "ace_weapons/multi_sound/120mm_multi.mp3",

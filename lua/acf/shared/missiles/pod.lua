@@ -42,7 +42,7 @@ ACF_DefineRack("40mm7xPOD", {
 		["missile2"] = { ["pos"] = Vector(0,-2,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile3"] = { ["pos"] = Vector(0,-1,-1.733), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile4"] = { ["pos"] = Vector(0,1,-1.733), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile5"] = { ["pos"] = Vector(0,2,0),  ["offset"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(0,2,0),  ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile6"] = { ["pos"] = Vector(0,1,1.736), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
 		["missile7"] = { ["pos"] = Vector(0,-1,1.736), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
@@ -200,7 +200,7 @@ ACF_DefineRack("3xUARRK", {
 } )
 
 ACF_DefineRack("6xUARRK", {
-	name = "M270 6x Artillery Launcher",
+	name = "M27 6x Artillery Launcher",
 	desc = "6-pack of death, used to efficiently carry artillery rockets",
 	model	= "models/missiles/6pod_rk.mdl",
 	rackmdl	= "models/missiles/6pod_cover.mdl",
@@ -337,7 +337,7 @@ ACF_DefineRack("2x Strela-1", {
 --strela-1
 ACF_DefineRack("4x Strela-1", {
 	name = "Quad Munition 9M31 Rack",
-	desc = "An 9m31 rack designed to carry 4 missiles.",
+	desc = "An 9m31 rack designed to carry until 4 missiles.",
 	model	= "models/missiles/9m31_rk4.mdl",
 	gunclass = "POD",
 	weight = 50,
@@ -495,23 +495,22 @@ ACF_DefineRack("127mm4xPOD", {
 
 --9m311 pod
 ACF_DefineRack("1x 9m311", {
-	name = "Single 9M311 Launch Tube",
-	desc = "A single 9M311 round.",
-	model = "models/missiles/arend/9m311_tube.mdl",
+	name = "9m311 Round",
+	desc = "A single 9m311 round.",
+	model = "models/missiles/bgm_71e_round.mdl",
 	gunclass = "POD",
 	weight = 10,
-	year = 1982,
+	year = 1970,
 	magsize = 1,
-	armour  = 18,
 	caliber = 12,
 
-	whitelistonly   = true,
+	whitelistonly	= true,
 	protectmissile  = true,
-	hidemissile     = true,
+	hidemissile	= true,
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		["missile1"] = { ["pos"] = Vector(15.759,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )
 
@@ -533,126 +532,5 @@ ACF_DefineRack("1x Javelin", {
 	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,-1.38,2.4), ["scaledir"] = Vector(0,0,0)}
-	}
-} )
-
-ACF_DefineRack("20x S8KO", {
-	name = "S-8KO Rocket Pod",
-	desc = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
-	model = "models/missiles/arend/s8kolauncher.mdl",
-	gunclass = "POD",
-	weight = 100,
-	year = 1970,
-	magsize = 20,
-	armour  = 20,
-	caliber = 8,
-	whitelistonly   = true,
-	protectmissile  = true,
-	hidemissile     = false,
-
-	mountpoints =
-	{
-		["missile1"] = { ["pos"] = Vector(0,-3.6086,6.968),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile2"] = { ["pos"] = Vector(0,3.525,-3.435),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile3"] = { ["pos"] = Vector(0,3.6086,6.968),    ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile4"] = { ["pos"] = Vector(0,-3.525,-3.435),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile5"] = { ["pos"] = Vector(0,6.493,4.704),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile6"] = { ["pos"] = Vector(0,-6.493,4.704),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile7"] = { ["pos"] = Vector(0,6.488,-5.649),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile8"] = { ["pos"] = Vector(0,-6.488,-5.649),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile9"] = { ["pos"] = Vector(0,2.286,3.424),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile10"] = { ["pos"] = Vector(0,-3.594,-7.954),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile11"] = { ["pos"] = Vector(0,-2.286,3.424),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile12"] = { ["pos"] = Vector(0,3.594,-7.954),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile13"] = { ["pos"] = Vector(0,-8.047,1.336),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile14"] = { ["pos"] = Vector(0,0,-5.04),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile15"] = { ["pos"] = Vector(0,8.047,1.336),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile16"] = { ["pos"] = Vector(0,-4.4812,0.288),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile17"] = { ["pos"] = Vector(0,8.047,-2.351),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile18"] = { ["pos"] = Vector(0,-8.047,-2.351),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile19"] = { ["pos"] = Vector(0,4.4812,0.288),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile20"] = { ["pos"] = Vector(0,0,-8.824),		["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-	}
-} )
-
-ACF_DefineRack("2x SRAAM", {
-	name = "SRAAM Launcher",
-	desc = "A Launcher made for 2 SRAAM missiles",
-	model       = "models/missiles/arend/sraam_rack.mdl",
-	gunclass = "RK",
-	weight = 100,
-	year = 1970,
-	magsize = 2,
-	armour  = 20,
-	caliber = 16.5,
-
-	mountpoints =
-	{
-		["missile1"] = { ["pos"] = Vector(0,5,0),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile2"] = { ["pos"] = Vector(0,-5,0),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-	}
-} )
-
-ACF_DefineRack("1x VT-1", {
-	name = "VT-1 Single Tube",
-	desc = "A single VT-1 Konkurs round.",
-	model = "models/missiles/arend/vt1_launcher.mdl",
-	gunclass = "POD",
-	weight = 10,
-	year = 1970,
-	magsize = 1,
-	armour  = 18,
-	caliber = 12,
-
-	whitelistonly   = true,
-	protectmissile  = true,
-	hidemissile     = false,
-
-	mountpoints =
-	{
-		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
-	}
-} )
-
-ACF_DefineRack("6x 9K121", {
-	name = "9K121 Vikhr Rack",
-	desc = "The 9K121 Vikhr rack designed to carry 6 9K121 missiles.",
-	model       = "models/missiles/arend/9k121_rack.mdl",
-	gunclass = "RK",
-	weight = 100,
-	year = 1984,
-	magsize = 6,
-	armour  = 20,
-	caliber = 13,
-
-	mountpoints =
-	{
-		["missile1"] = { ["pos"] = Vector(-9.582,6.612,5.098),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile2"] = { ["pos"] = Vector(-9.582,-6.653,5.098),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile3"] = { ["pos"] = Vector(-9.582,-9.539,-6.896),    ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile4"] = { ["pos"] = Vector(-9.582,-3.19,-6.896),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile5"] = { ["pos"] = Vector(-9.582,3.227,-6.896),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile6"] = { ["pos"] = Vector(-9.582,9.531,-6.896),     ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-	}
-} )
-
-ACF_DefineRack("1x 9M113", {
-	name = "9M113 Single Tube",
-	desc = "A single 9M113 Konkurs round.",
-	model = "models/missiles/arend/9m113_launcher.mdl",
-	gunclass = "POD",
-	weight = 10,
-	year = 1970,
-	magsize = 1,
-	armour  = 18,
-	caliber = 15.2,
-
-	whitelistonly   = true,
-	protectmissile  = true,
-	hidemissile     = false,
-
-	mountpoints =
-	{
-		["missile1"] = { ["pos"] = Vector(17,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)} -- 15.759,0,0
 	}
 } )

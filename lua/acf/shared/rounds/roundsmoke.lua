@@ -202,9 +202,9 @@ function Round.endeffect( _, Bullet )
 
 	local Flash = EffectData()
 		Flash:SetOrigin( Bullet.SimPos )
-		Flash:SetNormal( Bullet.SimFlight )
-		Flash:SetRadius( math.max( Bullet.FillerMass ^ 0.33 * 8, 0 ) )
-		Flash:SetMagnitude( math.max( Bullet.WPMass ^ 0.33 * 8, 0 ) )
+		Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
+		Flash:SetRadius( math.max( Bullet.FillerMass * 8 * 39.37, 0 ) ) --(Bullet.FillerMass) ^ 0.33 * 8*39.37
+		Flash:SetMagnitude( math.max( Bullet.WPMass * 8 * 39.37, 0 ) )
 
 		local vec = Vector(255,255,255)
 		if IsValid(Bullet.Crate) then vec = Bullet.Crate:GetNWVector( "TracerColour", Bullet.Crate:GetColor() ) end

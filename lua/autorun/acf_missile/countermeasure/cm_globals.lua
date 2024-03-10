@@ -106,30 +106,15 @@ end
 
 
 
-function ACFM_GetMissilesInCone(radar, dir, degs)
+function ACFM_GetMissilesInCone(pos, dir, degs)
 
 	local ret = {}
-	local pos = radar:LocalToWorld(radar:OBBCenter())
 
-	for missile in pairs(ACF_ActiveMissiles) do
+	for missile, _ in pairs(ACF_ActiveMissiles) do
 
 		if not IsValid(missile) then continue end
 
-		local missilePos = missile:GetPos()
-
-		local traceData = {
-			start = pos,
-			endpos = missilePos,
-			mask = MASK_SOLID_BRUSHONLY,
-			filter = radar
-		}
-
-		local traceResult = util.TraceLine(traceData)
-
-		--debugoverlay.Line(pos, traceResult.HitPos, 0.25, Color(255, 0, 0), true) -- radar to missile
-		--debugoverlay.Box(pos, Vector(-5, -5, -5), Vector(5, 5, 5), 0.25, Color(0, 255, 0, 150)) -- radar pos 
-
-		if traceResult.Fraction == 1 and ACFM_ConeContainsPos(pos, dir, degs, missilePos) then
+		if ACFM_ConeContainsPos(pos, dir, degs, missile:GetPos()) then
 			ret[#ret + 1] = missile
 		end
 
@@ -142,43 +127,25 @@ end
 
 
 
-function ACFM_GetMissilesInSphere(radar, radius)
+function ACFM_GetMissilesInSphere(pos, radius)
 
 	local ret = {}
-	local pos = radar:LocalToWorld(radar:OBBCenter())
 
 	local radSqr = radius * radius
 
-	for missile in pairs(ACF_ActiveMissiles) do
+	for missile, _ in pairs(ACF_ActiveMissiles) do
 
 		if not IsValid(missile) then continue end
 
-		local missilePos = missile:GetPos()
-
-		if pos:DistToSqr(missilePos) <= radSqr then
-
-			local traceData = {
-				start = pos,
-				endpos = missilePos,
-				mask = MASK_SOLID_BRUSHONLY,
-				filter = radar
-			}
-
-			local traceResult = util.TraceLine(traceData)
-
-			--debugoverlay.Line(pos, traceResult.HitPos, 0.25, Color(255, 0, 0), true) -- radar to missile
-			--debugoverlay.Box(pos, Vector(-5, -5, -5), Vector(5, 5, 5), 0.25, Color(0, 255, 0, 150)) -- radar pos 
-
-			if traceResult.Fraction == 1 then
-				ret[#ret + 1] = missile
-			end
+		if pos:DistToSqr(missile:GetPos()) <= radSqr then
+			ret[#ret + 1] = missile
 		end
+
 	end
 
 	return ret
 
 end
-
 
 
 

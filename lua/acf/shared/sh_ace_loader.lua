@@ -278,14 +278,13 @@ function ACF_GetAllFuseNamesExcept(list)
 end
 
 -- search for and load a bunch of files or whatever
---
+
 do
 
 	local Gpath = "acf/shared/"
 	local folders = {
 		"armor",
 		"guns",
-		"rounds",
 		"missiles",
 		"mines",
 		"radars",
