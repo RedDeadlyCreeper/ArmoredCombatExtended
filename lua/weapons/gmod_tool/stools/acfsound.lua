@@ -226,7 +226,7 @@ if CLIENT then
 	function TOOL.BuildCPanel(panel)
 		local wide = panel:GetWide()
 
-		panel:Help( "#tool.acfsound.cpanel.info" )
+		panel:Help( "#tool.acfsound.info" )
 
 		local SoundNameText = vgui.Create("DTextEntry", ValuePanel)
 		SoundNameText:SetText("")
@@ -239,7 +239,7 @@ if CLIENT then
 		panel:AddItem(SoundNameText)
 
 		local SoundBrowserButton = vgui.Create("DButton")
-		SoundBrowserButton:SetText("#tool.acfsound.cpanel.openbrowser")
+		SoundBrowserButton:SetText("#tool.acfsound.openbrowser")
 		SoundBrowserButton:SetWide(wide)
 		SoundBrowserButton:SetTall(20)
 		SoundBrowserButton:SetVisible(true)
@@ -257,7 +257,7 @@ if CLIENT then
 		local SoundPreWide = SoundPre:GetWide()
 
 		local SoundPrePlay = vgui.Create("DButton", SoundPre)
-		SoundPrePlay:SetText("#tool.acfsound.cpanel.play")
+		SoundPrePlay:SetText("#tool.acfsound.play")
 		SoundPrePlay:SetWide(SoundPreWide / 2)
 		SoundPrePlay:SetPos(0, 0)
 		SoundPrePlay:SetTall(20)
@@ -268,7 +268,7 @@ if CLIENT then
 		end
 
 		local SoundPreStop = vgui.Create("DButton", SoundPre)
-		SoundPreStop:SetText("#tool.acfsound.cpanel.stop")
+		SoundPreStop:SetText("#tool.acfsound.stop")
 		SoundPreStop:SetWide(SoundPreWide / 2)
 		SoundPreStop:SetPos(SoundPreWide / 2, 0)
 		SoundPreStop:SetTall(20)
@@ -287,7 +287,7 @@ if CLIENT then
 		end
 
 		local CopyButton = vgui.Create("DButton")
-		CopyButton:SetText("#tool.acfsound.cpanel.copy")
+		CopyButton:SetText("#tool.acfsound.copy")
 		CopyButton:SetWide(wide)
 		CopyButton:SetTall(20)
 		CopyButton:SetIcon( "icon16/page_copy.png" )
@@ -298,7 +298,7 @@ if CLIENT then
 		panel:AddItem(CopyButton)
 
 		local ClearButton = vgui.Create("DButton")
-		ClearButton:SetText("#tool.acfsound.cpanel.clear")
+		ClearButton:SetText("#tool.acfsound.clear")
 		ClearButton:SetWide(wide)
 		ClearButton:SetTall(20)
 		ClearButton:SetIcon( "icon16/cancel.png" )
@@ -309,8 +309,8 @@ if CLIENT then
 		end
 		panel:AddItem(ClearButton)
 
-		panel:NumSlider( "#tool.acfsound.cpanel.pitch", "acfsound_pitch", 10, 255, 0 )
-		panel:ControlHelp( "#tool.acfsound.cpanel.pitchdesc" )
+		panel:NumSlider( "#tool.acfsound.pitch", "acfsound_pitch", 10, 255, 0 )
+		panel:ControlHelp( "#tool.acfsound.pitchdesc" )
 	end
 
 	--[[

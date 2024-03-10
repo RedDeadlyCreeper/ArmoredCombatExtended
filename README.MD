@@ -40,7 +40,8 @@ ACE is not just another addon; it's a game-changer for your building process. He
 ACE requires you have the following addons before using:
 
 * **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)** 
-* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (almost essential for using ACE. You are granted with essentially necessary for beginners dupes/tools that are only visible with this tool as well as an ability to save your contraptions )
+* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (ACE comes with some pre-made vehicles and tools only spawnable with this addon)
+* **[Contraption Framework](https://steamcommunity.com/sharedfiles/filedetails/?id=3154971187)**
 
 ## Workshop Edition
 
