@@ -126,8 +126,8 @@ function ENT:Think()
 						ang = scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
 						absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
-						ScanCone1 = scanEnt.Cone or 30
-						ScanCone2 = scanEnt.Cone or 30
+						ScanCone1 = scanEnt.Cone or 0
+						ScanCone2 = scanEnt.Cone or 0
 					else --Search radar
 						ang	=  scanEnt:WorldToLocalAngles(difpos:Angle())  - Angle(0,scanEnt.CurrentScanAngle,0)	--Used for testing if inrange
 						--absang	= Angle(math.abs(math.NormalizeAngle(ang.p)),math.abs(math.NormalizeAngle(ang.y)),0)  --Since I like ABS so much
