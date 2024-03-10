@@ -23,7 +23,7 @@ ACF_defineGun("40mmFFAR", { --id
 	desc		= "A tiny, unguided rocket.  Useful for anti-infantry, smoke and suppression.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
 	model	= "models/missiles/launcher7_40mm.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor FFAR",
+	effectbooster	= "ACE_MissileTiny",
 	caliber	= 4,
 	gunclass	= "FFAR",
 	rack		= "40mm7xPOD",  -- Which rack to spawn this missile on?
@@ -89,7 +89,7 @@ ACF_defineGun("70mmFFAR", { --id
 	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
 	model	= "models/missiles/launcher7_70mm.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor FFAR",
+	effectbooster	= "ACE_MissileTiny",
 	caliber	= 7,
 	gunclass	= "FFAR",
 	rack		= "70mm7xPOD",  -- Which rack to spawn this missile on?
@@ -157,7 +157,7 @@ ACF_defineGun("S8KO", { --id
 	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
 	model       = "models/missiles/arend/s-8ko.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor FFAR",
+	effectbooster	= "ACE_MissileTiny",
 	caliber	= 8,
 	gunclass	= "FFAR",
 	rack		= "20x S8KO",  -- Which rack to spawn this missile on?
@@ -225,7 +225,7 @@ ACF_defineGun("Zuni ASR", { --id
 	desc             = "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.",
 	model            = "models/ghosteh/zuni.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor FFAR",
+	effectbooster	= "ACE_MissileSmall",
 	caliber          = 12.7,
 	gunclass         = "FFAR",
 	rack             = "127mm4xPOD",

@@ -19,7 +19,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	name             = "FIM-92 Missile",
 	desc             = "The FIM-92 Stinger is a lightweight and versatile close-range air defense missile.\nWith a seek cone of 15 degrees and a sharply limited range that makes it useless versus high-flying targets, it is best to aim before firing and choose shots carefully.",
 	model            = "models/missiles/fim_92.mdl",
-	effect           = "Rocket Motor FFAR",					--Tiny motor for tiny rocket
+	effect           = "ACE_MissileTiny",					--Tiny motor for tiny rocket
 	gunclass         = "SAM",
 	rack             = "1x FIM-92",							-- Which rack to spawn this missile on?
 	length           = 150,
@@ -88,7 +88,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 	name             = "Mistral Missile",
 	desc             = "A very fast short range missile, faster and less agile than FIM-92. Mostly for Anti-Aircraft and Anti-Missile operations.",
 	model            = "models/missiles/fim_92_folded.mdl",
-	effect           = "Rocket Motor FFAR",					-- Tiny motor for tiny rocket
+	effect           = "ACE_MissileTiny",					-- Tiny motor for tiny rocket
 	gunclass         = "SAM",
 	rack             = "2x FIM-92",							-- Which rack to spawn this missile on?
 	length           = 150,
@@ -155,7 +155,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 	name             = "9M31 Strela-1",
 	desc             = "The 9M31 Strela-1 is a medium-range homing SAM with a much bigger payload than the FIM-92. Bulky. It is best suited to ground vehicles or stationary units. The strela is fast-reacting, while its missiles are surprisingly deadly and able to defend an acceptable area.",
 	model            = "models/missiles/9m31.mdl",
-	effect           = "Rocket Motor",
+	effect           = "ACE_MissileSmall",
 	gunclass         = "SAM",
 	rack             = "1x Strela-1",							-- Which rack to spawn this missile on?
 	length           = 219,
@@ -224,8 +224,8 @@ ACF_defineGun("VT-1 SAM", {										-- id
 	name             = "VT-1 Missile",
 	desc             = "Powerful command guided SAM. Great range, good agility, and a powerful warhead. Has datalink.",
 	model            = "models/missiles/arend/vt1.mdl",
-	effect           = "Rocket Motor",
-	effectbooster	= "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass         = "SAM",
 	rack             = "1x VT-1",								-- Which rack to spawn this missile on?
 	length           = 92 * 2.53, --Convert to ammocrate units
@@ -292,8 +292,8 @@ ACF_defineGun("9M311 SAM", {										-- id
 	name             = "9M311 Tunguska",
 	desc             = "The 9M311 missile is a supersonic Anti Air missile that while is not agile enough to hit maneuvering planes, excels against helicopters. Has datalink.",
 	model            = "models/missiles/arend/9m311_unfolded.mdl",
-	effect           = "Rocket Motor",
-	effectbooster	= "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass         = "SAM",
 	rack             = "1x 9m311",								-- Which rack to spawn this missile on?
 	length           = 100 * 2.53, --Convert to ammocrate units
@@ -362,7 +362,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 	name             = "9M331 TOR",
 	desc             = "The TOR Missile. Medium range SAM. This vertically Launched medium range missile is fast reacting making it good for missile intercepts, agile, and deadly. The missile is first kicked out of the tube, spun towards the target, then launched. Has datalink.",
 	model            = "models/missiles/arend/9m331_unfolded.mdl",
-	effect           = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
 	effectbooster	 = "Rocket_Smoke_Trail",
 	gunclass         = "SAM",
 	rack             = "1x9M331 Pod",							-- Which rack to spawn this missile on?
@@ -432,8 +432,8 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 	name             = "9M38M1 BUK",
 	desc             = "Absolute monster of a missile. Long range yet still appreciably maneuverable. Takes a bit to get up to speed but it is a monster. Has datalink.",
 	model            = "models/macc/9m38m1.mdl",
-	effect           = "Rocket Motor Arty",
-	effectbooster	 = "Rocket Motor Arty",
+	effect           = "ACE_MissileLarge",
+	effectbooster	 = "ACE_MissileLarge",
 	gunclass         = "SAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 220 * 2.53, --Convert to ammocrate units

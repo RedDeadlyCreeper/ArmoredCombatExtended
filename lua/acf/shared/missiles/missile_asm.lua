@@ -21,8 +21,8 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 	name             = "AGM-122 Sidearm Missile",
 	desc             = "A refurbished early-model AIM-9, for attacking ground targets.  Less well-known than the bigger Shrike, it provides easy-to-use blind-fire anti-SAM performance for helicopters and light aircraft, with far heavier a punch than its ancestor.",
 	model            = "models/missiles/aim9m.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "ASM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 215,
@@ -39,7 +39,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		rackmdl				= "models/missiles/aim9m.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 1.0,
-		reloaddelay			= 40.0,
+		reloaddelay			= 25.0,
 
 		maxlength			= 140,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
@@ -92,9 +92,9 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
 ACF_defineGun("AGM-45 ASM", {						-- id
 	name             = "AGM-45 Shrike Missile",
-	desc             = "The body of an AIM-7 sparrow, an air-to-ground seeker kit, and a far larger warhead than its ancestor.\nWith its homing radar seeker option, thicker skin, and long range, it is a great weapon for long-range, precision standoff attack versus squishy things, like those pesky sam sites.",
+	desc             = "The body of an AIM-7 sparrow, an air-to-ground seeker kit, and a far larger warhead than its ancestor.\nWith its anti radiation seeker, thicker skin, and long range, it is a great weapon for long-range, precision standoff attack pesky sam sites.",
 	model            = "models/missiles/arend/aim7f.mdl",
-	effect           = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 146 * 2.53, --Convert to ammocrate units
@@ -111,7 +111,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		rackmdl				= "models/missiles/arend/aim7f.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 1.0,
-		reloaddelay			= 60.0,
+		reloaddelay			= 30.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
@@ -165,7 +165,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 	name             = "AGM-88 HARM",
 	desc             = "Advanced long range anti-radiation missile with improved guidance. Significantly heavier but makes up for it in range and tracking. Has datalink.",
 	model            = "models/missiles/arend/agm-88.mdl",
-	effect           = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 160 * 2.53, --Convert to ammocrate units
@@ -182,7 +182,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 		rackmdl				= "models/missiles/arend/agm-88.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 1.0,
-		reloaddelay			= 60.0,
+		reloaddelay			= 45.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
@@ -237,7 +237,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 	desc             = "Massive turbojet Antiradiation missile also used as antiship missile. It may be slower to get there but it HURTS. Mini Moskit. Has datalink.",
 	model            = "models/missiles/arend/kh31.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	 = "Rocket Motor",
+	effectbooster	 = "ACE_MissileMedium",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 185 * 2.53, --Convert to ammocrate units
@@ -252,7 +252,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 		rackmdl				= "models/missiles/arend/kh31.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 2.0,
-		reloaddelay			= 80.0,
+		reloaddelay			= 60.0,
 
 
 		maxlength			= 220,							-- Length of missile. Used for ammo properties.
@@ -309,7 +309,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 	name             = "AGM-65 Maverick Missile",
 	desc             = "You see that tank over there a mile away? I want you to lock onto it and forget about it.",
 	model            = "models/missiles/arend/agm65d.mdl",
-	effect           = "Rocket Motor Missile1",
+	effect           = "ACE_MissileLarge",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 99 * 2.53, --Convert to ammocrate units
@@ -378,7 +378,7 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 	desc             = "The stormshadow is a low observability, turbojet driven cruise missile. Though slow this ordinance has extreme range, good maneuverability, staying time. And will obliterate anything it touches.",
 	model            = "models/macc/storm_shadow_open.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	 = "Rocket Motor",
+	effectbooster	 = "ACE_MissileTiny",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 205 * 2.53, --Convert to ammocrate units

@@ -21,7 +21,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 	desc             = "A common artillery rocket in the third world, able to be launched from a variety of platforms with a painful whallop and a very arced trajectory.\nContrary to appearances and assumptions, does not in fact werf nebel.",
 	model            = "models/missiles/glatgm/mgm51.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor Arty",
+	effectbooster	= "ACE_MissileSmall",
 	caliber          = 10.7,
 	gunclass         = "ARTY",
 	rack             = "1xRK_small",							-- Which rack to spawn this missile on?
@@ -102,7 +102,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 	desc             = "A short-range but formidable artillery rocket, based upon the Grad.  Well suited to the backs of trucks.",
 	model            = "models/missiles/9m31.mdl",
 	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor Arty",
+	effectbooster	= "ACE_MissileMedium",
 	caliber          = 12.2,
 	gunclass         = "ARTY",
 	rack             = "1xRK",								-- Which rack to spawn this missile on?
@@ -174,8 +174,8 @@ ACF_defineGun("RW61 RA", {								-- id
 	name             = "Raketwerfer-61",
 	desc             = "A heavy, demolition-oriented rocket-assisted mortar, devastating against field works but takes a very, VERY long time to load.\n\n\nDon't miss.",
 	model            = "models/missiles/RW61M.mdl",
-	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor Arty",
+	effect           = "ACE_MissileLarge",
+	effectbooster	= "ACE_MissileLarge",
 	caliber          = 38,
 	gunclass         = "ARTY",
 	rack             = "380mmRW61",							-- Which rack to spawn this missile on?
@@ -266,7 +266,7 @@ ACF_defineGun("M26 RA", {							-- id
 		firedelay			= 0.33,
 		reloadspeed			= 1.0,
 		reloaddelay			= 30.0,
-		inaccuracy			= 3,
+		inaccuracy			= 4,
 
 		maxlength			= 210,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
@@ -285,14 +285,14 @@ ACF_defineGun("M26 RA", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 200,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.35,							-- Time in seconds for booster runtime
+		boostacceleration	= 150,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0.2,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.00025,						-- percent speed loss per second
-		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 	},
 
@@ -315,8 +315,8 @@ ACF_defineGun("SS-40 RA", {								-- id
 	name             = "SS-40 Rocket",
 	desc             = "A large, heavy, guided artillery rocket for taking out stationary or dug-in targets.  Slow to load, slow to fire, slow to guide, and slow to arrive.",
 	model            = "models/missiles/aim120.mdl",
-	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor Arty",
+	effect           = "ACE_MissileMedium",
+	effectbooster	= "ACE_MissileMedium",
 	caliber          = 18.0,
 	gunclass         = "ARTY",
 	rack             = "1xRK",								-- Which rack to spawn this missile on?
@@ -388,8 +388,8 @@ ACF_defineGun("M31 RA", {							-- id
 	name             = "M31 GMLRS",
 	desc             = "Long range precision strike missile found in the M270 MLRS. Guided to give better precision and control over trajectory. Has datalink.",
 	model            = "models/missiles/gmlrs.mdl",
-	effect           = "Rocket_Smoke_Trail",
-	effectbooster	= "Rocket Motor Arty",
+	effect           = "ACE_MissileMedium",
+	effectbooster	= "ACE_MissileMedium",
 	caliber          = 22.7,
 	gunclass         = "ARTY",
 	rack             = "6xUARRK",								-- Which rack to spawn this missile on?
@@ -413,7 +413,7 @@ ACF_defineGun("M31 RA", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 35,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 3,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
@@ -431,10 +431,10 @@ ACF_defineGun("M31 RA", {							-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.003,						-- percent speed loss per second
+		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
-		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 	},
 
@@ -456,8 +456,8 @@ ACF_defineGun("ATACMS RA", {						-- id
 	name             = "MGM-140 ATACMS",
 	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!! Has datalink.",
 	model            = "models/macc/MGM-140.mdl",
-	effect           = "ACE_MissileMedium",
-	effectbooster	 = "ACE_MissileMedium",
+	effect           = "ACE_MissileLarge",
+	effectbooster	 = "ACE_MissileLarge",
 	gunclass         = "ARTY",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 145 * 2.53, --Convert to ammocrate units

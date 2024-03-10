@@ -22,13 +22,13 @@ ACF_defineGun("40mmGL", { --id
 	gunclass = "GL",
 	caliber = 4.0,
 	weight = 55,
-	magsize = 32,
-	rofmod = 0.14,
+	magsize = 48,
+	rofmod = 0.45,
 	magreload = 7.5,
 	year = 1970,
 	round = {
-		maxlength = 65,
-		propweight = 0.05
+		maxlength = 7.5,
+		propweight = 0.01
 	}
 } )
 
@@ -40,13 +40,13 @@ ACF_defineGun("20mmGL", { --id
 	gunclass = "GL",
 	caliber = 3.01,
 	weight = 10,
-	magsize = 48,
-	rofmod = 0.085,
+	magsize = 72,
+	rofmod = 0.55,
 	magreload = 8,
 	year = 1970,
 	round = {
-		maxlength = 160,
-		propweight = 0.05
+		maxlength = 7,
+		propweight = 0.005
 	}
 } )
 
@@ -61,7 +61,7 @@ ACF_defineGun("40mmGLSingle", { --id
 	rofmod = 6,
 	year = 1940,
 	round = {
-		maxlength = 100,
-		propweight = 0.06
+		maxlength = 35,
+		propweight = 0.02
 	}
 } )

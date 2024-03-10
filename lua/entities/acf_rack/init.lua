@@ -473,8 +473,8 @@ function ENT:Reload() --
 
 	if Reloaded then
 		self:EmitSound("acf_extra/tankfx/gnomefather/reload12.wav", 500, 110)
-		self.NextReload = CT + self.ReloadTime
-		self.NextFire = CT + self.ReloadDelay * self.ReloadMultiplierBonus or 1
+		self.NextReload = CT + self.ReloadTime * self.ReloadMultiplierBonus or 1
+		self.NextFire = CT + math.Max(self.ReloadDelay * self.ReloadMultiplierBonus or 1,0.2)
 		self.Ready = false
 		Wire_TriggerOutput(self, "Ready", 0)
 		self.CurMissile = ValidCount + 1

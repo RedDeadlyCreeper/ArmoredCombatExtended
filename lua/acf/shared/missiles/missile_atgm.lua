@@ -20,7 +20,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 	desc			= "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.",
 	model			= "models/missiles/bgm_71e.mdl",
 	effect			= "Rocket Motor ATGM",
-	effectbooster	= "Rocket Motor Missile1",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "1x BGM-71E",								-- Which rack to spawn this missile on?
 	length			= 123,										-- Used for the physics calculations
@@ -89,7 +89,7 @@ ACF_defineGun("9M113 ASM", {									-- id
 	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.",
 	model			= "models/missiles/arend/9m113.mdl",
 	effect			= "Rocket Motor ATGM",
-	effectbooster	= "Rocket Motor Missile1",
+	effectbooster	= "Rocket Motor ATGM",
 	gunclass		= "ATGM",
 	rack			= "1x 9M113",							-- Which rack to spawn this missile on?
 	length			= 51 * 2.53, --Convert to ammocrate units
@@ -155,7 +155,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 	desc			= "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
 	model			= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 	effect			= "Rocket Motor ATGM",
-	effectbooster	= "Rocket Motor Missile1",
+	effectbooster	= "Rocket Motor ATGM",
 	gunclass		= "ATGM",
 	rack			= "1x Kornet",							-- Which rack to spawn this missile on?
 	length			= 130,
@@ -223,7 +223,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	name			= "AT-3 Sagger Missile",
 	desc			= "The AT-3 missile (9M14P1) is a short-range wire-guided anti-tank munition. While powerful and lightweight its speed will make you die of old age before you hit the target.",
 	model			= "models/missiles/at3.mdl",
-	effect			= "Rocket Motor FFAR",
+	effect			= "ACE_MissileTiny",
 	gunclass		= "ATGM",
 	rack			= "1xAT3RK",									-- Which rack to spawn this missile on?
 	length			= 84,										-- Used for the physics calculations
@@ -294,7 +294,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	name			= "AT-2 Fleyta Missile",
 	desc			= "The AT-2 Missile (9M17P) is a more powerful, yet light, Anti-Tank Missile, the big brother of the Sagger. Being agile, deliveries a powerful payload at the cost of being slower than the AT-3",
 	model			= "models/missiles/at2.mdl",
-	effect			= "Rocket Motor FFAR",
+	effect			= "ACE_MissileTiny",
 	gunclass		= "ATGM",
 	rack			= "1xRK",									-- Which rack to spawn this missile on?
 	length			= 115,										-- Used for the physics calculations
@@ -362,8 +362,8 @@ ACF_defineGun("FGM-148 ASM", {
 	name			= "FGM-148 Javelin Missile",
 	desc			= "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.",
 	model			= "models/mcace/Jevelinemissile.mdl",		-- model to spawn on menu
-	effect			= "Rocket Motor Missile1",
-	effectbooster	= "Rocket Motor Missile1",
+	effect			= "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "1x Javelin",								-- Which rack to spawn this missile on?
 	length			= 98,										-- Used for the physics calculations
@@ -429,8 +429,8 @@ ACF_defineGun("Spike-LR ASM", {
 	name			= "Spike LR Missile",
 	desc			= "A powerful multi-purpose Missile, being fast and agile but maneuverable enough to hit aircraft or tanks in top attack.",
 	model			= "models/mcace/Jevelinemissile.mdl",		-- model to spawn on menu
-	effect			= "Rocket Motor Missile1",
-	effectbooster	= "Rocket Motor Missile1",
+	effect			= "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "1x Javelin",								-- Which rack to spawn this missile on?
 	length			= 67 * 2.53, --Convert to ammocrate units
@@ -503,8 +503,8 @@ ACF_defineGun("Ataka ASM", { --id
 	name			= "9M120 Ataka Missile",
 	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads",
 	model			= "models/missiles/9m120.mdl",
-	effect			= "Rocket Motor Missile1",
-	effectbooster	= "Rocket Motor Missile1",
+	effect			= "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "1x Ataka",							-- Which rack to spawn this missile on?
 	length			= 174,
@@ -573,8 +573,8 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	name 			= "AGM-114 Hellfire Missile",
 	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.",
 	model 			= "models/missiles/agm_114.mdl",
-	effect			= "Rocket Motor Missile1",
-	effectbooster	= "Rocket Motor Missile1",
+	effect			= "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileMedium",
 	gunclass 		= "ATGM",
 	rack 			= "2x AGM-114",					-- Which rack to spawn this missile on?
 	length 			= 163,
@@ -643,8 +643,8 @@ ACF_defineGun("Vikhr ASM", { --id
 	name			= "9K121 Vikhr Missile",
 	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.",
 	model			= "models/missiles/arend/9k121.mdl",
-	effect			= "Rocket Motor Missile1",
-	effectbooster	= "Rocket Motor Missile1",
+	effect			= "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "6x 9K121",							-- Which rack to spawn this missile on?
 	length			= 112 * 2.53, --Convert to ammocrate units

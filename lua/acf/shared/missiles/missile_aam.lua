@@ -20,8 +20,8 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 	name             = "AIM-9 Sidewinder",
 	desc             = "The gold standard in airborne jousting sticks. Agile and reliable with a rather underwhelming effective range, this homing missile is the weapon of choice for dogfights.",
 	model            = "models/missiles/aim9m.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 214,
@@ -36,7 +36,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 		rackmdl				= "models/missiles/aim9m.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 1.5,
-		reloaddelay			= 100.0,
+		reloaddelay			= 30.0,
 
 		--Formerly 302 and 1. Reduced blast from 381Mj to 136Mj. For reference a 100kg bomb has 117Kj.
 		maxlength			= 130,							-- Length of missile. Used for ammo properties.
@@ -92,8 +92,8 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 	name             = "AIM-7 Sparrow",
 	desc             = "While not as advanced as its modern counterparts, the Sparrow makes up for it in thrust and plentiful speed. Do not underestimate it.",
 	model            = "models/missiles/arend/aim7f.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
+	effectbooster    = "ACE_MissileMedium",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 146 * 2.53, --Convert to ammocrate units
@@ -108,7 +108,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 		rackmdl				= "models/missiles/arend/aim7f.mdl",
 		firedelay			= 1.0,
 		reloadspeed			= 1.5,
-		reloaddelay			= 60.0,
+		reloaddelay			= 45.0,
 
 		--Formerly 370 and 1. Reduced blast from 1059Mj to 215Mj. For reference a 250kg bomb has 224Kj.
 		maxlength			= 100,							-- Length of missile. Used for ammo properties.
@@ -164,8 +164,8 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 	name             = "AIM-120 AMRAAM",
 	desc             = "Faster than the AIM-9, but also a lot heavier. Burns hot and fast, with a good reach, but harder to lock with.  This long-range missile is sure to deliver one heck of a blast upon impact.Less agile than its smaller stablemate, so choose your shots carefully. Has datalink.",
 	model            = "models/missiles/aim120c.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
+	effectbooster    = "ACE_MissileMedium",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 383,
@@ -237,7 +237,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 	name             = "AIM-54 Phoenix",
 	desc             = "Supersonic long-range air to air missile with early radar homing.Though relatively easy to dodge, this 300 kg beast will atomize any aircraft it hits. Getting hit is a traumatic experience. Has datalink.",
 	model            = "models/missiles/arend/aim54c.mdl",
-	effect           = "Rocket Motor Arty",
+	effect           = "ACE_MissileLarge",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 153 * 2.53, --Convert to ammocrate units
@@ -304,8 +304,8 @@ ACF_defineGun("SRAAM AAM", {								-- id
 	name             = "SRAAM",
 	desc             = "Thrust vectoring absurdity. Shoots hot straight off the rails like some bat out of hell. Short range in every sense of the word but have fun dodging this one. Antimissile capable.",
 	model            = "models/missiles/arend/sraam_unfolded.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "AAM",
 	rack             = "2x SRAAM",							-- Which rack to spawn this missile on?
 	length           = 115 * 2.53, --Convert to ammocrate units
@@ -320,7 +320,7 @@ ACF_defineGun("SRAAM AAM", {								-- id
 		rackmdl				= "models/missiles/arend/sraam_folded.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 1.5,
-		reloaddelay			= 100.0,
+		reloaddelay			= 45.0,
 
 		maxlength			= 40,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
@@ -373,8 +373,8 @@ ACF_defineGun("Magic AAM", {								-- id
 	name             = "R-550 Magic",
 	desc             = "Short range air to air missile comparable to the sidewinder. Much more agile but less range and a smaller warhead.",
 	model            = "models/missiles/arend/r550magic.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 115 * 2.53, --Convert to ammocrate units
@@ -389,7 +389,7 @@ ACF_defineGun("Magic AAM", {								-- id
 		rackmdl				= "models/missiles/arend/r550magic.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 1.5,
-		reloaddelay			= 100.0,
+		reloaddelay			= 45.0,
 
 		maxlength			= 100,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
@@ -445,8 +445,8 @@ ACF_defineGun("MICA AAM", {								-- id
 	name             = "MICA Missile",
 	desc             = "Thrust vectoring short range air to air missile. Not quite as maneuverable as the R-73 but still remarkably agile. Capable of missile intercept. Has datalink.",
 	model            = "models/missiles/arend/mica_em.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 122 * 2.53, --Convert to ammocrate units
@@ -461,7 +461,7 @@ ACF_defineGun("MICA AAM", {								-- id
 		rackmdl				= "models/missiles/arend/mica_em.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 1.5,
-		reloaddelay			= 100.0,
+		reloaddelay			= 45.0,
 
 		maxlength			= 80,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
@@ -518,8 +518,8 @@ ACF_defineGun("Meteor AAM", {							-- id
 	name             = "Meteor Missile",
 	desc             = "Long range ramjet proppeled missile. Takes a bit longer to get up to speed but much longer range and harder to overshoot. Has datalink.",
 	model            = "models/missiles/arend/meteor.mdl",
-	effect           = "Rocket_Smoke_Trail",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileTiny",
+	effectbooster    = "ACE_MissileTiny",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 143 * 2.53, --Convert to ammocrate units
@@ -589,8 +589,8 @@ ACF_defineGun("R-60 AAM", {								-- id
 	name             = "R-60 Aphid",
 	desc             = "Small early soviet air to air missile. Slow but has a good range. Don't expect to do much with its relatively puny warhead",
 	model            = "models/missiles/arend/r60m.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 85 * 2.53, --Convert to ammocrate units,
@@ -605,7 +605,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 		rackmdl				= "models/missiles/arend/r60m.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 1.5,
-		reloaddelay			= 100.0,
+		reloaddelay			= 30.0,
 
 		maxlength			= 50,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
@@ -660,8 +660,8 @@ ACF_defineGun("R-73 AAM", {								-- id
 	name             = "R-73 Archer",
 	desc             = "A monster in a dogfight. Compared to the Aim-9 this missile has a longer range and incredible offbore capability. But the IRCCM isn't as effective.",
 	model            = "models/missiles/arend/r73.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileSmall",
+	effectbooster    = "ACE_MissileSmall",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 116 * 2.53, --Convert to ammocrate units
@@ -676,7 +676,7 @@ ACF_defineGun("R-73 AAM", {								-- id
 		rackmdl				= "models/missiles/arend/r73.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 1.5,
-		reloaddelay			= 100.0,
+		reloaddelay			= 45.0,
 
 		maxlength			= 80,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
@@ -732,8 +732,8 @@ ACF_defineGun("R-77 AAM", {							-- id
 	name             = "R-77 Adder",
 	desc             = "Counterpart to the aim-120. Very similar in performance but heavier but burns hot and fast.  This long-range missile is sure to deliver its payload fast.Less agile than its smaller stablemate, so choose your shots carefully. Has datalink.",
 	model            = "models/missiles/arend/r77.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
+	effectbooster    = "ACE_MissileMedium",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 142 * 2.53, --Convert to ammocrate units
@@ -803,8 +803,8 @@ ACF_defineGun("R-27 AAM", {							-- id
 	name             = "R-27 Alamo",
 	desc             = "Massive medium range AAM with an equally large warhead. Slower to start than the aim-120 but packs a powerful punch. Has datalink.",
 	model            = "models/missiles/arend/r27t.mdl",
-	effect           = "Rocket Motor",
-	effectbooster    = "Rocket Motor Missile1",
+	effect           = "ACE_MissileMedium",
+	effectbooster    = "ACE_MissileMedium",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 180 * 2.53, --Convert to ammocrate units
@@ -819,7 +819,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 		rackmdl				= "models/missiles/arend/r27t.mdl",
 		firedelay			= 1.0,
 		reloadspeed			= 1.5,
-		reloaddelay			= 60.0,
+		reloaddelay			= 45.0,
 
 		--Formerly 370 and 1. Reduced blast from 1059Mj to 215Mj. For reference a 250kg bomb has 224Kj.
 		maxlength			= 100,							-- Length of missile. Used for ammo properties.
@@ -869,13 +869,11 @@ ACF_defineGun("R-27 AAM", {							-- id
 	ghosttime          = 0.075									-- Time where this missile will be unable to hit surfaces, in seconds
 } )
 
---AIM-54 phoenix. Being faster and bigger than AIM-120, can deliver a single big blast against the target, however, this 300kgs piece of aerial destruction has a serious trouble
---with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("R-33 AAM", {							-- id
 	name             = "R-33 Amos",
 	desc             = "A supersonic long-range air to air missile. H E A V Y. Faster than its Aim-54 counterpart but with a weaker warhead. Will vaporize any aircraft it touches. Has datalink.",
 	model            = "models/missiles/arend/r33.mdl",
-	effect           = "Rocket Motor Arty",
+	effect           = "ACE_MissileLarge",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 163 * 2.53, --Convert to ammocrate units

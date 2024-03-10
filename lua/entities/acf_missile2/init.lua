@@ -105,7 +105,8 @@ function ENT:Think()
 	local Facing = self:GetForward()
 	local AngleOfAttack = math.min(math.abs(math.acos(FlightDir:Dot( Facing ))),0.785) --45*180/3.14
 --	local DifFacing = (Facing:Angle() - FlightDir:Angle())
-	local DifFacing = (self:GetUp():Angle() - FlightDir:Angle())
+	local DifFacing = (FlightDir:Angle() - Facing:Angle())
+	DifFacing = Angle(math.NormalizeAngle(DifFacing.pitch),math.NormalizeAngle(DifFacing.yaw),0)
 
 	--------------------------
 	-----Guidance Section-----
@@ -287,11 +288,12 @@ function ENT:Think()
 
 			local adjustedrate = self.TurnRate * DeltaTime * (self.Speed^2 / 10000) * math.cos(AngleOfAttack) + self.ThrustTurnRate * DeltaTime
 			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
-			self:SetAngles(AngAdjust + Angle(math.Clamp( DifFacing.pitch, 0, 100 ), math.Clamp( DifFacing.yaw, -100, 100 ),0) * 0.15 * DeltaTime)
+			self:SetAngles(AngAdjust + Angle(math.Clamp( DifFacing.pitch, 0, 100 ), math.Clamp( DifFacing.yaw, -100, 100 ),0) * 2 * DeltaTime)
+			--self:SetAngles(AngAdjust)
 
 		else
 
-			self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 0.15 * DeltaTime))
+			self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 2 * DeltaTime))
 
 		end
 		--------------------------
