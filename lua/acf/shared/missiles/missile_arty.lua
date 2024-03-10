@@ -386,7 +386,7 @@ ACF_defineGun("SS-40 RA", {								-- id
 ACF_defineGun("M31 RA", {							-- id
 
 	name             = "M31 GMLRS",
-	desc             = "Long range precision strike missile found in the M270 MLRS. Guided to give better precision and control over trajectory. Has datalink.",
+	desc             = "Long range precision strike missile found in the M270 MLRS. Guided to give better precision and control over trajectory.",
 	model            = "models/missiles/gmlrs.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster	= "ACE_MissileMedium",
@@ -433,7 +433,6 @@ ACF_defineGun("M31 RA", {							-- id
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 	},
@@ -454,7 +453,7 @@ ACF_defineGun("M31 RA", {							-- id
 
 ACF_defineGun("ATACMS RA", {						-- id
 	name             = "MGM-140 ATACMS",
-	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!! Has datalink.",
+	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!!",
 	model            = "models/macc/MGM-140.mdl",
 	effect           = "ACE_MissileLarge",
 	effectbooster	 = "ACE_MissileLarge",
@@ -501,7 +500,6 @@ ACF_defineGun("ATACMS RA", {						-- id
 
 		dragcoef			= 0.01,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},

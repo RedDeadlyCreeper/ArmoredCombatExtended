@@ -57,7 +57,7 @@ function this:GetGuidance(missile)
 
 	self:CheckTarget(missile)
 
-	if not IsValid(self.Target) or not self.Target.Active then
+	if not IsValid(self.Target) or not self.Target.Active or self.Target.IsJammed ~= 0 then
 		return {}
 	end
 
