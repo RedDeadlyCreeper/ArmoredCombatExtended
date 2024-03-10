@@ -6,10 +6,34 @@ function EFFECT:Init( data )
 
 	self.Origin = data:GetOrigin()
 	self.DirVec = data:GetNormal()
-	self.Radius = math.max(data:GetRadius() / 50,1)
+	self.Radius = math.max(data:GetRadius() / 39.4,1)
 	self.Emitter = ParticleEmitter( self.Origin )
 	self.ParticleMul = tonumber(LocalPlayer():GetInfo("acf_cl_particlemul")) or 1
 
+	--[[
+	for _ = 0, 5 * self.Radius * self.ParticleMul do
+
+		local Embers = self.Emitter:Add( "particles/flamelet" .. math.random(1,5), self.Origin )
+		if (Embers) then
+			Embers:SetVelocity ( (self.DirVec + VectorRand() * 0.4) * math.random(100,600) * self.Radius )
+			Embers:SetLifeTime( 0 )
+			Embers:SetDieTime( math.Rand( 0.3 , 1 ) * self.Radius / 3 )
+			Embers:SetStartAlpha( 255 )
+			Embers:SetEndAlpha( 0 )
+			Embers:SetStartSize( 1 * self.Radius )
+			Embers:SetEndSize( 0 * self.Radius )
+			Embers:SetStartLength( 5 * self.Radius )
+			Embers:SetEndLength ( 0 * self.Radius )
+			Embers:SetRoll( math.Rand(0, 360) )
+			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Embers:SetAirResistance( 20 )
+			Embers:SetGravity( Vector( 0, 0, -650 ) )
+			Embers:SetColor( 200,200,200 )
+		end
+	end
+	]]--
+
+	--[[
 	for _ = 0, 3 * self.Radius * self.ParticleMul do
 
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
@@ -69,6 +93,7 @@ function EFFECT:Init( data )
 			Embers:SetColor( 200,200,200 )
 		end
 	end
+	]]--
 
 	local Flash = EffectData()
 		Flash:SetOrigin( self.Origin )

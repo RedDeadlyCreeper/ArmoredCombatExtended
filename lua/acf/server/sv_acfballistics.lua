@@ -140,15 +140,34 @@ do
 		if BackTraceOverride then Bullet.FlightTime = 0 end
 		Bullet.DeltaTime = ACF.SysTime - Bullet.LastThink
 
+		local NormFlight = Bullet.Flight:GetNormalized()
+		local FlightLength = Bullet.Flight:Length()
+
+		local WaterTr = { }
+		WaterTr.start = Bullet.Pos
+		WaterTr.endpos = Bullet.Pos + NormFlight * 1
+		WaterTr.mask = MASK_WATER
+		local Water = util.TraceLine( WaterTr )
+
+
+		Bullet.UnderWater = false
+
+		if Water.HitWorld and Water.StartSolid then
+				Bullet.UnderWater = true
+		end
+
 		--actual motion of the bullet
-		local Drag		= Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
+		local Drag		= NormFlight * (Bullet.DragCoef * FlightLength^2) / ACF.DragDiv
+		if Bullet.UnderWater then
+			Drag = Drag * 800
+		end
 		Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)																								-- Calculates the next shell position
 		Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag) * Bullet.DeltaTime
 
 		-- Used for trace
-		local Flightnorm  = Bullet.Flight:GetNormalized()
+		local Flightnorm  = NormFlight
 
-		Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * Bullet.Flight:Length() - Bullet.TraceBackComp * Bullet.DeltaTime )
+		Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * FlightLength - Bullet.TraceBackComp * Bullet.DeltaTime )
 		Bullet.EndTrace	= Bullet.NextPos + Flightnorm * PhysVel
 
 		debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255) ) --true start
@@ -303,7 +322,8 @@ do
 				else
 
 					ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
-					ACF_CalcBulletFlight( Index, Bullet, true )		--The world ain't going to move, so we say True for the backtrace override
+					--ACF_CalcBulletFlight( Index, Bullet, true )		--The world ain't going to move, so we say True for the backtrace override
+					ACF_CalcBulletFlight( Index, Bullet, true )		--Backtrace needed for world penetration effects
 				end
 			end,
 
@@ -390,6 +410,11 @@ do
 			end
 
 			return
+		end
+
+		ACF_DoOnBulletFlight = ACF.RoundTypes[Bullet.Type]["onbulletflight"]
+		if ACF_DoOnBulletFlight then
+			ACF_DoOnBulletFlight( Index, Bullet)
 		end
 
 		--if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
@@ -515,24 +540,24 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 		end
 
 		Effect:SetScale( Hit )  --Hit Type
-	util.Effect( "ACF_BulletEffect", Effect, true, true )
+		util.Effect( "ACF_BulletEffect", Effect, true, true )
 
 	elseif Type == "Init" then
 
-	local IsMissile
+		local IsMissile
 
-	if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
-		IsMissile = 1
-	end
+		if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
+			IsMissile = 1
+		end
 
-	local Effect = EffectData()
-		Effect:SetMaterialIndex( Index )	--Bullet Index
-		Effect:SetStart( Bullet.Flight / 10 )	--Bullet Direction
-		Effect:SetOrigin( Bullet.Pos )
-		Effect:SetEntity( Entity(Bullet["Crate"]) )
-		Effect:SetScale( 0 )
-		Effect:SetAttachment( IsMissile or 0 )
-	util.Effect( "ACF_BulletEffect", Effect, true, true )
+		local Effect = EffectData()
+			Effect:SetMaterialIndex( Index )	--Bullet Index
+			Effect:SetStart( Bullet.Flight / 10 )	--Bullet Direction
+			Effect:SetOrigin( Bullet.Pos )
+			Effect:SetEntity( Entity(Bullet["Crate"]) )
+			Effect:SetScale( 0 )
+			Effect:SetAttachment( IsMissile or 0 )
+		util.Effect( "ACF_BulletEffect", Effect, true, true )
 
 	end
 end

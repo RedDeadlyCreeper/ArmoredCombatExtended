@@ -1,0 +1,4 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/S8KOLauncher_material"
+}

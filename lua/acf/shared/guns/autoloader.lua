@@ -4,7 +4,7 @@ ACF_defineGunClass("AL", {
 	spread = 0.1,
 	name = "Autoloader",
 	desc = ACFTranslation.GunClasses[3],
-	muzzleflash = "120mm_muzzleflash_noscale",
+	muzzleflash = "C",
 	rofmod = 0.64,
 	year = 1946,
 	sound = "ace_weapons/multi_sound/100mm_multi.mp3",

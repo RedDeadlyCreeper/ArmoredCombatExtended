@@ -30,24 +30,33 @@ ACF_defineGun("50kgBOMB", {						-- id
 	modeldiameter    = 11.15,					-- in cm
 
 	round = {
-		model       = "models/bombs/fab50.mdl",
-		rackmdl     = "models/bombs/fab50.mdl",
-		maxlength   = 62,
-		casing      = 0.05,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.003,						-- drag coefficient of the missile
-		finmul      = 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
+		rocketmdl			= "models/bombs/fab50.mdl",
+		rackmdl				= "models/bombs/fab50.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 30.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 600,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
 		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK_small"] = true,
@@ -75,24 +84,33 @@ ACF_defineGun("100kgBOMB", {						-- id
 	modeldiameter    = 13,				-- in cm
 
 	round = {
-		model       = "models/bombs/fab100.mdl",
-		rackmdl     = "models/bombs/fab100.mdl",
-		maxlength   = 125,
-		casing      = 0.1,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.003,						-- drag coefficient of the missile
-		finmul      = 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		rocketmdl			= "models/bombs/fab100.mdl",
+		rackmdl				= "models/bombs/fab100.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 45.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 400,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 30,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 					["1xRK_small"] = true,
@@ -119,24 +137,33 @@ ACF_defineGun("250kgBOMB", {						-- id
 	modeldiameter    = 15, -- in cm
 
 	round = {
-		model       = "models/bombs/fab250.mdl",
-		rackmdl     = "models/bombs/fab250.mdl",
-		maxlength   = 150,						-- was 115, wtf!
-		casing      = 0.15,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.003,						-- drag coefficient of the missile
-		finmul      = 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		rocketmdl			= "models/bombs/fab250.mdl",
+		rackmdl				= "models/bombs/fab250.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 60.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 750,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK_small"] = true,
@@ -163,24 +190,33 @@ ACF_defineGun("500kgBOMB", {						-- id
 	modeldiameter    = 18,				-- in cm
 
 	round = {
-		model       = "models/bombs/fab500.mdl",
-		rackmdl     = "models/bombs/fab500.mdl",
-		maxlength   = 300,
-		casing      = 0.2,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.003,						-- drag coefficient of the missile
-		finmul      = 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		rocketmdl			= "models/bombs/fab500.mdl",
+		rackmdl				= "models/bombs/fab500.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 80.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 300,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 50,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK"] = true,
@@ -204,24 +240,33 @@ ACF_defineGun("1000kgBOMB", {					-- id
 	modeldiameter    = 26,				-- in cm
 
 	round = {
-		model       = "models/bombs/an_m66.mdl",
-		rackmdl     = "models/bombs/an_m66.mdl",
-		maxlength   = 600,
-		casing      = 0.1,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 1,							-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.003,						-- drag coefficient of the missile
-		finmul      = 0.004,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul      = math.sqrt(0.08)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		rocketmdl			= "models/bombs/an_m66.mdl",
+		rackmdl				= "models/bombs/an_m66.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 100.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 700,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 60,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK"] = true
@@ -245,24 +290,33 @@ ACF_defineGun("100kgGBOMB", {					-- id
 	modeldiameter    = 13,				-- in cm
 
 	round = {
-		model       = "models/missiles/micro.mdl",
-		rackmdl     = "models/missiles/micro.mdl",
-		maxlength   = 125,
-		casing      = 0.1,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 500,						-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.002,						-- drag coefficient of the missile
-		finmul      = 0.05,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		rocketmdl			= "models/missiles/micro.mdl",
+		rackmdl				= "models/missiles/micro.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 35.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 400,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK_small"] = true,
@@ -291,24 +345,33 @@ ACF_defineGun("250kgGBOMB", {					-- id
 	bodydiameter     = 16.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
-		model       = "models/missiles/fab250.mdl",
-		rackmdl     = "models/missiles/fab250.mdl",
-		maxlength   = 150,
-		casing      = 0.2,						-- thickness of missile casing, cm
-		armour      = 25,						-- effective armour thickness of casing, in mm
-		propweight  = 0,							-- motor mass - motor casing
-		thrust      = 1,							-- average thrust - kg * in/s ^ 2
-		burnrate    = 1,							-- cm ^ 3/s at average chamber pressure
-		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
-		minspeed    = 500,						-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef    = 0.002,						-- drag coefficient of the missile
-		finmul      = 0.05,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		rocketmdl			= "models/missiles/fab250.mdl",
+		rackmdl				= "models/missiles/fab250.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 50.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 750,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical", "Cluster"},
+	fuses      = {"Contact", "Optical"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 					["1xRK_small"] = true,

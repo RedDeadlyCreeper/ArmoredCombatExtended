@@ -103,15 +103,23 @@ do
 			BulletData.LastThink    = CurTime() --ACF.CurTime
 			BulletData.Effect       = self.Entity
 			BulletData.CrackCreated = false
+			BulletData.HasWhistled = false
+			BulletData.HasSplashed = false
 			BulletData.InitialPos   = BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
 
 			BulletData.BulletModel  = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" )
 
-			if BulletData.Crate:GetNWFloat( "Tracer" ) > 0 then
+			BulletData.Tracer         = ParticleEmitter( BulletData.SimPos )
+
+			self.hasTracer = (BulletData.Crate:GetNWFloat( "Tracer" ) > 0)
+
+			if self.hasTracer then
 				BulletData.Counter        = 0
-				BulletData.Tracer         = ParticleEmitter( BulletData.SimPos )
 				BulletData.TracerColour   = BulletData.Crate:GetNWVector( "TracerColour", BulletData.Crate:GetColor() ) or Vector(255,255,255)
 			end
+
+
+			BulletData.ShellParticles         = ParticleEmitter( BulletData.SimPos )
 
 			--Add all that data to the bullet table, overwriting if needed
 			ACF.BulletEffect[self.Index] = BulletData
@@ -154,7 +162,7 @@ function EFFECT:Think()
 	if self.Alive and Bullet and self.CreateTime > ACF.CurTime-30 then
 
 		--We require this so the tracer is not spawned in middle of the gun (when initially fired)
-		if Bullet.Tracer and IsValid(Bullet.Tracer) and Bullet.Counter < 3 then Bullet.Counter = Bullet.Counter + 1 end
+		if self.hasTracer and IsValid(Bullet.Tracer) and Bullet.Counter < 4 then Bullet.Counter = Bullet.Counter + 1 end
 
 		return true
 	end
@@ -174,7 +182,38 @@ local function CanBulletCrack( Bullet )
 	if Bullet.Impacted then return false end
 
 	local SqrtSpeed = (Bullet.SimPos - Bullet.SimPosLast):LengthSqr()
-	if SqrtSpeed < 50 ^ 2 then return false end
+	if SqrtSpeed < 2500 then return false end -- 2500 = 50^2
+
+	return true
+end
+
+--Check if the crack is allowed to perform or not
+local function CanWhistle( Bullet )
+
+	if Bullet.IsMissile then return false end
+	if Bullet.HasWhistled then return false end
+	if Bullet.Impacted then return false end
+	if Bullet.SimFlight:GetNormalized().z > -0.5 then return false end
+	if Bullet.Caliber < 5 then return false end
+
+	local BulSpeed = Bullet.SimFlight:Length()
+
+	if BulSpeed < 50 then return false end
+	if not ACE_SInDistance( Bullet.SimPos, 1 * BulSpeed ) then return false end
+
+	if ACE_Approaching( Bullet.SimPos, Bullet.SimFlight ) > 0 then return false end --Shell is moving away.
+
+
+	return true
+end
+
+--Check if the crack is allowed to perform or not
+local function CanSplash( Bullet )
+
+	if Bullet.IsMissile then return false end
+	if Bullet.Impacted then return false end
+	if not Bullet.IsUnderWater then return false end
+	if Bullet.HasSplashed then return false end
 
 	return true
 end
@@ -195,6 +234,24 @@ function EFFECT:ApplyMovement( Bullet, Index )
 		if CanBulletCrack( Bullet ) then
 			ACE_SBulletCrack(Bullet, Bullet.Caliber)
 		end
+
+		--incoming shell whistle
+		if CanWhistle( Bullet ) then
+			ACE_SBulletWhistle(Bullet, Bullet.Caliber)
+		end
+
+		local WaterTr = { }
+		WaterTr.start = Bullet.SimPos
+		WaterTr.endpos = Bullet.SimPos + Bullet.SimFlight * 0.1
+		WaterTr.mask = MASK_WATER
+		local Water = util.TraceLine( WaterTr )
+
+		Bullet.IsUnderWater = false
+		if Water.HitWorld and Water.StartSolid then
+				Bullet.IsUnderWater = true
+				Bullet.WaterPos = Water.HitPos
+		end
+
 	else
 		--We don't need small bullets to stay outside of skybox. This is meant for large calibers only.
 		if Bullet.Caliber < 5 then
@@ -203,39 +260,97 @@ function EFFECT:ApplyMovement( Bullet, Index )
 		end
 	end
 
-	if Bullet.Tracer and IsValid(Bullet.Tracer) then
-
-		local value = 2.5
-
---		if Bullet.Counter <= 1 then value = 1.85 end
+	if IsValid(Bullet.Tracer) then
 
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
-		local Length =  math.min(-DeltaPos:Length() * value,-1)
+		local Length =  math.min(-DeltaPos:Length() * 3.125,-1)
 
-		local MaxSprites = 2
+		if self.hasTracer and Bullet.Counter > 3 then
 
-		local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos + Bullet.SimFlight * 0.01 )
+			local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos )
 
-		--debugoverlay.Cross(setPos,3,1,Color(255,255,255,10), true)
+			if (Light) then
+				Light:SetAngles( Bullet.SimFlight:Angle() )
+				Light:SetVelocity( Bullet.SimFlight:GetNormalized() )
+				Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
+				Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.0275,0.05625) ) -- 0.075, 0.1
+				Light:SetStartAlpha( 180 )
+				Light:SetEndAlpha( 0 )
+				Light:SetStartSize( 30 * Bullet.Caliber ) -- 5
+				Light:SetEndSize( 30 * Bullet.Caliber ) --15 * Bullet.Caliber
+				Light:SetStartLength( Length )
+				Light:SetEndLength( Length ) --Length
+				Light:SetLighting( false )
+			end
 
-		if (Light) then
-			Light:SetAngles( Bullet.SimFlight:Angle() )
-			Light:SetVelocity( Bullet.SimFlight:GetNormalized() )
-			Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
-			Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.0275,0.05625) ) -- 0.075, 0.1
-			Light:SetStartAlpha( 180 )
-			Light:SetEndAlpha( 0 )
-			Light:SetStartSize( 30 * Bullet.Caliber ) -- 5
-			Light:SetEndSize( 30 * Bullet.Caliber ) --15 * Bullet.Caliber
-			Light:SetStartLength( Length )
-			Light:SetEndLength( Length ) --Length
-			Light:SetLighting( false )
+			Light = Bullet.Tracer:Add( "effects/ar2_altfire1b", setPos )
+
+			--debugoverlay.Cross(setPos,3,1,Color(255,255,255,10), true)
+
+			if (Light) then
+				Light:SetAngles( Bullet.SimFlight:Angle() )
+				Light:SetVelocity( Bullet.SimFlight:GetNormalized() )
+				--Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
+				Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.0275,0.05625) ) -- 0.075, 0.1
+				Light:SetStartAlpha( 180 )
+				Light:SetEndAlpha( 0 )
+				Light:SetStartSize( 2 * Bullet.Caliber ) -- 5
+				Light:SetEndSize( 2 * Bullet.Caliber ) --15 * Bullet.Caliber
+				Light:SetStartLength( Length )
+				Light:SetEndLength( Length ) --Length
+				Light:SetLighting( false )
+			end
 		end
+
+		--Splish Splash Water
+		if CanSplash( Bullet ) then
+
+			WaterTr = { }
+			WaterTr.start = Bullet.SimPos - Bullet.SimFlight * 0.025
+			WaterTr.endpos = Bullet.SimPos + Bullet.SimFlight * 500
+			WaterTr.mask = MASK_WATER
+			Water = util.TraceLine( WaterTr )
+
+			local Sparks = EffectData()
+			Sparks:SetOrigin( Water.HitPos + Vector(0,0,0) )
+			Sparks:SetScale( Bullet.Caliber * 10 )
+			util.Effect( "watersplash", Sparks )
+
+			ACE_EmitSound( "ambient/water/water_splash" .. math.random(1,3) .. ".wav" , Water.HitPos, 100, 100 / Bullet.Caliber * 4, 300 )
+
+			Bullet.HasSplashed = true
+		end
+
+
+
+
+		local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos + DeltaPos )
+		if (Smoke) then
+			Smoke:SetAngles( Bullet.SimFlight:Angle() )
+			Smoke:SetVelocity( Bullet.SimFlight * 0.05 )
+			Smoke:SetColor( 200 , 200 , 200 )
+			Smoke:SetDieTime( 0.8 ) -- 0.5
+			Smoke:SetStartAlpha( 15 )
+			Smoke:SetEndAlpha( 0 )
+			Smoke:SetStartSize( Bullet.Caliber * 3 )
+			Smoke:SetEndSize( Bullet.Caliber * 3 )
+			Smoke:SetStartLength( Length * 0.75 )
+			Smoke:SetEndLength( Length * 0.75 ) --Length
+			Smoke:SetRollDelta( 0.1 )
+			Smoke:SetAirResistance( 150 )
+			Smoke:SetGravity( Vector(0,0,20) )
+
+		end
+
+
+
+		--[[
+		local MaxSprites = 1
 
 		if MaxSprites > 0 then
 
 			for i = 1, MaxSprites do
-				local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos - (DeltaPos * i / MaxSprites) )
+				local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos + (DeltaPos * i / MaxSprites) )
 				if (Smoke) then
 					Smoke:SetAngles( Bullet.SimFlight:Angle() )
 					Smoke:SetVelocity( Bullet.SimFlight * 0.05 )
@@ -252,6 +367,9 @@ function EFFECT:ApplyMovement( Bullet, Index )
 				end
 			end
 		end
+		]]--
+
+
 	end
 end
 

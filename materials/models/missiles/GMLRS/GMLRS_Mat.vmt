@@ -1,0 +1,13 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/GMLRS/GMLRS_Mat"
+	$bumpmap "models/missiles/GMLRS/GMLRS__n"
+
+
+	$rimlight 1
+	$rimlightexponent 100
+	$rimlightboost 1
+
+	$rimmask 1
+
+}
