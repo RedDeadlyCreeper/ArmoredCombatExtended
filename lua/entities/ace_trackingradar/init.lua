@@ -8,39 +8,41 @@ DEFINE_BASECLASS( "base_wire_entity" )
 function ENT:Initialize()
 
 	self.ThinkDelay			= 0.1
+	self.ResetJamDelay		= 0.45 --Periodically resets jamming strength to zero for the jammer to apply the highest noise available. This means the jamming won't always remain at full strength without a lot of networking.
+	self.NextJamCheck		= 0
 	self.StatusUpdateDelay	= 0.5
-	self.LastStatusUpdate	= CurTime()
+	self.LastStatusUpdate	= ACF.CurTime
 	self.Active				= false
 
 	self.Heat				= 21
 	self.IsJammed			= 0
+	self.JamStrength		= 0
+	self.JamDir				= vector_origin
 
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
 	self.LegalIssues			= ""
 
-	self.MinViewCone = 3
-	self.MaxViewCone = 45
-
 	self.ClosestToBeam		= -1
 
+	self.AcquiredTargets		= {}
+
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam","IsJammed"} )
+	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam", "IsJammed", "JamDirection [VECTOR]"} )
 	self.OutputData = {
 		Detected        = 0,
 		Owner           = {},
 		Position        = {},
 		Velocity        = {},
 		ClosestToBeam   = -1,
-		IsJammed        = 0
+		IsJammed        = 0,
+		JamDirection    = vector_origin
 	}
 
 end
 
 local function SetConeParameters( Radar )
 
-	Radar.InaccuracyMul          = (0.035 * (Radar.Cone / 15) ^ 2) * 0.2
-	Radar.DPLRFAC                = 65 - (Radar.Cone / 2)
 	Radar.ConeInducedGCTRSize    = Radar.Cone * 10
 
 end
@@ -66,6 +68,15 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	Radar.ACFName  = radar.name
 	Radar.ICone    = radar.viewcone	--Note: intentional. --Recorded initial cone
 	Radar.Cone     = Radar.ICone
+	Radar.PowerID     = radar.powerid
+
+	Radar.InaccuracyMul          = (0.035 * (Radar.ICone / 15) ^ 2) * 0.2
+	Radar.DPLRFAC                = 65 - (Radar.ICone / 2)
+
+	Radar.OffBoreInaccFactor	 = radar.offborefactor
+	Radar.Burnthrough = radar.burnthrough
+
+	--print(Radar.OffBoreInaccFactor)
 
 	SetConeParameters( Radar )
 
@@ -112,15 +123,18 @@ end
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
 		self:SetActive((value ~= 0) and self.Legal)
+
+		local curTime = CurTime()
+		self:NextThink(curTime + 3) --Radar takes a moment to power up. Used to prevent radar flickering to avoid ECM.
 	elseif inp == "Cone" then
 		if value > 0 then
 
-			self.Cone = math.Clamp(value / 2, self.MinViewCone ,self.MaxViewCone )
+			self.Cone = math.Clamp(value / 2, 1 ,self.ICone )
 
 			SetConeParameters( self )
 
 			local curTime = CurTime()
-			self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
+			self:NextThink(curTime + 3) --Switching beam width will take time. This is to balance jamming.
 		else
 			self.Cone = self.ICone
 		end
@@ -132,6 +146,7 @@ end
 function ENT:SetActive(active)
 
 	self.Active = active
+	self.AcquiredTargets		= {}
 
 	if active  then
 		local sequence = self:LookupSequence("active") or 0
@@ -149,6 +164,7 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Velocity", {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 		WireLib.TriggerOutput( self, "IsJammed", 0 )
+		WireLib.TriggerOutput( self, "Velocity", vector_origin )
 
 		self.OutputData.Detected = 0
 		self.OutputData.Owner = {}
@@ -161,6 +177,40 @@ function ENT:SetActive(active)
 	end
 
 end
+
+
+function ENT:UpdateStatus()
+	self.Status = self.Active and "On" or "Off"
+end
+
+function ENT:UpdateOverlayText()
+
+local cone	= self.Cone
+local status	= self.Status or "Off"
+local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
+local Jammed	= self.IsJammed
+
+local txt = "Status: " .. status
+
+txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
+
+--txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
+
+if Jammed > 0 then
+	txt = txt .. "\n\n! ! ! Warning: Jammed ! ! !"
+end
+if detected then
+	txt = txt .. "\n\nTarget Detected!"
+end
+
+if not self.Legal then
+txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+end
+
+self:SetOverlayText(txt)
+
+end
+
 
 function ENT:Think()
 
@@ -181,32 +231,22 @@ function ENT:Think()
 
 	if self.Active and self.Legal then
 
-		local radID = ACE.radarIDs[self]
-		self.IsJammed = 0
-		for _, scanEnt in pairs(ACE.ECMPods) do
-
-			if scanEnt.CurrentlyJamming == radID then
-				self.IsJammed = 1
-			end
-
-		end
+		--local radID = ACE.radarIDs[self]
 
 		WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
 		self.OutputData.IsJammed = self.IsJammed
-
-		if self.IsJammed <= 0 then
 
 			--Get all ents collected by contraptionScan
 			local ScanArray = ACE.contraptionEnts
 
 			local thisPos	= self:GetPos()
 			--local thisforward	= self:GetForward()
-			local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
-			local randinac2	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using one inaccuracy was boring
+			--local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
 
 			local ownArray	= {}
 			local posArray	= {}
 			local velArray	= {}
+			self.AcquiredTargets		= {}
 
 			self.ClosestToBeam  = -1
 			local besterr = math.huge --Hugh mungus number
@@ -217,28 +257,26 @@ function ENT:Think()
 				--check if ent is valid
 				if scanEnt:IsValid() then
 
-					--skip any flare from vision
-					if scanEnt:GetClass() == "ace_flare" then continue end
-
 					--skip the tracking itself
-					if scanEnt:EntIndex() == self:EntIndex() then continue end
+					if scanEnt:EntIndex() == self:EntIndex() then continue end --Wouldn't be needed with CFRAME
 
 					--skip any parented entity
-					if scanEnt:GetParent():IsValid() then continue end
+					if scanEnt:GetParent():IsValid() then continue end --Wouldn't be needed with CFRAME
 
 					local entvel	= scanEnt:GetVelocity()
-					local velLength = entvel:Length()
 					local entpos	= scanEnt:WorldSpaceCenter()
 
 					local difpos	= (entpos - thisPos)
+					local entdistance  = difpos:Length()
 					local ang	= self:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
 					local absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
-					--Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
-					local errorFromAng = Vector(0.05 * (absang.y / self.Cone) ^ 2, 0.02 * (absang.y / self.Cone) ^ 2, 0.02 * (absang.p / self.Cone) ^ 2)
-
 					--Entity is within radar cone
 					if (absang.p < self.Cone and absang.y < self.Cone) then
+
+						local BTFactor = 1 / (1 + ((self.Cone-1) / (self.ICone-1)) * 2) --1x at 1 degree seek. 1/3rd at max seek.
+
+						if self.IsJammed ~= 0 and (self.Burnthrough * 3937 * BTFactor) / self.JamStrength < entdistance then continue end --39.37 * 1000 from burnthrough factor to convert to meters.
 
 						local LOStr = util.TraceLine( {
 
@@ -254,20 +292,16 @@ function ENT:Think()
 							local DPLR
 							local Espeed = entvel:Length()
 
-							if Espeed > 0.5 then
-								DPLR = self:WorldToLocal(thisPos + entvel * 2)
+							if Espeed > 0.5 then --Target is moving, test for doppler.
+								DPLR = self:WorldToLocal(thisPos + entvel * 2) --Gets velocity of target in line with radar
 							else
 								Espeed = 0
 								DPLR = Vector(0.001,0.001,0.001)
 							end
 
-							--print(Espeed)
-
-							local Dopplertest = math.min(math.abs(Espeed / math.abs(DPLR.Y)) * 100, 10000)
-							local Dopplertest2 = math.min(math.abs(Espeed / math.abs(DPLR.Z)) * 100, 10000)
-
-							--Also objects not coming directly towards the radar create more error.
-							local DopplerERR = (((math.abs(DPLR.y) ^ 2 + math.abs(DPLR.z) ^ 2) ^ 0.5) / velLength / 2) * 0.1
+							--0.6 ratio fails test.
+							local Dopplertest = math.min(math.abs(Espeed / math.abs(DPLR.Y)) * 100, 10000) --Side to side speed ratio. If all speed is up ratio is 0.5, half 1.0, quarter, 2.0, etc. x100.
+							local Dopplertest2 = math.min(math.abs(Espeed / math.abs(DPLR.Z)) * 100, 10000) --Vertical speed ratio.
 
 							local GCtr = util.TraceHull( {
 
@@ -293,12 +327,31 @@ function ENT:Think()
 							--print(GCdis)
 							--if GCdis <= 0.5 then --Get canceled by ground clutter
 
-							--Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target
-							if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X / (Espeed + 0.0001)) > 0.3) or (GCFr >= 0.4) ) then
-								--1000 u = ~57 mph
+							--Tests if radar target. If it doesn't pass a ground clutter check, do a pulse doppler test.
+							--DPLRFAC is 60 on large radar. Requiring a dopplertest below that.
+							--On DPLRFAC X term, if a target is moving away or towards the radar at 50 mph the radar will also classify the target
+							if (GCFr >= 0.4) or (( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( math.abs(DPLR.X / (Espeed + 0.0001)) > 0.3 )) then
+
+
+								--Chaff can be used to gunk up radars.
+								local Multiplier = 1
+
+								if scanEnt:GetClass() == "ace_flare" then
+									Multiplier = scanEnt.RadarSig
+								end
 
 								--Could do pythagorean stuff but meh, works 98% of time
 								local err = absang.p + absang.y
+
+								local BaseInacc = VectorRand()  * ( entdistance / 400 ) --39.37 cancels out.
+
+								local OffboreInacc = 1 + (err / self.ICone) * self.OffBoreInaccFactor
+
+								--For Owner table
+								local Owner = scanEnt:CPPIGetOwner()
+								local NickName = IsValid(Owner) and Owner:GetName() or ""
+
+								err = err * Multiplier
 
 								--Sorts targets as closest to being directly in front of radar
 								if err < besterr then
@@ -306,18 +359,15 @@ function ENT:Think()
 									besterr = err
 								end
 
-								--For Owner table
-								local Owner = scanEnt:CPPIGetOwner()
-								local NickName = IsValid(Owner) and Owner:GetName() or ""
-
 								table.insert(ownArray , NickName)
-								table.insert(posArray ,entpos + randinac * errorFromAng * 2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis * 0.1 ))) --3
+								table.insert(posArray ,entpos + BaseInacc * OffboreInacc ) --3 --Inaccuracy goes hereValidTargets
+								table.insert(self.AcquiredTargets , scanEnt)
 
 								--IDK if this is more intensive than length
 								local finalvel = Vector(0,0,0)
 
-								if Espeed > 0 then
-									finalvel = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr * 0.03) )
+								if Espeed > 0.5 then
+									finalvel = entvel * (1 + math.Rand(-0.025,0.025) * OffboreInacc)
 									finalvel = Vector(math.Clamp(finalvel.x,-7000,7000),math.Clamp(finalvel.y,-7000,7000),math.Clamp(finalvel.z,-7000,7000))
 								end
 
@@ -361,7 +411,6 @@ function ENT:Think()
 				self.OutputData.Velocity = {}
 				self.OutputData.ClosestToBeam = -1
 			end
-		end
 	end
 
 	if (self.LastStatusUpdate + self.StatusUpdateDelay < curTime) then
@@ -369,39 +418,18 @@ function ENT:Think()
 		self.LastStatusUpdate = curTime
 	end
 
+	WireLib.TriggerOutput( self, "JamDirection", self.JamDir )
 	self:UpdateOverlayText()
 
-end
+	if self.IsJammed ~= 0 and ACF.CurTime > self.NextJamCheck then
+		self.NextJamCheck = ACF.CurTime + self.ResetJamDelay
 
-function ENT:UpdateStatus()
-		self.Status = self.Active and "On" or "Off"
-end
+		--Reset everything for next check
+		self.IsJammed			= 0
+		self.JamStrength		= 0
+		self.JamDir				= vector_origin
 
-function ENT:UpdateOverlayText()
-
-	local cone	= self.Cone
-	local status	= self.Status or "Off"
-	local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
-	local Jammed	= self.IsJammed
-
-	local txt = "Status: " .. status
-
-	txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
-
-	--txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
-
-	if detected then
-		txt = txt .. "\n\nTarget Detected!"
 	end
 
-	if Jammed > 0 then
-		txt = txt .. "\n\nWarning: Jammed"
-	end
-
-	if not self.Legal then
-	txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-	end
-
-	self:SetOverlayText(txt)
-
+	return true --Needed for think delay override
 end

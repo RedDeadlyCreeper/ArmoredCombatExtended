@@ -2,7 +2,7 @@
 local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "ACF" or "Construction");
 
 TOOL.Category		= cat
-TOOL.Name			= "#Tool.acfcopy.listname";
+TOOL.Name			= "#tool.acfcopy.name";
 TOOL.Author		= "looter";
 TOOL.Command		= nil;
 TOOL.ConfigName		= "";
@@ -11,16 +11,9 @@ TOOL.GearboxCopyData = {};
 TOOL.AmmoCopyData = {};
 
 if CLIENT then
-
-	language.Add( "Tool.acfcopy.listname", ACFTranslation.CopyToolText[1] );
-	language.Add( "Tool.acfcopy.name", ACFTranslation.CopyToolText[2] );
-	language.Add( "Tool.acfcopy.desc", ACFTranslation.CopyToolText[3] );
-	language.Add( "Tool.acfcopy.0", ACFTranslation.CopyToolText[4] );
-
 	function TOOL.BuildCPanel()
 
 	end
-
 end
 
 -- Update
@@ -93,7 +86,7 @@ function TOOL:RightClick( trace )
 
 		self.GearboxCopyData = ArgsTable;
 
-		ACF_SendNotify( pl, true, ACFTranslation.CopyToolText[5] );
+		ACF_SendNotify( pl, true, "#tool.acfcopy.gearbox" );
 
 	end
 
@@ -126,7 +119,7 @@ function TOOL:RightClick( trace )
 
 		self.AmmoCopyData = ArgsTable;
 
-		ACF_SendNotify( pl, true, ACFTranslation.CopyToolText[6] );
+		ACF_SendNotify( pl, true, "#tool.acfcopy.ammo" );
 
 	end
 

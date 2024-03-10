@@ -59,6 +59,7 @@ ACFTranslation.CopyToolText = {
 
 }
 
+--[[
 ACFTranslation.SoundToolText = {
 	----------/Tool Display description--------/--
 
@@ -102,6 +103,7 @@ ACFTranslation.ACFCuttingTorch = {
 	"Primary to repair.\nSecondary to damage."-- Description 2 (3)
 
 }
+--]]
 
 ACFTranslation.GunClasses = {
 

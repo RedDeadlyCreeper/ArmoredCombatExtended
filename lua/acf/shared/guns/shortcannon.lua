@@ -4,7 +4,7 @@ ACF_defineGunClass("SC", {
 	spread = 0.20,
 	name = "Short-Barrel Cannon",
 	desc = ACFTranslation.GunClasses[13],
-	muzzleflash = "120mm_muzzleflash_noscale",
+	muzzleflash = "C",
 	rofmod = 1.3,
 	maxrof = 25, -- maximum rounds per minute
 	year = 1915,

@@ -23,13 +23,13 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
+this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
 
---Sensitivity of the IR Seeker, higher sensitivity is for aircraft
-this.SeekSensitivity = 1
+--Whether the missile has IRCCM. Will disable seeking when the locked target would have been a countermeasure.
+this.HasIRCCM = false
 
 --Defines how many degrees are required above the ambient one to consider a target
-this.HeatAboveAmbient = 5
+this.HeatAboveAmbient = 100
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 200  -- ~5m
@@ -39,6 +39,7 @@ this.MaximumDistance = 20000
 
 this.desc = "This guidance package detects hot targets infront of itself, and guides the munition towards it."
 
+this.TTime = 0
 
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
@@ -49,10 +50,17 @@ function this:Configure(missile)
 
 	self:super().Configure(self, missile)
 
-	self.ViewCone		= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone) * 1.2
-	self.ViewConeCos		= (math.cos(math.rad(self.ViewCone))) * 1.2
-	self.SeekCone		= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone) * 1.2
-	self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
+	self.ViewCone		= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)
+	self.ViewConeCos		= (math.cos(math.rad(self.ViewCone)))
+	self.SeekCone		= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)
+	self.HeatAboveAmbient = self.HeatAboveAmbient / (ACF_GetGunValue(missile.BulletData, "seeksensitivity") or 1)
+	--self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
+	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
+
+	--print("CEent")
+	--for i, ent in ipairs(ACE.contraptionEnts) do
+	--	print(ent)
+	--end
 
 end
 
@@ -70,21 +78,43 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
+	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
+		--print("IRCCM reject")
+		self.Target = nil
+		return {}
+	end
+
 	local missilePos = missile:GetPos()
 	--local missileForward = missile:GetForward()
 	--local targetPhysObj = self.Target:GetPhysicsObject()
-	local targetPos = self.Target:GetPos() + Vector(0,0,25)
-
+	local Lastpos = self.TPos or Vector()
+	self.TPos = self.Target:GetPos()
 	local mfo	= missile:GetForward()
-	local mdir	= (targetPos - missilePos):GetNormalized()
+	local mdir	= (self.TPos - missilePos):GetNormalized()
 	local dot	= mfo:Dot(mdir)
 
 	if dot < self.ViewConeCos then
 		self.Target = nil
 		return {}
 	else
-		self.TargetPos = targetPos
-		return {TargetPos = targetPos, ViewCone = self.ViewCone * 1.3}
+		local LastDist = self.Dist or 0
+		self.Dist = (self.TPos - missilePos):Length()
+		DeltaDist = (self.Dist - LastDist) / engine.TickInterval()
+
+		if DeltaDist < 0 then --More accurate traveltime calculation. Only works when closing on target.
+			self.TTime = math.Clamp(math.abs(self.Dist / DeltaDist), 0, 5)
+		else
+			self.TTime = (self.Dist / missile.Speed / 39.37)
+		end
+
+--		if self.Target:GetClass( ) == "ace_flare" and this.HasIRCCM then
+
+
+
+		local TarVel = (self.TPos - Lastpos) / engine.TickInterval()
+		missile.TargetVelocity = TarVel --Used for Inertial Guidance
+		self.TargetPos = self.TPos + TarVel * self.TTime * (missile.MissileActive and 1 or 0) --Don't lead the target on the rail
+		return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 	end
 
 end
@@ -169,8 +199,8 @@ function this:AcquireLock(missile)
 
 	local curTime = CurTime()
 
-	if self.LastSeek + self.SeekDelay > curTime then return nil end
-	self.LastSeek = curTime
+	if self.LastSeek > curTime then return nil end
+	self.LastSeek = curTime + self.SeekDelay
 
 	--Part 1: get all ents in cone
 	local found = self:GetWhitelistedEntsInCone(missile)
@@ -196,6 +226,14 @@ function this:AcquireLock(missile)
 	local absang		= Angle()
 	local testang	= Angle()
 
+	if missile.TargetPos then
+		--print("HasTpos")
+		self.OffBoreAng = missile:WorldToLocalAngles((missile.TargetPos - missilePos):Angle()) or Angle()
+		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
+	end
+
+	local CheckTemp = ACE.AmbientTemp + self.HeatAboveAmbient
+
 	for _, classifyent in ipairs(found) do
 
 		entpos  = classifyent:WorldSpaceCenter()
@@ -206,7 +244,13 @@ function this:AcquireLock(missile)
 		--if the target is a Heat Emitter, track its heat
 		if classifyent.Heat then
 
-			Heat = self.SeekSensitivity * classifyent.Heat
+			physEnt = classifyent:GetPhysicsObject()
+
+			if IsValid(physEnt) and physEnt:IsMoveable() then
+				Heat = ACE_InfraredHeatFromProp( classifyent , dist )
+			else
+				Heat = classifyent.Heat
+			end
 
 		--if is not a Heat Emitter, track the friction's heat
 		else
@@ -217,25 +261,49 @@ function this:AcquireLock(missile)
 			--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
 			if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
-			Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
+			Heat = ACE_InfraredHeatFromProp( classifyent, dist )
 
 		end
 
+		--0x heat @ 1200m
+		--0.25x heat @ 900m
+		--0.5x heat @ 600m
+		--0.75x heat @ 300m
+		--1.0x heat @ 0m
+
+		local HeatMulFromDist = 1 - math.min(dist / 47244, 1) --39.37 * 1200 = 47244
+		Heat = Heat * HeatMulFromDist
+
 		--Skip if not Hotter than AmbientTemp in deg C.
-		if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
+		if Heat <= CheckTemp then continue end
+
+
+		if missile.TargetPos then --Initialized. Work from here.
+			--print("Offbore")
+			ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle()) - self.OffBoreAng	--Used for testing if inrange
+
+			--print(missile.TargetPos)
+		else
 
 		ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+
+		end
+
 		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
 		if absang.p < self.SeekCone and absang.y < self.SeekCone then --Entity is within missile cone
 
 			testang = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
-			if self.Target == scanEnt then
-				testang = testang / self.SeekSensitivity
-			end
+			--if self.Target == scanEnt then
+			--	testang = testang / self.SeekSensitivity
+			--end
 
-			testang = testang - Heat
+			--180 is from 90deg + 90deg, assuming the target is fully offbore.
+			--4x heat fully front and center. 1x heat fully offbore
+			local BoreHeatMul = 4 - ((absang.p + absang.y) / 180 * 3)
+
+			testang = -Heat * BoreHeatMul
 
 
 
@@ -251,6 +319,9 @@ function this:AcquireLock(missile)
 
 
 	end
+
+	--if IsValid(bestent) and bestent:GetClass( ) == "ace_flare" then print("SQUIRREL") end
+	--print(bestent)
 
 	return bestent
 end

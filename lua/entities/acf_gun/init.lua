@@ -47,6 +47,7 @@ function ENT:Initialize()
 	self.BulletData.ProjMass = 0
 
 	self.Inaccuracy          = 1
+	self.KERecoil			 = 0
 	self.LastThink           = 0
 
 end
@@ -186,7 +187,7 @@ do
 			Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)
 			local Cal = Gun.Caliber
 
-			if Cal >= 2 and Cal <= 14 then
+			if Cal >= 3 then
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse )
 			else
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse )
@@ -196,7 +197,7 @@ do
 		else
 			local Cal = Gun.Caliber
 
-			if Cal >= 2 and Cal <= 14 then
+			if Cal >= 4 then
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse_noreload )
 			else
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse_noreload )
@@ -221,6 +222,7 @@ do
 		Gun.DefaultSound      = Gun.Sound
 		Gun.SoundPitch        = 100
 		Gun.AutoSound         = ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
+		Gun.CurrentRecoil     = 0
 
 		Gun:SetNWInt( "Caliber", Gun.Caliber )
 		Gun:SetNWString( "WireName", Lookup.name )
@@ -722,7 +724,19 @@ function ENT:Think()
 	self.LastThink = ACF.CurTime
 	self:NextThink(Time)
 
+	if self.CurrentRecoil > 0 then
+		local Dir = -self:GetForward()
+		--local MuzzlePos		= self:LocalToWorld(self.Muzzle)
+		--local MuzzlePos		= self:GetForward() * self.Muzzle.x + self:GetRight()  * self.Muzzle.y + self:GetUp() * self.Muzzle.z
+		--local MuzzlePos		= self:GetPos()
+		ACF_KEShove(self, self:GetPos() , Dir , self.KERecoil * self.CurrentRecoil )
+
+		self.CurrentRecoil = math.max(self.CurrentRecoil - self.DeltaTime / 0.5,0) --Divided by time to dissipate recoil. Currently 0.5
+		--self.CurrentRecoil = 0
+	end
+
 	return true
+
 end
 
 function ENT:ReloadMag()
@@ -803,10 +817,10 @@ do
 	local FusedRounds = {
 		HE	= true,
 		HEFS	= true,
-		HESH	= true,
-		HEAT	= true,
-		HEATFS  = true,
-		SM	= true
+		SM	= true,
+		CHE	= true,
+		CHEAT	= true,
+		CAP	= true
 	}
 
 	function ENT:FireShell()
@@ -854,20 +868,17 @@ do
 				self.BulletData.Owner = self.User
 				self.BulletData.Gun = self
 
-				local Cal = self.Caliber
+				--local Cal = self.Caliber
 
 				--using fusetime via wire will override the ammo fusetime!
-				if Cal < 14 and FusedRounds[self.BulletData.Type] and FusedRounds[self.BulletData.Type] and self.OverrideFuse then
+				if FusedRounds[self.BulletData.Type] and FusedRounds[self.BulletData.Type] and self.OverrideFuse then
 					self.BulletData.FuseLength = self.FuseTime
 				end
 
 				self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 				self:CreateShell( self.BulletData )
 
-				local Dir = -self:GetForward()
-				local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1)
-
-				ACF_KEShove(self, self:GetPos() , Dir , KE )
+				self.CurrentRecoil = 1
 
 				self.Ready = false
 				self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
@@ -982,6 +993,8 @@ function ENT:LoadAmmo( AddTime, Reload )
 		Wire_TriggerOutput(self, "Fire Rate", self.RateOfFire)
 		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
 		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
+
+		self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 500
 
 		self.NextFire = curTime + self.ReloadTime
 		local reloadTime = self.ReloadTime

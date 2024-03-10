@@ -25,7 +25,15 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 
 	self.Inputs				= WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs			= WireLib.CreateOutputs( self, {"Detected (" .. RadarWireDescs["Detected"] .. ")", "ClosestDistance", "Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]", "Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]", "Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]"} )
+	self.Outputs			= WireLib.CreateOutputs( self, {
+		"Detected (" .. RadarWireDescs["Detected"] .. ")",
+		"ClosestDistance",
+		"Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]",
+		"Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]",
+		"Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]",
+		"Heat"
+	} )
+
 	self.OutputData = {
 		Detected = 0,
 		ClosestDistance = 0,
@@ -41,6 +49,8 @@ function ENT:Initialize()
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
 	self.LegalIssues		= ""
+
+	self.Heat 				= ACE.AmbientTemp
 
 	self.Active				= false
 
@@ -193,7 +203,7 @@ function ENT:Think()
 
 	if ACF.CurTime > self.NextLegalCheck then
 
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
 		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
 		if not self.Legal then
@@ -208,6 +218,8 @@ function ENT:Think()
 		self.LastStatusUpdate = curTime
 	end
 
+	self.Heat = ACE_HeatFromRadar(self, self.ThinkDelay)
+	WireLib.TriggerOutput(self, "Heat", self.Heat)
 	self:GetOverlayText()
 
 	return true
@@ -231,7 +243,6 @@ end
 function ENT:ScanForMissiles()
 
 	local missiles = self:GetDetectedEnts() or {}
-
 	local entArray = {}
 	local posArray = {}
 	local velArray = {}
@@ -340,6 +351,8 @@ function ENT:GetOverlayText()
 	if not self.Legal then
 		txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	end
+
+	txt = txt .. "\nTemp: " .. math.Round(self.Heat) .. " °C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. " °F"
 
 	self:SetOverlayText(txt)
 
