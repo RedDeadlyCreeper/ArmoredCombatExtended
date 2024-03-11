@@ -76,6 +76,7 @@ function ENT:Initialize()
 	self.Speed = 0
 
 	self.GuidanceActive = false
+	self.GuidanceActivationDelay = self.GuidanceActivationDelay or 0
 	self.TargetAcquired = false
 	self.TargetDir		= Vector(0,0,0)
 
@@ -186,7 +187,7 @@ function ENT:Think()
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 							end
 
-					end 
+					end
 					self.Flight = self.Flight + self:GetForward() * self.BoostAccel * DeltaTime
 					self.BoostTime = self.BoostTime - DeltaTime
 
@@ -223,8 +224,10 @@ function ENT:Think()
 		--------------------------
 		-----Steering Section-----
 		--------------------------
-
-		if self.TargetPos then
+		if self.GuidanceActivationDelay > 0 then
+			self.GuidanceActivationDelay = self.GuidanceActivationDelay - DeltaTime
+			self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 2 * DeltaTime))
+		elseif self.TargetPos then
 
 			local OffsetTPos = self.TargetPos + VectorRand():GetNormalized() * 5 --Apply your noise here. I was thinking of putting noise multipliers in the guidance sections.
 			local Tarang = Angle()
@@ -306,6 +309,7 @@ function ENT:Think()
 			self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 2 * DeltaTime))
 
 		end
+
 		--------------------------
 		------Payload Section-----
 		--------------------------
@@ -385,7 +389,7 @@ end
 
 function ENT:ConfigureLaunch()
 
-
+	--self.GuidanceActivationDelay = self.GuidanceActivationDelay + CT
 	self.MissilePosition = self:GetPos()
 
 	local CT = CurTime()
@@ -484,20 +488,20 @@ do
 end
 
 
-function ENT:CanTool( ply, trace, mode, tool, button )
+function ENT:CanTool( _, _, _, _, _ ) --ply, trace, mode, tool, button
 	--print("tool: "..mode)
 	return false
 
 end
 
-function ENT:CanProperty( ply, property)
+function ENT:CanProperty( _, _)
 --	print("false")
 	return false
 
 end
 
-hook.Add( "PhysgunPickup", "DisallowPhysgunMissiles", function( ply, ent )
-	if ( ent:GetClass() =="acf_missile2" ) then
+hook.Add( "PhysgunPickup", "DisallowPhysgunMissiles", function( _, ent )
+	if ( ent:GetClass() == "ace_missile" ) then
 		--print("phys blocked")
 		return false
 	end

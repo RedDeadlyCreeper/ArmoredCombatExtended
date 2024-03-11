@@ -94,26 +94,26 @@ function EFFECT:Init( data )
 		SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 ))
 		SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 ))
 
-		local DecalMat = "Impact.Concrete"
+		local DecalMat = "Impact.Concrete" --Disabled other impact effects due to source bug hitting odd materials. Not too much loss in fidelity anyways.
 
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )
-			DecalMat = "Impact.Metal"
+			--DecalMat = "Impact.Metal"
 		elseif  MatVal == "Dirt" or MatVal == "Sand"  then
 			self:Dust( SMKColor )
-			DecalMat = "Impact.Sand"
+			--DecalMat = "Impact.Sand"
 		elseif MatVal == "Concrete" then
 			self:Concrete( SMKColor )
-			DecalMat = DecalMat
+			--DecalMat = DecalMat
 		elseif  MatVal == "Snow"  then
 			self:Dust( SMKColor )
-			DecalMat = "Impact.Sand"
+			--DecalMat = "Impact.Sand"
 		elseif  MatVal == "Wood"  then
 			self:Wood( SMKColor )
-			DecalMat = "Impact.Wood"
+			--DecalMat = "Impact.Wood"
 		elseif  MatVal == "Glass"  then
 			self:Glass( SMKColor )
-			DecalMat = "Impact.Glass"
+			--DecalMat = "Impact.Glass"
 		else
 			self:Dust( SMKColor )
 		end

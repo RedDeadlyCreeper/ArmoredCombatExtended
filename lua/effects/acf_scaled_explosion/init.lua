@@ -58,13 +58,13 @@ function EFFECT:Init( data )
 
 	self.HitNormal = Ground.HitNormal
 
-	if not self.HitWater then
+	if not self.HitWater and not self.UnderWater then
 		-- when detonation is in midair
 		if Material == "Dirt" or Material == "Sand"  then
 			self:Dirt( SMKColor )
 		else -- Nonspecific
 			self:Dirt( SMKColor )
---			self:Concrete( SMKColor )
+			--self:Concrete( SMKColor )
 		end
 	end
 

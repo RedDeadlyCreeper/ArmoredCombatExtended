@@ -123,7 +123,7 @@ function EFFECT:Init( data )
 				self:MuzzleSmokeC( Color( 175, 175, 175, 100 ) )
 			else
 				--self:Shockwave( Ground, SMKColor, 1, 1  )
-				self:MuzzleSmokeC( Color( 150, 150, 150, 100 ) )
+				self:MuzzleSmoke( Color( 150, 150, 150, 100 ) )
 			end
 
 
@@ -362,7 +362,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 			Smoke:SetVelocity( ShootVector * 800 * math.Rand(0.4, 1.0) * size + self.DirVec * -150 * size * math.Rand(0.8, 1.0) + self.GunVelocity * 1.5 )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime(  1.5 * size / 4 )
-			Smoke:SetStartAlpha( 30 )
+			Smoke:SetStartAlpha( 20 )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 25 * size )
 			Smoke:SetEndSize( 18 * size )
@@ -386,7 +386,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 			DustSpeed = DustSpeed + 6 * (i / ParticleCount)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(1.5 * (size / 4))
-			Dust:SetStartAlpha(40)
+			Dust:SetStartAlpha(35)
 			Dust:SetEndAlpha(5)
 			Dust:SetStartSize(20 * size * (i / ParticleCount))
 			Dust:SetEndSize(75 * size * (i / ParticleCount))
@@ -405,7 +405,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 		DustSpeed = DustSpeed + 6
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(1.5 * (size / 4))
-		Dust:SetStartAlpha(75)
+		Dust:SetStartAlpha(50)
 		Dust:SetEndAlpha(5)
 		Dust:SetStartSize(20 * size)
 		Dust:SetEndSize(100 * size)
@@ -1100,6 +1100,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 
 	size = size * 0.625
 
+	--[[
 
 	local Angle      = self.DirVec:Angle()
 
@@ -1124,6 +1125,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 			Smoke:SetColor( SmokeColor.r + SMKColor, SmokeColor.g + SMKColor, SmokeColor.b + SMKColor )
 		end
 	end
+	]]--
 
 	size = size * 1.6
 

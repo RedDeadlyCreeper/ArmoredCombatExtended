@@ -503,7 +503,7 @@ ACF_defineGun("Ataka ASM", { --id
 	name			= "9M120 Ataka Missile",
 	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads",
 	model			= "models/missiles/9m120.mdl",
-	effect			= "ACE_MissileSmall",
+	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "1x Ataka",							-- Which rack to spawn this missile on?
@@ -573,8 +573,8 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	name 			= "AGM-114 Hellfire Missile",
 	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.",
 	model 			= "models/missiles/agm_114.mdl",
-	effect			= "ACE_MissileSmall",
-	effectbooster	= "ACE_MissileMedium",
+	effect			= "ACE_MotorSmall",
+	effectbooster	= "ACE_MissileSmall",
 	gunclass 		= "ATGM",
 	rack 			= "2x AGM-114",					-- Which rack to spawn this missile on?
 	length 			= 163,
@@ -643,7 +643,7 @@ ACF_defineGun("Vikhr ASM", { --id
 	name			= "9K121 Vikhr Missile",
 	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.",
 	model			= "models/missiles/arend/9k121.mdl",
-	effect			= "ACE_MissileSmall",
+	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
 	rack			= "6x 9K121",							-- Which rack to spawn this missile on?

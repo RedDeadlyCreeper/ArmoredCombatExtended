@@ -46,7 +46,7 @@ function EFFECT:Init( data )
 	--local TraceEntity = SurfaceTr.Entity
 	self.HitNorm = SurfaceTr.HitNormal
 
-	local DecalMat = "Impact.Concrete"
+	local DecalMat = "Impact.Concrete" --Disabled other impact effects due to source bug hitting odd materials. Not too much loss in fidelity anyways.
 
 
 	if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
@@ -63,19 +63,19 @@ function EFFECT:Init( data )
 
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )
-			DecalMat = "Impact.Metal"
+			--DecalMat = "Impact.Metal"
 		elseif  MatVal == "Dirt" or MatVal == "Sand" or MatVal == "Snow"  then
 			self:Dust( SMKColor )
-			DecalMat = "Impact.Sand"
+			--DecalMat = "Impact.Sand"
 		elseif MatVal == "Concrete" then
 			self:Concrete( SMKColor )
-			DecalMat = "Impact.Sand"
+			--DecalMat = "Impact.Sand"
 		elseif  MatVal == "Wood"  then
 			self:Wood( SMKColor )
-			DecalMat = "ManhackCut"
+			--DecalMat = "ManhackCut"
 		elseif  MatVal == "Glass"  then
 			self:Glass( SMKColor )
-			DecalMat = "Impact.Glass"
+			--DecalMat = "Impact.Glass"
 		else
 			self:Dust( SMKColor )
 		end

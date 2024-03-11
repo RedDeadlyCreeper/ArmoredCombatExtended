@@ -138,8 +138,8 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 130,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.5,							-- Time in seconds for booster runtime
+		boostacceleration	= 60,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 1.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
@@ -352,13 +352,13 @@ ACF_defineGun("SS-40 RA", {								-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 500,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 4,							-- Time in seconds for booster runtime
+		boostacceleration	= 30,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.0025,						-- percent speed loss per second
+		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
