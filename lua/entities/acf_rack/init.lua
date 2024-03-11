@@ -561,6 +561,8 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 
 	missile.StraightRunning = ACF_GetRackValue(BulletData, "predictiondelay") or ACF_GetGunValue(BulletData.Id, "predictiondelay") or 1.25
 	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .. " - " .. BulletData.Type
+	missile.MinStartDelay =ACF_GetRackValue(BulletData, "armdelay") or ACF_GetGunValue(BulletData.Id, "armdelay") or 0.2
+
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8

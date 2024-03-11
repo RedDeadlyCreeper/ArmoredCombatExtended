@@ -94,7 +94,8 @@ function EFFECT:Init( data )
 
 	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
 
-	if PlayerDist < self.Radius * 10 and not LocalPlayer():HasGodMode() then
+	--if PlayerDist < self.Radius * 10 and not LocalPlayer():HasGodMode() then
+		if PlayerDist < self.Radius * 10 then
 		local Amp          = math.min(self.Radius * 0.5 / math.max(PlayerDist,1),40)
 		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, self.Radius / 7.5, 0 , true)
 	end

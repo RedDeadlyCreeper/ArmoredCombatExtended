@@ -11,15 +11,21 @@ DEFINE_BASECLASS("acf_explosive")
 
 function ENT:Initialize()
 
+
+
+	--self:PhysicsInit(SOLID_NONE)
+	self:SetMoveType(MOVETYPE_NONE)
+
+
 	self.PhysObj = self:GetPhysicsObject()
 
 	if not IsValid(self.PhysObj) then self:Remove() return end --Prevent duping missiles (to stop errors)
 
 	self.BaseClass.Initialize(self)
 
-	--if not IsValid(self:CPPIGetOwner()) then
-	--	self:CPPISetOwner(player.GetAll()[1])
-	--end
+	if not IsValid(self:CPPIGetOwner()) then
+		self:CPPISetOwner(player.GetAll()[1])
+	end
 
 	self.PhysObj:EnableGravity( false )
 	self.PhysObj:EnableMotion( false )
@@ -49,6 +55,8 @@ function ENT:Initialize()
 
 	self.CanDetonate = false
 
+	self.MissilePosition = self:GetPos()
+
 	self.P = Angle(0,0,0)
 	self.I = Angle(0,0,0)
 	self.D = Angle(0,0,0)
@@ -75,6 +83,7 @@ function ENT:Initialize()
 	self.TargetVelocity = Vector(0,0,0) --Used when target is lost by inertial guidance to shift target position by last known target velocity.
 
 	self.IgnitionDelay = 0
+
 end
 
 
@@ -87,7 +96,7 @@ function ENT:Think()
 	self.LastThink = CT
 	self:NextThink( CT + self.ThinkDelay )
 
-	local Pos = self:GetPos()
+	local Pos = self.MissilePosition
 	--local DeltaPos = (Pos - self.LastPos)/DeltaTime
 
 	self.LastVel = self.Flight * 39.37
@@ -160,9 +169,10 @@ function ENT:Think()
 	--------------------------
 
 		if self.JustLaunched == true then
-			self.Flight = self.Flight + self:GetForward() * self.BoostKick
+			self.Flight = self.Flight + self.Launcher:GetForward() * self.BoostKick
 			self.JustLaunched = false
 			self:ConfigureLaunch()
+			Pos = self.MissilePosition
 		end
 
 		if CT > self.ActivationTime + self.IgnitionDelay then
@@ -176,7 +186,7 @@ function ENT:Think()
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 							end
 
-					end
+					end 
 					self.Flight = self.Flight + self:GetForward() * self.BoostAccel * DeltaTime
 					self.BoostTime = self.BoostTime - DeltaTime
 
@@ -331,7 +341,8 @@ function ENT:Think()
 		--------------------------
 
 		self.Flight = self.Flight + (Vector(0,0,-9.8)) * DeltaTime
-		self:SetPos( Pos + self.Flight * 39.37 * DeltaTime )
+		self.MissilePosition = Pos + self.Flight * 39.37 * DeltaTime
+		self:SetPos( self.MissilePosition )
 
 		--25 is the result of dividing 2500 by a magic number to compress the speed variable to something nice. 25 = 2500/100
 		self.Flight = self.Flight + (self:GetForward() * (self.Speed ^2 / 25) * math.cos(AngleOfAttack) - FlightDir * (self.Speed^2 / 25) * math.cos(AngleOfAttack)) * DeltaTime * self.FinMul --Adjusts a portion of the flgiht by the fin efficiency multiplier
@@ -373,6 +384,9 @@ function ENT:ConfigureMissile()
 end
 
 function ENT:ConfigureLaunch()
+
+
+	self.MissilePosition = self:GetPos()
 
 	local CT = CurTime()
 	ACF_ActiveMissiles[self] = true
@@ -450,7 +464,7 @@ do
 		--print(math.Round(HitRes.Damage * 100))
 		--print(HitRes.Loss * 100)
 
-		print(HitRes.Overkill)
+		--print(HitRes.Overkill)
 
 		if HitRes.Kill or HitRes.Overkill > 1 then
 
@@ -468,3 +482,23 @@ do
 	end
 
 end
+
+
+function ENT:CanTool( ply, trace, mode, tool, button )
+	--print("tool: "..mode)
+	return false
+
+end
+
+function ENT:CanProperty( ply, property)
+--	print("false")
+	return false
+
+end
+
+hook.Add( "PhysgunPickup", "DisallowPhysgunMissiles", function( ply, ent )
+	if ( ent:GetClass() =="acf_missile2" ) then
+		--print("phys blocked")
+		return false
+	end
+end )
