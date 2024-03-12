@@ -543,7 +543,7 @@ do
 
 		function event:OnArrived()
 			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
-			local hearingPos = getHearingPos(ACE_SGetHearingEntity( LocalPlayer() ))
+			local hearingPos = getHearingPos(hearingEntity)
 			local origin = self.Origin
 
 			local dist = (hearingPos - origin):Length()
