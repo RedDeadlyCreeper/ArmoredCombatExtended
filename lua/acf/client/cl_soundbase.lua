@@ -182,7 +182,6 @@ do
 
 	local eventBase = {
 		Duration = 0,
-		Origin = Vector(0, 0, 0),
 		Sound = "vo/k_lab/kl_ahhhh.wav", -- Just for fun lol
 		SoundLevel = 75,
 		Pitch = 100,
@@ -190,11 +189,11 @@ do
 	}
 
 	function eventBase:OnArrived()
-		self.HearingEntity = ACE_SGetHearingEntity(LocalPlayer())
+		self.Entity = ACE_SGetHearingEntity(LocalPlayer())
 	end
 
 	function eventBase:Play()
-		ACE_EmitSound(self.Sound, self.HearingEntity, self.SoundLevel, self.Pitch, self.Volume)
+		ACE_EmitSound(self.Sound, self.Origin or self.Entity, self.SoundLevel, self.Pitch, self.Volume)
 	end
 
 	local function newSoundEvent(event)
@@ -278,8 +277,6 @@ do
 	--Handles Explosion sounds
 	function ACE_SBlast( HitPos, Radius, HitWater, HitWorld )
 		local event = newSoundEvent({
-			Origin = HitPos,
-
 			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - HitPos):Length())
 		})
 
@@ -289,7 +286,7 @@ do
 			local hearingPos = getHearingPos(hearingEntity)
 			local distance = (hearingPos - HitPos):Length()
 
-			local volume = 1 / ((hearingEntity:GetPos() - self.Origin):Length() / 500) * Radius * 0.2
+			local volume = 1 / ((hearingEntity:GetPos() - HitPos):Length() / 500) * Radius * 0.2
 			local pitch = math.Clamp(1000 / Radius, 25, 130)
 
 			if not HitWater then
@@ -389,8 +386,6 @@ do
 			self.Volume = 1 / ((hearingEntity:GetPos() - self.Origin):Length() / 500) * Velocity / 130000 * volFix
 			self.Pitch = math.Clamp(Velocity * 0.001, 90, 150) * pitchFix
 
-			self.HearingEntity = hearingEntity
-
 			if not HitWorld then
 				self.Sound = getImpactSound("Metal")
 
@@ -429,8 +424,6 @@ do
 	--Handles ricochet sounds 
 	function ACE_SRicochet( HitPos, Caliber, Velocity, HitWorld, Material )
 		local event = newSoundEvent({
-			Origin = HitPos,
-
 			SoundLevel = 100,
 			Pitch = math.Clamp(Velocity * 0.001, 90, 150),
 
@@ -440,8 +433,7 @@ do
 		function event:OnArrived()
 			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
 
-			self.Origin = hearingEntity
-			self.HearingEntity = hearingEntity
+			self.Entity = hearingEntity
 
 			local volFix, pitchFix = 1, 1
 			if not HitWorld then
@@ -489,8 +481,6 @@ do
 		local event = newSoundEvent({
 			Sound = "acf_other/penetratingshots/penetrations/large/close/pen" .. math.random(3) .. ".mp3",
 
-			Origin = HitPos,
-
 			Pitch = math.Clamp(Velocity * 1, 90, 150),
 
 			Duration = ACE_GetDistanceTime((getHearingPos(ACE_SGetHearingEntity(LocalPlayer())) - HitPos):Length())
@@ -499,8 +489,7 @@ do
 		function event:OnArrived()
 			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
 
-			self.Origin = hearingEntity
-			self.HearingEntity = hearingEntity
+			self.Entity = hearingEntity
 
 			local volFix, pitchFix = 1, 1
 			if not HitWorld then
@@ -588,8 +577,6 @@ do
 
 			self.Origin = hearingPos + (origin - hearingPos):GetNormalized() * 64
 			self.Volume = (1 / (dist / 500) * Propellant / 18) * volFix
-
-			self.HearingEntity = hearingEntity
 		end
 	end
 
@@ -640,7 +627,7 @@ do
 			end
 			self.Volume = self.Volume * volFix
 
-			self.HearingEntity = hearingEntity
+			self.Entity = hearingEntity
 		end
 
 		debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
@@ -670,7 +657,7 @@ do
 			local ShellVel = BulletData.SimFlight:Length()
 			self.Pitch = math.Clamp( ShellVel / 3 / 39.37, 30, 165 )
 
-			self.HearingEntity = hearingEntity
+			self.Entity = hearingEntity
 		end
 
 		debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
@@ -701,8 +688,6 @@ do
 			self.Volume = BaseDistVolume / (EyePos() - Origin):Length() * volFix
 			--self.Pitch = Pitch * math.Clamp(Velocity * 0.001, 90, 150) -Unfinished doppler code.
 			self.Pitch = Pitch
-
-			self.HearingEntity = hearingEntity
 		end
 	end
 
