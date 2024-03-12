@@ -432,7 +432,7 @@ function SWEP:PrimaryAttack()
 			ent.LeadMul = 1.5
 			ent.TopAttackGuidance = topAttack
 			ent.DirectFireDist = self.DirectFireDist
-
+			ent.DamageOwner = owner
 
 			ent:SetOwner(owner)
 			ent:CPPISetOwner(owner)

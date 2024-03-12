@@ -19,8 +19,8 @@ ACF_DefineTrackRadar("Large-TRACK", {
 	desc		= "A large and HEAVY tracking radar mostly meant for ground installations. Can track offbore targets with negligible loss of accuracy. Powerful and capable of burning through jamming with ease.",
 	model		= "models/radar/radar_big.mdl",
 	class		= "DIR-TRACK",
-	weight		= 3600,
-	viewcone	= 10,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total.
+	weight		= 4200,
+	viewcone	= 15,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total.
 	offborefactor = 5,				--Inaccuracy modifier for targets at maximum offbore
 	burnthrough = 4,				--Burn through power at 1 degree seeker. x4 means burn through at 400m when fully in the center of a jam beam and set to 1 degree cone.
 	powerid		= 1					--Power ranking of radar for RWR identification
@@ -34,7 +34,7 @@ ACF_DefineTrackRadar("Medium-TRACK", {
 	model		= "models/radar/radar_mid.mdl",
 	class		= "DIR-TRACK",
 	weight		= 1200,
-	viewcone	= 5,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
+	viewcone	= 8,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	offborefactor = 10,				--Inaccuracy modifier for targets at maximum offbore
 	burnthrough = 2.5,					--Burn through power at 1 degree seeker. x2.5 means burn through at 250m when fully in the center of a jam beam and set to 1 degree cone.
 	powerid		= 2					--Power ranking of radar for RWR identification
@@ -48,7 +48,7 @@ ACF_DefineTrackRadar("Small-TRACK", { --Does not burn through.
 	model		= "models/radar/radar_sml.mdl",
 	class		= "DIR-TRACK",
 	weight		= 600,
-	viewcone	= 2,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
+	viewcone	= 4,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	offborefactor = 20,				--Inaccuracy modifier for targets at maximum offbore
 	burnthrough = 0,					--Will not burn through.
 	powerid		= 3					--Power ranking of radar for RWR identification

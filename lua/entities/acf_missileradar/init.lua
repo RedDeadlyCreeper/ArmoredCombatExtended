@@ -17,7 +17,6 @@ local RadarWireDescs = {
 	["Entities"]  = "Returns all the detected missiles into an array.",
 	["Position"]  = "Returns the current position of all the flying missiles of this radar",
 	["Velocity"]  = "Returns the velocity of all the active missiles into an array.",
-	["Owner"]     = "Returns the owner of the missile.",
 
 }
 
@@ -32,7 +31,6 @@ function ENT:Initialize()
 		"Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]",
 		"Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]",
 		"Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]",
-		"Owner (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]",
 		"Heat"
 	} )
 
@@ -42,7 +40,6 @@ function ENT:Initialize()
 		Entities = {},
 		Position = {},
 		Velocity = {},
-		Owner = {},
 	}
 
 	self.ThinkDelay			= 0.1
@@ -249,7 +246,6 @@ function ENT:ScanForMissiles()
 	local entArray = {}
 	local posArray = {}
 	local velArray = {}
-	local ownArray = {}
 
 	local i = 0
 
@@ -263,7 +259,6 @@ function ENT:ScanForMissiles()
 		i = i + 1
 
 		entArray[i] = missile
-		ownArray[i] = missile.DamageOwner
 		posArray[i] = missile.CurPos
 		velArray[i] = missile.TrueVel or missile.LastVel
 
@@ -284,14 +279,12 @@ function ENT:ScanForMissiles()
 	WireLib.TriggerOutput( self, "Entities", entArray )
 	WireLib.TriggerOutput( self, "Position", posArray )
 	WireLib.TriggerOutput( self, "Velocity", velArray )
-	WireLib.TriggerOutput( self, "Owner", ownArray )
 
 	self.OutputData.Detected = i
 	self.OutputData.ClosestDistance = closestOutput
 	self.OutputData.Entities = entArray
 	self.OutputData.Position = posArray
 	self.OutputData.Velocity = velArray
-	self.OutputData.Owners = ownArray
 
 	if i > (self.LastMissileCount or 0) then
 		self:EmitRadarSound()
@@ -311,9 +304,7 @@ function ENT:ClearOutputs()
 
 	if #self.Outputs.Entities.Value > 0 then
 		WireLib.TriggerOutput( self, "Entities", {} )
-		WireLib.TriggerOutput( self, "Owner", {} )
 		self.OutputData.Entities = {}
-		self.OutputData.Owners = {}
 	end
 
 	if #self.Outputs.Position.Value > 0 then

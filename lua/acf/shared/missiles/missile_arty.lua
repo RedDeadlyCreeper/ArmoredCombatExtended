@@ -254,10 +254,10 @@ ACF_defineGun("M26 RA", {							-- id
 	gunclass         = "ARTY",
 	rack             = "6xUARRK",								-- Which rack to spawn this missile on?
 	weight           = 308,
-	length           = 219, --320
+	length           = 155 * 2.53, --Convert to ammocrate units
 	year             = 1980,
 	roundclass       = "Rocket",
-	modeldiameter    = 10,
+	modeldiameter    = 10, --Already in ammocrate units
 	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round	=	{
@@ -394,10 +394,10 @@ ACF_defineGun("M31 RA", {							-- id
 	gunclass         = "ARTY",
 	rack             = "6xUARRK",								-- Which rack to spawn this missile on?
 	weight           = 308,
-	length           = 219, --320
+	length           = 155 * 2.53, --Convert to ammocrate units
 	year             = 1980,
 	roundclass       = "Rocket",
-	modeldiameter    = 10,
+	modeldiameter    = 10, --Already in ammocrate units
 	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round	=	{

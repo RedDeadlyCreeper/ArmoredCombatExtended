@@ -224,6 +224,12 @@ function ENT:Think()
 		--------------------------
 		-----Steering Section-----
 		--------------------------
+
+		local EnableRotation = 0
+		if CT > self.ActivationTime + 0.5 then
+			EnableRotation = 1
+		end
+
 		if self.GuidanceActivationDelay > 0 then
 			self.GuidanceActivationDelay = self.GuidanceActivationDelay - DeltaTime
 			self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 2 * DeltaTime))
@@ -301,13 +307,13 @@ function ENT:Think()
 
 			local adjustedrate = self.TurnRate * DeltaTime * (self.Speed^2 / 10000) * math.cos(AngleOfAttack) + self.ThrustTurnRate * DeltaTime
 			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
-			self:SetAngles(AngAdjust + Angle(math.Clamp( DifFacing.pitch, 0, 100 ), math.Clamp( DifFacing.yaw, -100, 100 ),0) * 2 * DeltaTime)
+			self:SetAngles(AngAdjust + Angle(math.Clamp( DifFacing.pitch, 0, 100 ), math.Clamp( DifFacing.yaw, -100, 100 ),0) * 2 * DeltaTime * EnableRotation)
 			--self:SetAngles(AngAdjust)
 
 		else
-
-			self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 2 * DeltaTime))
-
+			if EnableRotation then
+				self:SetAngles(self:LocalToWorldAngles(Angle(math.Clamp( DifFacing.pitch, 0, 100 ), 0,0) * 2 * DeltaTime))
+			end
 		end
 
 		--------------------------

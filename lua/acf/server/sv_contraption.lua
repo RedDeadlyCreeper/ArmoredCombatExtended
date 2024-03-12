@@ -64,7 +64,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 	timer.Simple(0, function()
 		if not IsValid(Ent) then return end
 
-		local Eclass = Ent:GetClass() 
+		local Eclass = Ent:GetClass()
 
 		-- check if ent class is in whitelist
 		if AllowedEnts[Eclass] then
@@ -107,7 +107,7 @@ end)
 -- Remove any entity of the Contraption List that has been removed from map
 hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 
-	local Eclass = Ent:GetClass() 
+	local Eclass = Ent:GetClass()
 
 	--Assuming that our table has whitelisted ents
 	if AllowedEnts[Eclass] then
