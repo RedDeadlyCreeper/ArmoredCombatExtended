@@ -433,12 +433,9 @@ do
 		function event:OnArrived()
 			local hearingEntity = ACE_SGetHearingEntity(LocalPlayer())
 
-			self.Entity = hearingEntity
-
 			local volFix, pitchFix = 1, 1
 			if not HitWorld then
 				local Sound, vf, pf = bulletRicochetEntitySoundData(Caliber)
-
 				volFix = vf
 				pitchFix = pf
 
@@ -454,8 +451,11 @@ do
 				volFix = volFix * 0.5
 			end
 
-			self.Volume = 1 / ((getHearingPos(hearingEntity) - HitPos):Length() / 500) * Velocity / 130000 * volFix
+			local distance = (getHearingPos(hearingEntity) - HitPos):Length()
+			local volume = 1 / (distance / 500) * Velocity / 130000
+			self.Volume = volume * volFix
 			self.Pitch = self.Pitch * pitchFix
+			self.Entity = hearingEntity
 		end
 	end
 
