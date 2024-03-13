@@ -149,3 +149,24 @@ ACF_DefineRack("1xAT3RKS", {
 		missile1 = { pos = Vector(21.225,-0.2,2.6), scaledir = Vector(0, 0, 1) }
 	}
 } )
+
+--TOR pod
+ACF_DefineRack("1x9M331 Pod", {
+	name = "9M331 Pod",
+	desc = "Launch Pod for TOR misiles.",
+	model	= "models/missiles/arend/9m331_launcher_4_v2.mdl",
+	gunclass = "POD",
+	weight = 100,
+	year = 1986,
+	magsize = 1,
+	caliber = 23.9,
+	whitelistonly   = true,
+	protectmissile  = false,
+	hidemissile     = false,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(-8.3,0,-6.2),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+
+	}
+} )

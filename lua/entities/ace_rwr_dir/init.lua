@@ -30,11 +30,11 @@ function ENT:Initialize()
 	self:GetPhysicsObject():SetMass(165)
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Radar ID [ARRAY]", "Angle [ARRAY]"} )
+	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Radar ID [ARRAY]", "Angle [ARRAY]", "Radar Power [ARRAY]"} )
 
 	self:SetActive(false)
 
-	self.Cone = 45
+	self.Cone = 50
 
 	self.LegalTick = 0
 	self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
@@ -79,6 +79,7 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Detected", 0 )
 		WireLib.TriggerOutput( self, "Angle", {} )
 		WireLib.TriggerOutput( self, "Radar ID", {} )
+		WireLib.TriggerOutput( self, "Radar Power", {} )
 	end
 
 end
@@ -105,25 +106,47 @@ function ENT:Think()
 		local detected = 0
 		local radIDs = {}
 		local detAngs = {}
+		local radPOWs = {}
 		local randinac = Angle(1 + math.Rand(-0.15,0.15),1 + math.Rand(-0.05,0.05),0)
 
 		for _, scanEnt in pairs(ScanArray) do
 
-			local entpos = scanEnt:GetPos()
-			local difpos = (thisPos - entpos)
-
 			if IsValid(scanEnt) then
+
+				local entpos = scanEnt:GetPos()
+				local difpos = (thisPos - entpos)
+
 				local radActive = scanEnt.Active
 
 				if radActive then
 					local nonlocang = (-difpos):Angle()
-					local ang = scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
+
+
+					local ang = angle_zero
+					local absang = angle_zero
+					local ScanCone1 = 5
+					local ScanCone2 = 5
+
+					if scanEnt:GetClass() ~= "ace_searchradar" then
+						ang = scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
+						absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
+
+						ScanCone1 = (scanEnt.Cone  or 0 ) + 8
+						ScanCone2 = (scanEnt.Cone  or 0 ) + 8
+					else --Search radar
+						ang	=  scanEnt:WorldToLocalAngles(difpos:Angle())  - Angle(0,scanEnt.CurrentScanAngle,0)	--Used for testing if inrange
+						--absang	= Angle(math.abs(math.NormalizeAngle(ang.p)),math.abs(math.NormalizeAngle(ang.y)),0)  --Since I like ABS so much
+						absang	= Angle(0,math.abs(math.NormalizeAngle(ang.y)),0)  --Because elevation limits are disabled on search radars
+						ScanCone1 = 99999
+						ScanCone2 = scanEnt.Cone / 4 + 8
+					end
+
+
 					local ang2 = self:WorldToLocalAngles(nonlocang)
 					local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 					local absang2 = Angle(math.abs(ang2.p),math.abs(ang2.y),0) --Since I like ABS so much
 
-
-					if absang.p < (scanEnt.Cone + 8)  and absang.y < (scanEnt.Cone + 8) and absang2.p < self.Cone and absang2.y < self.Cone then --Entity is within radar cone
+					if absang.p < ScanCone1  and absang.y < ScanCone2 and absang2.p < self.Cone and absang2.y < self.Cone then --Entity is within radar cone
 
 						local LOStr = util.TraceLine( {
 							start = thisPos ,
@@ -139,6 +162,7 @@ function ENT:Think()
 
 							table.insert(radIDs,ACE.radarIDs[scanEnt])
 							table.insert(detAngs, Angle(nonlocang.p * randinac.p, nonlocang.y * randinac.y, nonlocang.r * randinac.r) ) --3
+							table.insert(radPOWs,scanEnt.PowerID or 0)
 						end
 					end
 				end
@@ -148,6 +172,9 @@ function ENT:Think()
 		WireLib.TriggerOutput( self, "Detected", detected )
 		WireLib.TriggerOutput( self, "Radar ID", radIDs )
 		WireLib.TriggerOutput( self, "Angle", detAngs )
-
+		WireLib.TriggerOutput( self, "Radar Power", radPOWs )
 	end
+
+	return true
+
 end

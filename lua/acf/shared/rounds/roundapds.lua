@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL","SBC"}
+ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "AAM", "FFAR", "POD", "SAM", "ECM", "FGL","SBC"}
 
 local Round = {}
 
@@ -38,23 +38,16 @@ function Round.convert( _, PlayerData )
 
 	if GunClass == "AC" or GunClass == "HMG" then
 
-		Data.MinCalMult	= 0.35
+		Data.MinCalMult	= 0.28
 		Data.MaxCalMult	= 1.0
 		Data.PenModifier	= 2 -- Autocannons are puny anyways
 		Data.VelModifier	= 1.6
 		Data.Ricochet	= 68
 	elseif GunClass == "RAC" then
 
-		Data.MinCalMult	= 0.5
+		Data.MinCalMult	= 0.47
 		Data.MaxCalMult	= 1.0
 		Data.PenModifier	= 1.8
-		Data.VelModifier	= 1.7
-		Data.Ricochet	= 68
-	elseif GunClass == "HRAC" then
-
-		Data.MinCalMult	= 0.5
-		Data.MaxCalMult	= 1.0
-		Data.PenModifier	= 1.9
 		Data.VelModifier	= 1.7
 		Data.Ricochet	= 68
 	elseif GunClass == "MG" then

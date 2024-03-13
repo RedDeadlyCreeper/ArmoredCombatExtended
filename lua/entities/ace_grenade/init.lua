@@ -8,6 +8,7 @@ function ENT:Initialize()
 	self:SetModel( "models/weapons/w_eq_fraggrenade.mdl" )
 	self:SetSolid( SOLID_BBOX )
 	self:SetCollisionBounds( Vector( -2 , -2 , -2 ) , Vector( 2 , 2 , 2 ) )
+	self:SetCollisionGroup(COLLISION_GROUP_WORLD)
 	self:SetMoveType(MOVETYPE_FLYGRAVITY);
 	self:PhysicsInit(MOVECOLLIDE_FLY_CUSTOM);
 	self:SetUseType(SIMPLE_USE);
@@ -24,10 +25,10 @@ function ENT:Initialize()
 		phys:SetBuoyancyRatio( 5 )
 		phys:SetDragCoefficient( 0 )
 		phys:SetDamping( 0, 8 )
-		phys:SetMaterial( "grenade" )
+		phys:SetMaterial( "Grenade" )
 	end
 
-	self:EmitSound( "npc/roller/blade_in.wav", 150, 100, 2, CHAN_AUTO )
+	self:EmitSound( "npc/roller/blade_in.wav", 150, 165, 2, CHAN_AUTO )
 
 end
 
@@ -39,10 +40,14 @@ function ENT:Think()
 
 	if self.FuseTime < 0 then
 
-		self:Remove()
+		--0.21 ~5m
 
-		local HEWeight = 4
+		self:Remove()
+		--Originally 4
+		local HEWeight =  4
 		local Radius = HEWeight ^ 0.33 * 8 * 39.37
+
+		--print(Radius/39.37)
 
 		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self.DamageOwner, nil, self) --0.5 is standard antipersonal mine
 

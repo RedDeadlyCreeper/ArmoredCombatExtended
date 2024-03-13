@@ -2,6 +2,28 @@ AddCSLuaFile()
 
 local Clamp = math.Clamp
 
+-- returns last parent in chain, which has physics
+function ACF_GetPhysicalParent( obj )
+	if not IsValid(obj) then return nil end
+
+	--check for fresh cached parent
+	if obj.acfphysparent and ACF.CurTime < obj.acfphysstale then
+		return obj.acfphysparent
+	end
+
+	local Parent = obj
+
+	while IsValid(Parent:GetParent()) do
+		Parent = Parent:GetParent()
+	end
+
+	--update cached parent
+	obj.acfphysparent = Parent
+	obj.acfphysstale = ACF.CurTime + 10 --when cached parent is considered stale and needs updating
+
+	return Parent
+end
+
 --Calculates a position along a catmull-rom spline (as defined on https://www.mvps.org/directx/articles/catmull/)
 --This is used for calculating engine torque curves
 function ACF_CalcCurve(Points, Pos)
@@ -114,15 +136,29 @@ function ACE_GetMaterialName( Mat )
 	-- Dirt
 	if Mat == 68 or Mat == 79 or Mat == 85 then
 		GroundMat = "Dirt"
-	-- Sand
+	--Sand
 	elseif Mat == 78 then
-		GroundMat = "Sand"
-	-- Glass
+	GroundMat = "Sand"
+	--Metal
+	elseif Mat == 77 or Mat == 86 or Mat == 80 then
+	GroundMat = "Metal"
+	--Snow
+	elseif Mat == 74 then
+	GroundMat = "Snow"
+	--Glass
 	elseif Mat == 89 then
 		GroundMat = "Glass"
-	elseif Mat == 77 or Mat == 86 or Mat == 80 then
-		GroundMat = "Metal"
+	elseif Mat == 87 then
+		GroundMat = "Wood"
 	end
+
+	--[[
+	if GroundMat != "Concrete" then
+	--print("GMat: "..GroundMat)
+	else
+	print("ID: "..Mat)
+	end
+	]]--
 
 	return GroundMat
 end

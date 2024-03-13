@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+ "$basetexture" "macc/MGM_Main"
+ 
+ "$BumpMap" "macc/MGM_Main_Normal"
+  
+  $ssbump 1
+  
+
+
+	"$envmap" "env_cubemap"
+	$normalmapalphaenvmapmask 1
+	$envmaptint "[0.2 0.2 0.2]"
+	$envmapanisotropy 1
+
+}

@@ -1,0 +1,4 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/aim54a_material"
+}

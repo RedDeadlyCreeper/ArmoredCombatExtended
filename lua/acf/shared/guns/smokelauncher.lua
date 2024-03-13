@@ -4,7 +4,7 @@ ACF_defineGunClass("SL", {
 	spread		= 0.15,
 	name		= "Smoke Launcher",
 	desc		= ACFTranslation.GunClasses[14],
-	muzzleflash = "40mm_muzzleflash_noscale",
+	muzzleflash = "MO",
 	rofmod		= 45,
 	year		= 1941,
 	sound		= "ace_weapons/multi_sound/smoke_multi.mp3",
@@ -19,7 +19,7 @@ ACF_defineGun("40mmSL", { --id
 	sound		= "ace_weapons/multi_sound/smoke_multi.mp3",
 	gunclass	= "SL",
 	caliber	= 4.0,
-	rofmod		= 1.2,
+	rofmod		= 0.2,
 	weight		= 1,
 	year		= 1941,
 	round = {

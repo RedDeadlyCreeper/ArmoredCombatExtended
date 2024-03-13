@@ -118,8 +118,8 @@ function Round.convert( _, PlayerData )
 	Data.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
 	Data.SlugPenArea2 = SlugFrArea2 ^ ACF.PenAreaMod
 
-	Data.SlugDragCoef = ((SlugFrArea / 10000) / Data.SlugMass) * 750
-	Data.SlugDragCoef2 = ((SlugFrArea2 / 10000) / Data.SlugMass2) * 750
+	Data.SlugDragCoef = ((SlugFrArea / 10000) / Data.SlugMass)
+	Data.SlugDragCoef2 = ((SlugFrArea2 / 10000) / Data.SlugMass2)
 
 	Data.SlugRicochet	=	500									-- Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
@@ -327,16 +327,19 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 		else
 
-			local Speed	= Bullet.Flight:Length() / ACF.VelScale
-			local Energy	= ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
-			local HitRes	= ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+			--Linter :)
+			--local Speed	= Bullet.Flight:Length() / ACF.VelScale
+			--local Energy	= ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
+			--local HitRes	= ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
 
-			if HitRes.Ricochet then
-				return "Ricochet"
-			else
+
+			--Breaks effect hitnormal. Though HEAT failing to fuse is nice.
+			--if HitRes.Ricochet then
+			--	return "Ricochet"
+			--else
 				Round.detonate( Index, Bullet, HitPos, HitNormal )
 				return "Penetrated"
-			end
+			--end
 
 		end
 	else
