@@ -1096,6 +1096,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 	local PMul       = self.ParticleMul
 	local size    = self.Radius * 0.5
 
+	--local Offset = self.DirVec * size * -12
 	local Offset = self.DirVec * size * -12
 
 	size = size * 0.625

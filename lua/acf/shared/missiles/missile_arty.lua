@@ -261,8 +261,8 @@ ACF_defineGun("M26 RA", {							-- id
 	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round	=	{
-		rocketmdl			= "models/missiles/gmlrs.mdl",
-		rackmdl				= "models/missiles/gmlrs.mdl",
+		rocketmdl			= "models/missiles/GMLRS_M26.mdl",
+		rackmdl				= "models/missiles/GMLRS_M26.mdl",
 		firedelay			= 0.33,
 		reloadspeed			= 1.0,
 		reloaddelay			= 30.0,

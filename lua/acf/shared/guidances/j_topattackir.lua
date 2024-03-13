@@ -119,12 +119,12 @@ function this:GetGuidance(missile)
 		--print(self.Dist/39.37)
 
 		local AddDist = 0
-		if self.GDist > self.LargestDist then
+		if self.LargestDist == 0 then
 			self.TopAttackFactor = self.GDist * 0.25
-			self.LargestDist = self.GDist
+			self.LargestDist = math.max(self.GDist * 0.3,3000)
 		end
 
-		if self.GDist > (self.LargestDist * 0.4) then
+		if self.GDist > self.LargestDist then
 			AddDist = self.TopAttackFactor
 		--else
 			--print("Direct")

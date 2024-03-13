@@ -24,7 +24,7 @@ function ENT:Initialize()
 	self.Active = false
 	curTime = 0
 
-	self:SetModel( "models/missiles/ecm.mdl" )
+	self:SetModel( "models/missiles/minipod.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
 
 	self:GetPhysicsObject():SetMass(1000)

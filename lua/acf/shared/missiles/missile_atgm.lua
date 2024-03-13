@@ -46,7 +46,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 25,							-- Acceleration in m/s.
-		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
+		burntime			= 7,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 30,							-- Speed missile starts with on launch in m/s
@@ -84,7 +84,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 	armdelay	= 0.15										-- minimum fuse arming delay
 } )
 
-ACF_defineGun("9M113 ASM", {									-- id
+ACF_defineGun("9M113 ATGM", {									-- id
 	name			= "9M113 Konkurs Missile",
 	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.",
 	model			= "models/missiles/arend/9m113.mdl",
@@ -176,12 +176,12 @@ ACF_defineGun("9M133 ASM", {									-- id
 
 		armour				= 20,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 2.0,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 18,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		thrusterturnrate	= 12,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 10,							-- Acceleration in m/s.
-		burntime			= 8,							-- time in seconds for rocket motor to burn at max proppelant.
+		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 10,							-- Speed missile starts with on launch in m/s
@@ -362,8 +362,8 @@ ACF_defineGun("FGM-148 ASM", {
 	name			= "FGM-148 Javelin Missile",
 	desc			= "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.",
 	model			= "models/mcace/Jevelinemissile.mdl",		-- model to spawn on menu
-	effect			= "ACE_MissileSmall",
-	effectbooster	= "ACE_MissileSmall",
+	effect			= "ACE_MotorSmall",
+	effectbooster	= "ACE_MotorSmall",
 	gunclass		= "ATGM",
 	rack			= "1x Javelin",								-- Which rack to spawn this missile on?
 	length			= 98,										-- Used for the physics calculations
@@ -384,9 +384,9 @@ ACF_defineGun("FGM-148 ASM", {
 
 		armour				= 13,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 120,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 320,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		thrusterturnrate	= 30,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 15,							-- Acceleration in m/s.
 		burntime			= 6,							-- time in seconds for rocket motor to burn at max proppelant.
@@ -406,16 +406,16 @@ ACF_defineGun("FGM-148 ASM", {
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(0.55)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.1)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance		= {"Dumb", "Infrared", "Top Attack IR","Laser"},				-- here you have Laser for those top attacks, feel free to build one.
+	guidance		= {"Dumb", "Infrared", "Top Attack IR"},				-- here you have Laser for those top attacks, feel free to build one.
 
 	fuses			= {"Contact", "Optical"},
 
 	seekcone		= 2.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone		= 45,										-- getting outside this cone will break the lock.  Divided by 2.
+	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {											-- a whitelist for racks that this missile can load into.
 					["1x Javelin"] = true
 					},
@@ -435,7 +435,7 @@ ACF_defineGun("Spike-LR ASM", {
 	gunclass		= "ATGM",
 	rack			= "1x Javelin",								-- Which rack to spawn this missile on?
 	length			= 67 * 2.53, --Convert to ammocrate units
-	caliber			= 12.7,										-- caliber
+	caliber			= 13,										-- caliber
 	weight			= 13,										-- Don't scale down the weight though!  --was 97.2
 	year			= 1997,										-- year
 	modeldiameter	= 7,--Already in ammocrate units
@@ -447,14 +447,14 @@ ACF_defineGun("Spike-LR ASM", {
 		reloadspeed			= 1.0,
 		reloaddelay			= 60.0,
 
-		maxlength			= 110,							-- Length of missile. Used for ammo properties.
+		maxlength			= 60,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
 
 		armour				= 13,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 120,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 5,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		turnrate			= 200,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 30,							-- Acceleration in m/s.
 		burntime			= 6,							-- time in seconds for rocket motor to burn at max proppelant.
@@ -466,15 +466,15 @@ ACF_defineGun("Spike-LR ASM", {
 
 		boostacceleration	= 100,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
 		boostertime			= 0.25,							-- Time in seconds for booster runtime
-		boostdelay			= 0.45,							-- Delay in seconds before booster activates.
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.002,						-- percent speed loss per second
+		dragcoef			= 0.003,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(0.55)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.3)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
