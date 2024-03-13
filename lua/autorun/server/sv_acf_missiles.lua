@@ -239,7 +239,7 @@ include("autorun/server/duplicatorDeny.lua")
 hook.Add( "InitPostEntity", "ACFMissiles_DupeDeny", function()
 	-- Need to ensure this is called after InitPostEntity because Adv. Dupe 2 resets its whitelist upon this event.
 	timer.Simple(1, function()
-		duplicator.Deny("acf_missile")
+		duplicator.Deny("ace_missile")
 		duplicator.Deny("ace_missile_swep_guided")
 	end)
 end )

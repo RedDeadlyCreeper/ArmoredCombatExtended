@@ -27,7 +27,7 @@ ACE.CritEnts = {
 	acf_gearbox                = true,
 	acf_fueltank               = true,
 	acf_rack                   = true,
-	acf_missile                = true,
+	ace_missile                = true,
 	ace_missile_swep_guided    = true,
 	prop_vehicle_prisoner_pod  = true,
 	gmod_wire_gate             = true
@@ -302,7 +302,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 			PlayerDist = math.max(PlayerDist,13949) --Will never go below 3 meters.
 
-			Tar:ViewPunch( Angle( RelAngle.pitch * math.Clamp(Amp * -350000 / PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * -300000 / PlayerDist * math.Rand(0.5,1),-360,360), RelAngle.yaw * math.Clamp(Amp * 100000 / PlayerDist * math.Rand(0.5,1),-180,180) ) )
+			Tar:ViewPunch( Angle( math.Clamp(RelAngle.pitch * Amp * -120000 / PlayerDist * math.Rand(0.5,1),-60,60), math.Clamp( RelAngle.yaw * Amp * -100000 / PlayerDist * math.Rand(0.5,1),-60,60), math.Clamp( RelAngle.yaw * Amp * 50000 / PlayerDist * math.Rand(0.5,1),-60,60) ) )
 		end
 
 	--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see

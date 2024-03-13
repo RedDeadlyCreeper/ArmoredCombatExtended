@@ -546,7 +546,7 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 
 		local IsMissile
 
-		if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
+		if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "ace_missile" then
 			IsMissile = 1
 		end
 

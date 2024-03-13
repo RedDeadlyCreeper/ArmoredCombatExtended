@@ -138,8 +138,8 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 130,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.5,							-- Time in seconds for booster runtime
+		boostacceleration	= 60,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 1.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
@@ -254,15 +254,15 @@ ACF_defineGun("M26 RA", {							-- id
 	gunclass         = "ARTY",
 	rack             = "6xUARRK",								-- Which rack to spawn this missile on?
 	weight           = 308,
-	length           = 219, --320
+	length           = 155 * 2.53, --Convert to ammocrate units
 	year             = 1980,
 	roundclass       = "Rocket",
-	modeldiameter    = 10,
+	modeldiameter    = 10, --Already in ammocrate units
 	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round	=	{
-		rocketmdl			= "models/missiles/gmlrs.mdl",
-		rackmdl				= "models/missiles/gmlrs.mdl",
+		rocketmdl			= "models/missiles/GMLRS_M26.mdl",
+		rackmdl				= "models/missiles/GMLRS_M26.mdl",
 		firedelay			= 0.33,
 		reloadspeed			= 1.0,
 		reloaddelay			= 30.0,
@@ -352,13 +352,13 @@ ACF_defineGun("SS-40 RA", {								-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 500,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 4,							-- Time in seconds for booster runtime
+		boostacceleration	= 30,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.0025,						-- percent speed loss per second
+		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
@@ -394,10 +394,10 @@ ACF_defineGun("M31 RA", {							-- id
 	gunclass         = "ARTY",
 	rack             = "6xUARRK",								-- Which rack to spawn this missile on?
 	weight           = 308,
-	length           = 219, --320
+	length           = 155 * 2.53, --Convert to ammocrate units
 	year             = 1980,
 	roundclass       = "Rocket",
-	modeldiameter    = 10,
+	modeldiameter    = 10, --Already in ammocrate units
 	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round	=	{

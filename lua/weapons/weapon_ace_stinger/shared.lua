@@ -379,6 +379,7 @@ function SWEP:PrimaryAttack()
 			ent.tarent = self.TarEnt
 			ent.Bulletdata = self.BulletData
 			ent.LeadMul = 1.5 --A higher leadmul means it's easier to force the missile to bleed a missile's energy. Lower can potentially be more efficient by reducing overcorrection
+			ent.DamageOwner = owner
 
 			ent:SetOwner(owner)
 			ent:CPPISetOwner(owner)

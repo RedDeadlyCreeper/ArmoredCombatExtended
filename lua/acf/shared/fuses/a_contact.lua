@@ -58,6 +58,7 @@ end
 function this:Configure(Missile)
 	self.TimeStarted = CurTime()
 	Missile.IgnitionDelay = self.StartDelay
+	self.Primer = math.max(Missile.MinStartDelay,self.Primer)
 end
 
 

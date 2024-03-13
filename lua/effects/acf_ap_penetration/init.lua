@@ -114,29 +114,29 @@ function EFFECT:Init( data )
 
 		local FTrace, BTrace, BackTraceFilter = DoubleSidedTraceResult( self )
 
-		local DecalMat = "Impact.Concrete"
+		local DecalMat = "Impact.Concrete" --Disabled other impact effects due to source bug hitting odd materials. Not too much loss in fidelity anyways.
 
 
 		if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
 
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )
-			DecalMat = "Impact.Metal"
+			--DecalMat = "Impact.Metal"
 		elseif  MatVal == "Dirt" or MatVal == "Sand"  then
 			self:Dust( SMKColor )
-			DecalMat = DecalMat --For some reason Impact.Sand breaks on any prop brush but not world brushes. I don't get it?
+			--DecalMat = DecalMat --For some reason Impact.Sand breaks on any prop brush but not world brushes. I don't get it?
 		elseif MatVal == "Concrete" then
 			self:Concrete( SMKColor )
-			DecalMat = DecalMat
+			--DecalMat = DecalMat
 		elseif  MatVal == "Snow"  then
 			self:Dust( SMKColor )
-			DecalMat = "Impact.Sand"
+			--DecalMat = "Impact.Sand"
 		elseif  MatVal == "Wood"  then
 			self:Wood( SMKColor )
-			DecalMat = "Impact.Wood"
+			--DecalMat = "Impact.Wood"
 		elseif  MatVal == "Glass"  then
 			self:Glass( SMKColor )
-			DecalMat = "Impact.Glass"
+			--DecalMat = "Impact.Glass"
 		else
 			self:Dust( SMKColor )
 		end

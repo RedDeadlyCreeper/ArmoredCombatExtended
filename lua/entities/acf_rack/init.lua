@@ -22,6 +22,7 @@ local RackWireDescs = {
 	--Inputs
 	["Reload"]       = "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
 	["TargetPos"]    = "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
+	["Delay"]        = "Sets a specific delay to guidance control over the default one in seconds.",
 
 	--Outputs
 	["Ready"]        = "Returns if the rack is ready to fire."
@@ -71,8 +72,10 @@ function ENT:Initialize()
 	self.MaxMissile				= 1 or self.MaxMissile
 	self.CurMissile				= 0
 
-	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload (" .. RackWireDescs["Reload"] .. ")",	"Target Pos (" .. RackWireDescs["TargetPos"] .. ")", "Activate Guidance" },
-													{ "NORMAL", "NORMAL", "VECTOR", "NORMAL" } )
+	self.TrackDelay				= 0
+
+	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload (" .. RackWireDescs["Reload"] .. ")",	"Target Pos (" .. RackWireDescs["TargetPos"] .. ")", "Activate Guidance", "Track Delay (" .. RackWireDescs["Delay"] .. ")" },
+													{ "NORMAL", "NORMAL", "VECTOR", "NORMAL", "NORMAL" } )
 
 	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready (" .. RackWireDescs["Ready"] .. ")",	"Shots Left", "AcquiredTarget", "TargetDirection", "Current Missile", "Missile Info" },
 														{ "NORMAL", "NORMAL", "NORMAL", "VECTOR", "ENTITY", "STRING" } )
@@ -213,6 +216,12 @@ function ENT:TriggerInput( iname , value )
 			self.TargPos = value --I didn't like using wire outputs to pass target positions to missiles. The value also didn't make sense to the user.
 		else
 			self.TargPos = nil
+		end
+	elseif iname == "Track Delay" then
+		if value > 0 then
+			self.TrackDelay = value
+		else
+			self.TrackDelay = 0
 		end
 	elseif iname == "Activate Guidance" then
 		if value > 0 then
@@ -400,6 +409,7 @@ function ENT:ShootMissile()
 	if self.TargPos then
 		self.Missiles[MissileToShoot][1].TargetPos = self.TargPos --Sets target position of missile. Used for inertial navigation.
 	end
+	self.Missiles[MissileToShoot][1].GuidanceActivationDelay = self.TrackDelay
 	self.Missiles[MissileToShoot][1].LastThink = CurTime()
 	self.Missiles[MissileToShoot][1].ActivationTime = CurTime()
 	self.Missiles[MissileToShoot][1].Flight = self.Parent:GetVelocity() / 39.37
@@ -481,7 +491,7 @@ function ENT:Reload() --
 
 		Wire_TriggerOutput(self, "Shots Left", self.CurMissile)
 	else
-		self.NextReload = CT + 1
+		self.NextReload = CT + 5
 	end
 
 end
@@ -495,7 +505,7 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 
 	local ply = self:CPPIGetOwner()
 
-	local missile = ents.Create("acf_missile2")
+	local missile = ents.Create("ace_missile")
 	--missile:CPPISetOwner(ply) --What could possibly go wrong :/
 	missile.DamageOwner = ply
 	missile.DoNotDuplicate  = true
@@ -561,6 +571,8 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 
 	missile.StraightRunning = ACF_GetRackValue(BulletData, "predictiondelay") or ACF_GetGunValue(BulletData.Id, "predictiondelay") or 1.25
 	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .. " - " .. BulletData.Type
+	missile.MinStartDelay = ACF_GetRackValue(BulletData, "armdelay") or ACF_GetGunValue(BulletData.Id, "armdelay") or 0.2
+
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8
