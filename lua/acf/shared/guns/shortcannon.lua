@@ -21,7 +21,6 @@ ACF_defineGun("37mmSC", {
 	gunclass = "SC",
 	caliber = 3.7,
 	weight = 55,
-	rofmod = 45,
 	maxrof = 40, -- maximum rounds per minute
 	year = 1915,
 	round = {

@@ -19,7 +19,7 @@ ACF_defineGun("75mmHW", { --id
 	model = "models/howitzer/howitzer_75mm.mdl",
 	sound = "ace_weapons/multi_sound/howitzer_multi.mp3",
 	gunclass = "HW",
-	caliber = 24,
+	caliber = 7.5,
 	weight = 550,
 	maxrof = 20, -- maximum rounds per minute
 	year = 1900,
