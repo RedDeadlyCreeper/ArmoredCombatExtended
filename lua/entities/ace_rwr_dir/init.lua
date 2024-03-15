@@ -24,10 +24,10 @@ function ENT:Initialize()
 	self.Active = false
 	curTime = 0
 
-	self:SetModel( "models/missiles/radar_sml.mdl" )
+	self:SetModel( "models/radar/radar_sml.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
 
-	self:GetPhysicsObject():SetMass(165)
+	self:GetPhysicsObject():SetMass(105)
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active" } )
 	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Radar ID [ARRAY]", "Angle [ARRAY]", "Radar Power [ARRAY]"} )
@@ -44,7 +44,7 @@ end
 --ATGMs tracked
 function ENT:isLegal()
 
-	if self:GetPhysicsObject():GetMass() < 165 then return false end
+	if self:GetPhysicsObject():GetMass() < 105 then return false end
 	if not self:IsSolid() then return false end
 
 	ACF_GetPhysicalParent(self)

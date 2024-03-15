@@ -25,8 +25,7 @@ function ENT:Initialize()
 	self:SetActive(false)
 
 	self.Heat                = 21	-- Heat
-	self.HeatAboveAmbient    = 5	-- How many degrees above Ambient Temperature this irst will start to track?
-	self.HeatNoLoss 	     = 200  -- Required heat to make the tracker not to lose accuracy. Below this value, inaccuracy starts to take effect.
+	self.HeatAboveAmbient    = 10	-- How many degrees above Ambient Temperature this irst will start to track?
 
 	self.MinViewCone         = 3
 	self.MaxViewCone         = 45
@@ -225,7 +224,6 @@ end
 function ENT:AcquireLock()
 
 	local IRSTPos        = self:GetPos()
-	local inac           = self.inac
 
 	--Table definition
 	local Owners         = {}
@@ -248,7 +246,6 @@ function ENT:AcquireLock()
 
 	for _, scanEnt in ipairs(self:GetWhitelistedEntsInCone()) do
 
-		local randanginac	= math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
 		dist	= difpos:Length()
 
 
@@ -260,7 +257,7 @@ function ENT:AcquireLock()
 		absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 0.4 * (absang.y / 90) ^ 2 + 0.4 * (absang.y / 90) ^ 2 + 0.4 * (absang.p / 90) ^ 2
+		errorFromAng = 1 + ((absang.y / 90) + (absang.p / 90)) * 1
 
 		-- Check if the target is within the cone.
 		if IsInCone( absang, self.Cone ) then
@@ -312,9 +309,15 @@ function ENT:AcquireLock()
 				besterr = err
 			end
 
-			local errorFromHeat = math.max((self.HeatNoLoss - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
-			local finalerror = errorFromAng + errorFromHeat
-			local angerr = Angle(finalerror, finalerror, finalerror) * randanginac
+			local errorFromHeat = 5 / math.max(Heat / 20, 1) --200 degrees to the seeker causes no loss in accuracy
+
+
+			if Heat < 50 then
+				errorFromHeat = 25
+			end
+
+			local finalerror = errorFromAng * errorFromHeat
+			local angerr = Angle(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1)) * finalerror
 
 			--For Owner table
 			local Owner = scanEnt:CPPIGetOwner()

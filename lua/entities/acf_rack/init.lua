@@ -272,7 +272,7 @@ function ENT:UpdateValidMissiles()
 
 	--Find the next available missile in the stack.
 	--Used to pass guidance info to and from the missile to the launcher and back.
---	local MissileToShoot = nil
+	--local MissileToShoot = nil
 	for i = 1, self.MaxMissile do
 		local MissileTest = self.Missiles[i][2] or false
 		if MissileTest then
@@ -492,6 +492,9 @@ function ENT:Reload() --
 		Wire_TriggerOutput(self, "Shots Left", self.CurMissile)
 	else
 		self.NextReload = CT + 5
+
+		local ValidCount = self:UpdateValidMissiles()
+		self.CurMissile = ValidCount
 	end
 
 end

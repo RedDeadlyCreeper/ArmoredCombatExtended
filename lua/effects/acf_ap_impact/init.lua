@@ -63,7 +63,9 @@ function EFFECT:Init( data )
 	self.Caliber     = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 2 ) or 2
 	self.Emitter     = ParticleEmitter( self.Origin )
 
-	self.ParticleMul = tonumber(LocalPlayer():GetInfo("acf_cl_particlemul")) or 1
+	local LocPly = LocalPlayer()
+
+	self.ParticleMul = tonumber(LocPly:GetInfo("acf_cl_particlemul")) or 1
 
 	local SurfaceTr = PerformDecalTrace( self )
 	local TraceEntity = SurfaceTr.Entity
@@ -123,15 +125,17 @@ function EFFECT:Init( data )
 
 	end
 
-local Energy = (self.Mass * (self.Velocity / 39.37) ^2) / 1000000
+	local Energy = (self.Mass * (self.Velocity / 39.37) ^2) / 1000000
 
-local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
+	if IsValid(LocPly) then
+		local PlayerDist = (LocPly:GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
 
-if PlayerDist < Energy * 8 and not LocalPlayer():HasGodMode() then
-	local Amp          = math.min(Energy / 350 / math.max(PlayerDist,5), 40)
-	--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
-	util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy / 10 , false) --Energy/20
-end
+		if PlayerDist < Energy * 8 and not LocPly:HasGodMode() then
+			local Amp          = math.min(Energy / 350 / math.max(PlayerDist,5), 40)
+			--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
+			util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy / 10 , false) --Energy/20
+		end
+	end
 
 	PerformBulletEffect( self )
 

@@ -131,6 +131,7 @@ function ENT:TriggerInput( inp, value )
 		self:SetActive((value ~= 0) and self.Legal)
 
 		local curTime = CurTime()
+		self.LastThink = ACF.CurTime
 		self:NextThink(curTime + 3) --Radar takes a moment to power up. Used to prevent radar flickering to avoid ECM.
 	elseif inp == "Cone" then
 		if value > 0 then
@@ -217,6 +218,9 @@ if not self.Legal then
 txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 end
 
+
+txt = txt .. "\nTemp: " .. math.Round(self.Heat) .. "C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. "F"
+
 self:SetOverlayText(txt)
 
 end
@@ -242,10 +246,10 @@ function ENT:Think()
 
 	end
 
-	self.CurrentScanAngle = self.CurrentScanAngle + self.Cone * DeltaTime
-	if self.CurrentScanAngle >= 360 then self.CurrentScanAngle = self.CurrentScanAngle - 360 end
-
 	if self.Active and self.Legal then
+
+		self.CurrentScanAngle = self.CurrentScanAngle + self.Cone * DeltaTime
+		if self.CurrentScanAngle >= 360 then self.CurrentScanAngle = math.min(self.CurrentScanAngle - 360,360) end
 
 		--local radID = ACE.radarIDs[self]
 

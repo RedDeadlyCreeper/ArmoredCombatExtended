@@ -156,12 +156,18 @@ function EFFECT:Init( data )
 
 	local Energy = (self.Mass * (self.Velocity / 39.37) ^2) / 500000
 
-	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
+	local LocPly = LocalPlayer()
 
-	if PlayerDist < Energy * 8 and not LocalPlayer():HasGodMode() then
-		local Amp          = math.min(Energy / 250 / math.max(PlayerDist,5),40)
-		--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
-		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy / 10 , false) --Energy/20
+	if IsValid(LocPly) then
+
+		local PlayerDist = (LocPly:GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
+
+		if PlayerDist < Energy * 8 and not LocPly:HasGodMode() then
+			local Amp          = math.min(Energy / 250 / math.max(PlayerDist,5),40)
+			--local Amp          = math.min(self.Radius / 1.5 / math.max(PlayerDist,5),40)
+			util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, math.min(Amp  * 2,2), Energy / 10 , false) --Energy/20
+		end
+
 	end
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
