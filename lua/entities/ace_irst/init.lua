@@ -28,7 +28,7 @@ function ENT:Initialize()
 	self.HeatAboveAmbient    = 10	-- How many degrees above Ambient Temperature this irst will start to track?
 
 	self.MinViewCone         = 3
-	self.MaxViewCone         = 45
+	self.MaxViewCone         = 20
 
 	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal               = true
@@ -309,11 +309,14 @@ function ENT:AcquireLock()
 				besterr = err
 			end
 
-			local errorFromHeat = 5 / math.max(Heat / 20, 1) --200 degrees to the seeker causes no loss in accuracy
+			local errorFromHeat = 5 / math.max(Heat / 40, 1) --200 degrees to the seeker causes no loss in accuracy
+			--100C becomes 2
+			--200C becomes 1
+			--400C becomes 0.5
 
 
-			if Heat < 50 then
-				errorFromHeat = 25
+			if Heat < 75 then --A little lower than a tank idling. Full power tanks are usually about 90C plus movement heat.
+				errorFromHeat = 15
 			end
 
 			local finalerror = errorFromAng * errorFromHeat
