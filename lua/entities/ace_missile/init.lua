@@ -24,7 +24,7 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 
 	if not IsValid(self:CPPIGetOwner()) then
-		self:CPPISetOwner(player.GetAll()[1])
+		self:CPPISetOwner(game.GetWorld())
 	end
 
 	self.PhysObj:EnableGravity( false )
