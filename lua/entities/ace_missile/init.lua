@@ -423,7 +423,7 @@ function ENT:Detonate()
 	self.Launcher.FakeCrate = self.Launcher.FakeCrate or ents.Create("acf_fakecrate2")
 	self.Launcher.FakeCrate:RegisterTo(self.Bulletdata2)
 	self.Bulletdata2["Crate"] = self.Launcher.FakeCrate:EntIndex()
-	self.Launcher:DeleteOnRemove(self.Launcher)
+	self.Launcher:DeleteOnRemove(self.Launcher.FakeCrate)
 
 --	self.Bulletdata2["Flight"] = self:GetForward():GetNormalized() * self.Flight * 39.37 * ACF.MissileVelocityMul
 	self.Bulletdata2["Flight"] = self.Flight * 39.37 * ACF.MissileVelocityMul
