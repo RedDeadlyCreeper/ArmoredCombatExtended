@@ -3,6 +3,12 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+local deg, acos = math.deg, math.acos
+local min, max = math.min, math.max
+local Rand = math.Rand
+local TraceHull = util.TraceHull
+local Inf = math.huge
+
 local RadarTable = ACF.Weapons.Radars
 
 function ENT:Initialize()
@@ -13,7 +19,7 @@ function ENT:Initialize()
 	self.Active				= false
 
 	self.Inputs	= WireLib.CreateInputs( self, { "Active", "Cone" } )
-	self.Outputs	= WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
+	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
 	self.OutputData = {
 		Detected		= 0,
 		Owner			= {},
@@ -24,17 +30,21 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
-	self.Heat                = 21	-- Heat
-	self.HeatAboveAmbient    = 10	-- How many degrees above Ambient Temperature this irst will start to track?
+	self.Heat               = 21
+	self.HeatAboveAmbient   = 10 -- Targets below this temperature above ambient will be ignored
 
-	self.MinViewCone         = 3
-	self.MaxViewCone         = 20
+	self.MinViewCone        = 3
+	self.MaxViewCone        = 20
 
-	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal               = true
-	self.LegalIssues         = ""
+	self.BaseAngularError	= 1 -- Minimum angular error
+	self.LowHeatError		= 15 -- Angular error for things with very low temperature
+	self.LowHeatErrorTemp 	= 75 -- Anything below this temperature, the error will be LowHeatError
 
-	self.ClosestToBeam       = -1
+	self.NextLegalCheck     = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal              = true
+	self.LegalIssues        = ""
+
+	self.ClosestToBeam      = -1
 
 	self:UpdateOverlayText()
 
@@ -54,6 +64,7 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 	if not radar then return false end
 
 	local IRST = ents.Create("ace_irst")
+
 	if IsValid(IRST) then
 
 		IRST:SetAngles(Angle)
@@ -140,15 +151,8 @@ function ENT:SetActive(active)
 	self.Active = active
 
 	if active  then
-		local sequence = self:LookupSequence("active") or 0
-		self:ResetSequence(sequence)
-		self.AutomaticFrameAdvance = true
 		self.Heat = 21 + 40
 	else
-		local sequence = self:LookupSequence("idle") or 0
-		self:ResetSequence(sequence)
-		self.AutomaticFrameAdvance = false
-
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
 		WireLib.TriggerOutput( self, "Owner"		, {} )
 		WireLib.TriggerOutput( self, "Angle"		, {} )
@@ -166,182 +170,97 @@ function ENT:SetActive(active)
 
 end
 
-function ENT:GetWhitelistedEntsInCone()
-
-	local ScanArray = ACE.contraptionEnts
-	if not next(ScanArray) then return {} end
-
-	local WhitelistEnts    = {}
-	local LOSdata          = {}
-	local LOStr            = {}
-
-	local IRSTPos          = self:GetPos()
-
-	local entpos           = Vector()
-	local difpos           = Vector()
-	local dist             = 0
-
-	for _, scanEnt in ipairs(ScanArray) do
-
-		-- skip any invalid entity
-		if not IsValid(scanEnt) then continue end
-
-		--Why IRST should track itself?
-		if self == scanEnt then continue end
-
-		entpos  = scanEnt:GetPos()
-		difpos  = entpos - IRSTPos
-		dist	= difpos:Length()
-
-		-- skip any ent outside of minimun distance
-		if dist < self.MinimumDistance then continue end
-
-		-- skip any ent far than maximum distance
-		if dist > self.MaximumDistance then continue end
-
-		LOSdata.start             = IRSTPos
-		LOSdata.endpos            = entpos
-		LOSdata.collisiongroup    = COLLISION_GROUP_WORLD
-		LOSdata.filter            = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
-		LOSdata.mins              = vector_origin
-		LOSdata.maxs              = LOSdata.mins
-
-		LOStr = util.TraceHull( LOSdata )
-
-		--Trace did not hit world
-		if not LOStr.Hit then
-			table.insert(WhitelistEnts, scanEnt)
-		end
-	end
-
-	return WhitelistEnts
+local function GetAngleFromTarget(direction, forwardVector)
+	return deg(acos(direction:Dot(forwardVector)))
 end
 
-local function IsInCone( Angle, Cone )
-	return Angle.p < Cone and Angle.y < Cone
-end
+local LOSTraceData = {
+	mask = MASK_SOLID_BRUSHONLY,
+	mins = vector_origin,
+	maxs = vector_origin,
+}
 
-function ENT:AcquireLock()
-
-	local IRSTPos        = self:GetPos()
-
-	--Table definition
+function ENT:ScanForContraptions()
 	local Owners         = {}
 	local Temperatures   = {}
 	local AngTable       = {}
 
 	self.ClosestToBeam   = -1
-	local besterr        = math.huge --Hugh mungus number
 
-	local entpos         = vector_origin
-	local difpos         = vector_origin
+	local SelfContraption = self:GetContraption()
+	local SelfForward = self:GetForward()
+	local SelfPos = self:GetPos()
+	local MinDistance = Inf
+	local MinTrackingHeat = ACE.AmbientTemp + self.HeatAboveAmbient
+	local Cone = self.Cone
 
-	local nonlocang      = angle_zero
-	local ang            = angle_zero
-	local absang         = angle_zero
-	local errorFromAng   = 0
-	local dist           = 0
+	local BaseAngularError = self.BaseAngularError
+	local LowHeatError = self.LowHeatError
+	local LowHeatErrorTemp = self.LowHeatErrorTemp
 
-	local physEnt		= NULL
+	for Contraption in pairs(CFW.contraptions) do
+		if Contraption ~= SelfContraption then
+			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
+			local Base = Contraption.aceBaseplate
+			local BasePhys = Base:GetPhysicsObject()
+			local BaseTemp = 0
 
-	for _, scanEnt in ipairs(self:GetWhitelistedEntsInCone()) do
-
-		dist	= difpos:Length()
-
-
-		entpos	= scanEnt:WorldSpaceCenter()
-		difpos	= (entpos - IRSTPos)
-
-		nonlocang   = difpos:Angle()
-		ang         = self:WorldToLocalAngles(nonlocang)		--Used for testing if inrange
-		absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
-
-		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 1 + ((absang.y / 90) + (absang.p / 90)) * 1
-
-		-- Check if the target is within the cone.
-		if IsInCone( absang, self.Cone ) then
-
-
-			--if the target is a Heat Emitter, track its heat
-			if scanEnt.Heat then
-
-				physEnt = scanEnt:GetPhysicsObject()
-
-				if IsValid(physEnt) and physEnt:IsMoveable() then
-					ACE_InfraredHeatFromProp( scanEnt , dist )
-				else
-					Heat = scanEnt.Heat
-				end
-
-
-			--if is not a Heat Emitter, track the friction's heat
-			else
-
-				physEnt = scanEnt:GetPhysicsObject()
-
-				--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-				if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
-
-				Heat = ACE_InfraredHeatFromProp( scanEnt , dist )
-
+			if IsValid(Base) and IsValid(BasePhys) and BasePhys:IsMoveable() then
+				BaseTemp = ACE_InfraredHeatFromProp(Base, self.HeatAboveAmbient)
 			end
+
+			local Pos = BaseTemp > HottestEntityTemp and Base:GetPos() or Contraption:GetACEHeatPosition()
+			local PosDiff = Pos - SelfPos
+			local Distance = PosDiff:Length()
 
 			--0x heat @ 1200m
 			--0.25x heat @ 900m
 			--0.5x heat @ 600m
 			--0.75x heat @ 300m
 			--1.0x heat @ 0m
-
-			local HeatMulFromDist = 1 - math.min(dist / 47244, 1) --39.37 * 1200 = 47244
+			local Heat = max(BaseTemp, HottestEntityTemp)
+			local HeatMulFromDist = 1 - min(Distance / 47244, 1) -- 39.37 * 1200 = 47244
 			Heat = Heat * HeatMulFromDist
 
-			--Skip if not Hotter than AmbientTemp in deg C.
-			if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
+			LOSTraceData.start = SelfPos
+			LOSTraceData.endpos = Pos
+			local LOSTrace = TraceHull(LOSTraceData)
 
-			--Could do pythagorean stuff but meh, works 98% of time
-			local err = absang.p + absang.y
+			local AngleFromTarget = GetAngleFromTarget(PosDiff:GetNormalized(), SelfForward)
 
-			--Sorts targets as closest to being directly in front of radar
-			if err < besterr then
-				self.ClosestToBeam =  #Owners + 1
-				besterr = err
+			if AngleFromTarget < Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
+				local ErrorFromAngle = 1 + AngleFromTarget / 90 -- Better accuracy when directly facing the target
+				local ErrorFromHeat = 5 / max(Heat / 40, 1) --200 degrees to the seeker causes no loss in accuracy
+				--100C becomes 2
+				--200C becomes 1
+				--400C becomes 0.5
+
+				if Heat < LowHeatErrorTemp then
+					ErrorFromHeat = LowHeatError
+				end
+
+				local FinalError = BaseAngularError + ErrorFromAngle * ErrorFromHeat
+				local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * FinalError
+				local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError
+				FinalAngle.r = 0
+
+				Owners[#Owners + 1] = Base:CPPIGetOwner()
+				AngTable[#AngTable + 1] = FinalAngle
+				Temperatures[#Temperatures + 1] = Heat
+
+				if Distance < MinDistance then
+					self.ClosestToBeam = #Owners
+					MinDistance = Distance
+				end
 			end
-
-			local errorFromHeat = 5 / math.max(Heat / 40, 1) --200 degrees to the seeker causes no loss in accuracy
-			--100C becomes 2
-			--200C becomes 1
-			--400C becomes 0.5
-
-
-			if Heat < 75 then --A little lower than a tank idling. Full power tanks are usually about 90C plus movement heat.
-				errorFromHeat = 15
-			end
-
-			local finalerror = errorFromAng * errorFromHeat
-			local angerr = Angle(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1)) * finalerror
-
-			--For Owner table
-			local Owner = scanEnt:CPPIGetOwner()
-			local NickName = IsValid(Owner) and Owner:GetName() or ""
-
-
-			table.insert(Owners, NickName)
-			table.insert(Temperatures, Heat)
-			table.insert(AngTable, -ang + angerr) -- Negative means that if the target is higher than irst = positive pitch
-
 		end
-
-
 	end
 
-	if self.ClosestToBeam ~= -1 then --Some entity passed the test to be valid
-
-		WireLib.TriggerOutput( self, "Detected"	, 1 )
-		WireLib.TriggerOutput( self, "Owner"		, Owners )
-		WireLib.TriggerOutput( self, "Angle"		, AngTable )
-		WireLib.TriggerOutput( self, "EffHeat"	, Temperatures )
+	if self.ClosestToBeam ~= -1 then
+		WireLib.TriggerOutput( self, "Detected", 1 )
+		WireLib.TriggerOutput( self, "Owner", Owners )
+		WireLib.TriggerOutput( self, "Angle", AngTable )
+		WireLib.TriggerOutput( self, "EffHeat", Temperatures )
 		WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
 
 		self.OutputData.Detected = 1
@@ -349,12 +268,11 @@ function ENT:AcquireLock()
 		self.OutputData.Angle = AngTable
 		self.OutputData.EffHeat = Temperatures
 		self.OutputData.ClosestToBeam = self.ClosestToBeam
-	else --Nothing detected
-
-		WireLib.TriggerOutput( self, "Detected"	, 0 )
-		WireLib.TriggerOutput( self, "Owner"		, {} )
-		WireLib.TriggerOutput( self, "Angle"		, {} )
-		WireLib.TriggerOutput( self, "EffHeat"	, {} )
+	else
+		WireLib.TriggerOutput( self, "Detected", 0 )
+		WireLib.TriggerOutput( self, "Owner", {} )
+		WireLib.TriggerOutput( self, "Angle", {} )
+		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 
 		self.OutputData.Detected = 0
@@ -387,7 +305,7 @@ function ENT:Think()
 	end
 
 	if self.Active and self.Legal then
-		self:AcquireLock()
+		self:ScanForContraptions()
 	end
 
 	if (self.LastStatusUpdate + self.StatusUpdateDelay) < curTime then

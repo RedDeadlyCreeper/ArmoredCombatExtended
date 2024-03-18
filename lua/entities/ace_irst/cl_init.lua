@@ -2,29 +2,15 @@ include("shared.lua")
 
 local ACF_GunInfoWhileSeated = CreateClientConVar("ACF_GunInfoWhileSeated", 0, true, false)
 
-function ENT:Initialize()
-
-	self.BaseClass.Initialize( self )
-
-end
-
 function ENT:Draw()
-
 	local lply = LocalPlayer()
 	local hideBubble = not ACF_GunInfoWhileSeated:GetBool() and IsValid(lply) and lply:InVehicle()
 
 	self.BaseClass.DoNormalDraw(self, false, hideBubble)
 	Wire_Render(self)
-
-	if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then
-		-- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
-		Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false )
-	end
-
 end
 
 function ACFIRSTGUICreate( Table )
-
 	acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 
 	local RadarMenu = acfmenupanel.CData.DisplayModel
@@ -43,7 +29,6 @@ function ACFIRSTGUICreate( Table )
 	acfmenupanel:CPanelText("ViewCone", "View cone : " .. ((Table.viewcone or 180) * 2) .. " degs")
 	acfmenupanel:CPanelText("MaxRange", "View range : " .. math.Round(Table.maxdist / 39.37 , 2) .. " m")
 	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. " kg")
-	--acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n","DermaDefaultBold")
 
 	acfmenupanel.CustomDisplay:PerformLayout()
 
