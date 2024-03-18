@@ -18,7 +18,7 @@ ACF_defineGunClass("AAM", {
 -- The AIM-9 Sidewinder. The perfect choice for dogfights at short range. Although respectable payload, still tiny.
 ACF_defineGun("AIM-9 AAM", {								-- id
 	name             = "AIM-9 Sidewinder",
-	desc             = "The gold standard in airborne jousting sticks. Agile and reliable with a rather underwhelming effective range, this homing missile is the weapon of choice for dogfights.",
+	desc             = "The gold standard in airborne jousting sticks. Agile and reliable with a rather underwhelming effective range, this homing missile is the weapon of choice for dogfights.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: No",
 	model            = "models/missiles/aim9m.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -90,7 +90,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 
 ACF_defineGun("AIM-7 AAM", {							-- id
 	name             = "AIM-7 Sparrow",
-	desc             = "While not as advanced as its modern counterparts, the Sparrow makes up for it in thrust and plentiful speed. Do not underestimate it.",
+	desc             = "While not as advanced as its modern counterparts, the Sparrow makes up for it in thrust and plentiful speed. Do not underestimate it.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/missiles/arend/aim7f.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster    = "ACE_MissileMedium",
@@ -162,7 +162,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 --AIM-120 Sparrow. A medium-Range AAM missile, perfect for those who really need a decent boom in a single pass. Just remember that this is not an AIM-9 and is better to aim before.
 ACF_defineGun("AIM-120 AAM", {							-- id
 	name             = "AIM-120 AMRAAM",
-	desc             = "Faster than the AIM-9, but also a lot heavier. Burns hot and fast, with a good reach, but harder to lock with.  This long-range missile is sure to deliver one heck of a blast upon impact.Less agile than its smaller stablemate, so choose your shots carefully. Has datalink.",
+	desc             = "Faster than the AIM-9, but also a lot heavier. Burns hot and fast, with a good reach, but harder to lock with.  This long-range missile is sure to deliver one heck of a blast upon impact.Less agile than its smaller stablemate, so choose your shots carefully.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: Yes",
 	model            = "models/missiles/aim120c.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster    = "ACE_MissileMedium",
@@ -235,7 +235,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 --with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", {							-- id
 	name             = "AIM-54 Phoenix",
-	desc             = "Supersonic long-range air to air missile with early radar homing.Though relatively easy to dodge, this 300 kg beast will atomize any aircraft it hits. Getting hit is a traumatic experience. Has datalink.",
+	desc             = "Supersonic long-range air to air missile with early radar homing.Though relatively easy to dodge, this 300 kg beast will atomize any aircraft it hits. Getting hit is a traumatic experience. \n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/missiles/arend/aim54c.mdl",
 	effect           = "ACE_MissileLarge",
 	gunclass         = "AAM",
@@ -302,7 +302,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 ACF_defineGun("SRAAM AAM", {								-- id
 	name             = "SRAAM",
-	desc             = "Thrust vectoring absurdity. Shoots hot straight off the rails like some bat out of hell. Short range in every sense of the word but have fun dodging this one. Antimissile capable.",
+	desc             = "Thrust vectoring absurdity. Shoots hot straight off the rails like some bat out of hell. Short range in every sense of the word but have fun dodging this one. Antimissile capable.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model            = "models/missiles/arend/sraam_unfolded.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -371,7 +371,7 @@ ACF_defineGun("SRAAM AAM", {								-- id
 -- The AIM-9 Sidewinder. The perfect choice for dogfights at short range. Although respectable payload, still tiny.
 ACF_defineGun("Magic AAM", {								-- id
 	name             = "R-550 Magic",
-	desc             = "Short range air to air missile comparable to the sidewinder. Much more agile but less range and a smaller warhead.",
+	desc             = "Short range air to air missile comparable to the sidewinder. Much more agile but less range and a smaller warhead.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: No",
 	model            = "models/missiles/arend/r550magic.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -443,7 +443,7 @@ ACF_defineGun("Magic AAM", {								-- id
 
 ACF_defineGun("MICA AAM", {								-- id
 	name             = "MICA Missile",
-	desc             = "Thrust vectoring short range air to air missile. Not quite as maneuverable as the R-73 but still remarkably agile. Capable of missile intercept. Has datalink.",
+	desc             = "Thrust vectoring short range air to air missile. Not quite as maneuverable as the R-73 but still remarkably agile. Capable of missile intercept. \n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: Yes",
 	model            = "models/missiles/arend/mica_em.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -516,7 +516,7 @@ ACF_defineGun("MICA AAM", {								-- id
 
 ACF_defineGun("Meteor AAM", {							-- id
 	name             = "Meteor Missile",
-	desc             = "Long range ramjet proppeled missile. Takes a bit longer to get up to speed but much longer range and harder to overshoot. Has datalink.",
+	desc             = "Long range ramjet proppeled missile. Takes a bit longer to get up to speed but much longer range and harder to overshoot. \n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: Yes",
 	model            = "models/missiles/arend/meteor.mdl",
 	effect           = "ACE_MissileTiny",
 	effectbooster    = "ACE_MissileTiny",
@@ -587,7 +587,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 
 ACF_defineGun("R-60 AAM", {								-- id
 	name             = "R-60 Aphid",
-	desc             = "Small early soviet air to air missile. Slow but has a good range. Don't expect to do much with its relatively puny warhead",
+	desc             = "Small early soviet air to air missile. Slow but has a good range. Don't expect to do much with its relatively puny warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model            = "models/missiles/arend/r60m.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -658,7 +658,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 
 ACF_defineGun("R-73 AAM", {								-- id
 	name             = "R-73 Archer",
-	desc             = "A monster in a dogfight. Compared to the Aim-9 this missile has a longer range and incredible offbore capability. But the IRCCM isn't as effective.",
+	desc             = "A monster in a dogfight. Compared to the Aim-9 this missile has a longer range and incredible offbore capability. But the IRCCM isn't as effective.\n\nInertial Guidance: Yes\nECCM: Narrow Seeker\nDatalink: No",
 	model            = "models/missiles/arend/r73.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -730,7 +730,7 @@ ACF_defineGun("R-73 AAM", {								-- id
 
 ACF_defineGun("R-77 AAM", {							-- id
 	name             = "R-77 Adder",
-	desc             = "Counterpart to the aim-120. Very similar in performance but heavier but burns hot and fast.  This long-range missile is sure to deliver its payload fast.Less agile than its smaller stablemate, so choose your shots carefully. Has datalink.",
+	desc             = "Counterpart to the aim-120. Very similar in performance but heavier but burns hot and fast.  This long-range missile is sure to deliver its payload fast.Less agile than its smaller stablemate, so choose your shots carefully. \n\nInertial Guidance: Yes\nECCM: Narrow Seeker\nDatalink: Yes",
 	model            = "models/missiles/arend/r77.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster    = "ACE_MissileMedium",
@@ -801,7 +801,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 
 ACF_defineGun("R-27 AAM", {							-- id
 	name             = "R-27 Alamo",
-	desc             = "Massive medium range AAM with an equally large warhead. Slower to start than the aim-120 but packs a powerful punch. Has datalink.",
+	desc             = "Massive medium range AAM with an equally large warhead. Slower to start than the aim-120 but packs a powerful punch. \n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/missiles/arend/r27t.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster    = "ACE_MissileMedium",
@@ -871,7 +871,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 
 ACF_defineGun("R-33 AAM", {							-- id
 	name             = "R-33 Amos",
-	desc             = "A supersonic long-range air to air missile. H E A V Y. Faster than its Aim-54 counterpart but with a weaker warhead. Will vaporize any aircraft it touches. Has datalink.",
+	desc             = "A supersonic long-range air to air missile. H E A V Y. Faster than its Aim-54 counterpart but with a weaker warhead. Will vaporize any aircraft it touches.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model            = "models/missiles/arend/r33.mdl",
 	effect           = "ACE_MissileLarge",
 	gunclass         = "AAM",

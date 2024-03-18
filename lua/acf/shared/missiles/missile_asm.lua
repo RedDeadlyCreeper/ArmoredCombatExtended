@@ -19,7 +19,7 @@ ACF_defineGunClass("ASM", {
 --Sidearm, a lightweight anti-radar missile used by helicopters in the 80s
 ACF_defineGun("AGM-122 ASM", {						-- id
 	name             = "AGM-122 Sidearm Missile",
-	desc             = "A refurbished early-model AIM-9, for attacking ground targets.  Less well-known than the bigger Shrike, it provides easy-to-use blind-fire anti-SAM performance for helicopters and light aircraft, with far heavier a punch than its ancestor.",
+	desc             = "A refurbished early-model AIM-9, for attacking ground targets.  Less well-known than the bigger Shrike, it provides easy-to-use blind-fire anti-SAM performance for helicopters and light aircraft, with far heavier a punch than its ancestor.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model            = "models/missiles/aim9m.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -92,7 +92,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
 ACF_defineGun("AGM-45 ASM", {						-- id
 	name             = "AGM-45 Shrike Missile",
-	desc             = "The body of an AIM-7 sparrow, an air-to-ground seeker kit, and a far larger warhead than its ancestor.\nWith its anti radiation seeker, thicker skin, and long range, it is a great weapon for long-range, precision standoff attack pesky sam sites.",
+	desc             = "The body of an AIM-7 sparrow, an air-to-ground seeker kit, and a far larger warhead than its ancestor.\nWith its anti radiation seeker, thicker skin, and long range, it is a great weapon for long-range, precision standoff attack pesky sam sites.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model            = "models/missiles/arend/aim7f.mdl",
 	effect           = "ACE_MissileMedium",
 	gunclass         = "ASM",
@@ -137,7 +137,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.005,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		penmul            = math.sqrt(0.4)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -163,7 +163,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
 ACF_defineGun("AGM-88 ASM", {						-- id
 	name             = "AGM-88 HARM",
-	desc             = "Advanced long range anti-radiation missile with improved guidance. Significantly heavier but makes up for it in range and tracking. Has datalink.",
+	desc             = "Advanced long range anti-radiation missile with improved guidance. Significantly heavier but makes up for it in range and tracking. \n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/missiles/arend/agm-88.mdl",
 	effect           = "ACE_MissileMedium",
 	gunclass         = "ASM",
@@ -208,7 +208,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.0025,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		penmul            = math.sqrt(0.6)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -234,7 +234,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 
 ACF_defineGun("KH-31 ASM", {						-- id
 	name             = "KH-31A",
-	desc             = "Massive turbojet Antiradiation missile also used as antiship missile. It may be slower to get there but it HURTS. Mini Moskit. Has datalink.",
+	desc             = "Massive turbojet Antiradiation missile also used as antiship missile. It may be slower to get there but it HURTS. Mini Moskit. \n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/missiles/arend/kh31.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	 = "ACE_MissileMedium",
@@ -307,7 +307,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 -- Maverick. A heavy missile which excels at destroying armoured ground targets. Used by ground attack aircrafts like the A-10
 ACF_defineGun("AGM-65 ASM", {						-- id
 	name             = "AGM-65 Maverick Missile",
-	desc             = "You see that tank over there a mile away? I want you to lock onto it and forget about it.",
+	desc             = "You see that tank over there a mile away? I want you to lock onto it and forget about it.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model            = "models/missiles/arend/agm65d.mdl",
 	effect           = "ACE_MissileLarge",
 	gunclass         = "ASM",
@@ -375,7 +375,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 
 ACF_defineGun("Storm Shadow ASM", {						-- id
 	name             = "SCALP-EG Storm Shadow",
-	desc             = "The stormshadow is a low observability, turbojet driven cruise missile. Though slow this ordinance has extreme range, good maneuverability, staying time. And will obliterate anything it touches.",
+	desc             = "The stormshadow is a low observability, turbojet driven cruise missile. Though slow this ordinance has extreme range, good maneuverability, staying time. And will obliterate anything it touches.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/macc/storm_shadow_open.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	 = "ACE_MissileTiny",

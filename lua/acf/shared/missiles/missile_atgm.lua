@@ -17,7 +17,7 @@ ACF_defineGunClass("ATGM", {
 -- The BGM-71E, a wire guided missile with medium anti-tank effectiveness.
 ACF_defineGun("BGM-71E ASM", {								-- id
 	name			= "BGM-71E Missile",
-	desc			= "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.",
+	desc			= "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/missiles/bgm_71e.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "ACE_MissileSmall",
@@ -86,7 +86,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 
 ACF_defineGun("9M113 ATGM", {									-- id
 	name			= "9M113 Konkurs Missile",
-	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.",
+	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/missiles/arend/9m113.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "Rocket Motor ATGM",
@@ -152,7 +152,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 
 ACF_defineGun("9M133 ASM", {									-- id
 	name			= "9M133 Kornet Missile",
-	desc			= "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.",
+	desc			= "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "Rocket Motor ATGM",
@@ -221,7 +221,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
 ACF_defineGun("AT-3 ASM", { --id
 	name			= "AT-3 Sagger Missile",
-	desc			= "The AT-3 missile (9M14P1) is a short-range wire-guided anti-tank munition. While powerful and lightweight its speed will make you die of old age before you hit the target.",
+	desc			= "The AT-3 missile (9M14P1) is a short-range wire-guided anti-tank munition. While powerful and lightweight its speed will make you die of old age before you hit the target.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/missiles/at3.mdl",
 	effect			= "ACE_MissileTiny",
 	gunclass		= "ATGM",
@@ -292,7 +292,7 @@ ACF_defineGun("AT-3 ASM", { --id
 
 ACF_defineGun("AT-2 ASM", { --id
 	name			= "AT-2 Fleyta Missile",
-	desc			= "The AT-2 Missile (9M17P) is a more powerful, yet light, Anti-Tank Missile, the big brother of the Sagger. Being agile, deliveries a powerful payload at the cost of being slower than the AT-3",
+	desc			= "The AT-2 Missile (9M17P) is a more powerful, yet light, Anti-Tank Missile, the big brother of the Sagger. Being agile, deliveries a powerful payload at the cost of being slower than the AT-3\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/missiles/at2.mdl",
 	effect			= "ACE_MissileTiny",
 	gunclass		= "ATGM",
@@ -360,7 +360,7 @@ ACF_defineGun("AT-2 ASM", { --id
 
 ACF_defineGun("FGM-148 ASM", {
 	name			= "FGM-148 Javelin Missile",
-	desc			= "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.",
+	desc			= "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model			= "models/mcace/Jevelinemissile.mdl",		-- model to spawn on menu
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MotorSmall",
@@ -428,7 +428,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 ACF_defineGun("Spike-LR ASM", {
 	name			= "Spike LR Missile",
-	desc			= "A powerful multi-purpose Missile, being fast and agile but maneuverable enough to hit aircraft or tanks in top attack.",
+	desc			= "A powerful multi-purpose Missile, being fast and agile but maneuverable enough to hit aircraft or tanks in top attack.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model			= "models/missiles/arend/spikelr.mdl",		-- model to spawn on menu
 	effect			= "ACE_MissileSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -471,7 +471,8 @@ ACF_defineGun("Spike-LR ASM", {
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(1.3)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
@@ -502,7 +503,7 @@ ACF_defineGun("Spike-LR ASM", {
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("Ataka ASM", { --id
 	name			= "9M120 Ataka Missile",
-	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads",
+	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/missiles/9m120.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -572,7 +573,7 @@ ACF_defineGun("Ataka ASM", { --id
 -- The AGM-114, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("AGM-114 ASM", {						--id
 	name 			= "AGM-114 Hellfire Missile",
-	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.",
+	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model 			= "models/missiles/agm_114.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -642,7 +643,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("Vikhr ASM", { --id
 	name			= "9K121 Vikhr Missile",
-	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.",
+	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/missiles/arend/9k121.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",

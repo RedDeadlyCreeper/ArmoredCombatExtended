@@ -99,7 +99,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 ACF_defineGun("SAKR-10 RA", {							-- id
 
 	name             = "SAKR-10 Rocket",
-	desc             = "A short-range but formidable artillery rocket, based upon the Grad.  Well suited to the backs of trucks.",
+	desc             = "A short-range but formidable unguided artillery rocket, based upon the Grad.  Well suited to the backs of trucks.",
 	model            = "models/missiles/9m31.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileMedium",
@@ -313,7 +313,7 @@ ACF_defineGun("M26 RA", {							-- id
 ACF_defineGun("SS-40 RA", {								-- id
 
 	name             = "SS-40 Rocket",
-	desc             = "A large, heavy, guided artillery rocket for taking out stationary or dug-in targets.  Slow to load, slow to fire, slow to guide, and slow to arrive.",
+	desc             = "A large, heavy, guided artillery rocket for taking out stationary or dug-in targets.  Slow to load, slow to fire, slow to guide, and slow to arrive.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model            = "models/missiles/aim120.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster	= "ACE_MissileMedium",
@@ -386,7 +386,7 @@ ACF_defineGun("SS-40 RA", {								-- id
 ACF_defineGun("M31 RA", {							-- id
 
 	name             = "M31 GMLRS",
-	desc             = "Long range precision strike missile found in the M270 MLRS. Guided to give better precision and control over trajectory.",
+	desc             = "Long range precision strike missile found in the M270 MLRS. Guided to give better precision and control over trajectory.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model            = "models/missiles/gmlrs.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster	= "ACE_MissileMedium",
@@ -453,7 +453,7 @@ ACF_defineGun("M31 RA", {							-- id
 
 ACF_defineGun("ATACMS RA", {						-- id
 	name             = "MGM-140 ATACMS",
-	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!!",
+	desc             = "Mother of all artillery rockets. This slow lumbering menace of a MASSIVE missile is perfect for obliterating fortifications with precision. Though slow and not too maneuverabile it packs a hell of a punch. Get out of the way!!!\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
 	model            = "models/macc/MGM-140.mdl",
 	effect           = "ACE_MissileLarge",
 	effectbooster	 = "ACE_MissileLarge",
@@ -500,6 +500,7 @@ ACF_defineGun("ATACMS RA", {						-- id
 
 		dragcoef			= 0.01,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},

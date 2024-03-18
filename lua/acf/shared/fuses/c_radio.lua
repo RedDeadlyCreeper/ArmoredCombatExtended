@@ -21,7 +21,7 @@ this.Target = nil
 this.Distance = 2000
 
 
-this.desc = "This fuse tracks the guidance module's target and detonates when the distance becomes low enough.\nDistance in inches."
+this.desc = "This fuse tracks around the missile itself in a radius detonating as soon as a target enters the radius. This may lead to early detonations.\nDistance in inches." --This fuse tracks the guidance module's target and detonates when the distance becomes low enough.\nDistance in inches.
 
 
 -- Configuration information for things like acfmenu.

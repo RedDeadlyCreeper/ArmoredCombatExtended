@@ -1,7 +1,7 @@
 ACF_DefineIRSTClass("DIR-IRST", {
 	name = "Infrared Search and Track",
 	type = "IRST",
-	desc = "The InfraRed Search and Track (IRST) is a device which can detect targets by its heat. Has a limited range but unlike to tracking radar, the IRST will not alert to its opponent if he's being tracked, being useful for stealth applications."
+	desc = "The Infra-Red Search and Track (IRST) is a device which can detect targets by their heat. Has a limited range but the IRST will not alert to its opponent if he's being tracked unlike tracking radars, being useful for stealth applications."
 } )
 
 ACF_DefineIRST("Small-IRST", {

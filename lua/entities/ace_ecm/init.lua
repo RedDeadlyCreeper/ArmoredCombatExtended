@@ -19,7 +19,7 @@ end
 
 function ENT:Initialize()
 
-	self.ThinkDelay = 1 --1 second delay, hopefully enough to prevent ECM flashing
+	self.ThinkDelay = 0.5 --1 second delay, hopefully enough to prevent ECM flashing
 
 	self.Active = false
 	curTime = 0
@@ -43,6 +43,7 @@ function ENT:Initialize()
 
 	self.CurrentlyJamming = 0
 	self.JamDirection = vector_origin
+	self.JamTargetPos = 0 --Used for storing and updating jam vector if there is one.
 end
 
 --ATGMs tracked
@@ -64,8 +65,11 @@ function ENT:TriggerInput( inp, value )
 		self:SetActive((value ~= 0) and self:isLegal())
 	elseif inp == "JamDirection" then
 		self.JamDirection = value
+		self.JamTargetPos = nil
 	elseif inp == "JamPos" then
-		self.JamDirection = (value-self:GetPos()):GetNormalized()
+		self.JamTargetPos = value
+		self.JamDirection = self.JamTargetPos-self:GetPos()
+		--:GetNormalized() May not need to be normalized?
 	end
 
 end
@@ -106,8 +110,12 @@ function ENT:Think()
 	end
 
 	self.CurrentlyJamming = 0
-
 	if self.Active and self.IsLegal then
+
+		if self.JamTargetPos then
+			self.JamDirection = (self.JamTargetPos-self:GetPos()):GetNormalized()
+		end
+
 
 		local thisPos = self:GetPos()
 

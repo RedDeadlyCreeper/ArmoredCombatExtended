@@ -2,7 +2,7 @@
 ACF_DefineTrackRadarClass("DIR-SEARCH", {
 	name = "Search Radar",
 	type = "Search-Radar",
-	desc = "A radar with unlimited range but limited view cone. Unlike the antimissile radar, this can detect vehicles in front of it, but is affected by ground clutter and subject to jamming."
+	desc = "Search radar with unlimited range. Will periodically scan in a full 360 circle. Larger radars will scan faster. More susceptible than Track radars to jamming."
 } )
 
 

@@ -20,7 +20,7 @@ ACF_defineGunClass("FFAR", {
 ACF_defineGun("40mmFFAR", { --id
 
 	name		= "40mm Pod Rocket",
-	desc		= "A tiny, unguided rocket.  Useful for anti-infantry, smoke and suppression.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
+	desc		= "A tiny, unguided rocket.  Useful for anti-infantry, smoke and suppression.  Folding fins allow the rocket to be stored in pods, which defend them from damage.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model	= "models/missiles/launcher7_40mm.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileTiny",
@@ -86,7 +86,7 @@ ACF_defineGun("40mmFFAR", { --id
 ACF_defineGun("70mmFFAR", { --id
 
 	name		= "70mm Pod Rocket",
-	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
+	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model	= "models/missiles/launcher7_70mm.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileTiny",
@@ -154,7 +154,7 @@ ACF_defineGun("70mmFFAR", { --id
 ACF_defineGun("S8KO", { --id
 
 	name        = "S-8KO Unguided Rockets",
-	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.",
+	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model       = "models/missiles/arend/s-8ko.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileTiny",
@@ -222,7 +222,7 @@ ACF_defineGun("S8KO", { --id
 
 ACF_defineGun("Zuni ASR", { --id
 	name             = "Zuni Rocket",
-	desc             = "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.",
+	desc             = "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model            = "models/ghosteh/zuni.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileSmall",

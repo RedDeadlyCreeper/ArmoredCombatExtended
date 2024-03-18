@@ -91,6 +91,7 @@ end
 
 function ENT:Think()
 
+	if self.Exploded then return true end
 
 	local CT = ACF.CurTime
 	DeltaTime = CT - self.LastThink
@@ -143,6 +144,8 @@ function ENT:Think()
 			self.TargetPos = TestPos or nil
 			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
 		elseif self.HasDatalink and self.Launcher.TargPos then --Guidance location is not valid. Use datalink position if available.
+			--and IsValid(self.Launcher) Don't know if needed?
+
 
 			self.TargetPos = self.Launcher.TargPos
 			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
@@ -170,7 +173,7 @@ function ENT:Think()
 	--------------------------
 
 		if self.JustLaunched == true then
-			self.Flight = self.Flight + self.Launcher:GetForward() * self.BoostKick
+			self.Flight = self.Flight + self:GetForward() * self.BoostKick
 			self.JustLaunched = false
 			self:ConfigureLaunch()
 			Pos = self.MissilePosition
@@ -411,19 +414,39 @@ function ENT:Detonate()
 	self.Exploded = true
 	ACF_ActiveMissiles[self] = nil
 
-	self:Remove()
-
 	local HEWeight = self.Bulletdata2.BoomFillerMass
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
-	if not IsValid(self.Launcher) then return end
+--	if not IsValid(self.Launcher) then return end
 
-	self.Bulletdata2["Gun"]			= self.Launcher
+--	self.Bulletdata2["Gun"]			= self.Launcher
 
-	self.Launcher.FakeCrate = self.Launcher.FakeCrate or ents.Create("acf_fakecrate2")
-	self.Launcher.FakeCrate:RegisterTo(self.Bulletdata2)
-	self.Bulletdata2["Crate"] = self.Launcher.FakeCrate:EntIndex()
-	self.Launcher:DeleteOnRemove(self.Launcher.FakeCrate)
+--	self.Launcher.FakeCrate = self.Launcher.FakeCrate or ents.Create("acf_fakecrate2")
+--	self.Launcher.FakeCrate:RegisterTo(self.Bulletdata2)
+--	self.Bulletdata2["Crate"] = self.Launcher.FakeCrate:EntIndex()
+--	self.Launcher:DeleteOnRemove(self.Launcher.FakeCrate)
+
+	if not IsValid(self) then return end
+
+	local fakecrate = ents.Create("acf_fakecrate2")
+	self.Bulletdata2["Gun"]			= self
+	--self.FakeCrate = self.FakeCrate or ents.Create("acf_fakecrate2")
+	self.Bulletdata2["Crate"] = fakecrate:EntIndex()
+	fakecrate:RegisterTo(self.Bulletdata2)
+
+	self:SetNoDraw( true ) --Since we aren't immediately deleting the entity, hide it.
+	self:SetCollisionGroup( COLLISION_GROUP_IN_VEHICLE )
+	self:StopParticles()
+
+	timer.Simple(0.5, function() --Keep missile alive and give it time to show effects
+		if IsValid(fakecrate) then
+			fakecrate:Remove()
+		end
+		if IsValid(self) then
+			self:Remove()
+		end
+	end)
+
 
 --	self.Bulletdata2["Flight"] = self:GetForward():GetNormalized() * self.Flight * 39.37 * ACF.MissileVelocityMul
 	self.Bulletdata2["Flight"] = self.Flight * 39.37 * ACF.MissileVelocityMul
@@ -440,6 +463,7 @@ function ENT:Detonate()
 		Flash:SetRadius(math.max(Radius, 1))
 		util.Effect( "ACF_Scaled_Explosion", Flash )
 	end
+--
 
 end
 

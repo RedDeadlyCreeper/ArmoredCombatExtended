@@ -2,7 +2,7 @@
 ACF_DefineTrackRadarClass("DIR-TRACK", {
 	name = "Tracking Radar",
 	type = "Tracking-Radar",
-	desc = "A radar with unlimited range but limited view cone. Unlike the antimissile radar, this can detect vehicles in front of it, but is affected by ground clutter and subject to jamming.\nTo reduce inaccuracy point radar directly at the intended target. Offbore reduces accuracy. \nLower scanangles to increase resistence to jamming."
+	desc = "A radar with unlimited range but limited view cone. Unlike the antimissile radar, this can detect vehicles in front of it, but is affected by ground clutter and subject to jamming.\n\nTo reduce inaccuracy point radar directly at the intended target. Offbore aim reduces accuracy. \n\nIf being jammed set a lower scan cone to increase resistence to jamming. Larger radars are also more jam resistent."
 } )
 
 

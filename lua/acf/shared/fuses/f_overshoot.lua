@@ -21,7 +21,7 @@ this.Target = nil
 this.Distance = 2000^2
 
 
-this.desc = "If the missile is in activation distance, detonates the missile when it flys past the target.\nDistance in inches."
+this.desc = "If the missile is in the set activation distance, detonates the missile when distance increases as it flys past the target.\nDistance in inches."
 
 
 -- Configuration information for things like acfmenu.
