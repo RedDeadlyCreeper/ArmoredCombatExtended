@@ -5,10 +5,9 @@ include("shared.lua")
 
 local deg, acos = math.deg, math.acos
 local min, max = math.min, math.max
+local insert = table.insert
 local Rand = math.Rand
 local TraceHull = util.TraceHull
-local Inf = math.huge
-
 local RadarTable = ACF.Weapons.Radars
 
 function ENT:Initialize()
@@ -18,14 +17,27 @@ function ENT:Initialize()
 	self.LastStatusUpdate	= CurTime()
 	self.Active				= false
 
-	self.Inputs	= WireLib.CreateInputs( self, { "Active", "Cone" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Angle [ARRAY]", "EffHeat [ARRAY]", "ClosestToBeam"} )
+	self.Inputs	= WireLib.CreateInputs( self, {
+		"Active (Activates the IRST)",
+		"Cone (Sets the view cone angle of the IRST)"
+	})
+
+	self.Outputs = WireLib.CreateOutputs( self, {
+		"Detected (Returns 1 if the IRST is detecting at least one target)",
+		"Owner (Returns an array of the players who own the detected targets) [ARRAY]",
+		"Angle (Returns an array of angles towards the detected targets) [ARRAY]",
+		"EffHeat (Returns an array of the temperature of the detected targets) [ARRAY]",
+		"ID (Returns an array of unique IDs for each target that can be used to track a specific contraption) [ARRAY]",
+		"Distance (Returns an array of distances to each target, in GMod units) [ARRAY]"
+	})
+
 	self.OutputData = {
 		Detected		= 0,
 		Owner			= {},
 		Angle			= {},
 		EffHeat			= {},
-		ClosestToBeam	= -1
+		ID				= {},
+		Distance		= {}
 	}
 
 	self:SetActive(false)
@@ -36,7 +48,6 @@ function ENT:Initialize()
 	self.MinViewCone        = 3
 	self.MaxViewCone        = 20
 
-	self.BaseAngularError	= 1 -- Minimum angular error
 	self.LowHeatError		= 15 -- Angular error for things with very low temperature
 	self.LowHeatErrorTemp 	= 75 -- Anything below this temperature, the error will be LowHeatError
 
@@ -44,7 +55,7 @@ function ENT:Initialize()
 	self.Legal              = true
 	self.LegalIssues        = ""
 
-	self.ClosestToBeam      = -1
+	self.TargetDetected		= false
 
 	self:UpdateOverlayText()
 
@@ -154,24 +165,26 @@ function ENT:SetActive(active)
 		self.Heat = 21 + 40
 	else
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
-		WireLib.TriggerOutput( self, "Owner"		, {} )
-		WireLib.TriggerOutput( self, "Angle"		, {} )
-		WireLib.TriggerOutput( self, "EffHeat"	, {} )
-		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
+		WireLib.TriggerOutput( self, "Owner", {} )
+		WireLib.TriggerOutput( self, "Angle", {} )
+		WireLib.TriggerOutput( self, "EffHeat", {} )
+		WireLib.TriggerOutput( self, "ID", {} )
+		WireLib.TriggerOutput( self, "Distance", {} )
 
 		self.OutputData.Detected = 0
 		self.OutputData.Owner = {}
 		self.OutputData.Angle = {}
 		self.OutputData.EffHeat = {}
-		self.OutputData.ClosestToBeam = -1
+		self.OutputData.ID = {}
+		self.OutputData.Distance = {}
 
 		self.Heat = 21
 	end
 
 end
 
-local function GetAngleFromTarget(direction, forwardVector)
-	return deg(acos(direction:Dot(forwardVector)))
+local function GetAngleBetweenVectors(v1, v2)
+	return deg(acos(v1:Dot(v2)))
 end
 
 local LOSTraceData = {
@@ -181,20 +194,19 @@ local LOSTraceData = {
 }
 
 function ENT:ScanForContraptions()
-	local Owners         = {}
-	local Temperatures   = {}
-	local AngTable       = {}
+	self.TargetDetected = false
 
-	self.ClosestToBeam   = -1
+	local Owners        = {}
+	local Temperatures  = {}
+	local AngTable      = {}
+	local IDs			= {}
+	local Distances		= {}
 
 	local SelfContraption = self:GetContraption()
 	local SelfForward = self:GetForward()
 	local SelfPos = self:GetPos()
-	local MinDistance = Inf
 	local MinTrackingHeat = ACE.AmbientTemp + self.HeatAboveAmbient
-	local Cone = self.Cone
 
-	local BaseAngularError = self.BaseAngularError
 	local LowHeatError = self.LowHeatError
 	local LowHeatErrorTemp = self.LowHeatErrorTemp
 
@@ -226,9 +238,11 @@ function ENT:ScanForContraptions()
 			LOSTraceData.endpos = Pos
 			local LOSTrace = TraceHull(LOSTraceData)
 
-			local AngleFromTarget = GetAngleFromTarget(PosDiff:GetNormalized(), SelfForward)
+			local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
 
-			if AngleFromTarget < Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
+			if AngleFromTarget < self.Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
+				self.TargetDetected = true
+
 				local ErrorFromAngle = 1 + AngleFromTarget / 90 -- Better accuracy when directly facing the target
 				local ErrorFromHeat = 5 / max(Heat / 40, 1) --200 degrees to the seeker causes no loss in accuracy
 				--100C becomes 2
@@ -239,47 +253,52 @@ function ENT:ScanForContraptions()
 					ErrorFromHeat = LowHeatError
 				end
 
-				local FinalError = BaseAngularError + ErrorFromAngle * ErrorFromHeat
+				local FinalError = ErrorFromAngle * ErrorFromHeat
 				local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * FinalError
 				local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError
 				FinalAngle.r = 0
 
-				Owners[#Owners + 1] = Base:CPPIGetOwner()
-				AngTable[#AngTable + 1] = FinalAngle
-				Temperatures[#Temperatures + 1] = Heat
+				local Index = ACE_GetContraptionIndex(Contraption)
+				local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, Distance)
 
-				if Distance < MinDistance then
-					self.ClosestToBeam = #Owners
-					MinDistance = Distance
-				end
+				insert(Distances, InsertionIndex, Distance)
+				insert(Owners, InsertionIndex, Base:CPPIGetOwner())
+				insert(AngTable, InsertionIndex, FinalAngle)
+				insert(Temperatures, InsertionIndex, Heat)
+				insert(IDs, InsertionIndex, Index)
 			end
 		end
 	end
 
-	if self.ClosestToBeam ~= -1 then
+	if self.TargetDetected then
 		WireLib.TriggerOutput( self, "Detected", 1 )
 		WireLib.TriggerOutput( self, "Owner", Owners )
 		WireLib.TriggerOutput( self, "Angle", AngTable )
 		WireLib.TriggerOutput( self, "EffHeat", Temperatures )
-		WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
+		WireLib.TriggerOutput( self, "ID", IDs )
+		WireLib.TriggerOutput( self, "Distance", Distances )
+
 
 		self.OutputData.Detected = 1
 		self.OutputData.Owner = Owners
 		self.OutputData.Angle = AngTable
 		self.OutputData.EffHeat = Temperatures
-		self.OutputData.ClosestToBeam = self.ClosestToBeam
+		self.OutputData.ID = IDs
+		self.OutputData.Distance = Distances
 	else
 		WireLib.TriggerOutput( self, "Detected", 0 )
 		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Angle", {} )
 		WireLib.TriggerOutput( self, "EffHeat", {} )
-		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
+		WireLib.TriggerOutput( self, "ID", {} )
+		WireLib.TriggerOutput( self, "Distance", {} )
 
 		self.OutputData.Detected = 0
 		self.OutputData.Owner = {}
 		self.OutputData.Angle = {}
 		self.OutputData.EffHeat = {}
-		self.OutputData.ClosestToBeam = -1
+		self.OutputData.ID = {}
+		self.OutputData.Distance = {}
 	end
 end
 
@@ -320,11 +339,10 @@ function ENT:Think()
 end
 
 function ENT:UpdateOverlayText()
-
-	local cone	= self.Cone
+	local cone		= self.Cone
 	local status	= self.Status or "Off"
-	local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
-	local range	= self.MaximumDistance or 0
+	local detected  = status ~= "Off" and self.TargetDetected or false
+	local range		= self.MaximumDistance or 0
 
 	local txt = "Status: " .. status
 
@@ -341,6 +359,4 @@ function ENT:UpdateOverlayText()
 	end
 
 	self:SetOverlayText(txt)
-
-
 end
