@@ -1,4 +1,5 @@
 local CLASS = CFW.classes.contraption
+if CLIENT then return end -- CFW's loader will also load this file on the client when in a singleplayer game for some reason
 
 -- Maintains a table of ACE components for each contraption
 do
@@ -30,11 +31,14 @@ end
 do
     local function findContraptionBaseplate(con)
         local maxConstraintCount = 0
-        local baseplate = next(con.ents)
+        local fallbackBaseplate -- If the contraption doesn't have any constraints, just use something that isn't parented
+        local baseplate
 
         for ent in pairs(con.ents) do
-            if IsValid(ent) and not IsValid(ent:GetParent()) then
+            if IsValid(ent) and IsValid(ent:GetPhysicsObject()) and not IsValid(ent:GetParent()) then
                 local count = #constraint.GetTable(ent)
+
+                fallbackBaseplate = ent
 
                 if count > maxConstraintCount then
                     maxConstraintCount = count
@@ -43,7 +47,7 @@ do
             end
         end
 
-        con.aceBaseplate = baseplate
+        con.aceBaseplate = baseplate or fallbackBaseplate
     end
 
     hook.Add("cfw.contraption.entityAdded", "CFW_ACE_BaseplateDetection", findContraptionBaseplate)

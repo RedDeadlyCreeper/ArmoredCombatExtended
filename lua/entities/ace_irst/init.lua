@@ -12,7 +12,7 @@ local RadarTable = ACF.Weapons.Radars
 
 function ENT:Initialize()
 
-	self.ThinkDelay			= 0.1
+	self.ThinkDelay			= 0.05
 	self.StatusUpdateDelay	= 0.5
 	self.LastStatusUpdate	= CurTime()
 	self.Active				= false
@@ -202,7 +202,7 @@ function ENT:ScanForContraptions()
 	local IDs			= {}
 	local Distances		= {}
 
-	local SelfContraption = self.GetContraption and self:GetContraption()
+	local SelfContraption = self:GetContraption()
 	local SelfForward = self:GetForward()
 	local SelfPos = self:GetPos()
 	local MinTrackingHeat = ACE.AmbientTemp + self.HeatAboveAmbient
