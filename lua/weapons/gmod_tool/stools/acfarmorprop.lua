@@ -116,6 +116,18 @@ function TOOL:RightClick( trace )
 
 end
 
+do -- Allowing everyone to read contraptions
+	ACE_OldHookCall = ACE_OldHookCall or hook.Call
+
+	function hook.Call(Name, Gamemode, Player, Entity, Tool, ...)
+		if Name == "CanTool" and Tool == "acfarmorprop" and Player:KeyPressed(IN_RELOAD) then
+			return true
+		end
+
+		return ACE_OldHookCall(Name, Gamemode, Player, Entity, Tool, ...)
+	end
+end
+
 -- Total up mass of constrained ents
 function TOOL:Reload( trace )
 
