@@ -276,6 +276,8 @@ function ENT:ScanForContraptions()
 		end
 	end
 
+	local OutputData = self.OutputData
+
 	if self.TargetDetected then
 		WireLib.TriggerOutput( self, "Detected", 1 )
 		WireLib.TriggerOutput( self, "Owner", Owners )
@@ -285,12 +287,12 @@ function ENT:ScanForContraptions()
 		WireLib.TriggerOutput( self, "Distance", Distances )
 
 
-		self.OutputData.Detected = 1
-		self.OutputData.Owner = Owners
-		self.OutputData.Angle = AngTable
-		self.OutputData.EffHeat = Temperatures
-		self.OutputData.ID = IDs
-		self.OutputData.Distance = Distances
+		OutputData.Detected = 1
+		OutputData.Owner = Owners
+		OutputData.Angle = AngTable
+		OutputData.EffHeat = Temperatures
+		OutputData.ID = IDs
+		OutputData.Distance = Distances
 	else
 		WireLib.TriggerOutput( self, "Detected", 0 )
 		WireLib.TriggerOutput( self, "Owner", {} )
@@ -299,12 +301,12 @@ function ENT:ScanForContraptions()
 		WireLib.TriggerOutput( self, "ID", {} )
 		WireLib.TriggerOutput( self, "Distance", {} )
 
-		self.OutputData.Detected = 0
-		self.OutputData.Owner = {}
-		self.OutputData.Angle = {}
-		self.OutputData.EffHeat = {}
-		self.OutputData.ID = {}
-		self.OutputData.Distance = {}
+		OutputData.Detected = 0
+		OutputData.Owner = {}
+		OutputData.Angle = {}
+		OutputData.EffHeat = {}
+		OutputData.ID = {}
+		OutputData.Distance = {}
 	end
 end
 
