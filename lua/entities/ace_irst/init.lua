@@ -202,7 +202,7 @@ function ENT:ScanForContraptions()
 	local IDs			= {}
 	local Distances		= {}
 
-	local SelfContraption = self:GetContraption()
+	local SelfContraption = self.GetContraption and self:GetContraption()
 	local SelfForward = self:GetForward()
 	local SelfPos = self:GetPos()
 	local MinTrackingHeat = ACE.AmbientTemp + self.HeatAboveAmbient
@@ -213,6 +213,7 @@ function ENT:ScanForContraptions()
 	for Contraption in pairs(CFW.contraptions) do
 		if Contraption ~= SelfContraption then
 			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
+			HottestEntityTemp = HottestEntityTemp or 0
 			local Base = Contraption.aceBaseplate
 			local BasePhys = Base:GetPhysicsObject()
 			local BaseTemp = 0
@@ -221,7 +222,12 @@ function ENT:ScanForContraptions()
 				BaseTemp = ACE_InfraredHeatFromProp(Base, self.HeatAboveAmbient)
 			end
 
-			local Pos = BaseTemp > HottestEntityTemp and Base:GetPos() or Contraption:GetACEHeatPosition()
+			local Pos
+			if not Contraption.aceEntities or (HottestEntityTemp and BaseTemp > HottestEntityTemp) then
+				Pos = Base:GetPos()
+			else
+				Pos = Contraption:GetACEHeatPosition()
+			end
 			local PosDiff = Pos - SelfPos
 			local Distance = PosDiff:Length()
 
