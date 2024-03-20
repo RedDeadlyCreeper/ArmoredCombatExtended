@@ -18,6 +18,10 @@ do
         if not con.aceEntities then return end
 
         con.aceEntities[ent] = nil
+
+        if not next(con.aceEntities) then
+            con.aceEntities = nil
+        end
     end)
 end
 
