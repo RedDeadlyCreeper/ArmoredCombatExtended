@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-local Clamp = math.Clamp
+local floor, Clamp = math.floor, math.Clamp
 
 -- returns last parent in chain, which has physics
 function ACF_GetPhysicalParent( obj )
@@ -639,4 +639,73 @@ function ACE_table_contains(table, element)
 		end
 	end
 	return false
+end
+
+-- Radar/IRST-specific functions
+if SERVER then
+	local Indexes = {}
+	local IndexCount = 0
+	local Unused = {}
+
+	--- Gets a unique ID for a contraption object
+	---@param Contraption any
+	---@return number ID The contraption's unique ID
+	function ACE_GetContraptionIndex(Contraption)
+		if Indexes[Contraption] then return Indexes[Contraption] end
+
+		if next(Unused) then
+			local Index = next(Unused)
+
+			Indexes[Contraption] = Index
+			Unused[Index] = nil
+		else
+			IndexCount = IndexCount + 1
+
+			Indexes[Contraption] = IndexCount
+		end
+
+		local EntID = Indexes[Contraption]
+
+		return EntID
+	end
+
+	local function OnContraptionRemoved(con)
+		local ID = Indexes[con]
+
+		if ID then
+			Indexes[con] = nil
+			Unused[ID] = true
+		end
+	end
+
+	hook.Add("cfw.contraption.removed", "ACE_IndexTracking_ContraptionRemoved", OnContraptionRemoved)
+	hook.Add("cfw.contraption.merged", "ACE_IndexTracking_ContraptionMerged", OnContraptionRemoved)
+
+	--- Efficiently find the index to insert a value into a sorted table
+	---@param Tbl table
+	---@param Value number
+	---@return number Index The index to insert the value at
+	function ACE_GetBinaryInsertIndex(Tbl, Value)
+		local Start = 1
+		local Finish = #Tbl
+
+		if not Tbl[1] then
+			return 1
+		end
+
+		while Start < Finish do
+			local Mid = floor((Start + Finish) / 2)
+			if Value < Tbl[Mid] then
+				Finish = Mid
+			else
+				Start = Mid + 1
+			end
+		end
+
+		if Value < Tbl[Start] then
+			return Start
+		else
+			return Start + 1
+		end
+	end
 end

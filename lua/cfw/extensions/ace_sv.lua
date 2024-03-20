@@ -2,7 +2,7 @@ local CLASS = CFW.classes.contraption
 
 -- Maintains a table of ACE components for each contraption
 do
-    hook.Add("cfw.contraption.entityAdded", "CFW_Mass", function(con, ent)
+    hook.Add("cfw.contraption.entityAdded", "CFW_ACE_Entities", function(con, ent)
         if not IsValid(ent) then return end
         if not con.aceEntities then con.aceEntities = {} end
 
@@ -13,12 +13,37 @@ do
         end
     end)
 
-    hook.Add("cfw.contraption.entityRemoved", "CFW_Mass", function(con, ent)
+    hook.Add("cfw.contraption.entityRemoved", "CFW_ACE_Entities", function(con, ent)
         if not IsValid(ent) then return end
         if not con.aceEntities then return end
 
         con.aceEntities[ent] = nil
     end)
+end
+
+-- Attempt to keep track of baseplates of contraptions, based on which entity has the most constraints
+-- This is probably bad but it works for now
+do
+    local function findContraptionBaseplate(con)
+        local maxConstraintCount = 0
+        local baseplate = next(con.ents)
+
+        for ent in pairs(con.ents) do
+            if IsValid(ent) and not IsValid(ent:GetParent()) then
+                local count = #constraint.GetTable(ent)
+
+                if count > maxConstraintCount then
+                    maxConstraintCount = count
+                    baseplate = ent
+                end
+            end
+        end
+
+        con.aceBaseplate = baseplate
+    end
+
+    hook.Add("cfw.contraption.entityAdded", "CFW_ACE_BaseplateDetection", findContraptionBaseplate)
+    hook.Add("cfw.contraption.entityRemoved", "CFW_ACE_BaseplateDetection", findContraptionBaseplate)
 end
 
 --- Returns the hottest entity in a contraption and its temperature
