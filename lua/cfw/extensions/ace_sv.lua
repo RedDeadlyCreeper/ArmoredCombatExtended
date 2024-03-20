@@ -4,11 +4,11 @@ local CLASS = CFW.classes.contraption
 do
     hook.Add("cfw.contraption.entityAdded", "CFW_ACE_Entities", function(con, ent)
         if not IsValid(ent) then return end
-        if not con.aceEntities then con.aceEntities = {} end
 
         local class = ent:GetClass()
 
         if class:match("^ace_") or class:match("^acf_") then
+            if not con.aceEntities then con.aceEntities = {} end
             con.aceEntities[ent] = true
         end
     end)
