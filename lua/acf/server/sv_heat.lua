@@ -41,7 +41,7 @@ function ACE_InfraredHeatFromProp( Target, dist )
 	}) --Hits anything in the world.
 
 	local Speed = Target:GetVelocity():Length()
-	local Heat = Target.Heat or ACE.AmbientTemp --Take the heat of the entity if there is one
+	local Heat = 0 --Heat will be added to this.
 	Heat = Heat + (Speed / 35.2 ) --35.2 is 150 heat from 300 mph. 17.6 formula. 300mph / 2 mph per heat / 17.6 units/mph
 	if not GroundTr.Hit then Heat = Heat + 150 end --Add 150C if the target is above the ground
 

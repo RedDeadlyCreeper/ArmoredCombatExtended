@@ -1,0 +1,22 @@
+"VertexlitGeneric"
+{
+
+	"$basetexture" "models\Kali\vehicles\BO\S75\Veh_S75_Base_Tan_D_C"
+	"$bumpmap" "models\Kali\vehicles\BO\S75\Veh_S75_Base_N"
+	"$halflambert" "1"				
+	"$nocull" 1		
+
+	"$normalmapalphaenvmapmask" 1				
+	"$envmap" "env_cubemap"					
+	"$envmaptint" "[ .05 .05 .05 ]"					
+ 	"$envmapFresnel" "0.5"					
+
+	"$phong" "1"						
+	"$phongexponenttexture" "models\Kali\vehicles\BO\S75\Veh_S75_Base_Exp"
+	"$phongboost" "0.1"						
+	"$phongfresnelranges"	"[ .2 1.2 8]"	
+
+	"$PhongAlbedoTint" "1"		
+
+}
+

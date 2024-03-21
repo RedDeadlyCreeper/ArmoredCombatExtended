@@ -1,6 +1,20 @@
 --i'll leave almost everything ready so they can be exported to acf-3 in some near future
 --print("[ACE | INFO]- Loading Contraption System. . .")
 --ACE               = ACE or {}
+
+
+
+ACE.contraptionEnts   = {} --table which will have all registered ents
+
+
+
+
+
+
+
+
+
+
 ACE.contraptionEnts   = {} --table which will have all registered ents
 ACE.radarEntities     = {} --for tracking radar usage
 ACE.radarIDs          = {} --ID radar purpose

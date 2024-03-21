@@ -48,7 +48,7 @@ function ENT:Initialize()
 	self.MinViewCone        = 3
 	self.MaxViewCone        = 20
 
-	self.LowHeatError		= 15 -- Angular error for things with very low temperature
+	self.LowHeatError		= 10 -- Angular error for things with very low temperature
 	self.LowHeatErrorTemp 	= 75 -- Anything below this temperature, the error will be LowHeatError
 
 	self.NextLegalCheck     = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
@@ -215,6 +215,9 @@ function ENT:ScanForContraptions()
 			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
 			HottestEntityTemp = HottestEntityTemp or 0
 			local Base = Contraption.aceBaseplate
+
+			if not IsValid(Base) then continue end --Wouldn't be needed with CFRAME
+
 			local BasePhys = Base:GetPhysicsObject()
 			local BaseTemp = 0
 
@@ -231,12 +234,13 @@ function ENT:ScanForContraptions()
 			local PosDiff = Pos - SelfPos
 			local Distance = PosDiff:Length()
 
+			local Heat = BaseTemp + math.max(ACE.AmbientTemp,HottestEntityTemp)
+
 			--0x heat @ 1200m
 			--0.25x heat @ 900m
 			--0.5x heat @ 600m
 			--0.75x heat @ 300m
 			--1.0x heat @ 0m
-			local Heat = max(BaseTemp, HottestEntityTemp)
 			local HeatMulFromDist = 1 - min(Distance / 47244, 1) -- 39.37 * 1200 = 47244
 			Heat = Heat * HeatMulFromDist
 
@@ -249,11 +253,12 @@ function ENT:ScanForContraptions()
 			if AngleFromTarget < self.Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
 				self.TargetDetected = true
 
-				local ErrorFromAngle = 1 + AngleFromTarget / 90 -- Better accuracy when directly facing the target
-				local ErrorFromHeat = 5 / max(Heat / 40, 1) --200 degrees to the seeker causes no loss in accuracy
-				--100C becomes 2
-				--200C becomes 1
-				--400C becomes 0.5
+				local ErrorFromAngle = 1 + AngleFromTarget / 45 -- Better accuracy when directly facing the target
+				local ErrorFromHeat = 5 / max(Heat / 80, 1) --200 degrees to the seeker causes no loss in accuracy
+				-- 75C becomes 4
+				--100C becomes 3
+				--150C becomes 2
+				--400C becomes 0.75
 
 				if Heat < LowHeatErrorTemp then
 					ErrorFromHeat = LowHeatError
