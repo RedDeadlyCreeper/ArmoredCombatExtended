@@ -221,7 +221,7 @@ function ENT:ScanForContraptions()
 			local BasePhys = Base:GetPhysicsObject()
 			local BaseTemp = 0
 
-			if IsValid(Base) and IsValid(BasePhys) and BasePhys:IsMoveable() then
+			if IsValid(BasePhys) and BasePhys:IsMoveable() then
 				BaseTemp = ACE_InfraredHeatFromProp(Base, self.HeatAboveAmbient)
 			end
 
