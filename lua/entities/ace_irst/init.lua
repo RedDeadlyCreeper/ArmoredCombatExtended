@@ -272,8 +272,10 @@ function ENT:ScanForContraptions()
 				local Index = ACE_GetContraptionIndex(Contraption)
 				local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, Distance)
 
+				local Owner = Base:CPPIGetOwner()
+
 				insert(Distances, InsertionIndex, Distance)
-				insert(Owners, InsertionIndex, Base:CPPIGetOwner())
+				insert(Owners, InsertionIndex, IsValid(Owner) and Owner:Nick() or "")
 				insert(AngTable, InsertionIndex, FinalAngle)
 				insert(Temperatures, InsertionIndex, Heat)
 				insert(IDs, InsertionIndex, Index)
