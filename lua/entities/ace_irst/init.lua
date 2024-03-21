@@ -275,7 +275,7 @@ function ENT:ScanForContraptions()
 				local Owner = Base:CPPIGetOwner()
 
 				insert(Distances, InsertionIndex, Distance)
-				insert(Owners, InsertionIndex, IsValid(Owner) and Owner:Nick() or "")
+				insert(Owners, InsertionIndex, IsValid(Owner) and Owner:GetName() or "")
 				insert(AngTable, InsertionIndex, FinalAngle)
 				insert(Temperatures, InsertionIndex, Heat)
 				insert(IDs, InsertionIndex, Index)
