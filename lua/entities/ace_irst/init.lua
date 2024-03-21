@@ -214,7 +214,7 @@ function ENT:ScanForContraptions()
 		if Contraption ~= SelfContraption then
 			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
 			HottestEntityTemp = HottestEntityTemp or 0
-			local Base = Contraption.aceBaseplate
+			local Base = Contraption:GetACEBaseplate()
 
 			if not IsValid(Base) then continue end --Wouldn't be needed with CFRAME
 
