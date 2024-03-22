@@ -107,7 +107,7 @@ function ENT:Think()
 		local radIDs = {}
 		local detAngs = {}
 		local radPOWs = {}
-		local randinac = Angle(1 + math.Rand(-0.15,0.15),1 + math.Rand(-0.05,0.05),0)
+		local randinac = Angle(math.Rand(-3,3),math.Rand(-3,3),0)
 
 		for _, scanEnt in pairs(ScanArray) do
 
@@ -161,7 +161,7 @@ function ENT:Think()
 							detected = 1
 
 							table.insert(radIDs,ACE.radarIDs[scanEnt])
-							table.insert(detAngs, Angle(nonlocang.p * randinac.p, nonlocang.y * randinac.y, nonlocang.r * randinac.r) ) --3
+							table.insert(detAngs, Angle(nonlocang.p + randinac.p, nonlocang.y + randinac.y, nonlocang.r + randinac.r) ) --3
 							table.insert(radPOWs,scanEnt.PowerID or 0)
 						end
 					end
