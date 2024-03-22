@@ -26,32 +26,35 @@ do
     end)
 end
 
--- Attempt to keep track of baseplates of contraptions, based on which entity has the most constraints
--- This is probably bad but it works for now
-do
-    local function findContraptionBaseplate(con)
-        local maxConstraintCount = 0
-        local fallbackBaseplate -- If the contraption doesn't have any constraints, just use something that isn't parented
-        local baseplate
+--- Returns the baseplate of a contraption
+---@return Entity Baseplate The baseplate of the contraption
+function CLASS:GetACEBaseplate()
+    local curBase = self.aceBaseplate
 
-        for ent in pairs(con.ents) do
-            if IsValid(ent) and IsValid(ent:GetPhysicsObject()) and not IsValid(ent:GetParent()) then
-                local count = #constraint.GetTable(ent)
-
-                fallbackBaseplate = ent
-
-                if count > maxConstraintCount then
-                    maxConstraintCount = count
-                    baseplate = ent
-                end
-            end
-        end
-
-        con.aceBaseplate = baseplate or fallbackBaseplate
+    if IsValid(curBase) and curBase:GetContraption() == self then
+        return curBase
     end
 
-    hook.Add("cfw.contraption.entityAdded", "CFW_ACE_BaseplateDetection", findContraptionBaseplate)
-    hook.Add("cfw.contraption.entityRemoved", "CFW_ACE_BaseplateDetection", findContraptionBaseplate)
+    local maxConstraintCount = 0
+    local fallbackBaseplate -- If the contraption doesn't have any constraints, just use something that isn't parented
+    local baseplate
+
+    for ent in pairs(self.ents) do
+        if IsValid(ent) and IsValid(ent:GetPhysicsObject()) and not IsValid(ent:GetParent()) then
+            local count = #constraint.GetTable(ent)
+
+            fallbackBaseplate = ent
+
+            if count > maxConstraintCount then
+                maxConstraintCount = count
+                baseplate = ent
+            end
+        end
+    end
+
+    self.aceBaseplate = baseplate or fallbackBaseplate
+
+    return self.aceBaseplate
 end
 
 --- Returns the hottest entity in a contraption and its temperature

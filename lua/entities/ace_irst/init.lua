@@ -214,14 +214,14 @@ function ENT:ScanForContraptions()
 		if Contraption ~= SelfContraption then
 			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
 			HottestEntityTemp = HottestEntityTemp or 0
-			local Base = Contraption.aceBaseplate
+			local Base = Contraption:GetACEBaseplate()
 
 			if not IsValid(Base) then continue end --Wouldn't be needed with CFRAME
 
 			local BasePhys = Base:GetPhysicsObject()
 			local BaseTemp = 0
 
-			if IsValid(Base) and IsValid(BasePhys) and BasePhys:IsMoveable() then
+			if IsValid(BasePhys) and BasePhys:IsMoveable() then
 				BaseTemp = ACE_InfraredHeatFromProp(Base, self.HeatAboveAmbient)
 			end
 
@@ -272,8 +272,10 @@ function ENT:ScanForContraptions()
 				local Index = ACE_GetContraptionIndex(Contraption)
 				local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, Distance)
 
+				local Owner = Base:CPPIGetOwner()
+
 				insert(Distances, InsertionIndex, Distance)
-				insert(Owners, InsertionIndex, Base:CPPIGetOwner())
+				insert(Owners, InsertionIndex, IsValid(Owner) and Owner:GetName() or "")
 				insert(AngTable, InsertionIndex, FinalAngle)
 				insert(Temperatures, InsertionIndex, Heat)
 				insert(IDs, InsertionIndex, Index)
