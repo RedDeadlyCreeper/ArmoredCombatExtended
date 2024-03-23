@@ -669,17 +669,17 @@ if SERVER then
 		return EntID
 	end
 
-	local function OnContraptionRemoved(con)
-		local ID = Indexes[con]
+	function ACE_ClearContraptionIndex(Contraption)
+		local Index = Indexes[Contraption]
 
-		if ID then
-			Indexes[con] = nil
-			Unused[ID] = true
+		if Index then
+			Indexes[Contraption] = nil
+			Unused[Index] = true
 		end
 	end
 
-	hook.Add("cfw.contraption.removed", "ACE_IndexTracking_ContraptionRemoved", OnContraptionRemoved)
-	hook.Add("cfw.contraption.merged", "ACE_IndexTracking_ContraptionMerged", OnContraptionRemoved)
+	hook.Add("cfw.contraption.removed", "ACE_IndexTracking_ContraptionRemoved", ACE_ClearContraptionIndex)
+	hook.Add("cfw.contraption.merged", "ACE_IndexTracking_ContraptionMerged", ACE_ClearContraptionIndex)
 
 	--- Efficiently find the index to insert a value into a sorted table
 	---@param Tbl table

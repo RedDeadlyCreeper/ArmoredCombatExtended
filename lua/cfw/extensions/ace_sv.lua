@@ -1,6 +1,8 @@
 local CLASS = CFW.classes.contraption
 if CLIENT then return end -- CFW's loader will also load this file on the client when in a singleplayer game for some reason
 
+TraceLine = util.TraceLine
+
 -- Maintains a table of ACE components for each contraption
 do
     hook.Add("cfw.contraption.entityAdded", "CFW_ACE_Entities", function(con, ent)
@@ -31,7 +33,7 @@ end
 function CLASS:GetACEBaseplate()
     local curBase = self.aceBaseplate
 
-    if IsValid(curBase) and curBase:GetContraption() == self then
+    if IsValid(curBase) and IsValid(curBase:GetPhysicsObject()) and curBase:GetContraption() == self then
         return curBase
     end
 
@@ -55,6 +57,33 @@ function CLASS:GetACEBaseplate()
     self.aceBaseplate = baseplate or fallbackBaseplate
 
     return self.aceBaseplate
+end
+
+--- Returns the height of a contraption's baseplate above the ground
+---@return number Height The height of the baseplate above the ground
+function CLASS:GetACEAltitude()
+    if self.aceAltitudeLastCheck and (CurTime() - self.aceAltitudeLastCheck < 0.01) then
+        return self.aceAltitude
+    end
+
+    self.aceAltitudeLastCheck = CurTime()
+
+    local baseplate = self:GetACEBaseplate()
+
+    if not IsValid(baseplate) then return end
+
+    local pos = baseplate:GetPos()
+
+    local trace = TraceLine({
+        start = pos,
+        endpos = pos - Vector(0, 0, 10000),
+        mask = MASK_SOLID_BRUSHONLY
+    })
+
+    local altitude = pos.z - trace.HitPos.z
+    self.aceAltitude = altitude
+
+    return altitude
 end
 
 --- Returns the hottest entity in a contraption and its temperature

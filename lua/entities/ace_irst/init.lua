@@ -4,7 +4,8 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 local deg, acos = math.deg, math.acos
-local min, max = math.min, math.max
+local min, max, Clamp = math.min, math.max, math.Clamp
+local Remap = math.Remap
 local insert = table.insert
 local Rand = math.Rand
 local TraceHull = util.TraceHull
@@ -42,14 +43,20 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
-	self.Heat               = 21
+	self.Heat               = ACE.AmbientTemp
 	self.HeatAboveAmbient   = 10 -- Targets below this temperature above ambient will be ignored
 
 	self.MinViewCone        = 3
 	self.MaxViewCone        = 20
 
-	self.LowHeatError		= 10 -- Angular error for things with very low temperature
-	self.LowHeatErrorTemp 	= 75 -- Anything below this temperature, the error will be LowHeatError
+	self.LowHeatErrorTemp 	= 75 -- Inaccuracy for anything below this temperature will be LowHeatError
+	self.LowHeatError		= 10
+
+	self.PeakAccuracyTemp	= 600 -- Inaccuracy for anything at or above this temperature will be PeakAccuracyError
+	self.PeakAccuracyError	= 0.25
+
+	self.AircraftAltitude	= 500 -- As this altitude is approached (source units), the accuracy of the IRST will increase
+	self.AircraftAccuracy	= 0.1 -- At AircraftAltitude and above, the error will be multiplied by this value
 
 	self.NextLegalCheck     = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal              = true
@@ -142,7 +149,7 @@ function ENT:TriggerInput( inp, value )
 	elseif inp == "Cone" then
 		if value > 0 then
 
-			self.Cone = math.Clamp(value / 2, self.MinViewCone ,self.MaxViewCone )
+			self.Cone = Clamp(value / 2, self.MinViewCone ,self.MaxViewCone )
 
 			SetConeParameter( self )
 
@@ -162,7 +169,7 @@ function ENT:SetActive(active)
 	self.Active = active
 
 	if active  then
-		self.Heat = 21 + 40
+		self.Heat = ACE.AmbientTemp + 40
 	else
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
 		WireLib.TriggerOutput( self, "Owner", {} )
@@ -178,7 +185,7 @@ function ENT:SetActive(active)
 		self.OutputData.ID = {}
 		self.OutputData.Distance = {}
 
-		self.Heat = 21
+		self.Heat = ACE.AmbientTemp
 	end
 
 end
@@ -210,13 +217,19 @@ function ENT:ScanForContraptions()
 	local LowHeatError = self.LowHeatError
 	local LowHeatErrorTemp = self.LowHeatErrorTemp
 
+	local PeakAccuracyError = self.PeakAccuracyError
+	local PeakAccuracyTemp = self.PeakAccuracyTemp
+
+	local AircraftAltitude = self.AircraftAltitude
+	local AircraftAccuracy = self.AircraftAccuracy
+
 	for Contraption in pairs(CFW.contraptions) do
 		if Contraption ~= SelfContraption then
 			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
 			HottestEntityTemp = HottestEntityTemp or 0
 			local Base = Contraption:GetACEBaseplate()
 
-			if not IsValid(Base) then continue end --Wouldn't be needed with CFRAME
+			if not IsValid(Base) then continue end
 
 			local BasePhys = Base:GetPhysicsObject()
 			local BaseTemp = 0
@@ -251,22 +264,27 @@ function ENT:ScanForContraptions()
 			local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
 
 			if AngleFromTarget < self.Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
+				debugoverlay.Line(SelfPos, Pos, 0.1, Color(255, 0, 0))
+
 				self.TargetDetected = true
 
-				local ErrorFromAngle = 1 + AngleFromTarget / 45 -- Better accuracy when directly facing the target
-				local ErrorFromHeat = 5 / max(Heat / 80, 1) --200 degrees to the seeker causes no loss in accuracy
-				-- 75C becomes 4
-				--100C becomes 3
-				--150C becomes 2
-				--400C becomes 0.75
+				local ErrorFromAngle = 0--AngleFromTarget / 45 -- Better accuracy when directly facing the target
+				-- Smoothly decrease error as we go between LowHeatErrorTemp and PeakAccuracyTemp
+				local ErrorFromHeat = Clamp(Remap(Heat, LowHeatErrorTemp, PeakAccuracyTemp, LowHeatError, PeakAccuracyError), PeakAccuracyError, LowHeatError)
 
-				if Heat < LowHeatErrorTemp then
-					ErrorFromHeat = LowHeatError
-				end
+				local Altitude = Contraption:GetACEAltitude()
 
-				local FinalError = ErrorFromAngle * ErrorFromHeat
+				-- As altitude increases to AircraftAltitude, the error decreases to AircraftAccuracy
+				local AltitudeErrorMul = Clamp(Remap(Altitude, 0, AircraftAltitude, 1, AircraftAccuracy), AircraftAccuracy, 1)
+
+				local FinalError = ErrorFromAngle + ErrorFromHeat * AltitudeErrorMul
 				local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * FinalError
 				local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError
+
+				local debugDir = self:LocalToWorldAngles(-FinalAngle):Forward()
+
+				debugoverlay.Line(SelfPos, SelfPos + debugDir * Distance, 0.1, Color(0, 255, 0))
+
 				FinalAngle.r = 0
 
 				local Index = ACE_GetContraptionIndex(Contraption)
