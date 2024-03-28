@@ -249,7 +249,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
 							ACF_HEKill( Tar, (TargetPos - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							ACF_KEShove(Tar, NewHitpos, (TargetPos - NewHitpos):GetNormalized(), PowerFraction * 20 * (GetConVar("acf_hepush"):GetFloat() or 1) ) --0.333
+							ACF_KEShove(Tar, NewHitpos, (TargetPos - NewHitpos):GetNormalized(), PowerFraction * 10 * (GetConVar("acf_hepush"):GetFloat() or 1) ) --0.333
 						end
 					end
 				end)
@@ -311,7 +311,7 @@ end
 
 
 --Handles normal spalling
-function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor , Material)
+function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Material) --_ = Armor
 
 	--Don't use it if it's not allowed to
 	if not ACF.Spalling then return end
@@ -324,9 +324,9 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 
 	-- Spall armor factor bias
 	local ArmorMul	= MatData.ArmorMul or 1
-	local UsedArmor	= Armour * ArmorMul
+	--local UsedArmor	= Armour * ArmorMul
 
-	if SpallMul > 0 and Caliber * 10 > UsedArmor and Caliber > 3 then
+	if SpallMul > 0 and Caliber > 3 then --Caliber * 10 > UsedArmor
 
 		-- Normal spalling core
 		--For better consistency against light armor, spall no longer cares about the thickness of the armor but moreso the hole the cannon punches through and the energy it uses doing so.
@@ -339,10 +339,10 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 		--Direct multiplier for spall velocity, used to fine-tune the spall penetration
 		local Velocityfactor = 300
 
-		local TotalWeight = PI * (Caliber / 2) ^ 2 * ArmorMul * WeightFactor
+		local TotalWeight = PI * (Caliber / 8) ^ 2 * ArmorMul * WeightFactor
 		local Spall = math.min(math.floor((Caliber - 3) * ACF.KEtoSpall * SpallMul * 1.33) * ACF.SpallMult, 32)
 		local SpallWeight = TotalWeight / Spall * SpallMul
-		local SpallVel = (KE * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul * Velocityfactor
+		local SpallVel = (KE * 256 / SpallWeight) ^ 0.5 / Spall * SpallMul * Velocityfactor
 		local SpallArea = (SpallWeight / 7.8) ^ 0.33
 		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, 800)
 
@@ -358,7 +358,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 
 			ACE.Spall[Index] = {}
 			ACE.Spall[Index].start  = HitPos
-			ACE.Spall[Index].endpos = HitPos + ( HitVec:GetNormalized() + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVel, 600 ) --Spall endtrace. Used to determine spread and the spall trace length. Only adjust the value in the max to determine the minimum distance spall will travel. 600 should be fine.
+			ACE.Spall[Index].endpos = HitPos + ( HitVec:GetNormalized() + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVel / 8, 600 ) --Spall endtrace. Used to determine spread and the spall trace length. Only adjust the value in the max to determine the minimum distance spall will travel. 600 should be fine.
 			ACE.Spall[Index].filter = table.Copy(Filter)
 			ACE.Spall[Index].mins	= Vector(0,0,0)
 			ACE.Spall[Index].maxs	= Vector(0,0,0)

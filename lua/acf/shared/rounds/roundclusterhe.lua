@@ -261,7 +261,7 @@ do
 					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4)):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0) --Fixed scatter pattern since we're using the detonate offset to control spread.
 
 					local MuzzlePos = bullet.Pos
-					GEnt.BulletDataC.Pos = MuzzlePos
+					GEnt.BulletDataC.Pos = MuzzlePos - MuzzleVec
 					GEnt.CreateShell = ACF.RoundTypes[GEnt.BulletDataC.Type].create
 					GEnt:CreateShell( GEnt.BulletDataC )
 

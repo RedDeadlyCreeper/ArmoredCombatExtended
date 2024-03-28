@@ -88,14 +88,14 @@ function EFFECT:Init( data )
 	--print(SurfaceTr.Hitworld)
 
 	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
-	if self.Id and not RoundTypesIgnore[self.Id] or (IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) or SurfaceTr.HitWorld then
+	if self.Id and not RoundTypesIgnore[self.Id] and ((IsValid(TraceEntity) and not EntityFilter[TraceEntity:GetClass()]) or SurfaceTr.HitWorld) then
 
 		local Mat = SurfaceTr.MatType or 0
 		MatVal = ACE_GetMaterialName( Mat )
 
 
 		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
-			Mat = Mat
+			MatVal = "Metal"
 			self.HitNorm = -self.HitNorm
 			self.DirVec = -self.DirVec
 			--[[local TEnt = SurfaceTr.Entity
@@ -103,6 +103,8 @@ function EFFECT:Init( data )
 				--TODO: Add clienside way to get ACF Material
 				MatVal = "Metal"
 			]]--
+		else
+			print("HitWorld")
 		end
 
 		local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.

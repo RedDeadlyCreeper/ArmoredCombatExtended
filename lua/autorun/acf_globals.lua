@@ -64,7 +64,7 @@ ACF.RefillSpeed         = 250					-- (ACF.RefillSpeed / RoundMass) / Distance
 ---------------------------------- Explosive config ----------------------------------
 
 ACF.HEDamageFactor    = 50
-ACF.BoomMult          = 3.5					-- How much more do ammocrates/fueltanks blow up, useful since crates detonate all at once now.
+ACF.BoomMult          = 8					-- How much more do ammocrates/fueltanks blow up, useful since crates detonate all at once now.
 
 ACF.HEPower           = 8000					-- HE Filler power per KG in KJ
 ACF.HEDensity         = 1.65					-- HE Filler density (That's TNT density)

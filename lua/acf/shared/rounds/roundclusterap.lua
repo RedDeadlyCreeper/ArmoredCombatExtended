@@ -143,7 +143,7 @@ do
 		GEnt.BulletDataC["Accel"]			= Vector(0,0,-600)
 		GEnt.BulletDataC["BoomPower"]		= bdata.BoomPower
 
-		GEnt.BulletDataC["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 12, 0.1, bdata.Caliber * 0.5 ) --Controls visual size, does nothing else
+		GEnt.BulletDataC["Caliber"] 		= 0.001 --Controls visual size, does nothing else
 		GEnt.BulletDataC["Crate"]			= bdata.Crate
 		GEnt.BulletDataC["DragCoef"]		= 0
 
@@ -166,7 +166,7 @@ do
 		GEnt.BulletDataC["PenArea"]		= bdata.PenArea
 		GEnt.BulletDataC["Pos"]			= bdata.Pos
 		GEnt.BulletDataC["ProjLength"]	= bdata.ProjLength / Bomblets / 2
-		GEnt.BulletDataC["ProjMass"]		= bdata.ProjMass / Bomblets * 15
+		GEnt.BulletDataC["ProjMass"]		= bdata.ProjMass / Bomblets
 		GEnt.BulletDataC["PropLength"]	= bdata.PropLength
 		GEnt.BulletDataC["PropMass"]		= bdata.PropMass
 		GEnt.BulletDataC["Ricochet"]		= 90--bdata.Ricochet
@@ -198,7 +198,8 @@ do
 		local GEnt = bullet.Gun
 
 		local MuzzleVec = bullet.Flight:GetNormalized()
-		local MuzzleSpeed = bullet.Flight:Length() + GEnt.BulletDataC["MuzzleVel"] * 39.37
+		GEnt.BulletDataC = GEnt.BulletDataC or {}
+		local MuzzleSpeed = bullet.Flight:Length() + (GEnt.BulletDataC["MuzzleVel"] or 0) * 39.37
 		local GunBData = GEnt.BulletDataC or {}
 		local CCount = GunBData.Bomblets or 0
 
@@ -214,7 +215,7 @@ do
 					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4)):GetNormalized() * MuzzleSpeed --Fixed scatter pattern since we're using the detonate offset to control spread.
 
 					local MuzzlePos = bullet.Pos
-					GEnt.BulletDataC.Pos = MuzzlePos
+					GEnt.BulletDataC.Pos = MuzzlePos - MuzzleVec
 					GEnt.CreateShell = ACF.RoundTypes[GEnt.BulletDataC.Type].create
 					GEnt:CreateShell( GEnt.BulletDataC )
 

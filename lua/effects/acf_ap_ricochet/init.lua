@@ -49,7 +49,7 @@ function EFFECT:Init( data )
 	local DecalMat = "Impact.Concrete" --Disabled other impact effects due to source bug hitting odd materials. Not too much loss in fidelity anyways.
 
 
-	if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
+		if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
 
 		local Mat = SurfaceTr.MatType
 		MatVal = ACE_GetMaterialName( Mat )
@@ -60,6 +60,10 @@ function EFFECT:Init( data )
 		SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ))
 		SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 ))
 		SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 ))
+
+		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
+			MatVal = "Metal"
+		end
 
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )

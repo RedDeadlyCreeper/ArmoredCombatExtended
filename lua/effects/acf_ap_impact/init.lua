@@ -80,13 +80,12 @@ function EFFECT:Init( data )
 		MatVal = ACE_GetMaterialName( Mat )
 
 		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
-			Mat = Mat
+			MatVal = "Metal"
 			--self.HitNorm = -self.HitNorm
 			--self.DirVec = -self.DirVec
 			--local TEnt = SurfaceTr.Entity
-				--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
-				--TODO: Add clienside way to get ACF Material
-				MatVal = "Metal"
+			--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
+			--TODO: Add clienside way to get ACF Material
 		end
 
 		local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
