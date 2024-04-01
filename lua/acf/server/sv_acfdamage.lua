@@ -337,14 +337,19 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 		local WeightFactor = 15
 
 		--Direct multiplier for spall velocity, used to fine-tune the spall penetration
-		local Velocityfactor = 300
+		local Velocityfactor = 1
+
+		--print("Cal: "..Caliber)
 
 		local TotalWeight = PI * (Caliber / 8) ^ 2 * ArmorMul * WeightFactor
-		local Spall = math.min(math.floor((Caliber - 3) * ACF.KEtoSpall * SpallMul * 1.33) * ACF.SpallMult, 32)
-		local SpallWeight = TotalWeight / Spall * SpallMul
-		local SpallVel = (KE * 256 / SpallWeight) ^ 0.5 / Spall * SpallMul * Velocityfactor
-		local SpallArea = (SpallWeight / 7.8) ^ 0.33
-		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, 800)
+		local Spall = math.min(math.floor((Caliber - 3) * ACF.KEtoSpall * SpallMul * 5) * ACF.SpallMult, 128)
+		local SpallWeight = TotalWeight / Spall * SpallMul * 30
+		local SpallVel = (KE * 2048 / SpallWeight) ^ 0.5 / Spall * SpallMul * 79.787
+		local SpallArea = (SpallWeight * 50 ) ^ 0.33
+		local SpallEnergy = ACF_Kinetic(SpallVel * Velocityfactor, SpallWeight * 11 , 800)
+
+		--local caliber = 20 * (SpallArea ^ (1 / ACF.PenAreaMod) / 3.1416) ^ 0.5
+		--print("SpallCal: "..caliber)
 
 		for i = 1,Spall do
 
@@ -539,7 +544,7 @@ end
 --Handles HESH spalling
 function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
 
-	local spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, HitVec, Filter, Caliber )
+	local spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, -HitVec, Filter, Caliber )
 
 	local Mat		= Material or "RHA"
 	local MatData	= ACE_GetMaterialData( Mat )
@@ -551,18 +556,20 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 	local ArmorMul	= MatData.ArmorMul or 1
 	local UsedArmor	= Armour * ArmorMul
 
-	if SpallMul > 0 and HEFiller / 1501 * 4 > UsedArmor then
+	if SpallMul > 0 and ( HEFiller / 300 ) > UsedArmor then
 
 		--era stops the spalling at the cost of being detonated
 		if MatData.IsExplosive then Filter[1].ACF.ERAexploding = true return end
 
 		-- HESH spalling core
 		local TotalWeight = PI * (Caliber / 2) ^ 2 * math.max(UsedArmor, 30) * 2500
-		local Spall = math.min(math.floor((Caliber - 3) / 3 * ACF.KEtoSpall * SpallMul), 24) --24
-		local SpallWeight = TotalWeight / Spall * SpallMul
-		local SpallVel = (HEFiller * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul
-		local SpallArea = (SpallWeight / 7.8) ^ 0.33
-		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, 800)
+		local Spall = math.min(math.floor((Caliber - 3) * 5 * ACF.KEtoSpall * SpallMul), 128) --24
+		local SpallWeight = TotalWeight / Spall * SpallMul * 5
+		local SpallVel = (HEFiller * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul * 5
+		local SpallArea = (SpallWeight * 1) ^ 0.33
+		local SpallEnergy = ACF_Kinetic(SpallVel * 1, SpallWeight * 5, 800)
+
+		--print("Spall: "..Spall)
 
 		for i = 1,Spall do
 
@@ -576,7 +583,7 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 
 			ACE.Spall[Index]			= {}
 			ACE.Spall[Index].start	= spallPos
-			ACE.Spall[Index].endpos	= spallPos + ((fNormal * 2500 + HitVec):GetNormalized() + VectorRand() / 3):GetNormalized() * math.max(SpallVel * 10,math.random(450,600)) --I got bored of spall not going across the tank
+			ACE.Spall[Index].endpos	= spallPos + ((fNormal * 2500 + -HitVec):GetNormalized() + VectorRand() / 3):GetNormalized() * math.max(SpallVel * 10,math.random(450,600)) --I got bored of spall not going across the tank
 			ACE.Spall[Index].filter	= table.Copy(PEnts)
 
 			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor )
@@ -613,7 +620,7 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 		end
 
 		-- Get the spalling hitAngle
-		local Angle		= ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
+		--local Angle		= ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
 
 		local Mat		= SpallRes.Entity.ACF.Material or "RHA"
 		local MatData	= ACE_GetMaterialData( Mat )
@@ -624,11 +631,11 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 
 		--extra damage for ents like ammo, engines, etc
 		if ACE.CritEnts[ SpallRes.Entity:GetClass() ] then
-			SpallEnergy.Penetration = SpallEnergy.Penetration * 1.5
+			SpallEnergy.Penetration = SpallEnergy.Penetration * 10
 		end
 
 		-- Applies the damage to the impacted entity
-		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallArea , Angle , Inflictor, 0, nil, "Spall")
+		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallArea , 0 , Inflictor, 0, nil, "Spall") --Angle replaced with 0 for inconsistent spall
 
 		-- If it's able to destroy it, kill it and filter it
 		if HitRes.Kill then
@@ -659,11 +666,11 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 			return
 		end
 ]]
-		--debugoverlay.Line( SpallRes.StartPos + Vector(1,0,0), SpallRes.HitPos + Vector(1,0,0), 10 , Color(255,0,0), true )
+		debugoverlay.Line( SpallRes.StartPos + Vector(1,0,0), SpallRes.HitPos + Vector(1,0,0), 10 , Color(255,0,0), true )
 
 	end
 
-	--debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 10 , Color(0,255,0), true )
+	debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 10 , Color(0,255,0), true )
 end
 
 --Calculates the vector of the ricochet of a round upon impact at a set angle
@@ -676,15 +683,15 @@ end
 -- Handles the impact of a round on a target
 function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )
 
---[[
-	print("======DATA=======")
-	print(HitNormal)
-	print(Bullet["Flight"])
-	print("======DATA=======")
+	--[[
+		print("======DATA=======")
+		print(HitNormal)
+		print(Bullet["Flight"])
+		print("======DATA=======")
 
-	debugoverlay.Line(HitPos, HitPos + (Bullet["Flight"]), 5, Color(255,100,0), true )
-	debugoverlay.Line(HitPos, HitPos + (HitNormal * 100), 5, Color(255,255,0), true )
-]]
+		debugoverlay.Line(HitPos, HitPos + (Bullet["Flight"]), 5, Color(255,100,0), true )
+		debugoverlay.Line(HitPos, HitPos + (HitNormal * 100), 5, Color(255,255,0), true )
+	]]
 	Bullet.Ricochets = Bullet.Ricochets or 0
 
 	local Angle	= ACF_GetHitAngle( HitNormal , Bullet["Flight"] )

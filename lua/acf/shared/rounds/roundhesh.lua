@@ -80,7 +80,7 @@ function Round.getDisplayData(Data)
 	GUIData.Fragments = math.max(math.floor((Data.FillerMass / FragMass) * ACF.HEFrag), 2)
 	GUIData.FragMass = FragMass / GUIData.Fragments
 	GUIData.FragVel = (Data.FillerMass * ACF.HEPower * 1000 / GUIData.FragMass / GUIData.Fragments) ^ 0.5
-	GUIData.MaxPen = Data.FillerMass / 1501 * 4 * ACF.HEPower
+	GUIData.MaxPen = Data.FillerMass / 300 * ACF.HEPower
 
 	return GUIData
 end
@@ -111,7 +111,7 @@ function Round.cratetxt( BulletData )
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor(BulletData.FillerMass * ACF.HEPower), " KJ\n",
+		"Blast Energy: ", math.floor(BulletData.FillerMass * ACF.HEPower * 0.7), " KJ\n",
 		"Blast Penetration: ", math.floor(DData.MaxPen), " mm"
 	}
 
@@ -119,17 +119,26 @@ function Round.cratetxt( BulletData )
 
 end
 
-function Round.propimpact( _, Bullet, Target, HitNormal, HitPos, Bone )
+function Round.propimpact( _, Bullet, Target, _, HitPos, Bone ) --Hitnormal not used.
 
 	if ACF_Check( Target ) then
 
-		local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Energy = ACF_Kinetic(Speed / 4 + Bullet.FillerMass * 250, Bullet.ProjMass / 4 + Bullet.FillerMass * 5, Bullet.LimitVel)
+		--local Speed = Bullet.Flight:Length() / ACF.VelScale
+		local Energy = ACF_Kinetic(Bullet.FillerMass * 1750, Bullet.FillerMass * 50, Bullet.LimitVel)
 		--local HitRes = ACF_RoundImpact(Bullet, Speed / 4 + Bullet.FillerMass * 250, Energy, Target, HitPos, HitNormal / 10, Bone)
-		ACF_RoundImpact(Bullet, Speed / 4 + Bullet.FillerMass * 250, Energy, Target, HitPos, HitNormal / 10, Bone)
 
-		table.insert( Bullet.Filter , Target )
-		ACF_Spall_HESH( HitPos, Bullet.Flight, Bullet.Filter, Bullet.FillerMass * ACF.HEPower, Bullet.Caliber * 5, Target.ACF.Armour, Bullet.Owner, Target.ACF.Material) --Do some spalling
+		local Mat		= Target.ACF.Material or "RHA"
+		local MatData	= ACE_GetMaterialData( Mat )
+
+		local Pen = Bullet.FillerMass / 300 * ACF.HEPower
+		if ( Pen * 1.25 ) > ( Target.ACF.Armour * (MatData.ArmorMul or 1) ) then
+
+			ACF_RoundImpact(Bullet, Bullet.FillerMass * 250, Energy, Target, HitPos, Bullet.Flight:GetNormalized(), Bone) --( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )
+
+			table.insert( Bullet.Filter , Target )
+			ACF_Spall_HESH( HitPos, Bullet.Flight, Bullet.Filter, Bullet.FillerMass * ACF.HEPower, Bullet.Caliber, Target.ACF.Armour, Bullet.Owner, Target.ACF.Material) --Do some spalling
+
+		end
 
 	else
 		table.insert( Bullet.Filter , Target )
@@ -145,7 +154,7 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 
-	ACF_HE( HitPos - Bullet.Flight:GetNormalized() * 3, HitNormal, Bullet.FillerMass * 0.4, Bullet.ProjMass - Bullet.FillerMass * 0.4, Bullet.Owner, nil, Bullet.Gun )
+	ACF_HE( HitPos - Bullet.Flight:GetNormalized() * 3, HitNormal, Bullet.FillerMass * 0.7, Bullet.ProjMass - Bullet.FillerMass * 0.7, Bullet.Owner, nil, Bullet.Gun )
 	ACF_RemoveBullet( Index )
 
 end
