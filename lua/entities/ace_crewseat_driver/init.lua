@@ -45,15 +45,15 @@ function ENT:Initialize()
 	self.Legal = true
 	self.LegalIssues = ""
 
-	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Steve", "Ferv", "Twisted", "Red", "nrulz"}
+	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Ferv", "Rice", "spEAM"}
 
 	local randomNum = random(1, 100)
 
 	if randomNum <= 2 then
 		self.Name  = rareNames[random(1, #rareNames)]
 	else
-		local randomPrefixes = {"John", "Bob", "Sam", "Joe", "Ben", "Alex", "Chris", "David", "Eric", "Frank", "Antonio", "Ivan"}
-		local randomSuffixes = {"Smith", "Johnson", "Dover", "Wang", "Kim", "Lee", "Brown", "Davis", "Evans", "Garcia", "", "Russel", "King"}
+		local randomPrefixes = {"John", "Bob", "Sam", "Joe", "Ben", "Alex", "Chris", "David", "Eric", "Frank", "Antonio", "Ivan", "Alexander", "Victor", "Elon", "Vladimir"}
+		local randomSuffixes = {"Smith", "Johnson", "Dover", "Wang", "Kim", "Lee", "Brown", "Davis", "Evans", "Garcia", "", "Russel", "King", "Musk", "Popov"}
 
 		local randomPrefix = randomPrefixes[random(1, #randomPrefixes)]
 		local randomSuffix = randomSuffixes[random(1, #randomSuffixes)]

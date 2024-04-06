@@ -4,7 +4,7 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 local deg, acos = math.deg, math.acos
-local min, max, Clamp = math.min, math.max, math.Clamp
+local min, Clamp = math.min, math.Clamp
 local Remap = math.Remap
 local insert = table.insert
 local Rand = math.Rand
