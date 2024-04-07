@@ -236,7 +236,7 @@ function ENT:Think()
 
 	if ACF.CurTime > self.NextLegalCheck then
 
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
 		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
 		if not self.Legal then
@@ -249,7 +249,7 @@ function ENT:Think()
 	if self.Active and self.Legal then
 
 		self.CurrentScanAngle = self.CurrentScanAngle + self.Cone * DeltaTime
-		if self.CurrentScanAngle >= 360 then self.CurrentScanAngle = math.min(self.CurrentScanAngle - 360,360) end
+		if self.CurrentScanAngle >= 360 then self.CurrentScanAngle = math.min(self.CurrentScanAngle - 360, 360) end
 
 		--local radID = ACE.radarIDs[self]
 
@@ -289,9 +289,9 @@ function ENT:Think()
 					local difpos	= (entpos - thisPos)
 					local entdistance  = difpos:Length()
 
-					local ang	=  self:WorldToLocalAngles(difpos:Angle())  - Angle(0,-self.CurrentScanAngle,0)	--Used for testing if inrange
+					local ang	=  self:WorldToLocalAngles(difpos:Angle())  - Angle(0, -self.CurrentScanAngle, 0)	--Used for testing if inrange
 
-					local absang	= Angle(math.abs(math.NormalizeAngle(ang.p)),math.abs(math.NormalizeAngle(ang.y)),0)  --Since I like ABS so much
+					local absang	= Angle(math.abs(math.NormalizeAngle(ang.p)), math.abs(math.NormalizeAngle(ang.y)), 0)  --Since I like ABS so much
 
 					--Entity is within radar cone
 
@@ -325,7 +325,7 @@ function ENT:Think()
 							local Dopplertest = math.min(math.abs(Espeed / math.abs(DPLR.Y)) * 100, 10000) --Side to side speed ratio. If all speed is up ratio is 0.5, half 1.0, quarter, 2.0, etc. x100.
 							local Dopplertest2 = math.min(math.abs(Espeed / math.abs(DPLR.Z)) * 100, 10000) --Vertical speed ratio.
 
-							local GCtr = util.TraceHull( {
+							local GCtr = util.TraceHull( { --  Ground clutter trace
 
 								start = entpos,
 								endpos = entpos + difpos:GetNormalized() * 2000,
@@ -384,7 +384,7 @@ function ENT:Think()
 								table.insert(self.AcquiredTargets , scanEnt)
 
 								--IDK if this is more intensive than length
-								local finalvel = Vector(0,0,0)
+								local finalvel = Vector(0, 0, 0)
 
 								if Espeed > 0.5 then
 									finalvel = entvel

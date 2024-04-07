@@ -7,7 +7,7 @@ function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
-	local SPos = (trace.HitPos + Vector(0,0,1))
+	local SPos = (trace.HitPos + Vector(0, 0, 1))
 
 	local ent = ents.Create( "acf_opticalcomputer" )
 	ent:SetPos( SPos )
@@ -25,17 +25,15 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
 
+	self.Weight = 65
+	self:GetPhysicsObject():SetMass(self.Weight)
+
 
 end
 
 
 
 function ENT:Think()
-	self:GetPhysicsObject():SetMass(65)
-
-
-
-
 end
 
 

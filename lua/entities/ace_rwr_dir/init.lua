@@ -7,7 +7,7 @@ function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
-	local SPos = (trace.HitPos + Vector(0,0,1))
+	local SPos = (trace.HitPos + Vector(0, 0,1))
 
 	local ent = ents.Create( "ace_rwr_dir" )
 	ent:SetPos( SPos )
@@ -20,6 +20,8 @@ end
 function ENT:Initialize()
 
 	self.ThinkDelay = 0.1
+	self.Detected = 0
+	self.Weight = 105
 
 	self.Active = false
 	curTime = 0
@@ -27,39 +29,25 @@ function ENT:Initialize()
 	self:SetModel( "models/radar/radar_sml.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
 
-	self:GetPhysicsObject():SetMass(105)
+	self:GetPhysicsObject():SetMass(self.Weight)
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active" } )
 	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Radar ID [ARRAY]", "Angle [ARRAY]", "Radar Power [ARRAY]"} )
 
 	self:SetActive(false)
 
+	self.NextLegalCheck	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
+
 	self.Cone = 50
 
-	self.LegalTick = 0
-	self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
-	self.IsLegal = true
 end
-
---ATGMs tracked
-function ENT:isLegal()
-
-	if self:GetPhysicsObject():GetMass() < 105 then return false end
-	if not self:IsSolid() then return false end
-
-	ACF_GetPhysicalParent(self)
-
-	self.IsLegal = self.acfphysparent:IsSolid()
-
-	return self.IsLegal
-
-end
-
 
 
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
-		self:SetActive((value ~= 0) and self:isLegal())
+		self:SetActive((value ~= 0) and self.Legal)
 	end
 end
 
@@ -89,16 +77,15 @@ function ENT:Think()
 	local curTime = CurTime()
 	self:NextThink(curTime + self.ThinkDelay)
 
-	self.LegalTick = (self.LegalTick or 0) + 1
+	if ACF.CurTime > self.NextLegalCheck then
 
-	if	self.LegalTick >= (self.checkLegalIn or 0) then
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
-		self.LegalTick = 0
-		self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
-		self:isLegal()
 	end
 
-	if self.Active and self.IsLegal then
+
+	if self.Active and self.Legal then
 
 		local ScanArray = ACE.radarEntities
 
@@ -169,12 +156,29 @@ function ENT:Think()
 			end
 		end
 
+		self.Detected = detected
+
 		WireLib.TriggerOutput( self, "Detected", detected )
 		WireLib.TriggerOutput( self, "Radar ID", radIDs )
 		WireLib.TriggerOutput( self, "Angle", detAngs )
 		WireLib.TriggerOutput( self, "Radar Power", radPOWs )
 	end
 
+	self:UpdateOverlayText()
+
 	return true
 
+end
+
+function ENT:UpdateOverlayText()
+
+	local Active = self.Active
+	local Detected = self.Detected
+	local str = string.format("Active: %s\nDetected: %s", Active, Detected)
+
+	if not self.Legal then
+		str = str .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
+
+	self:SetOverlayText(str)
 end

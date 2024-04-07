@@ -7,7 +7,7 @@ function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
-	local SPos = (trace.HitPos + Vector(0,0,1))
+	local SPos = (trace.HitPos + Vector(0, 0, 1))
 
 	local ent = ents.Create( "ace_ecm" )
 	ent:SetPos( SPos )
@@ -20,6 +20,7 @@ end
 function ENT:Initialize()
 
 	self.ThinkDelay = 0.5 --1 second delay, hopefully enough to prevent ECM flashing
+	self.Weight = 1000
 
 	self.Active = false
 	curTime = 0
@@ -27,7 +28,7 @@ function ENT:Initialize()
 	self:SetModel( "models/missiles/minipod.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
 
-	self:GetPhysicsObject():SetMass(1000)
+	self:GetPhysicsObject():SetMass(self.Weight)
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "JamDirection [VECTOR]", "JamPos [VECTOR]" } )
 	self.Outputs = WireLib.CreateOutputs( self, {"JamCount"} )
@@ -37,38 +38,25 @@ function ENT:Initialize()
 	--out radars jammed?
 	self:SetActive(false)
 
-	self.LegalTick = 0
-	self.checkLegalIn = 5 + math.random(0,5) --Random checks every 5-10 seconds
-	self.IsLegal = true
+	self.NextLegalCheck	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
 
 	self.CurrentlyJamming = 0
 	self.JamDirection = vector_origin
 	self.JamTargetPos = 0 --Used for storing and updating jam vector if there is one.
 end
 
---ATGMs tracked
-function ENT:isLegal()
-
-	if self:GetPhysicsObject():GetMass() < 1000 then return false end
-	if not self:IsSolid() then return false end
-
-	ACF_GetPhysicalParent(self)
-
-	self.IsLegal = self.acfphysparent:IsSolid()
-
-	return self.IsLegal
-
-end
 
 function ENT:TriggerInput( inp, value )
 	if inp == "Active" then
-		self:SetActive((value ~= 0) and self:isLegal())
+		self:SetActive((value ~= 0) and self.Legal)
 	elseif inp == "JamDirection" then
 		self.JamDirection = value
 		self.JamTargetPos = nil
 	elseif inp == "JamPos" then
 		self.JamTargetPos = value
-		self.JamDirection = self.JamTargetPos-self:GetPos()
+		self.JamDirection = self.JamTargetPos - self:GetPos()
 		--:GetNormalized() May not need to be normalized?
 	end
 
@@ -99,20 +87,17 @@ function ENT:Think()
 	local curTime = CurTime()
 	self:NextThink(curTime + self.ThinkDelay)
 
-	self.LegalTick = (self.LegalTick or 0) + 1
+	if ACF.CurTime > self.NextLegalCheck then
 
-	if	self.LegalTick >= (self.checkLegalIn or 0) then
-
-		self.LegalTick = 0
-		self.checkLegalIn = 5 + math.random(0,5) --Random checks every 5-10 seconds
-		self:isLegal()
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
 	end
 
 	self.CurrentlyJamming = 0
-	if self.Active and self.IsLegal then
+	if self.Active and self.Legal then
 
-		if self.JamTargetPos then
+		if self.JamTargetPos and isvector(self.JamTargetPos) then
 			self.JamDirection = (self.JamTargetPos-self:GetPos()):GetNormalized()
 		end
 
@@ -170,6 +155,22 @@ function ENT:Think()
 		end
 		WireLib.TriggerOutput( self, "JamCount", self.CurrentlyJamming )
 	end
+
+	self:UpdateOverlayText()
+
+end
+
+function ENT:UpdateOverlayText()
+
+	local Active = self.Active
+	local JamCount = self.CurrentlyJamming
+	local str = string.format("Active: %s\nJam Count: %s", Active, JamCount)
+
+	if not self.Legal then
+		str = str .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
+
+	self:SetOverlayText(str)
 end
 
 function ENT:OnRemove()
