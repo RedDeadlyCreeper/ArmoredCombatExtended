@@ -27,7 +27,6 @@ Material.Nresiliance = 1
 Material.APSensorFactor	= 4	-- quotient used to determinate minimal pen for detonation for Kinetic shells
 Material.HEATSensorFactor	= 16	-- quotient used to determinate minimal pen for detonation for chemical shells
 
-Material.spallarmor	= 1
 Material.spallresist = 1
 
 Material.spallmult = 0

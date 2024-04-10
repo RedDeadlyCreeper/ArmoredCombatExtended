@@ -324,8 +324,11 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 
 	-- Spall armor factor bias
 	local ArmorMul	= MatData.ArmorMul or 1
+	
+	-- Cal of 3 = 30mm.
+	local Minimum_Caliber = 3
 
-	if SpallMul > 0 then 
+	if SpallMul > 0 and Caliber > Minimum_Caliber then 
 	
 		local WeightFactor = MatData.massMod or 1
 		-- local Max_Spall_Mass = 10
@@ -388,7 +391,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 end
 
 --Handles HESH spalling
-function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, _, Inflictor, Material )
+function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
 
 	--Don't use it if it's not allowed to
 	if not ACF.Spalling then return end
@@ -401,8 +404,10 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, _, Inflictor
 
 	-- Spall armor factor bias
 	local ArmorMul	= MatData.ArmorMul or 1
+	
+	local UsedArmor	= Armour * ArmorMul
 
-	if SpallMul > 0 then
+	if SpallMul > 0 and ( HEFiller / 300 ) > UsedArmor then
 
 		local WeightFactor = MatData.massMod or 1
 		-- local Max_Spall_Mass = 20
@@ -467,6 +472,8 @@ end
 --Spall trace core. For HESH and normal spalling
 function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 
+	local Entity_Crit_Hit_Factor = 1.01
+
 	local SpallRes = util.TraceLine(ACE.Spall[Index])
 
 	-- Check if spalling hit something
@@ -492,30 +499,28 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 		local Mat		= SpallRes.Entity.ACF.Material or "RHA"
 		local MatData	= ACE_GetMaterialData( Mat )
 
-		local If_Has_Spall_Resil = 0
+		local spall_resistance = MatData.spallresist
 		
-		if Mat == "Rub" then 
-			If_Has_Spall_Resil = MatData.spallresiliance
-		else
-			If_Has_Spall_Resil = MatData.spallresist
-		end
+		-- The clamp is due to that if the material spall resist/armor is below 1 then it multiplies the penetration. 
+		-- ^ Clamp keeps the variable at 1 or higher.
+		-- Such as why I have ceramic/textolite resistence set to 1 as that means spall doesnt lose energy when hitting it.
+		-- Two/three reasons why this is good ^:
+		-- 1. Ceramic/textolite are extremely brittle and once hit usually shatters, if you overthink it then the spall would be like blades of grass cutting through sand.
+		-- 2. It is extremely easy to overtweak the resistence as setting it even to 2 means the penetration will be lost within seconds due to the interval this script runs at.
+		-- 3. Regarding 2. This is for all materials. I have carefully selected the resistences for them.
+		local Final_Spall_Resistence = math.Clamp(spall_resistance, 1, 999)
+		Entity_Crit_Hit_Factor = math.Clamp(Entity_Crit_Hit_Factor, 1, 999)
 
-		local spallarmor	= MatData.spallarmor
-		
-		local Spall_Armor_Resist = (spallarmor + If_Has_Spall_Resil / 2)
-
-		SpallEnergy.Penetration = (SpallEnergy.Penetration / math.Clamp(Spall_Armor_Resist, 1, 2))
+		SpallEnergy.Penetration = (SpallEnergy.Penetration / Final_Spall_Resistence)
 
 		--extra damage for ents like ammo, engines, etc
 		if ACE.CritEnts[ SpallRes.Entity:GetClass() ] then
-			SpallEnergy.Penetration = (SpallEnergy.Penetration / math.Clamp(Spall_Armor_Resist, 1, 2))
+			SpallEnergy.Penetration = (SpallEnergy.Penetration / Entity_Crit_Hit_Factor)
 		end
 		
 		SpallEnergy.Penetration = math.floor(SpallEnergy.Penetration)
 		
 		-- print(SpallEnergy.Penetration)
-		
-		If_Has_Spall_Resil = 0
 
 		-- Applies the damage to the impacted entity
 		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallArea , 0 , Inflictor, 0, nil, "Spall") --Angle replaced with 0 for inconsistent spall
