@@ -27,7 +27,7 @@ Material.HEresiliance	= 6
 
 
 Material.spallarmor	= 1
-Material.spallresiliance = 15
+Material.spallresiliance = 1.6
 
 Material.spallmult	= 0.01 --While spall can pierce rubber, Rubber itself should not really spall.
 Material.ArmorMul	= 0.05

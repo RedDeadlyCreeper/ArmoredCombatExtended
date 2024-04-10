@@ -16,8 +16,8 @@ Material.curve		= 1
 Material.effectiveness  = 0.98
 Material.resiliance	= 0.4
 
-Material.spallarmor	= 1
-Material.spallresist	= 0.5
+Material.spallarmor	= 0.95
+Material.spallresist	= 1.1
 
 Material.spallmult	= 2
 Material.ArmorMul	= 1

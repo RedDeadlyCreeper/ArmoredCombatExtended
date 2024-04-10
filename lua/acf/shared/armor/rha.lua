@@ -16,7 +16,7 @@ Material.curve		= 1 --Slight and almost unnoticable penalty to high thickness ar
 Material.effectiveness  = 1
 Material.resiliance	= 1
 
-Material.spallarmor	= 1
+Material.spallarmor	= 1.24
 Material.spallresist	= 1
 
 Material.spallmult	= 1
