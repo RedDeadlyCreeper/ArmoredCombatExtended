@@ -328,7 +328,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 	if SpallMul > 0 then 
 	
 		local WeightFactor = MatData.massMod or 1
-		local Max_Spall_Mass = 10
+		-- local Max_Spall_Mass = 10
 
 		local Velocityfactor = 2
 		local Max_Spall_Vel = 3000
@@ -388,7 +388,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 end
 
 --Handles HESH spalling
-function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
+function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, _, Inflictor, Material )
 
 	--Don't use it if it's not allowed to
 	if not ACF.Spalling then return end
@@ -405,7 +405,7 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 	if SpallMul > 0 then
 
 		local WeightFactor = MatData.massMod or 1
-		local Max_Spall_Mass = 20
+		-- local Max_Spall_Mass = 20
 
 		local Velocityfactor = 1
 		local Max_Spall_Vel = 7000
