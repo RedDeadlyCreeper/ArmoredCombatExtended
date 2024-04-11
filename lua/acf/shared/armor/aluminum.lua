@@ -14,8 +14,7 @@ Material.effectiveness  = 0.34
 Material.resiliance	= 1.05
 Material.HEATMul		= 5 --Originally 80. Someone REALLY hated aluminum against HEAT.
 
-Material.spallarmor	= 1
-Material.spallresist	= 1
+Material.spallresist	= 1.02
 
 Material.spallmult	= 2
 Material.ArmorMul	= 0.334
