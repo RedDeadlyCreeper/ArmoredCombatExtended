@@ -34,6 +34,7 @@ function Round.convert( _, PlayerData )
 
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
+	--3.16
 	Data.ProjMass    = Data.FrArea * (Data.ProjLength * 7.9 / 1000) -- Volume of the projectile as a cylinder * density of steel
 	Data.ShovePower  = 0.2
 	Data.PenArea     = Data.FrArea ^ ACF.PenAreaMod

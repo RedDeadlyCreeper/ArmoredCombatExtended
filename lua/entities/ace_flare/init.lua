@@ -37,9 +37,6 @@ function ENT:Initialize()
 
 	self:SetRenderMode( RENDERMODE_TRANSCOLOR )
 
-
-	self:SetColor( Color( 255, 255, 255, 1 ) )
-
 	table.insert( ACE.contraptionEnts, self )
 end
 

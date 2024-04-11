@@ -19,13 +19,15 @@ function Round.create( Gun, BulletData )
 
 		ent:SetPos( BulletData.Pos )
 		ent:SetAngles( BulletData.Flight:Angle() )
-		ent.Life = (BulletData.FillerMass or 1) / (0.4 * ACFM.FlareBurnMultiplier)
+		ent.Life = (BulletData.FillerMass or 1) / (0.4 * ACFM.FlareBurnMultiplier) * 1
 		ent:Spawn()
 		ent:SetOwner( Gun )
 		ent:CPPISetOwner( Gun:CPPIGetOwner())
+		ent:SetColor( Color( 0, 0, 2, 1 ) ) --Blue set to 1 for flare, set to 2 for chaff
 
 		local phys = ent:GetPhysicsObject()
-		phys:SetVelocity( BulletData.Flight )
+		phys:SetVelocity( BulletData.Flight * 0.1 )
+		--phys:EnableGravity(false)
 		local avgFac = 1 - (math.Rand(0.1,0.5) ^ 2)
 		ent.Heat = 0 --No thermal signiture for chaff.
 		ent.FirstHeat = ent.Heat
@@ -55,7 +57,7 @@ function Round.convert( _, PlayerData )
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	--Shell sturdiness calcs
-	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9 / 1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * ACF.HEDensity / 1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
+	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9 / 1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * 3.16 / 1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
 
@@ -76,7 +78,7 @@ function Round.convert( _, PlayerData )
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 75										--Base ricochet angle
 
-	Data.BurnRate = 0.4 * ACFM.FlareBurnMultiplier
+	Data.BurnRate = 0.6 * ACFM.FlareBurnMultiplier
 	Data.DistractChance = (2 / math.pi) * math.atan(0.4 * ACFM.FlareDistractMultiplier)
 	Data.BurnTime = Data.FillerMass / Data.BurnRate
 

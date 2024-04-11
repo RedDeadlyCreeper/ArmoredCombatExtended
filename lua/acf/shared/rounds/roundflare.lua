@@ -25,9 +25,10 @@ function Round.create( Gun, BulletData )
 		ent:Spawn()
 		ent:SetOwner( Gun )
 		ent:CPPISetOwner( Gun:CPPIGetOwner())
+		ent:SetColor( Color( 0, 0, 1, 1 ) ) --Blue set to 1 for flare
 
 		local phys = ent:GetPhysicsObject()
-		phys:SetVelocity( BulletData.Flight )
+		phys:SetVelocity( BulletData.Flight * 0.35 )
 		local avgFac = 1 - (math.Rand(0.1,0.5) ^2)
 		ent.Heat = (BulletData.FillerMass or 1) * 1368 * avgFac -- 1028.8 is 600 temperature for a standard 40mm flare. This is twice an aircraft moving at 300 mph. I've added some extra measure. 1.71 * temp needed.
 		ent.FirstHeat = ent.Heat
