@@ -26,7 +26,7 @@ function Round.create( Gun, BulletData )
 		ent:SetColor( Color( 0, 0, 2, 1 ) ) --Blue set to 1 for flare, set to 2 for chaff
 
 		local phys = ent:GetPhysicsObject()
-		phys:SetVelocity( BulletData.Flight * 0.1 )
+		phys:SetVelocity( BulletData.Flight * 0.125 )
 		--phys:EnableGravity(false)
 		local avgFac = 1 - (math.Rand(0.1,0.5) ^ 2)
 		ent.Heat = 0 --No thermal signiture for chaff.

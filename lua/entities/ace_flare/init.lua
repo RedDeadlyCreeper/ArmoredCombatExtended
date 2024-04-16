@@ -24,7 +24,7 @@ function ENT:Initialize()
 	if IsValid( phys ) then
 		phys:SetMass(3)
 		phys:EnableDrag( true )
-		phys:SetDragCoefficient( 50 )
+		phys:SetDragCoefficient( 120 )
 		phys:SetBuoyancyRatio( 2 )
 		phys:Wake()
 	end

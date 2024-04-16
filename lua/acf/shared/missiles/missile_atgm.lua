@@ -17,7 +17,7 @@ ACF_defineGunClass("ATGM", {
 -- The BGM-71E, a wire guided missile with medium anti-tank effectiveness.
 ACF_defineGun("BGM-71E ASM", {								-- id
 	name			= "BGM-71E Missile",
-	desc			= "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The BGM-71E missile is a lightweight, wire guided anti-tank munition. It can be used in both air-to-surface and surface-to-surface combat, making it a decent alternative for ground vehicles.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 115 m/s",
 	model			= "models/missiles/bgm_71e.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "ACE_MissileSmall",
@@ -30,7 +30,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 	modeldiameter	= 3 * 2.54,
 
 	round = {
-		model				= "models/missiles/bgm_71e.mdl",
+		rocketmdl			= "models/missiles/bgm_71e.mdl",
 		rackmdl				= "models/missiles/bgm_71e.mdl",
 		firedelay			= 2,
 		reloadspeed			= 1.5,
@@ -45,7 +45,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 25,							-- Acceleration in m/s.
+		thrust				= 37,							-- Acceleration in m/s.
 		burntime			= 7,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -86,7 +86,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 
 ACF_defineGun("9M113 ATGM", {									-- id
 	name			= "9M113 Konkurs Missile",
-	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 74 m/s",
 	model			= "models/missiles/arend/9m113.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "Rocket Motor ATGM",
@@ -99,7 +99,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 	modeldiameter	= 6, --Already in ammocrate units
 
 	round = {
-		model				= "models/missiles/arend/9m113.mdl",
+		rocketmdl				= "models/missiles/arend/9m113.mdl",
 		rackmdl				= "models/missiles/arend/9m113_folded.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 2.0,
@@ -114,7 +114,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 10,							-- Acceleration in m/s.
+		thrust				= 18,							-- Acceleration in m/s.
 		burntime			= 6,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -152,7 +152,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 
 ACF_defineGun("9M133 ASM", {									-- id
 	name			= "9M133 Kornet Missile",
-	desc			= "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The Kornet is a modern antitank missile, with good range and a very powerful warhead, but somewhat limited maneuverability.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 92 m/s",
 	model			= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "Rocket Motor ATGM",
@@ -165,7 +165,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 	modeldiameter	= 3 * 2.54, -- in cm
 
 	round = {
-		model				= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
+		rocketmdl				= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 		rackmdl				= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 		firedelay			= 4,
 		reloadspeed			= 2.0,
@@ -180,7 +180,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 		finefficiency		= 2.0,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 12,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 10,							-- Acceleration in m/s.
+		thrust				= 20,							-- Acceleration in m/s.
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -188,8 +188,8 @@ ACF_defineGun("9M133 ASM", {									-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 600,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.05,							-- Time in seconds for booster runtime
+		boostacceleration	= 95,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.2,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
@@ -221,9 +221,10 @@ ACF_defineGun("9M133 ASM", {									-- id
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
 ACF_defineGun("AT-3 ASM", { --id
 	name			= "AT-3 Sagger Missile",
-	desc			= "The AT-3 missile (9M14P1) is a short-range wire-guided anti-tank munition. While powerful and lightweight its speed will make you die of old age before you hit the target.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The AT-3 missile (9M14P1) is a short-range wire-guided anti-tank munition. While powerful and lightweight its speed will make you die of old age before you hit the target.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 52 m/s",
 	model			= "models/missiles/at3.mdl",
-	effect			= "ACE_MissileTiny",
+	effect			= "ACE_MotorTiny",
+	effectbooster	= "ACE_MotorTiny",
 	gunclass		= "ATGM",
 	rack			= "1xAT3RK",									-- Which rack to spawn this missile on?
 	length			= 84,										-- Used for the physics calculations
@@ -234,7 +235,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	bodydiameter     = 7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
-		model				= "models/missiles/at3.mdl",
+		rocketmdl				= "models/missiles/at3.mdl",
 		rackmdl				= "models/missiles/at3.mdl",
 		firedelay			= 2,
 		reloadspeed			= 1.5,
@@ -246,10 +247,10 @@ ACF_defineGun("AT-3 ASM", { --id
 		armour				= 13,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.6,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.7,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 60,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 7,							-- Acceleration in m/s.
+		thrust				= 5,							-- Acceleration in m/s.
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -257,8 +258,8 @@ ACF_defineGun("AT-3 ASM", { --id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0,							-- Time in seconds for booster runtime
+		boostacceleration	= 95,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.2,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
@@ -292,9 +293,10 @@ ACF_defineGun("AT-3 ASM", { --id
 
 ACF_defineGun("AT-2 ASM", { --id
 	name			= "AT-2 Fleyta Missile",
-	desc			= "The AT-2 Missile (9M17P) is a more powerful, yet light, Anti-Tank Missile, the big brother of the Sagger. Being agile, deliveries a powerful payload at the cost of being slower than the AT-3\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The AT-2 Missile (9M17P) is a more powerful, yet light, Anti-Tank Missile, the big brother of the Sagger. Being agile, deliveries a powerful payload at the cost of being slower than the AT-3\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 62 m/s",
 	model			= "models/missiles/at2.mdl",
-	effect			= "ACE_MissileTiny",
+	effect			= "ACE_MotorTiny",
+	effectbooster	= "ACE_MissileTiny",
 	gunclass		= "ATGM",
 	rack			= "1xRK",									-- Which rack to spawn this missile on?
 	length			= 115,										-- Used for the physics calculations
@@ -304,7 +306,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	modeldiameter	= 2.8 * 2.54,
 
 	round = {
-		model				= "models/missiles/at2.mdl",
+		rocketmdl				= "models/missiles/at2.mdl",
 		rackmdl				= "models/missiles/at2.mdl",
 		firedelay			= 2,
 		reloadspeed			= 1.5,
@@ -319,7 +321,7 @@ ACF_defineGun("AT-2 ASM", { --id
 		finefficiency		= 0.6,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 30,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 15,							-- Acceleration in m/s.
+		thrust				= 8,							-- Acceleration in m/s.
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -327,8 +329,8 @@ ACF_defineGun("AT-2 ASM", { --id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0,							-- Time in seconds for booster runtime
+		boostacceleration	= 95,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.2,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
@@ -360,7 +362,7 @@ ACF_defineGun("AT-2 ASM", { --id
 
 ACF_defineGun("FGM-148 ASM", {
 	name			= "FGM-148 Javelin Missile",
-	desc			= "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	desc			= "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 85 m/s",
 	model			= "models/mcace/Jevelinemissile.mdl",		-- model to spawn on menu
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MotorSmall",
@@ -373,7 +375,7 @@ ACF_defineGun("FGM-148 ASM", {
 	modeldiameter	= 3 * 2.54,
 
 	round = {
-		model				= "models/mcace/Jevelinemissile.mdl",
+		rocketmdl				= "models/mcace/Jevelinemissile.mdl",
 		rackmdl				= "models/mcace/Jevelinemissile.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 1.0,
@@ -402,7 +404,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.0005,						-- percent speed loss per second
+		dragcoef			= 0.00175,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
@@ -428,7 +430,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 ACF_defineGun("Spike-LR ASM", {
 	name			= "Spike LR Missile",
-	desc			= "A powerful multi-purpose Missile, being fast and agile but maneuverable enough to hit aircraft or tanks in top attack.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes",
+	desc			= "A powerful multi-purpose Missile, being fast and agile but maneuverable enough to hit aircraft or tanks in top attack.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes\nTop Speed: 102 m/s",
 	model			= "models/missiles/arend/spikelr.mdl",		-- model to spawn on menu
 	effect			= "ACE_MissileSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -441,7 +443,7 @@ ACF_defineGun("Spike-LR ASM", {
 	modeldiameter	= 7,--Already in ammocrate units
 
 	round = {
-		model				= "models/missiles/arend/spikelr.mdl",
+		rocketmdl				= "models/missiles/arend/spikelr.mdl",
 		rackmdl				= "models/missiles/arend/spikelr_closed.mdl",
 		firedelay			= 4,
 		reloadspeed			= 1.0,
@@ -503,7 +505,7 @@ ACF_defineGun("Spike-LR ASM", {
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("Ataka ASM", { --id
 	name			= "9M120 Ataka Missile",
-	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The 9M120 Ataka is a high-speed anti tank missile used by soviet helicopters and ground vehicles.  It has very limited maneuverability but excellent range and speed, and can be armed with HE and HEAT warheads.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 196 m/s",
 	model			= "models/missiles/9m120.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -516,7 +518,7 @@ ACF_defineGun("Ataka ASM", { --id
 	modeldiameter	= 3 * 2.54,
 
 	round = {
-		model				= "models/missiles/9m120.mdl",
+		rocketmdl				= "models/missiles/9m120.mdl",
 		rackmdl				= "models/missiles/9m120.mdl",
 		firedelay			= 4,
 		reloadspeed			= 1.0,
@@ -527,9 +529,9 @@ ACF_defineGun("Ataka ASM", { --id
 
 		armour				= 21,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 20,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 10,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 15,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		thrusterturnrate	= 5,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 50,							-- Acceleration in m/s.
 		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
@@ -573,7 +575,7 @@ ACF_defineGun("Ataka ASM", { --id
 -- The AGM-114, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("AGM-114 ASM", {						--id
 	name 			= "AGM-114 Hellfire Missile",
-	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	desc 			= "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 152 m/s",
 	model 			= "models/missiles/agm_114.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -587,7 +589,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	year			= 1985,
 
 	round = {
-		model				= "models/missiles/agm_114.mdl",
+		rocketmdl				= "models/missiles/agm_114.mdl",
 		rackmdl				= "models/missiles/agm_114.mdl",
 		firedelay			= 4,
 		reloadspeed			= 1.0,
@@ -598,26 +600,26 @@ ACF_defineGun("AGM-114 ASM", {						--id
 
 		armour				= 21,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 35,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 28,							-- Acceleration in m/s.
-		burntime			= 2.7,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 91,							-- Acceleration in m/s.
+		burntime			= 3.05,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 20,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 90,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0.35,							-- Time in seconds for booster runtime
+		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.001,						-- percent speed loss per second
+		dragcoef			= 0.004,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 0,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul				= math.sqrt(0.518)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
@@ -643,7 +645,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 -- The 9M120 Ataka, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("Vikhr ASM", { --id
 	name			= "9K121 Vikhr Missile",
-	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 207 m/s",
 	model			= "models/missiles/arend/9k121.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
@@ -656,7 +658,7 @@ ACF_defineGun("Vikhr ASM", { --id
 	modeldiameter	= 6,--Already in ammocrate units
 
 	round = {
-		model				= "models/missiles/arend/9k121.mdl",
+		rocketmdl				= "models/missiles/arend/9k121.mdl",
 		rackmdl				= "models/missiles/arend/9k121_folded.mdl",
 		firedelay			= 3,
 		reloadspeed			= 1.0,
@@ -671,7 +673,7 @@ ACF_defineGun("Vikhr ASM", { --id
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 15,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 30,							-- Acceleration in m/s.
+		thrust				= 120,							-- Acceleration in m/s.
 		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -685,7 +687,7 @@ ACF_defineGun("Vikhr ASM", { --id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.001,						-- percent speed loss per second
+		dragcoef			= 0.003,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 

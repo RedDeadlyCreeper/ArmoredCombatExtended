@@ -41,6 +41,7 @@ function ENT:Draw()
 	else --Not a flare
 		if CT > self.CutOffTime then
 			self:StopParticleEmission()
+			self.CutOffTime = math.huge
 		end
 	end
 

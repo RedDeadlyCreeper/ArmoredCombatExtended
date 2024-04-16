@@ -645,7 +645,7 @@ ACF_DefineRack("1x 9M113", {
 	year = 1970,
 	magsize = 1,
 	armour  = 18,
-	caliber = 15.2,
+	caliber = 13.5,
 
 	whitelistonly   = true,
 	protectmissile  = true,
