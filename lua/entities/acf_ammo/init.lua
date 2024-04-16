@@ -779,7 +779,7 @@ function ENT:Think()
 					Ammo.Ammo	= Ammo.Ammo + Transfert
 
 					Ammo.Supplied = true
-					Ammo.Entity:EmitSound( "weapons/shotgun/shotgun_reload" .. math.random(1,3) .. ".wav", 350, 100, 0.30 )
+					Ammo.Entity:EmitSound( "weapons/ar2/ar2_reload.wav", 511, 100, 1 )
 
 				end
 			end

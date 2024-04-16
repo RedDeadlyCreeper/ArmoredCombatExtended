@@ -25,9 +25,7 @@ Material.HEATresiliance = 3
 
 Material.HEresiliance	= 6
 
-
-Material.spallarmor	= 1
-Material.spallresiliance = 15
+Material.spallresist = 1.3
 
 Material.spallmult	= 0.01 --While spall can pierce rubber, Rubber itself should not really spall.
 Material.ArmorMul	= 0.05
@@ -69,8 +67,8 @@ if SERVER then
 
 
 			if Type == "Spall" then --Overrides effectiveness values if deflecting spall
-				specialeffectiveness = Material.spallarmor
-				specialresiliance = Material.spallresiliance
+				specialeffectiveness = Material.spallresist
+				specialresiliance = Material.spallresist
 			end
 
 			local DmgResist = 0.01 + math.min(caliber * 10 / Material.specialeffect, 5) * 10 --Caliber in mm / specialeffect. Makes HEAT shells with a larger jet shred rubber more.

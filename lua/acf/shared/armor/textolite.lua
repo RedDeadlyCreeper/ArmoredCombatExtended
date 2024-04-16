@@ -20,8 +20,7 @@ Material.resiliance           = 50
 Material.HEATresiliance       = 0.5
 Material.HEresiliance         = 0.75
 
-Material.spallarmor           = 1
-Material.spallresist          = 0.65
+Material.spallresist          = 1
 
 Material.spallmult            = 1.3
 Material.ArmorMul             = 0.23

@@ -96,7 +96,7 @@ net.Receive("ACF_RefillEffect", function()
 	local EntFrom, EntTo = ents.GetByIndex( net.ReadUInt(14) ), ents.GetByIndex( net.ReadUInt(14) )
 	if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
 
-	local Mdl = "models/munitions/round_100mm_shot.mdl"
+	local Mdl = "models/munitions/round_200mm.mdl"
 
 	EntFrom.RefillAmmoEffect = EntFrom.RefillAmmoEffect or {}
 	table.insert( EntFrom.RefillAmmoEffect, {EntFrom = EntFrom, EntTo = EntTo, Model = Mdl, StTime = SysTime()} )
