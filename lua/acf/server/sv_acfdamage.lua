@@ -513,7 +513,7 @@ end
 function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
 
 	local Temp_Filter = Filter
-	local spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, -HitVec, Filter, Caliber )
+	local _, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, -HitVec, Filter, Caliber )
 	table.Add( Temp_Filter , PEnts )
 
 	--Don't use it if it's not allowed to
