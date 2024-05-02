@@ -333,8 +333,8 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 		local WeightFactor = MatData.massMod or 1
 		-- local Max_Spall_Mass = 10
 
-		local Velocityfactor = 2
-		local Max_Spall_Vel = 3000
+		local Velocityfactor = 10
+		local Max_Spall_Vel = 7000
 		
 		local Max_Spalls = 128
 
@@ -348,7 +348,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 		local Spall = math.min(math.floor(Caliber * ACF.KEtoSpall * SpallMul * 5) * ACF.SpallMult, Max_Spalls)
 		local TotalWeight = (Spall / (Cal_In_MM * (PI / 180)))
 		local SpallWeight = ((TotalWeight / (Spall / 10)) + (ArmorMul + WeightFactor))
-		local SpallVel = ((KE ^ Velocityfactor) / SpallWeight)
+		local SpallVel = ((KE * Velocityfactor) / SpallWeight)
 		local SpallArea = (TotalWeight / SpallWeight)
 		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, Max_Spall_Vel)
 		
@@ -379,7 +379,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 			ACE.Spall[Index].mins	= Vector(0,0,0)
 			ACE.Spall[Index].maxs	= Vector(0,0,0)
 
-			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor)
+			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor, SpallVel)
 
 			-- little sound optimization
 			if i < math.max(math.Round(Spall / 2), 1) then
@@ -390,8 +390,131 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 	end
 end
 
+--Dedicated function for HESH spalling
+function ACF_PropShockwave( HitPos, HitVec, Filter, Caliber )
+	--Don't even bother at calculating something that doesn't exist
+	if table.IsEmpty(Filter) then return end
+	--General
+	local FindEnd	= true			--marked for initial loop
+	local iteration	= 0				--since while has not index
+	local EntsToHit	= Filter	--Used for the second tracer, where it tells what ents must hit
+	--HitPos
+	local HitFronts	= {}				--Any tracefronts hitpos will be stored here
+	local HitBacks	= {}				--Any traceback hitpos will be stored here
+	--Distances. Store any distance
+	local FrontDists	= {}
+	local BackDists	= {}
+	local Normals	= {}
+	--Results
+	local fNormal	= Vector(0,0,0)
+	local finalpos
+	local TotalArmor	= {}
+	--Tracefront general data--
+	local TrFront	= {}
+	TrFront.start	= HitPos
+	TrFront.endpos	= HitPos + HitVec:GetNormalized() * Caliber * 1.5
+	TrFront.ignoreworld = true
+	TrFront.filter	= {}
+	--Traceback general data--
+	local TrBack		= {}
+	TrBack.start		= HitPos + HitVec:GetNormalized() * Caliber * 1.5
+	TrBack.endpos	= HitPos
+	TrBack.ignoreworld  = true
+	TrBack.filter	= function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then return true end end
+	while FindEnd do
+		iteration = iteration + 1
+		--print('iteration #' .. iteration)
+		--In case of total failure, this loop is limited to 1000 iterations, don't make me increase it even more.
+		if iteration >= 1000 then FindEnd = false end
+		--================-TRACEFRONT-==================-
+		local tracefront = util.TraceHull( TrFront )
+		--insert the hitpos here
+		local HitFront = tracefront.HitPos
+		table.insert( HitFronts, HitFront )
+		--distance between the initial hit and hitpos of front plate
+		local distToFront = math.abs( (HitPos - HitFront):Length() )
+		table.insert( FrontDists, distToFront)
+		--TraceFront's armor entity
+		local Armour = tracefront.Entity.ACF and tracefront.Entity.ACF.Armour or 0
+		--Code executed once its scanning the 2nd prop
+		if iteration > 1 then
+			--check if they are totally overlapped
+			if math.Round(FrontDists[iteration-1]) ~= math.Round(FrontDists[iteration] ) then
+				--distance between the start of ent1 and end of ent2
+				local space = math.abs( (HitFronts[iteration] - HitBacks[iteration - 1]):Length() )
+				--prop's material
+				local mat = tracefront.Entity.ACF and tracefront.Entity.ACF.Material or "RHA"
+				local MatData = ACE_GetMaterialData( mat )
+				local Hasvoid = false
+				local NotOverlap = false
+				--print("DATA TABLE - DONT FUCKING DELETE")
+				--print('distToFront: ' .. distToFront)
+				--print('BackDists[iteration - 1]: ' .. BackDists[iteration - 1])
+				--print('DISTS DIFF: ' .. distToFront - BackDists[iteration - 1])
+				--check if we have void
+				if space > 1 then
+					Hasvoid = true
+				end
+				--check if we dont have props semi-overlapped
+				if distToFront > BackDists[iteration - 1] then
+					NotOverlap = true
+				end
+				--check if we have spaced armor, spall liners ahead, if so, end here
+				if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACE.CritEnts[ tracefront.Entity:GetClass() ]) or MatData.Stopshock then
+					--print("stopping")
+					FindEnd	= false
+					finalpos	= HitBacks[iteration - 1] + HitVec:GetNormalized() * 0.1
+					fNormal	= Normals[iteration - 1]
+					--print("iteration #' .. iteration .. ' / FINISHED!")
+					break
+				end
+			end
+			--start inserting new ents to the table when iteration pass 1, so we don't insert the already inserted prop (first one)
+			table.insert( EntsToHit, tracefront.Entity)
+		end
+		--Filter this ent from being processed again in the next checks
+		table.insert( TrFront.filter, tracefront.Entity )
+		--Add the armor value to table
+		table.insert( TotalArmor, Armour )
+		--================-TRACEBACK-==================
+		local traceback = util.TraceHull( TrBack )
+		--insert the hitpos here
+		local HitBack = traceback.HitPos
+		table.insert( HitBacks, HitBack )
+		--store the dist between the backhit and the hitvec
+		local distToBack = math.abs( (HitPos - HitBack):Length() )
+		table.insert( BackDists, distToBack)
+		table.insert( Normals, traceback.HitNormal )
+		--flag this iteration as lost
+		if not tracefront.Hit then
+			--print("[ACE|WARN]- TRACE HAS BROKEN!")
+			FindEnd	= false
+			finalpos	= HitBack + HitVec:GetNormalized() * 0.1
+			fNormal	= Normals[iteration]
+			--print("iteration #' .. iteration .. ' / FINISHED")
+			break
+		end
+		--for red traceback
+		--debugoverlay.Line( traceback.StartPos + Vector(0,0,#EntsToHit * 0.1), traceback.HitPos + Vector(0,0,#EntsToHit * 0.1), 20 , Color(math.random(100,255),0,0) )
+		--for green tracefront
+		--debugoverlay.Line( tracefront.StartPos + Vector(0,0,#EntsToHit * 0.1), tracefront.HitPos + Vector(0,0,#EntsToHit * 0.1), 20 , Color(0,math.random(100,255),0) )
+	end
+	local ArmorSum = 0
+	for i = 1, #TotalArmor do
+		--print("Armor prop count: ' .. i..", Armor value: ' .. TotalArmor[i])
+		ArmorSum = ArmorSum + TotalArmor[i]
+	end
+	--print(ArmorSum)
+	return finalpos, ArmorSum, TrFront.filter, fNormal
+end
+
+
 --Handles HESH spalling
 function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
+
+	local Temp_Filter = Filter
+	local _, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, -HitVec, Filter, Caliber )
+	table.Add( Temp_Filter , PEnts )
 
 	--Don't use it if it's not allowed to
 	if not ACF.Spalling then return end
@@ -427,7 +550,7 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 		local Spall = math.min(math.floor(Caliber * HEFiller * SpallMul * 5) * ACF.SpallMult, Max_Spalls)
 		local TotalWeight = (Spall / (Cal_In_MM * (PI / 180)))
 		local SpallWeight = ((TotalWeight / (Spall / 10)) + (ArmorMul + WeightFactor))
-		local SpallVel = ((HEFiller ^ Velocityfactor) / SpallWeight)
+		local SpallVel = ((HEFiller * Velocityfactor) / SpallWeight)
 		local SpallArea = (TotalWeight / SpallWeight)
 		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, Max_Spall_Vel)
 		
@@ -440,6 +563,8 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 		-- print("HESH: " .. Spall)
 		-- print("VEL: " .. SpallVel)
 
+		-- PrintTable(Filter)
+		
 		for i = 1,Spall do
 
 			ACE.CurSpallIndex = ACE.CurSpallIndex + 1
@@ -449,15 +574,13 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 
 			-- Normal Trace creation
 			local Index = ACE.CurSpallIndex
-
-			ACE.Spall[Index] = {}
-			ACE.Spall[Index].start  = HitPos
-			ACE.Spall[Index].endpos = HitPos + ( HitVec:GetNormalized() + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVel / 8, 600 ) --Spall endtrace. Used to determine spread and the spall trace length. Only adjust the value in the max to determine the minimum distance spall will travel. 600 should be fine.
-			ACE.Spall[Index].filter = table.Copy(Filter)
-			ACE.Spall[Index].mins	= Vector(0,0,0)
-			ACE.Spall[Index].maxs	= Vector(0,0,0)
-
-			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor)
+			
+			ACE.Spall[Index]			= {}
+			ACE.Spall[Index].start	= HitPos
+			ACE.Spall[Index].endpos	= HitPos + ((fNormal * 2500 + HitVec):GetNormalized() + VectorRand() / 3):GetNormalized() * math.max( SpallVel / 8, 600) --I got bored of spall not going across the tank
+			ACE.Spall[Index].filter	= table.Copy(Temp_Filter)
+			
+			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor, SpallVel)
 
 			--little sound optimization
 			if i < math.max(math.Round(Spall / 2), 1) then
@@ -469,8 +592,9 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 end
 
 
+
 --Spall trace core. For HESH and normal spalling
-function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
+function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor, SpallVelocity )
 
 	local Entity_Crit_Hit_Factor = 1.01
 
@@ -485,16 +609,25 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 
 			if IsValid(phys) and ACF_CheckClips( SpallRes.Entity, SpallRes.HitPos ) then
 
-				table.insert( ACE.Spall[Index].filter , SpallRes.Entity )
+				local Temp_Filter = table.Copy(ACE.Spall[Index].filter)
+				table.insert( Temp_Filter , SpallRes.Entity )
 
-				ACF_SpallTrace( SpallRes.StartPos , Index , SpallEnergy , SpallArea , Inflictor, Material )
+				ACE.Spall[Index] = {}
+				ACE.Spall[Index].start  = SpallRes.HitPos
+				ACE.Spall[Index].endpos = SpallRes.HitPos + ( SpallRes.HitNormal + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVelocity / 8, 600)
+				ACE.Spall[Index].filter = Temp_Filter
+				ACE.Spall[Index].mins	= Vector(0,0,0)
+				ACE.Spall[Index].maxs	= Vector(0,0,0)
+			
+				ACF_SpallTrace( SpallRes.HitPos , Index , SpallEnergy , SpallArea , Inflictor, SpallVelocity )
 				return
 			end
 
 		end
 
 		-- Get the spalling hitAngle
-		--local Angle		= ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
+		local Angle		= ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
+		-- print("ANGLE: " .. Angle)
 
 		local Mat		= SpallRes.Entity.ACF.Material or "RHA"
 		local MatData	= ACE_GetMaterialData( Mat )
@@ -523,42 +656,50 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 		-- print(SpallEnergy.Penetration)
 
 		-- Applies the damage to the impacted entity
-		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallArea , 0 , Inflictor, 0, nil, "Spall") --Angle replaced with 0 for inconsistent spall
+		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallArea , Angle , Inflictor, 0, nil, "Spall") --Angle replaced with 0 for inconsistent spall
 
 		-- If it's able to destroy it, kill it and filter it
 		if HitRes.Kill then
 			local Debris = ACF_APKill( SpallRes.Entity , HitVec:GetNormalized() , SpallEnergy.Kinetic )
 			if IsValid(Debris) then
 				table.insert( ACE.Spall[Index].filter , Debris )
-				ACF_SpallTrace( SpallRes.HitPos , Index , SpallEnergy , SpallArea , Inflictor, Material )
+				ACF_SpallTrace( SpallRes.HitPos , Index , SpallEnergy , SpallArea , Inflictor, SpallVelocity )
 			end
 		end
 
 		-- Applies a decal
 		util.Decal("GunShot1",SpallRes.StartPos, SpallRes.HitPos, ACE.Spall[Index].filter )
---[[
+
 		-- The entity was penetrated --Disabled since penetration values are not real
 		if HitRes.Overkill > 0 then
 
-			table.insert( ACE.Spall[Index].filter , SpallRes.Entity )
+			local Temp_Filter = table.Copy(ACE.Spall[Index].filter)
+			table.insert( Temp_Filter , SpallRes.Entity )
+				
+			ACE.Spall[Index] = {}
+			ACE.Spall[Index].start  = SpallRes.HitPos
+			ACE.Spall[Index].endpos = SpallRes.HitPos + ( SpallRes.HitNormal + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVelocity / 8, 600)
+			ACE.Spall[Index].filter = Temp_Filter
+			ACE.Spall[Index].mins	= Vector(0,0,0)
+			ACE.Spall[Index].maxs	= Vector(0,0,0)
+			
+			SpallRes = util.TraceLine(ACE.Spall[Index])
 
-			-- Reduces the current SpallEnergy data for the next entity to hit
-			SpallEnergy.Penetration = SpallEnergy.Penetration * (1-HitRes.Loss)
-			SpallEnergy.Momentum = SpallEnergy.Momentum * (1-HitRes.Loss)
-
+			debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 30 , Color(0,0,255), true )
+			-- Blue trace means spall trace that overpenned and killed something.
+			
 			-- Retry
-			ACF_SpallTrace( SpallRes.HitPos , Index , SpallEnergy , SpallArea , Inflictor, Material )
-
-			debugoverlay.Line( SpallRes.StartPos + Vector(2,0,0), SpallRes.HitPos + Vector(2,0,0), 10 , Color(255,255,0), true )
-
+			ACF_SpallTrace( SpallRes.HitPos , Index , SpallEnergy , SpallArea , Inflictor, SpallVelocity )
 			return
+		else 
+			debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 30 , Color(255,0,0), true )	
+			-- Red trace means spall trace that did hit something.
 		end
-]]
-		debugoverlay.Line( SpallRes.StartPos + Vector(1,0,0), SpallRes.HitPos + Vector(1,0,0), 10 , Color(255,0,0), true )
 
+	else
+		debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 30 , Color(0,255,0), true )
+		-- Green trace means spall trace that doesn't hit something.
 	end
-
-	debugoverlay.Line( SpallRes.StartPos, SpallRes.HitPos, 10 , Color(0,255,0), true )
 end
 
 --Calculates the vector of the ricochet of a round upon impact at a set angle
