@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/bombs/glide250"
+	
+	$halflambert 			1
+	$blendtintbybasealpha		1
+}
+
+

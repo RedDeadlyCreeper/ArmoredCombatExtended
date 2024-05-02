@@ -334,7 +334,7 @@ ACF_defineGun("100kgGBOMB", {					-- id
 ACF_defineGun("250kgGBOMB", {					-- id
 	name             = "250kg Glide Bomb",
 	desc             = "A heavy 500lb bomb, fitted with fins for a gliding trajectory better suited to striking point targets.",
-	model            = "models/missiles/fab250.mdl",
+	model            = "models/bombs/glide250.mdl",
 	gunclass         = "BOMB",
 	rack             = "1xRK",					-- Which rack to spawn this missile on?
 	length           = 165,
@@ -345,8 +345,8 @@ ACF_defineGun("250kgGBOMB", {					-- id
 	bodydiameter     = 16.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
-		rocketmdl			= "models/missiles/fab250.mdl",
-		rackmdl				= "models/missiles/fab250.mdl",
+		rocketmdl			= "models/bombs/glide250.mdl",
+		rackmdl				= "models/bombs/glide250.mdl",
 		firedelay			= 0.1,
 		reloadspeed			= 0.3,
 		reloaddelay			= 50.0,
