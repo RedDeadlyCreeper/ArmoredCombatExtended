@@ -55,6 +55,7 @@ function ACF_Activate( Entity , Recalc )
 
 	local Count
 	local PhysObj = Entity:GetPhysicsObject()
+	Entity.ACF.PhysObj = PhysObj
 
 	if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
 	if PhysObj:IsValid() and Count and Count > 100 then
@@ -118,7 +119,7 @@ function ACF_Check( Entity )
 
 	if not Entity.ACF or (Entity.ACF and isnumber(Entity.ACF.Material)) then
 		ACF_Activate( Entity )
-	elseif Entity.ACF.Mass ~= physobj:GetMass() then
+	elseif Entity.ACF.Mass ~= physobj:GetMass() or (not IsValid(Entity.ACF.PhysObj) or Entity.ACF.PhysObj ~= physobj) then
 		ACF_Activate( Entity , true )
 	end
 
