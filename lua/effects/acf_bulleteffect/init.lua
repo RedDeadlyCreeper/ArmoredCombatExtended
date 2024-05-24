@@ -199,7 +199,7 @@ local function CanWhistle( Bullet )
 	local BulSpeed = Bullet.SimFlight:Length()
 
 	if BulSpeed < 50 then return false end
-	if not ACE_SInDistance( Bullet.SimPos, 1 * BulSpeed ) then return false end
+	if not ACE_SInDistance( Bullet.SimPos, math.min(BulSpeed, 5000)) then return false end
 
 	if ACE_Approaching( Bullet.SimPos, Bullet.SimFlight ) > 0 then return false end --Shell is moving away.
 

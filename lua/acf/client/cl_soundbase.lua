@@ -693,12 +693,16 @@ do
 
 	-- running all the sound events
 	hook.Add("Think", "ACE_Think_SpeedOfSound", function()
-		for index, event in ipairs(SpeedOfSoundEvents) do
-			if event.Time < RealTime() then
-				event:OnArrived()
-				event:Play()
+		for i = #SpeedOfSoundEvents, 1, -1 do -- iterate backwards to ensure we can remove elements properly
+			local event = SpeedOfSoundEvents[i]
 
-				table.remove(SpeedOfSoundEvents, index)
+			if event.Time < RealTime() then
+				if event.Sound then
+					event:OnArrived()
+					event:Play()
+				end
+
+				table.remove(SpeedOfSoundEvents, i)
 			end
 		end
 	end)
