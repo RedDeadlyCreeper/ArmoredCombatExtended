@@ -175,7 +175,7 @@ end
 function Round.endeffect( _, Bullet )
 
 	local Spall = EffectData()
-		Spall:SetEntity( Bullet.Crate )
+		Spall:SetEntity( Bullet.Gun )
 		Spall:SetOrigin( Bullet.SimPos )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 		Spall:SetScale( Bullet.SimFlight:Length() )
@@ -188,7 +188,7 @@ end
 function Round.pierceeffect( _, Bullet )
 
 	local Spall = EffectData()
-		Spall:SetEntity( Bullet.Crate )
+		Spall:SetEntity( Bullet.Gun )
 		Spall:SetOrigin( Bullet.SimPos )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 		Spall:SetScale( Bullet.SimFlight:Length() )
@@ -201,7 +201,7 @@ end
 function Round.ricocheteffect( _, Bullet )
 
 	local Spall = EffectData()
-		Spall:SetEntity( Bullet.Crate )
+		Spall:SetEntity( Bullet.Gun )
 		Spall:SetOrigin( Bullet.SimPos )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 		Spall:SetScale( Bullet.SimFlight:Length() )

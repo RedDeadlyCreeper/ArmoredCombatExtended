@@ -594,9 +594,6 @@ do
 		self:SetNWString( "Ammo", self.Ammo )
 		self:SetNWString( "WireName", WireName )
 
-		self.NetworkData = ACF.RoundTypes[self.BulletData.Type].network
-		self:NetworkData( self.BulletData )
-
 		self:UpdateOverlayText()
 
 	end
