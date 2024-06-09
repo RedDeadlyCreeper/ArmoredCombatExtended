@@ -3,6 +3,8 @@ include("shared.lua")
 
 --Shamefully stolen from lua rollercoaster. I'M SO SORRY. I HAD TO.
 
+killicon.Add("acf_ammo", "HUD/killicons/acf_ammo", ACF.KillIconColor)
+
 local function Bezier( a, b, c, d, t )
 	local ab,bc,cd,abbc,bccd
 

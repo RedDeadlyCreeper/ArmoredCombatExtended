@@ -3,6 +3,8 @@ include("shared.lua")
 
 local ACF_GunInfoWhileSeated = CreateClientConVar("ACF_GunInfoWhileSeated", 0, true, false)
 
+killicon.Add("acf_gun", "HUD/killicons/acf_gun", ACF.KillIconColor)
+
 function ENT:Initialize()
 
 	self.BaseClass.Initialize( self )

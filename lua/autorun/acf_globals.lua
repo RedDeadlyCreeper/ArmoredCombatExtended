@@ -148,6 +148,9 @@ ACF.SpallMult           = 1
 
 ACF.MissileVelocityMul	= 3					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
 
+if CLIENT then
+	ACF.KillIconColor	= Color(200, 200, 48)
+end
 
 --Math in globals????
 
