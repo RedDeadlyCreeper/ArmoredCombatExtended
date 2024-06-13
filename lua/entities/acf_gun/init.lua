@@ -933,6 +933,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 
 	local AmmoEnt = self:FindNextCrate()
 	local curTime = CurTime()
+	local oldBulletData = self.BulletData
 
 	if AmmoEnt and AmmoEnt.Legal then
 		AmmoEnt.Ammo = AmmoEnt.Ammo - 1
@@ -1013,6 +1014,12 @@ function ENT:LoadAmmo( AddTime, Reload )
 
 		self.NextFire = curTime + reloadTime
 		self.LastLoadDuration = reloadTime
+
+		-- Check if the round type has changed, and if so, update the network data
+		if not oldBulletData or oldBulletData.Type ~= self.BulletData.Type then
+			self.NetworkData = ACF.RoundTypes[self.BulletData.Type].network
+			self:NetworkData( self.BulletData )
+		end
 
 		self:Think()
 		return true

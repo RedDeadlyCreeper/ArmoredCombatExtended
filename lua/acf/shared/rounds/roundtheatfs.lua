@@ -342,7 +342,7 @@ end
 function Round.endeffect( _, Bullet )
 
 	local Impact = EffectData()
-		Impact:SetEntity( Bullet.Crate )
+		Impact:SetEntity( Bullet.Gun )
 		Impact:SetOrigin( Bullet.SimPos )
 		Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
 		Impact:SetScale( Bullet.SimFlight:Length() )
@@ -356,7 +356,7 @@ function Round.pierceeffect( Effect, Bullet )
 	if DetCount > 0 then
 
 		local Spall = EffectData()
-			Spall:SetEntity( Bullet.Crate )
+			Spall:SetEntity( Bullet.Gun )
 			Spall:SetOrigin( Bullet.SimPos )
 			Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 			Spall:SetScale( Bullet.SimFlight:Length() )
