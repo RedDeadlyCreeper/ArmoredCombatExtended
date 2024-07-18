@@ -90,3 +90,63 @@ ACF_DefineEngine( "15.8-B6", {
 	idlerpm = 620,
 	limitrpm = 4900
 } )
+
+ACF_DefineEngine( "13.6-B6", {
+	name = "13.6L Flat 6 Multifuel",
+	desc = "5TDF. Compact flat tank engine, with great power reserve, but with comparably high consumption. T-64 classic.",
+	model = "models/engines/b6med.mdl",
+	sound = "acf_extra/vehiclefx/engines/gnomefather/t64.wav",
+	category = "B6",
+	fuel = "Multifuel",
+	enginetype = "GenericDiesel",
+	weight = 1040,
+	torque = 2213,
+	flywheelmass = 6,
+	idlerpm = 600,
+	limitrpm = 2800
+} )
+
+ACF_DefineEngine( "20.7-B6", {
+	name = "20.7L Flat 6 Multifuel",
+	desc = "6TD-1. Not so large flat tank engine, with great power reserve, but with comparably high consumption.",
+	model = "models/engines/b6med.mdl",
+	sound = "acf_extra/vehiclefx/engines/gnomefather/t64.wav",
+	category = "B6",
+	fuel = "Multifuel",
+	enginetype = "GenericDiesel",
+	weight = 1180,
+	torque = 2678,
+	flywheelmass = 6.4,
+	idlerpm = 600,
+	limitrpm = 2800
+} )
+
+ACF_DefineEngine( "22.9-B6", {
+	name = "22.9L Flat 6 Multifuel",
+	desc = "6TD-2E. Large flat tank engine, with big power reserve, but with comparably high consumption",
+	model = "models/engines/b6large.mdl",
+	sound = "acf_extra/vehiclefx/engines/gnomefather/t64.wav",
+	category = "B6",
+	fuel = "Multifuel",
+	enginetype = "GenericDiesel",
+	weight = 1180,
+	torque = 3720,
+	flywheelmass = 6.4,
+	idlerpm = 600,
+	limitrpm = 2700
+} )
+
+ACF_DefineEngine( "25.9-B6", {
+	name = "25.9L Flat 6 Multifuel",
+	desc = "6TD-3, designed by Kharkiv. Large flat tank engine, with really big power reserve, but with monstrous consumption",
+	model = "models/engines/b6large.mdl",
+	sound = "acf_extra/vehiclefx/engines/gnomefather/t64.wav",
+	category = "B6",
+	fuel = "Multifuel",
+	enginetype = "GenericDiesel",
+	weight = 1220,
+	torque = 4575,
+	flywheelmass = 6.6,
+	idlerpm = 600,
+	limitrpm = 2800
+} )
