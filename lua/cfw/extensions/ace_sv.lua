@@ -1,4 +1,4 @@
-local CLASS = CFW.classes.contraption
+local CLASS = CFW.Classes.Contraption
 if CLIENT then return end -- CFW's loader will also load this file on the client when in a singleplayer game for some reason
 
 TraceLine = util.TraceLine
