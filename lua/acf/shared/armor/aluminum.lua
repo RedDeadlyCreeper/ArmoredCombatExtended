@@ -11,7 +11,7 @@ Material.massMod		= 0.221
 Material.curve		= 0.93
 
 Material.effectiveness  = 0.34
-Material.resiliance	= 1.05
+Material.resiliance	= 2
 Material.HEATMul		= 5 --Originally 80. Someone REALLY hated aluminum against HEAT.
 
 Material.spallresist	= 1.02
