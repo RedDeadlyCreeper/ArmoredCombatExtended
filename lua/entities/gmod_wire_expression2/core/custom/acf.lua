@@ -1240,7 +1240,7 @@ do
 
 	-- Returns the max health of an entity
 	[nodiscard]
-	e2function number entity:acfPropMaxHealth()
+	e2function number entity:acfPropHealthMax()
 		if not validPhysics(this) then return self:throw("Entity is not valid", 0) end
 		if restrictInfo(self.player, this) then return 0 end
 		if not this.ACF then
@@ -1254,7 +1254,7 @@ do
 
 	-- Returns the max armor of an entity
 	[nodiscard]
-	e2function number entity:acfPropMaxArmor()
+	e2function number entity:acfPropArmorMax()
 		if not validPhysics(this) then return self:throw("Entity is not valid", 0) end
 		if restrictInfo(self.player, this) then return 0 end
 		if not this.ACF then
