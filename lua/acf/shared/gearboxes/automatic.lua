@@ -40,6 +40,7 @@ local ShiftL = 0.5
 local blurb = "\n\nAutomatics are controlled by shifting into either forward or reverse drive. In forward drive, the automatic will choose the appropriate gearing based the upshift speed setting for each gear."
 blurb = blurb .. " For climbing inclines, automatics have an input to prevent upshifts. There's also an input for adjusting the shiftpoints, if for example you're driving with less throttle and want to shift earlier."
 blurb = blurb .. " However, automatics are significantly heavier than their manual counterparts, and lose a bit of output torque due to inefficiency."
+blurb = blurb .. "\n\nThe gearbox reads the contraption speed, that is obtained directly from the gearbox. If the gearbox is parented, the speed will be retrieved from the parent's root instead."
 --hold gear, shift scale, less efficient
 -- 3 Speed
 -- Inline
