@@ -3,10 +3,6 @@ Initializes the effect. The data is a table of data
 which was passed from the server.
 ---------------------------------------------------------]]
 
-local function GetParticleMul()
-	return math.max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
-end
-
 function EFFECT:Init( data )
 
 	self.HitWater = false
@@ -16,7 +12,6 @@ function EFFECT:Init( data )
 	self.DirVec        = data:GetNormal()
 	self.Radius        = math.max( data:GetRadius()  / 39.4 ,1)
 	self.Emitter       = ParticleEmitter( self.Origin )
-	self.ParticleMul   = GetParticleMul()
 
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius * 0.1
@@ -37,13 +32,12 @@ function EFFECT:Init( data )
 		end
 	end
 
-	if Ground.HitNonWorld then --Overide with ACE prop material
+	--Overide with ACE prop material
+	if Ground.HitNonWorld then 
 		Mat = Mat
-		--self.HitNorm = -self.HitNorm
-		--self.DirVec = -self.DirVec
-		--local TEnt = Ground.Entity
-			--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
-			--TODO: Add clienside way to get ACF Material
+
+		--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
+		--TODO: Add clienside way to get ACF Material
 		MatVal = "Metal"
 	end
 
@@ -64,7 +58,6 @@ function EFFECT:Init( data )
 			self:Dirt( SMKColor )
 		else -- Nonspecific
 			self:Dirt( SMKColor )
-			--self:Concrete( SMKColor )
 		end
 	end
 
@@ -91,15 +84,11 @@ function EFFECT:Init( data )
 
 	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
-
 	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
-
-	--if PlayerDist < self.Radius * 10 and not LocalPlayer():HasGodMode() then
-		if PlayerDist < self.Radius * 10 then
+	if PlayerDist < self.Radius * 10 then
 		local Amp          = math.min(self.Radius * 0.5 / math.max(PlayerDist,1),40)
 		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, self.Radius / 7.5, 0 , true)
 	end
-
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
@@ -110,37 +99,17 @@ function EFFECT:ExplosionSmall()
 	if not self.Emitter then return end
 
 	local Radius = self.Radius
-	local PMul = self.ParticleMul * 0.5
-
-	--local RandColor = 0
-	--local WaterColor = Color(255,255,255,100)
-
-	--Radius Debugging Circle
-	--[[
-	local Test = Radius * 1.3 * 0 --1.3 for lethal radius. 1.0 for Indicated radius of HE
-	local B = self.Emitter:Add( "effects/splashwake3", self.Origin + Vector(0,0,0) )
-
-	if B then
-		B:SetLifeTime( 0 )
-		B:SetDieTime( 1 )
-		B:SetStartAlpha( 255 )
-		B:SetEndAlpha( 255 )
-		B:SetStartSize( 20.915 * Test )
-		B:SetEndSize( 20.915 * Test )
-		B:SetColor( 255, 255, 255 )
-	end
-	]]--
-
+	local PMul = 0.5
 	local Glow = self.Emitter:Add( "sprites/orangeflare1", self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
 	if Glow then
-			Glow:SetLifeTime( 0 )
-			Glow:SetDieTime( 0.15 )
-			Glow:SetStartAlpha( 150 )
-			Glow:SetEndAlpha( 30 )
-			Glow:SetStartSize( 1.5 * Radius )
-			Glow:SetEndSize( 97.5 * Radius  )
-			Glow:SetColor( 255, 225, 225 )
+		Glow:SetLifeTime( 0 )
+		Glow:SetDieTime( 0.15 )
+		Glow:SetStartAlpha( 150 )
+		Glow:SetEndAlpha( 30 )
+		Glow:SetStartSize( 1.5 * Radius )
+		Glow:SetEndSize( 97.5 * Radius  )
+		Glow:SetColor( 255, 225, 225 )
 	end
 
 	local Flash = self.Emitter:Add("effects/fire_cloud" .. math.random(1,2), self.Origin - self.DirVec * (25 + 1.5 * Radius))
@@ -157,8 +126,7 @@ function EFFECT:ExplosionSmall()
 		Flash:SetLighting( false )
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius * 6, 3, 600 ) * PMul )
-
+	local ParticleCount = math.ceil( math.Clamp( Radius * 6, 3, 600 ) * PMul )
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
@@ -185,7 +153,6 @@ function EFFECT:ExplosionSmall()
 	end
 
 	ParticleCount = math.ceil( math.Clamp( Radius * 10, 3, 600 ) * PMul )
-
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/splash4", self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
@@ -212,7 +179,6 @@ function EFFECT:ExplosionSmall()
 	end
 
 	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 5)
-
 	if Dust then
 		Dust:SetLifeTime(0)
 		Dust:SetDieTime(0.2)
@@ -227,7 +193,6 @@ function EFFECT:ExplosionSmall()
 	end
 
 	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 5)
-
 	if Dust then
 		Dust:SetLifeTime(-0.15)
 		Dust:SetDieTime(0.3)
@@ -240,7 +205,6 @@ function EFFECT:ExplosionSmall()
 		Dust:SetAirResistance(15)
 		Dust:SetColor(50, 50, 50)
 	end
-
 end
 
 function EFFECT:ExplosionMedium()
@@ -248,10 +212,7 @@ function EFFECT:ExplosionMedium()
 	if not self.Emitter then return end
 
 	local Radius = self.Radius
-	local PMul = self.ParticleMul * 0.5
-
-	--local RandColor = 0
-	--local WaterColor = Color(255,255,255,100)
+	local PMul = 0.5
 
 	--Radius Debugging Circle
 
@@ -271,25 +232,25 @@ function EFFECT:ExplosionMedium()
 	local Glow = self.Emitter:Add( "sprites/orangeflare1", self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
 	if Glow then
-			Glow:SetLifeTime( 0 )
-			Glow:SetDieTime( 0.2 )
-			Glow:SetStartAlpha( 200 )
-			Glow:SetEndAlpha( 30 )
-			Glow:SetStartSize( 1.5 * Radius )
-			Glow:SetEndSize( 110 * Radius  )
-			Glow:SetColor( 255, 225, 225 )
+		Glow:SetLifeTime( 0 )
+		Glow:SetDieTime( 0.2 )
+		Glow:SetStartAlpha( 200 )
+		Glow:SetEndAlpha( 30 )
+		Glow:SetStartSize( 1.5 * Radius )
+		Glow:SetEndSize( 110 * Radius  )
+		Glow:SetColor( 255, 225, 225 )
 	end
 
 	local Glow = self.Emitter:Add( "effects/yellowflare", self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
 	if Glow then
-			Glow:SetLifeTime( 0 )
-			Glow:SetDieTime( 0.45 )
-			Glow:SetStartAlpha( 100 )
-			Glow:SetEndAlpha( 0 )
-			Glow:SetStartSize( 1.5 * Radius )
-			Glow:SetEndSize( 130 * Radius  )
-			Glow:SetColor( 255, 255, 255 )
+		Glow:SetLifeTime( 0 )
+		Glow:SetDieTime( 0.45 )
+		Glow:SetStartAlpha( 100 )
+		Glow:SetEndAlpha( 0 )
+		Glow:SetStartSize( 1.5 * Radius )
+		Glow:SetEndSize( 130 * Radius  )
+		Glow:SetColor( 255, 255, 255 )
 	end
 
 	ParticleCount = math.ceil( math.Clamp( Radius * 5, 3, 600 ) * PMul )
@@ -434,7 +395,6 @@ function EFFECT:ExplosionMedium()
 			Flash:SetColor(50 + ColorRandom.x, 50 + ColorRandom.y, 50 + ColorRandom.z)
 		end
 	end
-
 end
 
 
@@ -442,7 +402,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local Radius     = (1-Ground.Fraction) * self.Radius
 	local Density    = Radius
 	local Angle      = self.HitNormal:Angle()
@@ -465,46 +425,11 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
 			Smoke:SetAirResistance( 200 )
 			Smoke:SetCollide( true )
-
-			--local SMKColor = math.random( 0 , 50 )
-			--Smoke:SetColor( SmokeColor.r-SMKColor,SmokeColor.g-SMKColor,SmokeColor.b-SMKColor )
 		end
 	end
 
-	--[[
-	PMul       = self.ParticleMul
 	Radius     = (1-Ground.Fraction) * self.Radius * 0.75
 	Density    = Radius * 12
-	Angle      = self.HitNormal:Angle()
-
-	for _ = 0, Density * PMul do
-
-		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
-		local ShootVector = Angle:Up()
-		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), Ground.HitPos + self.HitNormal * (5 + Radius * 5) )
-
-		if Smoke then
-			Smoke:SetVelocity( ShootVector * 500 * Radius * math.Rand(0.5, 1) )
-			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime(  0.4 * Radius / 4 )
-			Smoke:SetStartAlpha( 40 )
-			Smoke:SetEndAlpha( 0 )
-			Smoke:SetStartSize( 5 * Radius )
-			Smoke:SetEndSize( 35 * Radius )
-			Smoke:SetRoll( math.Rand(0, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
-			Smoke:SetAirResistance( 150 )
-			Smoke:SetCollide( true )
-			Smoke:SetGravity(Vector(0, 0, 400))
-			local SMKColor = math.random( 0 , 20 )
-			Smoke:SetColor( SmokeColor.r + SMKColor, SmokeColor.g + SMKColor, SmokeColor.b + SMKColor )
-		end
-	end
-	]]--
-	PMul       = self.ParticleMul
-	Radius     = (1-Ground.Fraction) * self.Radius * 0.75
-	Density    = Radius * 12
-	Angle      = self.HitNormal:Angle()
 
 	for _ = 0, Density * PMul do
 
@@ -551,7 +476,7 @@ function EFFECT:Water( Water )
 
 	if not self.Emitter then return end
 
-	local PMul = self.ParticleMul
+	local PMul = 1
 
 	local WaterColor = Color(255,255,255,100)
 
@@ -614,7 +539,7 @@ function EFFECT:Concrete( SmokeColor )
 
 	if not self.Emitter then return end
 
-	for _ = 0, 5 * self.Radius * self.ParticleMul do --Flying Debris
+	for _ = 0, 5 * self.Radius do --Flying Debris
 
 		local Fragments = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
 		if Fragments then
@@ -637,7 +562,7 @@ function EFFECT:Concrete( SmokeColor )
 		end
 	end
 
-	for _ = 0, 3 * self.Radius * self.ParticleMul do
+	for _ = 0, 3 * self.Radius do
 
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
 		if Smoke then
@@ -670,9 +595,9 @@ function EFFECT:Dirt( SmokeColor )
 			ScaleMul = 1
 		end
 
-	for _ = 0, 9 * self.Radius * self.ParticleMul do
+	for _ = 0, 9 * self.Radius do
 
-		Texture = "effects/fleck_cement1"
+		local Texture = "effects/fleck_cement1"
 
 		local Smoke = self.Emitter:Add( Texture, self.Origin )
 		if Smoke then
@@ -695,9 +620,9 @@ function EFFECT:Dirt( SmokeColor )
 	end
 
 
-	Texture = "particles/smokey"
+	local Texture = "particles/smokey"
 
-	for _ = 0, 2 * self.Radius * self.ParticleMul do
+	for _ = 0, 2 * self.Radius do
 
 		local Smoke = self.Emitter:Add( Texture, self.Origin )
 		if Smoke then
@@ -722,14 +647,13 @@ function EFFECT:Dirt( SmokeColor )
 end
 
 function EFFECT:Sand( SmokeColor )
-
 	if not self.Emitter then return end
 
-	for _ = 0, 3 * self.Radius * self.ParticleMul * 2 do
+	for _ = 0, 3 * self.Radius do
 
-		NumRand = math.random(-1, 2)
-		TScale = 1
-		Texture = "particle/smokesprites_000" .. math.random(1,9)
+		local NumRand = math.random(-1, 2)
+		local TScale = 1
+		local Texture = "particle/smokesprites_000" .. math.random(1,9)
 
 		if NumRand then
 			TScale = 0.75
@@ -760,7 +684,7 @@ function EFFECT:Airburst()
 	if not self.Emitter then return end
 
 	local Radius = self.Radius
-	for _ = 0, 0.5 * Radius * self.ParticleMul do --Flying Debris
+	for _ = 0, Radius * 0.5 do --Flying Debris
 
 		local Debris = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
 		if Debris then
