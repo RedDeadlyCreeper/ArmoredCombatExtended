@@ -70,7 +70,7 @@ ACF_DefineEngine( "7.4-B4", {
 	fuel = "Multifuel",
 	enginetype = "GenericDiesel",
 	weight = 800,
-	torque = 1785,	
+	torque = 1785,
 	flywheelmass = 4.3,
 	idlerpm = 600,
 	limitrpm = 2800
@@ -85,7 +85,7 @@ ACF_DefineEngine( "8.2-B4", {
 	fuel = "Multifuel",
 	enginetype = "GenericDiesel",
 	weight = 800,
-	torque = 1860,	
+	torque = 1860,
 	flywheelmass = 4.3,
 	idlerpm = 600,
 	limitrpm = 2800
@@ -100,7 +100,7 @@ ACF_DefineEngine( "14.3-B4", {
 	fuel = "Multifuel",
 	enginetype = "GenericDiesel",
 	weight = 1620,
-	torque = 2803,	
+	torque = 2803,
 	flywheelmass = 6.8,
 	idlerpm = 400,
 	limitrpm = 2600
