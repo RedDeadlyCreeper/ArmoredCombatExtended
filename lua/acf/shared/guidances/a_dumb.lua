@@ -10,40 +10,28 @@ ACF.Guidance[ClassName] = this
 
 ---
 
-
-
 this.Name = ClassName
-
 
 this.desc = "This guidance package is empty and provides no control."
 
-
 -- an object containing an obj:GetGuidanceOverride(missile, guidance) function
 this.Override = nil
-
-
 
 this.AppliedSpawnCountermeasures = false
 
 
 function this:Init()
-
 end
 
-
 function this:Configure()
-
 end
 
 
 function this:GetGuidance(missile)
 
 	self:PreGuidance(missile)
-
 	return self:ApplyOverride(missile) or {}
-
 end
-
 
 function this:PreGuidance(missile)
 
@@ -55,13 +43,10 @@ function this:PreGuidance(missile)
 	end
 
 	ACFM_ApplyCountermeasures(missile, self)
-
 end
 
 
 function this:ApplyOverride()
-
-
 end
 
 

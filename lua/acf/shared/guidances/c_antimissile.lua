@@ -125,14 +125,8 @@ function this:GetWhitelistedEntsInCone(missile)
 
 		--Trace did not hit world
 		if not LOStr.Hit then
-
-
 			table.insert(foundAnim, scanEnt)
-
-
 		end
-
-
 	end
 
 	return foundAnim

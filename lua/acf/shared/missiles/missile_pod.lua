@@ -280,6 +280,8 @@ ACF_defineGun("Zuni ASR", { --id
 	fuses      = {"Contact", "Timed", "Optical", "Radio"},
 	racks      = {["127mm4xPOD"] = true},
 
+	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
+
 	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay   = 0.15
 
