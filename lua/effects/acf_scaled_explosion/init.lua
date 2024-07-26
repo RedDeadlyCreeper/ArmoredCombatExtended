@@ -33,7 +33,7 @@ function EFFECT:Init( data )
 	end
 
 	--Overide with ACE prop material
-	if Ground.HitNonWorld then 
+	if Ground.HitNonWorld then
 		Mat = Mat
 
 		--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.

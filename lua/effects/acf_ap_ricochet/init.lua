@@ -22,10 +22,6 @@ local function PerformDecalTrace( Effect )
 	return util.TraceLine( Tr )
 end
 
-local function GetParticleMul()
-	return math.max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
-end
-
 function EFFECT:Init( data )
 
 	self.AmmoCrate   = data:GetEntity() 		-- The ammo crate Entity of this round.
@@ -40,7 +36,6 @@ function EFFECT:Init( data )
 	self.Id            = ValidCrate and self.AmmoCrate:GetNWString( "AmmoType", "AP" ) or "AP"
 	self.Caliber       = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 2 ) or 2
 	self.Emitter       = ParticleEmitter( self.Origin )
-	self.ParticleMul   = GetParticleMul()
 
 	local SurfaceTr	= PerformDecalTrace( self )
 	--local TraceEntity = SurfaceTr.Entity
@@ -117,7 +112,7 @@ function EFFECT:Dust( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -208,7 +203,7 @@ function EFFECT:Glass( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -278,7 +273,7 @@ function EFFECT:Concrete( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -402,7 +397,7 @@ function EFFECT:Metal( SmokeColor )
 
 	--KE main formula
 	local Energy = math.max(((Mass * (Vel ^ 2)) / 2) * 0.005 * Boost, 2)
-	local Pmul = self.ParticleMul * 0.5
+	local Pmul = 0.5
 
 --	if self.Type == "RAC" then
 --		Pmul = Pmul * 0
@@ -546,7 +541,7 @@ function EFFECT:Wood( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))

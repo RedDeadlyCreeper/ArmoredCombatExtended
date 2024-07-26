@@ -340,7 +340,6 @@ elseif CLIENT then
 	include("acf/client/cl_acfpermission.lua")
 	include("acf/client/gui/cl_acfsetpermission.lua")
 
-	CreateClientConVar("acf_cl_particlemul", "1", true )
 	CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
 
 end

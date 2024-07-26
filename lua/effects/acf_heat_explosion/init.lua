@@ -8,7 +8,7 @@ function EFFECT:Init( data )
 	self.DirVec = data:GetNormal()
 	self.Radius = math.max(data:GetRadius() / 39.4,1)
 	self.Emitter = ParticleEmitter( self.Origin )
-	self.ParticleMul = tonumber(LocalPlayer():GetInfo("acf_cl_particlemul")) or 1
+	self.ParticleMul = 1
 
 	--[[
 	for _ = 0, 5 * self.Radius * self.ParticleMul do

@@ -1,9 +1,4 @@
 
-
-local function GetParticleMul()
-	return math.max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
-end
-
 --[[---------------------------------------------------------
 	Initializes the effect. The data is a table of data
 	which was passed from the server.
@@ -72,7 +67,6 @@ function EFFECT:Init( data )
 --			self.Radius 		= (Propellant * 1.35)
 			self.Radius 		= (Caliber / 8)
 			self.Emitter       = ParticleEmitter( self.Origin )
-			self.ParticleMul   = GetParticleMul()
 
 			ACF_RenderLight(Gun:EntIndex(), Caliber * 75, Color(255, 128, 48), Muzzle.Pos + self.DirVec * (Caliber / 5))
 
@@ -179,7 +173,7 @@ function EFFECT:Shockwave( Ground, SmokeColor, Smult, LTMult )
 
 	if not Ground.Hit then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local Radius     = self.Radius * 0.5 * Smult --Removed (1-Ground.Fraction)
 	local Density    = Radius * 6 * Smult
 	local Angle      = Ground.HitNormal:Angle()
@@ -214,7 +208,7 @@ function EFFECT:MuzzleSmokeRAC( SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local size    = self.Radius * 1
 
 	local Angle      = self.DirVec:Angle()
@@ -349,7 +343,7 @@ function EFFECT:MuzzleSmokeAC( SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local size    = self.Radius * 0.5
 
 	local Offset = self.DirVec * size * -2.5
@@ -696,7 +690,7 @@ function EFFECT:MuzzleSmokeMO( SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local size    = self.Radius * 0.25
 
 	local Offset = self.DirVec * size * 0.5
@@ -895,7 +889,7 @@ function EFFECT:MuzzleSmokeMG( SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local size    = self.Radius * 0.5
 
 	local Offset = self.DirVec * size * 0.5
@@ -1097,7 +1091,7 @@ function EFFECT:MuzzleSmokeC( SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local size    = self.Radius * 0.5
 
 	--local Offset = self.DirVec * size * -12
@@ -1495,7 +1489,7 @@ function EFFECT:MuzzleSmoke( SmokeColor )
 
 	if not self.Emitter then return end
 
-	local PMul       = self.ParticleMul
+	local PMul       = 1
 	local size    = self.Radius * 0.5
 
 	local Offset = self.DirVec * size * -2.5

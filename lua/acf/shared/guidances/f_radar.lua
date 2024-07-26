@@ -287,8 +287,11 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local seekCone = ACF.Weapons.Guns[Type].seekcone * 2 or 0
-	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
+	local Guns = ACF.Weapons.Guns
+	local GunTable = Guns[Type]
+
+	local seekCone = GunTable.seekcone and GunTable.seekcone * 2 or 0
+	local ViewCone = GunTable.viewcone and GunTable.viewcone * 2 or 0
 
 	return
 	{
