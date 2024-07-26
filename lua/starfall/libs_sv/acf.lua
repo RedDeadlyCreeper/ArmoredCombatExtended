@@ -1152,7 +1152,7 @@ do
 	--- Returns the powerband max of an ACF engine
 	-- @server
 	-- @return number The powerband max
-	function ents_methods:acfPowerbandMin()
+	function ents_methods:acfPowerbandMax()
 		local this = getent(self)
 
 		if not isEngine(this) then return 0 end
