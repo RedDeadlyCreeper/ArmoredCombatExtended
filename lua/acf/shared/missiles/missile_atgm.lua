@@ -24,7 +24,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 	gunclass		= "ATGM",
 	rack			= "1x BGM-71E",								-- Which rack to spawn this missile on?
 	length			= 123,										-- Used for the physics calculations
-	caliber			= 13,
+	caliber			= 15.2,
 	weight			= 76.4,										-- Don't scale down the weight though!
 	year			= 1970,
 	modeldiameter	= 3 * 2.54,
@@ -34,7 +34,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		rackmdl				= "models/missiles/bgm_71e.mdl",
 		firedelay			= 2,
 		reloadspeed			= 1.5,
-		reloaddelay			= 30.0,
+		reloaddelay			= 15,
 
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
@@ -228,7 +228,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	gunclass		= "ATGM",
 	rack			= "1xAT3RK",									-- Which rack to spawn this missile on?
 	length			= 84,										-- Used for the physics calculations
-	caliber			= 13,
+	caliber			= 12.5,
 	weight			= 12.5,										-- Don't scale down the weight though!
 	year			= 1969,
 	modeldiameter	= 3 * 2.54,
@@ -300,7 +300,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	gunclass		= "ATGM",
 	rack			= "1xRK",									-- Which rack to spawn this missile on?
 	length			= 115,										-- Used for the physics calculations
-	caliber			= 16,
+	caliber			= 14.8,
 	weight			= 27,										-- Don't scale down the weight though!
 	year			= 1969,
 	modeldiameter	= 2.8 * 2.54,
@@ -582,7 +582,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	gunclass 		= "ATGM",
 	rack 			= "2x AGM-114",					-- Which rack to spawn this missile on?
 	length 			= 163,
-	caliber 		= 16,
+	caliber 		= 18,
 	weight 			= 45,							-- Don't scale down the weight though!
 	modeldiameter	= 3 * 2.54,					-- in cm
 	bodydiameter	= 8.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)

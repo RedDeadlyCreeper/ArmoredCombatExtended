@@ -169,7 +169,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 383,
-	caliber          = 18,
+	caliber          = 17.8,
 	weight           = 152,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1991,
 	modeldiameter    = 20.41,						-- in cm
@@ -808,7 +808,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 180 * 2.53, --Convert to ammocrate units
-	caliber          = 20,
+	caliber          = 23,
 	weight           = 253,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year             = 1994,
 	modeldiameter    = 28,--Already in ammocrate units
