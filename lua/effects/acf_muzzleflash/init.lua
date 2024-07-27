@@ -117,6 +117,7 @@ end
 
 function EFFECT:Shockwave( MuzzleType )
 	if not self.Emitter then return end
+	if MuzzleType ~= "C" and MuzzleType ~= "MO" then return end -- because rdc put the shockwave for those only.
 
 	local GroundTr = { }
 	GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius
