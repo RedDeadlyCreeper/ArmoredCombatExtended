@@ -124,7 +124,7 @@ function ENT:Think()
 	--------------------------
 
 	self.TargetAcquired = false
-	self.TargetDir = Vector()
+	--self.TargetDir = Vector()
 
 	--
 	if self.GuidanceActive and (self.Guidance.Name ~= "Dumb") then
@@ -136,26 +136,36 @@ function ENT:Think()
 		if Guidance.TargetPos then --Only updates with a valid position
 			TestPos = Guidance.TargetPos
 			self.TargetAcquired = true
-		elseif not self.HasInertial then
-			TestPos = nil
+		--elseif not self.TargetPos then
+		--	TestPos = nil
 		end
 
 		if TestPos then --Guidance location is valid. Update the target position.
 			self.TargetPos = TestPos or nil
-			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
 		elseif self.HasDatalink and self.Launcher.TargPos then --Guidance location is not valid. Use datalink position if available.
 			--and IsValid(self.Launcher) Don't know if needed?
 
 
 			self.TargetPos = self.Launcher.TargPos
-			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
 
-		elseif self.HasInertial and self.TargetPos then --Guidance location is not valid. Update inertial position.
+		elseif self.HasInertial and self.TargetPos and self.MissileActive then --Guidance location is not valid. Update inertial position.
 			self.TargetVelocity = self.TargetVelocity or Vector()
 			self.TargetPos = self.TargetPos + self.TargetVelocity * DeltaTime
-			self.TargetDir = (Pos - self.TargetPos):GetNormalized()
 		else						--Guidance location not valid. No inertial guidance. Wipe it clean.
 			self.TargetPos = nil
+		end
+
+		if self.TargetPos and self.TargetPos ~= Vector() then
+
+			if not self.MissileActive then
+				Pos = self.Launcher:GetPos()
+			end
+
+			self.TargetDir = (self.TargetPos - Pos):GetNormalized()
+			--print("x: "..math.Round(self.TargetDir.x,2))
+			--print("y: "..math.Round(self.TargetDir.y,2))
+			--print("z: "..math.Round(self.TargetDir.z,2))
+
 		end
 
 	elseif not self.HasInertial then --Guidance is not active. But can be remembered by inertial nav.
