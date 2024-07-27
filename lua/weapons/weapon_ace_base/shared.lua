@@ -268,7 +268,7 @@ function SWEP:PrimaryAttack()
 			local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
 			if next(sounds) then
 				if SERVER then
-					ACE_NetworkMPEffects(owner, self.Primary.Sound, self.BulletData.PropMass)
+					ACE_NetworkMPEffects(owner, self, self.BulletData.PropMass)
 				else
 					self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
 				end
