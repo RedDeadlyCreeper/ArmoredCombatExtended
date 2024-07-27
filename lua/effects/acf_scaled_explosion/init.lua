@@ -15,7 +15,7 @@ function EFFECT:Init( data )
 
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1) * self.Radius * 0.1
-		GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 3
+		GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius * 20
 		GroundTr.mask = MASK_NPCWORLDSTATIC
 	local Ground = util.TraceLine( GroundTr )
 
