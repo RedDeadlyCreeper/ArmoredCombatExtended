@@ -34,7 +34,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/aim9m.mdl",
 		rackmdl				= "models/missiles/aim9m.mdl",
-		firedelay			= 0.75,
+		firedelay			= 1.5,
 		reloadspeed			= 1.5,
 		reloaddelay			= 30.0,
 
@@ -90,7 +90,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 
 ACF_defineGun("AIM-7 AAM", {							-- id
 	name             = "AIM-7 Sparrow",
-	desc             = "While not as advanced as its modern counterparts, the Sparrow makes up for it in thrust and plentiful speed. Do not underestimate it.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes\nTop Speed: 310 m/s",
+	desc             = "While not as advanced as its modern counterparts, the Sparrow makes up for it in thrust and plentiful speed. Do not underestimate it.\n\nInertial Guidance: No\nECCM: No\nDatalink: Yes\nTop Speed: 310 m/s",
 	model            = "models/missiles/arend/aim7f.mdl",
 	effect           = "ACE_MissileMedium",
 	effectbooster    = "ACE_MissileMedium",
@@ -106,7 +106,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/aim7f.mdl",
 		rackmdl				= "models/missiles/arend/aim7f.mdl",
-		firedelay			= 1.0,
+		firedelay			= 1.5,
 		reloadspeed			= 1.5,
 		reloaddelay			= 45.0,
 
@@ -116,10 +116,10 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.28,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 32.5,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.26,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 110,							-- Acceleration in m/s.
+		thrust				= 95,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -128,14 +128,14 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostacceleration	= 150,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
 		boostertime			= 0.2,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.001,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		dragcoef			= 0.00075,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
@@ -178,7 +178,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/aim120c.mdl",
 		rackmdl				= "models/missiles/aim120c.mdl",
-		firedelay			= 1.0,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 60.0,
 
@@ -188,8 +188,8 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 26.5,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.22,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 100,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
@@ -200,7 +200,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostacceleration	= 350,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
 		boostertime			= 0.1,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
@@ -235,7 +235,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 --with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", {							-- id
 	name             = "AIM-54 Phoenix",
-	desc             = "Supersonic long-range air to air missile with early radar homing.Though relatively easy to dodge, this 300 kg beast will atomize any aircraft it hits. Getting hit is a traumatic experience. \n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes\nTop Speed: 191 m/s",
+	desc             = "Supersonic long-range air to air missile with early radar homing.Though relatively easy to dodge, this 300 kg beast will atomize any aircraft it hits. Getting hit is a traumatic experience. \n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: Yes\nTop Speed: 191 m/s",
 	model            = "models/missiles/arend/aim54c.mdl",
 	effect           = "ACE_MissileLarge",
 	gunclass         = "AAM",
@@ -250,7 +250,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/aim54c.mdl",
 		rackmdl				= "models/missiles/arend/aim54c.mdl",
-		firedelay			= 1.0,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 60.0,
 
@@ -261,10 +261,10 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 12,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 19,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 70,							-- Acceleration in m/s.
+		thrust				= 65,							-- Acceleration in m/s.
 		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -278,10 +278,10 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.002,						-- percent speed loss per second
+		dragcoef			= 0.00055,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
-		predictiondelay		= 0.35							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 0.15							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
 	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -294,7 +294,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
-	agility            = 3,									-- multiplier for missile turn-rate.  --was 0.7
+	irccm				= true,
 	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.5,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.05									-- Time where this missile will be unable to hit surfaces, in seconds
@@ -302,7 +302,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 ACF_defineGun("SRAAM AAM", {								-- id
 	name             = "SRAAM",
-	desc             = "Thrust vectoring absurdity. Shoots hot straight off the rails like some bat out of hell. Short range in every sense of the word but have fun dodging this one. Antimissile capable.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 302 m/s",
+	desc             = "Wonderfully schizophrenic thrust vectoring absurdity. Shoots hot straight off the rails like some bat out of hell. Short range in every sense of the word but have fun dodging this one. Antimissile capable.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 302 m/s",
 	model            = "models/missiles/arend/sraam_unfolded.mdl",
 	effect           = "ACE_MissileSmall",
 	effectbooster    = "ACE_MissileSmall",
@@ -318,7 +318,7 @@ ACF_defineGun("SRAAM AAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/sraam_unfolded.mdl",
 		rackmdl				= "models/missiles/arend/sraam_folded.mdl",
-		firedelay			= 0.75,
+		firedelay			= 1.5,
 		reloadspeed			= 1.5,
 		reloaddelay			= 45.0,
 
@@ -328,8 +328,8 @@ ACF_defineGun("SRAAM AAM", {								-- id
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 								--320
 		turnrate			= 60,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 90,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		finefficiency		= 0.1,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 300,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 0,							-- Acceleration in m/s.
 		burntime			= 0.0,							-- time in seconds for rocket motor to burn at max proppelant.
@@ -339,13 +339,13 @@ ACF_defineGun("SRAAM AAM", {								-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 1.4,							-- Time in seconds for booster runtime
+		boostacceleration	= 220,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 1.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 3,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.0025,						-- percent speed loss per second
+		dragcoef			= 0.001,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
@@ -387,7 +387,7 @@ ACF_defineGun("Magic AAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/r550magic.mdl",
 		rackmdl				= "models/missiles/arend/r550magic.mdl",
-		firedelay			= 0.75,
+		firedelay			= 1.5,
 		reloadspeed			= 1.5,
 		reloaddelay			= 45.0,
 
@@ -459,7 +459,7 @@ ACF_defineGun("MICA AAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/mica_em.mdl",
 		rackmdl				= "models/missiles/arend/mica_em.mdl",
-		firedelay			= 0.75,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 45.0,
 
@@ -467,12 +467,12 @@ ACF_defineGun("MICA AAM", {								-- id
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
-								--320
+
 		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.55,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 55,							-- Acceleration in m/s.
+		thrust				= 50,							-- Acceleration in m/s.
 		burntime			= 3.0,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -480,7 +480,7 @@ ACF_defineGun("MICA AAM", {								-- id
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostacceleration	= 250,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
 		boostertime			= 0.25,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
@@ -532,7 +532,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/meteor.mdl",
 		rackmdl				= "models/missiles/arend/meteor.mdl",
-		firedelay			= 1.0,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 60.0,
 
@@ -542,7 +542,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 35,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 37,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 65,							-- Acceleration in m/s.
@@ -560,7 +560,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.001,						-- percent speed loss per second
+		dragcoef			= 0.0012,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -603,7 +603,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/r60m.mdl",
 		rackmdl				= "models/missiles/arend/r60m.mdl",
-		firedelay			= 0.75,
+		firedelay			= 1.5,
 		reloadspeed			= 1.5,
 		reloaddelay			= 30.0,
 
@@ -612,7 +612,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 
 		armour				= 15,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 53,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 55,							-- Acceleration in m/s.
@@ -674,7 +674,7 @@ ACF_defineGun("R-73 AAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/r73.mdl",
 		rackmdl				= "models/missiles/arend/r73.mdl",
-		firedelay			= 0.75,
+		firedelay			= 1.5,
 		reloadspeed			= 1.5,
 		reloaddelay			= 45.0,
 
@@ -746,7 +746,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/r77.mdl",
 		rackmdl				= "models/missiles/arend/r77.mdl",
-		firedelay			= 1.0,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 60.0,
 
@@ -756,8 +756,8 @@ ACF_defineGun("R-77 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 17,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.22,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 130,							-- Acceleration in m/s.
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
@@ -817,7 +817,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/r27t.mdl",
 		rackmdl				= "models/missiles/arend/r27t.mdl",
-		firedelay			= 1.0,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 45.0,
 
@@ -827,8 +827,8 @@ ACF_defineGun("R-27 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.3,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 58,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 70,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
@@ -886,7 +886,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 	round = {
 		rocketmdl			= "models/missiles/arend/r33.mdl",
 		rackmdl				= "models/missiles/arend/r33.mdl",
-		firedelay			= 1.0,
+		firedelay			= 2.0,
 		reloadspeed			= 1.5,
 		reloaddelay			= 60.0,
 
@@ -896,10 +896,10 @@ ACF_defineGun("R-33 AAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 9.5,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 18,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 90,							-- Acceleration in m/s.
+		thrust				= 80,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -914,7 +914,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.002,						-- percent speed loss per second
+		dragcoef			= 0.0005,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -930,7 +930,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
-	agility            = 3,									-- multiplier for missile turn-rate.  --was 0.7
+	irccm				= true,
 	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
 	guidelay           = 0.5,								-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime          = 0.05									-- Time where this missile will be unable to hit surfaces, in seconds
