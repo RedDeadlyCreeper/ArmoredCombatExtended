@@ -80,7 +80,19 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 	local OccFilter	= istable(NoOcc) and NoOcc or { NoOcc }
 	local LoopKill	= true
 
-	local Targets	= ACF_HEFind( Hitpos, Radius )		-- Will give tiny HE just a pinch of radius to help it hit the player
+	local FRTargets	= ACF_HEFind( Hitpos, Radius * ACF.HEFragRadiusMul )		-- Will give tiny HE just a pinch of radius to help it hit the player
+
+	local Targets = {} --Recalculates targets inside HE blast
+
+	--local RadSq = Radius^2 --Used for square distance test
+	--Saved for later HE Pen table
+	--for _, ent in pairs( FRTargets ) do
+		--	--skip any undesired ent
+		--	if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
+
+		--	table.insert( Targets, ent )
+
+	--end
 
 	while LoopKill and Power > 0 do
 
@@ -90,7 +102,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 		local Damage        = {}
 		local TotalArea     = 0
 
-		for i,Tar in ipairs(Targets) do
+		for i,Tar in ipairs(FRTargets) do
 
 			if not IsValid(Tar) then continue end
 			if Power <= 0 or Tar.Exploding then continue end
@@ -156,7 +168,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				--HE has direct view with the prop, so lets damage it
 				if TraceRes.Hit and TraceRes.Entity == Tar then
 
-					Targets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
+					FRTargets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
 					local Table		= {}
 
 					Table.Ent		= Tar
@@ -172,7 +184,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 					local AreaAdjusted  = Tar.ACF.Area
 
 					--Project the Area of the prop to the Area of the shadow it projects at the explosion max radius
-					Table.Area = math.min(AreaAdjusted / Sphere,0.5) * MaxSphere
+					Table.Area = math.min(AreaAdjusted / Sphere,0.5) * MaxSphere * ACF.HEFragRadiusMul --Don't forget to scale blast down by the frag adjustment factor.
 					table.insert(Damage, Table) --Add it to the Damage table so we know to damage it once we tallied everything
 
 					-- is it adding it too late?
@@ -181,7 +193,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				end
 
 			else
-				Targets[i] = NULL	--Target was invalid, so let's ignore it
+				FRTargets[i] = NULL	--Target was invalid, so let's ignore it
 				table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 			end
 
@@ -193,12 +205,14 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 			local Tar              = Table.Ent
 			local TargetPos        = Tar:GetPos()
 			local Feathering       = (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
+			local FRFeathering       = (1-math.min(1,Table.Dist / Radius / FRRadiuACF.HEFragRadiusMulsFactor)) ^ ACF.HEFeatherExp
 			local AreaFraction     = Table.Area / TotalArea
 			local PowerFraction    = Power * AreaFraction  --How much of the total power goes to that prop
 			local AreaAdjusted     = (Tar.ACF.Area / ACF.Threshold) * Feathering
+			local FRAreaAdjusted     = (Tar.ACF.Area / ACF.Threshold) * FRFeathering
 
 			--HE tends to pick some props where simply will not apply damage. So lets ignore it.
-			if AreaAdjusted <= 0 then continue end
+			if FRAreaAdjusted <= 0 then continue end
 
 			local BlastRes
 			local Blast = {
@@ -207,8 +221,10 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 			local FragRes
 			local FragHit	= Fragments * AreaFraction
-			FragVel	= math.max(FragVel - ( (Table.Dist / FragVel) * FragVel ^ 2 * FragWeight ^ 0.33 / 10000 ) / ACF.DragDiv,0)
+			FragVel	= math.max(FragVel - ( (Table.Dist / FragVel) * FragVel ^ 2 * FragWeight ^ 0.33 * ACF.HEFragDragFactor ) / ACF.DragDiv,0)
 			local FragKE	= ACF_Kinetic( FragVel , FragWeight * FragHit, 1500 )
+
+			--Why would this ever be below 0?
 			if FragHit < 0 then
 				if math.Rand(0,1) > FragHit then FragHit = 1 else FragHit = 0 end
 			end

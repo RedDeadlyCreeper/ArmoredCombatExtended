@@ -68,7 +68,9 @@ ACF.BoomMult          = 8					-- How much more do ammocrates/fueltanks blow up, 
 
 ACF.HEPower           = 8000					-- HE Filler power per KG in KJ
 ACF.HEDensity         = 1.65					-- HE Filler density (That's TNT density)
-ACF.HEFrag            = 1500					-- Mean fragment number for equal weight TNT and casing
+ACF.HEFrag            = 2500					-- Mean fragment number for equal weight TNT and casing
+ACF.HEFragDragFactor  = 0.2						--Lower = less drag. Higher = more. Adjust this to affect the penetration and lethality of fragments. If frags pen infantry die.
+ACF.HEFragRadiusMul   = 2						--Hard cap on frag radius. Multiplies HE Radius.
 ACF.HEBlastPen        = 0.4					-- Blast penetration exponent based of HE power
 ACF.HEFeatherExp      = 0.5					-- exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
 ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expotential
