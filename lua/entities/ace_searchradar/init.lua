@@ -328,7 +328,7 @@ function ENT:Think()
 							local GCtr = util.TraceHull( { --  Ground clutter trace
 
 								start = entpos,
-								endpos = entpos + difpos:GetNormalized() * 2000,
+								endpos = entpos + difpos:GetNormalized() * 8000,
 								collisiongroup  = COLLISION_GROUP_DEBRIS,
 								filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
 								mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),
