@@ -41,6 +41,7 @@ function ACF_HEFind( Hitpos, Radius )
 		--skip any undesired ent
 		if ACF.HEFilter[ent:GetClass()] then continue end
 		if not ent:IsSolid() then continue end
+		if ent.Exploding then continue end
 
 		table.insert( Table, ent )
 
@@ -966,7 +967,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 				if not IsValid(child) or child.Exploding then continue end
 
 				child.Exploding = true
-				ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
+				ACF_ScaledExplosion( child, true ) -- explode any crates that are getting removed
 
 			end
 		end
@@ -1094,7 +1095,7 @@ do
 	local FuelExplosionScale = 0.005
 
 	--converts what would be multiple simultaneous cache detonations into one large explosion
-	function ACF_ScaledExplosion( ent )
+	function ACF_ScaledExplosion( ent , remove )
 
 		if ent.RoundType and ent.RoundType == "Refill" then return end
 
@@ -1132,7 +1133,9 @@ do
 		local Search = true
 		local Filter = { ent }
 
-		ent:Remove()
+		if remove then
+			ent:Remove()
+		end
 
 		local CExplosives = ACE.Explosives
 
@@ -1145,6 +1148,7 @@ do
 				if #Filter > MaxGroup or HEWeight > MaxHE then break end
 				if not IsValid(Found) then continue end
 				if Found:GetPos():DistToSqr(Pos) > Radius ^ 2 then continue end
+				if not remove and ent == Found then continue end
 
 				if not Found.Exploding then
 
@@ -1191,8 +1195,9 @@ do
 							local Propel   = Found.BulletData.PropMass	or 0
 							local Ammo     = Found.Ammo					or 0
 
-							FoundHEWeight = ( ( HE + Propel * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
+							FoundHEWeight = ( ( HE + Propel * ACF.APAmmoDetonateFactor * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
 						end
+
 
 						table.insert( ExplodePos, Found:LocalToWorld(Found:OBBCenter()) )
 
@@ -1249,7 +1254,7 @@ do
 				Flash:SetOrigin( AvgPos )
 				Flash:SetNormal( -vector_up )
 				Flash:SetRadius( math.max( Radius , 1 ) )
-			util.Effect( "ACF_Scaled_Explosion", Flash )
+			util.Effect( "ACE_Scaled_Detonation", Flash )
 		end )
 
 	end

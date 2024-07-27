@@ -116,6 +116,7 @@ function ACF_Check( Entity )
 
 	local Class = Entity:GetClass()
 	if ( Class == "gmod_ghost" or Class == "ace_debris" or Class == "prop_ragdoll" or string.find( Class , "func_" )  ) then return false end
+	if Entity.Exploding then return false end
 
 	if not Entity.ACF or (Entity.ACF and isnumber(Entity.ACF.Material)) then
 		ACF_Activate( Entity )
