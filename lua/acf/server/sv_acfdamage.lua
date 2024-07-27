@@ -204,7 +204,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 			local Tar              = Table.Ent
 			local TargetPos        = Tar:GetPos()
 			local Feathering       = (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
-			local FRFeathering       = (1-math.min(1,Table.Dist / Radius / FRRadiuACF.HEFragRadiusMulsFactor)) ^ ACF.HEFeatherExp
+			local FRFeathering       = (1-math.min(1,Table.Dist / Radius / ACF.HEFragRadiusMul)) ^ ACF.HEFeatherExp
 			local AreaFraction     = Table.Area / TotalArea
 			local PowerFraction    = Power * AreaFraction  --How much of the total power goes to that prop
 			local AreaAdjusted     = (Tar.ACF.Area / ACF.Threshold) * Feathering
