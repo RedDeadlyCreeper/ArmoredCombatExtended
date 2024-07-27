@@ -19,6 +19,7 @@ local EngineTable       = {}
 local GearboxTable      = {}
 local FuelTankTable     = {}
 local FuelTankSizeTable = {}
+local MuzzleFlashTable 	= {}
 
 local MobilityTable     = {}
 
@@ -26,7 +27,8 @@ local GSoundData        = {}
 local ModelData         = {}
 local MineData          = {}
 
--- setup base classes
+-- setup base classes. This is necessary stuff if you want to setup a menu for a specific item.
+-- Janky as fuck though.
 local gun_base = {
 	ent    = "acf_gun",
 	type   = "Guns"
@@ -66,6 +68,7 @@ local irst_base = {
 }
 
 -- add gui stuff to base classes if this is client
+-- more required stuff for the menu. Janky as fuck
 if CLIENT then
 	gun_base.guicreate           = function( _, Table ) ACFGunGUICreate( Table )		end or nil
 	gun_base.guiupdate           = function() return end
@@ -89,6 +92,7 @@ if CLIENT then
 end
 
 -- some factory functions for defining ents
+-- Be patient. There are alot of functions here
 
 --Gun class definition
 function ACF_defineGunClass( id, data )
@@ -108,12 +112,19 @@ function ACF_defineGun( id, data )
 	end
 end
 
+-- Muzzleflash definition. The definitions are likely to be placed at the same location as the gun itself
+function ACE_DefineMuzzleFlash(id, data)
+	data.id = id
+	MuzzleFlashTable[ id ] = data
+end
+
 function ACE_DefineAmmoCrate( id, data )
 	data.id = id
 	table.Inherit( data, ammo_base )
 	AmmoTable[ id ] = data
 end
 
+-- Legacy Ammo crate definition
 function ACE_DefineLegacyAmmoCrate( id, data )
 	data.id = id
 	LegacyAmmoTable[ id ] = data
@@ -159,7 +170,6 @@ function ACF_DefineGearbox( id, data )
 	MobilityTable[ id ] = data
 end
 
-
 -- fueltank definition
 function ACF_DefineFuelTank( id, data )
 	data.id = id
@@ -174,7 +184,6 @@ function ACF_DefineFuelTankSize( id, data )
 	table.Inherit( data, fueltank_base )
 	FuelTankSizeTable[ id ] = data
 end
-
 
 -- Radar definition
 function ACF_DefineRadar( id, data )
@@ -203,7 +212,6 @@ function ACF_DefineTrackRadarClass( id, data )
 	RadarClasses[ id ] = data
 end
 
-
 -- Tracking Radar definition
 function ACF_DefineIRST( id, data )
 	data.id = id
@@ -223,12 +231,14 @@ function ACE_DefineGunFireSound( id, data )
 	GSoundData[id] = data
 end
 
+-- The model definition. This is where you can "add" scalable models.
 function ACE_DefineModelData( id, data )
 	data.id = id
 	ModelData[id] = data
 	ModelData[data.Model] = data -- I will allow both model or fast name as id.
 end
 
+-- Where you define a new Mine
 function ACE_DefineMine(id, data)
 	data.id = id
 	MineData[id] = data
@@ -325,6 +335,7 @@ ACF.Weapons.Gearboxes       = GearboxTable
 ACF.Weapons.FuelTanks       = FuelTankTable
 ACF.Weapons.FuelTanksSize   = FuelTankSizeTable
 ACF.Weapons.Radars          = Radars
+ACE.MuzzleFlashes           = MuzzleFlashTable
 
 --Small reminder of Mobility table. Still being used in stuff like starfall/e2. This can change
 ACF.Weapons.Mobility    = MobilityTable
