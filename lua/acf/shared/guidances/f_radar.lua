@@ -174,7 +174,7 @@ function this:GetWhitelistedEntsInCone(missile)
 				local ConeInducedGCTRSize = dist / 100 * self.GCMultiplier --2 meter wide tracehull for every 100m distance
 				local GCtr = util.TraceHull( {
 					start = entpos,
-					endpos = entpos + difpos:GetNormalized() * 4000 * self.GCMultiplier ,
+					endpos = entpos + difpos:GetNormalized() * 16000 * self.GCMultiplier ,
 					collisiongroup  = COLLISION_GROUP_WORLD,
 					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
 					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
