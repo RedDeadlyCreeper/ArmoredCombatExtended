@@ -730,6 +730,14 @@ do
 
 		this:TriggerInput("Gear Down", 1)
 	end
+
+	-- Sets the brakes for an ACF gearbox
+	e2function void entity:acfBrake(number brake)
+		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
+
+		this:TriggerInput("Brake", brake)
+	end
 	
 	-- Sets the left brakes for an ACF gearbox
 	e2function void entity:acfBrakeLeft(number brake)
