@@ -57,14 +57,10 @@ local function isRadar(ent)
 	return radarTypes[ent:GetClass()]
 end
 
-local function canTool(ply, ent)
-	return hook.Run("CanTool", ply, { Hit = true, Entity = ent }, "acf_menu")
-end
-
 local function restrictInfo(ply, ent)
 	if not ACF.RestrictInfo then return false end
 
-	return not canTool(ply, ent)
+	return not ent:CPPICanTool(ply, "acfmenu")
 end
 
 -- Link functions
@@ -201,7 +197,7 @@ do
 	-- Turns an ACF engine, ammo crate, or fuel tank on or off
 	e2function void entity:acfActive(number on)
 		if not (isEngine(this) or isAmmo(this) or isFuel(this)) then return self:throw("Entity is not a valid ACF engine, ammo crate, or fuel tank") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Active", on)
 	end
@@ -209,7 +205,7 @@ do
 	-- Returns 1 if the hitpos is on a clipped part of the entity
 	[nodiscard]
 	e2function number entity:acfHitClip(vector hitPos)
-		if not canTool(self.player, this) then return self:throw("You cannot target this entity", 0) end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot target this entity", 0) end
 		return ACF_CheckClips(this, hitPos) and 1 or 0
 	end
 
@@ -353,8 +349,8 @@ do
 		if not IsValid(this) then return self:throw("Invalid source entity", 0) end
 		if not IsValid(target) then return self:throw("Invalid target entity", 0) end
 		if this == target then return self:throw("Cannot link entity to itself", 0) end
-		if not canTool(self.player, this) then return self:throw("You do not have permission to target the source entity", 0) end
-		if not canTool(self.player, target) then return self:throw("You do not have permission to target the target entity", 0) end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You do not have permission to target the source entity", 0) end
+		if not target:CPPICanTool(self.player, "acfmenu") then return self:throw("You do not have permission to target the target entity", 0) end
 
 		local success, msg
 
@@ -384,8 +380,8 @@ do
 		if not IsValid(this) then return self:throw("Invalid source entity", 0) end
 		if not IsValid(target) then return self:throw("Invalid target entity", 0) end
 		if this == target then return self:throw("Cannot unlink entity from itself", 0) end
-		if not canTool(self.player, this) then return self:throw("You do not have permission to target the source entity", 0) end
-		if not canTool(self.player, target) then return self:throw("You do not have permission to target the target entity", 0) end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You do not have permission to target the source entity", 0) end
+		if not target:CPPICanTool(self.player, "acfmenu") then return self:throw("You do not have permission to target the target entity", 0) end
 
 		local success, msg
 
@@ -577,7 +573,7 @@ do
 	-- Sets the throttle of an ACF engine
 	e2function void entity:acfThrottle(number throttle)
 		if not isEngine(this) then return self:throw("Entity is not a valid ACF engine") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Throttle", throttle)
 	end
@@ -704,7 +700,7 @@ do
 	e2function void entity:acfCVTRatio(number ratio)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.CVT then return self:throw("This function can only be used on CVTs") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this.CVTRatio = clamp(ratio, 0, 1)
 	end
@@ -714,7 +710,7 @@ do
 	-- Sets the current gear for an ACF gearbox
 	e2function void entity:acfShift(number gear)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Gear", gear)
 	end
@@ -722,7 +718,7 @@ do
 	-- Causes an ACF gearbox to shift up
 	e2function void entity:acfShiftUp()
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Gear Up", 1)
 	end
@@ -730,7 +726,7 @@ do
 	-- Causes an ACF gearbox to shift down
 	e2function void entity:acfShiftDown()
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Gear Down", 1)
 	end
@@ -739,7 +735,7 @@ do
 	e2function void entity:acfBrakeLeft(number brake)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.Dual then return self:throw("This gearbox is not dual clutch") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Left Brake", brake)
 	end
@@ -748,7 +744,7 @@ do
 	e2function void entity:acfBrakeRight(number brake)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.Dual then return self:throw("This gearbox is not dual clutch") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Right Brake", brake)
 	end
@@ -756,7 +752,7 @@ do
 	-- Sets the clutch for an ACF gearbox
 	e2function void entity:acfClutch(number clutch)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Clutch", clutch)
 	end
@@ -765,7 +761,7 @@ do
 	e2function void entity:acfClutchLeft(number clutch)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.Dual then return self:throw("This gearbox is not dual clutch") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Left Clutch", clutch)
 	end
@@ -774,7 +770,7 @@ do
 	e2function void entity:acfClutchRight(number clutch)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.Dual then return self:throw("This gearbox is not dual clutch") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Right Clutch", clutch)
 	end
@@ -783,7 +779,7 @@ do
 	e2function void entity:acfSteerRate(number steerRate)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.DoubleDiff then return self:throw("This gearbox is not a double differential") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Steer Rate", steerRate)
 	end
@@ -792,7 +788,7 @@ do
 	e2function void entity:acfHoldGear(number holdGear)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.Auto then return self:throw("This gearbox is not automatic") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Hold Gear", holdGear)
 	end
@@ -801,7 +797,7 @@ do
 	e2function void entity:acfShiftPointScale(number scale)
 		if not isGearbox(this) then return self:throw("Entity is not a valid ACF gearbox") end
 		if not this.Auto then return self:throw("This gearbox is not automatic") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Shift Speed Scale", scale)
 	end
@@ -917,7 +913,7 @@ do
 	-- Sets the rate of fire limit of an ACF gun
 	e2function void entity:acfSetROFLimit(number rate)
 		if not isGun(this) then return self:throw("Entity is not a valid ACF gun") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("ROFLimit", rate)
 	end
@@ -944,7 +940,7 @@ do
 	-- Sets the firing state of an ACF gun or rack
 	e2function void entity:acfFire(number fire)
 		if not (isGun(this) or isRack(this)) then return self:throw("Entity is not a valid ACF gun or rack") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Fire", fire)
 	end
@@ -952,7 +948,7 @@ do
 	-- Unloads an ACF gun
 	e2function void entity:acfUnload()
 		if not isGun(this) then return self:throw("Entity is not a valid ACF gun") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:UnloadAmmo()
 	end
@@ -960,7 +956,7 @@ do
 	-- Reloads an ACF gun
 	e2function void entity:acfReload()
 		if not isGun(this) then return self:throw("Entity is not a valid ACF gun") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		local isEmpty = this.BulletData.Type == "Empty"
 
@@ -1367,7 +1363,7 @@ do
 	-- Sets the ACF fuel tank "refuel duty" state, which allows it to refuel other fuel tanks
 	e2function void entity:acfRefuelDuty(number state)
 		if not isFuel(this) then return self:throw("Entity is not a valid ACF fuel tank") end
-		if not canTool(self.player, this) then return self:throw("You cannot control this entity") end
+		if not this:CPPICanTool(self.player, "acfmenu") then return self:throw("You cannot control this entity") end
 
 		this:TriggerInput("Refuel Duty", state)
 	end
