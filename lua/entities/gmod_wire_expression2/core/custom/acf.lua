@@ -1219,7 +1219,7 @@ do
 	e2function number entity:acfPropHealth()
 		if not validPhysics(this) then return self:throw("Entity is not valid", 0) end
 		if restrictInfo(self.player, this) then return 0 end
-		if not this.ACF then
+		if not this.ACF or not this.ACF.Health then
 			local check = ACF_Check(this)
 
 			if not check then return 0 end
@@ -1233,7 +1233,7 @@ do
 	e2function number entity:acfPropArmor()
 		if not validPhysics(this) then return self:throw("Entity is not valid", 0) end
 		if restrictInfo(self.player, this) then return 0 end
-		if not this.ACF then
+		if not this.ACF or not this.ACF.Armour then
 			local check = ACF_Check(this)
 
 			if not check then return 0 end
@@ -1247,7 +1247,7 @@ do
 	e2function number entity:acfPropHealthMax()
 		if not validPhysics(this) then return self:throw("Entity is not valid", 0) end
 		if restrictInfo(self.player, this) then return 0 end
-		if not this.ACF then
+		if not this.ACF or not this.ACF.MaxHealth then
 			local check = ACF_Check(this)
 
 			if not check then return 0 end
@@ -1261,7 +1261,7 @@ do
 	e2function number entity:acfPropArmorMax()
 		if not validPhysics(this) then return self:throw("Entity is not valid", 0) end
 		if restrictInfo(self.player, this) then return 0 end
-		if not this.ACF then
+		if not this.ACF or not this.ACF.MaxArmour then
 			local check = ACF_Check(this)
 
 			if not check then return 0 end
