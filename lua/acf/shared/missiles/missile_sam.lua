@@ -23,7 +23,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	gunclass         = "SAM",
 	rack             = "1x FIM-92",							-- Which rack to spawn this missile on?
 	length           = 150,
-	caliber          = 11,
+	caliber          = 7,
 	weight           = 20,									-- 15.1,	-- Don't scale down the weight though!
 	modeldiameter    = 3,									-- in cm
 	year             = 1978,
@@ -36,7 +36,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		reloaddelay			= 25,
 
 		--Former 125 and 1.5. Reduced blast from 107Mj to 60Mj. For reference a 100kg bomb has 117Kj.
-		maxlength			= 85,							-- Length of missile. Used for ammo properties.
+		maxlength			= 95,							-- Length of missile. Used for ammo properties.
 		propweight			= 3,							-- Motor mass - motor casing. Used for ammo properties.
 
 		armour				= 20,							-- Armour effectiveness of casing, in mm
@@ -76,7 +76,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	seekcone           = 15,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
 	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity    = 1,
-	irccm				= true,
+	irccm				= false,
 
 	armdelay	= 0.15,									-- minimum fuse arming delay		-was 0.3
 	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
@@ -92,7 +92,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 	gunclass         = "SAM",
 	rack             = "2x FIM-92",							-- Which rack to spawn this missile on?
 	length           = 150,
-	caliber          = 11,
+	caliber          = 9,
 	weight           = 19.7,									-- 15.1,	-- Don't scale down the weight though!
 	modeldiameter    = 3,									-- in cm
 	year             = 1974,
@@ -105,7 +105,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 		reloaddelay			= 30.0,
 
 		--Formerly 130 and 1.5. Reduced blast from 112Mj to 72Mj. For reference a 100kg bomb has 117Kj.
-		maxlength			= 110,							-- Length of missile. Used for ammo properties.
+		maxlength			= 95,							-- Length of missile. Used for ammo properties.
 		propweight			= 4,							-- Motor mass - motor casing. Used for ammo properties.
 
 		armour				= 20,							-- Armour effectiveness of casing, in mm
@@ -143,7 +143,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 	seekcone			= 15,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
 	viewcone			= 70,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity		= 1,
-	irccm				= true,
+	irccm				= false,
 
 	guidelay   = 0,										-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
@@ -229,7 +229,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 	gunclass         = "SAM",
 	rack             = "1x VT-1",								-- Which rack to spawn this missile on?
 	length           = 92 * 2.53, --Convert to ammocrate units
-	caliber          = 12,
+	caliber          = 16.5,
 	weight           = 73,										-- Don't scale down the weight though!
 	year             = 1960,
 	modeldiameter    = 8,--Already in ammocrate units
@@ -297,7 +297,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 	gunclass         = "SAM",
 	rack             = "1x 9m311",								-- Which rack to spawn this missile on?
 	length           = 100 * 2.53, --Convert to ammocrate units
-	caliber          = 12,
+	caliber          = 7.6,
 	weight           = 71,										-- Don't scale down the weight though!
 	year             = 1982,
 	modeldiameter    = 7,--Already in ammocrate units
@@ -367,7 +367,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 	gunclass         = "SAM",
 	rack             = "1x9M331 Pod",							-- Which rack to spawn this missile on?
 	length           = 118 * 2.53, --Convert to ammocrate units
-	caliber          = 23.9,
+	caliber          = 23.5,
 	weight           = 167,									-- 15.1,	-- Don't scale down the weight though!
 	year             = 1986,
 	modeldiameter    = 10,
