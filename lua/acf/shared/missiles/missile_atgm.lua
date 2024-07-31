@@ -33,8 +33,8 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		rocketmdl			= "models/missiles/bgm_71e.mdl",
 		rackmdl				= "models/missiles/bgm_71e.mdl",
 		firedelay			= 2,
-		reloadspeed			= 1.5,
-		reloaddelay			= 30.0,
+		reloadspeed			= 6,
+		reloaddelay			= 13.0,
 
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
@@ -102,8 +102,8 @@ ACF_defineGun("9M113 ATGM", {									-- id
 		rocketmdl				= "models/missiles/arend/9m113.mdl",
 		rackmdl				= "models/missiles/arend/9m113_folded.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
-		reloaddelay			= 40.0,
+		reloadspeed			= 6.0,
+		reloaddelay			= 12.0,
 
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
@@ -168,8 +168,8 @@ ACF_defineGun("9M133 ASM", {									-- id
 		rocketmdl				= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 		rackmdl				= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 		firedelay			= 4,
-		reloadspeed			= 2.0,
-		reloaddelay			= 40.0,
+		reloadspeed			= 6.0,
+		reloaddelay			= 16.0,
 
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
@@ -238,8 +238,8 @@ ACF_defineGun("AT-3 ASM", { --id
 		rocketmdl				= "models/missiles/at3.mdl",
 		rackmdl				= "models/missiles/at3.mdl",
 		firedelay			= 2,
-		reloadspeed			= 1.5,
-		reloaddelay			= 15.0,
+		reloadspeed			= 5,
+		reloaddelay			= 10.0,
 
 		maxlength			= 55,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
@@ -309,8 +309,8 @@ ACF_defineGun("AT-2 ASM", { --id
 		rocketmdl				= "models/missiles/at2.mdl",
 		rackmdl				= "models/missiles/at2.mdl",
 		firedelay			= 2,
-		reloadspeed			= 1.5,
-		reloaddelay			= 40.0,
+		reloadspeed			= 16,
+		reloaddelay			= 12.0,
 
 		maxlength			= 55,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.2,							-- Motor mass - motor casing. Used for ammo properties.
@@ -377,9 +377,9 @@ ACF_defineGun("FGM-148 ASM", {
 	round = {
 		rocketmdl				= "models/mcace/Jevelinemissile.mdl",
 		rackmdl				= "models/mcace/Jevelinemissile.mdl",
-		firedelay			= 0.5,
-		reloadspeed			= 1.0,
-		reloaddelay			= 60.0,
+		firedelay			= 1.5,
+		reloadspeed			= 10.0,
+		reloaddelay			= 25.0,
 
 		maxlength			= 110,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
@@ -446,8 +446,8 @@ ACF_defineGun("Spike-LR ASM", {
 		rocketmdl				= "models/missiles/arend/spikelr.mdl",
 		rackmdl				= "models/missiles/arend/spikelr_closed.mdl",
 		firedelay			= 4,
-		reloadspeed			= 1.0,
-		reloaddelay			= 60.0,
+		reloadspeed			= 10,
+		reloaddelay			= 25.0,
 
 		maxlength			= 60,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
@@ -521,8 +521,8 @@ ACF_defineGun("Ataka ASM", { --id
 		rocketmdl				= "models/missiles/9m120.mdl",
 		rackmdl				= "models/missiles/9m120.mdl",
 		firedelay			= 4,
-		reloadspeed			= 1.0,
-		reloaddelay			= 40.0,
+		reloadspeed			= 6.0,
+		reloaddelay			= 30.0,
 
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.7,							-- Motor mass - motor casing. Used for ammo properties.
@@ -592,8 +592,8 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		rocketmdl				= "models/missiles/agm_114.mdl",
 		rackmdl				= "models/missiles/agm_114.mdl",
 		firedelay			= 4,
-		reloadspeed			= 1.0,
-		reloaddelay			= 60.0,
+		reloadspeed			= 6.0,
+		reloaddelay			= 40.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
@@ -661,8 +661,8 @@ ACF_defineGun("Vikhr ASM", { --id
 		rocketmdl				= "models/missiles/arend/9k121.mdl",
 		rackmdl				= "models/missiles/arend/9k121_folded.mdl",
 		firedelay			= 3,
-		reloadspeed			= 1.0,
-		reloaddelay			= 40.0,
+		reloadspeed			= 6.0,
+		reloaddelay			= 30.0,
 
 		maxlength			= 105,							-- Length of missile. Used for ammo properties.
 		propweight			= 1.7,							-- Motor mass - motor casing. Used for ammo properties.

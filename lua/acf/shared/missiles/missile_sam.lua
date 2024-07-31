@@ -17,7 +17,7 @@ ACF_defineGunClass("SAM", {
 -- The FIM-92, a lightweight, medium-speed short-range anti-air missile.
 ACF_defineGun("FIM-92 SAM", {								-- id
 	name             = "FIM-92 Missile",
-	desc             = "The FIM-92 Stinger is a lightweight and versatile close-range air defense missile.\nWith a seek cone of 15 degrees and a sharply limited range that makes it useless versus high-flying targets, it is best to aim before firing and choose shots carefully.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: No\nTop Speed: 194 m/s",
+	desc             = "The FIM-92 Stinger is a lightweight and versatile close-range air defense missile.\nWith a seek cone of 15 degrees and a sharply limited range that makes it useless versus high-flying targets, it is best to aim before firing and choose shots carefully.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 194 m/s",
 	model            = "models/missiles/fim_92.mdl",
 	effect           = "ACE_MissileTiny",					--Tiny motor for tiny rocket
 	gunclass         = "SAM",
@@ -31,9 +31,9 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	round = {
 		rocketmdl				= "models/missiles/fim_92.mdl",
 		rackmdl				= "models/missiles/fim_92_folded.mdl",
-		firedelay			= 0.5,
-		reloadspeed			= 1.0,
-		reloaddelay			= 25,
+		firedelay			= 2.5,
+		reloadspeed			= 8.0,
+		reloaddelay			= 20,
 
 		--Former 125 and 1.5. Reduced blast from 107Mj to 60Mj. For reference a 100kg bomb has 117Kj.
 		maxlength			= 85,							-- Length of missile. Used for ammo properties.
@@ -59,7 +59,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.4							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
@@ -76,7 +76,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	seekcone           = 15,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
 	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity    = 1,
-	irccm				= true,
+	irccm				= false,
 
 	armdelay	= 0.15,									-- minimum fuse arming delay		-was 0.3
 	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
@@ -86,7 +86,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 -- The Mistral missile is a faster short range missile with greater range than fim92 but less agility
 ACF_defineGun("Mistral SAM", {								-- id
 	name             = "Mistral Missile",
-	desc             = "A very fast short range missile, faster and less agile than FIM-92. Mostly for Anti-Aircraft and Anti-Missile operations.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: No\nTop Speed: 204 m/s",
+	desc             = "A very fast short range missile, faster and less agile than FIM-92. Mostly for Anti-Aircraft and Anti-Missile operations.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 204 m/s",
 	model            = "models/missiles/fim_92_folded.mdl",
 	effect           = "ACE_MissileTiny",					-- Tiny motor for tiny rocket
 	gunclass         = "SAM",
@@ -100,9 +100,9 @@ ACF_defineGun("Mistral SAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/fim_92.mdl",
 		rackmdl				= "models/missiles/fim_92_folded.mdl",
-		firedelay			= 0.75,
-		reloadspeed			= 1.0,
-		reloaddelay			= 30.0,
+		firedelay			= 2.5,
+		reloadspeed			= 8.0,
+		reloaddelay			= 25.0,
 
 		--Formerly 130 and 1.5. Reduced blast from 112Mj to 72Mj. For reference a 100kg bomb has 117Kj.
 		maxlength			= 110,							-- Length of missile. Used for ammo properties.
@@ -128,7 +128,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.005,						-- percent speed loss per second
-		inertialcapable		= true,						-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= false,						-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.1							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 	},
 
@@ -143,7 +143,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 	seekcone			= 15,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
 	viewcone			= 70,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity		= 1,
-	irccm				= true,
+	irccm				= false,
 
 	guidelay   = 0,										-- Required time (in seconds) for missile to start guiding at target once launched
 	ghosttime  = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
@@ -168,9 +168,9 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 	round = {
 		rocketmdl			= "models/missiles/9m31.mdl",
 		rackmdl				= "models/missiles/9m31f.mdl",
-		firedelay			= 0.75,
-		reloadspeed			= 2.0,
-		reloaddelay			= 40.0,
+		firedelay			= 1.25,
+		reloadspeed			= 5.0,
+		reloaddelay			= 30.0,
 
 		--Formerly 190 and 1. Reduced blast from 213j to 120Mj. For reference a 100kg bomb has 117Kj.
 		maxlength			= 145,							-- Length of missile. Used for ammo properties.
@@ -181,7 +181,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 		turnrate			= 60,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 60,							-- Acceleration in m/s.
+		thrust				= 62,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -238,8 +238,8 @@ ACF_defineGun("VT-1 SAM", {										-- id
 		rocketmdl			= "models/missiles/arend/vt1.mdl",
 		rackmdl				= "models/missiles/arend/vt1_folded.mdl",
 		firedelay			= 0.75,
-		reloadspeed			= 2.0,
-		reloaddelay			= 40.0,
+		reloadspeed			= 5.0,
+		reloaddelay			= 30.0,
 
 		--Formerly 190 and 1. Reduced blast from 213j to 120Mj. For reference a 100kg bomb has 117Kj.
 		maxlength			= 145,							-- Length of missile. Used for ammo properties.
@@ -247,7 +247,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 65,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 70,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.3,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 60,							-- Acceleration in m/s.
@@ -306,7 +306,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 		rocketmdl			= "models/missiles/arend/9m311_unfolded.mdl",
 		rackmdl				= "models/missiles/arend/9m311_folded.mdl",
 		firedelay			= 0.75,
-		reloadspeed			= 2.0,
+		reloadspeed			= 5.0,
 		reloaddelay			= 40.0,
 
 		--Formerly 190 and 1. Reduced blast from 283j to 116Mj. For reference a 100kg bomb has 117Kj.
@@ -377,8 +377,8 @@ ACF_defineGun("9M331 SAM", {								-- id
 		rocketmdl			= "models/missiles/arend/9m331_unfolded.mdl",
 		rackmdl				= "models/missiles/arend/9m331_folded.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
-		reloaddelay			= 45,
+		reloadspeed			= 5.0,
+		reloaddelay			= 40,
 
 		maxlength			= 55,							-- Length of missile. Used for ammo properties.
 		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
@@ -447,8 +447,8 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 		rocketmdl			= "models/macc/9m38m1.mdl",
 		rackmdl				= "models/macc/9m38m1.mdl",
 		firedelay			= 1.0,
-		reloadspeed			= 1.5,
-		reloaddelay			= 60.0,
+		reloadspeed			= 10,
+		reloaddelay			= 45.0,
 
 
 		maxlength			= 110,							-- Length of missile. Used for ammo properties.

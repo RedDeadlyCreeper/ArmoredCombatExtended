@@ -38,7 +38,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		rocketmdl			= "models/missiles/aim9m.mdl",
 		rackmdl				= "models/missiles/aim9m.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 1.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
 
 		maxlength			= 140,							-- Length of missile. Used for ammo properties.
@@ -110,7 +110,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/aim7f.mdl",
 		rackmdl				= "models/missiles/arend/aim7f.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 1.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 30.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
@@ -181,7 +181,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/agm-88.mdl",
 		rackmdl				= "models/missiles/arend/agm-88.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 1.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 45.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
@@ -251,7 +251,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/kh31.mdl",
 		rackmdl				= "models/missiles/arend/kh31.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 60.0,
 
 
@@ -323,7 +323,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/agm65d.mdl",
 		rackmdl				= "models/missiles/arend/agm65d.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 80.0,
 
 
@@ -392,7 +392,7 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 		rocketmdl			= "models/macc/storm_shadow_open.mdl",
 		rackmdl				= "models/macc/storm_shadow_closed.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 80.0,
 
 
