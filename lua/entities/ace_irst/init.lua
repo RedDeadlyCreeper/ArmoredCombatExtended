@@ -223,7 +223,7 @@ function ENT:ScanForContraptions()
 	local AircraftAltitude = self.AircraftAltitude
 	local AircraftAccuracy = self.AircraftAccuracy
 
-	for Contraption in pairs(CFW.contraptions) do
+	for Contraption in pairs(CFW.Contraptions) do
 		if Contraption ~= SelfContraption then
 			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
 			HottestEntityTemp = HottestEntityTemp or 0
