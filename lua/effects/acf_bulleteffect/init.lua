@@ -78,10 +78,10 @@ do
 		else
 			--print("Creating Bullet Effect")
 			local BulletData = {}
-			BulletData.Crate = data:GetEntity()
+			BulletData.Gun = data:GetEntity()
 
-			--TODO: Check if it is actually a crate
-			if not IsValid(BulletData.Crate) then
+			--TODO: Check if it is actually a gun
+			if not IsValid(BulletData.Gun) then
 				RemoveBulletEntry( self )
 				return
 			end
@@ -91,14 +91,14 @@ do
 			BulletData.SimFlight    = data:GetStart() * 10
 			BulletData.SimPos       = data:GetOrigin()
 			BulletData.SimPosLast   = BulletData.SimPos
-			BulletData.Caliber      = BulletData.Crate:GetNWFloat( "Caliber", 10 )
-			BulletData.RoundMass    = BulletData.Crate:GetNWFloat( "ProjMass", 10 )
-			BulletData.FillerMass   = BulletData.Crate:GetNWFloat( "FillerMass" )
-			BulletData.WPMass       = BulletData.Crate:GetNWFloat( "WPMass" )
-			BulletData.DragCoef     = BulletData.Crate:GetNWFloat( "DragCoef", 1 )
-			BulletData.AmmoType     = BulletData.Crate:GetNWString( "AmmoType", "AP" )
+			BulletData.Caliber      = BulletData.Gun:GetNWFloat( "Caliber", 10 )
+			BulletData.RoundMass    = BulletData.Gun:GetNWFloat( "ProjMass", 10 )
+			BulletData.FillerMass   = BulletData.Gun:GetNWFloat( "FillerMass" )
+			BulletData.WPMass       = BulletData.Gun:GetNWFloat( "WPMass" )
+			BulletData.DragCoef     = BulletData.Gun:GetNWFloat( "DragCoef", 1 )
+			BulletData.AmmoType     = BulletData.Gun:GetNWString( "AmmoType", "AP" )
 
-			BulletData.Accel        = BulletData.Crate:GetNWVector( "Accel", Vector(0,0,-600))
+			BulletData.Accel        = BulletData.Gun:GetNWVector( "Accel", Vector(0,0,-600))
 
 			BulletData.LastThink    = CurTime() --ACF.CurTime
 			BulletData.Effect       = self.Entity
@@ -107,15 +107,15 @@ do
 			BulletData.HasSplashed = false
 			BulletData.InitialPos   = BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
 
-			BulletData.BulletModel  = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" )
+			BulletData.BulletModel  = BulletData.Gun:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" )
 
 			BulletData.Tracer         = ParticleEmitter( BulletData.SimPos )
 
-			self.hasTracer = (BulletData.Crate:GetNWFloat( "Tracer" ) > 0)
+			self.hasTracer = (BulletData.Gun:GetNWFloat( "Tracer" ) > 0)
 
 			if self.hasTracer then
 				BulletData.Counter        = 0
-				BulletData.TracerColour   = BulletData.Crate:GetNWVector( "TracerColour", BulletData.Crate:GetColor() ) or Vector(255,255,255)
+				BulletData.TracerColour   = BulletData.Gun:GetNWVector( "TracerColour", BulletData.Gun:GetColor() ) or Vector(255,255,255)
 			end
 
 

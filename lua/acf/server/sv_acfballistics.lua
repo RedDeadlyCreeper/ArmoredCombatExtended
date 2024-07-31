@@ -554,7 +554,7 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 			Effect:SetMaterialIndex( Index )	--Bullet Index
 			Effect:SetStart( Bullet.Flight / 10 )	--Bullet Direction
 			Effect:SetOrigin( Bullet.Pos )
-			Effect:SetEntity( Entity(Bullet["Crate"]) )
+			Effect:SetEntity( Bullet.Gun )
 			Effect:SetScale( 0 )
 			Effect:SetAttachment( IsMissile or 0 )
 		util.Effect( "ACF_BulletEffect", Effect, true, true )
