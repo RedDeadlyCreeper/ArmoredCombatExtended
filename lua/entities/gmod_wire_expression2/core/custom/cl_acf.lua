@@ -84,6 +84,7 @@ E2Helper.Descriptions["acfFire"] = "Sets the firing state of an ACF weapon.  Kil
 E2Helper.Descriptions["acfUnload"] = "Causes an ACF weapon to unload."
 E2Helper.Descriptions["acfReload"] = "Causes an ACF weapon to reload."
 E2Helper.Descriptions["acfMagRounds"] = "Returns the rounds remaining in the magazine of an ACF weapon."
+E2Helper.Descriptions["acfMunitions"] = "Returns the number of rounds of an ACF Ammo Crate."
 E2Helper.Descriptions["acfAmmoCount"] = "Returns the number of rounds in active ammo crates linked to an ACF weapon."
 E2Helper.Descriptions["acfTotalAmmoCount"] = "Returns the number of rounds in all ammo crates linked to an ACF weapon."
 E2Helper.Descriptions["acfGetCrew"] = "Returns a list of all the crew seats of an ACF Entity."

@@ -10,46 +10,54 @@ local GunTable  = ACF.Weapons.Guns
 local AmmoTable = ACF.Weapons.Ammo
 local LegacyAmmoTable = ACF.Weapons.LegacyAmmo
 
+local Inputs = {
+	"Active"
+}
+local Outputs = {
+	"Munitions (Returns the current number of rounds in this crate.)",
+	"Capacity (Returns the capacity of this crate.)"
+}
+
 function ENT:Initialize()
 
-	self.SpecialHealth	= true  --If true needs a special ACF_Activate function
-	self.SpecialDamage	= true  --If true needs a special ACF_OnDamage function
+	self.SpecialHealth       = true  --If true needs a special ACF_Activate function
+	self.SpecialDamage       = true  --If true needs a special ACF_OnDamage function
 
-	self.IsExplosive		= true
-	self.Exploding		= false
-	self.Damaged			= false
-	self.DamageDelay = 0
+	self.IsExplosive         = true
+	self.Exploding           = false
+	self.Damaged             = false
+	self.DamageDelay         = 0
 
-	self.CanUpdate		= true
-	self.Load			= false
-	self.EmptyMass		= 1
-	self.AmmoMassMax		= 0
-	self.NextMassUpdate	= 0
+	self.CanUpdate           = true
+	self.Load                = false
+	self.EmptyMass           = 1
+	self.AmmoMassMax         = 0
+	self.NextMassUpdate      = 0
 
-	self.Ammo			= 0
-	self.IsTwoPiece		= false
+	self.Ammo                = 0
+	self.IsTwoPiece          = false
 
-	self.NextLegalCheck	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal			= true
-	self.LegalIssues		= ""
+	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal               = true
+	self.LegalIssues         = ""
 
-	self.Active			= false
-	self.Master			= {}
-	self.Sequence		= 0
+	self.Active              = false
+	self.Master              = {}
+	self.Sequence            = 0
 
-	self.Interval		= 1		-- Think Interval when its not damaged
-	self.ExplosionInterval  = 0.03	-- Base Think Interval when its damaged and its about to explode
+	self.Interval            = 1		-- Think Interval when its not damaged
+	self.ExplosionInterval   = 0.03	-- Base Think Interval when its damaged and its about to explode
 
-	self.Capacity		= 1
-	self.AmmoMassMax		= 1
-	self.Caliber			= 1
-	self.RoFMul			= 1
-	self.LastMass		= 1
+	self.Capacity            = 1
+	self.AmmoMassMax         = 1
+	self.Caliber             = 1
+	self.RoFMul              = 1
+	self.LastMass            = 1
 
-	self.Inputs			= Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
-	self.Outputs			= Wire_CreateOutputs( self, { "Munitions" } )
+	self.Inputs              = Wire_CreateInputs( self, Inputs ) --, "Fuse Length"
+	self.Outputs             = Wire_CreateOutputs( self, Outputs )
 
-	ACF.AmmoCrates		= ACF.AmmoCrates or {}
+	ACF.AmmoCrates           = ACF.AmmoCrates or {}
 
 end
 
@@ -628,11 +636,11 @@ do
 		-- end capacity calculations
 		end
 
-		self.AmmoMassMax = AmmoMaxMass
-		self.Capacity	= Capacity
-		self.Volume	= Vol --Used by the missile reload bonus
-		self.Caliber	= AmmoGunData.caliber or 1
-		self.RoFMul	= self.IsTwoPiece and 0.3 or 0						--30% ROF penalty for 2 piece
+		self.AmmoMassMax    = AmmoMaxMass
+		self.Capacity       = Capacity
+		self.Volume         = Vol --Used by the missile reload bonus
+		self.Caliber        = AmmoGunData.caliber or 1
+		self.RoFMul         = self.IsTwoPiece and 0.3 or 0						--30% ROF penalty for 2 piece
 
 		self:SetNWString( "Ammo", self.Ammo )
 		self:SetNWString( "WireName", WireName )
@@ -640,6 +648,7 @@ do
 		self.NetworkData = ACF.RoundTypes[self.BulletData.Type].network
 		self:NetworkData( self.BulletData )
 
+		Wire_TriggerOutput( self, "Capacity", self.Capacity )
 		self:UpdateOverlayText()
 
 	end
