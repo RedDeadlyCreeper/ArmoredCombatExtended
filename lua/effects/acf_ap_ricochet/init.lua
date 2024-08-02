@@ -49,16 +49,16 @@ function EFFECT:Init( data )
 		local Mat = SurfaceTr.MatType
 		MatVal = ACE_GetMaterialName( Mat )
 
+		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
+			MatVal = "Metal"
+		end
+
 		local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
 		local SMKColor = Color( SmokeColor.r, SmokeColor.g, SmokeColor.b, 255 ) --Used to prevent it from overwriting the global smokecolor :/
 		local AmbLight = render.GetLightColor( self.Origin ) * 2 + render.GetAmbientLightColor()
 		SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ))
 		SMKColor.g = math.floor(SMKColor.g * math.Clamp( AmbLight.y, 0, 1 ))
 		SMKColor.b = math.floor(SMKColor.b * math.Clamp( AmbLight.z, 0, 1 ))
-
-		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
-			MatVal = "Metal"
-		end
 
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )

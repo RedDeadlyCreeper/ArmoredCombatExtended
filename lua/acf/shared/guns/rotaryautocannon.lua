@@ -124,24 +124,44 @@ do
 				end
 			end
 
-			local Dust = Effect.Emitter:Add("effects/muzzleflash" .. math.random(1,4), Effect.Origin - Effect.DirVec * size * 10 )
+			local Dust = Effect.Emitter:Add("effects/muzzleflash" .. math.random(1,4), Effect.Origin - Effect.DirVec * size * 1 )
 
 			if Dust then
-				Dust:SetVelocity(Effect.DirVec * size * 55 + Effect.GunVelocity)
+				Dust:SetVelocity(Effect.DirVec * size * 100 + Effect.GunVelocity)
 				Dust:SetLifeTime(0)
-				Dust:SetDieTime(0.2 * (size / 3))
+				Dust:SetDieTime(0.15 * (size / 3))
 				Dust:SetStartAlpha(255)
 				Dust:SetEndAlpha(255)
-				Dust:SetStartSize(0.5 * size)
+				Dust:SetStartSize(0.1 * size)
 				Dust:SetEndSize(7 * size)
 				Dust:SetRoll(math.Rand(150, 360))
 				Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 				Dust:SetAirResistance( 0 )
 				Dust:SetGravity(Vector(0, 0, 0))
 				Dust:SetLighting( false )
-				local Length = 25 * size
-				Dust:SetStartLength( Length )
-				Dust:SetEndLength( Length * 1 )
+				--local Length = 25 * size
+				--Dust:SetStartLength( Length )
+				--Dust:SetEndLength( Length * 1 )
+			end
+
+			local Dust = Effect.Emitter:Add("sprites/orangeflare1", Effect.Origin - Effect.DirVec * size * 1 )
+
+			if Dust then
+				Dust:SetVelocity(Effect.DirVec * size * 80 + Effect.GunVelocity)
+				Dust:SetLifeTime(0)
+				Dust:SetDieTime(0.15 * (size / 3))
+				Dust:SetStartAlpha(100)
+				Dust:SetEndAlpha(100)
+				Dust:SetStartSize(0.1 * size)
+				Dust:SetEndSize(7 * size)
+				Dust:SetRoll(math.Rand(150, 360))
+				Dust:SetRollDelta(math.Rand(-0.2, 0.2))
+				Dust:SetAirResistance( 0 )
+				Dust:SetGravity(Vector(0, 0, 0))
+				Dust:SetLighting( false )
+				--local Length = 25 * size
+				--Dust:SetStartLength( Length )
+				--Dust:SetEndLength( Length * 1 )
 			end
 
 			local Dust = Effect.Emitter:Add("effects/muzzleflash" .. math.random(1,4), Effect.Origin  )
@@ -178,7 +198,7 @@ do
 				Dust:SetLighting( false )
 				Dust:SetColor( 255, 0, 0 )
 			end
-
+			--[[
 			local Dust = Effect.Emitter:Add("effects/ar2_altfire1b", Effect.Origin  )
 
 			if Dust then
@@ -195,6 +215,7 @@ do
 				Dust:SetGravity(Vector(0, 0, 0))
 				Dust:SetLighting( false )
 			end
+			]]--
 		end,
 	})
 end

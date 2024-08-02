@@ -74,6 +74,7 @@ function EFFECT:Init( data )
 		self.Id = "AP"
 		self.Caliber = 1 -- If you lose the crate at this point, adding a 10cm (100mm) could lead to cases like doing huge sparks from a 7.62mm MG...
 	end
+	self.Id            = ValidCrate and self.AmmoCrate:GetNWString( "AmmoType", "AP" ) or "AP"
 
 	self.Emitter     = ParticleEmitter( self.Origin )
 
@@ -90,8 +91,8 @@ function EFFECT:Init( data )
 
 		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
 			MatVal = "Metal"
-			self.HitNorm = -self.HitNorm
-			self.DirVec = -self.DirVec
+			--self.HitNorm = -self.HitNorm
+			--self.DirVec = -self.DirVec
 			--[[local TEnt = SurfaceTr.Entity
 				--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
 				--TODO: Add clienside way to get ACF Material

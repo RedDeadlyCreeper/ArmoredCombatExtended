@@ -114,22 +114,22 @@ function EFFECT:StartSmoke( _, SmokeColor, ShootVector, WPRadius, SRadius ) --GT
 			Smoke:SetColor(SmokeColor.x, SmokeColor.y, SmokeColor.z)
 		end
 
-		for _ = 0, 5 do
+		for _ = 0, 7 do
 
 		local Smoke = self.Emitter:Add("effects/splash2", self.Origin)
 		if Smoke then
 			Smoke:SetVelocity( 1.5 * Speed * (snorm + VectorRand() * 0.4) )
 			Smoke:SetLifeTime(0)
-			Smoke:SetDieTime(StartTime * 2)
+			Smoke:SetDieTime(StartTime * 1.5)
 			Smoke:SetStartAlpha(255)
 			Smoke:SetEndAlpha(30)
-			Smoke:SetStartSize(WPRadius * SmokeRadiusMul / StartTime / 32 * 1)
-			Smoke:SetEndSize(WPRadius * SmokeRadiusMul / 32 )
+			Smoke:SetStartSize(WPRadius * SmokeRadiusMul / StartTime / 24)
+			Smoke:SetEndSize(WPRadius * SmokeRadiusMul / 24 )
 			Smoke:SetAirResistance(0)
 			Smoke:SetGravity(gravity1 * 3)
 			Smoke:SetCollide( true )
 			Smoke:SetColor(SmokeColor.x, SmokeColor.y, SmokeColor.z)
-			local Length = 25 * WPRadius * SmokeRadiusMul / StartTime / 32 * 1
+			local Length = 25 * WPRadius * SmokeRadiusMul / StartTime / 38
 			Smoke:SetStartLength( Length )
 			Smoke:SetEndLength( Length * 1 )
 		end
