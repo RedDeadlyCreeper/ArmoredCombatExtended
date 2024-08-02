@@ -74,7 +74,6 @@ function EFFECT:Init( data )
 		self.Id = "AP"
 		self.Caliber = 1 -- If you lose the crate at this point, adding a 10cm (100mm) could lead to cases like doing huge sparks from a 7.62mm MG...
 	end
-	self.Id            = ValidCrate and self.AmmoCrate:GetNWString( "AmmoType", "AP" ) or "AP"
 
 	self.Emitter     = ParticleEmitter( self.Origin )
 
