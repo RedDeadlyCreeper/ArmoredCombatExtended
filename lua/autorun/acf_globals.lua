@@ -151,6 +151,9 @@ ACF.SpallMult           = 1
 
 ACF.MissileVelocityMul	= 3					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
 
+--In case the recoil torque broke too many tanks, allows the owner to disable recoil torque. Has CVAR
+ACF.UseLegacyRecoil = 0
+
 if CLIENT then
 	ACF.KillIconColor	= Color(200, 200, 48)
 else
@@ -237,6 +240,8 @@ if SERVER then
 	--Smoke
 	CreateConVar("acf_wind", 600, FCVAR_ARCHIVE)
 
+	--Uses non-torqueing recoil if there are problems
+	CreateConVar("acf_legacyrecoil", 1, FCVAR_ARCHIVE)
 
 	function ACF_CVarChangeCallback(CVar, _, New)
 
@@ -260,6 +265,8 @@ if SERVER then
 			ACF.ScaledHEMax = math.max(New,50)
 		elseif CVar == "acf_explosions_scaled_ents_max" then
 			ACF.ScaledEntsMax = math.max(New,1)
+		elseif CVar == "acf_legacyrecoil" then
+			ACF.UseLegacyRecoil = math.floor(math.Clamp(New, 0, 1))
 		elseif CVar == "acf_enable_dp" then
 			if ACE_SendDPStatus then
 				ACE_SendDPStatus()
@@ -277,6 +284,7 @@ if SERVER then
 	cvars.AddChangeCallback("acf_debris_children", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_explosions_scaled_he_max", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_explosions_scaled_ents_max", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legacyrecoil", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_enable_dp", ACF_CVarChangeCallback)
 
 
