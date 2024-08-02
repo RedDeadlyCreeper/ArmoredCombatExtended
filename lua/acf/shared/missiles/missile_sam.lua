@@ -31,7 +31,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	round = {
 		rocketmdl				= "models/missiles/fim_92.mdl",
 		rackmdl				= "models/missiles/fim_92_folded.mdl",
-		firedelay			= 2.5,
+		firedelay			= 2.0,
 		reloadspeed			= 8.0,
 		reloaddelay			= 20,
 
@@ -46,15 +46,15 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 
 		thrust				= 120,							-- Acceleration in m/s.
 		burntime			= 2.5,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0.3,
+		startdelay			= 0,
 
-		launchkick			= 30,							-- Speed missile starts with on launch in m/s
+		launchkick			= 40,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
 		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
 		boostertime			= 0,							-- Time in seconds for booster runtime
-		boostdelay			= 0,							-- Delay in seconds before booster activates.
+		boostdelay			= 0.15,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
@@ -73,7 +73,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 				["4x FIM-92"] = true
 			},
 
-	seekcone           = 15,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
+	seekcone           = 35,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
 	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity    = 1,
 	irccm				= false,
@@ -115,7 +115,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 
 		thrust				= 190,							-- Acceleration in m/s.
 		burntime			= 4,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0.2,
+		startdelay			= 0,
 
 		launchkick			= 30,							-- Speed missile starts with on launch in m/s
 
@@ -140,7 +140,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 					["2x FIM-92"] = true
 				},
 
-	seekcone			= 15,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
+	seekcone			= 35,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 35
 	viewcone			= 70,										-- getting outside this cone will break the lock.  Divided by 2.	--was 55
 	SeekSensitivity		= 1,
 	irccm				= false,
@@ -211,9 +211,9 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 						["4x Strela-1"] = true
 					},
 
-	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone           = 16,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 1,
+	SeekSensitivity    = 0.8,
 
 	armdelay	= 0.15,									-- minimum fuse arming delay
 	guidelay           = 0.75,									-- Required time (in seconds) for missile to start guiding at target once launched
@@ -278,7 +278,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 				["1x VT-1"] = true
 			},
 
-	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone           = 12,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
 
 	armdelay	= 0.15,									-- minimum fuse arming delay
@@ -347,7 +347,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 				["1x 9m311"] = true
 			},
 
-	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone           = 12,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
 
 	armdelay	= 0.15,									-- minimum fuse arming delay
@@ -417,7 +417,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 						["1x9M331 Pod"] = true
 				},
 
-	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone           = 12,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone           = 60,									-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
@@ -486,7 +486,7 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 1,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	seekcone           = 12,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
 	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 	irccm				= true,
