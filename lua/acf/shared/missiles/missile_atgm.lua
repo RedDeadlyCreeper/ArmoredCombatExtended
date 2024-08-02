@@ -45,8 +45,8 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 37,							-- Acceleration in m/s.
-		burntime			= 7,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 44,							-- Acceleration in m/s.
+		burntime			= 9,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 30,							-- Speed missile starts with on launch in m/s
@@ -114,8 +114,8 @@ ACF_defineGun("9M113 ATGM", {									-- id
 		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 18,							-- Acceleration in m/s.
-		burntime			= 6,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 22,							-- Acceleration in m/s.
+		burntime			= 8,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 10,							-- Speed missile starts with on launch in m/s
@@ -180,8 +180,8 @@ ACF_defineGun("9M133 ASM", {									-- id
 		finefficiency		= 2.0,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 12,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 20,							-- Acceleration in m/s.
-		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 24,							-- Acceleration in m/s.
+		burntime			= 12,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 10,							-- Speed missile starts with on launch in m/s
@@ -250,8 +250,8 @@ ACF_defineGun("AT-3 ASM", { --id
 		finefficiency		= 0.7,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 60,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 5,							-- Acceleration in m/s.
-		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 6,							-- Acceleration in m/s.
+		burntime			= 12,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 30,							-- Speed missile starts with on launch in m/s
@@ -321,8 +321,8 @@ ACF_defineGun("AT-2 ASM", { --id
 		finefficiency		= 0.6,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 30,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 8,							-- Acceleration in m/s.
-		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 10,							-- Acceleration in m/s.
+		burntime			= 14,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 30,							-- Speed missile starts with on launch in m/s
@@ -533,8 +533,8 @@ ACF_defineGun("Ataka ASM", { --id
 		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 5,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 50,							-- Acceleration in m/s.
-		burntime			= 5,							-- time in seconds for rocket motor to burn at max proppelant.
+		thrust				= 60,							-- Acceleration in m/s.
+		burntime			= 7,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 20,							-- Speed missile starts with on launch in m/s
