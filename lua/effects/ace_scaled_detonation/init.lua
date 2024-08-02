@@ -32,6 +32,9 @@ function EFFECT:Init( data )
 		end
 	end
 
+	local Mat = Ground.MatType or 0
+	local Material = ACE_GetMaterialName( Mat )
+
 	if Ground.HitNonWorld then --Overide with ACE prop material
 		Mat = Mat
 		--self.HitNorm = -self.HitNorm
@@ -39,12 +42,10 @@ function EFFECT:Init( data )
 		--local TEnt = Ground.Entity
 			--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
 			--TODO: Add clienside way to get ACF Material
-		MatVal = "Metal"
+			Material = "Metal"
 	end
 
-	local Mat = Ground.MatType or 0
-	local Material = ACE_GetMaterialName( Mat )
-	local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
+	local SmokeColor = ACE.DustMaterialColor[Material] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
 	local SMKColor = Color( SmokeColor.r, SmokeColor.g, SmokeColor.b, 150 ) --Used to prevent it from overwriting the global smokecolor :/
 	local AmbLight = render.GetLightColor( self.Origin + self.DirVec * -3 ) * 2 + render.GetAmbientLightColor()
 	SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ) * 1)

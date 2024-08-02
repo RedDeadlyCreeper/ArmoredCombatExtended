@@ -74,6 +74,7 @@ function EFFECT:Init( data )
 	else
 		self.Caliber = 1
 	end
+	self.Id            = ValidCrate and self.AmmoCrate:GetNWString( "AmmoType", "AP" ) or "AP"
 
 	self.Emitter     = ParticleEmitter( self.Origin )
 
@@ -91,15 +92,13 @@ function EFFECT:Init( data )
 
 		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
 			MatVal = "Metal"
-			self.HitNorm = -self.HitNorm
-			self.DirVec = -self.DirVec
+			--self.HitNorm = -self.HitNorm
+			--self.DirVec = -self.DirVec
 			--[[local TEnt = SurfaceTr.Entity
 				--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
 				--TODO: Add clienside way to get ACF Material
 				MatVal = "Metal"
 			]]--
-		else
-			print("HitWorld")
 		end
 
 		local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.

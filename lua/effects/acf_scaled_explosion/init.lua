@@ -32,18 +32,20 @@ function EFFECT:Init( data )
 		end
 	end
 
+	local Mat = Ground.MatType or 0
+	--print(Ground.MatType)
+	local Material = ACE_GetMaterialName( Mat )
+
 	--Overide with ACE prop material
 	if Ground.HitNonWorld then
 		Mat = Mat
 
 		--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
 		--TODO: Add clienside way to get ACF Material
-		MatVal = "Metal"
+		Material = "Metal"
 	end
 
-	local Mat = Ground.MatType or 0
-	local Material = ACE_GetMaterialName( Mat )
-	local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
+	local SmokeColor = ACE.DustMaterialColor[Material] or ACE.DustMaterialColor["Dirt"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
 	local SMKColor = Color( SmokeColor.r, SmokeColor.g, SmokeColor.b, 150 ) --Used to prevent it from overwriting the global smokecolor :/
 	local AmbLight = render.GetLightColor( self.Origin + self.DirVec * -3 ) * 2 + render.GetAmbientLightColor()
 	SMKColor.r = math.floor(SMKColor.r * math.Clamp( AmbLight.x, 0, 1 ) * 1)
@@ -85,7 +87,7 @@ function EFFECT:Init( data )
 	ACE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
 	local PlayerDist = (LocalPlayer():GetPos() - self.Origin):Length() / 20 + 0.001 --Divide by 0 is death, 20 is roughly 39.37 / 2
-	if PlayerDist < self.Radius * 10 then
+	if PlayerDist < self.Radius * 10 and not LocalPlayer():HasGodMode() then
 		local Amp          = math.min(self.Radius * 0.5 / math.max(PlayerDist,1),40)
 		util.ScreenShake( self.Origin, 50 * Amp, 1.5 / Amp, self.Radius / 7.5, 0 , true)
 	end
@@ -117,10 +119,10 @@ function EFFECT:ExplosionSmall()
 	if Flash then
 		Flash:SetLifeTime(0)
 		Flash:SetDieTime(0.15)
-		Flash:SetStartAlpha(255)
-		Flash:SetEndAlpha(255)
-		Flash:SetStartSize(4.5 * Radius)
-		Flash:SetEndSize(23 * Radius)
+		Flash:SetStartAlpha(100)
+		Flash:SetEndAlpha(100)
+		Flash:SetStartSize(3 * Radius)
+		Flash:SetEndSize(12 * Radius)
 		Flash:SetRoll(math.Rand(150, 360))
 		Flash:SetRollDelta(math.Rand(-0.3, 0.3))
 		Flash:SetLighting( false )
@@ -137,7 +139,7 @@ function EFFECT:ExplosionSmall()
 			Dust:SetDieTime(Lifetime)
 			Dust:SetStartAlpha(100)
 			Dust:SetEndAlpha(20)
-			local size = math.Rand(0.45, 3.375) * Radius
+			local size = math.Rand(0.45, 3.6) * Radius
 			Dust:SetStartSize(size)
 			Dust:SetEndSize(size * 0.25)
 			Dust:SetRoll(math.Rand(150, 360))
@@ -147,7 +149,7 @@ function EFFECT:ExplosionSmall()
 			Dust:SetLighting( false )
 			local ColorRandom = VectorRand() * 15
 			Dust:SetColor(240 + ColorRandom.x, 205 + ColorRandom.y, 135 + ColorRandom.z)
-			local Length = math.Rand(15, 37.5) * Radius
+			local Length = math.Rand(20, 40) * Radius
 			Dust:SetStartLength( Length )
 		end
 	end
