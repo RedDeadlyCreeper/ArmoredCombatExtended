@@ -868,7 +868,7 @@ local function ACE_ApplyForceOffset(Phys, Force, Pos, ForceVal) --For some reaso
 
 	Phys:ApplyTorqueCenter(angf)
 end
-]]--
+
 --Handles ACE forces (HE Push, Recoil, etc)
 function ACF_KEShove(Target, Pos, Vec, KE, Inflictor)
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE, Inflictor)
