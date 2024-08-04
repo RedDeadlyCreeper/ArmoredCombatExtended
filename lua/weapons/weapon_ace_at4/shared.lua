@@ -158,42 +158,42 @@ function SWEP:PrimaryAttack()
 			local MDat = {
 				Owner = owner,
 				Launcher = owner,
-			
+
 				Pos = owner:GetShootPos() + owner:GetAimVector() * 75,
 				Ang = owner:GetAimVector():Angle(),
-			
+
 				Mdl = "models/munitions/round_100mm_mortar_shot.mdl",
-			
+
 				TurnRate = 0,
 				FinMul = 0,
 				ThrusterTurnRate = 0,
-			
+
 				InitialVelocity = 134,
 				Thrust = 0,
 				BurnTime = 5,
 				MotorDelay = 0,
-			
+
 				BoostThrust = 0,
 				BoostTime = 0,
 				BoostDelay = 0,
-			
+
 				Drag = 0.003,
 				GuidanceName = "Dumb",
 				FuseName = "Contact",
 				HasInertial = false,
 				HasDatalink = false,
-			
+
 				ArmDelay = 0.01,
 				DelayPrediction = 0.1,
 				ArmorThickness = 8,
-		
-				MotorSound = "acf_extra/airfx/rpg_fire.wav",----
+
+				MotorSound = "acf_extra/airfx/rpg_fire.wav",
 				BoostEffect = "Rocket Motor ATGM",
 				MotorEffect = "Rocket Motor ATGM"
 			}
 			local BData = self.BulletData
 			BData.BulletData = nil
-			
+
 			BData.FakeCrate = ents.Create("acf_fakecrate2")
 			BData.FakeCrate:RegisterTo(BData)
 			BData.Crate = BData.FakeCrate:EntIndex()

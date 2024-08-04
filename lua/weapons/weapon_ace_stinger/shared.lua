@@ -21,7 +21,7 @@ SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
 SWEP.TrackSound = "acf_extra/airfx/radar_track.wav"
-SWEP.LockSound = "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav"
+SWEP.LockSound = "acf_extra/ACE/missiles/Seeker/SidewinderTone.wav"
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -359,42 +359,42 @@ function SWEP:PrimaryAttack()
 		local MDat = {
 			Owner = owner,
 			Launcher = owner,
-		
+
 			Pos = owner:GetShootPos() + owner:GetAimVector() * 75,
 			Ang = owner:GetAimVector():Angle(),
-		
+
 			Mdl = "models/missiles/fim_92.mdl",
-		
+
 			TurnRate = 320,
 			FinMul = 0.5,
 			ThrusterTurnRate = 0,
-		
+
 			InitialVelocity = 50,
 			Thrust = 100,
 			BurnTime = 3.5,
 			MotorDelay = 0,
-		
+
 			BoostThrust = 0,
 			BoostTime = 0,
 			BoostDelay = 0,
-		
+
 			Drag = 0.003,
 			GuidanceName = "Infrared",
 			FuseName = "Overshoot",
 			HasInertial = false,
 			HasDatalink = false,
-		
+
 			ArmDelay = 0.2,
 			DelayPrediction = 0.15,
 			ArmorThickness = 16,
-	
+
 			MotorSound = "acf_extra/ACE/missiles/Launch/Strela.wav",
 			BoostEffect = "ACE_MissileTiny",
 			MotorEffect = "ACE_MissileTiny"
 		}
 		local BData = self.BulletData
 		BData.BulletData = nil
-		
+
 		BData.FakeCrate = ents.Create("acf_fakecrate2")
 		BData.FakeCrate:RegisterTo(BData)
 		BData.Crate = BData.FakeCrate:EntIndex()
