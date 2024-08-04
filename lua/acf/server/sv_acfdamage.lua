@@ -859,8 +859,8 @@ end
 
 --helper function to replace ENT:ApplyForceOffset()
 --Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
---[[local m_insq = 1 / 39.37 ^ 2
-local function ACE_ApplyForceOffset(Phys, Force, Pos, ForceVal) --For some reason this function somestimes reverses the impulse. I don't know why. Deal with this another day.
+local m_insq = 1 / 39.37 ^ 2
+local function ACE_ApplyForceOffset(Phys, Force, Pos) --For some reason this function somestimes reverses the impulse. I don't know why. Deal with this another day.
 	--Old
 	Phys:ApplyForceCenter(Force)
 	local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
@@ -868,7 +868,7 @@ local function ACE_ApplyForceOffset(Phys, Force, Pos, ForceVal) --For some reaso
 
 	Phys:ApplyTorqueCenter(angf)
 end
-]]--
+
 --Handles ACE forces (HE Push, Recoil, etc)
 function ACF_KEShove(Target, Pos, Vec, KE, Inflictor)
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE, Inflictor)
@@ -902,10 +902,11 @@ function ACF_KEShove(Target, Pos, Vec, KE, Inflictor)
 	--local Res	= Local + phys:GetMassCenter()
 	--Pos			= parent:LocalToWorld(Res)
 
-	--ACE_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos, KE ) --Had a lot of odd quirks including reversing torque angles.
-
-	phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
-
+	if ACF.UseLegacyRecoil < 1 then
+		ACE_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos ) --Had a lot of odd quirks including reversing torque angles.
+	else
+		phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
+	end
 end
 
 -- helper function to process children of an acf-destroyed prop
