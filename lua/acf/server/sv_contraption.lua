@@ -13,7 +13,7 @@ ACE.contraptionEnts   = {} --table which will have all registered ents
 
 
 
-
+ACE.critEnts          = {} --List of all critical entities in ACE. Used for HE penetration calculations.
 
 ACE.contraptionEnts   = {} --table which will have all registered ents
 ACE.radarEntities     = {} --for tracking radar usage
@@ -56,6 +56,27 @@ local AllowedEnts = {
 	["primitive_ladder"]          = true
 }
 
+local CritEnts = {
+	["acf_rack"]                  = true,
+	["prop_vehicle_prisoner_pod"] = true,
+	["ace_crewseat_gunner"]       = true,
+	["ace_crewseat_loader"]       = true,
+	["ace_crewseat_driver"]       = true,
+	["ace_rwr_dir"]               = true,
+	["ace_rwr_sphere"]            = true,
+	["acf_missileradar"]          = true,
+	["acf_opticalcomputer"]       = true,
+	["ace_ecm"]                   = true,
+	["ace_trackingradar"]         = true,
+	["ace_searchradar"]           = true,
+	["ace_irst"]                  = true,
+	["acf_gun"]                   = true,
+	["acf_ammo"]                  = true,
+	["acf_engine"]                = true,
+	["acf_fueltank"]              = true,
+	["acf_gearbox"]               = true
+}
+
 --used mostly by contraption. Put here any entity which contains IsExplosive boolean
 ACE.ExplosiveEnts = {
 	["acf_ammo"]     = true,
@@ -79,6 +100,12 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 		if not IsValid(Ent) then return end
 
 		local Eclass = Ent:GetClass()
+
+		-- check if ent class is in whitelist
+		if CritEnts[Eclass] then
+			table.insert(ACE.critEnts, Ent)
+			print("Adding - Count: " .. #ACE.critEnts)
+		end
 
 		-- check if ent class is in whitelist
 		if AllowedEnts[Eclass] then
@@ -122,6 +149,20 @@ end)
 hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 
 	local Eclass = Ent:GetClass()
+
+	-- check if ent class is in whitelist
+	if CritEnts[Eclass] then
+
+		for i, critent in ipairs(ACE.critEnts) do
+			if IsValid(critent) and critent == Ent then
+				table.remove(ACE.critEnts, i)
+				print("Removing critent")
+				print("Removing - Count: " .. #ACE.critEnts)
+				break
+			end
+		end
+
+	end
 
 	--Assuming that our table has whitelisted ents
 	if AllowedEnts[Eclass] then

@@ -83,16 +83,19 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 	local FRTargets	= ACF_HEFind( Hitpos, Radius * ACF.HEFragRadiusMul )		-- Will give tiny HE just a pinch of radius to help it hit the player
 
+	--Only do if allowed
+
 	--local Targets = {} --Recalculates targets inside HE blast
-	--local RadSq = Radius^2 --Used for square distance test
+	local RadSq = Radius^2 --Used for square distance test
 	--Saved for later HE Pen table
-	--for _, ent in pairs( FRTargets ) do
-		--	--skip any undesired ent
-		--	if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
+	for _, ent in pairs( ACE.critEnts ) do
+		--skip any undesired ent
+		local epos = ent:GetPos()
+		if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
 
-		--	table.insert( Targets, ent )
+	--table.insert( Targets, ent )
 
-	--end
+	end
 
 	while LoopKill and Power > 0 do
 
