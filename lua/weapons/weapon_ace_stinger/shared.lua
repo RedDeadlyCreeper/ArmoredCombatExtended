@@ -21,7 +21,7 @@ SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
 SWEP.TrackSound = "acf_extra/airfx/radar_track.wav"
-SWEP.LockSound = "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav"
+SWEP.LockSound = "acf_extra/ACE/missiles/Seeker/SidewinderTone.wav"
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -353,38 +353,54 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
 	if SERVER and IsValid( self.TarEnt ) and self:GetLaunchAuth() then
-		local ent = ents.Create( "ace_missile_swep_guided" )
 
 		local owner = self:GetOwner()
 
-		if IsValid( ent ) then
-			ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 100)
-			ent:SetAngles(owner:GetAimVector():Angle() + Angle(0, 0, 0))
-			ent:Spawn()
-			ent:SetOwner(Gun)
-			ent:SetModel("models/missiles/fim_92.mdl")
+		local MDat = {
+			Owner = owner,
+			Launcher = owner,
 
-			timer.Simple(0.1, function()
-				ParticleEffectAttach("Rocket Motor FFAR", 4, ent, 1)
-			end)
+			Pos = owner:GetShootPos() + owner:GetAimVector() * 75,
+			Ang = owner:GetAimVector():Angle(),
 
-			ent.MissileThrust = 12000
-			ent.MissileBurnTime = 2
-			ent.EnergyRetention = 0.98
-			ent.MaxTurnRate = 60
-			ent.RadioDist = 0
-			ent.DestructOnMiss = true
-			ent.FuseTime = 17
-			ent.TrackCone = 50
-			ent.tarent = self.TarEnt
-			ent.Bulletdata = self.BulletData
-			ent.LeadMul = 1.5 --A higher leadmul means it's easier to force the missile to bleed a missile's energy. Lower can potentially be more efficient by reducing overcorrection
-			ent.DamageOwner = owner
+			Mdl = "models/missiles/fim_92.mdl",
 
-			ent:SetOwner(owner)
-			ent:CPPISetOwner(owner)
-		end
+			TurnRate = 320,
+			FinMul = 0.5,
+			ThrusterTurnRate = 0,
 
+			InitialVelocity = 50,
+			Thrust = 100,
+			BurnTime = 3.5,
+			MotorDelay = 0,
+
+			BoostThrust = 0,
+			BoostTime = 0,
+			BoostDelay = 0,
+
+			Drag = 0.003,
+			GuidanceName = "Infrared",
+			FuseName = "Overshoot",
+			HasInertial = false,
+			HasDatalink = false,
+
+			ArmDelay = 0.2,
+			DelayPrediction = 0.15,
+			ArmorThickness = 16,
+
+			MotorSound = "acf_extra/ACE/missiles/Launch/Strela.wav",
+			BoostEffect = "ACE_MissileTiny",
+			MotorEffect = "ACE_MissileTiny"
+		}
+		local BData = self.BulletData
+		BData.BulletData = nil
+
+		BData.FakeCrate = ents.Create("acf_fakecrate2")
+		BData.FakeCrate:RegisterTo(BData)
+		BData.Crate = BData.FakeCrate:EntIndex()
+		--self:DeleteOnRemove(BData.FakeCrate)
+
+		GenerateMissile(MDat,BData.FakeCrate,BData)
 		self:EmitSound(self.Primary.Sound)
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		self:GetOwner():SetAnimation(PLAYER_ATTACK1)

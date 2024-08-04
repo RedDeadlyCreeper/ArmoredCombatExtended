@@ -67,7 +67,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Wire"},
+	guidance	= {"Dumb", "Wire", "Beam Riding"},
 	fuses		= {"Contact", "Optical", "Plunging"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.

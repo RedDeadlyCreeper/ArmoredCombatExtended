@@ -151,33 +151,55 @@ function SWEP:PrimaryAttack()
 
 	self:SetNextPrimaryFire( CurTime() + (1 / self.FireRate) )
 
-	if SERVER then
-		local ent = ents.Create( "ace_missile_swep_guided" )
+		if SERVER then
 
-		local owner = self:GetOwner()
+			local owner = self:GetOwner()
 
-		if IsValid( ent ) then
-			ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 75)
-			ent:SetAngles(owner:GetAimVector():Angle() + Angle(0, 0, 0))
-			ent:Spawn()
-			ent:SetOwner(Gun)
-			ent:SetModel("models/weapons/w_missile.mdl")
+			local MDat = {
+				Owner = owner,
+				Launcher = owner,
 
-			timer.Simple(0.1, function()
-				ParticleEffectAttach("Rocket Motor FFAR", 4, ent, 1)
-			end)
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 75,
+				Ang = owner:GetAimVector():Angle(),
 
-			ent.MissileThrust = 84000
-			ent.MissileBurnTime = 0.15
-			ent.EnergyRetention = 0.999
-			ent.RadioDist = 0
-			ent.HasGuidance = false
-			ent.FuseTime = 17
-			ent.Bulletdata = self.BulletData
+				Mdl = "models/munitions/round_100mm_mortar_shot.mdl",
 
-			ent:SetOwner(owner)
-			ent:CPPISetOwner(owner)
-		end
+				TurnRate = 0,
+				FinMul = 0,
+				ThrusterTurnRate = 0,
+
+				InitialVelocity = 134,
+				Thrust = 0,
+				BurnTime = 5,
+				MotorDelay = 0,
+
+				BoostThrust = 0,
+				BoostTime = 0,
+				BoostDelay = 0,
+
+				Drag = 0.003,
+				GuidanceName = "Dumb",
+				FuseName = "Contact",
+				HasInertial = false,
+				HasDatalink = false,
+
+				ArmDelay = 0.01,
+				DelayPrediction = 0.1,
+				ArmorThickness = 8,
+
+				MotorSound = "acf_extra/airfx/rpg_fire.wav",
+				BoostEffect = "Rocket Motor ATGM",
+				MotorEffect = "Rocket Motor ATGM"
+			}
+			local BData = self.BulletData
+			BData.BulletData = nil
+
+			BData.FakeCrate = ents.Create("acf_fakecrate2")
+			BData.FakeCrate:RegisterTo(BData)
+			BData.Crate = BData.FakeCrate:EntIndex()
+			--self:DeleteOnRemove(BData.FakeCrate)
+
+			GenerateMissile(MDat,BData.FakeCrate,BData)
 
 		self:EmitSound(self.Primary.Sound)
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
