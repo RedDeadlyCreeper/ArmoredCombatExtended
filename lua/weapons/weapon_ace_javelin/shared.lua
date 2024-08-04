@@ -401,43 +401,52 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
 	if SERVER and IsValid( self.TarEnt ) and self:GetLaunchAuth() then
-		local ent = ents.Create( "ace_missile_swep_guided" )
 
-		if ( IsValid( ent ) ) then
-			ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * Vector(10, 30, -25))
+		local MDat = {
+			Owner = owner,
+			Launcher = owner,
+		
+			Pos = owner:GetShootPos() + owner:GetAimVector() * Vector(10, 30, -25),
+			Ang = owner:GetAimVector():Angle()+ Angle(-20, 0, 0),
+		
+			Mdl = "models/mcace/Jevelinemissile.mdl",
+		
+			TurnRate = 320,
+			FinMul = 1.0,
+			ThrusterTurnRate = 30,
+		
+			InitialVelocity = 20,
+			Thrust = 15,
+			BurnTime = 8,
+			MotorDelay = 0,
+		
+			BoostThrust = 140,
+			BoostTime = 0.1,
+			BoostDelay = 0.45,
+		
+			Drag = 0.003,
+			GuidanceName = "Top Attack IR",
+			FuseName = "Contact",
+			HasInertial = true,
+			HasDatalink = false,
+		
+			ArmDelay = 0.2,
+			DelayPrediction = 0.2,
+			ArmorThickness = 16,
+	
+			MotorSound = "acf_extra/ACE/missiles/Launch/Strela.wav",
+			BoostEffect = "ACE_MissileTiny",
+			MotorEffect = "ACE_MissileTiny"
+		}
+		local BData = self.BulletData
+		BData.BulletData = nil
+		
+		BData.FakeCrate = ents.Create("acf_fakecrate2")
+		BData.FakeCrate:RegisterTo(BData)
+		BData.Crate = BData.FakeCrate:EntIndex()
+		--self:DeleteOnRemove(BData.FakeCrate)
 
-			local targetDist = self.TarEnt:GetPos():Distance(owner:GetShootPos())
-			local topAttack = targetDist > self.DirectFireDist
---			ent:SetAngles(owner:GetAimVector():Angle() + Angle(topAttack and -20 or -5, 0, 0))
-			ent:SetAngles(owner:GetAimVector():Angle() + Angle(-20, 0, 0))
-
-			ent:Spawn()
-			ent:SetOwner(Gun)
-			ent:SetModel("models/mcace/Jevelinemissile.mdl")
-
-			ent.phys:ApplyForceCenter(20 * (ent:GetForward() * 500))
-
-			timer.Simple(0.1, function()
-				ParticleEffectAttach("Rocket Motor ATGM", 4, ent, 1)
-			end)
-
-			ent.MaxTurnRate = 80
-			ent.TrackCone = 180
-			ent.MissileThrust = 3500
-			ent.MotorIncrements = 0.55
-			ent.MissileBurnTime = 15
-			ent.FuseTime = 25
-			ent.tarent = self.TarEnt
-			ent.Bulletdata = self.BulletData
-			ent.LeadMul = 1.5
-			ent.TopAttackGuidance = topAttack
-			ent.DirectFireDist = self.DirectFireDist
-			ent.DamageOwner = owner
-
-			ent:SetOwner(owner)
-			ent:CPPISetOwner(owner)
-		end
-
+		GenerateMissile(MDat,BData.FakeCrate,BData)
 		self:EmitSound(self.Primary.Sound)
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		self:GetOwner():SetAnimation(PLAYER_ATTACK1)

@@ -17,10 +17,10 @@ this.Name = ClassName
 this.Target = nil
 
 -- Cone to acquire targets within.
-this.SeekCone = 20
+this.SeekCone = 30
 
 -- Cone to retain targets within.
-this.ViewCone = 25
+this.ViewCone = 60
 
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek

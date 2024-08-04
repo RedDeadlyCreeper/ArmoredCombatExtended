@@ -14,6 +14,7 @@ Round.netid = 9 --Unique ammotype ID for network transmission
 Round.Type  = "GLATGM"
 
 function Round.create( Gun, BulletData )
+	--[[
 	if Gun:GetClass() == "acf_ammo" then
 		ACF_CreateBullet( BulletData )
 	else
@@ -30,7 +31,96 @@ function Round.create( Gun, BulletData )
 		glatgm.Distance = BulletData.MuzzleVel * 4 * 39.37
 		glatgm:Spawn()
 	end
+	]]--
+
+	local mdl = "models/missiles/rs82.mdl"
+	if BulletData.Caliber > 20 then
+		mdl = "models/missiles/rw61m.mdl"
+	elseif BulletData.Caliber > 12.5 then
+		mdl = "models/missiles/9m120.mdl"
+	elseif BulletData.Caliber > 10.1 then
+		mdl = "models/missiles/glatgm/9m117.mdl"
+	elseif BulletData.Caliber > 7.6 then
+		mdl = "models/missiles/glatgm/9m112.mdl"
+	elseif BulletData.Caliber > 4 then
+		mdl = "models/missiles/ffar_70mm.mdl"
+	end
+
+	local SMul = 15/BulletData.Caliber * BulletData.MuzzleVel/200
+
+	local GuidEnt = Gun
+
+	if next(ACE.Opticals) then
+
+		for _, Optical in pairs(ACE.Opticals) do
+			--print("Looking for computer...")
+
+			if not IsValid(Optical) then
+				continue
+			end
+
+			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
+			if Optical:GetPos():DistToSqr(Gun:GetPos()) < 90000 ^ 2 and Optical:CPPIGetOwner() == Gun:CPPIGetOwner() then
+
+				--print("Attaching Nearest Computer...")
+				--debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
+
+				GuidEnt = Optical
+				break
+			end
+		end
+	end
+
+	local MDat = {
+		Owner = Gun:CPPIGetOwner(),
+		Launcher = GuidEnt,
+	
+		Pos = (Gun:GetAttachment(1).Pos + Gun:GetForward() * 39.37),
+		Ang = Gun:GetAngles(),
+	
+		Mdl = mdl,
+			
+		TurnRate = 70,
+		FinMul = 0.35,
+		ThrusterTurnRate = 20,
+	
+		InitialVelocity = 10,
+		Thrust = 44*SMul,
+		BurnTime = 8,
+		MotorDelay = 0,
+	
+		BoostThrust = 200*SMul,
+		BoostTime = 0.2,
+		BoostDelay = 0,
+	
+		Drag = 0.003,
+		GuidanceName = "Beam Riding",
+		FuseName = "Contact",
+		HasInertial = false,
+		HasDatalink = false,
+	
+		ArmDelay = 0.3,
+		DelayPrediction = 0.1,
+		ArmorThickness = 15,
+
+		MotorSound = "acf_extra/ACE/missiles/Launch/RocketBasic.wav",
+		BoostEffect = "Rocket Motor ATGM",
+		MotorEffect = "Rocket Motor ATGM"
+	}
+	local BData = table.Copy( BulletData ) --Done so we don't accidentally write to the original crate bulletdata
+	BData.BulletData = nil
+
+	BData.Type = "HEAT"
+	--BData.Id = 2	
+
+	BData.FakeCrate = ents.Create("acf_fakecrate2")
+	BData.FakeCrate:RegisterTo(BData)
+	BData.Crate = BData.FakeCrate:EntIndex()
+	--self:DeleteOnRemove(BData.FakeCrate)
+
+	GenerateMissile(MDat,BData.FakeCrate,BData)
 end
+
 function Round.ConeCalc( ConeAngle, Radius )
 
 	local ConeLength	= math.tan(math.rad(ConeAngle)) * Radius
@@ -95,7 +185,7 @@ function Round.convert( _, PlayerData )
 	local Rad						= math.rad(GUIData.ConeAng / 2)
 	Data.SlugCaliber				=  Data.Caliber - Data.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
 	Data.SlugMV					= ( Data.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + GUIData.ConeAng) / 2) / Data.SlugMass) ^ ACF.HEATMVScale --keep fillermass/2 so that penetrator stays the same
-	Data.SlugMass					= Data.SlugMass * 4 ^ 2
+	Data.SlugMass					= Data.SlugMass * 4.5 ^ 2
 	Data.SlugMV					= Data.SlugMV / 4
 
 	local SlugFrArea				= 3.1416 * (Data.SlugCaliber / 2) ^ 2
@@ -173,7 +263,7 @@ function Round.cratetxt( BulletData )
 
 	local str =
 	{
-		"Command Link: ", math.Round(BulletData.MuzzleVel * 4, 1), " m\n",
+		"Relative Thrust: ", math.Round((15/BulletData.Caliber * BulletData.MuzzleVel/200)*44, 1), " m/s^2\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
 		"Blast Energy: ", math.floor(BulletData.BoomFillerMass * ACF.HEPower), " KJ"
@@ -388,10 +478,9 @@ function Round.guiupdate( Panel )
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : " .. (math.floor(Data.FillerMass * 1000)) .. " g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_Checkboxes( Data )
-
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + Data.Tracer) * 100) / 100) .. "/" .. Data.MaxTotalLength .. " cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Command Link: " .. math.floor(Data.MuzzleVel * ACF.VelScale * 4) .. " m")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Relative Thrust: " .. math.Round((15/Data.Caliber * Data.MuzzleVel/200)*44, 1) .. " m/s^2")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : " .. (math.floor(Data.BlastRadius * 100) / 100) .. " m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : " .. Data.Fragments .. "\n Average Fragment Weight : " .. (math.floor(Data.FragMass * 10000) / 10) .. " g \n Average Fragment Velocity : " .. math.floor(Data.FragVel) .. " m/s")	--Proj muzzle penetration (Name, Desc)
 

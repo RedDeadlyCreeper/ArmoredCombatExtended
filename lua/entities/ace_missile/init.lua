@@ -195,7 +195,7 @@ function ENT:Think()
 				if CT > self.ActivationTime + self.BoostIgnitionDelay then --Past booster ignition delay
 					if not self.Boosted then
 						self.Boosted = true
-							local effect = ACF_GetGunValue(self.BulletData, "effectbooster")
+							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effectbooster")
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 							end
@@ -216,7 +216,7 @@ function ENT:Think()
 
 					if not self.MotorActivated then
 						self.MotorActivated = true
-							local effect = ACF_GetGunValue(self.BulletData, "effect")
+							local effect = self.MotorEffect or ACF_GetGunValue(self.BulletData, "effect")
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 							end

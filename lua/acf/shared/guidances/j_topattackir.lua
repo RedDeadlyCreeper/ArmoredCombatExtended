@@ -17,10 +17,10 @@ this.Name = ClassName
 this.Target = nil
 
 -- Cone to acquire targets within.
-this.SeekCone = 20
+this.SeekCone = 15
 
 -- Cone to retain targets within.
-this.ViewCone = 25
+this.ViewCone = 180
 
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
@@ -29,7 +29,7 @@ this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
 this.HasIRCCM = false
 
 --Defines how many degrees are required above the ambient one to consider a target
-this.HeatAboveAmbient = 100
+this.HeatAboveAmbient = 25
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 200  -- ~5m
