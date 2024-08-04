@@ -40,7 +40,7 @@ end
 
 function this:GetGuidance(missile)
 
-	local posVec = missile.Launcher.TargPos
+	--local posVec = missile.Launcher.TargPos
 
 	--if not posVec or type(posVec) ~= "Vector" or posVec == Vector() then
 	--	return {TargetPos = nil}
@@ -54,7 +54,7 @@ function this:GetGuidance(missile)
 	local Dist = GEntPos:Distance(missile:GetPos())
 
 
-	self.TargetPos = GEntPos + GEntDir * (Dist+39.37*15)
+	self.TargetPos = GEntPos + GEntDir * (Dist + 39.37 * 15)
 	return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 
 end

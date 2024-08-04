@@ -46,7 +46,7 @@ function Round.create( Gun, BulletData )
 		mdl = "models/missiles/ffar_70mm.mdl"
 	end
 
-	local SMul = 15/BulletData.Caliber * BulletData.MuzzleVel/200
+	local SMul = 15 / BulletData.Caliber * BulletData.MuzzleVel / 200
 
 	local GuidEnt = Gun
 
@@ -74,31 +74,31 @@ function Round.create( Gun, BulletData )
 	local MDat = {
 		Owner = Gun:CPPIGetOwner(),
 		Launcher = GuidEnt,
-	
-		Pos = (Gun:GetAttachment(1).Pos + Gun:GetForward() * 39.37),
+
+		Pos = Gun:GetAttachment(1).Pos + Gun:GetForward() * 39.37,
 		Ang = Gun:GetAngles(),
-	
+
 		Mdl = mdl,
-			
+
 		TurnRate = 70,
 		FinMul = 0.35,
 		ThrusterTurnRate = 20,
-	
+
 		InitialVelocity = 10,
-		Thrust = 44*SMul,
+		Thrust = 44 * SMul,
 		BurnTime = 8,
 		MotorDelay = 0,
-	
-		BoostThrust = 200*SMul,
+
+		BoostThrust = 200 * SMul,
 		BoostTime = 0.2,
 		BoostDelay = 0,
-	
+
 		Drag = 0.003,
 		GuidanceName = "Beam Riding",
 		FuseName = "Contact",
 		HasInertial = false,
 		HasDatalink = false,
-	
+
 		ArmDelay = 0.3,
 		DelayPrediction = 0.1,
 		ArmorThickness = 15,
@@ -263,7 +263,7 @@ function Round.cratetxt( BulletData )
 
 	local str =
 	{
-		"Relative Thrust: ", math.Round((15/BulletData.Caliber * BulletData.MuzzleVel/200)*44, 1), " m/s^2\n",
+		"Relative Thrust: ", math.Round((15 / BulletData.Caliber * BulletData.MuzzleVel / 200) * 44, 1), " m/s^2\n",
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
 		"Blast Energy: ", math.floor(BulletData.BoomFillerMass * ACF.HEPower), " KJ"
@@ -480,7 +480,7 @@ function Round.guiupdate( Panel )
 	ACE_Checkboxes( Data )
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + Data.Tracer) * 100) / 100) .. "/" .. Data.MaxTotalLength .. " cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Relative Thrust: " .. math.Round((15/Data.Caliber * Data.MuzzleVel/200)*44, 1) .. " m/s^2")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Relative Thrust: " .. math.Round((15 / Data.Caliber * Data.MuzzleVel / 200) * 44, 1) .. " m/s^2")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : " .. (math.floor(Data.BlastRadius * 100) / 100) .. " m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : " .. Data.Fragments .. "\n Average Fragment Weight : " .. (math.floor(Data.FragMass * 10000) / 10) .. " g \n Average Fragment Velocity : " .. math.floor(Data.FragVel) .. " m/s")	--Proj muzzle penetration (Name, Desc)
 
