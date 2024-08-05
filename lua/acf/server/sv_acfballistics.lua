@@ -157,10 +157,11 @@ do
 		end
 
 		--actual motion of the bullet
-		local Drag		= NormFlight * (Bullet.DragCoef * FlightLength^2) / ACF.DragDiv
+		local Drag		=  (Bullet.DragCoef * FlightLength^2) / ACF.DragDiv
 		if Bullet.UnderWater then
 			Drag = Drag * 800
 		end
+		Drag = NormFlight * math.min(Drag,0.99999)
 		Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)																								-- Calculates the next shell position
 		Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag) * Bullet.DeltaTime
 
