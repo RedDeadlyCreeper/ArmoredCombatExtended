@@ -77,8 +77,8 @@ ACF_defineGun("57mmSA", {
 	weight = 780,
 	year = 1965,
 	rofmod = 0.5,
-	magsize = 9,
-	magreload = 12,
+	magsize = 12,
+	magreload = 10,
 	round = {
 		maxlength = 62,
 		propweight = 2
