@@ -95,7 +95,7 @@ ACF_defineGun("76mmSA", {
 	weight = 1700,
 	year = 1984,
 	rofmod = 0.4,
-	magsize = 9,
+	magsize = 12,
 	magreload = 10,
 	round = {
 		maxlength = 70,
