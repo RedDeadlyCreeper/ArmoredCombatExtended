@@ -22,7 +22,7 @@ ACF_defineGun("7.92mmATR", { --id
 	weight = 8,
 	year = 1917,
 	rofmod = 1.6,
-	magsize = 5,
+	magsize = 12,
 	magreload = 6,
 	round = {
 		maxlength = 14,
@@ -40,7 +40,7 @@ ACF_defineGun("14.5mmATR", { --id
 	weight = 15,
 	year = 1917,
 	rofmod = 1.4,
-	magsize = 5,
+	magsize = 8,
 	magreload = 8,
 	round = {
 		maxlength = 21,
