@@ -255,6 +255,9 @@ function ENT:ScanForContraptions()
 	GCTraceData.mins = Vector(-ConeClutterSize, -ConeClutterSize, -ConeClutterSize)
 	GCTraceData.maxs = Vector(ConeClutterSize, ConeClutterSize, ConeClutterSize)
 
+
+	local BTFactor = 1 / (1 + ((self.Cone - 1) / (self.ICone - 1)) * 2)
+
 	for Contraption in pairs(CFW.Contraptions) do
 		local Base = Contraption:GetACEBaseplate()
 		if Contraption ~= SelfContraption and IsValid(Base) then
@@ -268,7 +271,9 @@ function ENT:ScanForContraptions()
 			LOSTraceData.start = SelfPos
 			LOSTraceData.endpos = Pos
 
-			if AngleFromTarget < SearchCone and IsValid(Owner) and not TraceHull(LOSTraceData).Hit then
+			local BurnThrough = self.IsJammed == 0 or (self.Burnthrough * 100 * BTFactor) / self.JamStrength >= BaseDistance
+
+			if AngleFromTarget < SearchCone and IsValid(Owner) and not TraceHull(LOSTraceData).Hit and BurnThrough then
 				--debugoverlay.Line(SelfPos, BasePos, 0.15, Color(0, 255, 0))
 
 				GCTraceData.start = BasePos
@@ -292,6 +297,7 @@ function ENT:ScanForContraptions()
 				if ClutterDistance < PDClutterSwitchDistance then -- PD mode
 					debugoverlay.Line(BasePos, GCTraceHitPos, 0.15, Color(255, 0, 0))
 					debugoverlay.Box(GCTraceHitPos, GCTraceData.mins, GCTraceData.maxs, 0.15, Color(255, 0, 0, 0))
+					debugoverlay.Text(GCTraceHitPos, "Ground Clutter", 0.15)
 
 					local RadialVelocity = BaseVelocityVector:Dot(DirectionToTarget)
 
