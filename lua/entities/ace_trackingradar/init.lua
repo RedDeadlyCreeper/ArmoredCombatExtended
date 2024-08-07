@@ -5,6 +5,16 @@ include("shared.lua")
 
 DEFINE_BASECLASS( "base_wire_entity" )
 
+local deg, acos = math.deg, math.acos
+local TraceHull = util.TraceHull
+local min, max = math.min, math.max
+local abs = math.abs
+local tableInsert = table.insert
+local mathHuge = math.huge
+
+local PDClutterSwitchDistance = 200 -- Switch to PD mode if ground clutter is closer than this distance (meters)
+local PDMinVelocity = 20 -- Minimum radial velocity (m/s) for targets to be picked up in PD mode
+
 function ENT:Initialize()
 
 	self.ThinkDelay			= 0.1
@@ -21,23 +31,31 @@ function ENT:Initialize()
 
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
-	self.LegalIssues			= ""
+	self.LegalIssues		= ""
 
-	self.ClosestToBeam		= -1
+	self.AcquiredTargets	= {}
 
-	self.AcquiredTargets		= {}
-
-	self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam", "IsJammed", "JamDirection [VECTOR]"} )
+	self.Inputs = WireLib.CreateInputs(self, {"Active", "Cone"})
+	self.Outputs = WireLib.CreateOutputs(self, {
+		"Detected",
+		"Owner [ARRAY]",
+		"Position [ARRAY]",
+		"Velocity [ARRAY]",
+		"ID [ARRAY]",
+		"IsJammed",
+		"JamDirection [VECTOR]"
+	})
 	self.OutputData = {
 		Detected        = 0,
 		Owner           = {},
 		Position        = {},
 		Velocity        = {},
-		ClosestToBeam   = -1,
+		ID              = {},
 		IsJammed        = 0,
 		JamDirection    = vector_origin
 	}
+
+	self.TargetDetected = false
 
 end
 
@@ -63,25 +81,23 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	Radar:SetAngles(Angle)
 	Radar:SetPos(Pos)
 
-	Radar.Model    = radar.model
-	Radar.Weight   = radar.weight
-	Radar.ACFName  = radar.name
-	Radar.ICone    = radar.viewcone	--Note: intentional. --Recorded initial cone
-	Radar.Cone     = Radar.ICone
-	Radar.PowerID     = radar.powerid
+	Radar.Model = radar.model
+	Radar.Weight = radar.weight
+	Radar.ACFName = radar.name
+	Radar.ICone = radar.viewcone	--Note: intentional. --Recorded initial cone
+	Radar.Cone = Radar.ICone
+	Radar.PowerID = radar.powerid
 
-	Radar.InaccuracyMul          = (0.035 * (Radar.ICone / 15) ^ 2) * 0.2
-	Radar.DPLRFAC                = 65 - (Radar.ICone / 2)
+	Radar.InaccuracyMul = (0.035 * (Radar.ICone / 15) ^ 2) * 0.2
+	Radar.DPLRFAC = 65 - (Radar.ICone / 2)
 
-	Radar.OffBoreInaccFactor	 = radar.offborefactor
+	Radar.OffBoreInaccFactor = radar.offborefactor
 	Radar.Burnthrough = radar.burnthrough
 
-	--print(Radar.OffBoreInaccFactor)
+	SetConeParameters(Radar)
 
-	SetConeParameters( Radar )
-
-	Radar.Id					= Id
-	Radar.Class				= radar.class
+	Radar.Id = Id
+	Radar.Class = radar.class
 
 	Radar:Spawn()
 
@@ -162,7 +178,6 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Position", {} )
 		WireLib.TriggerOutput( self, "Velocity", {} )
-		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 		WireLib.TriggerOutput( self, "IsJammed", 0 )
 		WireLib.TriggerOutput( self, "Velocity", vector_origin )
 
@@ -170,7 +185,6 @@ function ENT:SetActive(active)
 		self.OutputData.Owner = {}
 		self.OutputData.Position = {}
 		self.OutputData.Velocity = {}
-		self.OutputData.ClosestToBeam = -1
 		self.OutputData.IsJammed = 0
 
 		self.Heat = 21
@@ -184,39 +198,170 @@ function ENT:UpdateStatus()
 end
 
 function ENT:UpdateOverlayText()
+	local cone = self.Cone
+	local status = self.Status or "Off"
+	--local detected = status ~= "Off" and self.ClosestToBeam ~= -1 or false
+	local Jammed = self.IsJammed
 
-local cone	= self.Cone
-local status	= self.Status or "Off"
-local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
-local Jammed	= self.IsJammed
+	local txt = "Status: " .. status
+	txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
+	--txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
 
-local txt = "Status: " .. status
+	if Jammed > 0 then
+		txt = txt .. "\n\n! ! ! Warning: Jammed ! ! !"
+	end
 
-txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
+	if detected then
+		txt = txt .. "\n\nTarget Detected!"
+	end
 
---txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
+	if not self.Legal then
+		txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
 
-if Jammed > 0 then
-	txt = txt .. "\n\n! ! ! Warning: Jammed ! ! !"
-end
-if detected then
-	txt = txt .. "\n\nTarget Detected!"
-end
+	txt = txt .. "\nTemp: " .. math.Round(self.Heat) .. "C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. "F"
 
-if not self.Legal then
-txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-end
-
-
-txt = txt .. "\nTemp: " .. math.Round(self.Heat) .. "C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. "F"
-
-self:SetOverlayText(txt)
-
+	self:SetOverlayText(txt)
 end
 
+local function GetAngleBetweenVectors(v1, v2)
+	return deg(acos(v1:Dot(v2)))
+end
+
+local LOSTraceData = {
+	mask = MASK_SOLID_BRUSHONLY,
+	mins = vector_origin,
+	maxs = vector_origin,
+}
+
+local GCTraceData = {
+	mask = MASK_SOLID_BRUSHONLY,
+	mins = vector_origin,
+	maxs = vector_origin,
+}
+
+function ENT:ScanForContraptions()
+	local Owners = {}
+	local Distances = {}
+	local Positions = {}
+	local Velocities = {}
+	local IDs = {}
+
+	local SelfContraption = self:GetContraption()
+	local SelfPos = self:WorldSpaceCenter()
+	local SelfForward = self:GetForward()
+	local SearchCone = self.Cone
+	local ConeClutterSize = self.ConeInducedGCTRSize
+	GCTraceData.mins = Vector(-ConeClutterSize, -ConeClutterSize, -ConeClutterSize)
+	GCTraceData.maxs = Vector(ConeClutterSize, ConeClutterSize, ConeClutterSize)
+
+	local BTFactor = 1 / (1 + ((self.Cone - 1) / (self.ICone - 1)) * 2)
+
+	for Contraption in pairs(CFW.Contraptions) do
+		local Base = Contraption:GetACEBaseplate()
+		if Contraption ~= SelfContraption and IsValid(Base) then
+			local BasePos = Base:GetPos()
+			local BaseDistance = BasePos:Distance(SelfPos) / 39.3701
+			local PosDiff = BasePos - SelfPos
+			local DirectionToTarget = PosDiff:GetNormalized()
+			local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
+			local Owner = Base:CPPIGetOwner()
+
+			LOSTraceData.start = SelfPos
+			LOSTraceData.endpos = Pos
+
+			local BurnThrough = self.IsJammed == 0 or (self.Burnthrough * 100 * BTFactor) / self.JamStrength >= BaseDistance
+
+			if AngleFromTarget < SearchCone and IsValid(Owner) and not TraceHull(LOSTraceData).Hit and BurnThrough then
+				--debugoverlay.Line(SelfPos, BasePos, 0.15, Color(0, 255, 0))
+
+				GCTraceData.start = BasePos
+				GCTraceData.endpos = BasePos + DirectionToTarget * 50000
+
+				local GCTrace = TraceHull(GCTraceData)
+				local GCTraceHitPos = GCTrace.HitPos
+
+				local ClutterDistance
+				if not GCTrace.HitSky then
+					-- If the trace is starting in a solid, the ground is right behind/below the target
+					ClutterDistance = GCTrace.StartSolid and 0 or (GCTraceHitPos:Distance(BasePos) / 39.3701)
+				else
+					ClutterDistance = mathHuge
+				end
+
+				local BaseVelocityVector = Base:GetVelocity() / 39.3701
+
+				local OutputPosition, OutputDistance, ValidTarget
+
+				if ClutterDistance < PDClutterSwitchDistance then -- PD mode
+					debugoverlay.Line(BasePos, GCTraceHitPos, 0.15, Color(255, 0, 0))
+					debugoverlay.Box(GCTraceHitPos, GCTraceData.mins, GCTraceData.maxs, 0.15, Color(255, 0, 0, 0))
+					debugoverlay.Text(GCTraceHitPos, "Ground Clutter", 0.15)
+
+					local RadialVelocity = BaseVelocityVector:Dot(DirectionToTarget)
+
+					if abs(RadialVelocity) > PDMinVelocity then
+						ValidTarget = true
+					end
+				else
+					ValidTarget = true
+				end
+
+				if ValidTarget then
+					local BaseInaccuracy = VectorRand() * (BaseDistance / 10)
+					local OffboreInaccuracy = 1 + (AngleFromTarget / self.ICone) * self.OffBoreInaccFactor
+
+					OutputPosition = BasePos + BaseInaccuracy * OffboreInaccuracy
+					OutputDistance = OutputPosition:Distance(SelfPos) / 39.3701
+
+					local ContraptionIndex = ACE_GetContraptionIndex(Contraption)
+					local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, OutputDistance)
+
+					tableInsert(Owners, InsertionIndex, Owner:Nick())
+					tableInsert(Distances, InsertionIndex, OutputDistance)
+					tableInsert(Positions, InsertionIndex, OutputPosition)
+					tableInsert(Velocities, InsertionIndex, Base:GetVelocity())
+					tableInsert(IDs, InsertionIndex, ContraptionIndex)
+
+					debugoverlay.Line(SelfPos, OutputPosition, 0.15, Color(0, 255, 0))
+				end
+			end
+		end
+	end
+
+	local TargetDetected = #Owners > 0
+	self.TargetDetected = TargetDetected
+	local OutputData = self.OutputData
+
+	if TargetDetected then
+		WireLib.TriggerOutput(self, "Detected", 1)
+		WireLib.TriggerOutput(self, "Owner", Owners)
+		WireLib.TriggerOutput(self, "Position", Positions)
+		WireLib.TriggerOutput(self, "Velocity", Velocities)
+		WireLib.TriggerOutput(self, "ID", IDs)
+
+		OutputData.Detected = 1
+		OutputData.Owner = Owners
+		OutputData.Position = Positions
+		OutputData.Velocity = Velocities
+		OutputData.ID = IDs
+	else
+		WireLib.TriggerOutput(self, "Detected", 0)
+		WireLib.TriggerOutput(self, "Owner", {})
+		WireLib.TriggerOutput(self, "Position", {})
+		WireLib.TriggerOutput(self, "Velocity", {})
+		WireLib.TriggerOutput(self, "ID", {})
+
+		OutputData.Detected = 0
+		OutputData.Owner = {}
+		OutputData.Position = {}
+		OutputData.Velocity = {}
+		OutputData.ID = {}
+	end
+
+end
 
 function ENT:Think()
-
 	local curTime = CurTime()
 	self:NextThink(curTime + self.ThinkDelay)
 
@@ -233,190 +378,13 @@ function ENT:Think()
 	end
 
 	if self.Active and self.Legal then
-
-		--local radID = ACE.radarIDs[self]
-
-		WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
+		WireLib.TriggerOutput(self, "IsJammed", self.IsJammed)
 		self.OutputData.IsJammed = self.IsJammed
 
-			--Get all ents collected by contraptionScan
-			local ScanArray = ACE.contraptionEnts
-
-			local thisPos	= self:GetPos()
-			--local thisforward	= self:GetForward()
-			--local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
-
-			local ownArray	= {}
-			local posArray	= {}
-			local velArray	= {}
-			self.AcquiredTargets		= {}
-
-			self.ClosestToBeam  = -1
-			local besterr = math.huge --Hugh mungus number
-
-
-			for _, scanEnt in pairs(ScanArray) do
-
-				--check if ent is valid
-				if scanEnt:IsValid() then
-
-					--skip the tracking itself
-					if scanEnt:EntIndex() == self:EntIndex() then continue end --Wouldn't be needed with CFRAME
-
-					--skip any parented entity
-					if scanEnt:GetParent():IsValid() then continue end --Wouldn't be needed with CFRAME
-
-					local entvel	= scanEnt:GetVelocity()
-					local entpos	= scanEnt:WorldSpaceCenter()
-
-					local difpos	= (entpos - thisPos)
-					local entdistance  = difpos:Length()
-					local ang	= self:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
-					local absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
-
-					--Entity is within radar cone
-					if (absang.p < self.Cone and absang.y < self.Cone) then
-
-						local BTFactor = 1 / (1 + ((self.Cone-1) / (self.ICone-1)) * 2) --1x at 1 degree seek. 1/3rd at max seek.
-
-						if self.IsJammed ~= 0 and (self.Burnthrough * 3937 * BTFactor) / self.JamStrength < entdistance then continue end --39.37 * 1000 from burnthrough factor to convert to meters.
-
-						local LOStr = util.TraceLine( {
-
-							start = thisPos ,endpos = entpos,
-							collisiongroup = COLLISION_GROUP_WORLD,
-							filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
-
-						}) --Hits anything in the world.
-
-						--Trace did not hit world
-						if not LOStr.Hit then
-
-							local DPLR
-							local Espeed = entvel:Length()
-
-							if Espeed > 0.5 then --Target is moving, test for doppler.
-								DPLR = self:WorldToLocal(thisPos + entvel * 2) --Gets velocity of target in line with radar
-							else
-								Espeed = 0
-								DPLR = Vector(0.001,0.001,0.001)
-							end
-
-							--0.6 ratio fails test.
-							local Dopplertest = math.min(math.abs(Espeed / math.abs(DPLR.Y)) * 100, 10000) --Side to side speed ratio. If all speed is up ratio is 0.5, half 1.0, quarter, 2.0, etc. x100.
-							local Dopplertest2 = math.min(math.abs(Espeed / math.abs(DPLR.Z)) * 100, 10000) --Vertical speed ratio.
-
-							local GCtr = util.TraceHull( {
-
-								start = entpos,
-								endpos = entpos + difpos:GetNormalized() * 12000,
-								collisiongroup  = COLLISION_GROUP_DEBRIS,
-								filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
-								mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),
-								maxs = Vector( self.ConeInducedGCTRSize, self.ConeInducedGCTRSize, self.ConeInducedGCTRSize )
-
-							}) --Hits anything in the world.
-
-							--returns amount of ground clutter
-							if not GCtr.HitSky then
-								GCdis = (1-GCtr.Fraction)
-								GCFr = GCtr.Fraction
-							else
-								--returns amount of ground clutter
-								GCdis = 0
-								GCFr = 1
-							end
-
-							--print(GCdis)
-							--if GCdis <= 0.5 then --Get canceled by ground clutter
-
-							--Tests if radar target. If it doesn't pass a ground clutter check, do a pulse doppler test.
-							--DPLRFAC is 60 on large radar. Requiring a dopplertest below that.
-							--On DPLRFAC X term, if a target is moving away or towards the radar at 50 mph the radar will also classify the target
-							if (GCFr >= 0.4) or (( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( math.abs(DPLR.X / (Espeed + 0.0001)) > 0.3 )) then
-
-
-								--Chaff can be used to gunk up radars.
-								local Multiplier = 1
-
-								if scanEnt:GetClass() == "ace_flare" then
-									Multiplier = scanEnt.RadarSig
-								end
-
-								--Could do pythagorean stuff but meh, works 98% of time
-								local err = absang.p + absang.y
-
-								local BaseInacc = VectorRand()  * ( entdistance / 400 ) --39.37 cancels out.
-
-								local OffboreInacc = 1 + (err / self.ICone) * self.OffBoreInaccFactor
-
-								--For Owner table
-								local Owner = scanEnt:CPPIGetOwner()
-								local NickName = IsValid(Owner) and Owner:GetName() or ""
-
-								err = err * Multiplier
-
-								--Sorts targets as closest to being directly in front of radar
-								if err < besterr then
-									self.ClosestToBeam = #ownArray + 1
-									besterr = err
-								end
-
-								table.insert(ownArray , NickName)
-								table.insert(posArray ,entpos + BaseInacc * OffboreInacc ) --3 --Inaccuracy goes hereValidTargets
-								table.insert(self.AcquiredTargets , scanEnt)
-
-								--IDK if this is more intensive than length
-								local finalvel = Vector(0,0,0)
-
-								if Espeed > 0.5 then
-									finalvel = entvel * (1 + math.Rand(-0.025,0.025) * OffboreInacc)
-									finalvel = Vector(math.Clamp(finalvel.x,-7000,7000),math.Clamp(finalvel.y,-7000,7000),math.Clamp(finalvel.z,-7000,7000))
-								end
-
-								table.insert(velArray,finalvel)
-
-							end
-						end
-					end
-				end
-
-
-			end
-
-			--self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
-
-			--Some entity passed the test to be valid
-			if self.ClosestToBeam ~= -1 then
-
-				WireLib.TriggerOutput( self, "Detected", 1 )
-				WireLib.TriggerOutput( self, "Owner", ownArray )
-				WireLib.TriggerOutput( self, "Position", posArray )
-				WireLib.TriggerOutput( self, "Velocity", velArray )
-				WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
-
-				self.OutputData.Detected = 1
-				self.OutputData.Owner = ownArray
-				self.OutputData.Position = posArray
-				self.OutputData.Velocity = velArray
-				self.OutputData.ClosestToBeam = self.ClosestToBeam
-
-			else --Nothing detected
-				WireLib.TriggerOutput( self, "Detected", 0 )
-				WireLib.TriggerOutput( self, "Owner", {} )
-				WireLib.TriggerOutput( self, "Position", {} )
-				WireLib.TriggerOutput( self, "Velocity", {} )
-				WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
-
-				self.OutputData.Detected = 0
-				self.OutputData.Owner = {}
-				self.OutputData.Position = {}
-				self.OutputData.Velocity = {}
-				self.OutputData.ClosestToBeam = -1
-			end
+		self:ScanForContraptions()
 	end
 
-	if (self.LastStatusUpdate + self.StatusUpdateDelay < curTime) then
+	if self.LastStatusUpdate + self.StatusUpdateDelay < curTime then
 		self:UpdateStatus()
 		self.LastStatusUpdate = curTime
 	end
