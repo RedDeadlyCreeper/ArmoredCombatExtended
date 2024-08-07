@@ -7,7 +7,6 @@ DEFINE_BASECLASS( "base_wire_entity" )
 
 local deg, acos = math.deg, math.acos
 local TraceHull = util.TraceHull
-local min, max = math.min, math.max
 local abs = math.abs
 local tableInsert = table.insert
 local mathHuge = math.huge
