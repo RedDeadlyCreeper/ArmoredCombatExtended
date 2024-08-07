@@ -446,7 +446,9 @@ function SWEP:PrimaryAttack()
 		BData.Crate = BData.FakeCrate:EntIndex()
 		--self:DeleteOnRemove(BData.FakeCrate)
 
-		GenerateMissile(MDat,BData.FakeCrate,BData)
+		local MisEnt = GenerateMissile(MDat,BData.FakeCrate,BData)
+		MisEnt.TargetPos = self.TarEnt:GetPos()
+
 		self:EmitSound(self.Primary.Sound)
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		self:GetOwner():SetAnimation(PLAYER_ATTACK1)

@@ -697,8 +697,8 @@ do
 			local event = SpeedOfSoundEvents[i]
 
 			if event.Time < RealTime() then
+				event:OnArrived()
 				if event.Sound then
-					event:OnArrived()
 					event:Play()
 				end
 

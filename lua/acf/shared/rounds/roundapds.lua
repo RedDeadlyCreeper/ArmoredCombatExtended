@@ -59,10 +59,10 @@ function Round.convert( _, PlayerData )
 		Data.Ricochet	= 68
 	elseif GunClass == "SA" then
 
-		Data.MinCalMult	= 0.3
+		Data.MinCalMult	= 0.23
 		Data.MaxCalMult	= 1.0
 		Data.PenModifier	= 2
-		Data.VelModifier	= 1.6
+		Data.VelModifier	= 1.7
 		Data.Ricochet	= 68
 	elseif GunClass == "C" then
 

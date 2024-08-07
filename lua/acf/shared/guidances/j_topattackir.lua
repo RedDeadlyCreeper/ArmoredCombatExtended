@@ -17,7 +17,7 @@ this.Name = ClassName
 this.Target = nil
 
 -- Cone to acquire targets within.
-this.SeekCone = 15
+this.SeekCone = 5
 
 -- Cone to retain targets within.
 this.ViewCone = 180

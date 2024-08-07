@@ -994,7 +994,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
 		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
 
-		self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 500
+		self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 1000
 
 		self.NextFire = curTime + self.ReloadTime
 		local reloadTime = self.ReloadTime

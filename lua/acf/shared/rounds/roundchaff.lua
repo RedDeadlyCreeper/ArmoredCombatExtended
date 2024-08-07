@@ -20,6 +20,7 @@ function Round.create( Gun, BulletData )
 		ent:SetPos( BulletData.Pos )
 		ent:SetAngles( BulletData.Flight:Angle() )
 		ent.Life = (BulletData.FillerMass or 1) / (0.4 * ACFM.FlareBurnMultiplier) * 1
+		ent.IsChaff = true
 		ent:Spawn()
 		ent:SetOwner( Gun )
 		ent:CPPISetOwner( Gun:CPPIGetOwner())
