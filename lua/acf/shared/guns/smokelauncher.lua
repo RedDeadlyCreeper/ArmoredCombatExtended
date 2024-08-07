@@ -5,7 +5,7 @@ ACF_defineGunClass("SL", {
 	name		= "Smoke Launcher",
 	desc		= ACFTranslation.GunClasses[14],
 	muzzleflash = "MO",
-	rofmod		= 45,
+	rofmod		= 4,
 	year		= 1941,
 	sound		= "ace_weapons/multi_sound/smoke_multi.mp3",
 	nolights	= true

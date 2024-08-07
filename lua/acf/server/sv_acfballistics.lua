@@ -676,7 +676,7 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 			fuse:Configure(missile, missile.Guidance or missile:SetGuidance(ACF.Guidance.Dumb()))
 		end
 	end
-	
+
 
 	local phys = missile:GetPhysicsObject()
 	if (IsValid(phys)) then
@@ -703,8 +703,8 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 	missile.MotorSound = MissileData.MotorSound
 	missile:EmitSound(missile.MotorSound, 500, 100, 1, CHAN_WEAPON ) --Formerly 107
 
-	if missile:IsValid() then
-		return true
-	end
+	--if missile:IsValid() then
+		return missile
+	--end
 
 end
