@@ -149,8 +149,6 @@ ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(ang
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
-ACF.MissileVelocityMul	= 3					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
-
 --In case the recoil torque broke too many tanks, allows the owner to disable recoil torque. Has CVAR
 ACF.UseLegacyRecoil = 0
 
@@ -241,7 +239,7 @@ if SERVER then
 	CreateConVar("acf_wind", 600, FCVAR_ARCHIVE)
 
 	--Uses non-torqueing recoil if there are problems
-	CreateConVar("acf_legacyrecoil", 1, FCVAR_ARCHIVE)
+	CreateConVar("acf_legacyrecoil", 0, FCVAR_ARCHIVE)
 
 	function ACF_CVarChangeCallback(CVar, _, New)
 

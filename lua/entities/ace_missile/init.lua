@@ -457,9 +457,11 @@ function ENT:Detonate()
 		end
 	end)
 
-
+	self.Bulletdata2["PenArea"] = self.Bulletdata2["PenArea"] * self.MissileCalMul
+	--self.Bulletdata2["Caliber"] = self.Bulletdata2["FrArea"] * self.MissileCalMul
 --	self.Bulletdata2["Flight"] = self:GetForward():GetNormalized() * self.Flight * 39.37 * ACF.MissileVelocityMul
-	self.Bulletdata2["Flight"] = self.Flight * 39.37 * ACF.MissileVelocityMul
+	self.Bulletdata2["Flight"] = self.Flight * 39.37 * self.MissileVelocityMul
+
 	self.Bulletdata2.Pos = self:GetPos()
 	self.Bulletdata2.Owner = self:CPPIGetOwner()
 
@@ -516,6 +518,8 @@ do
 			self.MissileActive = true
 			self.ActivationTime = 0
 			self.Lifetime = 0 --Instantly scuttle as soon as can execute.
+
+			self.MissileVelocityMul = self.MissileVelocityMul * 0.2
 
 			return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }
 

@@ -576,6 +576,9 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .. " - " .. BulletData.Type
 	missile.MinStartDelay = ACF_GetRackValue(BulletData, "armdelay") or ACF_GetGunValue(BulletData.Id, "armdelay") or 0.3
 
+	missile.MissileVelocityMul = ACF_GetRackValue(BulletData, "velmul") or ACF_GetGunValue(BulletData.Id, "velmul") or 3
+	missile.MissileCalMul = ACF_GetRackValue(BulletData, "calmul") or ACF_GetGunValue(BulletData.Id, "calmul") or 1
+
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8
@@ -1008,9 +1011,9 @@ do
 		--print(self.Bulletdata2.Type)
 
 		if InstantDetTable[self.Bulletdata2.Type] then
-			self.Bulletdata2.FuseLength = 0.001
+			self.Bulletdata2.FuseLength = 0.00001
 		else
-			self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
+			self.Bulletdata2.FuseLength = 0.2 --The missile exploded. The shell shouldn't travel across the map.
 		end
 
 		self.Bulletdata2.Id = self.BulletData.Id
