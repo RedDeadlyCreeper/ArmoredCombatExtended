@@ -132,7 +132,7 @@ do
 		--Make cluster to fail. Allow with rounds on whitelist only.
 		--if not WhiteList[RoundType] then return end
 
-		local Bomblets  = math.Round(math.Clamp(math.Round(bdata.ProjMass * 0.2),5,120) * (bdata.ClusterMult or 100) / 100)	--30 bomblets original
+		local Bomblets  = math.Round(math.Clamp(math.Round(bdata.ProjMass * 0.3),10,240) * (bdata.ClusterMult or 100) / 100)	--30 bomblets original
 
 		local GEnt = bdata.Gun
 
@@ -199,7 +199,7 @@ do
 
 		local MuzzleVec = bullet.Flight:GetNormalized()
 		GEnt.BulletDataC = GEnt.BulletDataC or {}
-		local MuzzleSpeed = bullet.Flight:Length() + (GEnt.BulletDataC["MuzzleVel"] or 0) * 39.37
+		local MuzzleSpeed = bullet.Flight:Length() + (GEnt.BulletDataC["MuzzleVel"] or 0) * 2 * 39.37
 		local GunBData = GEnt.BulletDataC or {}
 		local CCount = GunBData.Bomblets or 0
 
@@ -212,7 +212,7 @@ do
 					--Spread = Spread
 					Spread = Vector(Spread.x * math.abs(Spread.x), Spread.y * math.abs(Spread.y), Spread.z * math.abs(Spread.z))
 					--GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * math.min((GEnt.BulletDataC.Bomblets/10) * 0.1 , 0.65))):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0)
-					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4)):GetNormalized() * MuzzleSpeed --Fixed scatter pattern since we're using the detonate offset to control spread.
+					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.2)):GetNormalized() * MuzzleSpeed --Fixed scatter pattern since we're using the detonate offset to control spread.
 
 					local MuzzlePos = bullet.Pos
 					GEnt.BulletDataC.Pos = MuzzlePos - MuzzleVec
