@@ -255,7 +255,6 @@ function ENT:ScanForContraptions()
 	GCTraceData.mins = Vector(-ConeClutterSize, -ConeClutterSize, -ConeClutterSize)
 	GCTraceData.maxs = Vector(ConeClutterSize, ConeClutterSize, ConeClutterSize)
 
-
 	local BTFactor = 1 / (1 + ((self.Cone - 1) / (self.ICone - 1)) * 2)
 
 	for Contraption in pairs(CFW.Contraptions) do

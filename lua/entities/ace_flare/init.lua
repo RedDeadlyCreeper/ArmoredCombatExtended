@@ -3,6 +3,8 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+ACE.CMTable = ACE.CMTable or {} -- Keep track of all countermeasures for radars
+
 function ENT:Initialize()
 
 	self:SetModel( "models/Items/AR2_Grenade.mdl" )
@@ -36,6 +38,14 @@ function ENT:Initialize()
 	end)
 
 	self:SetRenderMode( RENDERMODE_TRANSCOLOR )
+
+	if self.IsChaff then
+		ACE.CMTable[self] = true
+
+		self:CallOnRemove( "ACEFlareRemove", function(ent)
+			ACE.CMTable[ent] = nil
+		end )
+	end
 
 	table.insert( ACE.contraptionEnts, self )
 end
