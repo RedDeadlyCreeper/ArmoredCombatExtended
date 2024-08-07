@@ -268,7 +268,7 @@ function ENT:ScanForContraptions()
 			local Owner = Base:CPPIGetOwner()
 
 			LOSTraceData.start = SelfPos
-			LOSTraceData.endpos = Pos
+			LOSTraceData.endpos = BasePos
 
 			local BurnThrough = self.IsJammed == 0 or (self.Burnthrough * 100 * BTFactor) / self.JamStrength >= BaseDistance
 
