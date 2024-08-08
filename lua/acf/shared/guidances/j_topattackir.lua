@@ -1,5 +1,5 @@
 
-local ClassName = "Top Attack IR"
+local ClassName = "Top_Attack_IR"
 
 
 ACF = ACF or {}

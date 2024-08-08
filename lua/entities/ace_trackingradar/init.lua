@@ -86,6 +86,7 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	Radar.ICone = radar.viewcone	--Note: intentional. --Recorded initial cone
 	Radar.Cone = Radar.ICone
 	Radar.PowerID = radar.powerid
+	Radar.ACEPoints		= radar.acepoints or 0.9
 
 	Radar.InaccuracyMul = (0.035 * (Radar.ICone / 15) ^ 2) * 0.2
 	Radar.DPLRFAC = 65 - (Radar.ICone / 2)

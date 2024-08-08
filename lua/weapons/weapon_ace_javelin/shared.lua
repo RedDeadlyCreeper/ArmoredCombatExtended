@@ -425,7 +425,7 @@ function SWEP:PrimaryAttack()
 			BoostDelay = 0.45,
 
 			Drag = 0.003,
-			GuidanceName = "Top Attack IR",
+			GuidanceName = "Top_Attack_IR",
 			FuseName = "Contact",
 			HasInertial = true,
 			HasDatalink = false,

@@ -26,7 +26,8 @@ ACF_defineGun("7.62mmMG", { --id
 	round = {
 		maxlength = 13,
 		propweight = 0.04
-	}
+	},
+	acepoints = 50
 } )
 
 ACF_defineGun("12.7mmMG", {
@@ -42,7 +43,8 @@ ACF_defineGun("12.7mmMG", {
 	round = {
 		maxlength = 24,
 		propweight = 0.1
-	}
+	},
+	acepoints = 60
 } )
 
 ACF_defineGun("14.5mmMG", {
@@ -58,7 +60,8 @@ ACF_defineGun("14.5mmMG", {
 	round = {
 		maxlength = 27,
 		propweight = 0.04
-	}
+	},
+	acepoints = 80
 } )
 
 
@@ -75,7 +78,8 @@ ACF_defineGun("20mmMG", {
 	round = {
 		maxlength = 32,
 		propweight = 0.09
-	}
+	},
+	acepoints = 100
 } )
 
 do

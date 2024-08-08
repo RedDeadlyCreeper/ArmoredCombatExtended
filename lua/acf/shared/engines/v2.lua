@@ -13,7 +13,8 @@ ACF_DefineEngine( "0.6-V2", {
 	torque = 50,
 	flywheelmass = 0.01,
 	idlerpm = 900,
-	limitrpm = 7000
+	limitrpm = 7000,
+	acepoints = 89
 } )
 
 ACF_DefineEngine( "1.2-V2", {
@@ -28,7 +29,8 @@ ACF_DefineEngine( "1.2-V2", {
 	torque = 85,
 	flywheelmass = 0.02,
 	idlerpm = 725,
-	limitrpm = 6250
+	limitrpm = 6250,
+	acepoints = 133
 } )
 
 ACF_DefineEngine( "2.4-V2", {
@@ -43,5 +45,6 @@ ACF_DefineEngine( "2.4-V2", {
 	torque = 160,
 	flywheelmass = 0.075,
 	idlerpm = 900,
-	limitrpm = 6000
+	limitrpm = 6000,
+	acepoints = 242
 } )

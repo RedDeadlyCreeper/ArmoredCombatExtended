@@ -93,6 +93,7 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 		IRST.ACFName			= radar.name
 		IRST.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
 		IRST.Cone				= IRST.ICone
+		IRST.ACEPoints			= radar.acepoints or 0.9
 
 		SetConeParameter( IRST )
 

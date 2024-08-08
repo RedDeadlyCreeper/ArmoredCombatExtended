@@ -15,7 +15,8 @@ ACF_DefineRadar("SmallOMNI-AM", {
 	model		= "models/radar/radar_sp_sml.mdl",
 	class		= "OMNI-AM",
 	weight		= 300,
-	range		= 7874 -- range in inches.
+	range		= 7874, -- range in inches.
+	acepoints = 300
 } )
 
 
@@ -26,7 +27,8 @@ ACF_DefineRadar("MediumOMNI-AM", {
 	model		= "models/radar/radar_sp_mid.mdl", -- medium one is for now scalled big one - will be changed
 	class		= "OMNI-AM",
 	weight		= 600,
-	range		= 15748 -- range in inches.
+	range		= 15748, -- range in inches.
+	acepoints = 500
 } )
 
 
@@ -37,5 +39,6 @@ ACF_DefineRadar("LargeOMNI-AM", {
 	model		= "models/radar/radar_sp_big.mdl",
 	class		= "OMNI-AM",
 	weight		= 1200,
-	range		= 31496 -- range in inches.
+	range		= 31496, -- range in inches.
+	acepoints = 700
 } )

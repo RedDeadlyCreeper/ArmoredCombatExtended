@@ -38,7 +38,7 @@ function Round.convert( _, PlayerData )
 	Data.ProjMass    = Data.FrArea * (Data.ProjLength * 7.9 / 1000) -- Volume of the projectile as a cylinder * density of steel
 	Data.ShovePower  = 0.2
 	Data.PenArea     = Data.FrArea ^ ACF.PenAreaMod
-	Data.DragCoef    = ((Data.FrArea / 10000) / Data.ProjMass) * 1.2
+	Data.DragCoef    = (Data.FrArea / 10000) / Data.ProjMass
 	Data.LimitVel    = 750 -- Most efficient penetration speed in m/s
 	Data.KETransfert = 0.3 -- Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet    = 53 -- Base ricochet angle

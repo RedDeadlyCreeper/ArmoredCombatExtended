@@ -504,7 +504,12 @@ do
 	--List of munitions no longer stay on ACE
 	local AmmoComp = {
 		["APDSS"]		= "APDS",
-		["APFSDSS"]		= "APFSDS"
+		["APFSDSS"]		= "APFSDS",
+		["APBC"]		= "AP",
+		["APC"]			= "AP",
+		["APCBC"]		= "AP",
+		["APBC"]		= "AP",
+		["APHECBC"]		= "APHE"
 	}
 
 	function ENT:CreateAmmo(_, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
@@ -577,7 +582,7 @@ do
 			AmmoMaxMass = Vol
 
 			WireName = "ACE Universal Supply Crate"
-
+			self.ACEPoints = 4000
 		else
 
 			self.IsTwoPiece = false
@@ -630,6 +635,14 @@ do
 			debugoverlay.Text(self:GetPos() + Vector(0,0,50), "Bullet Dimensions", 20)
 			debugoverlay.Text(self:GetPos() + Vector(0,0,15), "Mass per Round: " .. (self.BulletData.ProjMass + self.BulletData.PropMass) .. "kgs", 20 )
 			debugoverlay.Text(self:GetPos() + Vector(0,0,10), "Total Ammo Mass: " .. self.AmmoMassMax .. "kgs", 20 )
+
+			if WeaponType ~= "missile" then
+				self.ACEPoints = math.ceil(self.AmmoMassMax / 1000 * ACE.AmmoPerTon)
+			else
+				local BulletData2 = ACFM_CompactBulletData(self)
+				local MissileCost = CalculateMissileCost(BulletData2)
+				self.ACEPoints = Capacity * MissileCost
+			end
 
 			WireName = AmmoGunData.name .. " Ammo"
 
