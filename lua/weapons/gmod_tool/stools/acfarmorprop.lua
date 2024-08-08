@@ -149,7 +149,13 @@ function TOOL:Reload( trace )
 	local GeneralTb	= { data.MaterialMass, data.MaterialPercent }
 	local ToJSON		= util.TableToJSON( GeneralTb )
 	local Compressed	= util.Compress(ToJSON)
-	local PointVal		= ent:GetContraption().ACEPoints or 0
+
+	local Contraption = ent:GetContraption() or nil
+	local PointVal		= 0
+
+	if Contraption ~= nil then
+		PointVal		= Contraption.ACEPoints
+	end
 
 	net.Start("ACE_ArmorSummary")
 		net.WriteFloat(total)

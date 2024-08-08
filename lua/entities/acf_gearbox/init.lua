@@ -86,6 +86,7 @@ do
 		Gearbox.DoubleDiff  = GearboxData.doublediff	or false
 		Gearbox.Auto		= GearboxData.auto			or false
 		Gearbox.Parentable  = GearboxData.parentable	or false
+		Gearbox.ACEPoints		= GearboxData.acepoints or 0.9
 
 		if Gearbox.CVT then
 			Gearbox.TargetMinRPM = Data3

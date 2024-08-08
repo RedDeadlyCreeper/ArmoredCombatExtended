@@ -1,14 +1,18 @@
 
 function ACE_GetEntPoints(Ent)
-	local Points = Ent.ACEPoints or 0 --Use the speciailly assigned points if it has them
+	local Points = Ent.ACEPoints or -1 --Use the speciailly assigned points if it has them
 
-		if Points == 0 and IsValid(Ent) then
+		if Points == -1 and IsValid(Ent) then
 				local phys = Ent:GetPhysicsObject()
 				if IsValid(phys) then
 					Points = phys:GetMass() / 1000 * ACF.PointsPerTon
+					local EACF = Ent.ACF or {}
+					local Mat = EACF.Material or "RHA"
+					Points = Points * (ACE.MatCostTables[Mat] or 1)
 				end
 		end
 
+	--print(Points)
 
 	return Points
 end
@@ -22,10 +26,10 @@ function ACE_UpdateContraptionPoints(ContraptionEnt) --
 			Pts = Pts + ACE_GetEntPoints(ent)
 		end
 
-		--if Pts > 1 then
+		if Pts > 1 then
 			--print("Total Contraption Pointcost: " .. Pts)
-		--end
-		ContraptionEnt.ACEPoints = Pts
+			ContraptionEnt.ACEPoints = Pts
+		end
 		return Pts
 end
 
@@ -35,7 +39,8 @@ ACE_NextTickContraptions = 0
 function ACE_ContraptionLegality()
 
 	if ACF.CurTime > ACE_NextTickContraptions then
-		ACE_NextTickContraptions = ACF.CurTime + 10
+		ACE_NextTickContraptions = ACF.CurTime + 3
+		--ACE_NextTickContraptions = ACF.CurTime + 10
 
 		for Contraption in pairs(CFW.Contraptions) do
 			ACE_UpdateContraptionPoints(Contraption)
