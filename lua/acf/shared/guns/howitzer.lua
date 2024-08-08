@@ -26,7 +26,8 @@ ACF_defineGun("75mmHW", { --id
 	round = {
 		maxlength = 60,
 		propweight = 1.8
-	}
+	},
+	acepoints = 750
 } )
 
 ACF_defineGun("105mmHW", {
@@ -42,7 +43,8 @@ ACF_defineGun("105mmHW", {
 	round = {
 		maxlength = 86,
 		propweight = 3.75
-	}
+	},
+	acepoints = 950
 } )
 
 ACF_defineGun("122mmHW", {
@@ -58,7 +60,8 @@ ACF_defineGun("122mmHW", {
 	round = {
 		maxlength = 106,
 		propweight = 7
-	}
+	},
+	acepoints = 1300
 } )
 
 ACF_defineGun("155mmHW", {
@@ -74,7 +77,8 @@ ACF_defineGun("155mmHW", {
 	round = {
 		maxlength = 124,
 		propweight = 13.5
-	}
+	},
+	acepoints = 1500
 } )
 
 ACF_defineGun("203mmHW", {
@@ -90,7 +94,8 @@ ACF_defineGun("203mmHW", {
 	round = {
 		maxlength = 162.4,
 		propweight = 28.5
-	}
+	},
+	acepoints = 2000
 } )
 
 
@@ -107,7 +112,8 @@ ACF_defineGun("240mmHW", {
 	round = {
 		maxlength = 192.0,
 		propweight = 33.7
-	}
+	},
+	acepoints = 4000
 } )
 
 ACF_defineGun("290mmHW", {
@@ -123,7 +129,8 @@ ACF_defineGun("290mmHW", {
 	round = {
 		maxlength = 360,
 		propweight = 57.0
-	}
+	},
+	acepoints = 6500
 } )
 
 ACF_defineGun("406mmHW", {
@@ -139,6 +146,7 @@ ACF_defineGun("406mmHW", {
 	round = {
 		maxlength = 540,
 		propweight = 40000
-	}
+	},
+	acepoints = 12000
 } )
 

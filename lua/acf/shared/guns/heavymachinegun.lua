@@ -30,7 +30,8 @@ ACF_defineGun("30mmHMGShort", {
 	round = {
 		maxlength = 25,
 		propweight = 0.03
-	}
+	},
+	acepoints = 150
 } )
 
 ACF_defineGun("40mmHMGShort", {
@@ -46,7 +47,8 @@ ACF_defineGun("40mmHMGShort", {
 	round = {
 		maxlength = 32,
 		propweight = 0.12
-	}
+	},
+	acepoints = 300
 } )
 
 --add a gun to the class
@@ -65,7 +67,8 @@ ACF_defineGun("20mmHMG", {
 	round = {
 		maxlength = 32,
 		propweight = 0.13
-	}
+	},
+	acepoints = 200
 } )
 
 ACF_defineGun("30mmHMG", {
@@ -83,7 +86,8 @@ ACF_defineGun("30mmHMG", {
 	round = {
 		maxlength = 39,
 		propweight = 0.35
-	}
+	},
+	acepoints = 300
 } )
 
 ACF_defineGun("40mmHMG", {
@@ -101,5 +105,6 @@ ACF_defineGun("40mmHMG", {
 	round = {
 		maxlength = 45,
 		propweight = 0.9
-	}
+	},
+	acepoints = 450
 } )

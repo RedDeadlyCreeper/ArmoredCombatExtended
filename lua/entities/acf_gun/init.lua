@@ -166,6 +166,7 @@ do
 		Gun.Class           = Lookup.gunclass
 		Gun.Heat            = ACE.AmbientTemp
 		Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1) ^ 1.2
+		Gun.ACEPoints		= (Lookup.acepoints * ACE.CannonPointMul) or 0.9
 
 		Gun.noloaders	= ClassData.noloader or nil
 

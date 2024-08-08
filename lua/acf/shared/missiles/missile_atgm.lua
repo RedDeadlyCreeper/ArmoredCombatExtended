@@ -65,11 +65,13 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 
 		penmul			= math.sqrt(0.9265),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
 		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
-		velmul			= 6		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+		velmul			= 6,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+
+		pointcost			= 250
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Wire", "Beam Riding"},
+	guidance	= {"Dumb", "Wire", "Beam_Riding"},
 	fuses		= {"Contact", "Optical", "Plunging"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
@@ -134,11 +136,12 @@ ACF_defineGun("9M113 ATGM", {									-- id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.2)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.2),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 200
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Wire"},
+	guidance	= {"Dumb", "Wire", "Beam_Riding"},
 	fuses		= {"Contact", "Optical"},
 
 
@@ -200,11 +203,12 @@ ACF_defineGun("9M133 ASM", {									-- id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.0)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.0),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 250
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "Beam_Riding"},
 	fuses		= {"Contact", "Optical"},
 
 
@@ -270,11 +274,12 @@ ACF_defineGun("AT-3 ASM", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.4)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.4),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 100
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Wire"},
+	guidance	= {"Dumb", "Wire", "Beam_Riding"},
 	fuses		= {"Contact", "Optical"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
@@ -341,11 +346,12 @@ ACF_defineGun("AT-2 ASM", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.3)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.3),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 150
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance		= {"Dumb", "Laser", "Wire"},
+	guidance		= {"Dumb", "Laser", "Wire", "Beam_Riding"},
 
 	fuses			= {"Contact", "Optical"},
 	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
@@ -410,11 +416,12 @@ ACF_defineGun("FGM-148 ASM", {
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.1)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.1),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 400
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance		= {"Dumb", "Infrared", "Top Attack IR"},				-- here you have Laser for those top attacks, feel free to build one.
+	guidance		= {"Dumb", "Infrared", "Top_Attack_IR"},				-- here you have Laser for those top attacks, feel free to build one.
 
 	fuses			= {"Contact", "Optical"},
 
@@ -479,11 +486,12 @@ ACF_defineGun("Spike-LR ASM", {
 		datalink			= true,
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.3)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.3),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 500
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance		= {"Dumb", "Infrared", "Top Attack IR", "Laser"},				-- here you have Laser for those top attacks, feel free to build one.
+	guidance		= {"Dumb", "Infrared", "Top_Attack_IR", "Laser"},				-- here you have Laser for those top attacks, feel free to build one.
 
 	fuses			= {"Contact", "Optical"},
 
@@ -553,11 +561,12 @@ ACF_defineGun("Ataka ASM", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.0)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.0),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 300
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser"},
+	guidance	= {"Dumb", "Laser", "Beam_Riding"},
 	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
@@ -623,7 +632,8 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul				= math.sqrt(0.518)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul				= math.sqrt(0.518),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 250
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -693,7 +703,8 @@ ACF_defineGun("Vikhr ASM", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul			= math.sqrt(1.148)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		penmul			= math.sqrt(1.148),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 150
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.

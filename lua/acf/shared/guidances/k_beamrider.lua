@@ -1,5 +1,5 @@
 
-local ClassName = "Beam Riding"
+local ClassName = "Beam_Riding"
 
 
 ACF = ACF or {}

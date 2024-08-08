@@ -134,6 +134,7 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Radar.Sound        = ACFM.DefaultRadarSound
 	Radar.DefaultSound = Radar.Sound
 	Radar.SoundPitch   = 100
+	Radar.ACEPoints		= radar.acepoints or 0.9
 
 	Radar:Spawn()
 	Radar:SetPlayer(Owner)

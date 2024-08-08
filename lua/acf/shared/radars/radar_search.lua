@@ -23,8 +23,8 @@ ACF_DefineTrackRadar("Large-SEARCH", {
 	viewcone	= 360 / 2,				--sets the horizontal search cone of the radar in degrees. 360/4 is 90 deg/s scanning
 	burnthrough = 4,					--Burn through power at 1 degree seeker. x4 means burn through at 400m when fully in the center of a jam beam and set to 1 degree cone.
 	powerid		= 4,					--Power ranking of radar for RWR identification
-
-	animspeed = 1
+	animspeed = 1,
+	acepoints = 500
 } )
 
 --Baseline radar. Solid track cone. Center beam burn through at 200m. Decent offbore accuracy.
@@ -38,9 +38,8 @@ ACF_DefineTrackRadar("Medium-SEARCH", {
 	viewcone	= 360 / 4,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	burnthrough = 2.5,					--Burn through power at 1 degree seeker. x2.5 means burn through at 250m when fully in the center of a jam beam and set to 1 degree cone.
 	powerid		= 5,					--Power ranking of radar for RWR identification
-
-
-	animspeed = 0.375
+	animspeed = 0.375,
+	acepoints = 250
 } )
 
 --Only useful as a fire director
@@ -54,9 +53,8 @@ ACF_DefineTrackRadar("Small-SEARCH", { --Does not burn through.
 	viewcone	= 360 / 7,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	burnthrough = 0,					--Will not burn through.
 	powerid		= 6,					--Power ranking of radar for RWR identification
-
-
-	animspeed = 0.28
+	animspeed = 0.28,
+	acepoints = 100
 } )
 
 --For every 200m, apply 2 units of inaccuracy. Across map there are 8 units accuracy. diagonally 12 units of inaccuracy.

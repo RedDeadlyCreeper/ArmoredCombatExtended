@@ -94,7 +94,7 @@ function Round.create( Gun, BulletData )
 		BoostDelay = 0,
 
 		Drag = 0.003,
-		GuidanceName = "Beam Riding",
+		GuidanceName = "Beam_Riding",
 		FuseName = "Contact",
 		HasInertial = false,
 		HasDatalink = false,

@@ -149,6 +149,7 @@ function TOOL:Reload( trace )
 	local GeneralTb	= { data.MaterialMass, data.MaterialPercent }
 	local ToJSON		= util.TableToJSON( GeneralTb )
 	local Compressed	= util.Compress(ToJSON)
+	local PointVal		= ent:GetContraption().ACEPoints or 0
 
 	net.Start("ACE_ArmorSummary")
 		net.WriteFloat(total)
@@ -157,8 +158,10 @@ function TOOL:Reload( trace )
 		net.WriteFloat(physratio)
 		net.WriteFloat(power)
 		net.WriteFloat(fuel)
+		net.WriteFloat(PointVal)
 
 		net.WriteData(Compressed)
+
 	net.Send(self:GetOwner())
 
 end
@@ -427,6 +430,7 @@ if CLIENT then
 
 		local hpton		= math.Round( power * bonus / (total / 1000), 1 )
 		local hasfuel	= fuel == 1 and " with fuel (25% boost)" or fuel == 2 and "" or " (no fuel)"
+		local PointVal	= math.Round( net.ReadFloat(), 1 )
 		local Compressed	= net.ReadData(640)
 		local Decompress	= util.Decompress(Compressed)
 		local FromJSON	= util.JSONToTable( Decompress )
@@ -436,12 +440,16 @@ if CLIENT then
 		local Tabletxt	= {}
 
 		local Title		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>" .. Sep }
+		local TPoints		= { Color4, "- Total Point Cost: ", Color3, "" .. PointVal .. Sep }
 		local TMass		= { Color4, "- Total Mass: ", Color3, "" .. total, Color4, " kgs / @ ", Color3, "" .. math.Truncate(total / 1000,2), Color4, " tons" .. Sep }
 		local TMass2		= { Color4, "- Mass Ratio: ",Color3, "" .. phystotal, Color4, " kgs physical, ", Color3, "" .. parenttotal, Color4, " kgs parented / ", Color3, physratio .. "%", Color4, " physical )" .. Sep }
 		local Engine		= { Color4, "- Total Power: ", Color3, "" .. math.Round(power * bonus, 1), Color4," hp / ",Color3, "" .. hpton, Color4, " hp/ton" .. hasfuel .. Sep }
 		local ArmorComp1	= { Color4, "- Composition: " .. Sep }
 
+		--PointVal
+
 		Tabletxt = table.Add(Tabletxt, Title)
+		Tabletxt = table.Add(Tabletxt,TPoints)
 		Tabletxt = table.Add(Tabletxt,TMass)
 		Tabletxt = table.Add(Tabletxt,TMass2)
 		Tabletxt = table.Add(Tabletxt,Engine)

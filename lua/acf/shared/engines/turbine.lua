@@ -17,7 +17,8 @@ ACF_DefineEngine( "Turbine-Small-Trans", {
 	limitrpm = 10000,
 	iselec = true,
 	istrans = true,
-	flywheeloverride = 4167
+	flywheeloverride = 4167,
+	acepoints = 734
 } )
 
 ACF_DefineEngine( "Turbine-Medium-Trans", {
@@ -36,7 +37,8 @@ ACF_DefineEngine( "Turbine-Medium-Trans", {
 	limitrpm = 12000,
 	iselec = true,
 	istrans = true,
-	flywheeloverride = 5000
+	flywheeloverride = 5000,
+	acepoints = 1316
 } )
 
 ACF_DefineEngine( "Turbine-Large-Trans", {
@@ -55,7 +57,8 @@ ACF_DefineEngine( "Turbine-Large-Trans", {
 	limitrpm = 13500,
 	iselec = true,
 	istrans = true,
-	flywheeloverride = 5625
+	flywheeloverride = 5625,
+	acepoints = 3621
 } )
 
 ACF_DefineEngine( "Turbine-Small", {
@@ -73,7 +76,8 @@ ACF_DefineEngine( "Turbine-Small", {
 	idlerpm = 1400,
 	limitrpm = 10000,
 	iselec = true,
-	flywheeloverride = 4167
+	flywheeloverride = 4167,
+	acepoints = 918
 } )
 
 ACF_DefineEngine( "Turbine-Medium", {
@@ -91,7 +95,8 @@ ACF_DefineEngine( "Turbine-Medium", {
 	idlerpm = 1800,
 	limitrpm = 12000,
 	iselec = true,
-	flywheeloverride = 5000
+	flywheeloverride = 5000,
+	acepoints = 1647
 } )
 
 ACF_DefineEngine( "Turbine-Large", {
@@ -109,7 +114,8 @@ ACF_DefineEngine( "Turbine-Large", {
 	idlerpm = 2000,
 	limitrpm = 13500,
 	iselec = true,
-	flywheeloverride = 5625
+	flywheeloverride = 5625,
+	acepoints = 4524
 } )
 
 --Forward facing ground turbines
@@ -129,7 +135,8 @@ ACF_DefineEngine( "Turbine-Ground-Small", {
 	idlerpm = 700,
 	limitrpm = 3000,
 	iselec = true,
-	flywheeloverride = 1667
+	flywheeloverride = 1667,
+	acepoints = 528
 } )
 
 ACF_DefineEngine( "Turbine-Ground-Medium", {
@@ -148,7 +155,8 @@ ACF_DefineEngine( "Turbine-Ground-Medium", {
 	limitrpm = 3000,
 	iselec = true,
 	flywheeloverride = 1450,
-	pitch = 115
+	pitch = 115,
+	acepoints = 766
 } )
 
 ACF_DefineEngine( "Turbine-Ground-Large", {
@@ -167,7 +175,8 @@ ACF_DefineEngine( "Turbine-Ground-Large", {
 	limitrpm = 3000,
 	iselec = true,
 	flywheeloverride = 1250,
-	pitch = 135
+	pitch = 135,
+	acepoints = 2472
 } )
 
 --Transaxial Ground Turbines
@@ -188,7 +197,8 @@ ACF_DefineEngine( "Turbine-Small-Ground-Trans", {
 	limitrpm = 3000,
 	iselec = true,
 	istrans = true,
-	flywheeloverride = 1667
+	flywheeloverride = 1667,
+	acepoints = 881
 } )
 
 ACF_DefineEngine( "Turbine-Medium-Ground-Trans", {
@@ -208,7 +218,8 @@ ACF_DefineEngine( "Turbine-Medium-Ground-Trans", {
 	iselec = true,
 	istrans = true,
 	flywheeloverride = 1450,
-	pitch = 115
+	pitch = 115,
+	acepoints = 1580
 } )
 
 ACF_DefineEngine( "Turbine-Large-Ground-Trans", {
@@ -228,7 +239,8 @@ ACF_DefineEngine( "Turbine-Large-Ground-Trans", {
 	iselec = true,
 	istrans = true,
 	flywheeloverride = 1250,
-	pitch = 135
+	pitch = 135,
+	acepoints = 4344
 } )
 
 
@@ -250,7 +262,8 @@ ACF_DefineEngine( "(+)Turbine-Small-SuperAero", {
 	limitrpm = 14000,
 	iselec = true,
 	pitch = 70,
-	flywheeloverride = 12000
+	flywheeloverride = 12000,
+	acepoints = 762
 } )
 
 
@@ -272,5 +285,6 @@ ACF_DefineEngine( "AGT 1500 Large Turbine", {
 	limitrpm = 3000,
 	iselec = true,
 	pitch = 130,
-	flywheeloverride = 5300
+	flywheeloverride = 5300,
+	acepoints = 4222
 } )

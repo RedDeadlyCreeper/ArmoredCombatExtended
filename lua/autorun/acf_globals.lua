@@ -115,6 +115,16 @@ ACF.PhysMaxVel		= 8000
 
 ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
+---------------------------------- Rules & Legality ----------------------------------
+
+ACF.CompMode = 0		--Enable disabling vehicles that do not meet legality
+ACF.PointsLimit = 10000 --The maximum legal pointvalue
+
+ACE.CannonPointMul = 1.0 --Multiplier for cannon point cost
+ACE.EnginePointMul = 0.5 --Multiplier for engine cost in points
+ACF.PointsPerTon   = 42  --Cost per ton of armor. Multiplier used to balance out armor
+ACE.AmmoPerTon     = 100 --Point cost per ton of ammo
+
 ---------------------------------- Misc & other ----------------------------------
 
 ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
@@ -328,6 +338,7 @@ if SERVER then
 	include("acf/server/sv_heat.lua")
 	include("acf/server/sv_legality.lua")
 	include("acf/server/sv_acfpermission.lua")
+	include("acf/server/sv_contraptionlegality.lua")
 
 	AddCSLuaFile("acf/client/cl_acfballistics.lua")
 	AddCSLuaFile("acf/client/cl_acfmenu_gui.lua")

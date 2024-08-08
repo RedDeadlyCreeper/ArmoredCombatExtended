@@ -26,7 +26,8 @@ ACF_defineGun("50mmM", { --id
 	round = {
 		maxlength = 50,
 		propweight = 0.06
-	}
+	},
+	acepoints = 550
 } )
 
 ACF_defineGun("60mmM", { --id
@@ -43,7 +44,8 @@ ACF_defineGun("60mmM", { --id
 	round = {
 		maxlength = 65,
 		propweight = 0.1
-	}
+	},
+	acepoints = 650
 } )
 
 ACF_defineGun("80mmM", {
@@ -60,7 +62,8 @@ ACF_defineGun("80mmM", {
 	round = {
 		maxlength = 85,
 		propweight = 0.25
-	}
+	},
+	acepoints = 750
 } )
 
 ACF_defineGun("120mmM", {
@@ -77,7 +80,8 @@ ACF_defineGun("120mmM", {
 	round = {
 		maxlength = 80,
 		propweight = 0.4
-	}
+	},
+	acepoints = 900
 } )
 
 ACF_defineGun("150mmM", {
@@ -94,7 +98,8 @@ ACF_defineGun("150mmM", {
 	round = {
 		maxlength = 110,
 		propweight = 0.8
-	}
+	},
+	acepoints = 1050
 } )
 
 ACF_defineGun("200mmM", {
@@ -110,7 +115,8 @@ ACF_defineGun("200mmM", {
 	round = {
 		maxlength = 125,
 		propweight = 1.7
-	}
+	},
+	acepoints = 1600
 } )
 
 ACF_defineGun("280mmM", {
@@ -126,7 +132,8 @@ ACF_defineGun("280mmM", {
 	round = {
 		maxlength = 150,
 		propweight = 3
-	}
+	},
+	acepoints = 2000
 } )
 
 ACF_defineGun("380mmM", {
@@ -142,7 +149,8 @@ ACF_defineGun("380mmM", {
 	round = {
 		maxlength = 180,
 		propweight = 5
-	}
+	},
+	acepoints = 2800
 } )
 
 do

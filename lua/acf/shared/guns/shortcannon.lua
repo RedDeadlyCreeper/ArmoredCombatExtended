@@ -26,7 +26,8 @@ ACF_defineGun("37mmSC", {
 	round = {
 		maxlength = 45,
 		propweight = 0.29
-	}
+	},
+	acepoints = 425
 } )
 
 ACF_defineGun("50mmSC", {
@@ -42,7 +43,8 @@ ACF_defineGun("50mmSC", {
 	round = {
 		maxlength = 63,
 		propweight = 0.6,
-	}
+	},
+	acepoints = 600
 } )
 
 ACF_defineGun("75mmSC", {
@@ -58,7 +60,8 @@ ACF_defineGun("75mmSC", {
 	round = {
 		maxlength = 76,
 		propweight = 2
-	}
+	},
+	acepoints = 825
 } )
 
 ACF_defineGun("85mmSC", {
@@ -73,7 +76,8 @@ ACF_defineGun("85mmSC", {
 	round = {
 		maxlength = 84.5,
 		propweight = 3.25
-	}
+	},
+	acepoints = 900
 } )
 
 ACF_defineGun("100mmSC", {
@@ -89,7 +93,8 @@ ACF_defineGun("100mmSC", {
 	round = {
 		maxlength = 93,
 		propweight = 4.5
-	}
+	},
+	acepoints = 1050
 } )
 
 ACF_defineGun("120mmSC", {
@@ -105,7 +110,8 @@ ACF_defineGun("120mmSC", {
 	round = {
 		maxlength = 110,
 		propweight = 8.5
-	}
+	},
+	acepoints = 1275
 } )
 
 ACF_defineGun("140mmSC", {
@@ -121,7 +127,8 @@ ACF_defineGun("140mmSC", {
 	round = {
 		maxlength = 127,
 		propweight = 12.8
-	}
+	},
+	acepoints = 1370
 } )
 
 ACF_defineGun("170mmSC", {
@@ -137,6 +144,7 @@ ACF_defineGun("170mmSC", {
 	round = {
 		maxlength = 147,
 		propweight = 14.8
-	}
+	},
+	acepoints = 1800
 } )
 
