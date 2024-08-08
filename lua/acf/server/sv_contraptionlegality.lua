@@ -39,8 +39,8 @@ ACE_NextTickContraptions = 0
 function ACE_ContraptionLegality()
 
 	if ACF.CurTime > ACE_NextTickContraptions then
-		ACE_NextTickContraptions = ACF.CurTime + 3
-		--ACE_NextTickContraptions = ACF.CurTime + 10
+		--ACE_NextTickContraptions = ACF.CurTime + 3
+		ACE_NextTickContraptions = ACF.CurTime + 10
 
 		for Contraption in pairs(CFW.Contraptions) do
 			ACE_UpdateContraptionPoints(Contraption)
