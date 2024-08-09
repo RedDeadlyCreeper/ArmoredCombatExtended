@@ -602,6 +602,7 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 	if not IsValid(Crate) then return false end
 
 	local ply = MissileData.Owner
+	print(ply)
 
 	local missile = ents.Create("ace_missile")
 	missile:CPPISetOwner(ply)
@@ -611,10 +612,10 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 
 	missile.ContrapId = ACF_Check( MissileData.Launcher ) and MissileData.Launcher.ACF.ContraptionId or 1
 
-	--local BulletData = ACFM_CompactBulletData(Crate)
-	--BulletData.IsShortForm  = true
-	--BulletData.Owner		= ply
-	--missile:SetBulletData(BulletData)
+	local BulletData = ACFM_CompactBulletData(Crate)
+	BulletData.IsShortForm  = true
+	BData.Owner		= ply
+	--missile:SetBulletData(BData)
 	--missile.Bulletdata2 = Crate.BulletData --Sets non compacted bulletdata for spawning a shell. I guarantee there's a better way to do this.
 	missile.Bulletdata2 = BData
 
@@ -654,6 +655,9 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 
 	missile.StraightRunning = MissileData.DelayPrediction or 0.5
 	missile.MinStartDelay = MissileData.ArmDelay or 0.3
+
+	missile.MissileVelocityMul = MissileData.MissileVelocityMul or 3
+	missile.MissileCalMul = MissileCalMul or 1
 
 	local guidance  = MissileData.GuidanceName
 	local fuse	= MissileData.FuseName

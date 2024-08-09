@@ -31,7 +31,30 @@ function this:Configure(missile)
 
 	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
-	self.GuidanceEntity = missile.Launcher
+
+	local GuidEnt = missile.Launcher
+
+	if next(ACE.Opticals) then
+
+		for _, Optical in pairs(ACE.Opticals) do
+			--print("Looking for computer...")
+
+			if not IsValid(Optical) then
+				continue
+			end
+
+			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
+			if Optical:GetPos():DistToSqr(missile.Launcher:GetPos()) < 90000 ^ 2 and Optical:CPPIGetOwner() == missile.Launcher:CPPIGetOwner() then
+
+				--print("Attaching Nearest Computer...")
+				--debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
+
+				GuidEnt = Optical
+				break
+			end
+		end
+	end
+	self.GuidanceEntity = GuidEnt
 
 end
 
