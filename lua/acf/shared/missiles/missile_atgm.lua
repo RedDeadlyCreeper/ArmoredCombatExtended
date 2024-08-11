@@ -67,7 +67,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
 		velmul			= 6,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 
-		pointcost			= 250
+		pointcost			= 200
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -137,7 +137,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(1.2),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
-		pointcost			= 200
+		pointcost			= 170
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -204,7 +204,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(1.0),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
-		pointcost			= 250
+		pointcost			= 210
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -417,7 +417,7 @@ ACF_defineGun("FGM-148 ASM", {
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(1.1),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
-		pointcost			= 400
+		pointcost			= 267
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -487,7 +487,7 @@ ACF_defineGun("Spike-LR ASM", {
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(1.3),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
-		pointcost			= 500
+		pointcost			= 333
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -615,7 +615,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 91,							-- Acceleration in m/s.
-		burntime			= 3.05,							-- time in seconds for rocket motor to burn at max proppelant.
+		burntime			= 3.55,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 20,							-- Speed missile starts with on launch in m/s
@@ -633,7 +633,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		predictiondelay		= 0,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul				= math.sqrt(0.518),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-		pointcost			= 250
+		pointcost			= 180
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.

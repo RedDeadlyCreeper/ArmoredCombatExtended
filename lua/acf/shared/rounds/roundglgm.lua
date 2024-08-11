@@ -14,24 +14,6 @@ Round.netid = 9 --Unique ammotype ID for network transmission
 Round.Type  = "GLATGM"
 
 function Round.create( Gun, BulletData )
-	--[[
-	if Gun:GetClass() == "acf_ammo" then
-		ACF_CreateBullet( BulletData )
-	else
-
-		local ply				= Gun:CPPIGetOwner()
-		local glatgm			= ents.Create("acf_glatgm")
-		glatgm:SetOwner(ply)
-		glatgm.DoNotDuplicate	= true
-		glatgm.Guidance		= Gun
-
-		glatgm:SetAngles(Gun:GetAngles())
-		glatgm:SetPos(Gun:GetAttachment(1).Pos + Gun:GetForward() * 39.37)
-		glatgm.BulletData = BulletData
-		glatgm.Distance = BulletData.MuzzleVel * 4 * 39.37
-		glatgm:Spawn()
-	end
-	]]--
 
 	local mdl = "models/missiles/rs82.mdl"
 	if BulletData.Caliber > 20 then
@@ -48,32 +30,9 @@ function Round.create( Gun, BulletData )
 
 	local SMul = 15 / BulletData.Caliber * BulletData.MuzzleVel / 200
 
-	local GuidEnt = Gun
-
-	if next(ACE.Opticals) then
-
-		for _, Optical in pairs(ACE.Opticals) do
-			--print("Looking for computer...")
-
-			if not IsValid(Optical) then
-				continue
-			end
-
-			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
-			if Optical:GetPos():DistToSqr(Gun:GetPos()) < 90000 ^ 2 and Optical:CPPIGetOwner() == Gun:CPPIGetOwner() then
-
-				--print("Attaching Nearest Computer...")
-				--debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
-
-				GuidEnt = Optical
-				break
-			end
-		end
-	end
-
 	local MDat = {
 		Owner = Gun:CPPIGetOwner(),
-		Launcher = GuidEnt,
+		Launcher = Gun,
 
 		Pos = Gun:GetAttachment(1).Pos + Gun:GetForward() * 39.37,
 		Ang = Gun:GetAngles(),
@@ -81,12 +40,12 @@ function Round.create( Gun, BulletData )
 		Mdl = mdl,
 
 		TurnRate = 70,
-		FinMul = 0.35,
+		FinMul = 0.45,
 		ThrusterTurnRate = 20,
 
-		InitialVelocity = 10,
+		InitialVelocity = 20,
 		Thrust = 44 * SMul,
-		BurnTime = 8,
+		BurnTime = 10,
 		MotorDelay = 0,
 
 		BoostThrust = 200 * SMul,

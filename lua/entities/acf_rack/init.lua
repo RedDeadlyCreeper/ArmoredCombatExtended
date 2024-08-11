@@ -152,8 +152,8 @@ function MakeACF_Rack(Owner, Pos, Angle, Id)
 
 	Rack.MaxMissile = table.Count(gundef.mountpoints) or 1
 	Rack.ReloadTime = gundef.magreload or 1 --Replace with fixed time delay rather than multiplier
-	--Rack.ACEPoints	= (400 + (Rack.MaxMissile-1) * 50)
-	Rack.ACEPoints	= 400
+	Rack.ACEPoints	= (100 + (Rack.MaxMissile-1) * 50)
+	--Rack.ACEPoints	= 200
 
 	local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
 
