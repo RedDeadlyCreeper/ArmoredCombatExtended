@@ -165,7 +165,7 @@ ACF.AmmoMod             = 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul       = 1
 ACF.AmmoWidthMul        = 1
 ACF.ArmorMod            = 1
-ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
+ACF.SlopeEffectFactor   = 1.0					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
