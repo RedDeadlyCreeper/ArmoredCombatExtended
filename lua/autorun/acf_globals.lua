@@ -387,23 +387,18 @@ include("acf/shared/rounds/roundfl.lua")
 include("acf/shared/rounds/roundhp.lua")
 include("acf/shared/rounds/roundsmoke.lua")
 include("acf/shared/rounds/roundrefill.lua")
-include("acf/shared/rounds/roundapc.lua")
 
 
 --interwar period
-if ACF.Year > 1920 then
+--if ACF.Year > 1920 then
 
-	include("acf/shared/rounds/roundapbc.lua")
-	include("acf/shared/rounds/roundapcbc.lua")
-
-end
+--end
 --A surprising amount of things were made during WW2
 if ACF.Year > 1939 then
 
 	include("acf/shared/rounds/roundhesh.lua")
 	include("acf/shared/rounds/roundheat.lua")
 	include("acf/shared/rounds/roundaphe.lua")
-	include("acf/shared/rounds/roundaphecbc.lua")
 	include("acf/shared/rounds/roundhvap.lua")
 
 end
