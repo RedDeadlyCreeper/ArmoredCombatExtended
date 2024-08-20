@@ -49,6 +49,8 @@ do
 
 		if not self:IsArmed() then return false end
 
+		if (missile.IsDecoyed or false) then return false end
+
 		local missilePos = missile:GetPos()
 		local missileTarget = missile.TargetPos
 

@@ -50,6 +50,7 @@ function this:Configure(missile)
 	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
+	self.SeekCone = self.SeekCone * 3
 	self.GCMultiplier	= ACF_GetGunValue(missile.BulletData, "groundclutterfactor") or this.GCMultiplier
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 end
@@ -68,9 +69,14 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
-	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
-		self.Target = nil
-		return {}
+	missile.IsDecoyed = false
+	if self.Target:GetClass( ) == "ace_flare" then
+		missile.IsDecoyed = true
+		if self.HasIRCCM then
+			--print("IRCCM reject")
+			self.Target = nil
+			return {}
+		end
 	end
 
 	local missilePos = missile:GetPos()
@@ -262,16 +268,19 @@ function this:AcquireLock(missile)
 
 			if classifyent:GetClass() == "ace_flare" then
 				Multiplier = classifyent.RadarSig
+				--print(Multiplier)
 				--print("FlareSeen")
 			end
 
 			--Could do pythagorean stuff but meh, works 98% of time
-			local testang = (absang.p + absang.y) * Multiplier
+			local testang = (absang.p + absang.y + 2.5) / Multiplier
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then
-
-				bestAng = testang
+				if Multiplier > 1 then
+					print("Flarewon")
+				end
+					bestAng = testang
 				bestent = classifyent
 
 			end
