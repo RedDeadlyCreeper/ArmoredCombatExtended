@@ -17,7 +17,7 @@ this.Name = ClassName
 this.Target = nil
 
 -- Cone to acquire targets within.
-this.SeekCone = 12
+this.SeekCone = 6
 
 -- Cone to retain targets within.
 this.ViewCone = 70
@@ -78,10 +78,14 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
-	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
-		--print("IRCCM reject")
-		self.Target = nil
-		return {}
+	missile.IsDecoyed = false
+	if self.Target:GetClass( ) == "ace_flare" then
+		missile.IsDecoyed = true
+		if self.HasIRCCM then
+			--print("IRCCM reject")
+			self.Target = nil
+			return {}
+		end
 	end
 
 	local missilePos = missile:GetPos()

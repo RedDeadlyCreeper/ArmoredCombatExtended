@@ -79,7 +79,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 30,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -151,7 +151,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 24,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= false,
@@ -224,7 +224,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 24,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -294,7 +294,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 24,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	seekcone           = 12,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
@@ -364,7 +364,7 @@ ACF_defineGun("SRAAM AAM", {								-- id
 			},
 
 
-	seekcone           = 30,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
@@ -436,7 +436,7 @@ ACF_defineGun("Magic AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 30,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -511,7 +511,7 @@ ACF_defineGun("MICA AAM", {								-- id
 			},
 
 
-	seekcone           = 30,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -583,7 +583,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 24,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -655,7 +655,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 30,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
@@ -729,7 +729,7 @@ ACF_defineGun("R-73 AAM", {								-- id
 
 
 	--Doesn't use the IRCCM system. Instead has a narrower seek cone that makes it better able to filter flares.
-	seekcone           = 18,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 9,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
@@ -801,7 +801,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 
 	--Doesn't use the IRCCM system. Instead has a narrower seek cone that makes it better able to filter flares.
 
-	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 27.5,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 
@@ -872,7 +872,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 
@@ -939,7 +939,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 16,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
