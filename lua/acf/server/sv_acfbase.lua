@@ -545,3 +545,15 @@ function ACE_GetWeaponUser( Weapon, inp )
 
 	return inp:CPPIGetOwner()
 end
+
+util.AddNetworkString( "colorchatmessage" )
+
+	--Sends a colored message to a specified player.
+function chatMessagePly( ply , message, color) --
+
+	net.Start( "colorchatmessage" )
+		net.WriteColor( color or Color( 255, 255, 255 ) ) --Must go first
+		net.WriteString( message )
+	net.Send( ply )
+
+end

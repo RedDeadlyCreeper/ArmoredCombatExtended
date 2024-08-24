@@ -30,9 +30,11 @@ function ENT:Initialize()
 	self.ROFLimit            = 0			-- Used for selecting firerate
 
 	self.IsMaster            = true		-- needed?
+	self.OTWarnings	         = {} --Used to remember all the one time warnings.
 	self.AmmoLink            = {}
 	self.CrewLink            = {}
 	self.HasGunner           = false
+	self.RequiresGunner      = false
 	self.LoaderCount         = 0
 	self.CurAmmo             = 1
 	self.Sequence            = 1
@@ -167,10 +169,15 @@ do
 		Gun.Heat            = ACE.AmbientTemp
 		Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1) ^ 1.2
 		Gun.ACEPoints		= (Lookup.acepoints * ACE.CannonPointMul) or 0.9
+		Gun.RequiresGunner	= false
 
 		Gun.noloaders	= ClassData.noloader or nil
 
 		Gun.Inaccuracy = ClassData.spread
+
+		if (Gun.Caliber * 10) > ACF.LargeGunsThreshold and ACF.LargeGunsRequireGunners then --If the caliber is large enough it requires a gunner.
+			Gun.RequiresGunner = true
+		end
 
 		if ClassData.color then
 			Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
@@ -831,6 +838,17 @@ do
 
 		if self.IsUnderWeight == nil then
 			self.IsUnderWeight = true
+		end
+
+		if self.RequiresGunner and not self.HasGunner then
+			local HasWarned = self.OTWarnings.WarnedGunner or false
+			--self.OTWarnings
+			if not HasWarned then
+				--print("No")
+				chatMessagePly( self:CPPIGetOwner() , "[ACE] Your gun is above [" .. ACF.LargeGunsThreshold .. " mm] and requires a gunner to operate.", Color( 255, 0, 0 ))
+				self.OTWarnings.WarnedGunner = true
+			end
+			return
 		end
 
 		local bool = true

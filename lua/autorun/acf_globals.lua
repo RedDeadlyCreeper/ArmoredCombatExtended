@@ -116,6 +116,11 @@ ACF.PhysMaxVel		= 8000
 ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ---------------------------------- Rules & Legality ----------------------------------
+ACF.EnginesRequireFuel = 1 --Should all engines require fuel to run? Modified by console commands.
+ACF.LargeEnginesRequireDrivers = 1 --Should engines over a certain hp need a driver? Modified by console commands.
+ACF.LargeEngineThreshold = 100 --Engine size in hp required to need a driver
+ACF.LargeGunsRequireGunners = 1 --Should engines over a certain hp need a driver? Modified by console commands.
+ACF.LargeGunsThreshold = 40 --Cannon size in mm required to need a driver
 
 ACF.PointsLimit = 10000 --The maximum legal pointvalue
 ACF.MaxWeight = 60000 --The max weight in Kg
@@ -219,6 +224,15 @@ if SERVER then
 		ACF.RestrictInfo = tobool(new)
 	end, "ACF_CVarChangeCallback")
 
+	-- Toggles for vehicle legality restrictions
+	CreateConVar( "acf_legality_enginesrequirefuel", 1 , FCVAR_ARCHIVE)
+
+	CreateConVar( "acf_legality_largeenginesneeddriver", 1 , FCVAR_ARCHIVE)
+	CreateConVar( "acf_legality_largeenginethreshold", 100 , FCVAR_ARCHIVE)
+
+	CreateConVar( "acf_legality_largegunsneedgunner", 1 , FCVAR_ARCHIVE)
+	CreateConVar( "acf_legality_largegunthreshold", 40 , FCVAR_ARCHIVE)
+
 	-- Cvars for legality checking
 	CreateConVar( "acf_legalcheck", 1 , FCVAR_ARCHIVE)
 	CreateConVar( "acf_legal_ignore_model", 0 , FCVAR_ARCHIVE)
@@ -285,6 +299,16 @@ if SERVER then
 			ACF.ScaledEntsMax = math.max(New,1)
 		elseif CVar == "acf_legacyrecoil" then
 			ACF.UseLegacyRecoil = math.floor(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_enginesrequirefuel" then
+			ACF.EnginesRequireFuel = math.ceil(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_largeenginesneeddriver" then
+			ACF.LargeEnginesRequireDrivers = math.ceil(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_largeenginethreshold" then
+			ACF.LargeEngineThreshold = math.ceil(math.Clamp(New, 0, 10000))
+		elseif CVar == "acf_legality_largegunsneedgunner" then
+			ACF.LargeGunsRequireGunners = math.ceil(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_largegunthreshold" then
+			ACF.LargeGunsThreshold = math.ceil(math.Clamp(New, 0, 10000))
 		elseif CVar == "acf_enable_dp" then
 			if ACE_SendDPStatus then
 				ACE_SendDPStatus()
@@ -303,8 +327,12 @@ if SERVER then
 	cvars.AddChangeCallback("acf_explosions_scaled_he_max", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_explosions_scaled_ents_max", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_legacyrecoil", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_enginesrequirefuel", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largeenginesneeddriver", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largeenginethreshold", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largegunsneedgunner", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largegunthreshold", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_enable_dp", ACF_CVarChangeCallback)
-
 
 elseif CLIENT then
 ---------------------------------- Clientside Convars ----------------------------------
