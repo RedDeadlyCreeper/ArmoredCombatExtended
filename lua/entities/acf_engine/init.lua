@@ -114,7 +114,7 @@ do
 		Engine.SoundPath        = Lookup.sound
 		Engine.DefaultSound     = Engine.SoundPath
 		Engine.SoundPitch       = Lookup.pitch or 100
-		Engine.SpecialHealth    = true
+		--Engine.SpecialHealth    = true
 		Engine.SpecialDamage    = true
 		Engine.TorqueMult       = 1
 		Engine.FuelTank         = 0
@@ -206,7 +206,7 @@ function ENT:Update( ArgsTable )
 	self.SoundPath         = Lookup.sound
 	self.DefaultSound      = self.SoundPath
 	self.SoundPitch        = Lookup.pitch or 100
-	self.SpecialHealth     = true
+	self.SpecialHealth     = false
 	self.SpecialDamage     = true
 	self.TorqueMult        = self.TorqueMult or 1
 	self.FuelTank          = 0

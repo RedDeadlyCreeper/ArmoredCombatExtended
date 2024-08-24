@@ -83,17 +83,40 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 	local FRTargets	= ACF_HEFind( Hitpos, Radius * ACF.HEFragRadiusMul )		-- Will give tiny HE just a pinch of radius to help it hit the player
 
-	--Only do if allowed
+	--Generates a list of critical entities inside the blast radius
+	if Power > 2000 then --About the HEpower of a 40mm autocannon.
+		local RadSq = Radius^2 --Used for square distance test
 
-	--local Targets = {} --Recalculates targets inside HE blast
-	local RadSq = Radius^2 --Used for square distance test
-	--Saved for later HE Pen table
-	for _, ent in pairs( ACE.critEnts ) do
-		--skip any undesired ent
-		local epos = ent:GetPos()
-		if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
+		local HEPen = Power / 3500
+		--print("Blastpen: " .. HEPen)
+		local Blast = {
+			Penetration = HEPen
+		}
+		for _, ent in pairs( ACE.critEnts ) do
+			local epos = ent:GetPos()
 
-	--table.insert( Targets, ent )
+			if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
+
+			local LosArmor = ACE_LOSMultiTrace(Hitpos,epos)
+			--print("LosArmor: " .. LosArmor)
+
+			if LosArmor < HEPen then --Able to "penetrate". Directly damages the target entity.
+				--print(ent:GetClass())
+				--print("LosArmor: " .. LosArmor)
+				--ACF_Damage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun, Type )
+				BlastRes = ACF_Damage ( ent  , Blast , 1 , 0 , Inflictor ,0 , Gun, "HE" )
+
+				if BlastRes and BlastRes.Kill then
+
+					--Add the debris created to the ignore so we don't hit it in other rounds
+					local Debris = ACF_HEKill( ent , VectorRand() , Power * 0.0001 , Hitpos )
+					table.insert( OccFilter , Debris )
+
+					LoopKill = true --look for fresh targets since we blew a hole somewhere
+				end
+			end
+
+		end
 
 	end
 
@@ -1292,3 +1315,62 @@ function ACE_CalculateHERadius( HEWeight )
 	return Radius
 end
 --
+
+
+
+--Calculates the effective armor between two points
+--Effangle, Type(1 = KE, 2 = HEAT), Filter
+--Might make for a nice e2 function if people probably wouldn't eat the server with it
+function ACE_LOSMultiTrace(StartVec, EndVec)
+
+	debugoverlay.Line( StartVec, EndVec, 30 , Color(255,0,0), true )
+
+	local Temp_Filter = {}
+	local TrTable = {}
+	TrTable.mins	= Vector(0,0,0)
+	TrTable.maxs	= Vector(0,0,0)
+	TrTable.filter	= Temp_Filter
+	TrTable.start  = StartVec
+	TrTable.endpos = EndVec
+
+	local Normal = (EndVec - StartVec):GetNormalized()
+
+	local TotalArmor = 0
+
+	local UnResolved = true
+	local OverRun = 0
+	while UnResolved do
+		local TraceLine = util.TraceLine(TrTable)
+
+		if TraceLine.Hit and ACF_Check( TraceLine.Entity ) then
+			local TraceEnt = TraceLine.Entity
+			local phys = TraceLine.Entity:GetPhysicsObject()
+
+			if IsValid(phys) then
+				if ACF_CheckClips( TraceEnt, TraceLine.HitPos ) then --Hit visclip. Skip straight to ignoring
+					table.insert( TrTable.filter , TraceEnt )
+				else
+					local Angle		= ACF_GetHitAngle( TraceLine.HitNormal , Normal )
+					local Mat			= TraceEnt.ACF.Material or "RHA"	--very important thing
+					local MatData		= ACE_GetMaterialData( Mat )
+					local armor = TraceEnt.ACF.Armour
+					local losArmor		= armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ) * MatData["effectiveness"]
+					TotalArmor = TotalArmor + losArmor
+					table.insert( TrTable.filter , TraceEnt )
+				end
+
+			end
+			OverRun = OverRun + 1
+			if OverRun > 5000 then
+				UnResolved = false
+				TotalArmor = 999999 --math.huge
+			end
+
+		else --We're done here. Traceline did not hit an entity.
+			UnResolved = false
+		end
+	end
+
+	return TotalArmor
+
+end
