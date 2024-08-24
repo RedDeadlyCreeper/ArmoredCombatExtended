@@ -22,6 +22,7 @@ ACE.ECMPods           = {} --ECM usage
 ACE.Opticals          = {} --GLATGM optical computers
 ACE.Explosives        = {} --Explosive entities like ammocrates & fueltanks go here
 ACE.Debris            = {} --Debris count
+ACE.Crewseats         = {}
 ACE.Mines             = ACE.Mines or {}
 ACE.MineOwners  	  = ACE.MineOwners or {} -- We want to develop without losing any data inside of this.
 ACE.ScalableEnts      = ACE.ScalableEnts or {}
@@ -98,6 +99,8 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 			elseif ACE.ExplosiveEnts[Eclass] then
 				--Insert Ammocrates and other explosive stuff here
 				table.insert(ACE.Explosives, Ent) --print('[ACE | INFO]- Explosive registered count: ' .. table.Count( ACE.Explosives ))
+			elseif Eclass == "ace_crewseat_gunner" or Eclass == "ace_crewseat_loader" or Eclass == "ace_crewseat_driver" then
+				table.insert(ACE.Crewseats, Ent) --print('[ACE | INFO]- Tracking radar registered count: ' .. table.Count( ACE.radarEntities ))
 			end
 
 			if Ent.IsScalable then
@@ -170,6 +173,15 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 					if IsValid(explosive) and explosive == Ent then
 						table.remove(ACE.Explosives, i)
 						--print("Explosive registered count: " .. #ACE.Explosives)
+						break
+					end
+				end
+			elseif Eclass == "ace_crewseat_gunner" or Eclass == "ace_crewseat_loader" or Eclass == "ace_crewseat_driver" then
+				for i, crewseat in ipairs(ACE.radarEntities) do
+					if IsValid(crewseat) and crewseat == Ent then
+
+						table.remove(ACE.Crewseats, i)
+						--print("Tracking radar registered count: " .. #ACE.radarEntities)
 						break
 					end
 				end

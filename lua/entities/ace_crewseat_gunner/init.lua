@@ -40,11 +40,20 @@ function ENT:Initialize()
 	self.Weight = 60
 	self.AnglePenalty = 0
 	self.LinkedGun = nil
+	self.Sound = "npc/combine_soldier/die" .. tostring(random(1, 3)) .. ".wav"
+	self.SoundPitch = 100
+
+	if not IsValid(self:CPPIGetOwner()) then
+		self:CPPISetOwner(game.GetWorld())
+	end
 
 	self.NextLegalCheck	= ACF.CurTime + random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
 	self.ACEPoints = 1
+
+	self.SpecialHealth	= false  --If true needs a special ACF_Activate function
+	self.SpecialDamage	= true  --If true needs a special ACF_OnDamage function
 
 	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Ferv", "Rice", "spEAM"}
 
@@ -70,11 +79,6 @@ local maxPenalty = 90
 function ENT:Think()
 	local curSeatAngle = deg(acos(self:GetUp():Dot(Vector(0, 0, 1))))
 	self.AnglePenalty = clamp(remap(curSeatAngle, startPenalty, maxPenalty, 0, 1), 0, 1)
-
-	if self.ACF.Health <= self.ACF.MaxHealth * 0.97 then
-		ACF_HEKill( self, VectorRand() , 0)
-		self:EmitSound("npc/combine_soldier/die" .. tostring(random(1, 3)) .. ".wav", 50)
-	end
 
 	if ACF.CurTime > self.NextLegalCheck then
 
@@ -115,8 +119,107 @@ function ENT:UpdateOverlayText()
 end
 
 
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, _, Inflictor, _, _ )	--This function needs to return HitRes
+	self.ACF.Armour = 3
+	local HitRes	= ACF_PropDamage( Entity, Energy , FrArea, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
+
+	--print(math.Round(HitRes.Damage * 100))
+	--print(HitRes.Loss * 100)
+
+	--print(HitRes.Overkill)
+
+	if HitRes.Kill or HitRes.Overkill > 1 then
+
+		self:ConsumeCrewseats()
+
+		return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }
+
+	end
+
+	return HitRes --This function needs to return HitRes
+
+end
+
+function ENT:ConsumeCrewseats() --So we died I guess. Find another poor schmuck to takeover
+
+	EmitSound(self.Sound, self:GetPos(), 50, CHAN_AUTO, 1, 75, 0, self.SoundPitch)
+
+	self.Legal = false
+	self.LegalIssues = "Apparently He Died"
+
+	self:SetNoDraw( true )
+	self:SetNotSolid( true )
+
+	for _, Link in pairs( self.Master ) do	--Unlink itself
+		if IsValid( Link ) then
+			Link.HasGunner = false
+		end
+	end
+
+	local ReplaceSeat = false
+
+	local ClosestDist = math.huge
+
+	if next(ACE.Crewseats) then
+		local ReplaceEnt = nil
+		for _, SeatEnt in pairs(ACE.Crewseats) do
+
+			if not IsValid(SeatEnt) then
+				continue
+			end
+
+			if SeatEnt:CPPIGetOwner() ~= self:CPPIGetOwner() then
+				continue
+			end
+
+			local Eclass = SeatEnt:GetClass()
+			if Eclass ~= "ace_crewseat_loader" then
+				continue
+			end
+			--Range: 20m or 790. 624100 is squared.
+			local sqDist = SeatEnt:GetPos():DistToSqr(self:GetPos())
+			if sqDist < 624100 and (sqDist < ClosestDist) then
+					ClosestDist = sqDist
+					ReplaceEnt = SeatEnt
+			end
+		end
+
+		if IsValid(ReplaceEnt) then
+			ReplaceSeat = true --You just got promoted bud.
+			self.Name = ReplaceEnt.Name
+			ACF_HEKill( ReplaceEnt, VectorRand() , 0)
+			--print("Found one...")
+			--debugoverlay.Cross(SeatEnt:GetPos(), 10, 10, Color(255,100,0), true)
+		end
+	end
+
+	if ReplaceSeat then
+		--Could add dynamic time by finding closest entity to replace it with
+		local ReplaceTime = 5 + math.sqrt( ClosestDist ) / 39.37 * 1 --5 seconds plus 1 second per meter
+
+		timer.Create( "CrewDie" .. self:GetCreationID(), ReplaceTime, 1, function() if IsValid(self) then self:ResetLinks() end end )
+
+	else
+		ACF_HEKill( self, VectorRand() , 0)
+	end
 
 
+	return ReplaceSeat
 
+end
 
+function ENT:ResetLinks()
 
+	self.ACF.Health = self.ACF.MaxHealth or 1
+	self.ACF.Armour = self.ACF.MaxArmour or 1
+	self.NextLegalCheck = 0
+	self:SetNoDraw( false )
+	self:SetNotSolid( false )
+
+	for _, Link in pairs( self.Master ) do				--First clean the table of any invalid entities
+		if IsValid( Link ) then
+			table.insert( Link.CrewLink, self )
+			Link.HasGunner = true
+		end
+	end
+end
