@@ -126,6 +126,63 @@ ACF.SoundToolSupport = {
 		end
 	},
 
+	ace_crewseat_gunner = {
+
+		GetSound = function(ent) return { Sound = ent.Sound or "npc/combine_soldier/die1.wav", Pitch = ent.SoundPitch or 100 } end,
+
+		SetSound = function(ent, soundData)
+			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
+			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
+		end,
+
+		ResetSound = function(ent)
+			local soundData = {Sound = "npc/combine_soldier/die1.wav", Pitch = 100}
+
+			local setSound = ACF.SoundToolSupport["ace_crewseat_gunner"].SetSound
+			setSound( ent, soundData )
+		end
+	},
+
+	ace_crewseat_driver = {
+
+		GetSound = function(ent) return { Sound = ent.Sound or "npc/combine_soldier/die1.wav", Pitch = ent.SoundPitch or 100 } end,
+
+		SetSound = function(ent, soundData)
+			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
+			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
+		end,
+
+		ResetSound = function(ent)
+			local soundData = {Sound = "npc/combine_soldier/die1.wav", Pitch = 100}
+
+			local setSound = ACF.SoundToolSupport["ace_crewseat_driver"].SetSound
+			setSound( ent, soundData )
+		end
+	},
+
+	ace_crewseat_loader = {
+
+		GetSound = function(ent) return { Sound = ent.Sound or "npc/combine_soldier/die1.wav", Pitch = ent.SoundPitch or 100 } end,
+
+		SetSound = function(ent, soundData)
+			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
+			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
+		end,
+
+		ResetSound = function(ent)
+			local soundData = {Sound = "npc/combine_soldier/die1.wav", Pitch = 100}
+
+			local setSound = ACF.SoundToolSupport["ace_crewseat_loader"].SetSound
+			setSound( ent, soundData )
+		end
+	},
+
 	NewFormat = function()
 	end
 
