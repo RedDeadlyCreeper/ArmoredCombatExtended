@@ -119,6 +119,7 @@ do
 		Engine.TorqueMult       = 1
 		Engine.FuelTank         = 0
 		Engine.Heat             = ACE.AmbientTemp
+		Engine.ACEPoints		= math.ceil(Lookup.acepoints * ACE.EnginePointMul) or 0.9
 
 		Engine.TorqueScale	= ACF.TorqueScale[Engine.EngineType]
 
@@ -210,6 +211,7 @@ function ENT:Update( ArgsTable )
 	self.SpecialDamage     = true
 	self.TorqueMult        = self.TorqueMult or 1
 	self.FuelTank          = 0
+	self.ACEPoints			= Lookup.acepoints or 404
 
 	self.TorqueScale		= ACF.TorqueScale[self.EngineType]
 

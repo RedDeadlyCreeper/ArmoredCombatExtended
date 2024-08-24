@@ -64,11 +64,14 @@ ACF.RefillSpeed         = 250					-- (ACF.RefillSpeed / RoundMass) / Distance
 ---------------------------------- Explosive config ----------------------------------
 
 ACF.HEDamageFactor    = 50
-ACF.BoomMult          = 8					-- How much more do ammocrates/fueltanks blow up, useful since crates detonate all at once now.
+ACF.BoomMult          = 1					-- How much more do ammocrates/fueltanks blow up, useful since crates detonate all at once now.
+ACF.APAmmoDetonateFactor = 2				--Multiplier for the explosion power of AP proppelant. To make AP rounds(the most common round) less underwhelming.
 
 ACF.HEPower           = 8000					-- HE Filler power per KG in KJ
 ACF.HEDensity         = 1.65					-- HE Filler density (That's TNT density)
-ACF.HEFrag            = 1500					-- Mean fragment number for equal weight TNT and casing
+ACF.HEFrag            = 2500					-- Mean fragment number for equal weight TNT and casing
+ACF.HEFragDragFactor  = 0.2						--Lower = less drag. Higher = more. Adjust this to affect the penetration and lethality of fragments. If frags pen infantry die.
+ACF.HEFragRadiusMul   = 2						--Hard cap on frag radius. Multiplies HE Radius.
 ACF.HEBlastPen        = 0.4					-- Blast penetration exponent based of HE power
 ACF.HEFeatherExp      = 0.5					-- exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
 ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expotential
@@ -112,6 +115,26 @@ ACF.PhysMaxVel		= 8000
 
 ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
+---------------------------------- Rules & Legality ----------------------------------
+
+ACF.PointsLimit = 10000 --The maximum legal pointvalue
+ACF.MaxWeight = 60000 --The max weight in Kg
+
+ACE.CannonPointMul = 1.0 --Multiplier for cannon point cost
+ACE.EnginePointMul = 1.0 --Multiplier for engine cost in points
+ACF.PointsPerTon   = 42  --Base cost per ton of armor. Multiplier used to balance out armor
+ACE.AmmoPerTon     = 100 --Point cost per ton of ammo
+
+ACE.MatCostTables = {
+	Alum			= 1.2 * (0.221 / 0.34),	--2mm per 1mm. A 20% increase in cost for 25% reduction in weight.
+	CHA				= 0.8 * (0.98 / 1.25),	--25% more heavy for a 20% reduction in cost.
+	Cer				= 1.4 * (2.05 / 1.4),	--50% more protection per kg for a 40% increase in cost. Brittle and prone to damage.
+	ERA				= 2.0 * (2.5 / 2.0),
+	Rub				= 1.5 * (0.05 / 0.2),
+	Texto			= 1.4 * (0.5 / 0.35),
+	RHA 			= 1
+}
+
 ---------------------------------- Misc & other ----------------------------------
 
 ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
@@ -142,11 +165,12 @@ ACF.AmmoMod             = 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul       = 1
 ACF.AmmoWidthMul        = 1
 ACF.ArmorMod            = 1
-ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
+ACF.SlopeEffectFactor   = 1.0					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
-ACF.MissileVelocityMul	= 3					--Multiplier for missile shell velocity on detonation. Useful for kinetic missiles.
+--In case the recoil torque broke too many tanks, allows the owner to disable recoil torque. Has CVAR
+ACF.UseLegacyRecoil = 0
 
 if CLIENT then
 	ACF.KillIconColor	= Color(200, 200, 48)
@@ -234,6 +258,8 @@ if SERVER then
 	--Smoke
 	CreateConVar("acf_wind", 600, FCVAR_ARCHIVE)
 
+	--Uses non-torqueing recoil if there are problems
+	CreateConVar("acf_legacyrecoil", 0, FCVAR_ARCHIVE)
 
 	function ACF_CVarChangeCallback(CVar, _, New)
 
@@ -257,6 +283,8 @@ if SERVER then
 			ACF.ScaledHEMax = math.max(New,50)
 		elseif CVar == "acf_explosions_scaled_ents_max" then
 			ACF.ScaledEntsMax = math.max(New,1)
+		elseif CVar == "acf_legacyrecoil" then
+			ACF.UseLegacyRecoil = math.floor(math.Clamp(New, 0, 1))
 		elseif CVar == "acf_enable_dp" then
 			if ACE_SendDPStatus then
 				ACE_SendDPStatus()
@@ -274,6 +302,7 @@ if SERVER then
 	cvars.AddChangeCallback("acf_debris_children", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_explosions_scaled_he_max", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_explosions_scaled_ents_max", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legacyrecoil", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_enable_dp", ACF_CVarChangeCallback)
 
 
@@ -319,6 +348,7 @@ if SERVER then
 	include("acf/server/sv_heat.lua")
 	include("acf/server/sv_legality.lua")
 	include("acf/server/sv_acfpermission.lua")
+	include("acf/server/sv_contraptionlegality.lua")
 
 	AddCSLuaFile("acf/client/cl_acfballistics.lua")
 	AddCSLuaFile("acf/client/cl_acfmenu_gui.lua")
@@ -340,7 +370,6 @@ elseif CLIENT then
 	include("acf/client/cl_acfpermission.lua")
 	include("acf/client/gui/cl_acfsetpermission.lua")
 
-	CreateClientConVar("acf_cl_particlemul", "1", true )
 	CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
 
 end
@@ -358,23 +387,18 @@ include("acf/shared/rounds/roundfl.lua")
 include("acf/shared/rounds/roundhp.lua")
 include("acf/shared/rounds/roundsmoke.lua")
 include("acf/shared/rounds/roundrefill.lua")
-include("acf/shared/rounds/roundapc.lua")
 
 
 --interwar period
-if ACF.Year > 1920 then
+--if ACF.Year > 1920 then
 
-	include("acf/shared/rounds/roundapbc.lua")
-	include("acf/shared/rounds/roundapcbc.lua")
-
-end
+--end
 --A surprising amount of things were made during WW2
 if ACF.Year > 1939 then
 
 	include("acf/shared/rounds/roundhesh.lua")
 	include("acf/shared/rounds/roundheat.lua")
 	include("acf/shared/rounds/roundaphe.lua")
-	include("acf/shared/rounds/roundaphecbc.lua")
 	include("acf/shared/rounds/roundhvap.lua")
 
 end

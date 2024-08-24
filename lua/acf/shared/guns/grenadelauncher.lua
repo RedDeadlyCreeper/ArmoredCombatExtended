@@ -29,7 +29,8 @@ ACF_defineGun("40mmGL", { --id
 	round = {
 		maxlength = 7.5,
 		propweight = 0.01
-	}
+	},
+	acepoints = 250
 } )
 
 ACF_defineGun("20mmGL", { --id
@@ -47,21 +48,6 @@ ACF_defineGun("20mmGL", { --id
 	round = {
 		maxlength = 7,
 		propweight = 0.005
-	}
-} )
-
-ACF_defineGun("40mmGLSingle", { --id
-	name = "40mm Single Grenade Launcher",
-	desc = "The 40mm grenade projecter excels at launching a small 40mm charge at nearby infantry or defending a tank from an incoming rocket.",
-	model = "models/launcher/40mmsl.mdl",
-	sound = "ace_weapons/multi_sound/smoke_multi.mp3",
-	gunclass = "GL",
-	caliber = 4.0,
-	weight = 5,
-	rofmod = 6,
-	year = 1940,
-	round = {
-		maxlength = 35,
-		propweight = 0.02
-	}
+	},
+	acepoints = 150
 } )

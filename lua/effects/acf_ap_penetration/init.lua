@@ -57,30 +57,25 @@ local function DoubleSidedTraceResult( Effect )
 	return FTrace, BTrace, BackTraceFilter
 end
 
-local function GetParticleMul()
-	return math.max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
-end
-
 function EFFECT:Init( data )
 
 	self.AmmoCrate   = data:GetEntity() 		-- The ammo crate Entity of this round.
 	self.Origin      = data:GetOrigin() 		-- where the round did hit.
 	self.DirVec      = data:GetNormal() 		-- the direction of the shell when did hit
 	self.Velocity    = data:GetScale() 			-- Mass of the projectile in kg
-
 	self.Mass        = data:GetMagnitude() 		-- Velocity of the projectile in gmod units
-
-	local ValidCrate = IsValid( self.AmmoCrate )
+	--
 
 	self.Scale       = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
-	if self.AmmoCrate:IsValid() then
-		self.Caliber     = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 10 ) or 10
+	if IsValid(self.AmmoCrate) then
+		self.Id      = self.AmmoCrate:GetNWString( "AmmoType", "AP" )
+		self.Caliber = self.AmmoCrate:GetNWFloat( "Caliber", 10 )
 	else
-		self.Caliber = 1
+		self.Id = "AP"
+		self.Caliber = 1 -- If you lose the crate at this point, adding a 10cm (100mm) could lead to cases like doing huge sparks from a 7.62mm MG...
 	end
 
 	self.Emitter     = ParticleEmitter( self.Origin )
-	self.ParticleMul = GetParticleMul()
 
 	local SurfaceTr = PerformDecalTrace( self )
 	local TraceEntity = SurfaceTr.Entity
@@ -93,18 +88,15 @@ function EFFECT:Init( data )
 		local Mat = SurfaceTr.MatType or 0
 		MatVal = ACE_GetMaterialName( Mat )
 
-
 		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
 			MatVal = "Metal"
-			self.HitNorm = -self.HitNorm
-			self.DirVec = -self.DirVec
+			--self.HitNorm = -self.HitNorm
+			--self.DirVec = -self.DirVec
 			--[[local TEnt = SurfaceTr.Entity
 				--I guess the material is serverside only ATM? TEnt.ACF.Material doesn't return anything valid.
 				--TODO: Add clienside way to get ACF Material
 				MatVal = "Metal"
 			]]--
-		else
-			print("HitWorld")
 		end
 
 		local SmokeColor = ACE.DustMaterialColor[MatVal] or ACE.DustMaterialColor["Concrete"] --Enabling lighting on particles produced some yucky results when gravity pulled particles below the map.
@@ -121,6 +113,7 @@ function EFFECT:Init( data )
 
 		if self.Id and self.Id == "FL" then self.Caliber = 0.01 end
 
+		-- RDC please, avoid doing elseif chains
 		if MatVal == "Metal" then
 			self:Metal( SMKColor )
 			--DecalMat = "Impact.Metal"
@@ -153,11 +146,9 @@ function EFFECT:Init( data )
 
 	end
 
---	self:CreatePenetrationEffect()
 	ACE_SPenetration( self.Origin, self.Caliber, self.Velocity, SurfaceTr.HitWorld, MatVal, self.Mass )
 
 	local Energy = (self.Mass * (self.Velocity / 39.37) ^2) / 500000
-
 	local LocPly = LocalPlayer()
 
 	if IsValid(LocPly) then
@@ -175,25 +166,6 @@ function EFFECT:Init( data )
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
 
-function EFFECT:CreatePenetrationEffect()
-
-	if not self.Emitter then return end
-
-	local Scale = self.Scale
-
-	local Sparks = EffectData()
-		Sparks:SetOrigin( self.Origin )
-		Sparks:SetNormal( self.Normal + VectorRand() * 1.5)
-		Sparks:SetMagnitude( Scale )
-		Sparks:SetScale( Scale )
-		Sparks:SetRadius( Scale )
-	util.Effect( "sparks", Sparks )
-
-end
-
-
-
-
 function EFFECT:Concrete( SmokeColor )
 
 	if not self.Emitter then return end
@@ -204,7 +176,7 @@ function EFFECT:Concrete( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -416,7 +388,7 @@ function EFFECT:Wood( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -503,7 +475,7 @@ function EFFECT:Glass( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -592,7 +564,7 @@ function EFFECT:Dust( SmokeColor )
 	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
 	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
 
-	local Pmul = self.ParticleMul * 1
+	local Pmul = 1
 
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
@@ -740,7 +712,7 @@ function EFFECT:Metal( SmokeColor )
 
 	--KE main formula
 	local Energy = math.max(((Mass * (Vel ^ 2)) / 2) * 0.005 * Boost, 2)
-	local Pmul = self.ParticleMul * 0.5
+	local Pmul = 0.5
 
 --	if self.Type == "RAC" then
 --		Pmul = Pmul * 0

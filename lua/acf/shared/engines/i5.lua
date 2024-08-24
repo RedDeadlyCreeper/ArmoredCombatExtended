@@ -15,7 +15,8 @@ ACF_DefineEngine( "2.3-I5", {
 	torque = 125,
 	flywheelmass = 0.12,
 	idlerpm = 900,
-	limitrpm = 7000
+	limitrpm = 7000,
+	acepoints = 219
 } )
 
 ACF_DefineEngine( "3.9-I5", {
@@ -30,7 +31,8 @@ ACF_DefineEngine( "3.9-I5", {
 	torque = 275,
 	flywheelmass = 0.25,
 	idlerpm = 700,
-	limitrpm = 6500
+	limitrpm = 6500,
+	acepoints = 447
 } )
 
 -- Diesel
@@ -47,7 +49,8 @@ ACF_DefineEngine( "2.9-I5", {
 	torque = 180,
 	flywheelmass = 0.5,
 	idlerpm = 500,
-	limitrpm = 4200
+	limitrpm = 4200,
+	acepoints = 207
 } )
 
 ACF_DefineEngine( "4.1-I5", {
@@ -62,5 +65,6 @@ ACF_DefineEngine( "4.1-I5", {
 	torque = 440,
 	flywheelmass = 1.5,
 	idlerpm = 650,
-	limitrpm = 3800
+	limitrpm = 3800,
+	acepoints = 464
 } )

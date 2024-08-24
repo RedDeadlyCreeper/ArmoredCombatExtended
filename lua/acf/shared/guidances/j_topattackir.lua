@@ -1,5 +1,5 @@
 
-local ClassName = "Top Attack IR"
+local ClassName = "Top_Attack_IR"
 
 
 ACF = ACF or {}
@@ -17,10 +17,10 @@ this.Name = ClassName
 this.Target = nil
 
 -- Cone to acquire targets within.
-this.SeekCone = 20
+this.SeekCone = 2
 
 -- Cone to retain targets within.
-this.ViewCone = 25
+this.ViewCone = 180
 
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
@@ -29,7 +29,7 @@ this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
 this.HasIRCCM = false
 
 --Defines how many degrees are required above the ambient one to consider a target
-this.HeatAboveAmbient = 100
+this.HeatAboveAmbient = 25
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 200  -- ~5m
@@ -83,10 +83,14 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
-	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
-		--print("IRCCM reject")
-		self.Target = nil
-		return {}
+	missile.IsDecoyed = false
+	if self.Target:GetClass( ) == "ace_flare" then
+		missile.IsDecoyed = true
+		if self.HasIRCCM then
+			--print("IRCCM reject")
+			self.Target = nil
+			return {}
+		end
 	end
 	--print("Target")
 
@@ -333,10 +337,7 @@ function this:AcquireLock(missile)
 				bestent = classifyent
 
 			end
-
 		end
-
-
 	end
 
 	--if IsValid(bestent) and bestent:GetClass( ) == "ace_flare" then print("SQUIRREL") end
@@ -348,8 +349,11 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local seekCone =  (ACF.Weapons.Guns[Type].seekcone or 0 ) * 2
-	local ViewCone = (ACF.Weapons.Guns[Type].viewcone or 0 ) * 2
+	local Guns = ACF.Weapons.Guns
+	local GunTable = Guns[Type]
+
+	local ViewCone = GunTable.viewcone and GunTable.viewcone * 2 or 0
+	local seekCone = GunTable.seekcone and GunTable.seekcone * 2 or 0
 
 	return
 	{

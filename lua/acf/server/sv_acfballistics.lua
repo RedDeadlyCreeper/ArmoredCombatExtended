@@ -157,10 +157,11 @@ do
 		end
 
 		--actual motion of the bullet
-		local Drag		= NormFlight * (Bullet.DragCoef * FlightLength^2) / ACF.DragDiv
+		local Drag		=  (Bullet.DragCoef * FlightLength^2) / ACF.DragDiv
 		if Bullet.UnderWater then
 			Drag = Drag * 800
 		end
+		Drag = NormFlight * math.min(Drag,0.99999)
 		Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)																								-- Calculates the next shell position
 		Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag) * Bullet.DeltaTime
 
@@ -560,4 +561,154 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 		util.Effect( "ACF_BulletEffect", Effect, true, true )
 
 	end
+end
+
+--Example Missiledata
+--[[
+MDat = {
+	Owner = nil,
+	Launcher = nil,
+
+	Pos = Vector(0,0,0),
+	Ang = Angle(0,0,0),
+
+	Mdl = "models/missiles/mgm51.mdl",
+
+	TurnRate = 0,
+	FinMul = 0,
+	ThrusterTurnRate = 0,
+
+	Thrust = 85,
+	BurnTime = 3,
+	MotorDelay = 0,
+	Drag = 0,
+
+	BoostThrust = 0,
+	BoostTime = 0,
+	BoostDelay = 0,
+
+	InitialVelocity = 0,
+	HasInertial = false,
+	HasDatalink = false,
+
+	ArmDelay = 0.3,
+	DelayPrediction = 0.5,
+	ArmorThickness = 8
+}
+]]--
+
+function GenerateMissile(MissileData,Crate,BData) --Shorthand function for generating and launching a missile without a rack.
+
+	if not IsValid(Crate) then return false end
+
+	local ply = MissileData.Owner
+	print(ply)
+
+	local missile = ents.Create("ace_missile")
+	missile:CPPISetOwner(ply)
+	missile.DamageOwner = ply
+	missile.DoNotDuplicate  = true
+	missile.Launcher		= MissileData.Launcher
+
+	missile.ContrapId = ACF_Check( MissileData.Launcher ) and MissileData.Launcher.ACF.ContraptionId or 1
+
+	local BulletData = ACFM_CompactBulletData(Crate)
+	BulletData.IsShortForm  = true
+	BData.Owner		= ply
+	--missile:SetBulletData(BData)
+	--missile.Bulletdata2 = Crate.BulletData --Sets non compacted bulletdata for spawning a shell. I guarantee there's a better way to do this.
+	missile.Bulletdata2 = BData
+
+	--BulletDataMath(missile)
+
+	missile:SetModelEasy( MissileData.Mdl )
+
+	missile:SetPos(MissileData.Pos)
+	missile:SetAngles(MissileData.Ang)
+
+	missile.ACF = missile.ACF or {}
+	missile.ACF.Ductility = -0.8
+	missile.ACF.Material = "RHA"
+	missile.RoundWeight = ACF_GetGunValue(BulletData, "weight") or 10
+
+	missile.Drag = MissileData.Drag
+
+	missile.Thrust = MissileData.Thrust
+
+
+	missile.BurnTime = MissileData.BurnTime
+	missile.Burndelay = MissileData.MotorDelay
+
+	missile.BoostAccel = MissileData.BoostThrust
+	missile.BoostTime = MissileData.BoostTime
+	missile.BoostIgnitionDelay = MissileData.BoostDelay
+
+	missile.BoostKick = MissileData.InitialVelocity
+
+	missile.Lifetime = 20 --Can add this value later
+
+	missile.TurnRate = MissileData.TurnRate
+	missile.FinMul = MissileData.FinMul
+	missile.ThrustTurnRate = MissileData.ThrusterTurnRate or 0
+	missile.HasInertial = MissileData.HasInertial or false
+	missile.HasDatalink = MissileData.HasDatalink or false
+
+	missile.StraightRunning = MissileData.DelayPrediction or 0.5
+	missile.MinStartDelay = MissileData.ArmDelay or 0.3
+
+	missile.MissileVelocityMul = MissileData.MissileVelocityMul or 3
+	missile.MissileCalMul = MissileCalMul or 1
+
+	local guidance  = MissileData.GuidanceName
+	local fuse	= MissileData.FuseName
+
+	if guidance then
+		guidance = ACFM_CreateConfigurable(guidance, ACF.Guidance, bdata, "guidance")
+		--if guidance then missile:SetGuidance(guidance) end
+		if guidance then
+			missile.Guidance = guidance
+			guidance:Configure(missile)
+		end
+	end
+
+	--print(GuidanceTable.guidance)
+
+	if fuse then
+		fuse = ACFM_CreateConfigurable(fuse, ACF.Fuse, bdata, "fuses")
+		if fuse then
+			missile.Fuse = fuse
+			fuse:Configure(missile, missile.Guidance or missile:SetGuidance(ACF.Guidance.Dumb()))
+		end
+	end
+
+
+	local phys = missile:GetPhysicsObject()
+	if (IsValid(phys)) then
+		--1.8 is 80 ductility
+		missile.ACF.Area = (phys:GetSurfaceArea() * 6.45) * 0.52505066107
+		phys:SetMass( missile.ACF.Area * 0.2 ^ 0.5 * (MissileData.ArmorThickness or 10) * 0.00078 ) --Sets missile armor thickness.
+	end
+
+	missile:Spawn()
+
+	missile.MissileActive = true
+	missile.GuidanceActive = true
+
+	missile.GuidanceActivationDelay = 0
+	--missile.TargetPos = self.TargPos --Sets target position of missile. Used for inertial navigation.
+
+	missileLastThink = ACF.CurTime
+	missile.ActivationTime = ACF.CurTime
+	missile.Flight = Vector(0,0,0)
+
+	missile.BoostEffect = MissileData.BoostEffect
+	missile.MotorEffect = MissileData.MotorEffect
+
+	missile.MotorSound = MissileData.MotorSound
+	missile:EmitSound(missile.MotorSound, 500, 100, 1, CHAN_WEAPON ) --Formerly 107
+
+	--if missile:IsValid() then
+		return missile
+	--end
+
 end

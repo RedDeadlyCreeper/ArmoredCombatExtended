@@ -68,7 +68,8 @@ ACF_defineGun("40mmFFAR", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul	= math.sqrt(0.5)
+		penmul	= math.sqrt(0.5),
+		pointcost			= 50
 	},
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -135,7 +136,8 @@ ACF_defineGun("70mmFFAR", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul	= math.sqrt(0.65)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul	= math.sqrt(0.65),	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 80
 	},
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -203,7 +205,8 @@ ACF_defineGun("S8KO", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul	= math.sqrt(0.65)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul	= math.sqrt(0.65),	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 80
 	},
 
 	ent        = "acf_missile_to_rack",
@@ -273,12 +276,15 @@ ACF_defineGun("Zuni ASR", { --id
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
-		penmul	= math.sqrt(0.825)	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul	= math.sqrt(0.825),	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 200
 	},
 	ent        = "acf_missile_to_rack",
 	guidance   = {"Dumb", "Laser", "GPS"},
 	fuses      = {"Contact", "Timed", "Optical", "Radio"},
 	racks      = {["127mm4xPOD"] = true},
+
+	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
 
 	ghosttime  = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay   = 0.15

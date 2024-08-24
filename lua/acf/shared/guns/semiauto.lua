@@ -22,13 +22,14 @@ ACF_defineGun("25mmSA", { --id
 	caliber = 2.5,
 	weight = 75,
 	year = 1935,
-	rofmod = 0.7,
-	magsize = 20,
-	magreload = 4,
+	rofmod = 0.45,
+	magsize = 12,
+	magreload = 2,
 	round = {
 		maxlength = 39,
 		propweight = 0.5
-	}
+	},
+	acepoints = 600
 } )
 
 ACF_defineGun("37mmSA", {
@@ -40,13 +41,14 @@ ACF_defineGun("37mmSA", {
 	caliber = 3.7,
 	weight = 180,
 	year = 1940,
-	rofmod = 0.5,
+	rofmod = 0.4,
 	magsize = 15,
-	magreload = 6,
+	magreload = 4,
 	round = {
 		maxlength = 42,
 		propweight = 1.125
-	}
+	},
+	acepoints = 700
 } )
 
 ACF_defineGun("45mmSA", { --
@@ -58,13 +60,14 @@ ACF_defineGun("45mmSA", { --
 	caliber = 4.5,
 	weight = 495,
 	year = 1965,
-	rofmod = 0.47,
+	rofmod = 0.325,
 	magsize = 12,
-	magreload = 7,
+	magreload = 5,
 	round = {
 		maxlength = 52,
 		propweight = 1.8
-	}
+	},
+	acepoints = 1000
 } )
 
 ACF_defineGun("57mmSA", {
@@ -76,13 +79,14 @@ ACF_defineGun("57mmSA", {
 	caliber = 5.7,
 	weight = 780,
 	year = 1965,
-	rofmod = 0.5,
-	magsize = 9,
-	magreload = 12,
+	rofmod = 0.4,
+	magsize = 12,
+	magreload = 9,
 	round = {
 		maxlength = 62,
 		propweight = 2
-	}
+	},
+	acepoints = 1400
 } )
 
 ACF_defineGun("76mmSA", {
@@ -94,11 +98,12 @@ ACF_defineGun("76mmSA", {
 	caliber = 7.62,
 	weight = 1700,
 	year = 1984,
-	rofmod = 0.4,
+	rofmod = 0.325,
 	magsize = 12,
-	magreload = 10,
+	magreload = 12,
 	round = {
 		maxlength = 70,
 		propweight = 4.75
-	}
+	},
+	acepoints = 1900
 } )

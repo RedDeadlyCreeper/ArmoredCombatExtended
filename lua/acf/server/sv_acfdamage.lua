@@ -41,6 +41,7 @@ function ACF_HEFind( Hitpos, Radius )
 		--skip any undesired ent
 		if ACF.HEFilter[ent:GetClass()] then continue end
 		if not ent:IsSolid() then continue end
+		if ent.Exploding then continue end
 
 		table.insert( Table, ent )
 
@@ -80,7 +81,18 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 	local OccFilter	= istable(NoOcc) and NoOcc or { NoOcc }
 	local LoopKill	= true
 
-	local Targets	= ACF_HEFind( Hitpos, Radius )		-- Will give tiny HE just a pinch of radius to help it hit the player
+	local FRTargets	= ACF_HEFind( Hitpos, Radius * ACF.HEFragRadiusMul )		-- Will give tiny HE just a pinch of radius to help it hit the player
+
+	--local Targets = {} --Recalculates targets inside HE blast
+	--local RadSq = Radius^2 --Used for square distance test
+	--Saved for later HE Pen table
+	--for _, ent in pairs( FRTargets ) do
+		--	--skip any undesired ent
+		--	if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
+
+		--	table.insert( Targets, ent )
+
+	--end
 
 	while LoopKill and Power > 0 do
 
@@ -90,7 +102,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 		local Damage        = {}
 		local TotalArea     = 0
 
-		for i,Tar in ipairs(Targets) do
+		for i,Tar in ipairs(FRTargets) do
 
 			if not IsValid(Tar) then continue end
 			if Power <= 0 or Tar.Exploding then continue end
@@ -156,7 +168,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				--HE has direct view with the prop, so lets damage it
 				if TraceRes.Hit and TraceRes.Entity == Tar then
 
-					Targets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
+					FRTargets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
 					local Table		= {}
 
 					Table.Ent		= Tar
@@ -172,7 +184,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 					local AreaAdjusted  = Tar.ACF.Area
 
 					--Project the Area of the prop to the Area of the shadow it projects at the explosion max radius
-					Table.Area = math.min(AreaAdjusted / Sphere,0.5) * MaxSphere
+					Table.Area = math.min(AreaAdjusted / Sphere,0.5) * MaxSphere * ACF.HEFragRadiusMul --Don't forget to scale blast down by the frag adjustment factor.
 					table.insert(Damage, Table) --Add it to the Damage table so we know to damage it once we tallied everything
 
 					-- is it adding it too late?
@@ -181,7 +193,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				end
 
 			else
-				Targets[i] = NULL	--Target was invalid, so let's ignore it
+				FRTargets[i] = NULL	--Target was invalid, so let's ignore it
 				table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 			end
 
@@ -193,12 +205,14 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 			local Tar              = Table.Ent
 			local TargetPos        = Tar:GetPos()
 			local Feathering       = (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
+			local FRFeathering       = (1-math.min(1,Table.Dist / Radius / ACF.HEFragRadiusMul)) ^ ACF.HEFeatherExp
 			local AreaFraction     = Table.Area / TotalArea
 			local PowerFraction    = Power * AreaFraction  --How much of the total power goes to that prop
 			local AreaAdjusted     = (Tar.ACF.Area / ACF.Threshold) * Feathering
+			local FRAreaAdjusted     = (Tar.ACF.Area / ACF.Threshold) * FRFeathering
 
 			--HE tends to pick some props where simply will not apply damage. So lets ignore it.
-			if AreaAdjusted <= 0 then continue end
+			if FRAreaAdjusted <= 0 then continue end
 
 			local BlastRes
 			local Blast = {
@@ -207,8 +221,10 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 			local FragRes
 			local FragHit	= Fragments * AreaFraction
-			FragVel	= math.max(FragVel - ( (Table.Dist / FragVel) * FragVel ^ 2 * FragWeight ^ 0.33 / 10000 ) / ACF.DragDiv,0)
+			FragVel	= math.max(FragVel - ( (Table.Dist / FragVel) * FragVel ^ 2 * FragWeight ^ 0.33 * ACF.HEFragDragFactor ) / ACF.DragDiv,0)
 			local FragKE	= ACF_Kinetic( FragVel , FragWeight * FragHit, 1500 )
+
+			--Why would this ever be below 0?
 			if FragHit < 0 then
 				if math.Rand(0,1) > FragHit then FragHit = 1 else FragHit = 0 end
 			end
@@ -843,8 +859,8 @@ end
 
 --helper function to replace ENT:ApplyForceOffset()
 --Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
---[[local m_insq = 1 / 39.37 ^ 2
-local function ACE_ApplyForceOffset(Phys, Force, Pos, ForceVal) --For some reason this function somestimes reverses the impulse. I don't know why. Deal with this another day.
+local m_insq = 1 / 39.37 ^ 2
+local function ACE_ApplyForceOffset(Phys, Force, Pos) --For some reason this function somestimes reverses the impulse. I don't know why. Deal with this another day.
 	--Old
 	Phys:ApplyForceCenter(Force)
 	local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
@@ -852,7 +868,7 @@ local function ACE_ApplyForceOffset(Phys, Force, Pos, ForceVal) --For some reaso
 
 	Phys:ApplyTorqueCenter(angf)
 end
-]]--
+
 --Handles ACE forces (HE Push, Recoil, etc)
 function ACF_KEShove(Target, Pos, Vec, KE, Inflictor)
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE, Inflictor)
@@ -886,10 +902,11 @@ function ACF_KEShove(Target, Pos, Vec, KE, Inflictor)
 	--local Res	= Local + phys:GetMassCenter()
 	--Pos			= parent:LocalToWorld(Res)
 
-	--ACE_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos, KE ) --Had a lot of odd quirks including reversing torque angles.
-
-	phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
-
+	if ACF.UseLegacyRecoil < 1 then
+		ACE_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos ) --Had a lot of odd quirks including reversing torque angles.
+	else
+		phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
+	end
 end
 
 -- helper function to process children of an acf-destroyed prop
@@ -965,7 +982,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 				if not IsValid(child) or child.Exploding then continue end
 
 				child.Exploding = true
-				ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
+				ACF_ScaledExplosion( child, true ) -- explode any crates that are getting removed
 
 			end
 		end
@@ -1093,7 +1110,7 @@ do
 	local FuelExplosionScale = 0.005
 
 	--converts what would be multiple simultaneous cache detonations into one large explosion
-	function ACF_ScaledExplosion( ent )
+	function ACF_ScaledExplosion( ent , remove )
 
 		if ent.RoundType and ent.RoundType == "Refill" then return end
 
@@ -1131,7 +1148,9 @@ do
 		local Search = true
 		local Filter = { ent }
 
-		ent:Remove()
+		if remove then
+			ent:Remove()
+		end
 
 		local CExplosives = ACE.Explosives
 
@@ -1144,6 +1163,7 @@ do
 				if #Filter > MaxGroup or HEWeight > MaxHE then break end
 				if not IsValid(Found) then continue end
 				if Found:GetPos():DistToSqr(Pos) > Radius ^ 2 then continue end
+				if not remove and ent == Found then continue end
 
 				if not Found.Exploding then
 
@@ -1190,8 +1210,9 @@ do
 							local Propel   = Found.BulletData.PropMass	or 0
 							local Ammo     = Found.Ammo					or 0
 
-							FoundHEWeight = ( ( HE + Propel * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
+							FoundHEWeight = ( ( HE + Propel * ACF.APAmmoDetonateFactor * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
 						end
+
 
 						table.insert( ExplodePos, Found:LocalToWorld(Found:OBBCenter()) )
 
@@ -1248,7 +1269,7 @@ do
 				Flash:SetOrigin( AvgPos )
 				Flash:SetNormal( -vector_up )
 				Flash:SetRadius( math.max( Radius , 1 ) )
-			util.Effect( "ACF_Scaled_Explosion", Flash )
+			util.Effect( "ACE_Scaled_Detonation", Flash )
 		end )
 
 	end

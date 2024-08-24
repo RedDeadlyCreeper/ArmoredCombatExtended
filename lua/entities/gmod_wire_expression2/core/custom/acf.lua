@@ -998,10 +998,19 @@ do
 
 	__e2setcost(10)
 
-	-- Returns the number of rounds in active ammo crates linked to an ACF gun
+	-- Returns the number of rounds of an ACF Ammo Crate
+	[nodiscard]
+	e2function number entity:acfMunitions()
+		if not isAmmo(this) then return self:throw("You can get the count from Ammo Crates only.", 0) end
+		if restrictInfo(self.player, this) then return 0 end
+
+		return this.Ammo
+	end
+
+	-- Returns the number of rounds in active ammo crates linked to an ACF gun or rack.
 	[nodiscard]
 	e2function number entity:acfAmmoCount()
-		if not isGun(this) then return self:throw("Entity is not a valid ACF gun", 0) end
+		if not (isGun(this) or isRack(this)) then return self:throw("Only Guns, Racks and Ammo Crates are valid.", 0) end
 		if restrictInfo(self.player, this) then return 0 end
 
 		local count = 0
@@ -1015,10 +1024,10 @@ do
 		return count
 	end
 
-	-- Returns the number of rounds in all ammo crates linked to an ACF gun, regardless of whether they are active
+	-- Returns the number of rounds in all ammo crates linked to an ACF gun or rack, regardless of whether they are active or not.
 	[nodiscard]
 	e2function number entity:acfTotalAmmoCount()
-		if not isGun(this) then return self:throw("Entity is not a valid ACF gun", 0) end
+		if not (isGun(this) or isRack(this)) then return self:throw("Only Guns, Racks and Ammo Crates are valid.", 0) end
 		if restrictInfo(self.player, this) then return 0 end
 
 		local count = 0

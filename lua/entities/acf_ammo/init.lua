@@ -10,45 +10,54 @@ local GunTable  = ACF.Weapons.Guns
 local AmmoTable = ACF.Weapons.Ammo
 local LegacyAmmoTable = ACF.Weapons.LegacyAmmo
 
+local Inputs = {
+	"Active"
+}
+local Outputs = {
+	"Munitions (Returns the current number of rounds in this crate.)",
+	"Capacity (Returns the capacity of this crate.)"
+}
+
 function ENT:Initialize()
 
-	self.SpecialHealth	= true  --If true needs a special ACF_Activate function
-	self.SpecialDamage	= true  --If true needs a special ACF_OnDamage function
+	self.SpecialHealth       = true  --If true needs a special ACF_Activate function
+	self.SpecialDamage       = true  --If true needs a special ACF_OnDamage function
 
-	self.IsExplosive		= true
-	self.Exploding		= false
-	self.Damaged			= false
+	self.IsExplosive         = true
+	self.Exploding           = false
+	self.Damaged             = false
+	self.DamageDelay         = 0
 
-	self.CanUpdate		= true
-	self.Load			= false
-	self.EmptyMass		= 1
-	self.AmmoMassMax		= 0
-	self.NextMassUpdate	= 0
+	self.CanUpdate           = true
+	self.Load                = false
+	self.EmptyMass           = 1
+	self.AmmoMassMax         = 0
+	self.NextMassUpdate      = 0
 
-	self.Ammo			= 0
-	self.IsTwoPiece		= false
+	self.Ammo                = 0
+	self.IsTwoPiece          = false
 
-	self.NextLegalCheck	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal			= true
-	self.LegalIssues		= ""
+	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal               = true
+	self.LegalIssues         = ""
 
-	self.Active			= false
-	self.Master			= {}
-	self.Sequence		= 0
+	self.Active              = false
+	self.Master              = {}
+	self.Sequence            = 0
 
-	self.Interval		= 1		-- Think Interval when its not damaged
-	self.ExplosionInterval  = 0.01	-- Base Think Interval when its damaged and its about to explode
+	self.Interval            = 1		-- Think Interval when its not damaged
+	self.ExplosionInterval   = 0.03	-- Base Think Interval when its damaged and its about to explode
 
-	self.Capacity		= 1
-	self.AmmoMassMax		= 1
-	self.Caliber			= 1
-	self.RoFMul			= 1
-	self.LastMass		= 1
+	self.Capacity            = 1
+	self.AmmoMassMax         = 1
+	self.Caliber             = 1
+	self.RoFMul              = 1
+	self.LastMass            = 1
 
-	self.Inputs			= Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
-	self.Outputs			= Wire_CreateOutputs( self, { "Munitions" } )
+	self.Inputs              = Wire_CreateInputs( self, Inputs ) --, "Fuse Length"
+	self.Outputs             = Wire_CreateOutputs( self, Outputs )
 
-	ACF.AmmoCrates		= ACF.AmmoCrates or {}
+	ACF.AmmoCrates           = ACF.AmmoCrates or {}
 
 end
 
@@ -125,8 +134,8 @@ do
 				self.Inflictor = Inflictor
 			end
 
-			if self.Ammo > 1 and self.BulletData.Type ~= "Refill" then
-				ACF_ScaledExplosion( self )
+			if self.Ammo > 1 and self.BulletData.Type ~= "Refill" then --Not a refill and has ammo. Instant detonation.
+				ACF_ScaledExplosion( self, true )
 			else
 				self:Remove()
 			end
@@ -139,7 +148,7 @@ do
 			self:Remove()
 		else
 
-			local Ratio	= ( HitRes.Damage / self.BulletData.RoundVolume ) ^ 0.2
+			local Ratio	= math.max(( HitRes.Damage / self.BulletData.RoundVolume ) ^ 0.2, 1.0)
 			local CMul	= 1  --30% Chance to detonate, 5% chance to cookoff
 			local DetRand	= 0
 
@@ -156,19 +165,61 @@ do
 				DetRand = math.Rand(0,1) * CMul
 			end
 
-			--Cook Off
-			if DetRand >= 0.95 then
+
+			--Cookoff chance
+			if DetRand > 0.45 then --Passed chance for a cookoff.
+				DetRand = math.Rand(0,1)
+				self.Exploding = true
+
+				--Instantly detonate all the ammo
+				if DetRand < 0.35 then --55% of all ammo detonations
+
+					self.Inflictor  = Inflictor
+					self.Damaged	= 1 --Instant explosion guarenteed
+					--self.Ammo = self.Ammo * 2
+
+				--Explode a portion of the ammo then cook off
+				elseif DetRand < 0.95 then --40% of all ammo detonations
+
+					local DetDelay = 0.001
+					if math.Rand(0,1) > 0.25 then --75% chance to have a several second delay before the cookoff starts
+						DetDelay = math.Rand(0,3)
+						self.DamageDelay = ACF.CurTime + DetDelay
+					end
+
+
+					--util.Effect not working during MP workaround. Waiting a while fixes the issue.
+
+					timer.Simple(DetDelay, function()
+						local OldAmmo = self.Ammo
+						local Ratio = math.Rand(0.1,0.4)
+						self.Ammo = math.ceil(OldAmmo * Ratio * 2)
+						ACF_ScaledExplosion( self, false ) --Make the crate instantly explode without destroying it. Creates a nice violent explosion.
+
+						--Originally from 0 to 0.5 as half of the ammo was used for the explosion.
+						--Lead to inconsistent cookoffs with fast cooking ammo.
+						self.Ammo = math.ceil(OldAmmo * (1-Ratio))
+					end )
+
+					self.Inflictor  = Inflictor
+					self.Damaged	= ACF.CurTime + (10 - Ratio * 8)
+
+				--Long cookoff. Rare.
+				else
+
+				if math.Rand(0,1) > 0.2 then --80% chance to have a several second delay before the cookoff starts
+					self.DamageDelay = ACF.CurTime + math.Rand(0,3)
+				end
+
+				self.Ammo = math.ceil(self.Ammo * math.Rand(0.35,1))
 
 				self.Inflictor  = Inflictor
-				self.Damaged	= ACF.CurTime + (5 - Ratio * 3)
+				self.Damaged	= ACF.CurTime + 15 --Cookoffs until the box runs out of ammo or for 15 seconds. Whichever happens first.
 
-			--Boom
-			elseif DetRand >= 0.7 then
-
-				self.Inflictor  = Inflictor
-				self.Damaged	= 1 --Instant explosion guarenteed
+				end
 
 			end
+
 
 		end
 
@@ -453,7 +504,12 @@ do
 	--List of munitions no longer stay on ACE
 	local AmmoComp = {
 		["APDSS"]		= "APDS",
-		["APFSDSS"]		= "APFSDS"
+		["APFSDSS"]		= "APFSDS",
+		["APBC"]		= "AP",
+		["APC"]			= "AP",
+		["APCBC"]		= "AP",
+		["APBC"]		= "AP",
+		["APHECBC"]		= "APHE"
 	}
 
 	function ENT:CreateAmmo(_, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
@@ -526,7 +582,7 @@ do
 			AmmoMaxMass = Vol
 
 			WireName = "ACE Universal Supply Crate"
-
+			self.ACEPoints = 4000
 		else
 
 			self.IsTwoPiece = false
@@ -580,16 +636,24 @@ do
 			debugoverlay.Text(self:GetPos() + Vector(0,0,15), "Mass per Round: " .. (self.BulletData.ProjMass + self.BulletData.PropMass) .. "kgs", 20 )
 			debugoverlay.Text(self:GetPos() + Vector(0,0,10), "Total Ammo Mass: " .. self.AmmoMassMax .. "kgs", 20 )
 
+			if WeaponType ~= "missile" then
+				self.ACEPoints = math.ceil(self.AmmoMassMax / 1000 * ACE.AmmoPerTon)
+			else
+				local BulletData2 = ACFM_CompactBulletData(self)
+				local MissileCost = CalculateMissileCost(BulletData2)
+				self.ACEPoints = Capacity * MissileCost
+			end
+
 			WireName = AmmoGunData.name .. " Ammo"
 
 		-- end capacity calculations
 		end
 
-		self.AmmoMassMax = AmmoMaxMass
-		self.Capacity	= Capacity
-		self.Volume	= Vol --Used by the missile reload bonus
-		self.Caliber	= AmmoGunData.caliber or 1
-		self.RoFMul	= self.IsTwoPiece and 0.3 or 0						--30% ROF penalty for 2 piece
+		self.AmmoMassMax    = AmmoMaxMass
+		self.Capacity       = Capacity
+		self.Volume         = Vol --Used by the missile reload bonus
+		self.Caliber        = AmmoGunData.caliber or 1
+		self.RoFMul         = self.IsTwoPiece and 0.3 or 0						--30% ROF penalty for 2 piece
 
 		self:SetNWString( "Ammo", self.Ammo )
 		self:SetNWString( "WireName", WireName )
@@ -597,6 +661,7 @@ do
 		self.NetworkData = ACF.RoundTypes[self.BulletData.Type].network
 		self:NetworkData( self.BulletData )
 
+		Wire_TriggerOutput( self, "Capacity", self.Capacity )
 		self:UpdateOverlayText()
 
 	end
@@ -717,41 +782,82 @@ function ENT:Think()
 			end
 		end
 
-		local CrateType = self.BulletData.Type or "Refill"
+		if self.DamageDelay < ACF.CurTime then
+			local CrateType = self.BulletData.Type or "Refill"
 
-		--If that is a refill, remove it
-		if CrateType == "Refill" then
+			--If that is a refill, remove it
+			if CrateType == "Refill" then
 
-			self:Remove()
+				self:Remove()
 
-		-- immediately detonate if there's 1 or 0 shells
-		elseif self.Ammo <= 1 or self.Damaged < CurTime() then
+			-- immediately detonate if there's 1 or 0 shells
+			elseif self.Ammo <= 1 or self.Damaged < CurTime() then
 
-			ACF_ScaledExplosion( self ) -- going to let empty crates harmlessly poot still, as an audio cue it died
+				ACF_ScaledExplosion( self, true ) -- going to let empty crates harmlessly poot still, as an audio cue it died
 
-		else
+			else
 
-			if math.Rand(0,150) > self.BulletData.RoundVolume ^ 0.5 and math.Rand(0,1) < self.Ammo / math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
+				--if math.Rand(20,150) > self.BulletData.RoundVolume ^ 0.5 and math.Rand(0,1) < self.Ammo / math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
+				if math.Rand(0,1) < self.Ammo / math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
 
-				self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass * 100,60)  )
-				self.BulletCookSpeed	= self.BulletCookSpeed or ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass / 2, self.Caliber )
+					self:EmitSound( "acf_other/explosions/cookoff/cookOff" .. math.random(1,4) .. ".mp3", 550, math.max(140 - self.BulletData.PropMass * 35,35)  )
+					self.BulletCookSpeed	= self.BulletCookSpeed or ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass / 2, self.Caliber )
 
-				self.BulletData.Pos = self:LocalToWorld(self:OBBCenter() + VectorRand() * (self:OBBMaxs() - self:OBBMins()) / 2)
-				self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity()
+					self.BulletData.Tracer = 1
+					self.RoundData10 = 1
 
-				self.BulletData.Owner	= self.BulletData.Owner or self.Inflictor or self:CPPIGetOwner()
-				self.BulletData.Gun	= self.BulletData.Gun	or self
-				self.BulletData.Crate	= self.BulletData.Crate or self:EntIndex()
+					self.BulletData.Pos = self:LocalToWorld(self:OBBCenter() + VectorRand() * (self:OBBMaxs() - self:OBBMins()) / 2)
+					self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity() * 0.25
 
-				self.CreateShell		= ACF.RoundTypes[CrateType].create
-				self:CreateShell( self.BulletData )
+					self.BulletData.Owner	= self.BulletData.Owner or self.Inflictor or self:CPPIGetOwner()
+					self.BulletData.Gun	= self.BulletData.Gun	or self
+					self.BulletData.Crate	= self.BulletData.Crate or self:EntIndex()
 
-				self.Ammo = self.Ammo - 1
+					self.CreateShell		= ACF.RoundTypes[CrateType].create
+					self:CreateShell( self.BulletData )
+
+					self.Ammo = self.Ammo - 1
+
+
+						--util.Effect not working during MP workaround. Waiting a while fixes the issue.
+						timer.Simple(0.001, function()
+							local Flash = EffectData()
+								Flash:SetAttachment( 1 )
+								Flash:SetOrigin( self.BulletData.Pos )
+								Flash:SetNormal( -vector_up )
+								Flash:SetRadius( self.BulletData.RoundVolume ^ 0.4 * 0.75 )
+							util.Effect( "ace_cookoff_puff", Flash )
+						end )
+
+						--1 in 3 chance to create explosion for double round's HE weight
+
+						if math.Rand(0,1) > 0.5 then
+
+							local HE       = self.BulletData.FillerMass	or 0
+							local Propel   = self.BulletData.PropMass	or 0
+
+							local HEWeight = ((  HE + Propel * ACF.APAmmoDetonateFactor * ( ACF.PBase / ACF.HEPower) ) * ACF.BoomMult)
+							local HERadius = ACE_CalculateHERadius( HEWeight )
+
+							ACF_HE( self.BulletData.Pos , vector_origin , HEWeight , HEWeight , Inflictor , ent, ent )
+
+							--util.Effect not working during MP workaround. Waiting a while fixes the issue.
+							timer.Simple(0.001, function()
+								local Flash = EffectData()
+									Flash:SetAttachment( 1 )
+									Flash:SetOrigin( self.BulletData.Pos )
+									Flash:SetNormal( -vector_up )
+									Flash:SetRadius( math.max( HERadius , 1 ) )
+								util.Effect( "acf_scaled_explosion", Flash )
+							end )
+
+					end
+
+				end
+
+				self:NextThink( CurTime() + self.ExplosionInterval + (self.BulletData.RoundVolume ^ 0.5 / 150 ) )
 
 			end
-
-			self:NextThink( CurTime() + self.ExplosionInterval + self.BulletData.RoundVolume ^ 0.5 / 100 )
-
 		end
 
 	-- Completely new, fresh, genius, beautiful, flawless refill system.

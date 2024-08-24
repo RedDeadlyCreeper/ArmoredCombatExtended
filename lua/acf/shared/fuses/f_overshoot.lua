@@ -18,7 +18,7 @@ this.Name = ClassName
 this.Target = nil
 
 -- the fuse may trigger at some point under this range - unless it's travelling so fast that it steps right on through.
-this.Distance = 2000^2
+this.Distance = 2000
 
 
 this.desc = "If the missile is in the set activation distance, detonates the missile when distance increases as it flys past the target.\nDistance in inches."
@@ -48,6 +48,8 @@ do
 	function this:GetDetonate(missile)
 
 		if not self:IsArmed() then return false end
+
+		if (missile.IsDecoyed or false) then return false end
 
 		local missilePos = missile:GetPos()
 		local missileTarget = missile.TargetPos

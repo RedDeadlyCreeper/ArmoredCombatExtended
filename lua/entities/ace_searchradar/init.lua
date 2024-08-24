@@ -78,6 +78,7 @@ function MakeACE_SearchRadar(Owner, Pos, Angle, Id)
 	Radar.Cone     = Radar.ICone
 	Radar.PowerID     = radar.powerid
 	Radar.AnimationRate     = radar.animspeed
+	Radar.ACEPoints		= radar.acepoints or 0.9
 
 	Radar.InaccuracyMul          = (0.035 * (Radar.ICone / 15) ^ 2) * 0.2
 	Radar.DPLRFAC                = 65 - (Radar.ICone / 2)
@@ -328,7 +329,7 @@ function ENT:Think()
 							local GCtr = util.TraceHull( { --  Ground clutter trace
 
 								start = entpos,
-								endpos = entpos + difpos:GetNormalized() * 2000,
+								endpos = entpos + difpos:GetNormalized() * 8000,
 								collisiongroup  = COLLISION_GROUP_DEBRIS,
 								filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
 								mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),

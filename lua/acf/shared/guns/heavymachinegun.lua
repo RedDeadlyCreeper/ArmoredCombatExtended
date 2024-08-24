@@ -1,11 +1,11 @@
 --define the class
 ACF_defineGunClass("HMG", {
 	type = "Gun",
-	spread = 0.25,
+	spread = 0.17,
 	name = "Heavy Machinegun",
 	desc = ACFTranslation.GunClasses[7],
 	muzzleflash = "MG",
-	rofmod = 0.17,
+	rofmod = 0.16,
 	year = 1935,
 	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	noloader = true,
@@ -30,7 +30,8 @@ ACF_defineGun("30mmHMGShort", {
 	round = {
 		maxlength = 25,
 		propweight = 0.03
-	}
+	},
+	acepoints = 150
 } )
 
 ACF_defineGun("40mmHMGShort", {
@@ -46,7 +47,8 @@ ACF_defineGun("40mmHMGShort", {
 	round = {
 		maxlength = 32,
 		propweight = 0.12
-	}
+	},
+	acepoints = 300
 } )
 
 --add a gun to the class
@@ -57,15 +59,16 @@ ACF_defineGun("20mmHMG", {
 	sound = "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 	gunclass = "HMG",
 	caliber = 2.0,
-	weight = 100,
+	weight = 80,
 	year = 1935,
 	rofmod = 1.2, --at 1.5, 675rpm; at 2.0, 480rpm
 	magsize = 60,
-	magreload = 8,
+	magreload = 5,
 	round = {
-		maxlength = 30,
-		propweight = 0.12
-	}
+		maxlength = 32,
+		propweight = 0.13
+	},
+	acepoints = 200
 } )
 
 ACF_defineGun("30mmHMG", {
@@ -75,15 +78,16 @@ ACF_defineGun("30mmHMG", {
 	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	gunclass = "HMG",
 	caliber = 3.0,
-	weight = 180,
+	weight = 150,
 	year = 1941,
 	rofmod = 0.8, --at 1.05, 495rpm;
 	magsize = 50,
-	magreload = 10,
+	magreload = 6,
 	round = {
-		maxlength = 37,
+		maxlength = 39,
 		propweight = 0.35
-	}
+	},
+	acepoints = 300
 } )
 
 ACF_defineGun("40mmHMG", {
@@ -93,13 +97,14 @@ ACF_defineGun("40mmHMG", {
 	sound = "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	gunclass = "HMG",
 	caliber = 4.0,
-	weight = 340,
+	weight = 300,
 	year = 1955,
 	rofmod = 0.95, --at 0.75, 455rpm
 	magsize = 35,
-	magreload = 10,
+	magreload = 7,
 	round = {
-		maxlength = 42,
+		maxlength = 45,
 		propweight = 0.9
-	}
+	},
+	acepoints = 450
 } )

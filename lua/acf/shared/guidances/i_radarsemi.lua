@@ -71,6 +71,16 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
+	missile.IsDecoyed = false
+	if self.Target:GetClass( ) == "ace_flare" then
+		missile.IsDecoyed = true
+		if self.HasIRCCM then
+			--print("IRCCM reject")
+			self.Target = nil
+			return {}
+		end
+	end
+
 	local missilePos = missile:GetPos()
 	--local missileForward = missile:GetForward()
 	--local targetPhysObj = self.Target:GetPhysicsObject()
@@ -204,8 +214,15 @@ function this:AcquireLock(missile)
 
 			debugoverlay.Sphere(entpos, 100, 5, Color(255,100,0,255))
 
+			local Multiplier = 1
+
+			if classifyent:GetClass() == "ace_flare" then
+				Multiplier = classifyent.RadarSig
+				--print("FlareSeen")
+			end
+
 			--Could do pythagorean stuff but meh, works 98% of time
-			local testang = absang.p + absang.y
+			local testang = (absang.p + absang.y) * Multiplier
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then
@@ -226,7 +243,10 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
+	local Guns = ACF.Weapons.Guns
+	local GunTable = Guns[Type]
+
+	local ViewCone = GunTable.viewcone and GunTable.viewcone * 2 or 0
 
 	return
 	{

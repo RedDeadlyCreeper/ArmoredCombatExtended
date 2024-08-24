@@ -51,7 +51,8 @@ ACF_defineGun("50kgBOMB", {						-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.05)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.05),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 50
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -105,7 +106,8 @@ ACF_defineGun("100kgBOMB", {						-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 100
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -158,7 +160,8 @@ ACF_defineGun("250kgBOMB", {						-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 250
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -211,7 +214,8 @@ ACF_defineGun("500kgBOMB", {						-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 750
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -261,7 +265,8 @@ ACF_defineGun("1000kgBOMB", {					-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 1000
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -311,7 +316,8 @@ ACF_defineGun("100kgGBOMB", {					-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 100
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -366,7 +372,8 @@ ACF_defineGun("250kgGBOMB", {					-- id
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
-		penmul      = math.sqrt(0.3)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 250
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.

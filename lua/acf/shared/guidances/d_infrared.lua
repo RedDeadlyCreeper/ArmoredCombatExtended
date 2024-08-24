@@ -17,10 +17,10 @@ this.Name = ClassName
 this.Target = nil
 
 -- Cone to acquire targets within.
-this.SeekCone = 20
+this.SeekCone = 6
 
 -- Cone to retain targets within.
-this.ViewCone = 25
+this.ViewCone = 70
 
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
@@ -78,10 +78,14 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
-	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
-		--print("IRCCM reject")
-		self.Target = nil
-		return {}
+	missile.IsDecoyed = false
+	if self.Target:GetClass( ) == "ace_flare" then
+		missile.IsDecoyed = true
+		if self.HasIRCCM then
+			--print("IRCCM reject")
+			self.Target = nil
+			return {}
+		end
 	end
 
 	local missilePos = missile:GetPos()
@@ -329,8 +333,11 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local seekCone =  (ACF.Weapons.Guns[Type].seekcone or 0 ) * 2
-	local ViewCone = (ACF.Weapons.Guns[Type].viewcone or 0 ) * 2
+	local Guns = ACF.Weapons.Guns
+	local GunTable = Guns[Type]
+
+	local ViewCone = GunTable.viewcone and GunTable.viewcone * 2 or 0
+	local seekCone = GunTable.seekcone and GunTable.seekcone * 2 or 0
 
 	return
 	{

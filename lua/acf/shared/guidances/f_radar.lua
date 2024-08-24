@@ -50,6 +50,7 @@ function this:Configure(missile)
 	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
+	self.SeekCone = self.SeekCone * 3
 	self.GCMultiplier	= ACF_GetGunValue(missile.BulletData, "groundclutterfactor") or this.GCMultiplier
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 end
@@ -68,9 +69,14 @@ function this:GetGuidance(missile)
 		return {}
 	end
 
-	if (self.Target:GetClass( ) == "ace_flare" and self.HasIRCCM) then
-		self.Target = nil
-		return {}
+	missile.IsDecoyed = false
+	if self.Target:GetClass( ) == "ace_flare" then
+		missile.IsDecoyed = true
+		if self.HasIRCCM then
+			--print("IRCCM reject")
+			self.Target = nil
+			return {}
+		end
 	end
 
 	local missilePos = missile:GetPos()
@@ -174,7 +180,7 @@ function this:GetWhitelistedEntsInCone(missile)
 				local ConeInducedGCTRSize = dist / 100 * self.GCMultiplier --2 meter wide tracehull for every 100m distance
 				local GCtr = util.TraceHull( {
 					start = entpos,
-					endpos = entpos + difpos:GetNormalized() * 4000 * self.GCMultiplier ,
+					endpos = entpos + difpos:GetNormalized() * 16000 * self.GCMultiplier ,
 					collisiongroup  = COLLISION_GROUP_WORLD,
 					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
 					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
@@ -262,16 +268,19 @@ function this:AcquireLock(missile)
 
 			if classifyent:GetClass() == "ace_flare" then
 				Multiplier = classifyent.RadarSig
+				--print(Multiplier)
 				--print("FlareSeen")
 			end
 
 			--Could do pythagorean stuff but meh, works 98% of time
-			local testang = (absang.p + absang.y) * Multiplier
+			local testang = (absang.p + absang.y + 2.5) / Multiplier
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then
-
-				bestAng = testang
+				if Multiplier > 1 then
+					print("Flarewon")
+				end
+					bestAng = testang
 				bestent = classifyent
 
 			end
@@ -287,8 +296,11 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local seekCone = ACF.Weapons.Guns[Type].seekcone * 2 or 0
-	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
+	local Guns = ACF.Weapons.Guns
+	local GunTable = Guns[Type]
+
+	local seekCone = GunTable.seekcone and GunTable.seekcone * 2 or 0
+	local ViewCone = GunTable.viewcone and GunTable.viewcone * 2 or 0
 
 	return
 	{

@@ -38,7 +38,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		rocketmdl			= "models/missiles/aim9m.mdl",
 		rackmdl				= "models/missiles/aim9m.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 1.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
 
 		maxlength			= 140,							-- Length of missile. Used for ammo properties.
@@ -66,7 +66,8 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		dragcoef			= 0.0005,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		penmul            = math.sqrt(0.4)				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(0.4),				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 714,
 	},
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -110,7 +111,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/aim7f.mdl",
 		rackmdl				= "models/missiles/arend/aim7f.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 1.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 30.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
@@ -139,7 +140,8 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		dragcoef			= 0.005,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		penmul            = math.sqrt(0.4)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(0.4),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 857
 	},
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -181,7 +183,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/agm-88.mdl",
 		rackmdl				= "models/missiles/arend/agm-88.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 1.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 45.0,
 
 		maxlength			= 150,							-- Length of missile. Used for ammo properties.
@@ -211,7 +213,8 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		penmul            = math.sqrt(0.6)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(0.6),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 1071
 	},
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -251,7 +254,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/kh31.mdl",
 		rackmdl				= "models/missiles/arend/kh31.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 60.0,
 
 
@@ -282,7 +285,8 @@ ACF_defineGun("KH-31 ASM", {						-- id
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 1071
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -323,7 +327,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		rocketmdl			= "models/missiles/arend/agm65d.mdl",
 		rackmdl				= "models/missiles/arend/agm65d.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 80.0,
 
 
@@ -352,7 +356,8 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		dragcoef			= 0.005,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 625
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -392,7 +397,7 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 		rocketmdl			= "models/macc/storm_shadow_open.mdl",
 		rackmdl				= "models/macc/storm_shadow_closed.mdl",
 		firedelay			= 0.5,
-		reloadspeed			= 2.0,
+		reloadspeed			= 6.0,
 		reloaddelay			= 80.0,
 
 
@@ -424,7 +429,8 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		penmul            = math.sqrt(1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		pointcost			= 250
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.

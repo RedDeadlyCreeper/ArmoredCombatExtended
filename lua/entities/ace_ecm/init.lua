@@ -45,6 +45,8 @@ function ENT:Initialize()
 	self.CurrentlyJamming = 0
 	self.JamDirection = vector_origin
 	self.JamTargetPos = 0 --Used for storing and updating jam vector if there is one.
+
+	self.ACEPoints = 500
 end
 
 

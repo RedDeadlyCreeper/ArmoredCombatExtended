@@ -602,9 +602,6 @@ function ACFCLGUICreate()
 	Effects:CheckBox("Draw Mobility rope links", "ACF_MobilityRopeLinks")
 	Effects:ControlHelp( "Allow you to see the links between engines and gearboxes (requires dupe restart)" )
 
-	Effects:NumSlider( "Particle Multipler", "acf_cl_particlemul", 1, 5, 0 )
-	Effects:ControlHelp( "Adjusts the particles that will be created by ACE. Keep this low for better performance." )
-
 	acfmenupanel.CustomDisplay:AddItem( Effects )
 
 	local DupeSection = vgui.Create( "DForm" )

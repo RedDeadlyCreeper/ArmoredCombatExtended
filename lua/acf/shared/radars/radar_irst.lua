@@ -15,5 +15,6 @@ ACF_DefineIRST("Small-IRST", {
 	maxdist		= 23622, --600m
 	SeekSensitivity = 1,
 	viewcone		= 10,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
-	inaccuracy		= 6					--Curently does nothing.
+	inaccuracy		= 6,					--Curently does nothing.
+	acepoints = 400
 } )

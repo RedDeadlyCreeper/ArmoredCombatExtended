@@ -125,14 +125,8 @@ function this:GetWhitelistedEntsInCone(missile)
 
 		--Trace did not hit world
 		if not LOStr.Hit then
-
-
 			table.insert(foundAnim, scanEnt)
-
-
 		end
-
-
 	end
 
 	return foundAnim
@@ -193,7 +187,10 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
+	local Guns = ACF.Weapons.Guns
+	local GunTable = Guns[Type]
+
+	local ViewCone = GunTable.viewcone and GunTable.viewcone * 2 or 0
 
 	return
 	{

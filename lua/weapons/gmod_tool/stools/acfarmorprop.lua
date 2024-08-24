@@ -150,6 +150,15 @@ function TOOL:Reload( trace )
 	local ToJSON		= util.TableToJSON( GeneralTb )
 	local Compressed	= util.Compress(ToJSON)
 
+	local Contraption = ent:GetContraption() or nil
+	local PointVal		= 0
+
+	if Contraption ~= nil then
+		PointVal		= Contraption.ACEPoints or ACE_GetEntPoints(ent) or 0
+	else
+		PointVal = ACE_GetEntPoints(ent)
+	end
+
 	net.Start("ACE_ArmorSummary")
 		net.WriteFloat(total)
 		net.WriteFloat(phystotal)
@@ -157,8 +166,10 @@ function TOOL:Reload( trace )
 		net.WriteFloat(physratio)
 		net.WriteFloat(power)
 		net.WriteFloat(fuel)
+		net.WriteFloat(PointVal)
 
 		net.WriteData(Compressed)
+
 	net.Send(self:GetOwner())
 
 end
@@ -427,6 +438,7 @@ if CLIENT then
 
 		local hpton		= math.Round( power * bonus / (total / 1000), 1 )
 		local hasfuel	= fuel == 1 and " with fuel (25% boost)" or fuel == 2 and "" or " (no fuel)"
+		local PointVal	= math.Round( net.ReadFloat(), 1 )
 		local Compressed	= net.ReadData(640)
 		local Decompress	= util.Decompress(Compressed)
 		local FromJSON	= util.JSONToTable( Decompress )
@@ -436,25 +448,77 @@ if CLIENT then
 		local Tabletxt	= {}
 
 		local Title		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>" .. Sep }
-		local TMass		= { Color4, "- Total Mass: ", Color3, "" .. total, Color4, " kgs / @ ", Color3, "" .. math.Truncate(total / 1000,2), Color4, " tons" .. Sep }
-		local TMass2		= { Color4, "- Mass Ratio: ",Color3, "" .. phystotal, Color4, " kgs physical, ", Color3, "" .. parenttotal, Color4, " kgs parented / ", Color3, physratio .. "%", Color4, " physical )" .. Sep }
-		local Engine		= { Color4, "- Total Power: ", Color3, "" .. math.Round(power * bonus, 1), Color4," hp / ",Color3, "" .. hpton, Color4, " hp/ton" .. hasfuel .. Sep }
-		local ArmorComp1	= { Color4, "- Composition: " .. Sep }
+		--local ArmorComp1	= { Color4, "- Armor composition: " .. Sep }
+		local TMass2		= { Color4, "-Mass Ratio: ",Color3, "" .. phystotal .. "kg", Color4, " physical, ", Color3, "" .. parenttotal .. "kg", Color4, " parented / ", Color3, physratio .. "%", Color4, " physical )" .. Sep }
+
+		local Engine		= { Color4, "-Total Power: ", Color3, "" .. math.Round(power * bonus, 1), Color4," hp -> ",Color3, "" .. hpton, Color4, " hp/ton", Color3, "" .. hasfuel .. Sep }
+
+
+		--PointVal
 
 		Tabletxt = table.Add(Tabletxt, Title)
-		Tabletxt = table.Add(Tabletxt,TMass)
 		Tabletxt = table.Add(Tabletxt,TMass2)
-		Tabletxt = table.Add(Tabletxt,Engine)
-		Tabletxt = table.Add(Tabletxt,ArmorComp1)
+		--Tabletxt = table.Add(Tabletxt,ArmorComp1)
 
-		for material, mass in pairs( FromJSON[1] ) do
 
+		local Count = 0
+		for material, _ in pairs( FromJSON[1] ) do
 			local Percent	=  math.Round( FromJSON[2][material] * 100 ,1)
-			local TbStr	= { Color4, "> " .. material .. " @ ", Color3, "" .. math.Round(mass,1), Color4, " kgs (", Color3, Percent .. "%", Color4, ")" .. Sep }
+			local MatText = material .. ": "
+			local MassText = math.Round(Percent,0) .. "%  "
 
-			Tabletxt = table.Add(Tabletxt,TbStr)
+			Count = Count + 1
+			if Count > 7 then
+				Count = 0
+				table.Add(Tabletxt,{ Color4, MatText})
+				table.Add(Tabletxt,{ Color3, MassText .. Sep})
+			else
+				table.Add(Tabletxt,{ Color4, MatText})
+				table.Add(Tabletxt,{ Color3, MassText})
+			end
 
 		end
+
+		table.Add(Tabletxt,{ Color4, Sep})
+
+		Count = 0
+		for material, mass in pairs( FromJSON[1] ) do
+			local MatText = material .. ": "
+			local MassText = math.Round(mass,1) .. "kg  "
+
+			if Count > 3 then
+				Count = 0
+				table.Add(Tabletxt,{ Color4, MatText})
+				table.Add(Tabletxt,{ Color3, MassText .. Sep})
+			else
+				table.Add(Tabletxt,{ Color4, MatText})
+				table.Add(Tabletxt,{ Color3, MassText})
+			end
+			Count = Count + 1
+
+		end
+
+		Tabletxt = table.Add(Tabletxt,TbStr)
+		local TPoints = {}
+		if PointVal > ACF.PointsLimit then
+			local OverPoints = PointVal - ACF.PointsLimit
+			TPoints		= { Color4, "-Total Cost: ", Color1, "" .. PointVal .. "pts", Color2, "  -  ", Color1, OverPoints .. " pts over" .. Sep }
+		else
+			TPoints		= { Color4, "-Total Cost: ", Color3, "" .. PointVal .. "pts" .. Sep }
+		end
+
+		Tabletxt = table.Add(Tabletxt,TPoints)
+
+		local TMass = {}
+		if total > ACF.MaxWeight then
+			local OverTons = total - ACF.MaxWeight
+			TMass		= { Color4, "-Total Mass: ", Color1, "" .. math.Truncate(total / 1000,1) .. " tons", Color4, " / ", Color1, "" .. total .. "kg", Color2, "  -  ", Color1, OverTons .. " kg over" .. Sep }
+		else
+			TMass		= { Color4, "-Total Mass: ", Color3, "" .. math.Truncate(total / 1000,1) .. " tons", Color4, " / ", Color3, "" .. total .. "kg" .. Sep }
+		end
+
+		Tabletxt = table.Add(Tabletxt,TMass)
+		Tabletxt = table.Add(Tabletxt,Engine)
 
 		chat.AddText(unpack(Tabletxt))
 

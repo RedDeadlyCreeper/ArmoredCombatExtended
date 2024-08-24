@@ -5,7 +5,7 @@ ACF_defineGunClass("SC", {
 	name = "Short-Barrel Cannon",
 	desc = ACFTranslation.GunClasses[13],
 	muzzleflash = "MO",
-	rofmod = 1.3,
+	rofmod = 1.1,
 	maxrof = 25, -- maximum rounds per minute
 	year = 1915,
 	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
@@ -21,12 +21,13 @@ ACF_defineGun("37mmSC", {
 	gunclass = "SC",
 	caliber = 3.7,
 	weight = 55,
-	maxrof = 40, -- maximum rounds per minute
+	maxrof = 60, -- maximum rounds per minute
 	year = 1915,
 	round = {
 		maxlength = 45,
 		propweight = 0.29
-	}
+	},
+	acepoints = 500
 } )
 
 ACF_defineGun("50mmSC", {
@@ -42,7 +43,8 @@ ACF_defineGun("50mmSC", {
 	round = {
 		maxlength = 63,
 		propweight = 0.6,
-	}
+	},
+	acepoints = 700
 } )
 
 ACF_defineGun("75mmSC", {
@@ -53,12 +55,13 @@ ACF_defineGun("75mmSC", {
 	gunclass = "SC",
 	caliber = 7.5,
 	weight = 480,
-	maxrof = 25, -- maximum rounds per minute
+	maxrof = 35, -- maximum rounds per minute
 	year = 1936,
 	round = {
 		maxlength = 76,
 		propweight = 2
-	}
+	},
+	acepoints = 1000
 } )
 
 ACF_defineGun("85mmSC", {
@@ -68,12 +71,13 @@ ACF_defineGun("85mmSC", {
 	gunclass = "SC",
 	caliber = 8.5,
 	weight = 1250,
-	maxrof = 23, -- maximum rounds per minute
+	maxrof = 30, -- maximum rounds per minute
 	year = 1942,
 	round = {
 		maxlength = 84.5,
 		propweight = 3.25
-	}
+	},
+	acepoints = 1100
 } )
 
 ACF_defineGun("100mmSC", {
@@ -84,12 +88,13 @@ ACF_defineGun("100mmSC", {
 	gunclass = "SC",
 	caliber = 10.0,
 	weight = 1000,
-	maxrof = 18, -- maximum rounds per minute
+	maxrof = 25, -- maximum rounds per minute
 	year = 1940,
 	round = {
 		maxlength = 93,
 		propweight = 4.5
-	}
+	},
+	acepoints = 1250
 } )
 
 ACF_defineGun("120mmSC", {
@@ -100,12 +105,13 @@ ACF_defineGun("120mmSC", {
 	gunclass = "SC",
 	caliber = 12.0,
 	weight = 1400,
-	maxrof = 13, -- maximum rounds per minute
+	maxrof = 17, -- maximum rounds per minute
 	year = 1944,
 	round = {
 		maxlength = 110,
 		propweight = 8.5
-	}
+	},
+	acepoints = 1500
 } )
 
 ACF_defineGun("140mmSC", {
@@ -116,12 +122,13 @@ ACF_defineGun("140mmSC", {
 	gunclass = "SC",
 	caliber = 14.0,
 	weight = 2050,
-	maxrof = 9, -- maximum rounds per minute
+	maxrof = 12, -- maximum rounds per minute
 	year = 1999,
 	round = {
 		maxlength = 127,
 		propweight = 12.8
-	}
+	},
+	acepoints = 1625
 } )
 
 ACF_defineGun("170mmSC", {
@@ -137,6 +144,7 @@ ACF_defineGun("170mmSC", {
 	round = {
 		maxlength = 147,
 		propweight = 14.8
-	}
+	},
+	acepoints = 2200
 } )
 

@@ -152,6 +152,8 @@ function MakeACF_Rack(Owner, Pos, Angle, Id)
 
 	Rack.MaxMissile = table.Count(gundef.mountpoints) or 1
 	Rack.ReloadTime = gundef.magreload or 1 --Replace with fixed time delay rather than multiplier
+	Rack.ACEPoints	= (100 + (Rack.MaxMissile-1) * 50)
+	--Rack.ACEPoints	= 200
 
 	local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
 
@@ -576,13 +578,16 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.StringName = (ACF_GetRackValue(BulletData, "name") or ACF_GetGunValue(BulletData.Id, "name") or "") .. " - " .. BulletData.Type
 	missile.MinStartDelay = ACF_GetRackValue(BulletData, "armdelay") or ACF_GetGunValue(BulletData.Id, "armdelay") or 0.3
 
+	missile.MissileVelocityMul = ACF_GetRackValue(BulletData, "velmul") or ACF_GetGunValue(BulletData.Id, "velmul") or 3
+	missile.MissileCalMul = ACF_GetRackValue(BulletData, "calmul") or ACF_GetGunValue(BulletData.Id, "calmul") or 1
+
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8
 
 	if guidance then
 		guidance = ACFM_CreateConfigurable(guidance, GuidanceTable, bdata, "guidance")
---		if guidance then missile:SetGuidance(guidance) end
+		--if guidance then missile:SetGuidance(guidance) end
 		if guidance then
 			missile.Guidance = guidance
 			guidance:Configure(missile)
@@ -627,6 +632,8 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	self.ReloadTime = ACF_GetRackValue(BulletData, "reloadspeed") or ACF_GetGunValue(BulletData.Id, "reloadspeed") or 1
 	self.ReloadDelay = ACF_GetRackValue(BulletData, "reloaddelay") or ACF_GetGunValue(BulletData.Id, "reloaddelay") or 1
 	self.Inaccuracy = ACF_GetRackValue(BulletData, "inaccuracy") or ACF_GetGunValue(BulletData.Id, "inaccuracy") or 0
+
+	missile.ACEPoints = CalculateMissileCost(BulletData)
 
 	if missile:IsValid() then
 		self:EmitSound("acf_extra/tankfx/gnomefather/reload12.wav", 500, 110)
@@ -1008,9 +1015,9 @@ do
 		--print(self.Bulletdata2.Type)
 
 		if InstantDetTable[self.Bulletdata2.Type] then
-			self.Bulletdata2.FuseLength = 0.001
+			self.Bulletdata2.FuseLength = 0.00001
 		else
-			self.Bulletdata2.FuseLength = 0.5 --The missile exploded. The shell shouldn't travel across the map.
+			self.Bulletdata2.FuseLength = 0.2 --The missile exploded. The shell shouldn't travel across the map.
 		end
 
 		self.Bulletdata2.Id = self.BulletData.Id
@@ -1244,5 +1251,31 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, _, Inflictor, _, _ )	--This f
 	end
 
 	return HitRes --This function needs to return HitRes
+
+end
+
+do
+	local MissileGuidanceFactors = {
+		Dumb			= 0.3,
+		GPS				= 0.6,
+		Antimissile		= 0.6,
+		AntiRadiation	= 0.7,
+		Beam_Riding		= 0.7,
+		Semiactive		= 0.85,
+		Wire			= 1.0,
+		Laser			= 1.2,
+		Infrared		= 1.2,
+		Top_Attack_IR	= 1.5,
+		Radar			= 1.5
+	}
+
+	function CalculateMissileCost(BulletData) --Used for both the missiles on the rack and the ammo entities
+		local Pts = ACF_GetRackValue(BulletData, "pointcost") or ACF_GetGunValue(BulletData.Id, "pointcost") or 0.9
+		local Guid = BulletData.Data7 or "Dumb"
+		Pts = Pts * MissileGuidanceFactors[Guid] or 0
+		return Pts
+
+	end
+
 
 end
