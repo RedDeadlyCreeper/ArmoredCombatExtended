@@ -117,8 +117,8 @@ ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree pl
 
 ---------------------------------- Rules & Legality ----------------------------------
 
-ACF.CompMode = 0		--Enable disabling vehicles that do not meet legality
 ACF.PointsLimit = 10000 --The maximum legal pointvalue
+ACF.MaxWeight = 60000 --The max weight in Kg
 
 ACE.CannonPointMul = 1.0 --Multiplier for cannon point cost
 ACE.EnginePointMul = 1.0 --Multiplier for engine cost in points

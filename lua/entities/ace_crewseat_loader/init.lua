@@ -46,7 +46,7 @@ function ENT:Initialize()
 	self.NextLegalCheck	= ACF.CurTime + random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
-	self.ACEPoints = 250
+	self.ACEPoints = 50
 
 	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Ferv", "Rice", "spEAM"}
 
