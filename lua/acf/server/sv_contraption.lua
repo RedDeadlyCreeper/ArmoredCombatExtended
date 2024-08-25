@@ -105,7 +105,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 		-- check if ent class is in whitelist
 		if CritEnts[Eclass] then
 			table.insert(ACE.critEnts, Ent)
-			print("Adding - Count: " .. #ACE.critEnts)
+			--print("Adding - Count: " .. #ACE.critEnts)
 		end
 
 		-- check if ent class is in whitelist
@@ -143,7 +143,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 		elseif Eclass == "ace_debris" then
 			table.insert(ACE.Debris, Ent) --print('Adding - Count: ' .. #ACE.Debris)
 		elseif Eclass == "ace_mine" then
-			table.insert(ACE.Mines, Ent) print("Adding - Count: " .. #ACE.Mines)
+			table.insert(ACE.Mines, Ent) --print("Adding - Count: " .. #ACE.Mines)
 		end
 	end)
 end)
@@ -159,8 +159,8 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 		for i, critent in ipairs(ACE.critEnts) do
 			if IsValid(critent) and critent == Ent then
 				table.remove(ACE.critEnts, i)
-				print("Removing critent")
-				print("Removing - Count: " .. #ACE.critEnts)
+				--print("Removing critent")
+				--print("Removing - Count: " .. #ACE.critEnts)
 				break
 			end
 		end
