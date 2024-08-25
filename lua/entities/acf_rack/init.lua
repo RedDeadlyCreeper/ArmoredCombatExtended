@@ -581,6 +581,14 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.MissileVelocityMul = ACF_GetRackValue(BulletData, "velmul") or ACF_GetGunValue(BulletData.Id, "velmul") or 3
 	missile.MissileCalMul = ACF_GetRackValue(BulletData, "calmul") or ACF_GetGunValue(BulletData.Id, "calmul") or 1
 
+	--0-stops underwater
+	--1-booster only underwater - DEFAULT
+	--2-works above and below 
+	--3-underwater only
+	--4-booster all and under thrust only
+
+	missile.UnderwaterThrust = ACF_GetRackValue(BulletData, "waterthrusttype") or ACF_GetGunValue(BulletData.Id, "waterthrusttype") or 1
+	missile.Buoyancy = ACF_GetRackValue(BulletData, "buoyancy") or ACF_GetGunValue(BulletData.Id, "buoyancy") or 0.5
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8

@@ -69,6 +69,7 @@ ACF_defineGun("40mmFFAR", { --id
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul	= math.sqrt(0.5),
+		waterthrusttype = 0, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
 		pointcost			= 50
 	},
 
@@ -137,6 +138,7 @@ ACF_defineGun("70mmFFAR", { --id
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul	= math.sqrt(0.65),	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		waterthrusttype = 0, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
 		pointcost			= 80
 	},
 

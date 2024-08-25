@@ -56,6 +56,12 @@ function ENT:Initialize()
 	self.CanDetonate = false
 
 	self.MissilePosition = self:GetPos()
+	self.IsUnderWater = 0
+
+	--0 for both, 1 for abovewater only, 2 for underwater only
+	self.UnderwaterThrust = 1
+	self.BoostUnderwater = 1
+	self.Buoyancy = 0.5
 
 	self.P = Angle(0,0,0)
 	self.I = Angle(0,0,0)
@@ -118,6 +124,13 @@ function ENT:Think()
 --	local DifFacing = (Facing:Angle() - FlightDir:Angle())
 	local DifFacing = (FlightDir:Angle() - Facing:Angle())
 	DifFacing = Angle(math.NormalizeAngle(DifFacing.pitch),math.NormalizeAngle(DifFacing.yaw),0)
+
+	local LastWater = self.IsUnderWater
+	self.IsUnderWater = self:WaterLevel() / 3
+	local ChangedWater = false
+	if math.ceil(LastWater) ~= math.ceil(self.IsUnderWater) then
+		ChangedWater = true
+	end
 
 	--------------------------
 	-----Guidance Section-----
@@ -199,9 +212,29 @@ function ENT:Think()
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 							end
-
 					end
-					self.Flight = self.Flight + self:GetForward() * self.BoostAccel * DeltaTime
+					local TMul = 1
+					--self.UnderwaterThrust = 1
+					--self.IsUnderWater > 0
+					--self.BoostUnderwater = 1
+					--Let's just never touch this again. Please.
+					if self.BoostUnderwater ~= 1 then
+						if self.IsUnderWater > 0 then
+							if self.BoostUnderwater < 1 then --Abovewater only thruster is underwater
+								TMul = 0
+							else
+								TMul = 1
+							end
+						else
+							if self.BoostUnderwater > 1 then --Underwater only thruster is above water
+								TMul = 0
+							else
+								TMul = 1
+							end
+						end
+					end
+
+					self.Flight = self.Flight + self:GetForward() * self.BoostAccel * DeltaTime * TMul
 					self.BoostTime = self.BoostTime - DeltaTime
 
 					if self.BoostTime <= 0 then --Booster detaches/stops. Begin regular rocket operations
@@ -363,14 +396,22 @@ function ENT:Think()
 		-----Movement Section-----
 		--------------------------
 
-		self.Flight = self.Flight + (Vector(0,0,-9.8)) * DeltaTime
+		local DMul = 1
+		local GMul = 1
+		if self.IsUnderWater then
+			DMul = 1 + 60 * self.IsUnderWater
+			GMul = math.max(1 - self.Buoyancy * self.IsUnderWater,0)
+		end
+
+		self.Flight = self.Flight + (Vector(0,0,-9.8 * GMul)) * DeltaTime
 		self.MissilePosition = Pos + self.Flight * 39.37 * DeltaTime
 		self:SetPos( self.MissilePosition )
 
 		--25 is the result of dividing 2500 by a magic number to compress the speed variable to something nice. 25 = 2500/100
 		self.Flight = self.Flight + (self:GetForward() * (self.Speed ^2 / 25) * math.cos(AngleOfAttack) - FlightDir * (self.Speed^2 / 25) * math.cos(AngleOfAttack)) * DeltaTime * self.FinMul --Adjusts a portion of the flgiht by the fin efficiency multiplier
 
-		self.Flight = self.Flight - (self.Flight:GetNormalized() * self.Drag * self.Flight:LengthSqr()) * DeltaTime --Simple drag multiplier
+
+		self.Flight = self.Flight - (self.Flight:GetNormalized() * self.Drag * DMul * self.Flight:LengthSqr()) * DeltaTime --Simple drag multiplier
 
 		--Delete the missile if it was fired outside of the map
 		if not self:IsInWorld() then
@@ -403,6 +444,34 @@ function ENT:ConfigureMissile()
 	self.Filter	= self.Filter or {self}
 
 	self.Guidance:Configure(self)
+
+
+	--0-stops underwater
+	--1-booster only underwater - DEFAULT
+	--2-works above and below 
+	--3-underwater only
+	--4-booster all and under thrust only
+
+	--0 for abovewater only, 1 for both, 2 for underwater only
+	self.UnderwaterThrust = 1
+	self.BoostUnderwater = 1
+
+	if self.UnderwaterThrust == 0 then
+		self.UnderwaterThrust = 0
+		self.BoostUnderwater = 0
+	elseif self.UnderwaterThrust == 1 then
+		self.UnderwaterThrust = 0
+		self.BoostUnderwater = 1
+	elseif self.UnderwaterThrust == 2 then
+		self.UnderwaterThrust = 1
+		self.BoostUnderwater = 1
+	elseif self.UnderwaterThrust == 3 then
+		self.UnderwaterThrust = 2
+		self.BoostUnderwater = 2
+	elseif self.UnderwaterThrust == 4 then
+		self.UnderwaterThrust = 2
+		self.BoostUnderwater = 0
+	end
 
 end
 
