@@ -122,7 +122,7 @@ do
 		Engine.TorqueMult       = 1
 		Engine.FuelTank         = 0
 		Engine.Heat             = ACE.AmbientTemp
-		Engine.ACEPoints		= math.ceil(Lookup.acepoints * ACE.EnginePointMul) or 0.9
+		Engine.ACEPoints		= math.ceil((Lookup.acepoints or 404) * ACE.EnginePointMul)
 
 		Engine.TorqueScale	= ACF.TorqueScale[Engine.EngineType]
 
