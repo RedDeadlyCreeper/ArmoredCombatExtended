@@ -273,7 +273,6 @@ function ENT:Think()
 					end
 
 					if self.UpdateFX then
-						print("Update")
 						self:StopParticles()
 						if TMul > 0 then
 							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effectbooster")
@@ -321,7 +320,6 @@ function ENT:Think()
 					end
 
 					if self.UpdateFX then
-						print("Thrusterthingy")
 						self:StopParticles()
 						if TMul > 0 then
 							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effect")
