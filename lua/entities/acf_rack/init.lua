@@ -1264,17 +1264,19 @@ end
 
 do
 	local MissileGuidanceFactors = {
-		Dumb			= 0.3,
-		GPS				= 0.6,
-		Antimissile		= 0.6,
-		AntiRadiation	= 0.7,
-		Beam_Riding		= 0.7,
-		Semiactive		= 0.85,
-		Wire			= 1.0,
-		Laser			= 1.2,
-		Infrared		= 1.2,
-		Top_Attack_IR	= 1.5,
-		Radar			= 1.5
+		Dumb				= 0.3,
+		Straight_Running	= 0.45,
+		GPS					= 0.6,
+		Antimissile			= 0.6,
+		AntiRadiation		= 0.7,
+		Beam_Riding			= 0.7,
+		Semiactive			= 0.85,
+		Wire				= 1.0,
+		Acoustic_Straight = 1.0,
+		Laser				= 1.2,
+		Infrared			= 1.2,
+		Top_Attack_IR		= 1.5,
+		Radar				= 1.5
 	}
 
 	function CalculateMissileCost(BulletData) --Used for both the missiles on the rack and the ammo entities
