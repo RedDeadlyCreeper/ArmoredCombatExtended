@@ -581,6 +581,14 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 	missile.MissileVelocityMul = ACF_GetRackValue(BulletData, "velmul") or ACF_GetGunValue(BulletData.Id, "velmul") or 3
 	missile.MissileCalMul = ACF_GetRackValue(BulletData, "calmul") or ACF_GetGunValue(BulletData.Id, "calmul") or 1
 
+	--0-stops underwater
+	--1-booster only underwater - DEFAULT
+	--2-works above and below 
+	--3-underwater only
+	--4-booster all and under thrust only
+
+	missile.UnderwaterThrust = ACF_GetRackValue(BulletData, "waterthrusttype") or ACF_GetGunValue(BulletData.Id, "waterthrusttype") or 1
+	missile.Buoyancy = ACF_GetRackValue(BulletData, "buoyancy") or ACF_GetGunValue(BulletData.Id, "buoyancy") or 0.5
 
 	local guidance  = BulletData.Data7
 	local fuse	= BulletData.Data8
@@ -1256,17 +1264,19 @@ end
 
 do
 	local MissileGuidanceFactors = {
-		Dumb			= 0.3,
-		GPS				= 0.6,
-		Antimissile		= 0.6,
-		AntiRadiation	= 0.7,
-		Beam_Riding		= 0.7,
-		Semiactive		= 0.85,
-		Wire			= 1.0,
-		Laser			= 1.2,
-		Infrared		= 1.2,
-		Top_Attack_IR	= 1.5,
-		Radar			= 1.5
+		Dumb				= 0.3,
+		Straight_Running	= 0.45,
+		GPS					= 0.6,
+		Antimissile			= 0.6,
+		AntiRadiation		= 0.7,
+		Beam_Riding			= 0.7,
+		Semiactive			= 0.85,
+		Wire				= 1.0,
+		Acoustic_Straight = 1.0,
+		Laser				= 1.2,
+		Infrared			= 1.2,
+		Top_Attack_IR		= 1.5,
+		Radar				= 1.5
 	}
 
 	function CalculateMissileCost(BulletData) --Used for both the missiles on the rack and the ammo entities
