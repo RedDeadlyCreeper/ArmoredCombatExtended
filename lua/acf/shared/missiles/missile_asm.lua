@@ -457,7 +457,7 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 	desc             = "The gold standard of cruise missiles. Subsonic and long range. Though slow this ordinance has extreme range and good maneuverability. Good for removing distant targets. Cannot be updated after it has launched.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 81 m/s",
 	model            = "models/macc/tomahawk.mdl",
 	effect           = "Rocket_Smoke_Trail", --Rocket_Smoke_Trail
-	effectbooster	 = "ACE_MissileMedium",
+	effectbooster	 = "ACE_MissileLarge",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 250 * 2.53, --Convert to ammocrate units
