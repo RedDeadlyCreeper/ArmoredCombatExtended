@@ -74,6 +74,11 @@ ACF.HEFragDragFactor  = 0.2						--Lower = less drag. Higher = more. Adjust this
 ACF.HEFragRadiusMul   = 2						--Hard cap on frag radius. Multiplies HE Radius.
 ACF.HEBlastPen        = 0.4					-- Blast penetration exponent based of HE power
 ACF.HEFeatherExp      = 0.5					-- exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
+ACF.HEBlastPenMinPow  = 35000				--Minimum HE filler in KJ to start testing for blast penetrations. Don't even bother on something that doesn't even have 10mm of pen
+ACF.HEBlastPenetration  = 3500				--KJ per mm penetrated
+ACF.HEBlastPenRadiusMul  = 3				--Fraction of the HE radius to apply penetrations to. 2 is half. 4 is 1/4th.
+ACF.HEBlastPenLossAtMaxDist = 0.35				--HE penetration against targets at the max penetration distance
+ACF.HEBlastPenLossExponent = 1.5					--Exponent for pen loss. For example, with a 0.25x pen loss, 2 means 0.25^2 = 0.0625 loss. Higher means less falloff.
 ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMVScaleTan    = 0.75					-- Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly equal to AP damage
