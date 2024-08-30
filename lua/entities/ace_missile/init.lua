@@ -428,6 +428,7 @@ function ENT:Think()
 
 			local adjustedrate = self.TurnRate * DMul * DeltaTime * (self.Speed^2 / 10000) * math.cos(AngleOfAttack) + self.ThrustTurnRate * DeltaTime
 			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), 0)) --math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)
+			AngAdjust = Angle(AngAdjust.pitch,AngAdjust.yaw,0)
 			self:SetAngles(AngAdjust + Angle(math.Clamp( DifFacing.pitch, 0, 100 ), math.Clamp( DifFacing.yaw, -100, 100 ),0) * 2 * DeltaTime * EnableRotation)
 			--self:SetAngles(AngAdjust)
 
