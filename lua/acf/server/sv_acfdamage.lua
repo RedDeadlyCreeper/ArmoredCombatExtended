@@ -84,27 +84,33 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 	local FRTargets	= ACF_HEFind( Hitpos, Radius * ACF.HEFragRadiusMul )		-- Will give tiny HE just a pinch of radius to help it hit the player
 
 	--Generates a list of critical entities inside the blast radius
-	if Power > 2000 then --About the HEpower of a 40mm autocannon.
-		local RadSq = Radius^2 --Used for square distance test
+	if Power > ACF.HEBlastPenMinPow then --About the HEpower of a 40mm autocannon.
+		local RadSq = (Radius^2) / ACF.HEBlastPenRadiusMul --Used for square distance test
 
-		local HEPen = Power / 3500
+		local HEPen = Power / ACF.HEBlastPenetration
 		--print("Blastpen: " .. HEPen)
 		local Blast = {
 			Penetration = HEPen
 		}
+
 		for _, ent in pairs( ACE.critEnts ) do
 			local epos = ent:GetPos()
+			local SqDist = Hitpos:DistToSqr( ent:GetPos() )
+			if SqDist > RadSq then continue end --Perhaps a table storing positions would be faster?
 
-			if Hitpos:DistToSqr( ent:GetPos() ) > RadSq then continue end --Perhaps a table storing positions would be faster?
-
-			local LosArmor = ACE_LOSMultiTrace(Hitpos,epos)
+			local LosArmor = ACE_LOSMultiTrace(Hitpos,epos, HEPen)
 			--print("LosArmor: " .. LosArmor)
 
-			if LosArmor < HEPen then --Able to "penetrate". Directly damages the target entity.
+			local Dist = math.sqrt(SqDist)
+			--print("DistPen: " .. Radius / 39.37)
+			local penLoss = 1 - (Dist / Radius) ^ ACF.HEBlastPenLossExponent * ACF.HEBlastPenLossAtMaxDist
+			--print("NewHEPen: " .. math.Round(HEPen * penLoss,2)) --ACF.HEBlastPenPenAtMaxDist
+
+			if LosArmor < (HEPen * penLoss) then --Able to "penetrate". Directly damages the target entity.
 				--print(ent:GetClass())
 				--print("LosArmor: " .. LosArmor)
 				--ACF_Damage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun, Type )
-				BlastRes = ACF_Damage ( ent  , Blast , 1 , 0 , Inflictor ,0 , Gun, "HE" )
+				BlastRes = ACF_Damage ( ent  , Blast , 1 , 0 , Inflictor ,0 , Gun, "Frag" ) --Swapped from "HE" to "Frag" to prevent instantly cooking off fuel.
 
 				if BlastRes and BlastRes.Kill then
 
@@ -1322,7 +1328,7 @@ end
 --Calculates the effective armor between two points
 --Effangle, Type(1 = KE, 2 = HEAT), Filter
 --Might make for a nice e2 function if people probably wouldn't eat the server with it
-function ACE_LOSMultiTrace(StartVec, EndVec)
+function ACE_LOSMultiTrace(StartVec, EndVec, PenetrationMax)
 
 	debugoverlay.Line( StartVec, EndVec, 30 , Color(255,0,0), true )
 
@@ -1362,7 +1368,7 @@ function ACE_LOSMultiTrace(StartVec, EndVec)
 
 			end
 			OverRun = OverRun + 1
-			if OverRun > 5000 then
+			if OverRun > 5000 or (TotalArmor > (PenetrationMax or 0) and (PenetrationMax or 0) > 0) then
 				UnResolved = false
 				TotalArmor = 999999 --math.huge
 			end
