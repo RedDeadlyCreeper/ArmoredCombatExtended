@@ -112,7 +112,7 @@ function Round.cratetxt( BulletData )
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
-		"Blast Energy: ", math.floor(BulletData.FillerMass * ACF.HEPower), " KJ",
+		"Blast Energy: ", math.floor(BulletData.FillerMass * ACF.HEPower), " KJ\n",
 		"Max Blast Penetration: ", math.floor(BulletData.FillerMass * ACF.HEPower / ACF.HEBlastPenetration), " mm"
 	}
 

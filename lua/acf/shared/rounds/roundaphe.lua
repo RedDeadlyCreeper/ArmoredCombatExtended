@@ -116,7 +116,7 @@ function Round.cratetxt( BulletData )
 		"Max Penetration: ", math.floor(DData.MaxPen), " mm\n",
 		"Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
 		"Blast Energy: ", math.floor(BulletData.FillerMass * ACF.HEPower), " KJ\n",
-		"Fuse Delay: ", math.floor(BulletData.DetDelay * 1000), " ms",
+		"Fuse Delay: ", math.floor(BulletData.DetDelay * 1000), " ms\n",
 		"Max Blast Penetration: ", math.floor(BulletData.FillerMass * ACF.HEPower / ACF.HEBlastPenetration), " mm"
 	}
 
