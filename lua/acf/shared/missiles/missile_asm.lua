@@ -434,8 +434,8 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser", "GPS"},
-	fuses      = {"Contact", "Optical"},
+	guidance	= {"Dumb", "Laser", "GPS", "GPS_TerrainAvoidant"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -456,7 +456,7 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 	name             = "BGM-109 Tomahawk",
 	desc             = "The gold standard of cruise missiles. Subsonic and long range. Though slow this ordinance has extreme range and good maneuverability. Good for removing distant targets. Cannot be updated after it has launched.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 81 m/s",
 	model            = "models/macc/tomahawk.mdl",
-	effect           = "Rocket_Smoke_Trail", --Rocket_Smoke_Trail
+	effect           = "ACE_RocketBlackSmoke", --Rocket_Smoke_Trail
 	effectbooster	 = "ACE_MissileLarge",
 	gunclass         = "ASM",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
@@ -471,8 +471,8 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 		rocketmdl			= "models/macc/tomahawk.mdl",
 		rackmdl				= "models/macc/tomahawk_folded.mdl",
 		firedelay			= 1.0,
-		reloadspeed			= 30.0,
-		reloaddelay			= 5.0,
+		reloadspeed			= 5.0,
+		reloaddelay			= 1.0,
 
 
 		maxlength			= 220,							-- Length of missile. Used for ammo properties.
@@ -480,16 +480,16 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 60,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.7,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		thrusterturnrate	= 30,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 20,							-- Acceleration in m/s.
+		thrust				= 15,							-- Acceleration in m/s.
 
 		burntime			= 60,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+		launchkick			= 5,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -509,8 +509,8 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "GPS"},
-	fuses      = {"Contact", "Optical"},
+	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
