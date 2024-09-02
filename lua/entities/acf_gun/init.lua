@@ -112,12 +112,14 @@ do
 
 	--List of ids which no longer stay on ACE. Useful to replace them with the closest counterparts
 	local BackComp = {
-		["20mmHRAC"]    = "20mmRAC",
-		["30mmHRAC"]    = "30mmRAC",
-		["105mmSB"]     = "100mmSBC",
-		["120mmSB"]     = "120mmSBC",
-		["140mmSB"]     = "140mmSBC",
-		["170mmSB"]     = "170mmSBC"
+		["20mmHRAC"]     = "20mmRAC",
+		["30mmHRAC"]     = "30mmRAC",
+		["40mmGLSingle"] = "40mmSL",
+		["105mmSB"]      = "100mmSBC",
+		["120mmSB"]      = "120mmSBC",
+		["140mmSB"]      = "140mmSBC",
+		["170mmSB"]      = "170mmSBC"
+
 	}
 
 	local rapidgun = {
@@ -1013,7 +1015,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
 		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
 
-		self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 1000
+		self.KERecoil = (self.BulletData.PropMass * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1) * 750
 
 		self.NextFire = curTime + self.ReloadTime
 		local reloadTime = self.ReloadTime
