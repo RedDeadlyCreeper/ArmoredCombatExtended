@@ -29,6 +29,7 @@ do
 		self.IsMaster       = true
 		self.GearLink       = {} -- a "Link" has these components: Ent, Rope, RopeLen, ReqTq
 		self.FuelLink       = {}
+		self.OTWarnings		= {} --Used to remember all the one time warnings.
 
 		self.NextUpdate     = 0
 		self.LastThink      = 0
@@ -40,6 +41,7 @@ do
 		self.Legal          = true
 		self.CanUpdate      = true
 		self.RequiresFuel   = false
+		self.RequiresDriver = false
 		self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 		self.Legal          = true
 		self.LegalIssues    = ""
@@ -111,18 +113,27 @@ do
 		Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
 		Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
 		Engine.RequiresFuel     = Lookup.requiresfuel
+		Engine.RequiresDriver   = false
 		Engine.SoundPath        = Lookup.sound
 		Engine.DefaultSound     = Engine.SoundPath
 		Engine.SoundPitch       = Lookup.pitch or 100
-		Engine.SpecialHealth    = true
+		--Engine.SpecialHealth    = true
 		Engine.SpecialDamage    = true
 		Engine.TorqueMult       = 1
 		Engine.FuelTank         = 0
 		Engine.Heat             = ACE.AmbientTemp
-		Engine.ACEPoints		= math.ceil((Lookup.acepoints or 404) * ACE.EnginePointMul)
+
+		Engine.ACEPoints		= math.ceil((Lookup.acepoints or 0.404) * ACE.EnginePointMul)
 
 		Engine.TorqueScale	= ACF.TorqueScale[Engine.EngineType]
 
+		if ACF.EnginesRequireFuel > 0 then
+			Engine.RequiresFuel = true
+		end
+
+		if Engine.peakkw > (74.57 / 100 * ACF.LargeEngineThreshold) and ACF.LargeEnginesRequireDrivers then --If the engine has more than 100 hp it requires a driver.
+			Engine.RequiresDriver = true
+		end
 		--calculate base fuel usage
 		if Engine.EngineType == "Electric" then
 			Engine.FuelUse = ACF.ElecRate / (ACF.Efficiency[Engine.EngineType] * 60 * 60) --elecs use current power output, not max
@@ -207,7 +218,7 @@ function ENT:Update( ArgsTable )
 	self.SoundPath         = Lookup.sound
 	self.DefaultSound      = self.SoundPath
 	self.SoundPitch        = Lookup.pitch or 100
-	self.SpecialHealth     = true
+	self.SpecialHealth     = false
 	self.SpecialDamage     = true
 	self.TorqueMult        = self.TorqueMult or 1
 	self.FuelTank          = 0
@@ -275,6 +286,7 @@ function ENT:TriggerInput( iname, value )
 		if (value > 0 and not self.Active and self.Legal) then
 			--make sure we have fuel
 			local HasFuel
+			local HasDriver
 			if not self.RequiresFuel then
 				HasFuel = true
 			else
@@ -282,8 +294,15 @@ function ENT:TriggerInput( iname, value )
 					if fueltank.Fuel > 0 and fueltank.Active and fueltank.Legal then HasFuel = true break end
 				end
 			end
-
-			if HasFuel then
+			if not self.RequiresDriver then
+				HasDriver = true
+			else
+				if self.HasDriver then
+					HasDriver = true
+				end
+			end
+			--RequiresDriver
+			if HasFuel and HasDriver then
 				self.Active = true
 				if self.SoundPath ~= "" then
 
@@ -296,6 +315,26 @@ function ENT:TriggerInput( iname, value )
 
 				end
 				self:ACFInit()
+			else
+
+				if not HasFuel then
+					local HasWarned = self.OTWarnings.WarnedFuel or false
+					--self.OTWarnings
+					if not HasWarned then
+						chatMessagePly( self:CPPIGetOwner() , "[ACE] Your engine requires fuel to work.", Color( 255, 0, 0 ))
+						self.OTWarnings.WarnedFuel = true
+					end
+				end
+
+				if not HasDriver then
+					local HasWarned = self.OTWarnings.WarnedDriver or false
+					--self.OTWarnings
+					if not HasWarned then
+						chatMessagePly( self:CPPIGetOwner() , "[ACE] Your engine is above [" .. ACF.LargeEngineThreshold .. " hp] requiring a driver to work.", Color( 255, 0, 0 ))
+						self.OTWarnings.WarnedDriver = true
+					end
+				end
+
 			end
 		elseif (value <= 0 and self.Active) then
 			self.Active = false
@@ -557,6 +596,11 @@ function ENT:CalcRPM()
 		return 0
 	else
 		Wire_TriggerOutput(self, "Fuel Use", 0)
+	end
+
+	if self.RequiresDriver and not self.HasDriver  then
+		self:TriggerInput( "Active", 0 ) --shut off if no driver and requires it
+		return 0
 	end
 
 	------------------------ Torque & RPM calculation ------------------------

@@ -659,6 +659,9 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 	missile.MissileVelocityMul = MissileData.MissileVelocityMul or 3
 	missile.MissileCalMul = MissileCalMul or 1
 
+	missile.UnderwaterThrust = MissileData.UnderwaterThrustType or 1
+	missile.Buoyancy = MissileData.Buoyancy or 0.5
+
 	local guidance  = MissileData.GuidanceName
 	local fuse	= MissileData.FuseName
 

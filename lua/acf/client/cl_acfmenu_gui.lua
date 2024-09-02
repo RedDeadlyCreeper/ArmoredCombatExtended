@@ -1218,3 +1218,7 @@ function PANEL:CPanelText(Name, Desc, Font, Panel)
 	acfmenupanel["CData"][Name .. "_text"]:SizeToContentsY()
 
 end
+
+net.Receive( "colorchatmessage", function( _, _ ) --Wooo colored chat
+	chat.AddText( net.ReadColor(), net.ReadString() )
+end )

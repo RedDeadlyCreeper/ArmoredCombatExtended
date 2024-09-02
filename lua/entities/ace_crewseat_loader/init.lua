@@ -42,11 +42,20 @@ function ENT:Initialize()
 	self.Name = "Crew Seat"
 	self.Weight = 60
 	self.AnglePenalty = 0
+	self.Sound = "npc/combine_soldier/die" .. tostring(random(1, 3)) .. ".wav"
+	self.SoundPitch = 100
+
+	if not IsValid(self:CPPIGetOwner()) then
+		self:CPPISetOwner(game.GetWorld())
+	end
 
 	self.NextLegalCheck	= ACF.CurTime + random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
-	self.ACEPoints = 50
+	self.ACEPoints = 200
+
+	self.SpecialHealth	= false  --If true needs a special ACF_Activate function
+	self.SpecialDamage	= true  --If true needs a special ACF_OnDamage function
 
 	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Ferv", "Rice", "spEAM"}
 
@@ -111,11 +120,6 @@ function ENT:Think()
 	local curSeatAngle = deg(acos(self:GetUp():Dot(Vector(0, 0, 1))))
 	self.AnglePenalty = clamp(remap(curSeatAngle, startPenalty, maxPenalty, 0, 1), 0, 1)
 
-	if self.ACF.Health <= self.ACF.MaxHealth * 0.97 then
-		ACF_HEKill(self, VectorRand(), 0)
-		self:EmitSound("npc/combine_soldier/die" .. tostring(random(1, 3)) .. ".wav", 60)
-	end
-
 	if ACF.CurTime > self.NextLegalCheck then
 
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, round(self.Weight, 2), nil, true, true)
@@ -159,3 +163,26 @@ function ENT:UpdateOverlayText()
 	self:SetOverlayText(str)
 end
 
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, _, Inflictor, _, _ )	--This function needs to return HitRes
+	self.ACF.Armour = 3
+	local HitRes	= ACF_PropDamage( Entity, Energy , FrArea, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
+
+	--print(math.Round(HitRes.Damage * 100))
+	--print(HitRes.Loss * 100)
+
+	--print(HitRes.Overkill)
+
+	if HitRes.Kill or HitRes.Overkill > 1 then
+
+
+		EmitSound(self.Sound, self:GetPos(), 50, CHAN_AUTO, 1, 75, 0, self.SoundPitch)
+
+		ACF_HEKill( self, VectorRand() , 0)
+
+		return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }
+
+	end
+
+	return HitRes --This function needs to return HitRes
+
+end

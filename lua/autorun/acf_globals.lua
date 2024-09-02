@@ -74,6 +74,11 @@ ACF.HEFragDragFactor  = 0.2						--Lower = less drag. Higher = more. Adjust this
 ACF.HEFragRadiusMul   = 2						--Hard cap on frag radius. Multiplies HE Radius.
 ACF.HEBlastPen        = 0.4					-- Blast penetration exponent based of HE power
 ACF.HEFeatherExp      = 0.5					-- exponent applied to HE dist/maxdist feathering, <1 will increasingly bias toward max damage until sharp falloff at outer edge of range
+ACF.HEBlastPenMinPow  = 35000				--Minimum HE filler in KJ to start testing for blast penetrations. Don't even bother on something that doesn't even have 10mm of pen
+ACF.HEBlastPenetration  = 3500				--KJ per mm penetrated
+ACF.HEBlastPenRadiusMul  = 3				--Fraction of the HE radius to apply penetrations to. 2 is half. 4 is 1/4th.
+ACF.HEBlastPenLossAtMaxDist = 0.35				--HE penetration against targets at the max penetration distance
+ACF.HEBlastPenLossExponent = 1.5					--Exponent for pen loss. For example, with a 0.25x pen loss, 2 means 0.25^2 = 0.0625 loss. Higher means less falloff.
 ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMVScaleTan    = 0.75					-- Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly equal to AP damage
@@ -116,6 +121,11 @@ ACF.PhysMaxVel		= 8000
 ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ---------------------------------- Rules & Legality ----------------------------------
+ACF.EnginesRequireFuel = 1 --Should all engines require fuel to run? Modified by console commands.
+ACF.LargeEnginesRequireDrivers = 1 --Should engines over a certain hp need a driver? Modified by console commands.
+ACF.LargeEngineThreshold = 100 --Engine size in hp required to need a driver
+ACF.LargeGunsRequireGunners = 1 --Should engines over a certain hp need a driver? Modified by console commands.
+ACF.LargeGunsThreshold = 40 --Cannon size in mm required to need a driver
 
 ACF.PointsLimit = 10000 --The maximum legal pointvalue
 ACF.MaxWeight = 60000 --The max weight in Kg
@@ -219,6 +229,15 @@ if SERVER then
 		ACF.RestrictInfo = tobool(new)
 	end, "ACF_CVarChangeCallback")
 
+	-- Toggles for vehicle legality restrictions
+	CreateConVar( "acf_legality_enginesrequirefuel", 1 , FCVAR_ARCHIVE)
+
+	CreateConVar( "acf_legality_largeenginesneeddriver", 1 , FCVAR_ARCHIVE)
+	CreateConVar( "acf_legality_largeenginethreshold", 100 , FCVAR_ARCHIVE)
+
+	CreateConVar( "acf_legality_largegunsneedgunner", 1 , FCVAR_ARCHIVE)
+	CreateConVar( "acf_legality_largegunthreshold", 40 , FCVAR_ARCHIVE)
+
 	-- Cvars for legality checking
 	CreateConVar( "acf_legalcheck", 1 , FCVAR_ARCHIVE)
 	CreateConVar( "acf_legal_ignore_model", 0 , FCVAR_ARCHIVE)
@@ -234,6 +253,7 @@ if SERVER then
 	CreateConVar( "acf_enable_dp", 0 , FCVAR_ARCHIVE )	-- Enable the inbuilt damage protection system.
 
 	-- Cvars for recoil/he push
+	CreateConVar("acf_kepush", 1, FCVAR_ARCHIVE)
 	CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
 	CreateConVar("acf_recoilpush", 1, FCVAR_ARCHIVE)
 
@@ -285,6 +305,16 @@ if SERVER then
 			ACF.ScaledEntsMax = math.max(New,1)
 		elseif CVar == "acf_legacyrecoil" then
 			ACF.UseLegacyRecoil = math.floor(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_enginesrequirefuel" then
+			ACF.EnginesRequireFuel = math.ceil(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_largeenginesneeddriver" then
+			ACF.LargeEnginesRequireDrivers = math.ceil(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_largeenginethreshold" then
+			ACF.LargeEngineThreshold = math.ceil(math.Clamp(New, 0, 10000))
+		elseif CVar == "acf_legality_largegunsneedgunner" then
+			ACF.LargeGunsRequireGunners = math.ceil(math.Clamp(New, 0, 1))
+		elseif CVar == "acf_legality_largegunthreshold" then
+			ACF.LargeGunsThreshold = math.ceil(math.Clamp(New, 0, 10000))
 		elseif CVar == "acf_enable_dp" then
 			if ACE_SendDPStatus then
 				ACE_SendDPStatus()
@@ -303,8 +333,12 @@ if SERVER then
 	cvars.AddChangeCallback("acf_explosions_scaled_he_max", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_explosions_scaled_ents_max", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_legacyrecoil", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_enginesrequirefuel", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largeenginesneeddriver", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largeenginethreshold", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largegunsneedgunner", ACF_CVarChangeCallback)
+	cvars.AddChangeCallback("acf_legality_largegunthreshold", ACF_CVarChangeCallback)
 	cvars.AddChangeCallback("acf_enable_dp", ACF_CVarChangeCallback)
-
 
 elseif CLIENT then
 ---------------------------------- Clientside Convars ----------------------------------
