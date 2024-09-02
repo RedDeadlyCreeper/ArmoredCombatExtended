@@ -253,6 +253,7 @@ if SERVER then
 	CreateConVar( "acf_enable_dp", 0 , FCVAR_ARCHIVE )	-- Enable the inbuilt damage protection system.
 
 	-- Cvars for recoil/he push
+	CreateConVar("acf_kepush", 1, FCVAR_ARCHIVE)
 	CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
 	CreateConVar("acf_recoilpush", 1, FCVAR_ARCHIVE)
 
