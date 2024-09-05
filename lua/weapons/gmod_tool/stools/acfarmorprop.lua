@@ -192,6 +192,7 @@ function TOOL:Think()
 
 		local Mat = ent.ACF.Material or "RHA"
 		local MatData =  ACE_GetMaterialData( Mat )
+		local AcePts = ACE_GetEntPoints(ent)
 
 		if not MatData then return end
 
@@ -202,6 +203,7 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 		self.Weapon:SetNWString( "Material", MatData.sname or "RHA")
+		self.Weapon:SetNWFloat( "PointCost", AcePts )
 
 	else
 
@@ -212,6 +214,7 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "MaxHP", 0 )
 		self.Weapon:SetNWFloat( "MaxArmour", 0 )
 		self.Weapon:SetNWString( "Material", "RHA" )
+		self.Weapon:SetNWFloat( "PointCost", 0 )
 	end
 
 	self.AimEntity = ent
@@ -486,7 +489,8 @@ if CLIENT then
 			local MatText = material .. ": "
 			local MassText = math.Round(mass,1) .. "kg  "
 
-			if Count > 3 then
+			Count = Count + 1
+			if Count >= 3 then
 				Count = 0
 				table.Add(Tabletxt,{ Color4, MatText})
 				table.Add(Tabletxt,{ Color3, MassText .. Sep})
@@ -494,9 +498,11 @@ if CLIENT then
 				table.Add(Tabletxt,{ Color4, MatText})
 				table.Add(Tabletxt,{ Color3, MassText})
 			end
-			Count = Count + 1
 
 		end
+
+
+		table.Add(Tabletxt,{Color3,Sep})
 
 		Tabletxt = table.Add(Tabletxt,TbStr)
 		local TPoints = {}
@@ -533,7 +539,8 @@ if CLIENT then
 		getPhrase("tool.acfarmorprop.mass") .. ": %s\n" ..
 		getPhrase("tool.acfarmorprop.armor") .. ": %s\n" ..
 		getPhrase("tool.acfarmorprop.health") .. ": %s\n" ..
-		getPhrase("tool.acfarmorprop.material") .. ": %s"
+		getPhrase("tool.acfarmorprop.material") .. ": %s\n\n" ..
+		getPhrase("tool.acfarmorprop.acepoints") .. ": %s"
 
 	function TOOL:DrawHUD()
 
@@ -544,6 +551,7 @@ if CLIENT then
 		local curarmor	= self.Weapon:GetNWFloat( "MaxArmour" )
 		local curhealth	= self.Weapon:GetNWFloat( "MaxHP" )
 		local material	= self.Weapon:GetNWString( "Material" )
+		local acepointcost	= self.Weapon:GetNWFloat( "PointCost" )
 
 		local area		= GetConVar( "acfarmorprop_area" ):GetFloat()
 		local ductility	= GetConVar( "acfarmorprop_ductility" ):GetFloat()
@@ -563,7 +571,8 @@ if CLIENT then
 			math.Round(mass, 2),
 			math.Round(armor, 2),
 			math.Round(health, 2),
-			MatData.sname
+			MatData.sname,
+			math.Round(acepointcost, 1)
 		)
 
 		local pos = ent:WorldSpaceCenter()

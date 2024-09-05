@@ -28,15 +28,16 @@ function ENT:Initialize()
 	end
 end
 
-local function MakeSmoke(size, pos)
+local function MakeSmoke(size, pos, dir)
 	local Flash = EffectData()
-	Flash:SetOrigin(pos)
-	Flash:SetNormal(Vector(0, 0, 1))
-	Flash:SetRadius(0)
-	Flash:SetMagnitude(size)
+	Flash:SetOrigin(pos + Vector(0,0,10))
+	--Flash:SetNormal(Vector(0, 0, 1))
+	Flash:SetNormal(dir)
+	Flash:SetRadius(size ^ 0.33)
+	Flash:SetMagnitude((size ^ 0.33) * 0.5)
 
-	Flash:SetStart(Vector(255, 255, 255))
-	util.Effect("ACF_Smoke", Flash)
+	Flash:SetStart(Vector(200, 200, 200))
+	util.Effect("ACF_Smoke", Flash) --In all honesty we're probably going to need a seperate smoke effect.
 end
 
 function ENT:Think()
@@ -50,11 +51,18 @@ function ENT:Think()
 		self:Remove()
 
 		local pos = self:GetPos()
-		MakeSmoke(15, pos)
-		timer.Simple(1, function() MakeSmoke(10, pos) end)
-		timer.Simple(4, function() MakeSmoke(10, pos) end)
-		timer.Simple(7, function() MakeSmoke(5, pos) end)
-		timer.Simple(10, function() MakeSmoke(5, pos) end)
+		MakeSmoke(25, pos,Vector(1, 0, 0))
+		MakeSmoke(25, pos,Vector(-1, 0, 0))
+		MakeSmoke(25, pos,Vector(0, 1, 0))
+		MakeSmoke(25, pos,Vector(0, -1, 0))
+		MakeSmoke(25, pos,Vector(1, -1, 0))
+		MakeSmoke(25, pos,Vector(-1, 1, 0))
+		MakeSmoke(25, pos,Vector(1, 1, 0))
+		MakeSmoke(25, pos,Vector(-1, -1, 0))
+		--timer.Simple(1, function() MakeSmoke(10, pos) end)
+		--timer.Simple(4, function() MakeSmoke(10, pos) end)
+		--timer.Simple(7, function() MakeSmoke(5, pos) end)
+		--timer.Simple(10, function() MakeSmoke(5, pos) end)
 
 		sound.Play("weapons/smokegrenade/sg_explode.wav", self:GetPos())
 	end
