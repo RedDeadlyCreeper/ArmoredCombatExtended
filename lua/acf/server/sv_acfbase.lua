@@ -557,3 +557,25 @@ function chatMessagePly( ply , message, color) --
 	net.Send( ply )
 
 end
+
+
+function chatMessageGlobal( message, color) --Like chatMessagePly but it just goes to everyone.
+
+	print(message)
+	net.Start( "colorchatmessage" )
+		net.WriteColor( color or Color( 255, 255, 255 ) ) --Must go first
+		net.WriteString( message )
+	net.Broadcast()
+
+end
+
+
+--[[
+function chatMessageGlobal( message, color) --Like chatMessagePly but it just goes to everyone.
+
+	print(message)
+	for _, ply in ipairs( player.GetAll() ) do --Terrible. But you'd think the above would work.
+		chatMessagePly( ply , message, color)
+	end
+end
+]]--

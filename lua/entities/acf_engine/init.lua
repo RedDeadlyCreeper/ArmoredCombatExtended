@@ -60,6 +60,8 @@ do
 
 		self.WireDebugName = "ACF Engine"
 
+		self.CanLegalCheck = true
+
 	end
 
 end
@@ -131,7 +133,7 @@ do
 			Engine.RequiresFuel = true
 		end
 
-		if Engine.peakkw > (74.57 / 100 * ACF.LargeEngineThreshold) and ACF.LargeEnginesRequireDrivers then --If the engine has more than 100 hp it requires a driver.
+		if Engine.peakkw > (74.57 / 100 * ACF.LargeEngineThreshold) and ACF.LargeEnginesRequireDrivers ~= 0 then --If the engine has more than 100 hp it requires a driver.
 			Engine.RequiresDriver = true
 		end
 		--calculate base fuel usage
@@ -336,6 +338,7 @@ function ENT:TriggerInput( iname, value )
 				end
 
 			end
+			ACE_DoContraptionLegalCheck(self)
 		elseif (value <= 0 and self.Active) then
 			self.Active = false
 			self.FlyRPM = 0
@@ -597,6 +600,8 @@ function ENT:CalcRPM()
 	else
 		Wire_TriggerOutput(self, "Fuel Use", 0)
 	end
+
+	ACE_DoContraptionLegalCheck(self)
 
 	if self.RequiresDriver and not self.HasDriver  then
 		self:TriggerInput( "Active", 0 ) --shut off if no driver and requires it

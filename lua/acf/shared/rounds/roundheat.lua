@@ -89,7 +89,7 @@ function Round.convert( _, PlayerData )
 
 	Data.SlugCaliber		=  Data.Caliber - Data.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
 
-	Data.SlugMV = 1.3 * (Data.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + GUIData.ConeAng) / 2) / Data.SlugMass) ^ ACF.HEATMVScale --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMV = (1.3 * (Data.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + GUIData.ConeAng) / 2) / Data.SlugMass) ^ ACF.HEATMVScale)  * math.sqrt(ACF.ShellPenMul) --keep fillermass/2 so that penetrator stays the same
 	Data.SlugMass = Data.SlugMass * 4 ^ 2
 	Data.SlugMV = Data.SlugMV / 4
 

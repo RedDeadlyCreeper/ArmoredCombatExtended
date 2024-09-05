@@ -24,7 +24,7 @@ ACF_defineGun("40mmSL", { --id
 	year		= 1941,
 	round = {
 		maxlength	= 17.5,
-		propweight	= 0.000075
+		propweight	= 0.007
 	},
 	acepoints = 10
 } )
@@ -41,7 +41,7 @@ ACF_defineGun("20mmSL", { --id
 	year		= 1941,
 	round = {
 		maxlength	= 17.5,
-		propweight	= 0.000075
+		propweight	= 0.0055
 	},
 	acepoints = 5
 } )
@@ -60,7 +60,7 @@ ACF_defineGun("40mmCL", { --id
 	year		= 1975,
 	round = {
 		maxlength	= 17.5,
-		propweight	= 0.001
+		propweight	= 0.007
 	},
 	acepoints = 30
 } )

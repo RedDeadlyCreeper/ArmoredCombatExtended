@@ -1220,5 +1220,6 @@ function PANEL:CPanelText(Name, Desc, Font, Panel)
 end
 
 net.Receive( "colorchatmessage", function( _, _ ) --Wooo colored chat
+	print("Recieved")
 	chat.AddText( net.ReadColor(), net.ReadString() )
 end )

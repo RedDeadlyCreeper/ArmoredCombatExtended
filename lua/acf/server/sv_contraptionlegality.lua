@@ -1,184 +1,141 @@
 
-function ACE_GetEntPoints(Ent)
-	local Points = Ent.ACEPoints or 0 --Use the specially assigned points if it has them
 
-	if Points == 0 and IsValid(Ent) then
+function ACE_DoContraptionLegalCheck(CheckEnt) --In the future could allow true/false to stop the vehicle from working.
+
+	CheckEnt.CanLegalCheck = CheckEnt.CanLegalCheck or false
+	if not CheckEnt.CanLegalCheck then return end
+	CheckEnt.CanLegalCheck = false
+
+	local Contraption = CheckEnt:GetContraption()
+
+	ACE_CheckLegalCont(Contraption)
+
+	timer.Simple(3, function() if IsValid(CheckEnt) then CheckEnt.CanLegalCheck = true end end) --Reallows the legal check after 3 seconds to prevent spam.
+
+end
+
+function ACE_CheckLegalCont(Contraption)
+
+	Contraption.OTWarnings = Contraption.OTWarnings or {} --Used to remember all the one time warnings.
+	--Flag test
+	local HasWarned = false
+
+	HasWarned = Contraption.OTWarnings.WarnedOverPoints or false
+	if Contraption.ACEPoints > ACF.PointsLimit and not HasWarned then
+		local Ply = Contraption:GetACEBaseplate():CPPIGetOwner()
+		local AboveAmt = Contraption.ACEPoints - ACF.PointsLimit
+		local msg = "[ACE] " .. Ply:Nick() .. " has a vehicle [" .. math.ceil(AboveAmt) .. "pts] over the limit costing [" .. math.ceil(Contraption.ACEPoints) .. "pts / " .. math.ceil(ACF.PointsLimit) .. "pts]"
+
+		chatMessageGlobal( msg, Color( 255, 234, 0))
+
+		Contraption.OTWarnings.WarnedOverPoints = true
+	end
+
+	HasWarned = Contraption.OTWarnings.WarnedOverWeight or false
+	if Contraption.totalMass > ACF.MaxWeight and not HasWarned then
+		local Ply = Contraption:GetACEBaseplate():CPPIGetOwner()
+		local AboveAmt = Contraption.totalMass - ACF.MaxWeight
+
+		local msg = "[ACE] " .. Ply:Nick() .. " has a vehicle [" .. math.ceil(AboveAmt) .. "kg] over the limit, weighing [" .. math.ceil(Contraption.totalMass) .. "kg / " .. math.ceil(ACF.PointsLimit) .. "kg]"
+		chatMessageGlobal( msg, Color( 255, 234, 0))
+
+		Contraption.OTWarnings.WarnedOverWeight = true
+	end
+
+	--chatMessageGlobal( message, color)
+
+
+end
+
+
+
+function ACE_GetEntPoints(Ent, MassOverride)
+	local Points = 0 --Use the specially assigned points if it has them
+
+
+	if IsValid(Ent) then --Used to exclude entities with special points. Could exploit this by using said entities as armor. Now it's in addition to.
+
+		if not MassOverride then
 			local phys = Ent:GetPhysicsObject()
 			if IsValid(phys) then
 				Points = phys:GetMass() / 1000 * ACF.PointsPerTon
 				local EACF = Ent.ACF or {}
 				local Mat = EACF.Material or "RHA"
-				Points = Points * (ACE.MatCostTables[Mat] or 1)
+				local DuctMul = 1 / ( 1 + (EACF.Ductility or 1) ) ^ 0.5 --Counteracts the weight bonus from ductility.
+
+				Points = Points * (ACE.MatCostTables[Mat] or 1) * DuctMul
 			end
+		else
+			Points = MassOverride / 1000 * ACF.PointsPerTon
+			local EACF = Ent.ACF or {}
+			local Mat = EACF.Material or "RHA"
+			local DuctMul = 1 / ( 1 + (EACF.Ductility or 1) ) ^ 0.5 --Counteracts the weight bonus from ductility.
+
+			Points = Points * (ACE.MatCostTables[Mat] or 1) * DuctMul
+		end
+
 	end
 
-		--print(Points)
-
+	Points = Points + (Ent.ACEPoints or 0)
 
 	return Points
 end
 
-
---Uncomment this to enable the point system checks.
---Picks an entity and then updates it in chunks across numerous ticks. Updating other legality flags could also happen once per update.
---Disabled for now. Noted issue: Removing a contraption or updating it in the middle of a check would occasionally completely break the system permanantly until a restart. Otherwise the system worked well. Now if I could only find the bug to squash.
---[[
 do
 
-	local ACE_TimerDelay = 0.1	--Time in seconds to run legality logic.
-	local ACE_FractionsToIterate = 0.05 --Sections to break each vehicle into. 0.05 will iterate 5% of a vehicle every iteration. 2 seconds to fully profile a vehicle at 0.1 delay.
 
-	local ACE_ContraptionFractionProfiled = 0
-	local ACE_ContraptionLastCount = 0
-	local ACE_ContraptionTestingPoints = 0
-	function ACE_UpdateContraptionPoints(ContraptionEnt)
+	--Used for setweight update checks. This is such a hacky way to do things.
+	local PHYS    = FindMetaTable("PhysObj")
+	local ACE_Override_SetMass = ACE_Override_SetMass or PHYS.SetMass
+	function PHYS:SetMass(mass)
 
-		--Gets entity count on the vehicle
-		local ContCount = table.Count(ContraptionEnt.ents)
+		local ent     = self:GetEntity()
+		local oldPointValue = ent._AcePts or 0 -- The 'or 0' handles cases of ents connected before they had a physObj
 
-		--print(ContCount)
+		ent._AcePts = ACE_GetEntPoints(ent,mass)
 
-		--Determines which entities to test to
-		ACE_ContraptionFractionProfiled = math.min(ACE_ContraptionFractionProfiled + ACE_FractionsToIterate,1)
-		ContCountMax = math.ceil(ContCount * ACE_ContraptionFractionProfiled)
+		ACE_Override_SetMass(self,mass)
 
-		--ACE_ContraptionFractionProfiled = 1.1
+		local con = ent:GetContraption()
 
-		--print("CMin: " .. ContCountMin)
-		--print("CMax: " .. ContCountMax)
-
-		local Pts = 0
-		local TrackerCount = 0
-		for ent in pairs(ContraptionEnt.ents) do
-			TrackerCount = TrackerCount + 1
-			if TrackerCount <= ACE_ContraptionLastCount then continue end --Could probably be done faster by storing a subtable but eh.
-			if TrackerCount > ContCountMax then break end --Also eh
-			Pts = Pts + ACE_GetEntPoints(ent)
+		if con then
+			con.ACEPoints = con.ACEPoints + (ent._AcePts - oldPointValue)
 		end
-
-		ACE_ContraptionLastCount = TrackerCount
-
-		if Pts > 0 then
-			--print("Points tallied: " .. Pts)
-			ACE_ContraptionTestingPoints = ACE_ContraptionTestingPoints + Pts
-		end
-
-		--All parts have been profiled. Move to the next vehicle.
-		if ACE_ContraptionFractionProfiled >= 1 then
-			ContraptionEnt.ACEPoints = ACE_ContraptionTestingPoints
-			print("Total Contraption Points: " .. ACE_ContraptionTestingPoints)
-
-			ACE_ContraptionTestingPoints = 0
-			ACE_ContraptionFractionProfiled = 0
-			ACE_ContraptionLastCount = 0
-
-			--Tells that we have finished profiling the current vehicle
-			return true
-		end
-
-		return false
-
-		--ContraptionEnt.ACEPoints
-
 	end
 
 
-	local ACE_ContraptionToProfile = nil
-	local ACE_ContraptionNumberProfiled = 0
-	function ACE_FindNextContraption() --Finds the next CFW contraption in the list to profile
-
-		local ContCount = table.Count(CFW.Contraptions)
-
-		ACE_ContraptionNumberProfiled = ACE_ContraptionNumberProfiled + 1
-		if ACE_ContraptionNumberProfiled > ContCount then
-			ACE_ContraptionNumberProfiled = 1
-		end
-
-		local ContTrackerCount = 1
-		for Contraption in pairs(CFW.Contraptions) do
-
-			if ContTrackerCount < ACE_ContraptionNumberProfiled then continue end
+	local function ACE_InitPts(Class)
+		Class.ACEPoints = 0
+	end
+	hook.Add("cfw.contraption.created", "ACE_InitPoints", ACE_InitPts)
+	hook.Add("cfw.family.created", "ACE_InitPoints", ACE_InitPts)
 
 
-			--if not IsValid(Contraption) then --Avoids a lot of wasted time sorting through invalid contraptions
-			--	--print("Novalid")
-			--	ACE_ContraptionNumberProfiled = ACE_ContraptionNumberProfiled + 1
-			--	if ACE_ContraptionNumberProfiled > ContCount then
-			--		ACE_ContraptionNumberProfiled = 1
-			--	end
-			--	continue
-			--end
+	local function ACE_AddPts(Class, Ent)
+		if not IsValid(Ent) then return end
 
+		--local Mass = PhysObj:GetMass()
 
-			ACE_ContraptionTestingPoints = 0
-			ACE_ContraptionFractionProfiled = 0
-			ACE_ContraptionLastCount = 0
+		local AcePts = ACE_GetEntPoints(Ent)
 
-			ACE_ContraptionToProfile = Contraption
-			break
+		Ent._AcePts     = AcePts
 
-		end
+		Class.ACEPoints = Class.ACEPoints + AcePts
+		--print(Class.ACEPoints)
+	end
+	hook.Add("cfw.contraption.entityAdded", "ACE_AddPoints", ACE_AddPts)
+	hook.Add("cfw.family.added", "ACE_AddPoints", ACE_AddPts)
 
+	local function ACE_RemPts(Class, Ent)
+		if not IsValid(Ent) then return end
+
+		local AcePts = ACE_GetEntPoints(Ent)
+
+		Class.ACEPoints = Class.ACEPoints - AcePts
 	end
 
-	local ACE_NextTickContraptions = 0
-	function ACE_ContraptionLegality()
+	hook.Add("cfw.contraption.entityRemoved", "ACE_RemPoints", ACE_RemPts)
+	hook.Add("cfw.family.subbed", "ACE_RemPoints", ACE_RemPts)
 
-		if ACF.CurTime > ACE_NextTickContraptions then
-			ACE_NextTickContraptions = ACF.CurTime + 2.25 --Logic runs every ~2.25 seconds
-
-			if not ACE_ContraptionToProfile then
-				ACE_FindNextContraption()
-				print("Next Contraption to profile: " .. ACE_ContraptionNumberProfiled)
-			end
-
-		end
-
-
-		if ACE_ContraptionToProfile then
-			local ProfileContraption = ACE_UpdateContraptionPoints(ACE_ContraptionToProfile)
-			if ProfileContraption then --If we finished profiling the contraption find the next contraption to profile
-				ACE_ContraptionToProfile = nil
-			end
-		end
-
-	end
-	--timer.Remove( "ACE_ScanContraptionLegality" )
-	--timer.Create( "ACE_ScanContraptionLegality", ACE_TimerDelay, 0, ACE_ContraptionLegality )
 
 end
-]]--
-
-
-
-
-
-
---for ent in pairs()
-
-
---Used for setweight update checks
---local PHYS = FindMetaTable("PhysObj")
---ACE_Override_SetMass = ACE_Override_SetMass or PHYS.SetMass
-
---[[
-function PHYS:SetMass(mass)
-	--local ent = self:GetEntity()
-	print("some extra logic here, applied to")
-
-	ACE_Override_SetMass(mass)
-end
-]]--
---[[
-
-hook.Add("AdvDupe_FinishPasting", "TestHook", function(entityList)
-    timer.Simple(0, function()
-        local entID = next(entityList[1].EntityList)
-        local ent = Entity(entID)
-        local contraption = ent:GetContraption()
-        
-        print(entID, ent, contraption)
-    end)
-end)
-
-]]--
