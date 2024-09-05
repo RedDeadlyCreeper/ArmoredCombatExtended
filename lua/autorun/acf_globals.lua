@@ -89,7 +89,7 @@ ACF.HEATAirGapFactor  = 0.15						--% velocity loss for every meter traveled. 0.
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
 ACF.HEATPlungingReduction = 4					--Multiplier for the penarea of HEAT shells. 2x is a 50% reduction in penetration, 4x 25% and so on.
 ACF.GlatgmPenMul = 1.3							--Multiplier for the penetration of GLATGM rounds
-ACF.ShellPenMul = 2								--Multiplier for the penetration of HEAT rounds
+ACF.ShellPenMul = 1								--Multiplier for the penetration of HEAT rounds
 
 ACF.ScaledHEMax       = 75
 ACF.ScaledEntsMax     = 5
