@@ -103,6 +103,9 @@ function ENT:Initialize()
 
 	self.MissileEntity = NULL
 	self.MissileText = ""
+
+	self.CanLegalCheck = true
+
 end
 
 
@@ -399,6 +402,7 @@ function ENT:ShootMissile()
 
 	if not ShotMissile:IsValid() then self.CurMissile = self:UpdateValidMissiles() return end
 
+	ACE_DoContraptionLegalCheck(self)
 
 	self.NextReload = CT + self.ReloadTime
 
@@ -1074,8 +1078,8 @@ do
 		end
 
 		self.Bulletdata2.SlugCaliber2 = self.Bulletdata2.Caliber - self.Bulletdata2.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
-		self.Bulletdata2.SlugMV = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * (1 - self.Bulletdata2.HEAllocation) * math.sin(math.rad(10 + self.Bulletdata2.Data6) / 2) / self.Bulletdata2.SlugMass) ^ ACF.HEATMVScale) * (ACF_GetRackValue(self.BulletData, "penmul") or ACF_GetGunValue(self.BulletData.Id, "penmul") or 1) / ACF.KEtoRHA
-		self.Bulletdata2.SlugMV2 = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * self.Bulletdata2.HEAllocation * math.sin(math.rad(10 + self.Bulletdata2.Data13) / 2) / self.Bulletdata2.SlugMass2) ^ ACF.HEATMVScaleTan) --keep fillermass/2 so that penetrator stays the same
+		self.Bulletdata2.SlugMV = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * (1 - self.Bulletdata2.HEAllocation) * math.sin(math.rad(10 + self.Bulletdata2.Data6) / 2) / self.Bulletdata2.SlugMass) ^ ACF.HEATMVScale) * (ACF_GetRackValue(self.BulletData, "penmul") or ACF_GetGunValue(self.BulletData.Id, "penmul") or 1) / ACF.KEtoRHA / math.sqrt(ACF.ShellPenMul)
+		self.Bulletdata2.SlugMV2 = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * self.Bulletdata2.HEAllocation * math.sin(math.rad(10 + self.Bulletdata2.Data13) / 2) / self.Bulletdata2.SlugMass2) ^ ACF.HEATMVScaleTan) / math.sqrt(ACF.ShellPenMul) --keep fillermass/2 so that penetrator stays the same
 
 
 		local BoomMul = 1

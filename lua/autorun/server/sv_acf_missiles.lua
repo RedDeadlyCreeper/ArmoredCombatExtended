@@ -194,7 +194,7 @@ function ResetVelocity.HEAT(bdata)
 
 	bdata.Flight:Normalize()
 
-	local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) * 0.77	--local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) * 0.77
+	local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) / math.sqrt(ACF.ShellPenMul) * 0.77	--local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) * 0.77
 
 	bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37
 	bdata.NotFirstPen = false
@@ -209,7 +209,7 @@ function ResetVelocity.THEAT(bdata)
 
 	bdata.Flight:Normalize()
 
-	local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) * 0.77
+	local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) / math.sqrt(ACF.ShellPenMul) * 0.77
 
 	if DetCount == 1 then
 		--print("Detonation1")
