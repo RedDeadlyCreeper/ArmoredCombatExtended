@@ -7,7 +7,7 @@ function ACE_DoContraptionLegalCheck(CheckEnt) --In the future could allow true/
 	CheckEnt.CanLegalCheck = false
 
 	local Contraption = CheckEnt:GetContraption()
-
+	if not IsValid(Contraption) then return end
 	ACE_CheckLegalCont(Contraption)
 
 	timer.Simple(3, function() if IsValid(CheckEnt) then CheckEnt.CanLegalCheck = true end end) --Reallows the legal check after 3 seconds to prevent spam.
