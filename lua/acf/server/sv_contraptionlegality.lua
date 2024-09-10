@@ -36,7 +36,7 @@ function ACE_CheckLegalCont(Contraption)
 		local Ply = Contraption:GetACEBaseplate():CPPIGetOwner()
 		local AboveAmt = Contraption.totalMass - ACF.MaxWeight
 
-		local msg = "[ACE] " .. Ply:Nick() .. " has a vehicle [" .. math.ceil(AboveAmt) .. "kg] over the limit, weighing [" .. math.ceil(Contraption.totalMass) .. "kg / " .. math.ceil(ACF.PointsLimit) .. "kg]"
+		local msg = "[ACE] " .. Ply:Nick() .. " has a vehicle [" .. math.ceil(AboveAmt) .. "kg] over the limit, weighing [" .. math.ceil(Contraption.totalMass) .. "kg / " .. math.ceil(ACF.MaxWeight) .. "kg]"
 		chatMessageGlobal( msg, Color( 255, 234, 0))
 
 		Contraption.OTWarnings.WarnedOverWeight = true

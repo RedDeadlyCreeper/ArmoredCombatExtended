@@ -95,7 +95,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 		for _, ent in pairs( ACE.critEnts ) do
 			local epos = ent:GetPos()
-			local SqDist = Hitpos:DistToSqr( ent:GetPos() )
+			local SqDist = Hitpos:DistToSqr( epos )
 			if SqDist > RadSq then continue end --Perhaps a table storing positions would be faster?
 
 			local LosArmor = ACE_LOSMultiTrace(Hitpos,epos, HEPen)

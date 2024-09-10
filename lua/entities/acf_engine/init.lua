@@ -323,7 +323,7 @@ function ENT:TriggerInput( iname, value )
 					local HasWarned = self.OTWarnings.WarnedFuel or false
 					--self.OTWarnings
 					if not HasWarned then
-						chatMessagePly( self:CPPIGetOwner() , "[ACE] Your engine requires fuel to work.", Color( 255, 0, 0 ))
+						chatMessagePly( self:CPPIGetOwner() , "[ACE] Your engine requires fuel to work and that it be activated BEFORE the engine.", Color( 255, 0, 0 ))
 						self.OTWarnings.WarnedFuel = true
 					end
 				end
