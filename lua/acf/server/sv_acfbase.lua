@@ -501,6 +501,140 @@ function ACE_CreateLinkRope( Pos, Ent1, LPos1, Ent2, LPos2 )
 end
 
 --[[----------------------------------------------------------------------
+	A variation of the CreateKeyframeRope( ... ) for visualizing safezones
+	This one is more simple than the original function.
+	Creates a rope without any constraint
+------------------------------------------------------------------------]]
+function ACE_CreateSZRope( Pos, Ent, LPos1, LPos2 )
+
+	local rope = ents.Create( "keyframe_rope" )
+	rope:SetPos( Pos )
+	rope:SetKeyValue( "Width", 15 )
+	rope:SetKeyValue( "Type", 2 )
+
+	rope:SetKeyValue( "RopeMaterial", "cable/physbeam" )
+
+	-- Attachment point 1
+	rope:SetEntity( "StartEntity", Ent )
+	rope:SetKeyValue( "StartOffset", tostring( LPos1 ) )
+	rope:SetKeyValue( "StartBone", 0 )
+
+	-- Attachment point 2
+	rope:SetEntity( "EndEntity", Ent )
+	rope:SetKeyValue( "EndOffset", tostring( LPos2 ) )
+	rope:SetKeyValue( "EndBone", 0 )
+
+	rope:Spawn()
+	rope:Activate()
+
+	-- Delete the rope if the attachments get killed
+	Ent:DeleteOnRemove( rope )
+
+	return rope
+
+end
+
+function ACE_VisualizeSZ(Point1, Point2)
+
+	local SZEnt = ents.Create("prop_physics")
+	if SZEnt:IsValid() then
+		SZEnt:SetModel( "models/jaanus/wiretool/wiretool_pixel_med.mdl" )
+		SZEnt:Spawn()
+		SZEnt:SetColor( Color(255,0,0) )
+
+		local phys = SZEnt:GetPhysicsObject()
+		if (IsValid(phys)) then
+			phys:EnableMotion( false )
+		end
+		SZEnt:SetNotSolid( true )
+	end
+
+	--Upper Rectangle
+	local PT1 = Vector(Point1.x,Point1.y,Point2.z) + Vector(0,0,2)
+	local PT2 = Vector(Point2.x,Point1.y,Point2.z) + Vector(0,0,2)
+	local LPT1 = SZEnt:WorldToLocal(PT1)
+	local LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point1.x,Point1.y,Point2.z) + Vector(0,0,2)
+	PT2 = Vector(Point1.x,Point2.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point2.x,Point2.y,Point2.z) + Vector(0,0,2)
+	PT2 = Vector(Point1.x,Point2.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point2.x,Point2.y,Point2.z) + Vector(0,0,2)
+	PT2 = Vector(Point2.x,Point1.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	--Lower Rectangle
+	PT1 = Vector(Point1.x,Point1.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point2.x,Point1.y,Point1.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point1.x,Point1.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point1.x,Point2.y,Point1.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point2.x,Point2.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point1.x,Point2.y,Point1.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point2.x,Point2.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point2.x,Point1.y,Point1.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+	--4 corners
+	PT1 = Vector(Point2.x,Point2.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point2.x,Point2.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point1.x,Point1.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point1.x,Point1.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point1.x,Point2.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point1.x,Point2.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+	PT1 = Vector(Point2.x,Point1.y,Point1.z) + Vector(0,0,2)
+	PT2 = Vector(Point2.x,Point1.y,Point2.z) + Vector(0,0,2)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+
+--[[
+	PT1 = Vector(Point1.x,Point1.y,Point1.z)
+	PT2 = Vector(Point2.x,Point1.y,Point1.z)
+	LPT1 = SZEnt:WorldToLocal(PT1)
+	LPT2 = SZEnt:WorldToLocal(PT2)
+	ACE_CreateSZRope( PT1, SZEnt, LPT1, LPT2 )
+]]--
+
+	return SZEnt
+end
+
+--[[----------------------------------------------------------------------
 	This function will look for the driver/operator of a gun/rack based
 	from the used gun inputs when firing.
 	Meant for determining if the driver seat is legal.
