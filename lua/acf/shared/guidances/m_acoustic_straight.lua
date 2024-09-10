@@ -1,5 +1,5 @@
 
-local ClassName = "Acoustic_Straightsearch"
+local ClassName = "Acoustic_Straight"
 
 
 ACF = ACF or {}
