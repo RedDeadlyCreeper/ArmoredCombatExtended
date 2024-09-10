@@ -48,6 +48,9 @@ do
 		self.LockOnActive   = false --used to turn on the engine in case of being lockdown by not legal
 		self.CrewLink       = {}
 		self.HasDriver      = false
+		self.HasSeatDriver = false
+		self.CanUseSeatDriver = false
+		self.SeatDriverEnt = nil
 
 		self.LastDamageTime = CurTime()
 
@@ -135,6 +138,7 @@ do
 
 		if Engine.peakkw > (74.57 / 100 * ACF.LargeEngineThreshold) and ACF.LargeEnginesRequireDrivers ~= 0 then --If the engine has more than 100 hp it requires a driver.
 			Engine.RequiresDriver = true
+			Engine.CanUseSeatDriver = true
 		end
 		--calculate base fuel usage
 		if Engine.EngineType == "Electric" then
@@ -280,6 +284,66 @@ function ENT:UpdateOverlayText()
 
 end
 
+function ENT:FindSeatForDriver()
+
+	local MaxDist = 15 * 39.37^2 --Max distance to link driver seats
+	local maxWeight = 0
+	local SeatEnt = nil
+
+	for _, ent in pairs( ACE.critEnts ) do
+
+
+		local eclass = ent:GetClass()
+
+		if eclass ~= "prop_vehicle_prisoner_pod" then continue end
+
+		local epos = ent:GetPos()
+		local spos = self:GetPos()
+		local SqDist = spos:DistToSqr( epos )
+
+		if SqDist > MaxDist then continue end --Outside link range. Continue.
+
+
+		local phys = ent:GetPhysicsObject()
+		if not IsValid(phys) then continue end
+		local Mass = phys:GetMass()
+		if Mass > maxWeight then
+			SeatEnt = ent
+			maxWeight = Mass
+		end
+	end
+
+	if SeatEnt then
+		self.HasSeatDriver = true
+		self.LinkedDriver = SeatEnt
+	end
+
+end
+
+function ENT:TestDriverDistance()
+
+	if not IsValid(self.LinkedDriver) then
+		self.HasSeatDriver = false
+		self.HasDriver = false
+		self.LinkedDriver = nil
+		return
+	end
+
+	local epos = self.LinkedDriver:GetPos()
+	local spos = self:GetPos()
+	local SqDist = spos:DistToSqr( epos )
+
+	local MaxDist = 15 * 39.37^2 --Max distance to link driver seats
+	if SqDist > MaxDist then
+		self.HasDriver = false
+		self.HasSeatDriver = false
+		local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+		self:EmitSound(soundstr,500,100)
+	end
+
+
+end
+
 function ENT:TriggerInput( iname, value )
 
 	if (iname == "Throttle") then
@@ -299,8 +363,13 @@ function ENT:TriggerInput( iname, value )
 			if not self.RequiresDriver then
 				HasDriver = true
 			else
-				if self.HasDriver then
+				if self.HasDriver or self.HasSeatDriver then
 					HasDriver = true
+				elseif self.CanUseSeatDriver then
+					self:FindSeatForDriver()
+					if IsValid(self.LinkedDriver) then
+						HasDriver = true
+					end
 				end
 			end
 			--RequiresDriver
@@ -603,7 +672,7 @@ function ENT:CalcRPM()
 
 	ACE_DoContraptionLegalCheck(self)
 
-	if self.RequiresDriver and not self.HasDriver  then
+	if self.RequiresDriver and not (self.HasDriver or self.HasSeatDriver)  then
 		self:TriggerInput( "Active", 0 ) --shut off if no driver and requires it
 		return 0
 	end
@@ -613,7 +682,7 @@ function ENT:CalcRPM()
 	--adjusting performance based on damage
 	-- TorqueMult is a mutipler that affects the final Torque an engine can offer at its max.
 	-- PeakTorque is the final possible torque to get.
-	local driverboost = self.HasDriver and ACF.DriverTorqueBoost or 1
+	local driverboost = self.HasDriver and ACF.DriverTorqueBoost or 1 --Seat drivers dont give hp boost.
 	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
 	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * driverboost
 
@@ -723,6 +792,7 @@ do
 				self:EmitSound(soundstr,500,100)
 			end
 		end
+
 	end
 
 	-- Check fueltanks are within the range with the engine.
@@ -735,6 +805,9 @@ do
 				self:UpdateOverlayText()
 			end
 		end
+
+		self:TestDriverDistance()
+
 	end
 
 
@@ -900,7 +973,9 @@ do
 		table.insert( Target.Master, self )
 
 		Target.LinkedEngine = self
+		self.LinkedDriver = Target
 		self.HasDriver = true
+		self.CanUseSeatDriver = false --Driver specified. Seat can no longer be used as driver.
 		self:UpdateOverlayText()
 
 		return true, "Link successful!"
