@@ -241,7 +241,14 @@ end
 -- replaced with _ due to lack of use: Bone
 function ACF_VehicleDamage(Entity, Energy, FrArea, Angle, Inflictor, _, Gun, Type)
 
-	local HitRes = ACF_CalcDamage( Entity , Energy , FrArea , Angle  , Type)
+	--We create a dummy table to pass armour values to the calc function
+	local Target = {
+		ACF = {
+			Armour = 2 --8
+		}
+	}
+
+	local HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle  , Type)
 	local Driver = Entity:GetDriver()
 	local validd = Driver:IsValid()
 
