@@ -107,8 +107,16 @@ local function getMapSZs()
 	end
 
 	this.Safezones = safezones
+
+	timer.Simple( 5, function() this.visualizeSafeZones() end )
+
 	return true
 end
+
+hook.Add( "CleanUpMap", "RestoreSZsCleanup", function( _ )
+	--getMapSZs()
+	this.visualizeSafeZones()
+end )
 
 local function SaveMapDPM(mode)
 	local mapname = string.gsub(game.GetMap(), "[ ^ %a%d-_]", "_")
@@ -119,6 +127,21 @@ local function LoadMapDPM()
 	local mapname = string.gsub(game.GetMap(), "[ ^ %a%d-_]", "_")
 	return file.Read(mapDPMDir .. mapname .. ".txt", "DATA")
 end
+
+function this.visualizeSafeZones()
+
+	if not this.Safezones then return false end
+
+	--szname is _ because unused. I could potentially color the visual safezones???
+	for _, szpts in pairs(this.Safezones) do
+		szmin = szpts[1]
+		szmax = szpts[2]
+		ACE_VisualizeSZ(szmin, szmax)
+	end
+
+	return false
+end
+
 
 hook.Add( "Initialize", "ACF_LoadSafesForMap", function()
 	if not getMapSZs() then

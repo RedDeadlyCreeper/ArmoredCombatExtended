@@ -174,12 +174,13 @@ do
 		Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1) ^ 1.2
 		Gun.ACEPoints		= (Lookup.acepoints or 0.404) * ACE.CannonPointMul
 		Gun.RequiresGunner	= false
+		local GunnerExcluded	= Lookup.gunnerexception or false
 
 		Gun.noloaders	= ClassData.noloader or nil
 
 		Gun.Inaccuracy = ClassData.spread
 
-		if (Gun.Caliber * 10) > ACF.LargeGunsThreshold and ACF.LargeGunsRequireGunners ~= 0 then --If the caliber is large enough it requires a gunner.
+		if not GunnerExcluded and (Gun.Caliber * 10) > ACF.LargeGunsThreshold and ACF.LargeGunsRequireGunners ~= 0 then --If the caliber is large enough it requires a gunner.
 			Gun.RequiresGunner = true
 		end
 
