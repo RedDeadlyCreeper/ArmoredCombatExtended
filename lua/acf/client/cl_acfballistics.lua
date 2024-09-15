@@ -32,11 +32,15 @@ function ACF_SimBulletFlight( Bullet, Index )
 			Bullet.UnderWater = true
 	end
 
-	local Drag = Bullet.SimFlight:GetNormalized() * ( Bullet.DragCoef * Bullet.SimFlight:LengthSqr() ) / ACF.DragDiv
+	local FlightLength = Bullet.SimFlight:Length()
+
+	local Drag = ( Bullet.DragCoef * FlightLength^2 ) / ACF.DragDiv
 
 	if Bullet.UnderWater then
 		Drag = Drag * 800
 	end
+	local ClampFlight = FlightLength * 0.9999999
+	Drag = Bullet.SimFlight:GetNormalized() * math.min(Drag,ClampFlight)
 
 	Bullet.SimPosLast	= Bullet.SimPos
 	Bullet.SimPos		= Bullet.SimPos + (Bullet.SimFlight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
