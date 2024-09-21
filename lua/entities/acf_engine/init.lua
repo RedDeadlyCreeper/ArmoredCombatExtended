@@ -342,7 +342,7 @@ function ENT:TestDriverDistance()
 	local spos = self:GetPos()
 	local SqDist = spos:DistToSqr( epos )
 
-	local MaxDist = 15 * 39.37^2 --Max distance to link driver seats
+	local MaxDist = 348749.3 --Max distance to link driver seats. (15 meters * 39.37)^2 = 348749.3
 	if SqDist > MaxDist then
 		self.HasDriver = false
 		self.HasSeatDriver = false
