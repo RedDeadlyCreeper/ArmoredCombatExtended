@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+   $basetexture macc/VLS_Inside
+   $surfaceprop metal
+   $bumpmap macc/VLS_Base_Normal
+ 
+   
+  
+}
