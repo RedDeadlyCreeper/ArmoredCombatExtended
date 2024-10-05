@@ -48,33 +48,62 @@ function SWEP:DoDrawCrosshair(x, y)
 	local inaccuracy = math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1)
 	inaccuracy = math.max(inaccuracy, self.Heat / self.HeatMax)
 
+	local degrees = math.Clamp((self.Heat / self.HeatMax) ^ 2 * self.MaxSpread + self.BaseSpread, self.BaseSpread, self.BaseSpread + self.MaxSpread)
+
+	--Inaccuracy based on player speed
+	degrees = degrees + math.min(owner:GetVelocity():Length() / self.NormalPlayerRunSpeed, 1) * self.MovementSpread
+
+	local IsCrouching = owner:Crouching()
+	if PRONE_CUSTOM_ANIM_EVENT_NUM or false then
+		IsCrouching = IsCrouching or owner:IsProne()
+	end
+
+	if not self:GetZoomState() then
+		degrees = degrees + self.UnscopedSpread * (IsCrouching and self.CrouchRecoilBonus or 1)
+	end
+
+
 	if self.HasScope then
+		local OuterReticleSize = 120 * degrees
 		if Zoom then
-			surface.SetDrawColor(Color(0, 0, 0, 255 - inaccuracy * 150))
-
-			local width = 1 + inaccuracy * 7
-			surface.DrawRect(x - 1000, y - width / 2 + 1, 2000, width)
-			surface.DrawRect(x - width / 2 + 1, y - 1000, width, 2000)
-
 			surface.SetDrawColor(Color(0, 0, 0, 255))
-
-			surface.DrawRect(x - 1000, y, 2000, 2)
-			surface.DrawRect(x, y - 1000, 2, 2000)
-
+				if self.HasScope then
+					surface.DrawLine( x + 200, y, x + 7, y )
+					surface.DrawLine( x - 200, y, x - 7, y )
+					surface.DrawLine( x, y + 7, x, y + 200 )
+					surface.DrawRect(x + 35 + OuterReticleSize, y, 1000, 2)
+					surface.DrawRect(x - 1035 - OuterReticleSize, y, 1000, 2)
+					surface.DrawRect(x-1.5, y + 35 + OuterReticleSize-1, 5, 1000)
+					surface.SetDrawColor(Color(0, 150, 255, 255))
+					surface.DrawLine( x, y - 7, x, y - 35 )
+				end
 			return true
 		end
 
-		if self:GetClass() == "weapon_ace_awp" or self:GetClass() == "weapon_ace_scout" then return true end
+		--if self:GetClass() == "weapon_ace_awp" or self:GetClass() == "weapon_ace_scout" then return true end
 	end
 
-	local ReticleSize = (self.Heat + inaccuracy * 15) / (3 / (owner:Crouching() and self.CrouchRecoilBonus or 1))
+	local ReticuleBarSize = self.ReticuleSize
+	local OffsetDist = 40 * degrees
 
-	--Draw basic crosshair that increases in size with Inaccuracy Accumulation
-	surface.SetDrawColor(255, 0, 0, 255)
-	surface.DrawLine(x + ReticleSize + 3, y, x + ReticleSize + 10, y)
-	surface.DrawLine(x - ReticleSize - 3, y, x - ReticleSize - 10, y)
-	surface.DrawLine(x, y + ReticleSize + 3, x, y + ReticleSize + 10)
-	surface.DrawLine(x, y - ReticleSize - 3, x, y - ReticleSize - 10)
+	surface.SetDrawColor(0, 0, 0, 255)
+	surface.DrawRect(x - 2, y - ReticuleBarSize - OffsetDist - 2, 4, ReticuleBarSize + 4)
+	surface.DrawRect(x - 2, y + OffsetDist + 2, 4, ReticuleBarSize)
+	surface.DrawRect(x + OffsetDist + 2, y - 1, ReticuleBarSize, 4)
+	surface.DrawRect(x - OffsetDist - 2 - ReticuleBarSize, y - 1, ReticuleBarSize + 4, 4)
+
+	surface.SetDrawColor(134, 255, 123)
+	surface.DrawRect(x - 1, y - ReticuleBarSize - OffsetDist, 1, ReticuleBarSize)
+	surface.DrawRect(x - 1, y + OffsetDist, 1, ReticuleBarSize)
+	surface.DrawRect(x + OffsetDist, y, ReticuleBarSize, 1)
+	surface.DrawRect(x - OffsetDist- ReticuleBarSize, y, ReticuleBarSize, 1)
+
+
+	surface.SetFont( "Trebuchet24" )
+	surface.SetTextColor( 134, 255, 123 )
+	surface.SetTextPos( x + 30, y + 30 )
+	surface.DrawText( "" .. self:Clip1() )
+	--self.Primary.ClipSize
 
 	return true
 end
