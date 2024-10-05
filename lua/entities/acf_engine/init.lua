@@ -295,7 +295,7 @@ end
 
 function ENT:FindSeatForDriver()
 
-	local MaxDist = 15 * 39.37^2 --Max distance to link driver seats
+	local MaxDist = 348749.3 --Max distance to link driver seats. (15 meters * 39.37)^2 = 348749.3
 	local maxWeight = 0
 	local SeatEnt = nil
 
@@ -346,6 +346,7 @@ function ENT:TestDriverDistance()
 	if SqDist > MaxDist then
 		self.HasDriver = false
 		self.HasSeatDriver = false
+		self.LinkedDriver = nil
 		local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
 		self:EmitSound(soundstr,500,100)
 	end
