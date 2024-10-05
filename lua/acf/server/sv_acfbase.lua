@@ -274,85 +274,184 @@ function ACF_VehicleDamage(Entity, Energy, FrArea, Angle, Inflictor, _, Gun, Typ
 	return HitRes
 end
 
-function ACF_SquishyDamage(Entity, Energy, FrArea, Angle, Inflictor, Bone, Gun, Type)
-	local Size = Entity:BoundingRadius()
+function ACF_SquishyDamage(Entity, Energy, FrArea, _, Inflictor, Bone, Gun, Type)
+	--local Size = Entity:BoundingRadius()
 	local Mass = Entity:GetPhysicsObject():GetMass()
+	local MaxPen = Energy.Penetration
+	local Penetration = MaxPen
+	--print("Pen: " .. math.Round(Penetration,1))
+	local MaxHealth = Entity:GetMaxHealth() --Used to set the max HP lost when hitting a nonvital part.
+	local MassRatio = Mass / 90 --Scalar for bodymass of entity. Used to make bigger creatures harder to kill.
 	local HitRes = {}
 	local Damage = 0
+	local BoneArmor = 0
 
-	--We create a dummy table to pass armour values to the calc function
-	local Target = {
-		ACF = {
-			Armour = 0.1
-		}
-	}
+	local BodyArmor = 0 --Thickness of armor to determine if any damage taken.
+
+	local IsPly = false
+	if Entity:IsPlayer() then IsPly = true end
+
+	if IsPly then
+		BodyArmor = 3 * (1 + Entity:Armor() / 100) --Thickness of armor to determine if any damage taken. Having 200 armor has a 3x body armor mult.
+		--print("BodyArmorThickness: " .. BodyArmor)
+	end
+
+	local FleshThickness = 5 * MassRatio --Past the armor, the thickness of flesh in RHA to do max damage. 5mm for human.
+
+	local caliber = 20 * (FrArea ^ (1 / ACF.PenAreaMod) / 3.1416) ^ 0.5
+	local BaseDamage = caliber * (4 + 0.1 * caliber)
 
 	if Bone then
 		--This means we hit the head
 		if Bone == 1 then
-			Target.ACF.Armour = Mass * 0.02 --Set the skull thickness as a percentage of Squishy weight, this gives us 2mm for a player, about 22mm for an Antlion Guard. Seems about right
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, Angle, Type) --This is hard bone, so still sensitive to impact angle
-			Damage = HitRes.Damage * 20
+			--print("Head Hit")
+			BoneArmor = MassRatio * 3.6 --3.6mm for a human skull?
 
-			--If we manage to penetrate the skull, then MASSIVE DAMAGE
-			if HitRes.Overkill > 0 then
-				Target.ACF.Armour = Size * 0.25 * 0.01 --A quarter the bounding radius seems about right for most critters head size
-				HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type)
-				Damage = Damage + HitRes.Damage * 100
+			if IsPly and Entity:Armor() > 75 then --High enough armor. Assume we have a helmet.
+				BoneArmor = BoneArmor + BodyArmor
 			end
 
-			Target.ACF.Armour = Mass * 0.065 --Then to check if we can get out of the other side, 2x skull + 1x brains
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, Angle, Type)
-			Damage = Damage + HitRes.Damage * 20
-		elseif Bone == 0 or Bone == 2 or Bone == 3 then
+			if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+				Penetration = Penetration - BoneArmor
+				--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+				Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+				Damage = Penetration * BaseDamage * 2.5 --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			else
+				Penetration = 0
+			end
+
 			--This means we hit the torso. We are assuming body armour/tough exoskeleton/zombie don't give fuck here, so it's tough
-			Target.ACF.Armour = Mass * 0.04 --Set the armour thickness as a percentage of Squishy weight, this gives us 8mm for a player, about 90mm for an Antlion Guard. Seems about right
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, Angle, Type) --Armour plate,, so sensitive to impact angle
-			Damage = HitRes.Damage * 5
+		elseif Bone == 0 or Bone == 2 or Bone == 3 then
+			--print("Body Hit")
+			BoneArmor = MassRatio * 2 --2mm for a ribcage?
 
-			if HitRes.Overkill > 0 then
-				Target.ACF.Armour = Size * 0.5 * 0.02 --Half the bounding radius seems about right for most critters torso size
-				HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type)
-				Damage = Damage + HitRes.Damage * 25 --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			--If we have any armor the chest will always be protected.
+			BoneArmor = BoneArmor + BodyArmor
+
+
+			if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+				Penetration = Penetration - BoneArmor
+				--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+				Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+				Damage = Penetration * BaseDamage --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			else
+				Penetration = 0
 			end
 
-			Target.ACF.Armour = Mass * 0.185 --Then to check if we can get out of the other side, 2x armour + 1x guts
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, Angle, Type)
-			Damage = Damage + HitRes.Damage * 5
 		elseif Bone == 4 or Bone == 5 then
-			--This means we hit an arm or appendage, so ormal damage, no armour
-			Target.ACF.Armour = Size * 0.2 * 0.02 --A fitht the bounding radius seems about right for most critters appendages
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type) --This is flesh, angle doesn't matter
-			Damage = HitRes.Damage * 10 --Limbs are somewhat less important
+			--print("Arm Hit")
+
+			BoneArmor = 0 --Unprotected unless covered in armor?
+
+			if IsPly and Entity:Armor() > 50 then --High enough armor. Assume we have armor/kevelar.
+				BoneArmor = BoneArmor + BodyArmor / 4
+			end
+
+			if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+				Penetration = Penetration - BoneArmor
+				--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+				Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+				--As arms are nonvital you cannot take more than 20% of your health from an arm hit. Energy excluded.
+				Damage = math.min(Penetration * BaseDamage * 0.5, MaxHealth * 0.2) --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			else
+				Penetration = 0
+			end
+
 		elseif Bone == 6 or Bone == 7 then
-			Target.ACF.Armour = Size * 0.2 * 0.02 --A fitht the bounding radius seems about right for most critters appendages
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type) --This is flesh, angle doesn't matter
-			Damage = HitRes.Damage * 10 --Limbs are somewhat less important
+			--print("Leg Hit")
+			BoneArmor = MassRatio * 0 --Unprotected unless covered in armor?
+
+			if IsPly and Entity:Armor() > 50 then --High enough armor. Assume we have armor/kevelar.
+				BoneArmor = BoneArmor + BodyArmor / 4
+			end
+
+			if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+				Penetration = Penetration - BoneArmor
+				--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+				Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+				--As arms are less vital you cannot take more than 30% of your health from an arm hit. Energy excluded.
+				Damage = math.min(Penetration * BaseDamage * 0.7, MaxHealth * 0.3) --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			else
+				Penetration = 0
+			end
+
 		elseif Bone == 10 then
-			--This means we hit a backpack or something
-			Target.ACF.Armour = Size * 0.1 * 0.02 --Arbitrary size, most of the gear carried is pretty small
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type) --This is random junk, angle doesn't matter
-			Damage = HitRes.Damage * 1 --Damage is going to be fright and shrapnel, nothing much
+			--print("Leg Hit")
+			BoneArmor = 0 --Unprotected unless covered in armor?
+
+			if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+				Penetration = Penetration - BoneArmor
+				--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+				Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+				--As it's entirely nonvital limit damage to 0.1x
+				Damage = math.min(Penetration * BaseDamage * 0.7, MaxHealth * 0.1) --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			else
+				Penetration = 0
+			end
 		else --Just in case we hit something not standard
-			Target.ACF.Armour = Size * 0.2 * 0.02
-			HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0)
-			Damage = HitRes.Damage * 10
+			BoneArmor = MassRatio * 2 --2mm for a ribcage?
+
+			--If we have any armor the chest will always be protected.
+			BoneArmor = BoneArmor + BodyArmor
+
+
+			if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+				Penetration = Penetration - BoneArmor
+				--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+				Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+				Damage = Penetration * BaseDamage --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+			else
+				Penetration = 0
+			end
 		end
 	else --Just in case we hit something not standard
-		Target.ACF.Armour = Size * 0.2 * 0.02
-		HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type)
-		Damage = HitRes.Damage * 10
+		BoneArmor = MassRatio * 2 --2mm for a ribcage?
+
+		--If we have any armor the chest will always be protected.
+		BoneArmor = BoneArmor + BodyArmor
+
+
+		if Penetration > BoneArmor then --We penetrated any armor. Now do damage.
+			Penetration = Penetration - BoneArmor
+			--print("PenRemaining: " .. math.Round(Penetration-FleshThickness,1))
+			Penetration = math.min(Penetration / FleshThickness,1) -- Gets fraction penetrated
+
+			Damage = Penetration * BaseDamage --If we penetrate the armour then we get into the important bits inside, so DAMAGE
+		end
 	end
 
-	local dmg = 2.5
-
-	if Type == "Spall" then
-		dmg = 0.03
+	--if Type == "Spall" then
+		--dmg = 0.03
 		--print(Damage * dmg)
-	end
+	--end
 
-	Entity:TakeDamage(Damage * dmg, Inflictor, Gun)
+	--print("SquishyDamage: " .. math.Round(Damage,1))
+	--print("PenFraction: " .. math.Round(Penetration,1))
+
+	--local MaxDig = (( Energy.Penetration * 1 / Bullet.PenArea ) * ACF.KEtoRHA / ACF.GroundtoRHA ) / 25.4
+	--local EnergyRatio =  (FleshThickness * Penetration) / MaxPen
+	local EnergyAbsorbed = Penetration * (Energy.Kinetic or 0) --Technically unrealistic but eh. I'll look up a more advanced model for hydralic pressure eventually.
+	--print("Energy Absorbed: " .. EnergyAbsorbed .. "Kj")
+
+	Damage = Damage + EnergyAbsorbed --1 damage every 2 Kj absorbed.
+
+	Entity:TakeDamage(Damage, Inflictor, Gun)
 	HitRes.Kill = false
+
+	--We create a dummy table to pass armour values to the calc function
+	local Target = {
+		ACF = {
+			Armour = BoneArmor + FleshThickness
+		}
+	}
+
+	HitRes = ACF_CalcDamage(Target, Energy, FrArea, 0, Type)
 
 	return HitRes
 end
