@@ -35,8 +35,11 @@ SWEP.HeatMax = 55 --Maximum heat - determines max rate at which recoil is applie
 				--Also determines point at which random spread is at its highest intensity
 				--HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
-SWEP.RecoilSideBias = -0.1 --How much the recoil is biased to one side proportional to vertical recoil
-						--Positive numbers bias to the right, negative to the left
+SWEP.AngularRecoil = 15	--Amount of angular recoil
+
+--How much the recoil is biased to one side proportional to vertical recoil
+--Positive numbers bias to the right, negative to the left
+SWEP.RecoilSideBias = -0.1
 
 SWEP.ZoomRecoilBonus = 0.65 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
@@ -44,10 +47,10 @@ SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does no
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0 --First-shot random spread, in degrees
-SWEP.MaxSpread = 2.5 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.15 --First-shot random spread, in degrees
+SWEP.MaxSpread = 1.25 --Maximum added random spread from heat value, in degrees
 					--If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 2 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.MovementSpread = 0.5 --Increase aimcone to this many degrees when sprinting at full speed
 SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
 
