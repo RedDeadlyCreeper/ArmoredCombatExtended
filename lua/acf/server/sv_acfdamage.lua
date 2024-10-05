@@ -66,7 +66,7 @@ end
 
 local PI = math.pi
 
-function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
+function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun, BlastPenMul )
 
 	local Radius       = ACE_CalculateHERadius(FillerMass) -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
 	local MaxSphere    = 4 * PI * (Radius * 2.54) ^ 2 -- Surface Area of the sphere at maximum radius
@@ -84,10 +84,11 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 	local FRTargets	= ACF_HEFind( Hitpos, Radius * ACF.HEFragRadiusMul )		-- Will give tiny HE just a pinch of radius to help it hit the player
 
 	--Generates a list of critical entities inside the blast radius
-	if Power > ACF.HEBlastPenMinPow then --About the HEpower of a 40mm autocannon.
+	local HEBP = Power * (BlastPenMul or 1)
+	if HEBP > ACF.HEBlastPenMinPow then --About the HEpower of a 40mm autocannon.
 		local RadSq = (Radius^2) / ACF.HEBlastPenRadiusMul --Used for square distance test
 
-		local HEPen = Power / ACF.HEBlastPenetration
+		local HEPen = HEBP / ACF.HEBlastPenetration
 		--print("Blastpen: " .. HEPen)
 		local Blast = {
 			Penetration = HEPen
@@ -1152,6 +1153,8 @@ do
 		local MaxGroup    = ACF.ScaledEntsMax	-- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
 		local MaxHE       = ACF.ScaledHEMax	-- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
+		local HighestHEWeight = 0
+
 		local Inflictor   = ent.Inflictor or nil
 		local Owner       = ent:CPPIGetOwner() or NULL
 
@@ -1234,6 +1237,10 @@ do
 							local Type       = Found.FuelType or "Petrol"
 
 							FoundHEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
+
+							if FoundHEWeight > HighestHEWeight then
+								HighestHEWeight = FoundHEWeight
+							end
 						else
 
 							if Found.RoundType == "Refill" then Found:Remove() continue end
@@ -1242,7 +1249,12 @@ do
 							local Propel   = Found.BulletData.PropMass	or 0
 							local Ammo     = Found.Ammo					or 0
 
-							FoundHEWeight = ( ( HE + Propel * ACF.APAmmoDetonateFactor * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
+							local AmmoHEWeight = ( HE + Propel * ACF.APAmmoDetonateFactor * ( ACF.PBase / ACF.HEPower))
+							if AmmoHEWeight > HighestHEWeight then
+								HighestHEWeight = AmmoHEWeight
+							end
+
+							FoundHEWeight = ( AmmoHEWeight * Ammo ) * AmmoExplosionScale
 						end
 
 
@@ -1292,7 +1304,12 @@ do
 		HEWeight	= HEWeight * ACF.BoomMult
 		Radius	= ACE_CalculateHERadius( HEWeight )
 
-		ACF_HE( AvgPos , vector_origin , HEWeight , HEWeight , Inflictor , ent, ent )
+		--Sets the ratio of HE blast pen so it no longer pens 300mm when 10 shells cookoff.
+		--Blastpen will use the HEpower of 2 of the biggest HE detonations or 1/10th the HE power. Whichever is bigger.
+		--Then convert that blastpower to a ratio of the HE weight.
+		local BlastPenRatio = math.min(math.max(HEWeight * 0.1, HighestHEWeight * 2),1) / HEWeight
+
+		ACF_HE( AvgPos , vector_origin , HEWeight , HEWeight , Inflictor , ent, ent, BlastPenRatio )
 
 		--util.Effect not working during MP workaround. Waiting a while fixes the issue.
 		timer.Simple(0.001, function()
