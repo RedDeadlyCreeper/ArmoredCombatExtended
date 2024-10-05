@@ -21,7 +21,7 @@ SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for sho
 
 SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
 										--Most models have a built-in first-person reload sound
-
+SWEP.ReticuleSize = 0
 SWEP.ZoomFOV = 20
 SWEP.HasScope = true --True if the weapon has a sniper-style scope
 
@@ -40,15 +40,15 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 5 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 8 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
 SWEP.BaseSpread = 0 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
 					--If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 0.75 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 0 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
 SWEP.CarrySpeedMul			= 0.7
 

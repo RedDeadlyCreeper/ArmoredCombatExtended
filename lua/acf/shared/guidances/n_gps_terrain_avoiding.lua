@@ -79,7 +79,7 @@ function this:GetGuidance(missile)
 	local TRadius = 100
 	local LOSdata = {}
 	LOSdata.start			= MPos
-	LOSdata.endpos			= MPos + missile.Flight * 2 * 39.37
+	LOSdata.endpos			= MPos + missile.Flight * 2.5 * 39.37
 	--LOSdata.endpos			= MPos + Difpos * FLLength * 20
 	--LOSdata.collisiongroup	= COLLISION_GROUP_WORLD
 	LOSdata.filter			= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end --Hits anything world related.

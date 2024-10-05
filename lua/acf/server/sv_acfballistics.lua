@@ -273,10 +273,10 @@ do
 			if FlightRes.HitNonWorld and (HitEnt:IsPlayer() or HitEnt:IsNPC()) then
 
 				FlightTr.output = nil
-				local PlayerHitCheck = util.LegacyTraceLine(FlightTr).Entity --new hit ent after traceline conversion
+				local PlayerHitCheck = util.LegacyTraceLine(FlightTr) --new hit ent after traceline conversion
 				FlightTr.output = FlightRes
 
-				if HitEnt ~= PlayerHitCheck then
+				if HitEnt ~= PlayerHitCheck.Entity then
 					table.insert(Bullet.Filter, HitEnt)
 					table.insert(Bullet.FilterKeysToRemove, #Bullet.Filter)
 
@@ -285,6 +285,7 @@ do
 					-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
 					visCount = visCount + 1
 				end
+				FlightRes.HitGroup = PlayerHitCheck.HitGroup
 			end
 		end
 

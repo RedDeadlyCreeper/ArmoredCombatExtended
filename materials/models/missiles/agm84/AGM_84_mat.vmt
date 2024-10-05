@@ -1,0 +1,27 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/agm84/AGM_84_mat_rgb"
+	$bumpmap "models/missiles/agm84/agm_84_mat_n"
+
+	$phong 1
+	$phongexponenttexture "models/missiles/agm84/agm_84_mat_e"
+	$phongfresnelranges "[1 0.1 0]"
+	$phongalbedotint 1
+	$phongalbedoboost 10
+
+	$rimlight 1
+	$rimlightexponent 100
+	$rimlightboost 1
+
+	$rimmask 1
+
+	Proxies
+	{
+		MwEnvMapTint
+		{
+			min 0
+			max 1
+			color "[0.098 0.098 0.098]"
+		}
+	}
+}

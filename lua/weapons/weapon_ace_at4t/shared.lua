@@ -44,11 +44,11 @@ SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does n
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.75 --First-shot random spread, in degrees
-SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.2 --First-shot random spread, in degrees
+SWEP.MaxSpread = 5 --Maximum added random spread from heat value, in degrees
 					--If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 8 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 2 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0.65 --Spread, in degrees, when unscoped with a scoped weapon
 
 SWEP.CarrySpeedMul			= 0.5
 
@@ -170,7 +170,7 @@ function SWEP:PrimaryAttack()
 				Owner = owner,
 				Launcher = owner,
 
-				Pos = owner:GetShootPos() + owner:GetAimVector() * 75,
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 900,
 				Ang = owner:GetAimVector():Angle(),
 
 				Mdl = "models/missiles/hvar.mdl",
@@ -179,7 +179,7 @@ function SWEP:PrimaryAttack()
 				FinMul = 0,
 				ThrusterTurnRate = 0,
 
-				InitialVelocity = 119,
+				InitialVelocity = 170,
 				Thrust = 0,
 				BurnTime = 5,
 				MotorDelay = 0,
@@ -194,7 +194,7 @@ function SWEP:PrimaryAttack()
 				HasInertial = false,
 				HasDatalink = false,
 
-				ArmDelay = 0.01,
+				ArmDelay = 0.0,
 				DelayPrediction = 0.1,
 				ArmorThickness = 8,
 

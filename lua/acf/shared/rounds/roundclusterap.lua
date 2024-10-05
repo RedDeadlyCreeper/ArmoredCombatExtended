@@ -3,7 +3,7 @@ AddCSLuaFile()
 
 local Round = {}
 
-ACF.AmmoBlacklist.CAP = { "MG", "HMG","RAC", "ATR", "SL", "GL", "FFAR", "FGL", "ATR", "ATGM", "ASR","Torpedo" }
+ACF.AmmoBlacklist.CAP = { "MG", "HMG","RAC", "ATR", "SL", "GL", "FFAR", "FGL", "ATR", "ATGM", "ASR" }
 
 Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name  = "[CLUSTER-AP] - " .. ACFTranslation.ShellAP[1] --Human readable name

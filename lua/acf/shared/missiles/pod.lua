@@ -656,3 +656,106 @@ ACF_DefineRack("1x 9M113", {
 		["missile1"] = { ["pos"] = Vector(17,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)} -- 15.759,0,0
 	}
 } )
+
+
+ACF_DefineRack("1xVLS", {
+	name = "1x Vertical Launch Cell",
+	desc = "Self enclosed vertical launch tube.",
+	model	= "models/macc/VLS_SingleBase.mdl",
+	rackmdl	= "models/macc/VLS_Single_Cover.mdl",
+	gunclass = "POD",
+	weight = 1200,
+	year = 1960,
+	magsize = 1,
+
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	inverted = true,
+
+	mountpoints =
+	{
+
+		["missile1"] = { ["pos"] = Vector(134,0,-2.25), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+
+	}
+} )
+
+ACF_DefineRack("1xmVLS", {
+	name = "1x Mini Vertical Launch Cell",
+	desc = "Small self enclosed vertical launch tube.",
+	model	= "models/macc/VLS_SingleBase_Small.mdl",
+	rackmdl	= "models/macc/VLS_Single_Cover_Small.mdl",
+	gunclass = "POD",
+	weight = 600,
+	year = 1960,
+	magsize = 1,
+
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	inverted = true,
+
+	mountpoints =
+	{
+
+		["missile1"] = { ["pos"] = Vector(50.25,0,-0.84375), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+
+	}
+} )
+
+ACF_DefineRack("4xVLS", {
+	name = "4x Vertical Launch Cell",
+	desc = "Quad vertical launch tubes for unleasing the storm.",
+	model	= "models/macc/VLS_4X.mdl",
+	rackmdl	= "models/macc/VLS_Single_Cover.mdl",
+	gunclass = "POD",
+	weight = 4800,
+	year = 1960,
+	magsize = 4,
+
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	inverted = true,
+
+	mountpoints =
+	{
+
+		["missile1"] = { ["pos"] = Vector(134,98,-2.25), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(134,32.5,-2.25), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(134,-32.5,-2.25), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(134,-98,-2.25), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)}
+
+
+	}
+} )
+
+ACF_DefineRack("4xmVLS", {
+	name = "4x Mini Vertical Launch Cell",
+	desc = "Quad vertical launch tubes for unleasing the storm. Small edition.",
+	model	= "models/macc/VLS_4X_Small.mdl",
+	rackmdl	= "models/macc/VLS_Single_Cover_Small.mdl",
+	gunclass = "POD",
+	weight = 2400,
+	year = 1960,
+	magsize = 1,
+
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	inverted = true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(50.25,0,-0.84375), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile1"] = { ["pos"] = Vector(50.25,36.75,-0.84375), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(50.25,12.1875,-0.84375), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(50.25,-12.1875,-0.84375), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(50.25,-36.75,-0.84375), ["offset"] = Vector(0,0.1,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )

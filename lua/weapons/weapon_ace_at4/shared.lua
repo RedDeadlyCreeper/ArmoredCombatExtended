@@ -28,10 +28,9 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 --Recoil (crosshair movement) settings--
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
-SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
-SWEP.HeatReductionDelay = 0.25 --Delay after firing before beginning to reduce heat
-SWEP.HeatPerShot = 10 --Heat generated per shot
-SWEP.HeatMax = 25 --Maximum heat - determines max rate at which recoil is applied to eye angles
+SWEP.HeatReductionRate = 25 --Heat loss per second when not firing
+SWEP.HeatPerShot = 100 --Heat generated per shot
+SWEP.HeatMax = 100 --Maximum heat - determines max rate at which recoil is applied to eye angles
 				--Also determines point at which random spread is at its highest intensity
 				--HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
@@ -40,15 +39,15 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 100 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.75 --First-shot random spread, in degrees
-SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.15 --First-shot random spread, in degrees
+SWEP.MaxSpread = 15 --Maximum added random spread from heat value, in degrees
 					--If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 7 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 2 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0.5 --Spread, in degrees, when unscoped with a scoped weapon
 
 SWEP.CarrySpeedMul			= 0.6
 
@@ -159,7 +158,7 @@ function SWEP:PrimaryAttack()
 				Owner = owner,
 				Launcher = owner,
 
-				Pos = owner:GetShootPos() + owner:GetAimVector() * 75,
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 700,
 				Ang = owner:GetAimVector():Angle(),
 
 				Mdl = "models/munitions/round_100mm_mortar_shot.mdl",
@@ -183,7 +182,7 @@ function SWEP:PrimaryAttack()
 				HasInertial = false,
 				HasDatalink = false,
 
-				ArmDelay = 0.01,
+				ArmDelay = 0,
 				DelayPrediction = 0.1,
 				ArmorThickness = 8,
 
