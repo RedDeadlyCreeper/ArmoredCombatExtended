@@ -174,7 +174,7 @@ function ENT:Think()
 
 	local DMul = 1
 	local GMul = 1
-	if self.IsUnderWater then
+	if self.IsUnderWater > 0 then
 		DMul = 1 + 60 * self.IsUnderWater
 		GMul = math.max(1 - self.Buoyancy * self.IsUnderWater,0)
 	end
@@ -334,7 +334,7 @@ function ENT:Think()
 
 				else
 					self:StopParticles()
-					self:StopSound(self.MotorSound)
+					self:StopSound(self.MotorSound or "")
 					self.UpdateFX = false
 					--print(DeltaPos:Length()/39.37) --Prints velocity on motor cutoff. Used for debugging missile speed.
 				end

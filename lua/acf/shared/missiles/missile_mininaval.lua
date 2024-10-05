@@ -1,9 +1,9 @@
 
 --define the class
-ACF_defineGunClass("NAV", {
+ACF_defineGunClass("mNAV", {
 	type           = "missile",
 	spread         = 1,
-	name           = "[NAV] - Naval Missiles",
+	name           = "[mNAV] - Scaled Naval Missiles",
 	desc           = ACFTranslation.MissileClasses[3],
 	muzzleflash    = "40mm_muzzleflash_noscale",
 	year           = 1969,
@@ -18,13 +18,13 @@ ACF_defineGunClass("NAV", {
 
 
 
-ACF_defineGun("BGM-109 Tomahawk", {						-- id
+ACF_defineGun("Scaled BGM-109 Tomahawk", {						-- id
 	name             = "BGM-109 Tomahawk",
 	desc             = "The gold standard of cruise missiles. Subsonic and long range. Though slow this ordinance has extreme range and good maneuverability. Good for removing distant targets. Cannot be updated after it has launched.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 81 m/s",
 	model            = "models/macc/Tomahawk_Small.mdl",
 	effect           = "ACE_RocketBlackSmoke", --Rocket_Smoke_Trail
-	effectbooster	 = "ACE_MissileLarge",
-	gunclass         = "NAV",
+	effectbooster	 = "ACE_MissileMedium",
+	gunclass         = "mNAV",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 250 * 2.53, --Convert to ammocrate units
 	caliber          = 35.56,
@@ -34,8 +34,8 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 	bodydiameter     = 24.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
-		rocketmdl			= "models/macc/tomahawk.mdl",
-		rackmdl				= "models/macc/tomahawk_folded.mdl",
+		rocketmdl			= "models/macc/Tomahawk_Small.mdl",
+		rackmdl				= "models/macc/Tomahawk_Folded_Small.mdl",
 		firedelay			= 1.0,
 		reloadspeed			= 5.0,
 		reloaddelay			= 1.0,
@@ -81,8 +81,8 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
-					["1xVLS"] = true,
-					["4xVLS"] = true
+					["1xmVLS"] = true,
+					["4xmVLS"] = true
 				},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -96,13 +96,13 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 } )
 
 
-ACF_defineGun("AGM-84 Harpoon", {						-- id
+ACF_defineGun("Scaled AGM-84 Harpoon", {						-- id
 	name             = "AGM-84 Harpoon",
 	desc             = "Versatile subsonic anti ship missile. Though somewhat sluggish packs a wallop.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 81 m/s",
 	model            = "models/missiles/1xagm84.mdl",
 	effect           = "ACE_RocketBlackSmoke", --Rocket_Smoke_Trail
 	effectbooster	 = "ACE_MissileMedium",
-	gunclass         = "NAV",
+	gunclass         = "mNAV",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 150 * 2.53, --Convert to ammocrate units
 	caliber          = 34,
@@ -112,8 +112,8 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 	bodydiameter     = 15.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
-		rocketmdl			= "models/missiles/1xagm84.mdl",
-		rackmdl				= "models/missiles/1xagm84.mdl",
+		rocketmdl			= "models/missiles/375xagm84.mdl",
+		rackmdl				= "models/missiles/375xagm84.mdl",
 		firedelay			= 1.0,
 		reloadspeed			= 5.0,
 		reloaddelay			= 1.0,
@@ -159,8 +159,8 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
-					["1xVLS"] = true,
-					["4xVLS"] = true
+					["1xmVLS"] = true,
+					["4xmVLS"] = true
 				},
 
 	skinindex	= {HEAT = 1, HE = 0},
@@ -175,13 +175,13 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 
 } )
 
-ACF_defineGun("Storm Shadow ASM", {						-- id
+ACF_defineGun("Scaled Storm Shadow ASM", {						-- id
 	name             = "SCALP-EG Storm Shadow",
 	desc             = "The stormshadow is a low observability, turbojet driven cruise missile. Though slow this ordinance has extreme range, good maneuverability, staying time. And will obliterate anything it touches.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes\nTop Speed: 81 m/s",
 	model            = "models/macc/storm_shadow_open.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	 = "ACE_MissileTiny",
-	gunclass         = "NAV",
+	gunclass         = "mNAV",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 205 * 2.53, --Convert to ammocrate units
 	caliber          = 35.56,
@@ -191,8 +191,8 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 	bodydiameter     = 24.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
-		rocketmdl			= "models/macc/storm_shadow_open.mdl",
-		rackmdl				= "models/macc/storm_shadow_closed.mdl",
+		rocketmdl			= "models/macc/Storm_Shadow_Open_Small.mdl",
+		rackmdl				= "models/macc/Storm_Shadow_Closed_Small.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 20.0,
 		reloaddelay			= 5.0,
@@ -237,8 +237,8 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
-					["1xVLS"] = true,
-					["4xVLS"] = true
+					["1xmVLS"] = true,
+					["4xmVLS"] = true
 			},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -251,13 +251,13 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 
 } )
 
-ACF_defineGun("3M-54 Kalibr", {						-- id
+ACF_defineGun("Scaled 3M-54 Kalibr", {						-- id
 	name             = "3M-54 Kalibr",
 	desc             = "Russia's cruise missile. Fast and long range. This massive missile can easily remove entire regions. Cannot be updated after it has launched.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 81 m/s",
 	model            = "models/macc/Kalibr_small.mdl",
 	effect           = "ACE_RocketBlackSmoke", --Rocket_Smoke_Trail
 	effectbooster	 = "ACE_MissileLarge",
-	gunclass         = "NAV",
+	gunclass         = "mNAV",
 	rack             = "1xRK",						-- Which rack to spawn this missile on?
 	length           = 250 * 2.53, --Convert to ammocrate units
 	caliber          = 53.3,
@@ -267,8 +267,8 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 	bodydiameter     = 24.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
-		rocketmdl			= "models/macc/Kalibr.mdl",
-		rackmdl				= "models/macc/Kalibr_folded.mdl",
+		rocketmdl			= "models/macc/Kalibr_small.mdl",
+		rackmdl				= "models/macc/Kalibr_folded_small.mdl",
 		firedelay			= 1.0,
 		reloadspeed			= 5.0,
 		reloaddelay			= 1.0,
@@ -314,8 +314,8 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
-					["1xVLS"] = true,
-					["4xVLS"] = true
+					["1xmVLS"] = true,
+					["4xmVLS"] = true
 				},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -328,83 +328,13 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 
 } )
 
-
-
-ACF_defineGun("Black Shark Torp", {						-- id
-	name             = "533mm Black Shark Torpedo",
-	desc             = "Advanced heavyweight torpedo meant to strike fear into capital ships of all sizes.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: No\nTop Speed: N/A m/s",
-	model            = "models/missiles/BlackSharkWASS.mdl",
-	effect           = "ACE_TorpedoMedium",
-	effectbooster    = "",
-	gunclass         = "NAV",
-	rack             = "1xRK",							-- Which rack to spawn this missile on?
-	length           = 250 * 2.53, --Convert to ammocrate units,
-	caliber          = 15, --Unfortunately caliber determines the minimum length even above the max length var. For now has to be set lower than 1:1
-	weight           = 1200,								-- Don't scale down the weight though!
-	rofmod           = 0.3,
-	year             = 2015,
-	modeldiameter    = 30,
-	bodydiameter     = 32, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
-
-	round = {
-		rocketmdl			= "models/missiles/blacksharkwass.mdl",
-		rackmdl				= "models/missiles/blacksharkwass.mdl",
-		firedelay			= 0.5,
-		reloadspeed			= 6.0,
-		reloaddelay			= 25.0,
-
-		maxlength			= 175,							-- Length of missile. Used for ammo properties.
-		propweight			= 0.001,							-- Motor mass - motor casing. Used for ammo properties.
-
-		armour				= 30,							-- Armour effectiveness of casing, in mm
-		turnrate			= 6,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
-
-		thrust				= 100,							-- Acceleration in m/s.
-		burntime			= 120,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0,
-
-		launchkick			= 20,							-- Speed missile starts with on launch in m/s
-
-		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
-
-		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 0,							-- Time in seconds for booster runtime
-		boostdelay			= 0,							-- Delay in seconds before booster activates.
-
-		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
-
-		dragcoef			= 0.001,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-		waterthrusttype 	= 4, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
-		pointcost			= 1500,
-	},
-
-	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb","Straight_Running","Acoustic_Straight","Wire"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
-
-	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true
-				},
-
-	seekcone   = 45,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone   = 45,								-- getting outside this cone will break the lock.  Divided by 2.
-
-	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
-
-	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
-} )
-
-ACF_defineGun("G7a Torp", {						-- id
+ACF_defineGun("Scaled G7a Torp", {						-- id
 	name             = "533mm G7a Torpedo",
 	desc             = "Classic German U-boat torpedo. Fast, heavy hitting, but not particularly advanced.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: N/A m/s",
 	model            = "models/macc/Torpedo_G7A_Small.mdl",
 	effect           = "ACE_TorpedoMedium",
 	effectbooster    = "",
-	gunclass         = "NAV",
+	gunclass         = "mNAV",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 250 * 2.53, --Convert to ammocrate units,
 	caliber          = 15, --Unfortunately caliber determines the minimum length even above the max length var. For now has to be set lower than 1:1
@@ -415,8 +345,8 @@ ACF_defineGun("G7a Torp", {						-- id
 	bodydiameter     = 32, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
-		rocketmdl			= "models/macc/Torpedo_G7A.mdl",
-		rackmdl				= "models/macc/Torpedo_G7A.mdl",
+		rocketmdl			= "models/macc/Torpedo_G7A_Small.mdl",
+		rackmdl				= "models/macc/Torpedo_G7A_Small.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
@@ -466,13 +396,13 @@ ACF_defineGun("G7a Torp", {						-- id
 	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
 } )
 
-ACF_defineGun("Mk13 Torp", {						-- id
+ACF_defineGun("Scaled Mk13 Torp", {						-- id
 	name             = "570mm Mk 13 Torpedo",
 	desc             = "One of the most common aerial torpedoes of WW2. Used by the US. Has claimed many capital ships.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: N/A m/s",
 	model            = "models/macc/Torpedo_MK13_Small.mdl",
 	effect           = "ACE_TorpedoMedium",
 	effectbooster    = "",
-	gunclass         = "NAV",
+	gunclass         = "mNAV",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 125 * 2.53, --Convert to ammocrate units,
 	caliber          = 15, --Unfortunately caliber determines the minimum length even above the max length var. For now has to be set lower than 1:1
@@ -483,8 +413,8 @@ ACF_defineGun("Mk13 Torp", {						-- id
 	bodydiameter     = 36, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
-		rocketmdl			= "models/macc/Torpedo_MK13.mdl",
-		rackmdl				= "models/macc/Torpedo_MK13.mdl",
+		rocketmdl			= "models/macc/Torpedo_MK13_Small.mdl",
+		rackmdl				= "models/macc/Torpedo_MK13_Small.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,

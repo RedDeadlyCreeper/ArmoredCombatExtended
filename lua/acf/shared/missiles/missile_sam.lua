@@ -279,7 +279,11 @@ ACF_defineGun("VT-1 SAM", {										-- id
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
-				["1x VT-1"] = true
+				["1x VT-1"] = true,
+				["1xVLS"] = true,
+				["1xmVLS"] = true,
+				["4xVLS"] = true,
+				["4xmVLS"] = true
 			},
 
 	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -349,7 +353,11 @@ ACF_defineGun("9M311 SAM", {										-- id
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
-				["1x 9m311"] = true
+				["1x 9m311"] = true,
+				["1xVLS"] = true,
+				["1xmVLS"] = true,
+				["4xVLS"] = true,
+				["4xmVLS"] = true
 			},
 
 	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -390,15 +398,15 @@ ACF_defineGun("9M331 SAM", {								-- id
 
 		armour				= 35,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 10,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.15,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 50,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		turnrate			= 5,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 120,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 110,							-- Acceleration in m/s.
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 25,							-- Speed missile starts with on launch in m/s
+		launchkick			= 15,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -411,7 +419,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
-		predictiondelay		= 1.2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 1.05,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		pointcost			= 353
 	},
 
@@ -420,7 +428,11 @@ ACF_defineGun("9M331 SAM", {								-- id
 	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
-						["1x9M331 Pod"] = true
+						["1x9M331 Pod"] = true,
+						["1xVLS"] = true,
+						["1xmVLS"] = true,
+						["4xVLS"] = true,
+						["4xmVLS"] = true
 				},
 
 	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -491,7 +503,11 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 	guidance           = {"Dumb", "Radar"},
 	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
 
-	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+	racks              = {
+	["1xRK"] = true,
+	["1xVLS"] = true,
+	["4xVLS"] = true
+	},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
 	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
 	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.
