@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+ "$basetexture" "macc/9M317ME_Main"
+ 
+ "$BumpMap" "macc/9M317ME_Main_Normal"
+  
+  $ssbump 1
+
+}

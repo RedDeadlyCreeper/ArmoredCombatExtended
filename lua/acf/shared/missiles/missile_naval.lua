@@ -533,3 +533,79 @@ ACF_defineGun("Mk13 Torp", {						-- id
 
 	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
 } )
+
+
+ACF_defineGun("9M317ME SAM", {							-- id
+	name             = "9M317ME Navalized BUK",
+	desc             = "Get. Out. Of. MY. Airspace. Navalized version of the BUK often carried by cruisers. Perfect to designate a no-fly zone. Fast beyond belief and still decently maneuverable. \n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: Yes\nTop Speed: 273 m/s",
+	model            = "models/macc/9M317ME_open_small.mdl",
+	effect           = "ACE_MissileLarge",
+	effectbooster	 = "ACE_MissileLarge",
+	gunclass         = "SAM",
+	rack             = "1xRK",							-- Which rack to spawn this missile on?
+	length           = 200 * 2.53, --Convert to ammocrate units
+	caliber          = 38.0,
+	weight           = 1040,								-- Don't scale down the weight though!
+	year             = 1981,
+	modeldiameter    = 32,--Already in ammocrate units
+	bodydiameter     = 20, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/macc/9m317me_open.mdl",
+		rackmdl				= "models/macc/9m317me_folded.mdl",
+		firedelay			= 1.0,
+		reloadspeed			= 10,
+		reloaddelay			= 45.0,
+
+
+		maxlength			= 110,							-- Length of missile. Used for ammo properties.
+		propweight			= 40,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+								--320
+		turnrate			= 5,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 60,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 165,							-- Acceleration in m/s.
+		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
+		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 20,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 3,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.002,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
+		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		pointcost			= 333
+	},
+
+	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance           = {"Dumb", "Radar"},
+	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
+
+	racks              = {
+	["1xRK"] = true,
+	["1xVLS"] = true,
+	["4xVLS"] = true
+	},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+
+	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 1,
+	irccm				= true,
+
+	agility            = 3,									-- multiplier for missile turn-rate.  --was 0.7
+	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+	guidelay           = 0.5,								-- Required time (in seconds) for missile to start guiding at target once launched
+	ghosttime          = 0.05									-- Time where this missile will be unable to hit surfaces, in seconds
+} )

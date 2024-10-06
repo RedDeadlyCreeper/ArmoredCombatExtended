@@ -246,6 +246,7 @@ function ENT:ScanForContraptions()
 	local Positions = {}
 	local Velocities = {}
 	local IDs = {}
+	self.AcquiredTargets		= {}
 
 	local SelfContraption = self:GetContraption()
 	local SelfPos = self:WorldSpaceCenter()
@@ -322,6 +323,7 @@ function ENT:ScanForContraptions()
 					tableInsert(Positions, InsertionIndex, OutputPosition)
 					tableInsert(Velocities, InsertionIndex, Base:GetVelocity())
 					tableInsert(IDs, InsertionIndex, ContraptionIndex)
+					tableInsert(self.AcquiredTargets, Base)
 
 					debugoverlay.Line(SelfPos, OutputPosition, 0.15, Color(0, 255, 0))
 				end
