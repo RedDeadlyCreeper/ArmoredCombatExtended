@@ -25,7 +25,8 @@ local RackWireDescs = {
 	["Delay"]        = "Sets a specific delay to guidance control over the default one in seconds.",
 
 	--Outputs
-	["Ready"]        = "Returns if the rack is ready to fire."
+	["Ready"]        = "Returns if the rack is ready to fire.",
+	["CurMissile"]        = "Outputs the next position of the missile in the rack getting fired."
 
 }
 
@@ -77,8 +78,8 @@ function ENT:Initialize()
 	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload (" .. RackWireDescs["Reload"] .. ")",	"Target Pos (" .. RackWireDescs["TargetPos"] .. ")", "Activate Guidance", "Track Delay (" .. RackWireDescs["Delay"] .. ")" },
 													{ "NORMAL", "NORMAL", "VECTOR", "NORMAL", "NORMAL" } )
 
-	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready (" .. RackWireDescs["Ready"] .. ")",	"Shots Left", "AcquiredTarget", "TargetDirection", "Current Missile", "Missile Info" },
-														{ "NORMAL", "NORMAL", "NORMAL", "VECTOR", "ENTITY", "STRING" } )
+	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready (" .. RackWireDescs["Ready"] .. ")",	"Shots Left", "AcquiredTarget", "TargetDirection", "Current Missile", "Missile Info", "CurMissile" },
+														{ "NORMAL", "NORMAL", "NORMAL", "VECTOR", "ENTITY", "STRING", "NORMAL" } )
 
 	Wire_TriggerOutput(self, "Ready", 1)
 	Wire_TriggerOutput(self, "Current Missile", nil)
@@ -286,6 +287,7 @@ function ENT:UpdateValidMissiles()
 			self.MissileText = self.MissileEntity.StringName
 			Wire_TriggerOutput(self, "Missile Info", self.MissileText)
 			Wire_TriggerOutput(self, "Current Missile", self.MissileEntity)
+			Wire_TriggerOutput(self, "CurMissile", MissileToShoot)
 			break
 		end
 	end
