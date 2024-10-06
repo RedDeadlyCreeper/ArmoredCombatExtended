@@ -1275,6 +1275,7 @@ do
 		AntiRadiation		= 0.7,
 		Beam_Riding			= 0.7,
 		GPS_TerrainAvoidant = 0.8,
+		SACLOS				= 0.75,
 		Semiactive			= 0.85,
 		Wire				= 1.0,
 		Acoustic_Straight = 1.0,
