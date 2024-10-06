@@ -37,8 +37,11 @@ SWEP.HeatMax = 0 --Maximum heat - determines max rate at which recoil is applied
 				--Also determines point at which random spread is at its highest intensity
 				--HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
-SWEP.RecoilSideBias = 0 --How much the recoil is biased to one side proportional to vertical recoil
-						--Positive numbers bias to the right, negative to the left
+SWEP.AngularRecoil = 0	--Amount of angular recoil
+
+--How much the recoil is biased to one side proportional to vertical recoil
+--Positive numbers bias to the right, negative to the left
+SWEP.RecoilSideBias = 0
 
 SWEP.ZoomRecoilBonus = 1 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 1 --Reduce recoil by this amount when crouching
@@ -657,6 +660,5 @@ function SWEP:Think()
 		end
 	end
 
-	self:HandleRecoil()
 	self:OnThink()
 end
