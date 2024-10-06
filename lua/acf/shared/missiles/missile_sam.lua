@@ -205,7 +205,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 	},
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance		= {"Dumb", "Infrared","Antimissile"},
+	guidance	= {"Dumb", "Infrared","Antimissile"},
 	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
@@ -275,7 +275,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "Semiactive"},
+	guidance   = {"Dumb", "SACLOS", "Semiactive"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
@@ -349,7 +349,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "Semiactive"},
+	guidance   = {"Dumb", "SACLOS", "Semiactive"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
@@ -424,7 +424,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 	},
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance		= {"Dumb", "Laser", "Semiactive","Antimissile"},
+	guidance		= {"Dumb", "SACLOS", "Semiactive","Antimissile"},
 	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
@@ -504,9 +504,7 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks              = {
-	["1xRK"] = true,
-	["1xVLS"] = true,
-	["4xVLS"] = true
+	["1xRK"] = true
 	},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
 	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4

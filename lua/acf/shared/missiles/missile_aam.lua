@@ -143,7 +143,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Semiactive"},
+	guidance   = {"Dumb", "Semiactive", "SACLOS"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
 
 	racks		= {									-- a whitelist for racks that this missile can load into.
