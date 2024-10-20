@@ -1,5 +1,5 @@
 
-local ClassName = "Acoustic_Straight"
+local ClassName = "Acoustic_Helical"
 
 
 ACF = ACF or {}
@@ -25,17 +25,20 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 2 -- Re-seek drastically reduced cost so we can re-seek. Dynamically reduced as the guidance gets closer
+this.SeekDelay = 1.5 -- Re-seek drastically reduced cost so we can re-seek. Dynamically reduced as the guidance gets closer
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m
-this.MaxDistance = 200 * 39.37	--10m
+this.MaxDistance = 150 * 39.37	--10m
 
-this.desc = "Acoustic torpedo guidance."
+this.desc = "Acoustic torpedo guidance with a helical search pattern."
 --Useful for airdropped torpedoes. Follows a helical pattern until it reaches its target depth. WARNING: Targetposition can only specify the depth to search at. This torpedo will search around the area it was first dropped.
 
 --Sets initial guidance info
 this.FirstGuidance = true
+
+--Determines whether to spiral up or down
+this.Direction = -1
 
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
@@ -68,19 +71,15 @@ function this:GetGuidance(missile)
 		end
 
 		local posVec = launcher.TargPos
-		local zHeight = 0
 
 		if not posVec or type(posVec) ~= "Vector" or posVec == Vector() then
 		--	return {TargetPos = nil}
-			self.TarPos = missile:GetForward()
-			zHeight = missilePos.z
+			self.TarPos = missilePos
+			self.Direction = 1
 		else
 			self.TarPos = (posVec - missilePos):GetNormalized()
-			zHeight = posVec.z
 		end
 
-		self.TarPos = missilePos + self.TarPos * 500000
-		self.TarPos = Vector(self.TarPos.x,self.TarPos.y,zHeight)
 		self.FirstGuidance = false
 	end
 
@@ -90,6 +89,7 @@ function this:GetGuidance(missile)
 	self:CheckTarget(missile)
 
 	if IsValid(self.Target) then
+		self.Direction = 2
 		--print("VAL TAR")
 		missile.IsDecoyed = false
 		if self.Target:GetClass( ) == "ace_flare" then --Ace flare entity deletes itself underwater unless an acoustic CM?
@@ -106,9 +106,6 @@ function this:GetGuidance(missile)
 
 		if dot < self.ViewConeCos then
 			self.Target = nil
-			--self.TarPos = missilePos
-			missile.StraightRunning = 2
-			--print("Eh")
 			return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 		else
 			local LastDist = self.Dist or 0
@@ -127,6 +124,56 @@ function this:GetGuidance(missile)
 
 		end
 
+
+	elseif self.Direction ~= 2 then
+
+
+		if self.Direction ~= 0 then --Begin Spiral
+			if missile.IsUnderWater > 0  then
+			--missile.WaterZHeight
+
+			local TarHeight = 0
+
+			if self.Direction == 1 then --Going up
+				TarHeight = missilePos.z + 50
+
+				if (missilePos.z > (missile.WaterZHeight or -50000) - 200) then
+					self.Direction = -1
+					--print("DOWN")
+				end
+
+			elseif self.Direction == -1 then
+				TarHeight = missilePos.z - 100
+
+				local LOSdata = {}
+				LOSdata.start			= missilePos
+				LOSdata.endpos			= missilePos - Vector(0,0,300)
+				LOSdata.collisiongroup	= COLLISION_GROUP_WORLD
+				LOSdata.filter			= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end --Hits anything world related.
+				LOSdata.mins			= Vector(0,0,0)
+				LOSdata.maxs			= Vector(0,0,0)
+				local LOStr = util.TraceHull( LOSdata )
+
+				if LOStr.Hit then --Replace with contraption entity flag for water vehicles.
+					self.Direction = 1
+					--print("UP")
+				end
+			end
+
+			self.TarPos = Vector(self.TarPos.x,self.TarPos.y,TarHeight)
+			else --Not traveling towards target and hasn't entered the water. Reset the position
+				self.TarPos = missilePos
+			end
+
+		else --Traveling towards specified search point
+
+			local Dist = (self.TarPos-missilePos):LengthSqr()
+			if Dist < self.MinimumDistance^2 then
+				self.Direction = 1
+			end
+
+		end
+
 	end
 
 	local Difpos = (self.TarPos-missilePos)
@@ -136,7 +183,7 @@ function this:GetGuidance(missile)
 	-- 39.37 * 800 = 393.7
 	local Aheaddistance = 31500
 	self.TargetPos = missilePos + NoZDif * Aheaddistance + Vector(0,0,math.Clamp(Difpos.z * 15,-Aheaddistance * 1,Aheaddistance * 1))
-	self.TargetPos = Vector(self.TargetPos.x, self.TargetPos.y, math.min(self.TargetPos.z,(missile.WaterZHeight or 5000000) - 75))
+	self.TargetPos = Vector(self.TargetPos.x, self.TargetPos.y, math.min(self.TargetPos.z,(missile.WaterZHeight or 5000000) - 150))
 
 
 	return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
@@ -240,7 +287,7 @@ function this:AcquireLock(missile)
 
 	-- Part 2: get a good seek target
 	local missilePos = missile:GetPos()
-	EmitSound("acf_extra/ACE/sensors/Sonar/High1.wav", missilePos, 0, 1, CHAN_WEAPON, 400, 0, 100 ) --Formerly 107
+	EmitSound("acf_extra/ACE/sensors/Sonar/SonarShort.wav", missilePos, 0, 1, CHAN_WEAPON, 400, 0, 100 ) --Formerly 107
 
 
 	local bestAng = math.huge
@@ -277,7 +324,7 @@ function this:AcquireLock(missile)
 		--print(absang.y)
 
 		if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
-			classifyent:EmitSound("acf_extra/ACE/sensors/Sonar/High1.wav", 400, 100, 1, CHAN_WEAPON ) --Formerly 107
+			classifyent:EmitSound("acf_extra/ACE/sensors/Sonar/SonarShort.wav", 400, 100, 1, CHAN_WEAPON ) --Formerly 107
 			debugoverlay.Sphere(entpos, 100, 5, Color(255,100,0,255))
 
 			local Multiplier = 1
@@ -310,7 +357,7 @@ function this:AcquireLock(missile)
 	local difpos = entpos - missilePos
 	local dist = difpos:Length()
 
-	self.LastSeek = curTime + self.SeekDelay * math.Clamp(dist / self.MaxDistance,0.1,self.SeekDelay)
+	self.LastSeek = curTime + self.SeekDelay * math.Clamp(dist / self.MaxDistance,0.05,self.SeekDelay)
 
 	return bestent
 end

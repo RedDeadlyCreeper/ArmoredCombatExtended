@@ -145,9 +145,10 @@ function this:GetWhitelistedEntsInCone(missile)
 	local DPLRFAC = 65 - (self.SeekCone / 2)
 	local foundAnim = {}
 
-	local ScanArray = ACE.contraptionEnts
+	--local ScanArray = ACE.contraptionEnts
 
-	for _, scanEnt in pairs(ScanArray) do
+	for Contraption in pairs(CFW.Contraptions) do
+		scanEnt = Contraption:GetACEBaseplate()
 
 		-- skip any invalid entity
 		if not scanEnt:IsValid() then continue end

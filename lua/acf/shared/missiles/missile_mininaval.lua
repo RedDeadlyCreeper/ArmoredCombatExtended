@@ -296,7 +296,7 @@ ACF_defineGun("Scaled 3M-54 Kalibr", {						-- id
 		boostertime			= 3,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 130,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.0025,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -371,12 +371,13 @@ ACF_defineGun("Scaled G7a Torp", {						-- id
 		boostertime			= 0,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 40,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.001,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		waterthrusttype 	= 4, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
+		buoyancy			= 1,
 		pointcost			= 1000,
 	},
 
@@ -439,12 +440,13 @@ ACF_defineGun("Scaled Mk13 Torp", {						-- id
 		boostertime			= 0,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 130,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.001,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		waterthrusttype 	= 4, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
+		buoyancy			= 1,
 		pointcost			= 750,
 	},
 
@@ -492,20 +494,21 @@ ACF_defineGun("Scaled 9M317ME SAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 10,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 5,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 60,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 145,							-- Acceleration in m/s.
+		thrust				= 165,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 10,							-- Speed missile starts with on launch in m/s
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
-		boostacceleration	= 80,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 1,							-- Time in seconds for booster runtime
+		boostacceleration	= 20,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 3,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
