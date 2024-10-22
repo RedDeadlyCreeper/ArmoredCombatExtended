@@ -518,7 +518,6 @@ function ENT:AddMissile(MissileSlot) --Where the majority of the missile paramat
 
 	local missile = ents.Create("ace_missile")
 	missile:CPPISetOwner(ply)
-	missile.DamageOwner = ply
 	missile.DoNotDuplicate  = true
 	missile.Launcher		= self
 

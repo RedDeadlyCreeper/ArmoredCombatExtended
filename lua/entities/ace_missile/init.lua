@@ -642,17 +642,21 @@ do
 		HEFS	= true
 	}
 
-	function ENT:ACF_OnDamage( Entity, Energy, FrArea, _, Inflictor, _, Type )	--This function needs to return HitRes
+	function ENT:ACF_OnDamage( Ent, Energy, FrArea, _, Inflictor, _, Type )	--This function needs to return HitRes
 
 		local Mul	= (( HEtbl[Type] and 0.1 ) or 1) --HE penetrators better penetrate the armor of missiles
-		local HitRes	= ACF_PropDamage( Entity, Energy , FrArea * Mul, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
+		local HitRes	= ACF_PropDamage( Ent, Energy , FrArea * Mul, 0, Inflictor ) --Calling the standard damage prop function. Angle of incidence set to 0 for more consistent damage.
+		--local Activated = ACF_Check( Ent )
+		--local CanDo = hook.Run("ACF_BulletDamage", Activated, Ent, Energy, FrArea, 0, Inflictor )
 
+		local CanDo = hook.Run("ACF_BulletDamage", _, Ent, _, _, _, Inflictor, _, _ )
+		----------------------(_, Entity, _, _, _, Inflictor, _, _)
 		--print(math.Round(HitRes.Damage * 100))
 		--print(HitRes.Loss * 100)
 
 		--print(HitRes.Overkill)
 
-		if HitRes.Kill or HitRes.Overkill > 1 then
+		if (HitRes.Kill or HitRes.Overkill > 1) and CanDo then
 
 			--self:Detonate()
 			self.MissileActive = true

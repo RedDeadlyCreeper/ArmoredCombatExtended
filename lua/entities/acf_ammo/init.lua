@@ -191,6 +191,8 @@ do
 					--util.Effect not working during MP workaround. Waiting a while fixes the issue.
 
 					timer.Simple(DetDelay, function()
+						if not IsValid(self) then return end
+
 						local OldAmmo = self.Ammo
 						local Ratio = math.Rand(0.1,0.4)
 						self.Ammo = math.ceil(OldAmmo * Ratio * 2)

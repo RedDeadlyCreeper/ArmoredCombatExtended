@@ -296,8 +296,10 @@ end
 function ENT:FindSeatForDriver()
 
 	local MaxDist = 348749.3 --Max distance to link driver seats. (15 meters * 39.37)^2 = 348749.3
-	local maxWeight = 0
+	local closestDist = math.huge
 	local SeatEnt = nil
+
+	local EngContraption = self:GetContraption()
 
 	for _, ent in pairs( ACE.critEnts ) do
 
@@ -312,13 +314,11 @@ function ENT:FindSeatForDriver()
 
 		if SqDist > MaxDist then continue end --Outside link range. Continue.
 
+		if EngContraption ~= ent:GetContraption() then continue end --Seatent isn't on the same contraption as the engine. Ignore it.
 
-		local phys = ent:GetPhysicsObject()
-		if not IsValid(phys) then continue end
-		local Mass = phys:GetMass()
-		if Mass > maxWeight then
+		if SqDist < closestDist then
 			SeatEnt = ent
-			maxWeight = Mass
+			closestDist = SqDist
 		end
 	end
 
