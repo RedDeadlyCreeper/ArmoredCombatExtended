@@ -52,6 +52,8 @@ ACF_defineGun("50kgBOMB", {						-- id
 
 
 		penmul      = math.sqrt(0.05),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 50
 	},
 
@@ -107,6 +109,8 @@ ACF_defineGun("100kgBOMB", {						-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 100
 	},
 
@@ -161,6 +165,8 @@ ACF_defineGun("250kgBOMB", {						-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 250
 	},
 
@@ -215,6 +221,8 @@ ACF_defineGun("500kgBOMB", {						-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 750
 	},
 
@@ -266,6 +274,8 @@ ACF_defineGun("1000kgBOMB", {					-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 1000
 	},
 
@@ -317,6 +327,8 @@ ACF_defineGun("100kgGBOMB", {					-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 100
 	},
 
@@ -373,6 +385,8 @@ ACF_defineGun("250kgGBOMB", {					-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 250
 	},
 

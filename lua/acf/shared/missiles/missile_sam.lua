@@ -57,6 +57,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		boostdelay			= 0.15,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.003,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -127,6 +128,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.005,						-- percent speed loss per second
 		inertialcapable		= false,						-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -197,6 +199,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -266,6 +269,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -340,6 +344,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.00035,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -415,6 +420,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -491,6 +497,7 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
