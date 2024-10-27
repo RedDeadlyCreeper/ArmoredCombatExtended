@@ -470,7 +470,7 @@ ACF_defineGun("Scaled 9M317ME SAM", {							-- id
 	model            = "models/macc/9M317ME_open_small.mdl",
 	effect           = "ACE_MissileLarge",
 	effectbooster	 = "ACE_MissileLarge",
-	gunclass         = "SAM",
+	gunclass         = "mNAV",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?
 	length           = 200 * 2.53, --Convert to ammocrate units
 	caliber          = 38.0,

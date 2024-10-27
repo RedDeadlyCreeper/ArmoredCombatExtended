@@ -57,7 +57,7 @@ function this:Configure(missile)
 	self.ViewCone		= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)
 	self.ViewConeCos		= (math.cos(math.rad(self.ViewCone)))
 	self.SeekCone		= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)
-	self.HeatAboveAmbient = self.HeatAboveAmbient / (ACF_GetGunValue(missile.BulletData, "seeksensitivity") or 5)
+	self.HeatAboveAmbient = self.HeatAboveAmbient / (ACF_GetGunValue(missile.BulletData, "seeksensitivity") or 10)
 	--self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 
@@ -124,7 +124,7 @@ function this:GetGuidance(missile)
 
 		local AddDist = 0
 		if self.LargestDist == 0 then
-			self.TopAttackFactor = self.GDist * 0.25
+			self.TopAttackFactor = self.GDist * 0.15
 			self.LargestDist = math.max(self.GDist * 0.3,3000)
 		end
 
