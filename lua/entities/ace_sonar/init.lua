@@ -9,31 +9,42 @@ local tableInsert = table.insert
 
 ACF.SonarTimeCompression = 0.15 --Multiplier for speed of sound. 0.33 means sound takes ~3x the time to travel to the target. Generally sonar travels at ~1500 m/s
 
+--ACF.SonarLayerDepth = (20 + math.Rand(0,1)) --Layer depth in meters where sonar scatters. Subject to being reworked later.
+ACF.SonarLayerDepth = 20 --Layer depth in meters where sonar scatters. Subject to being reworked later.
+
 function ENT:Initialize()
 
 	--TODO:
-	--Add layer function based on limiting ray and add output
 	--Passive sonar
 	--Active intercept
-	--Torpedo detection
-	--Add soundreplacer and wire input sound swapping
-	--Change beamforming to double sonar range
+
 	--Later:
-	--Add sidelobes to active sonar. Later.
+	--Add layer function based on limiting ray and add output. Applies to subs below 20 meters
+	--Add sidelobes to active sonar.
 	--Improve CalcAngle function with trig to reduce cost.
+	--Add narrowband sonar generator and classification
+	--Add Deep layer starting @ 100m. With extremely limiting angles(55deg?) Will require computing points at each layer if trying to detect across multiple layers.
+	--Noisemaker detection on passive sonar. And detection strength.
 
 	self.ThinkDelay			= 0.1
 	self.StatusUpdateDelay	= 0.5
 	self.LastStatusUpdate	= CurTime()
 	self.Active				= false
 
+	self.SelfPos = nil
+	self.SelfContraption = nil
+	self.SelfBasePlate = nil
 	self.WaterZHeight = 0
+	self.NextWaterlevelCheck = 0
 
 	self.MaximumDistance	= self.MaximumDistance or 0
 	self.BaseMaximumDistance = self.MaximumDistance
 	self.PowerScale			= self.PowerScale or 1
 	self.WashoutFactor		= self.WashoutFactor or 1
 	self.NoiseMul			= self.NoiseMul or 1
+
+	self.Sound = "acf_extra/ACE/sensors/Sonar/coldwaters.wav"
+	self.SoundPitch = 100
 
 	self.ActiveTransmitting = false
 	self.PulseDuration = 6
@@ -49,7 +60,9 @@ function ENT:Initialize()
 		"ActiveSonar (Whether to transmit active sonar instead of using passive.)",
 		"ActiveAngle (World bearing to point the sonar beam at.)",
 		"PulseDuration (Length in sec of pulse. Longer = more accurate. 4 sec needed to get spd. 0.5s Min, 10s Max)",
-		"ActiveBeamwidth (Width of the beam of the sonar in degrees. Max 270, Min 27.)"
+		"ActiveBeamwidth (Width of the beam of the sonar in degrees. Min 27, Max 270.)",
+		"ActiveSound (String soundpath to play when using active sonar. Overrides the soundreplacer.) [STRING]",
+		"ActivePitch (The numerical pitch of active sonar from 0-255. Overrides the soundreplacer.)"
 	})
 
 	self.Outputs = WireLib.CreateOutputs( self, {
@@ -191,7 +204,7 @@ function ENT:TriggerInput( inp, value )
 		self.PulseDuration = Clamp(value, 0.5 , 10)
 	elseif inp == "ActiveBeamwidth" then
 		self.BeamWidth = math.Round(Clamp(value,27,270),1)
-		self.MaximumDistance = self.BaseMaximumDistance / (value / 243 + (8 / 9)) --Doubles at max angle. Computed intercept for 27,1 and 270,2
+		self.MaximumDistance = self.BaseMaximumDistance * (value / -243 + (19 / 9)) --Doubles at narrowest angle. Computed intercept for 27,1 and 270,2
 	elseif inp == "Cone" then
 		if value > 0 then
 
@@ -207,6 +220,10 @@ function ENT:TriggerInput( inp, value )
 		end
 
 		self:UpdateOverlayText()
+	elseif inp == "ActiveSound" then
+		self.Sound = value or "acf_extra/ACE/sensors/Sonar/coldwaters.wav"
+	elseif inp == "ActivePitch" then
+		self.SoundPitch = clamp(math.Round(value,0),0,255)
 	end
 end
 
@@ -273,8 +290,8 @@ function ENT:SONARDevDisplayAngles(Duration)
 		local Ang1 = BeamAng - BeamWidth
 		local Ang2 = BeamAng + BeamWidth
 
-		local SelfPos = self:WorldSpaceCenter()
-		local Voffset1 = Vector(self.MaximumDistance,0,-1000)
+		local SelfPos = self.SelfPos
+		local Voffset1 = Vector(self.MaximumDistance * 0.51,0,-1000)
 		--local Voffset2 = Vector(self.MaximumDistance,0,1000)
 
 		debugoverlay.Line(SelfPos, SelfPos + Angle(0,BeamAng,0):Forward() * 500, Duration, Color(0, 0, 255), true)
@@ -297,8 +314,12 @@ function ENT:DoSonarFunctions()
 	self.SonarYaw = self:GetAngles().yaw
 	self:SONARDevDisplayAngles(0.15)
 
-	--Put on a 2 second timer
-	self:GetWaterHeight()
+	if ACF.CurTime > self.NextWaterlevelCheck then
+		self:GetWaterHeight()
+		self.NextWaterlevelCheck = ACF.CurTime + 3
+	end
+
+	self:UpdateSonarTorpedoTracks()
 
 	if self.ActiveTransmitting and ACF.CurTime > self.NextPing then
 			self:activeSonar()
@@ -324,7 +345,7 @@ end
 
 function ENT:GetWaterHeight()
 
-	local SelfPos = self:WorldSpaceCenter()
+	local SelfPos = self.SelfPos
 
 	local WaterTr = { }
 	WaterTr.start = SelfPos + Vector(0,0, 50000)
@@ -355,12 +376,14 @@ end
 
 function ENT:activeSonar()
 
-	local ActiveSound = "acf_extra/ACE/sensors/Sonar/Medium.wav"
-	local ActivePitch = 140
+	local ActiveSound = self.Sound
+	local ActivePitch = self.SoundPitch
 
 
 	if not IsValid(self) then return end
-	local SelfPos = self:WorldSpaceCenter()
+	local SelfPos = self.SelfPos
+
+	local SonarDepth = (self.WaterZHeight - SelfPos.z) / 39.37
 
 	--EmitSound("acf_extra/ACE/sensors/Sonar/coldwaters.wav", SelfPos, 0, CHAN_WEAPON, 1, 400 * self.PowerScale, 0, 100 ) --Formerly 107
 	self:EmitSound(ActiveSound, 100 * self.PowerScale, ActivePitch, 1, CHAN_WEAPON )
@@ -414,7 +437,7 @@ function ENT:activeSonar()
 	-----Contraption Detection Handling-----
 	----------------------------------------
 
-	local SelfContraption = self:GetContraption()
+	local SelfContraption = self.SelfContraption
 
 
 	for Contraption in pairs(CFW.Contraptions) do
@@ -426,8 +449,12 @@ function ENT:activeSonar()
 
 		local BasePos = Base:GetPos()
 		local AngToTarg = SONARCalculateAngle(SelfPos, BasePos)
+		local AngPitch = math.NormalizeAngle(-AngToTarg.pitch)
 
 		if not self:SONARIsInCone(AngToTarg.yaw) then continue end
+
+		--print(AngPitch)
+		if math.abs(AngPitch) > 70 then continue end --Sonar elevation too great.
 
 		if BasePos.z > self.WaterZHeight + 200 then continue end --Target must be within 5m of the water.
 
@@ -435,19 +462,57 @@ function ENT:activeSonar()
 
 		--TestIfLayerObscured function
 
+		LOSTraceData.start = SelfPos
+		LOSTraceData.endpos = BasePos
+		local LOSTrace = TraceHull(LOSTraceData)
+
+		if LOSTrace.Hit then continue end
 
 		--print("ContraptionEnt")
 
 		local TravelTime = Dist / SpeedOfSound
 
+		local EnvironmentalFactor = 1 --Represents the modifier for environmental sound travel range. Things like shallow waters will affect this.
+		local RecievingEnvironmentalFactor = 1
 
-		--Function to calculate DB lost from ratio energy lost. Clamped to 50DB minimum
+
+		--Calculates depth reduction due to the depth of the water. Sonar transmissions in shallow water typically have less range due to sonar reflecting off the bottom and escaping out of the water. Among other factors.
+		LOSTraceData.start = BasePos
+		LOSTraceData.endpos = BasePos + vector_up * -50000
+		LOSTrace = TraceHull(LOSTraceData)
+
+		local ZHit = 0
+		local BottomDepth = 0
+		local DepthBelowKeel = 0
+		if LOSTrace.Hit then
+			ZHit = LOSTrace.HitPos.z
+
+			BottomDepth = (self.WaterZHeight - ZHit) / 39.37 --Depth in meters
+			--print("Depth: " .. math.Round(BottomDepth) .. "m")
+
+			EnvironmentalFactor = EnvironmentalFactor * (0.3 + 0.7 * min(BottomDepth / 40,1)) --40m of water depth are required for max sonar range
+			--print(math.Round(EnvironmentalFactor,2))
+
+			--Math for sonar reciever
+			RecievingEnvironmentalFactor = EnvironmentalFactor
+
+			--Submarines sitting on the bottom are harder to detect.
+			DepthBelowKeel = (BasePos.z - ZHit) / 39.37
+			if DepthBelowKeel < 4 then
+				RecievingEnvironmentalFactor = RecievingEnvironmentalFactor * 0.33
+			end
+		end
+
+		local TarDepth = (self.WaterZHeight - BasePos.z) / 39.37
+		if CheckShadowZoneObscured(SonarDepth, TarDepth, AngPitch) then continue end
+
+		--print(math.Round(self.MaximumDistance * EnvironmentalFactor / 39.37))
 
 		--debugoverlay.Line(SelfPos, BasePos, self.PulseDuration, Color(255, 0, 0), true)
 
 		if Dist < self.MaximumDistance * 2 then --Target can hear our sonar
 
-			local Ratio = math.max(1 - (Dist / self.MaximumDistance),0.4)
+			local Ratio = math.max(1 - (Dist / self.MaximumDistance * EnvironmentalFactor),0.4)
 
 			timer.Simple( TravelTime, function()
 				if not IsValid(Base) then return end
@@ -457,9 +522,9 @@ function ENT:activeSonar()
 
 		end
 
-		if Dist < self.MaximumDistance then --We can hear the sonar return
+		if Dist < self.MaximumDistance * RecievingEnvironmentalFactor then --We can hear the sonar return
 
-			local Ratio = math.max(1 - (2 * Dist / self.MaximumDistance),0.4)
+			local Ratio = math.max(1 - (2 * Dist / self.MaximumDistance * RecievingEnvironmentalFactor),0.4)
 
 			timer.Simple( TravelTime * 2, function()
 				debugoverlay.Line(SelfPos, BasePos, TravelTime, Color(43, 0, 255), true)
@@ -475,7 +540,7 @@ function ENT:activeSonar()
 				local ID = ACE_GetContraptionIndex(Contraption)
 				local Owner = Base:CPPIGetOwner()
 
-
+				self.SonarPositions[ID] = self.SonarPositions[ID] or {}
 				self.SonarPositions[ID] = BasePos
 				self.SonarVelocity[ID] = Base:GetVelocity()
 				self.SonarOwners[ID] = Owner:Nick()
@@ -520,13 +585,98 @@ function ENT:CleanupSonarTracks(CleanupDelay) --Step the track forward by veloci
 
 end
 
+function ENT:UpdateSonarTorpedoTracks()
+
+	local TorpPositions = {}
+
+	local DetectionRange = 300 * 39.37 * self.PowerScale
+	local missiles = ACFM_GetMissilesInSphere(self,DetectionRange)
+
+	local i = 0
+	for _, missile in pairs(missiles) do
+
+		if (missile.UnderwaterThrust or 0) < 1 then continue end --Main missile motor doesn't work underwater. Not a torpedo.
+		if (missile.IsUnderWater or 0) == 0 then continue end --Torpedo waterlevel is not underwater. Ignore it.
+
+
+		i = i + 1
+		TorpPositions[i] = missile:GetPos()
+
+	end
+
+
+	if table.Count( TorpPositions ) > 0 then
+		WireLib.TriggerOutput( self, "TorpDetected", 1 )
+	else
+		WireLib.TriggerOutput( self, "TorpDetected", 0 )
+	end
+	WireLib.TriggerOutput( self, "TorpPosition", TorpPositions )
+
+end
+
+--Negate elevation if reversed
+function CheckShadowZoneObscured(StartDepth, EndDepth, Elevation) --Checks if noise can reach the given area. Likely will be reworked.
+
+	local IsShallow = 1
+
+	--Shallow layer logic
+	local ShallowWaterCriticalAngle = 20
+
+	if IsShallow then
+
+		local AboveShallowLayer = 1
+		local TarAboveShallowLayer = 1
+
+		if StartDepth > ACF.SonarLayerDepth then --Origin is below the layer
+			AboveShallowLayer = 0
+		end
+		if EndDepth > ACF.SonarLayerDepth then --Target is above the layer
+			TarAboveShallowLayer = 0
+		end
+
+		if AboveShallowLayer == TarAboveShallowLayer then
+			--print("Samelayer")
+			return false
+		end --On same layer depth as target. Return true. Otherwise do logic
+
+
+
+		if AboveShallowLayer > TarAboveShallowLayer then --Target is below layer but we are not
+			--print(Elevation)
+			if Elevation < -ShallowWaterCriticalAngle then
+				--print("Shallowwater Valid")
+				return false
+			else
+				--print("Shallowwater Invalid")
+				return true
+			end
+
+		elseif TarAboveShallowLayer > AboveShallowLayer then --Target is above layer and we are below it
+			--print(Elevation)
+			if Elevation > ShallowWaterCriticalAngle then
+				--print("Shallowwater Valid")
+				return false
+			else
+				--print("Shallowwater Invalid")
+				return true
+			end
+		end
+
+	end
+
+	print("Overflow")
+	return false
+
+end
+
+
 function ENT:UpdateSonarTracks() --Step the track forward by velocity? Or let player do that?
 
 	--Don't update the outputs if there's nothing to update.
 	if not self.SonoUpdated then return end
 	self.SonoUpdated = false
 
-	local SelfPos = self:WorldSpaceCenter()
+	local SelfPos = self.SelfPos
 
 	local SonoBearings = {}
 	local SonoDepths = {}
@@ -540,6 +690,11 @@ function ENT:UpdateSonarTracks() --Step the track forward by velocity? Or let pl
 	local NoZVector = Vector(1,1,0)
 
 	--Compiles the track lists to the table
+
+	local MySpeed = self.SelfBasePlate:GetVelocity():Length()
+	self.WashOut = MySpeed / 616 * self.WashoutFactor -- 616 = 17.6 per mph * 35 mph
+	WireLib.TriggerOutput( self, "Washout"	, self.WashOut )
+
 
 	if self.WashOut < 1 then --The sonar only works as long as it isn't washed out.
 		for ID in pairs(self.SonarPositions) do
@@ -656,6 +811,11 @@ function ENT:Think()
 	end
 
 	if self.Active and self.Legal then
+
+		self.SelfPos = self:WorldSpaceCenter()
+		self.SelfContraption = self:GetContraption()
+		self.SelfBasePlate = self.SelfContraption:GetACEBaseplate()
+
 		self:DoSonarFunctions()
 		self:CleanupSonarTracks(self.PulseDuration + 0.5) --Wait the duration of an active pulse before cleaning up contacts.
 		self:UpdateSonarTracks()
@@ -681,10 +841,10 @@ function ENT:UpdateOverlayText()
 	local txt = "Status: " .. status
 
 
-	txt = txt .. "\n\nCurrent Range: " .. math.Round(range2 / 39.37 * 2 , 2) .. " m" 
+	txt = txt .. "\n\nCurrent Range: " .. math.Round(range2 / 39.37 , 2) .. " m"
 
-	txt = txt .. "\n\nMax Omnidirectional Range: " .. math.Round(range / 39.37 , 2) .. " m" 
-	txt = txt .. "\nMax Directional Range: " .. math.Round(range / 39.37 * 2 , 2) .. " m" 
+	txt = txt .. "\n\nMax Omnidirectional Range: " .. math.Round(range / 39.37 , 2) .. " m"
+	txt = txt .. "\nMax Directional Range: " .. math.Round(range / 39.37 * 2 , 2) .. " m"
 
 	if detected then
 		txt = txt .. "\n\nTarget Detected!"

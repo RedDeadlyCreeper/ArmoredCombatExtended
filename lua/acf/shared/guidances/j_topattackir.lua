@@ -181,6 +181,7 @@ function this:GetWhitelistedEntsInCone(missile)
 	local difpos		= Vector()
 	local dist		= 0
 
+	local scanEnt = nil
 	for Contraption in pairs(CFW.Contraptions) do
 		scanEnt = Contraption:GetACEBaseplate()
 

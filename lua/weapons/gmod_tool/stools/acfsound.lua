@@ -183,6 +183,25 @@ ACF.SoundToolSupport = {
 		end
 	},
 
+	ace_sonar = {
+
+		GetSound = function(ent) return { Sound = ent.Sound or "acf_extra/ACE/sensors/Sonar/coldwaters.wav", Pitch = ent.SoundPitch or 100 } end,
+
+		SetSound = function(ent, soundData)
+			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
+			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
+		end,
+
+		ResetSound = function(ent)
+			local soundData = {Sound = "acf_extra/ACE/sensors/Sonar/coldwaters.wav", Pitch = 100}
+
+			local setSound = ACF.SoundToolSupport["ace_crewseat_driver"].SetSound
+			setSound( ent, soundData )
+		end
+	},
+
 	NewFormat = function()
 	end
 

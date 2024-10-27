@@ -361,7 +361,7 @@ ACF_defineGun("Black Shark Torp", {						-- id
 		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 100,							-- Acceleration in m/s.
+		thrust				= 40,							-- Acceleration in m/s.
 		burntime			= 120,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -391,8 +391,8 @@ ACF_defineGun("Black Shark Torp", {						-- id
 					["1xRK"] = true
 				},
 
-	seekcone   = 25,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone   = 25,								-- getting outside this cone will break the lock.  Divided by 2.
+	seekcone   = 13,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone   = 13,								-- getting outside this cone will break the lock.  Divided by 2.
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 

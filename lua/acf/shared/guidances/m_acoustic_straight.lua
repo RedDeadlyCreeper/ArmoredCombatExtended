@@ -29,7 +29,7 @@ this.SeekDelay = 2 -- Re-seek drastically reduced cost so we can re-seek. Dynami
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m
-this.MaxDistance = 200 * 39.37	--10m
+this.MaxDistance = 100 * 39.37	--10m
 
 this.desc = "Acoustic torpedo guidance."
 --Useful for airdropped torpedoes. Follows a helical pattern until it reaches its target depth. WARNING: Targetposition can only specify the depth to search at. This torpedo will search around the area it was first dropped.
@@ -179,10 +179,11 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	--local ScanArray = ACE.contraptionEnts
 
+	local scanEnt = nil
 	for Contraption in pairs(CFW.Contraptions) do
 		scanEnt = Contraption:GetACEBaseplate()
 		-- skip any invalid entity
-		if not scanEnt:IsValid() then continue end
+		if not IsValid(scanEnt) then continue end
 
 
 		--No sir I will not ignore the flares. They "might" contain chaff
