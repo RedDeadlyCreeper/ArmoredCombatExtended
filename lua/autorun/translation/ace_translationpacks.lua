@@ -158,6 +158,16 @@ ACFTranslation.Radar = {
 
 }
 
+ACFTranslation.Sonar = {
+	--Hull Array
+	"Hull sonar array capable of tracking targets in water. Has both passive and active modes. Can emit sonar in all directions or a stronger directional ping at a specific bearing.\n WARNING: Range will vary on environmental conditions like shallower water or position relative to thermal layers.",--Sonar Array (1)
+	"Small sonar that you might find on frigates and patrol boats. Has limited range but is practical for smaller platforms.", --Small Sonar (2)
+	"Medium size sonar found on frigates and destroyers alike. Has a very practical range and despite not being the largest sonar it makes up for it in precision.", --Medium Sonar (3)
+	"Massive sonar array found on a handful of vessels. Has the longest range by far ensonifying entire regions and obliterating the fish population. Though is less precise than its medium counterpart.",--Large Sonar (4)
+	"TINY sonar useful for helicopter dipping sonars. The only SONAR that can see 360 degrees. While the range is quite insignificant compared to other sonars it is remarkably light and tiny.",--Tiny Sonar (6)
+
+}
+
 ACFTranslation.ShellAP = {
 	"Armour Piercing", --AmmoName (1)
 	"A shell made out of a solid piece of steel, meant to penetrate armour. Does the most damage out of the AP round types." --Desc (2)
