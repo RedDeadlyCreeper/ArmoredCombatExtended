@@ -227,7 +227,7 @@ end
 local function GetAngleBetweenVectors(v1, v2)
 	return deg(acos(v1:Dot(v2)))
 end
-
+--bit.bor(MASK_WATER, MASK_SOLID_BRUSHONLY)
 local LOSTraceData = {
 	mask = MASK_SOLID_BRUSHONLY,
 	mins = vector_origin,
@@ -235,7 +235,13 @@ local LOSTraceData = {
 }
 
 local GCTraceData = {
-	mask = MASK_SOLID_BRUSHONLY,
+	mask = bit.bor(MASK_WATER, MASK_SOLID_BRUSHONLY),
+	mins = vector_origin,
+	maxs = vector_origin,
+}
+
+local WaterTraceData = {
+	mask = MASK_WATER,
 	mins = vector_origin,
 	maxs = vector_origin,
 }
@@ -282,10 +288,20 @@ function ENT:ScanForContraptions()
 				local GCTrace = TraceHull(GCTraceData)
 				local GCTraceHitPos = GCTrace.HitPos
 
+
 				local ClutterDistance
 				if not GCTrace.HitSky then
 					-- If the trace is starting in a solid, the ground is right behind/below the target
 					ClutterDistance = GCTrace.StartSolid and 0 or (GCTraceHitPos:Distance(BasePos) / 39.3701)
+
+					if (Contraption.totalMass or 0) > 20000 then --The contraption weighs more than 20 tons. About the weight of most planes. It is clearly a large target.
+						WaterTraceData.start = BasePos + vector_up * 5000
+						WaterTraceData.endpos = BasePos - vector_up * 5000
+						local WaterTrace = TraceHull(WaterTraceData)
+						if WaterTrace.Hit and abs(BasePos.z-WaterTrace.HitPos.z) < 250 then --Target is on the water. Assuming the target is large enough, makes radar returns easier to find.
+							ClutterDistance = mathHuge
+						end
+					end
 				else
 					ClutterDistance = mathHuge
 				end
