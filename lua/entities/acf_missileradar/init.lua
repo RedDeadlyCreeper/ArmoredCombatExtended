@@ -257,6 +257,8 @@ function ENT:ScanForMissiles()
 
 	for _, missile in pairs(missiles) do
 
+		if missile.IsUnderWater or 0 > 3 then continue end
+
 		i = i + 1
 
 		entArray[i] = missile
