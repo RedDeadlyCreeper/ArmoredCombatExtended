@@ -450,7 +450,7 @@ function ACFHomeGUICreate()
 
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)
-	--acfmenupanel["CData"]["VersionInit"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"]["VersionInit"]:SetDark( true )
 	acfmenupanel["CData"]["VersionInit"]:SizeToContents()
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["VersionInit"] )
 
@@ -459,7 +459,7 @@ function ACFHomeGUICreate()
 
 	acfmenupanel["CData"]["VersionText"]:SetFont("Trebuchet18")
 	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is " .. versionstring .. "!\n\n")
-	--acfmenupanel["CData"]["VersionText"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SizeToContents()
 
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["VersionText"] )
@@ -534,7 +534,7 @@ function ACFHomeGUIUpdate( Table )
 	end
 
 	acfmenupanel["CData"]["VersionText"]:SetText(txt)
-	--acfmenupanel["CData"]["VersionText"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SetColor(color)
 	acfmenupanel["CData"]["VersionText"]:SizeToContents()
 
@@ -1096,7 +1096,7 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 	acfmenupanel["CData"][Name .. "_label"]:SetPos( 0, 0)
 	acfmenupanel["CData"][Name .. "_label"]:SetText( Title )
 	acfmenupanel["CData"][Name .. "_label"]:SizeToContents()
-	--acfmenupanel["CData"][Name .. "_label"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_label"]:SetDark( true )
 
 	if acfmenupanel.AmmoData[Name] then
 			acfmenupanel["CData"][Name]:SetValue(acfmenupanel.AmmoData[Name])
@@ -1124,7 +1124,7 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 
 	acfmenupanel["CData"][Name .. "_text"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc or "" )
-	--acfmenupanel["CData"][Name .. "_text"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_text"]:SetDark( true )
 	acfmenupanel["CData"][Name .. "_text"]:SetTall( 20 )
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name .. "_text"] )
 
@@ -1145,7 +1145,7 @@ function PANEL:AmmoCheckbox(Name, Title, Desc, Tooltip )
 
 	acfmenupanel["CData"][Name] = vgui.Create( "DCheckBoxLabel" )
 	acfmenupanel["CData"][Name]:SetText( Title or "" )
-	--acfmenupanel["CData"][Name]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name]:SetDark( true )
 	acfmenupanel["CData"][Name]:SizeToContents()
 	acfmenupanel["CData"][Name]:SetChecked(acfmenupanel.AmmoData[Name] or false)
 
@@ -1174,7 +1174,7 @@ function PANEL:AmmoCheckbox(Name, Title, Desc, Tooltip )
 	acfmenupanel["CData"][Name .. "_text"] = acfmenupanel["CData"][Name .. "_text"]
 	acfmenupanel["CData"][Name .. "_text"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc or "" )
-	--acfmenupanel["CData"][Name .. "_text"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_text"]:SetDark( true )
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name .. "_text"] )
 
 	end
@@ -1200,7 +1200,7 @@ function PANEL:CPanelText(Name, Desc, Font, Panel)
 	acfmenupanel["CData"][Name .. "_text"] = vgui.Create( "DLabel" )
 
 	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc or "" )
-	--acfmenupanel["CData"][Name .. "_text"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_text"]:SetDark( true )
 
 	if Font then acfmenupanel["CData"][Name .. "_text"]:SetFont( Font ) end
 
