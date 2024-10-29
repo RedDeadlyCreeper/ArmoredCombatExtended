@@ -97,7 +97,7 @@ function EFFECT:Init( data )
 
 	local Flash = EffectData()
 		Flash:SetOrigin( self.Origin )
-		Flash:SetScale( self.Radius )
+		Flash:SetScale( math.Round(math.max(self.Radius / 39.37, 1),2) )
 		Flash:SetNormal( self.DirVec )
 	util.Effect( "ACF_Scaled_Explosion", Flash )
 

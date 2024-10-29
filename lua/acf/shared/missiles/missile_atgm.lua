@@ -91,7 +91,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 ACF_defineGun("9M113 ATGM", {									-- id
 	name			= "9M113 Konkurs Missile",
 	desc			= "The tube-launched Konkurs is a solid ATGM all around. With a decent speed, maneuverability, and warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 108 m/s\nMax Kinetic Pen: 409 mm",
-	model			= "models/missiles/arend/9m113.mdl",
+	model			= "models/missiles/9m113.mdl",
 	effect			= "Rocket Motor ATGM",
 	effectbooster	= "Rocket Motor ATGM",
 	gunclass		= "ATGM",
@@ -103,7 +103,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 	modeldiameter	= 6, --Already in ammocrate units
 
 	round = {
-		rocketmdl				= "models/missiles/arend/9m113.mdl",
+		rocketmdl			= "models/missiles/9m113.mdl",
 		rackmdl				= "models/missiles/arend/9m113_folded.mdl",
 		firedelay			= 0.5,
 		reloadspeed			= 6.0,
@@ -452,7 +452,7 @@ ACF_defineGun("FGM-148 ASM", {
 ACF_defineGun("Spike-LR ASM", {
 	name			= "Spike LR Missile",
 	desc			= "A powerful multi-purpose Missile, being fast and agile but maneuverable enough to hit aircraft or tanks in top attack.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: Yes\nTop Speed: 141 m/s\nMax Kinetic Pen: 667 mm",
-	model			= "models/missiles/arend/spikelr.mdl",		-- model to spawn on menu
+	model			= "models/missiles/spikelr2.mdl",		-- model to spawn on menu
 	effect			= "ACE_MissileSmall",
 	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
@@ -464,7 +464,7 @@ ACF_defineGun("Spike-LR ASM", {
 	modeldiameter	= 7,--Already in ammocrate units
 
 	round = {
-		rocketmdl				= "models/missiles/arend/spikelr.mdl",
+		rocketmdl			= "models/missiles/spikelr2.mdl",
 		rackmdl				= "models/missiles/arend/spikelr_closed.mdl",
 		firedelay			= 4,
 		reloadspeed			= 10,
@@ -616,7 +616,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	year			= 1985,
 
 	round = {
-		rocketmdl				= "models/missiles/agm_114.mdl",
+		rocketmdl			= "models/missiles/agm_114.mdl",
 		rackmdl				= "models/missiles/agm_114.mdl",
 		firedelay			= 4,
 		reloadspeed			= 6.0,
@@ -676,7 +676,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 ACF_defineGun("Vikhr ASM", { --id
 	name			= "9K121 Vikhr Missile",
 	desc			= "The 9K121 Vikhr is a long range anti tank missile used by soviet helicopters. Slower in comparison to the Ataka, this missile is more maneuverable. Can utilize proxy fuses.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 748 m/s\nMax Kinetic Pen: 721 mm",
-	model			= "models/missiles/arend/9k121.mdl",
+	model			= "models/missiles/9m127.mdl",
 	effect			= "ACE_MotorSmall",
 	effectbooster	= "ACE_MissileSmall",
 	gunclass		= "ATGM",
@@ -688,9 +688,9 @@ ACF_defineGun("Vikhr ASM", { --id
 	modeldiameter	= 6,--Already in ammocrate units
 
 	round = {
-		rocketmdl				= "models/missiles/arend/9k121.mdl",
+		rocketmdl			= "models/missiles/9m127.mdl",
 		rackmdl				= "models/missiles/arend/9k121_folded.mdl",
-		firedelay			= 0.5,
+		firedelay			= 3,
 		reloadspeed			= 6.0,
 		reloaddelay			= 30.0,
 
@@ -739,4 +739,146 @@ ACF_defineGun("Vikhr ASM", { --id
 	viewcone		= 40,										-- getting outside this cone will break the lock.  Divided by 2.
 
 	armdelay	= 0.15										-- minimum fuse arming delay
+} )
+
+
+ACF_defineGun("MGM-166", { --id
+	name			= "MGM-166 LOSAT",
+	desc			= "You ever just wake up one day and want to pen 2 meters of armor? Couldn't be me. Stupidly fast and unyieldy. But if it hits have mercy. Getting hit is a significant emotional event\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nTop Speed: 548 m/s\nMax Kinetic Pen: YES!!\n\n\nI should also mention, NO the ammo is not bugged. I had to do some antics to prevent tanks from getting sent to space when hit.",
+	model			= "models/missiles/losat.mdl",
+	effect			= "ACE_MotorMedium",
+	effectbooster	= "ACE_MissileMedium",
+	gunclass		= "ATGM",
+	rack			= "6xUARRK",							-- Which rack to spawn this missile on?
+	length			= 174,
+	caliber			= 16.2,
+	weight			= 79,									-- Don't scale down the weight though!
+	year			= 1984,
+	modeldiameter	= 3 * 2.54,
+
+	round = {
+		rocketmdl			= "models/missiles/losat.mdl",
+		rackmdl				= "models/missiles/losat.mdl",
+		firedelay			= 0.5,
+		reloadspeed			= 6.0,
+		reloaddelay			= 30.0,
+
+		maxlength			= 1,							-- Length of missile. Used for ammo properties.
+		propweight			= 0.001,						-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 21,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.65,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 35,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 250,							-- Acceleration in m/s.
+		burntime			= 7,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 10,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 100,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.5,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00001,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.05,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		penmul			= math.sqrt(0.1),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		calmul			= 0.000675,	--I guess it was a little too good at transfering energy. Increasing the velocitymul(energy limit) sent tanks to space
+		velmul			= 0.02,
+		pointcost			= 300
+	},
+
+	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance	= {"Dumb", "Beam_Riding"},
+	fuses		= {"Contact"},
+
+	racks	= {											-- a whitelist for racks that this missile can load into.
+					["6xUARRK"] = true
+				},
+
+	seekcone		= 20,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone		= 40,										-- getting outside this cone will break the lock.  Divided by 2
+
+	armdelay	= 0.15										-- minimum fuse arming delay
+} )
+
+ACF_defineGun("MIM-146", {										-- id
+	name             = "MIM-146 ADATS",
+	desc             = "Wicked surface to air missile doubling as an anti tank missile. For torturing tanks when you have nothing else to shoot at. \n\nInertial Guidance: False\nECCM: No\nDatalink: Yes\nTop Speed: 178 m/s",
+	model            = "models/missiles/mim146.mdl",
+	effect           = "ACE_MissileSmall",
+	effectbooster	= "ACE_MissileSmall",
+	gunclass         = "ATGM",
+	rack             = "1x VT-1",								-- Which rack to spawn this missile on?
+	length           = 92 * 2.53, --Convert to ammocrate units
+	caliber          = 15.2,
+	weight           = 51,										-- Don't scale down the weight though!
+	year             = 1960,
+	modeldiameter    = 8,--Already in ammocrate units
+
+	round = {
+		rocketmdl			= "models/missiles/mim146.mdl",
+		rackmdl				= "models/missiles/arend/vt1_folded.mdl",
+		--rackmdl				= "models/missiles/mim146_folded.mdl",
+		firedelay			= 0.75,
+		reloadspeed			= 5.0,
+		reloaddelay			= 30.0,
+
+		--Formerly 190 and 1. Reduced blast from 213j to 120Mj. For reference a 100kg bomb has 117Kj.
+		maxlength			= 145,							-- Length of missile. Used for ammo properties.
+		propweight			= 5,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 30,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 70,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.3,							--Fraction of speed redirected every second at max deflection
+
+		thrust				= 60,							-- Acceleration in m/s.
+		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		launchkick			= 50,							-- Speed missile starts with on launch in m/s
+
+		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
+
+		boostacceleration	= 300,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
+		boostertime			= 0.25,							-- Time in seconds for booster runtime
+		boostdelay			= 0,							-- Delay in seconds before booster activates.
+
+		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
+		velmul				= 0.1,		--No
+
+		dragcoef			= 0.002,						-- percent speed loss per second
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= true,
+		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+
+		penmul			= math.sqrt(0.57),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
+		pointcost			= 353
+	},
+
+	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb", "Beam_Riding", "Semiactive"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+
+	racks = {										-- a whitelist for racks that this missile can load into.
+				["1x VT-1"] = true
+			},
+
+	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone           = 70,									-- getting outside this cone will break the lock.  Divided by 2.
+
+	armdelay	= 0.15,									-- minimum fuse arming delay
+	guidelay           = 0,									-- Required time (in seconds) for missile to start guiding at target once launched
+	ghosttime          = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	SeekSensitivity    = 2
 } )

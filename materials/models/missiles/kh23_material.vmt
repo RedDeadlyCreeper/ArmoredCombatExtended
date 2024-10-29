@@ -1,0 +1,4 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/kh23_material"
+}

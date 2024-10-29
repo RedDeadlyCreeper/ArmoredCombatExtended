@@ -275,7 +275,7 @@ function Round.endeffect( _, Bullet )
 	local Flash = EffectData()
 		Flash:SetOrigin( Bullet.SimPos )
 		Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
-		Flash:SetRadius( math.max( Radius, 1 ) )
+		Flash:SetRadius( math.Round(math.max(Radius / 39.37, 1),2) )
 	util.Effect( "ACF_Scaled_Explosion", Flash )
 
 end

@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\missiles\5V55"
+    $phong "1"
+	"$model" "1"
+	"$nocull" "1"
+	"$halflambert" "1"
+}
