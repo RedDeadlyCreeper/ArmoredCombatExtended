@@ -89,7 +89,7 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun, Blast
 		local RadSq = (Radius^2) / ACF.HEBlastPenRadiusMul --Used for square distance test
 
 		local HEPen = HEBP / ACF.HEBlastPenetration
-		print("Blastpen: " .. HEPen)
+		--print("Blastpen: " .. HEPen)
 		local Blast = {
 			Penetration = HEPen
 		}
