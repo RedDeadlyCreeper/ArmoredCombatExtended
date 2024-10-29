@@ -10,7 +10,7 @@ function EFFECT:Init( data )
 
 	self.Origin        = data:GetOrigin()
 	self.DirVec        = data:GetNormal()
-	self.Radius        = math.max( data:GetRadius()  / 39.4 ,1)
+	self.Radius        = math.max( data:GetRadius() ,1)
 	self.Emitter       = ParticleEmitter( self.Origin )
 
 	local GroundTr = { }

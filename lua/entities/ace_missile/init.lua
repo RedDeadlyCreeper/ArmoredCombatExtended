@@ -488,7 +488,7 @@ function ENT:Think()
 			local Flash = EffectData()
 			Flash:SetOrigin(self:GetPos() + Vector(0, 0, 8))
 			Flash:SetNormal(Vector(0, 0, -1))
-			Flash:SetRadius(90)
+			Flash:SetRadius(2)
 			util.Effect( "ACF_Scaled_Explosion", Flash )
 
 			self:Remove()
@@ -612,7 +612,7 @@ function ENT:Detonate()
 		local Flash = EffectData()
 		Flash:SetOrigin(self:GetPos() + Vector(0, 0, 8))
 		Flash:SetNormal(Vector(0, 0, -1))
-		Flash:SetRadius(math.max(Radius, 1))
+		Flash:SetRadius(math.Round(math.max(Radius / 39.37, 1),2))
 		util.Effect( "ACF_Scaled_Explosion", Flash )
 	end
 --

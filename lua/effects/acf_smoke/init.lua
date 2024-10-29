@@ -49,7 +49,7 @@ function EFFECT:Init( data )
 	local Flash = EffectData()
 		Flash:SetOrigin( self.Origin)
 		Flash:SetNormal( self.DirVecNormal )
-		Flash:SetRadius( math.max( Radius, 1 ) )
+		Flash:SetRadius( math.Round(math.max(Radius / 39.37, 1),2) )
 	util.Effect( "ACF_Scaled_Explosion", Flash )
 
 	ACE_SBlast( self.Origin, self.Magnitude, false, Ground.HitWorld ) --hitwater is false

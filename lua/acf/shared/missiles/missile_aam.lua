@@ -532,7 +532,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 	name             = "Meteor Missile",
 	desc             = "Long range ramjet proppeled missile. Takes a bit longer to get up to speed but much longer range and harder to overshoot. \n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: Yes\nTop Speed: 236 m/s",
 	model            = "models/missiles/arend/meteor.mdl",
-	effect           = "ACE_MissileTiny",
+	effect           = "ACE_RocketBlackSmoke",
 	effectbooster    = "ACE_MissileTiny",
 	gunclass         = "AAM",
 	rack             = "1xRK",							-- Which rack to spawn this missile on?

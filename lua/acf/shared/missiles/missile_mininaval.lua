@@ -494,7 +494,7 @@ ACF_defineGun("Scaled 9M317ME SAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 5,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 2,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 60,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
@@ -508,7 +508,7 @@ ACF_defineGun("Scaled 9M317ME SAM", {							-- id
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
 		boostacceleration	= 20,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 3,							-- Time in seconds for booster runtime
+		boostertime			= 4,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles

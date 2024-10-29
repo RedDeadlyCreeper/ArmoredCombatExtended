@@ -849,7 +849,7 @@ function ENT:Think()
 									Flash:SetAttachment( 1 )
 									Flash:SetOrigin( self.BulletData.Pos )
 									Flash:SetNormal( -vector_up )
-									Flash:SetRadius( math.max( HERadius , 1 ) )
+									Flash:SetRadius( math.Round(math.max(HERadius / 39.37, 1),2) )
 								util.Effect( "acf_scaled_explosion", Flash )
 							end )
 
