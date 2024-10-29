@@ -257,7 +257,10 @@ function ENT:ScanForMissiles()
 
 	for _, missile in pairs(missiles) do
 
-		if missile.IsUnderWater or 0 > 0 then continue end
+		if (missile.IsUnderWater or 0) > 0 then
+			print("WaterLevelExclusion: " .. missile.IsUnderWater)
+			continue
+		end
 
 		i = i + 1
 

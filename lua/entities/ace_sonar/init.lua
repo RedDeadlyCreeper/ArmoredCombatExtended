@@ -450,6 +450,8 @@ function ENT:activeSonar()
 
 	local SelfContraption = self.SelfContraption
 	local MyID = ACE_GetContraptionIndex(SelfContraption)
+
+
 	local CacheTime = ACF.CurTime + 5 --Time in seconds to remove a sonar ping
 
 	for Contraption in pairs(CFW.Contraptions) do
@@ -758,7 +760,7 @@ function ENT:UpdateRecievedPings()
 
 	local SelfContraption = self.SelfContraption
 
-	if not IsValid(SelfContraption:GetACEBaseplate()) then return end --Needs some other workaround as contraptions aren't recognized as valid
+	if not IsValid(SelfContraption.SonarPings or nil) then return end --Needs some other workaround as contraptions aren't recognized as valid
 
 
 	SelfContraption.SonarPings = SelfContraption.SonarPings or {}
@@ -979,12 +981,14 @@ function ENT:Think()
 	if self.Active and self.Legal then
 
 		self.SelfPos = self:WorldSpaceCenter()
-		self.SelfContraption = self:GetContraption()
-		if IsValid(self.SelfContraption) then
+		self.SelfContraption = self:GetContraption() or {}
+
+		if not table.IsEmpty(self.SelfContraption) then
 			self.SelfBasePlate = self.SelfContraption:GetACEBaseplate()
 		else
 			self.SelfBasePlate = self
 		end
+
 		self:DoSonarFunctions()
 		self:CleanupSonarTracks(self.PulseDuration + 0.5) --Wait the duration of an active pulse before cleaning up contacts.
 		self:UpdateSonarTracks()
