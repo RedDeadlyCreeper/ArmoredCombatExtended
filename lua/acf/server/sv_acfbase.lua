@@ -202,7 +202,7 @@ function ACF_CalcDamage( Entity , Energy , FrArea , Angle , Type) --y=-5/16x + b
 
 	--Nifty shell information debugging.
 --	print("Type: "..Type)
-	print("Penetration: " .. math.Round(maxPenetration,3) .. "mm")
+--	print("Penetration: " .. math.Round(maxPenetration,3) .. "mm")
 --	print("Caliber: "..math.Round(caliber,3).."mm")
 
 	local ACE_ArmorResolution = MatData["ArmorResolution"]

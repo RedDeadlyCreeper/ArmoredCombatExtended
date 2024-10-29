@@ -379,6 +379,206 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 
 } )
 
+ACF_defineGun("AS-30 ASM", {						-- id
+	name			= "AS-30 Missile",
+	desc			= "Large Beam-riding NATO Air to Ground missile. CHEAP.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	model			= "models/missiles/as30.mdl",
+	effect           = "ACE_MissileMedium",
+	gunclass		= "ASM",
+	rack			= "1xRK",						-- Which rack to spawn this missile on?
+	length			= 120,
+	caliber			= 34,
+	weight			= 520,							-- Don't scale down the weight though!
+	year			= 1976,
+	modeldiameter	= 12,					-- in cm
+	bodydiameter     = 14, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/missiles/as30.mdl",
+		rackmdl				= "models/missiles/as30.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 60.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 85,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 4.0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 50,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 20,							-- Acceleration in m/s.
+		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		fusetime			= 40,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.001,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		pointcost			= 200,
+
+
+
+		penmul      = math.sqrt(0.1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+	},
+
+	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance	= {"Dumb", "Beam_Riding"},
+	fuses	= {"Contact", "Timed", "Optical"},
+
+	racks	= {									-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true
+				},
+
+	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00								-- minimum fuse arming delay
+} )
+
+ACF_defineGun("KH-23 ASM", {						-- id
+	name			= "KH-23 Missile",
+	desc			= "Beam-riding Soviet Air to Ground missile. Though 'Middlesize' for Russian standards this thing hits like a train. CHEAP.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	model			= "models/missiles/kh23.mdl",
+	effect           = "ACE_MissileMedium",
+	gunclass		= "ASM",
+	rack			= "1xRK",						-- Which rack to spawn this missile on?
+	length			= 120,
+	caliber			= 27.5,
+	weight			= 287,							-- Don't scale down the weight though!
+	year			= 1976,
+	modeldiameter	= 12,					-- in cm
+	bodydiameter     = 14, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/missiles/kh23.mdl",
+		rackmdl				= "models/missiles/kh23.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 60.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 150,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 4.0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 40,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 25,							-- Acceleration in m/s.
+		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		fusetime			= 40,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.001,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		pointcost			= 100,
+
+
+
+		penmul      = math.sqrt(0.1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+	},
+
+	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance	= {"Dumb", "Beam_Riding"},
+	fuses	= {"Contact", "Timed", "Optical"},
+
+	racks	= {									-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true,
+					["2xRK"] = true
+				},
+
+	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00								-- minimum fuse arming delay
+} )
+
+ACF_defineGun("KH-25 ASM", {						-- id
+	name			= "KH-25 Missile",
+	desc			= "Soviet Air to Ground missile with every sort of guidance. Though 'Middlesize' for Russian standards this thing hits like a train.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	model			= "models/missiles/kh25.mdl",
+	effect           = "ACE_MissileMedium",
+	gunclass		= "ASM",
+	rack			= "1xRK",						-- Which rack to spawn this missile on?
+	length			= 120,
+	caliber			= 27.5,
+	weight			= 370,							-- Don't scale down the weight though!
+	year			= 1976,
+	modeldiameter	= 12,					-- in cm
+	bodydiameter     = 14, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/missiles/kh25.mdl",
+		rackmdl				= "models/missiles/kh25.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 60.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 150,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		thrust				= 25,							-- Acceleration in m/s.
+		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
+		startdelay			= 0,
+
+		fusetime			= 40,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.002,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		pointcost			= 500,
+
+
+
+		penmul      = math.sqrt(0.1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+	},
+
+	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance	= {"Dumb", "Beam_Riding", "Laser", "Semiactive", "Infrared", "Radar"},
+	fuses	= {"Contact", "Timed", "Optical"},
+
+	racks	= {									-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true,
+					["2xRK"] = true
+				},
+
+	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00								-- minimum fuse arming delay
+} )
+
 ACF_defineGun("KH-29 ASM", {						-- id
 	name             = "KH-29 Missile",
 	desc             = "Massive Russian standoff missile of ludicrous proportions capable of lofting itself towards distant targets. Anything it hits ceases existing.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No\nTop Speed: 144 m/s",
@@ -447,140 +647,4 @@ ACF_defineGun("KH-29 ASM", {						-- id
 
 	armdelay	= 0.15,								-- minimum fuse arming delay --was 0.3
 
-} )
-
-
-
-ACF_defineGun("KH-23 ASM", {						-- id
-	name			= "KH-23 Missile",
-	desc			= "Beam-riding guided Soviet Air to Ground missile. Though 'Middlesize' for Russian standards this thing hits like a train. CHEAP.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
-	model			= "models/missiles/kh23.mdl",
-	effect           = "ACE_MissileMedium",
-	gunclass		= "ASM",
-	rack			= "1xRK",						-- Which rack to spawn this missile on?
-	length			= 120,
-	caliber			= 27.5,
-	weight			= 287,							-- Don't scale down the weight though!
-	year			= 1976,
-	modeldiameter	= 12,					-- in cm
-	bodydiameter     = 17.6, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
-
-	round = {
-		rocketmdl			= "models/missiles/kh23.mdl",
-		rackmdl				= "models/missiles/kh23.mdl",
-		firedelay			= 0.1,
-		reloadspeed			= 0.3,
-		reloaddelay			= 60.0,
-		inaccuracy			= 2.0,
-
-		maxlength			= 150,							-- Length of missile. Used for ammo properties.
-		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
-
-		armour				= 25,							-- Armour effectiveness of casing, in mm
-
-		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 4.0,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 40,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
-
-		thrust				= 25,							-- Acceleration in m/s.
-		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0,
-
-		fusetime			= 40,							--Time in seconds after launch/booster stop before missile scuttles
-
-		dragcoef			= 0.001,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-
-		pointcost			= 100,
-
-
-
-		penmul      = math.sqrt(0.1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
-		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
-	},
-
-	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Beam_Riding"},
-	fuses	= {"Contact", "Timed", "Optical"},
-
-	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,
-					["2xRK"] = true
-				},
-
-	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
-
-	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
-	armdelay	= 0.00								-- minimum fuse arming delay
-} )
-
-ACF_defineGun("KH-25 ASM", {						-- id
-	name			= "KH-25 Missile",
-	desc			= "Soviet Air to Ground missile with every sort of guidance. Though 'Middlesize' for Russian standards this thing hits like a train.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
-	model			= "models/missiles/kh25.mdl",
-	effect           = "ACE_MissileMedium",
-	gunclass		= "ASM",
-	rack			= "1xRK",						-- Which rack to spawn this missile on?
-	length			= 120,
-	caliber			= 27.5,
-	weight			= 370,							-- Don't scale down the weight though!
-	year			= 1976,
-	modeldiameter	= 12,					-- in cm
-	bodydiameter     = 17.6, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
-
-	round = {
-		rocketmdl			= "models/missiles/kh25.mdl",
-		rackmdl				= "models/missiles/kh25.mdl",
-		firedelay			= 0.1,
-		reloadspeed			= 0.3,
-		reloaddelay			= 60.0,
-		inaccuracy			= 2.0,
-
-		maxlength			= 150,							-- Length of missile. Used for ammo properties.
-		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
-
-		armour				= 25,							-- Armour effectiveness of casing, in mm
-
-		turnrate			= 25,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 1.0,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
-
-		thrust				= 25,							-- Acceleration in m/s.
-		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
-		startdelay			= 0,
-
-		fusetime			= 40,							--Time in seconds after launch/booster stop before missile scuttles
-
-		dragcoef			= 0.002,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
-
-		pointcost			= 500,
-
-
-
-		penmul      = math.sqrt(0.1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
-		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
-	},
-
-	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Beam_Riding", "Laser", "Semiactive", "Infrared", "Radar"},
-	fuses	= {"Contact", "Timed", "Optical"},
-
-	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,
-					["2xRK"] = true
-				},
-
-	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
-
-	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
-	armdelay	= 0.00								-- minimum fuse arming delay
 } )
