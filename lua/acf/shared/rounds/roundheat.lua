@@ -322,7 +322,7 @@ function Round.pierceeffect( Effect, Bullet )
 		local Flash = EffectData()
 			Flash:SetOrigin( Bullet.SimPos )
 			Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
-			Flash:SetRadius( math.max( Radius, 1 ) )
+			Flash:SetRadius( math.Round(math.max(Radius / 39.37, 1),2) )
 		util.Effect( "acf_heat_explosion", Flash )
 
 		Bullet.Detonated = true
