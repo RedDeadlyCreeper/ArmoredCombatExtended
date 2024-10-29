@@ -62,6 +62,10 @@ local trackradar_base = {
 	ent    = "ace_trackingradar",
 	type   = "Radars"
 }
+local sonar_base = {
+	ent    = "ace_sonar",
+	type   = "Radars"
+}
 local irst_base = {
 	ent    = "ace_irst",
 	type   = "Radars"
@@ -86,6 +90,9 @@ if CLIENT then
 
 	trackradar_base.guicreate    = function( _, Table ) ACFTrackRadarGUICreate( Table )  end or nil
 	trackradar_base.guiupdate    = function() return end
+
+	sonar_base.guicreate    = function( _, Table ) ACFSonarGUICreate( Table )  end or nil
+	sonar_base.guiupdate    = function() return end
 
 	irst_base.guicreate          = function( _, Table ) ACFIRSTGUICreate( Table )		end or nil
 	irst_base.guiupdate          = function() return end
@@ -210,6 +217,19 @@ end
 function ACF_DefineTrackRadarClass( id, data )
 	data.id = id
 	RadarClasses[ id ] = data
+end
+
+-- Sonar Array Class definition
+function ACF_DefineSonarClass( id, data )
+	data.id = id
+	RadarClasses[ id ] = data
+end
+
+-- Sonar definition
+function ACF_DefineSonar( id, data )
+	data.id = id
+	table.Inherit( data, sonar_base )
+	Radars[ id ] = data
 end
 
 -- Tracking Radar definition

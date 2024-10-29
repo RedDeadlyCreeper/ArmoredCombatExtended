@@ -277,7 +277,6 @@ ACF_DefineRack("4x FIM-92", {
 	weight = 30,
 	year = 1984,
 	magsize = 4,
-	caliber = 11,
 
 	protectmissile  = true,
 	hidemissile	= false,
@@ -602,7 +601,6 @@ ACF_DefineRack("1x VT-1", {
 	year = 1970,
 	magsize = 1,
 	armour  = 18,
-	caliber = 12,
 
 	whitelistonly   = true,
 	protectmissile  = true,

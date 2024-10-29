@@ -145,12 +145,14 @@ function this:GetWhitelistedEntsInCone(missile)
 	local DPLRFAC = 65 - (self.SeekCone / 2)
 	local foundAnim = {}
 
-	local ScanArray = ACE.contraptionEnts
+	--local ScanArray = ACE.contraptionEnts
 
-	for _, scanEnt in pairs(ScanArray) do
+	local scanEnt = nil
+	for Contraption in pairs(CFW.Contraptions) do
+		scanEnt = Contraption:GetACEBaseplate() or nil
 
 		-- skip any invalid entity
-		if not scanEnt:IsValid() then continue end
+		if not IsValid(scanEnt) then continue end
 
 
 		--No sir I will not ignore the flares. They "might" contain chaff

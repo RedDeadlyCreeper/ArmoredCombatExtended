@@ -20,7 +20,7 @@ ACF_defineGunClass("FFAR", {
 ACF_defineGun("40mmFFAR", { --id
 
 	name		= "40mm Pod Rocket",
-	desc		= "A tiny, unguided rocket.  Useful for anti-infantry, smoke and suppression.  Folding fins allow the rocket to be stored in pods, which defend them from damage.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc		= "A tiny, unguided rocket.  Useful for anti-infantry, smoke and suppression.  Folding fins allow the rocket to be stored in pods, which defend them from damage.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nMax Kinetic Pen: 122 mm",
 	model	= "models/missiles/launcher7_40mm.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileTiny",
@@ -69,6 +69,7 @@ ACF_defineGun("40mmFFAR", { --id
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul	= math.sqrt(0.5),
+
 		waterthrusttype = 0, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
 		pointcost			= 50
 	},
@@ -88,7 +89,7 @@ ACF_defineGun("40mmFFAR", { --id
 ACF_defineGun("70mmFFAR", { --id
 
 	name		= "70mm Pod Rocket",
-	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nMax Kinetic Pen: 284 mm",
 	model	= "models/missiles/launcher7_70mm.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileTiny",
@@ -138,6 +139,9 @@ ACF_defineGun("70mmFFAR", { --id
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul	= math.sqrt(0.65),	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 4,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+
 		waterthrusttype = 0, 	--0-stops underwater, 1-booster only underwater - DEFAULT, 2-works above and below, 3-underwater only, 4-booster all and under thrust only
 		pointcost			= 80
 	},
@@ -158,7 +162,7 @@ ACF_defineGun("70mmFFAR", { --id
 ACF_defineGun("S8KO", { --id
 
 	name        = "S-8KO Unguided Rockets",
-	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc        = "The S-8 is a rocket weapon developed by the Soviet Air Force for use by military aircraft. It remains in service with the Russian Aerospace Forces and various export customers.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nMax Kinetic Pen: 194 mm",
 	model       = "models/missiles/arend/s-8ko.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileTiny",
@@ -227,7 +231,7 @@ ACF_defineGun("S8KO", { --id
 
 ACF_defineGun("Zuni ASR", { --id
 	name             = "Zuni Rocket",
-	desc             = "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	desc             = "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.\n\nInertial Guidance: No\nECCM: No\nDatalink: No\nMax Kinetic Pen: 388 mm",
 	model            = "models/ghosteh/zuni.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileSmall",
@@ -249,7 +253,7 @@ ACF_defineGun("Zuni ASR", { --id
 		firedelay			= 0.25,
 		reloadspeed			= 0.3,
 		reloaddelay			= 45.0,
-		inaccuracy			= 0.2,
+		inaccuracy			= 0.1,
 
 		maxlength			= 70,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.7,							-- Motor mass - motor casing. Used for ammo properties.
@@ -279,6 +283,9 @@ ACF_defineGun("Zuni ASR", { --id
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul	= math.sqrt(0.825),	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 0.4,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+
 		pointcost			= 200
 	},
 	ent        = "acf_missile_to_rack",

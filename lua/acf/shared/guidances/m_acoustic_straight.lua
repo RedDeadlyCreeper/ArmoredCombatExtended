@@ -25,12 +25,11 @@ this.SeekCone = 20
 this.ViewCone = 25
 
 -- This instance must wait this long between target seeks.
-this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
-
+this.SeekDelay = 2 -- Re-seek drastically reduced cost so we can re-seek. Dynamically reduced as the guidance gets closer
 
 -- Minimum distance for a target to be considered
 this.MinimumDistance = 393.7	--10m
-this.MaxDistance = 7874	--10m
+this.MaxDistance = 100 * 39.37	--10m
 
 this.desc = "Acoustic torpedo guidance."
 --Useful for airdropped torpedoes. Follows a helical pattern until it reaches its target depth. WARNING: Targetposition can only specify the depth to search at. This torpedo will search around the area it was first dropped.
@@ -91,7 +90,7 @@ function this:GetGuidance(missile)
 	self:CheckTarget(missile)
 
 	if IsValid(self.Target) then
-		print("VALTAR")
+		--print("VAL TAR")
 		missile.IsDecoyed = false
 		if self.Target:GetClass( ) == "ace_flare" then --Ace flare entity deletes itself underwater unless an acoustic CM?
 			missile.IsDecoyed = true
@@ -136,7 +135,7 @@ function this:GetGuidance(missile)
 
 	-- 39.37 * 800 = 393.7
 	local Aheaddistance = 31500
-	self.TargetPos = missilePos + NoZDif * Aheaddistance + Vector(0,0,math.Clamp(Difpos.z * 10,-Aheaddistance * 1,Aheaddistance * 1))
+	self.TargetPos = missilePos + NoZDif * Aheaddistance + Vector(0,0,math.Clamp(Difpos.z * 15,-Aheaddistance * 1,Aheaddistance * 1))
 	self.TargetPos = Vector(self.TargetPos.x, self.TargetPos.y, math.min(self.TargetPos.z,(missile.WaterZHeight or 5000000) - 75))
 
 
@@ -178,12 +177,13 @@ function this:GetWhitelistedEntsInCone(missile)
 	local missilePos = missile:GetPos()
 	local foundAnim = {}
 
-	local ScanArray = ACE.contraptionEnts
+	--local ScanArray = ACE.contraptionEnts
 
-	for _, scanEnt in pairs(ScanArray) do
-
+	local scanEnt = nil
+	for Contraption in pairs(CFW.Contraptions) do
+		scanEnt = Contraption:GetACEBaseplate()
 		-- skip any invalid entity
-		if not scanEnt:IsValid() then continue end
+		if not IsValid(scanEnt) then continue end
 
 
 		--No sir I will not ignore the flares. They "might" contain chaff
@@ -234,11 +234,15 @@ function this:AcquireLock(missile)
 
 	self.LastSeek = curTime + self.SeekDelay
 
+	if missile:WaterLevel() == 0 then return nil end
+
 	-- Part 1: get all whitelisted entities in seek-cone.
 	local found = self:GetWhitelistedEntsInCone(missile)
 
 	-- Part 2: get a good seek target
 	local missilePos = missile:GetPos()
+	EmitSound("acf_extra/ACE/sensors/Sonar/High1.wav", missilePos, 0, 1, CHAN_WEAPON, 400, 0, 100 ) --Formerly 107
+
 
 	local bestAng = math.huge
 	local bestent = nil
@@ -274,7 +278,7 @@ function this:AcquireLock(missile)
 		--print(absang.y)
 
 		if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
-
+			classifyent:EmitSound("acf_extra/ACE/sensors/Sonar/High1.wav", 400, 100, 1, CHAN_WEAPON ) --Formerly 107
 			debugoverlay.Sphere(entpos, 100, 5, Color(255,100,0,255))
 
 			local Multiplier = 1
@@ -302,6 +306,12 @@ function this:AcquireLock(missile)
 
 --	print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
+
+	local entpos = bestent:GetPos()
+	local difpos = entpos - missilePos
+	local dist = difpos:Length()
+
+	self.LastSeek = curTime + self.SeekDelay * math.Clamp(dist / self.MaxDistance,0.1,self.SeekDelay)
 
 	return bestent
 end

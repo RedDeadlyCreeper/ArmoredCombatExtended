@@ -72,8 +72,8 @@ SWEP.CarrySpeedMul			= 1 --WalkSpeedMult when carrying the weapon
 SWEP.NormalPlayerWalkSpeed	= 200 --Default walk and sprint speed in case all else fails
 SWEP.NormalPlayerRunSpeed	= 400
 
-SWEP.SwayScale = 0.3
-SWEP.BobScale = 0.4
+SWEP.SwayScale = 0.5
+SWEP.BobScale = 1.5
 
 
 AddCSLuaFile("cl_ace_spawnmenu.lua")

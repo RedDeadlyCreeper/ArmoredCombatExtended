@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\bombs\umpk"
+	"$nocull" "1"
+}

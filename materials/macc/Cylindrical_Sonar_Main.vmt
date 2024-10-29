@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+   $basetexture "macc/Cylindrical_Sonar_Main"
+   $surfaceprop "metal"
+	"$bumpmap" "macc/Cylindrical_Sonar_Main_normal"
+ 
+  
+}

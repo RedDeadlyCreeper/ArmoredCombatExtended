@@ -48,10 +48,12 @@ ACF_defineGun("50kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.00075,						-- percent speed loss per second
+		dragcoef			= 0.0015,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.05),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 50
 	},
 
@@ -103,10 +105,12 @@ ACF_defineGun("100kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.00075,						-- percent speed loss per second
+		dragcoef			= 0.0025,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 100
 	},
 
@@ -157,10 +161,12 @@ ACF_defineGun("250kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.00075,						-- percent speed loss per second
+		dragcoef			= 0.005,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 250
 	},
 
@@ -211,10 +217,12 @@ ACF_defineGun("500kgBOMB", {						-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.00075,						-- percent speed loss per second
+		dragcoef			= 0.0075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 750
 	},
 
@@ -233,7 +241,7 @@ ACF_defineGun("500kgBOMB", {						-- id
 
 ACF_defineGun("1000kgBOMB", {					-- id
 	name             = "1000kg Free Falling Bomb",
-	desc             = "A 2000lb bomb. As close to a nuke as you can get in ACF, this munition will turn everything it touches to ashes. Handle with care.",
+	desc             = "A 2000lb bomb. Nothing is surviving the blast of this one, this munition will turn everything it touches to ashes. Handle with care.",
 	model            = "models/bombs/an_m66.mdl",
 	gunclass         = "BOMB",
 	rack             = "1xRK",					-- Which rack to spawn this missile on?
@@ -262,11 +270,301 @@ ACF_defineGun("1000kgBOMB", {					-- id
 
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
+		dragcoef			= 0.01,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+		pointcost			= 3000 --divided by 3 for unguided
+	},
+
+	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb"},
+	fuses      = {"Contact", "Optical"},
+
+	racks	= {								-- a whitelist for racks that this missile can load into.
+				["1xRK"] = true
+			},
+
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00							-- minimum fuse arming delay
+} )
+
+
+ACF_defineGun("Mk82Bomb", {						-- id
+	name			= "MK-83 General Purpose Bomb",
+	desc			= "Small low drag general purpose bomb. You can carry a lot of these.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	model			= "models/bombs/gbu/gbu12.mdl",
+	gunclass		= "GBU",
+	rack			= "1xRK",						-- Which rack to spawn this missile on?
+	length			= 225,
+	caliber			= 10.5,
+	weight			= 215,							-- Don't scale down the weight though!
+	year			= 1976,
+	modeldiameter	= 12,					-- in cm
+	bodydiameter     = 12.5, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/bombs/gbu/gbu12_fold.mdl",
+		rackmdl				= "models/bombs/gbu/gbu12.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 60.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 850,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 25,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		pointcost			= 333,
+
+
+
+		penmul      = math.sqrt(0.1),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+	},
+
+	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb"},
+	fuses	= {"Contact", "Timed", "Optical"},
+
+	racks	= {									-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true,
+					["2xRK"] = true,
+					["3xRK"] = true,
+					["4xRK"] = true
+				},
+
+	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00								-- minimum fuse arming delay
+} )
+
+ACF_defineGun("Mk83Bomb", {						-- id
+	name			= "MK-83 General Purpose Bomb",
+	desc			= "Low drag general purpose bomb. Packs a sizable warhead perfect for nailing heavy targets.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
+	model			= "models/bombs/gbu/gbu16.mdl",
+	gunclass		= "GBU",
+	rack			= "1xRK",						-- Which rack to spawn this missile on?
+	length			= 264,
+	caliber		= 17.0,
+	weight			= 425,							-- Don't scale down the weight though!
+	year			= 1976,
+	modeldiameter	= 13,					-- in cm
+	bodydiameter     = 13.8, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+
+	round = {
+		rocketmdl			= "models/bombs/gbu/gbu16_fold.mdl",
+		rackmdl				= "models/bombs/gbu/gbu16.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 80.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 830,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 30,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		pointcost			= 833,
+
+		penmul      = math.sqrt(0.15),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+	},
+
+	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb"},
+	fuses	= {"Contact", "Timed", "Optical"},
+
+	racks	= {									-- a whitelist for racks that this missile can load into.
+					["1xRK"] = true,
+					["2xRK"] = true,
+					["3xRK"] = true
+				},
+
+	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime	= 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00								-- minimum fuse arming delay
+} )
+
+ACF_defineGun("Mk84Bomb", {						-- id
+	name			= "MK-84 General Purpose Bomb",
+	desc			= "Low drag general purpose bomb with a massive warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
+	model			= "models/bombs/gbu/gbu10.mdl",
+	gunclass		= "GBU",
+	rack			= "1xRK",						-- Which rack to spawn this missile on?
+	length			= 320,
+	caliber		= 20.0,
+	weight			= 900,							-- Don't scale down the weight though!
+	year			= 1976,
+	modeldiameter	= 20,					-- in cm
+	round = {
+		rocketmdl			= "models/bombs/gbu/gbu10_fold.mdl",
+		rackmdl				= "models/bombs/gbu/gbu10.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 100.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 1400,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 40,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		predictiondelay		= 0.5,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+
+		pointcost			= 1667,
+
+		penmul      = math.sqrt(0.2),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+	},
+
+	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb"},
+	fuses	= {"Contact", "Timed", "Optical"},
+
+	racks	= {									-- a whitelist for racks that this missile can load into.'
+					["1xRK"] = true,
+					["2xRK"] = true
+				},
+
+	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
+	SeekSensitivity    = 5,
+
+	ghosttime	= 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00								-- minimum fuse arming delay
+} )
+
+ACF_defineGun("FAB-5000", {					-- id
+	name             = "FAB-5000 Bomb",
+	desc             = "5000 Kilograms. Will turn entire regions into craters or ruin a warthunder player's day. I wish it were the biggest.",
+	model            = "models/bombs/fab5000.mdl",
+	gunclass         = "BOMB",
+	rack             = "1xRK",					-- Which rack to spawn this missile on?
+	length           = 227, --i know. Real one is too big for the largest of the ammocrates
+	caliber          = 100,
+	weight           = 5400,						-- Don't scale down the weight though!
+	year             = 1945,
+	modeldiameter    = 43.25,				-- in cm
+
+	round = {
+		rocketmdl			= "models/bombs/fab5000.mdl",
+		rackmdl				= "models/bombs/fab5000.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 100.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 300,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 60,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
 		dragcoef			= 0.00075,						-- percent speed loss per second
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
-		pointcost			= 1000
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+		pointcost			= 6000 --divided by 3 for unguided
+	},
+
+	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
+	guidance   = {"Dumb"},
+	fuses      = {"Contact", "Optical"},
+
+	racks	= {								-- a whitelist for racks that this missile can load into.
+				["1xRK"] = true
+			},
+
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	armdelay	= 0.00							-- minimum fuse arming delay
+} )
+
+ACF_defineGun("FAB-9000", {					-- id
+	name             = "FAB-9000 Bomb",
+	desc             = "9000 Kilograms. Genuinely why. The blast power alone rivals some tactical nukes. Why would anyone need this? But you have it I guess...",
+	model            = "models/bombs/fab9000m54.mdl",
+	gunclass         = "BOMB",
+	rack             = "1xRK",					-- Which rack to spawn this missile on?
+	length           = 227, --i know. Real one is too big for the largest of the ammocrates
+	caliber          = 120,
+	weight           = 9407,						-- Don't scale down the weight though!
+	year             = 1945,
+	modeldiameter    = 62,				-- in cm
+
+	round = {
+		rocketmdl			= "models/bombs/fab9000m54.mdl",
+		rackmdl				= "models/bombs/fab9000m54.mdl",
+		firedelay			= 0.1,
+		reloadspeed			= 0.3,
+		reloaddelay			= 100.0,
+		inaccuracy			= 2.0,
+
+		maxlength			= 700,							-- Length of missile. Used for ammo properties.
+		propweight			= 0,							-- Motor mass - motor casing. Used for ammo properties.
+
+		armour				= 60,							-- Armour effectiveness of casing, in mm
+
+		turnrate			= 0,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 0,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+
+		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+
+		dragcoef			= 0.00075,						-- percent speed loss per second
+
+
+		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
+		pointcost			= 9000 --divided by 3 for unguided
 	},
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
@@ -317,6 +615,8 @@ ACF_defineGun("100kgGBOMB", {					-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 100
 	},
 
@@ -373,6 +673,8 @@ ACF_defineGun("250kgGBOMB", {					-- id
 
 
 		penmul      = math.sqrt(0.3),			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		calmul			= 1,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
+		velmul			= 2,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
 		pointcost			= 250
 	},
 
