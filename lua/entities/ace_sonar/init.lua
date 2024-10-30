@@ -78,7 +78,8 @@ function ENT:Initialize()
 		"SonoAngle (Returns an array of the world angle of detected sonar pings) [ARRAY]",
 		"TorpDetected (Returns 1 if a torpedo was detected)",
 		"TorpPosition (Returns the vector position of any detected torpedoes) [ARRAY]",
-		"Washout (Returns the level of washout from speed. At 1 the sonar becomes unusable.)"
+		"Washout (Returns the level of washout from speed. At 1 the sonar becomes unusable.)",
+		"WaterZHeight (Returns the world Z level of the water.)"
 	})
 
 	self.OutputData = {
@@ -93,7 +94,8 @@ function ENT:Initialize()
 		SonoAngle		= {},
 		TorpDetected	= 0,
 		TorpPosition	= {},
-		Washout	= 0
+		Washout	= 0,
+		WaterZHeight = 0
 	}
 
 	--List of target info we have. Used to compile into outputs or keep a record of transients of a track. Periodically cleaned after contact is lost for more than so much time.
@@ -142,7 +144,7 @@ function MakeACE_Sonar(Owner, Pos, Angle, Id)
 
 		Sonar.SeekSensitivity	= radar.SeekSensitivity
 
-		local BaseDist =	39.37 * 450 --Base distance of sonar for a large sonar.
+		local BaseDist =	39.37 * 300 --Base distance of sonar for a large sonar.
 		Sonar.MaximumDistance	= BaseDist * (radar.powerscale or 1)
 		Sonar.PowerScale		= radar.powerscale or 1
 		Sonar.WashoutFactor		= radar.washoutfactor or 1
@@ -369,6 +371,8 @@ function ENT:GetWaterHeight()
 	else
 		self.WaterZHeight = self:GetPos().z --If all else fails use our depth.
 	end
+
+	WireLib.TriggerOutput( self, "WaterZHeight"	, self.WaterZHeight )
 
 end
 
