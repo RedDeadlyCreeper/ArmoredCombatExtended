@@ -144,7 +144,7 @@ function MakeACE_Sonar(Owner, Pos, Angle, Id)
 
 		Sonar.SeekSensitivity	= radar.SeekSensitivity
 
-		local BaseDist =	39.37 * 450 --Base distance of sonar for a large sonar.
+		local BaseDist =	39.37 * 300 --Base distance of sonar for a large sonar.
 		Sonar.MaximumDistance	= BaseDist * (radar.powerscale or 1)
 		Sonar.PowerScale		= radar.powerscale or 1
 		Sonar.WashoutFactor		= radar.washoutfactor or 1
