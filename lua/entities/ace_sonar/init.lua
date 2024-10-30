@@ -142,7 +142,7 @@ function MakeACE_Sonar(Owner, Pos, Angle, Id)
 
 		Sonar.SeekSensitivity	= radar.SeekSensitivity
 
-		local BaseDist =	39.37 * 300 --Base distance of sonar for a large sonar.
+		local BaseDist =	39.37 * 450 --Base distance of sonar for a large sonar.
 		Sonar.MaximumDistance	= BaseDist * (radar.powerscale or 1)
 		Sonar.PowerScale		= radar.powerscale or 1
 		Sonar.WashoutFactor		= radar.washoutfactor or 1
@@ -227,7 +227,7 @@ function ENT:TriggerInput( inp, value )
 	elseif inp == "ActiveSound" then
 		self.Sound = value or "acf_extra/ACE/sensors/Sonar/coldwaters.wav"
 	elseif inp == "ActivePitch" then
-		self.SoundPitch = clamp(math.Round(value,0),0,255)
+		self.SoundPitch = Clamp(math.Round(value,0),0,255)
 	end
 end
 
@@ -700,18 +700,25 @@ function ENT:CleanupSonarTracks(CleanupDelay) --Step the track forward by veloci
 	local TimeAfter = ACF.CurTime - CleanupDelay
 	local ShouldLoop = true
 
-	while ShouldLoop do
+	local LoopSafety = 1 --If the part of the loop being changed
+	while ShouldLoop and LoopSafety < 100 do
 		ShouldLoop = false
-
+		LoopSafety = LoopSafety + 1
 		for ID in pairs(self.SonarLastTracked) do
 			local LastTracked = self.SonarLastTracked[ID]
 
 			if TimeAfter > LastTracked then --Remove old track
-				--print("Sonar cleaned up old contact ID: " .. ID)
-				table.remove(self.SonarPositions,ID)
-				table.remove(self.SonarVelocity,ID)
-				table.remove(self.SonarOwners,ID)
-				table.remove(self.SonarLastTracked,ID)
+				--print("Sonar cleaned up old contact ID: " .. ID .. "TDif: " .. (TimeAfter - LastTracked))
+
+				self.SonarPositions[ID] = nil
+				self.SonarVelocity[ID] = nil
+				self.SonarOwners[ID] = nil
+				self.SonarLastTracked[ID] = nil
+
+				--table.remove(self.SonarPositions,ID)
+				--table.remove(self.SonarVelocity,ID)
+				--table.remove(self.SonarOwners,ID)
+				--table.remove(self.SonarLastTracked,ID)
 
 				self.SonoUpdated = true --Let the sonar know to update the outputs
 
