@@ -26,7 +26,7 @@ function ACFSonarGUICreate( Table )
 
 	acfmenupanel:CPanelText("ClassDesc", ACF.Classes.Radar[Table.class].desc)
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
-	acfmenupanel:CPanelText("MaxRange", "View range : " .. math.Round( 300 * Table.powerscale , 2) .. " m")
+	acfmenupanel:CPanelText("MaxRange", "View range : " .. math.Round( 450 * Table.powerscale , 2) .. " m")
 	acfmenupanel:CPanelText("NoiseFactor", "Relative noise factor : " .. math.Round(Table.noisemul,2))
 	acfmenupanel:CPanelText("Washout", "Sonar speed for complete washout : " .. math.Round(35 / Table.washoutfactor,1) .. " mph / " .. math.Round(56.33 / Table.washoutfactor,1) .. "kph")
 	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. " kg")
