@@ -12,6 +12,10 @@ ACF.SonarTimeCompression = 0.15 --Multiplier for speed of sound. 0.33 means soun
 --ACF.SonarLayerDepth = (20 + math.Rand(0,1)) --Layer depth in meters where sonar scatters. Subject to being reworked later.
 ACF.SonarLayerDepth = 20 --Layer depth in meters where sonar scatters. Subject to being reworked later.
 
+local SonarSpreadDistribution = Vector(1,1,0.1) --Scales the noise vector
+local NoZVector = Vector(1,1,0)
+
+
 function ENT:Initialize()
 
 	--TODO:
@@ -204,6 +208,10 @@ function ENT:TriggerInput( inp, value )
 		else
 			self.ActiveTransmitting = false
 		end
+		self.SonarPositions = {}
+		self.SonarVelocity = {}
+		self.SonarOwners = {}
+		self.SonarLastTracked = {}
 	elseif inp == "ActiveAngle" then
 		self.BeamAngle = math.NormalizeAngle(value)
 	elseif inp == "PulseDuration" then
@@ -401,7 +409,7 @@ function ENT:activeSonar()
 	local SonarDepth = (self.WaterZHeight - SelfPos.z) / 39.37
 
 	--EmitSound("acf_extra/ACE/sensors/Sonar/coldwaters.wav", SelfPos, 0, CHAN_WEAPON, 1, 400 * self.PowerScale, 0, 100 ) --Formerly 107
-	self:EmitSound(ActiveSound, 100 * self.PowerScale, ActivePitch, 1, CHAN_WEAPON )
+	self:EmitSound(ActiveSound, 150 * self.PowerScale, ActivePitch, 1, CHAN_WEAPON )
 
 	local SpeedOfSound = 1540 * 39.37 * ACF.SonarTimeCompression
 
@@ -535,7 +543,7 @@ function ENT:activeSonar()
 			timer.Simple( TravelTime, function()
 				if not IsValid(Base) then return end
 				debugoverlay.Line(SelfPos, BasePos, TravelTime, Color(255, 0, 183), true)
-				Base:EmitSound(ActiveSound, 100, ActivePitch, 1 * Ratio, CHAN_WEAPON )
+				Base:EmitSound(ActiveSound, 130, ActivePitch, 1 * Ratio, CHAN_WEAPON )
 			end)
 
 			Contraption.SonarPings = Contraption.SonarPings or {}
@@ -566,7 +574,7 @@ function ENT:activeSonar()
 				self:EmitSound(ActiveSound, 100, ActivePitch * 1, 1 * Ratio, CHAN_AUTO )
 			end)
 
-			timer.Simple( TravelTime * 2 + self.PulseDuration, function() --Needs to process full pulse
+			timer.Simple( TravelTime * 2 + self.PulseDuration * 0.5, function() --Needs to process the sonar pulse
 
 				if not IsValid(Base) then return end
 				debugoverlay.Line(SelfPos, BasePos, TravelTime, Color(0, 255, 38), true)
@@ -574,8 +582,21 @@ function ENT:activeSonar()
 				local ID = ACE_GetContraptionIndex(Contraption)
 				local Owner = Base:CPPIGetOwner()
 
+
+				--Min pulse duration is 0.5
+				--Max pulse duration is 10
+				--Multiplier ranges from 40x to 2x
+				local PulseLengthErrorMul = 30 / self.PulseDuration
+				local WashOutErrorMul = 1 + self.WashOut * 2
+
+				local InaccMul = self.NoiseMul * SonarSpreadDistribution * PulseLengthErrorMul * WashOutErrorMul
+
+				--Max errormul = 20x PL * 2x WO = 40x
+				--Max Error = 1m * 40x = 40m
+				local Inaccuracy = VectorRand() * 39.37 * InaccMul
+
 				self.SonarPositions[ID] = self.SonarPositions[ID] or {}
-				self.SonarPositions[ID] = BasePos
+				self.SonarPositions[ID] = BasePos + Inaccuracy
 				self.SonarVelocity[ID] = Base:GetVelocity()
 				self.SonarOwners[ID] = Owner:Nick()
 				self.SonarLastTracked[ID] = ACF.CurTime
@@ -674,7 +695,7 @@ function ENT:passiveSonar() --Subject to rework
 
 		--debugoverlay.Line(SelfPos, BasePos, self.PulseDuration, Color(255, 0, 0), true)
 
-		if Noise * (1.34 * self.PowerScale) > 1 then --We can hear the sonar return
+		if Noise * (1.34 * self.PowerScale) > 1 then --We can hear the target's noise
 
 			timer.Simple( TravelTime, function()
 
@@ -684,8 +705,17 @@ function ENT:passiveSonar() --Subject to rework
 				local ID = ACE_GetContraptionIndex(Contraption)
 				local Owner = Base:CPPIGetOwner()
 
+				local WashOutErrorMul = 1 + self.WashOut * 4
+
+				local InaccMul = self.NoiseMul * SonarSpreadDistribution * WashOutErrorMul
+
+				--Max errormul = 20x PL * 2x WO = 40x
+				--Max Error = 1m * 40x = 40m
+				local Inaccuracy = VectorRand() * 39.37 * InaccMul
+
+
 				self.SonarPositions[ID] = self.SonarPositions[ID] or {}
-				self.SonarPositions[ID] = BasePos
+				self.SonarPositions[ID] = BasePos + Inaccuracy
 				self.SonarVelocity[ID] = vector_origin
 				self.SonarOwners[ID] = Owner:Nick()
 				self.SonarLastTracked[ID] = ACF.CurTime
@@ -699,42 +729,31 @@ function ENT:passiveSonar() --Subject to rework
 	end
 end
 
-function ENT:CleanupSonarTracks(CleanupDelay) --Step the track forward by velocity? Or let player do that?
-
+function ENT:CleanupSonarTracks(CleanupDelay)
 	local TimeAfter = ACF.CurTime - CleanupDelay
-	local ShouldLoop = true
+	local IDsToRemove = {}
 
-	local LoopSafety = 1 --If the part of the loop being changed
-	while ShouldLoop and LoopSafety < 100 do
-		ShouldLoop = false
-		LoopSafety = LoopSafety + 1
-		for ID in pairs(self.SonarLastTracked) do
-			local LastTracked = self.SonarLastTracked[ID]
-
-			if TimeAfter > LastTracked then --Remove old track
-				--print("Sonar cleaned up old contact ID: " .. ID .. "TDif: " .. (TimeAfter - LastTracked))
-
-				self.SonarPositions[ID] = nil
-				self.SonarVelocity[ID] = nil
-				self.SonarOwners[ID] = nil
-				self.SonarLastTracked[ID] = nil
-
-				--table.remove(self.SonarPositions,ID)
-				--table.remove(self.SonarVelocity,ID)
-				--table.remove(self.SonarOwners,ID)
-				--table.remove(self.SonarLastTracked,ID)
-
-				self.SonoUpdated = true --Let the sonar know to update the outputs
-
-				ShouldLoop = true
-				break
-			end
-
+	-- Collect IDs that need removal
+	for ID, LastTracked in pairs(self.SonarLastTracked) do
+		if TimeAfter > LastTracked then
+			table.insert(IDsToRemove, ID)
 		end
-
 	end
 
+	-- Remove outdated elements after collecting IDs
+	for _, ID in ipairs(IDsToRemove) do
+		self.SonarPositions[ID] = nil
+		self.SonarVelocity[ID] = nil
+		self.SonarOwners[ID] = nil
+		self.SonarLastTracked[ID] = nil
+	end
+
+	-- Update sonar outputs if needed
+	if #IDsToRemove > 0 then
+		self.SonoUpdated = true
+	end
 end
+
 
 function ENT:UpdateSonarTorpedoTracks()
 
@@ -865,9 +884,6 @@ function ENT:UpdateSonarTracks() --Step the track forward by velocity? Or let pl
 	local SonoOwner = {}
 	local Distances = {} --Not an output
 
-	local SpreadDistribution = Vector(1,1,0.25) --Scales the noise vector
-	local NoZVector = Vector(1,1,0)
-
 	--Compiles the track lists to the table
 
 	local MySpeed = self.SelfBasePlate:GetVelocity():Length()
@@ -879,37 +895,24 @@ function ENT:UpdateSonarTracks() --Step the track forward by velocity? Or let pl
 		for ID in pairs(self.SonarPositions) do
 			--print(ID)
 
-			local InaccMul = 1
-			local BaseInacc = VectorRand() * 39.37
-			--self.WashOut
-			local SPos = self.SonarPositions[ID]
 			local SVel = vector_origin --For passive sonar and when the sonar pulse isn't long enough
-			local Dist = 0
+			--local Dist = 0
 			local SOwn = self.SonarOwners[ID]
 
 			if self.ActiveTransmitting and self.PulseDuration > 4 then
 				SVel = self.SonarVelocity[ID]
 			end
 
-			--Min pulse duration is 0.5
-			--Max pulse duration is 10
-			--Multiplier ranges from 40x to 2x
-			local PulseLengthErrorMul = 20 / self.PulseDuration
-
-			local WashOutErrorMul = 1 + self.WashOut * 2
-
-			InaccMul = InaccMul * self.NoiseMul * SpreadDistribution * PulseLengthErrorMul * WashOutErrorMul
-
-			--Max errormul = 20x PL * 2x WO = 40x
-			--Max Error = 1m * 40x = 40m
-			OutputPosition = SPos + BaseInacc * InaccMul
+			OutputPosition = self.SonarPositions[ID]
 			OutputDistance = OutputPosition:Distance(SelfPos) --/ 39.3701
 
 			local Bearing = SONARCalculateAngle(SelfPos, OutputPosition).yaw
 			local Depth = SONARCalculateDepth(OutputPosition, self.WaterZHeight)
-			if self.ActiveTransmitting and self.PulseDuration > 0.5 then
-				Dist = ((SelfPos - OutputPosition) * NoZVector):Length()
-			end
+
+			--if self.ActiveTransmitting and self.PulseDuration > 0.5 then
+			local Dist = ((SelfPos - OutputPosition) * NoZVector):Length()
+			--end
+
 			--print("SonoBearing: " .. math.Round(Bearing / 39.37,1))
 			--print("SonoDepth: " .. math.Round(Depth / 39.37,2))
 			--print("SonoDist: " .. math.Round(Dist / 39.37,2))
@@ -1001,7 +1004,7 @@ function ENT:Think()
 		end
 
 		self:DoSonarFunctions()
-		self:CleanupSonarTracks(self.PulseDuration + 0.5) --Wait the duration of an active pulse before cleaning up contacts.
+		self:CleanupSonarTracks(10 + 0.5) --Wait the duration of an active pulse before cleaning up contacts.
 		self:UpdateSonarTracks()
 	end
 
