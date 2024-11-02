@@ -43,7 +43,7 @@ function ENT:Boom()
 	local Flash = EffectData()
 		Flash:SetOrigin( self:GetPos() )
 		Flash:SetNormal( Vector(0, 0, -1) )
-		Flash:SetRadius( Radius )
+		Flash:SetRadius( math.Round(math.max(Radius / 39.37, 1),2) )
 	util.Effect( "ACF_Scaled_Explosion", Flash )
 
 
