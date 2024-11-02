@@ -144,15 +144,14 @@ function SWEP:PrimaryAttack()
 
 	if not self:CanPrimaryAttack() then return end
 
-	if IsFirstTimePredicted() or game.SinglePlayer() then
+	local owner = self:GetOwner()
+	if (IsFirstTimePredicted() or game.SinglePlayer()) and owner:IsPlayer() then
 		self:GetOwner():ViewPunch(Angle(-5, 0, 0))
 	end
 
 	self:SetNextPrimaryFire( CurTime() + (1 / self.FireRate) )
 
 		if SERVER then
-
-			local owner = self:GetOwner()
 
 			local MDat = {
 				Owner = owner,
@@ -204,14 +203,15 @@ function SWEP:PrimaryAttack()
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		self:GetOwner():SetAnimation(PLAYER_ATTACK1)
 
-		if self:Ammo1() > 0 then
-			self:GetOwner():RemoveAmmo( 1, "RPG_Round")
-			self:SetZoomState(false)
-			self:SetOwnerZoomSpeed(false)
-		else
-			self:TakePrimaryAmmo(1)
+		if owner:IsPlayer() then
+			if self:Ammo1() > 0 then
+				self:GetOwner():RemoveAmmo( 1, "RPG_Round")
+				self:SetZoomState(false)
+				self:SetOwnerZoomSpeed(false)
+			else
+				self:TakePrimaryAmmo(1)
+			end
 		end
-
 
 	end
 end
