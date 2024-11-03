@@ -324,7 +324,22 @@ function PANEL:Init( )
 		end
 
 	end
+	do
+	--[[==================================================
+                        Tools folder
+    ]]--==================================================
 
+	local toolsNode	= HomeNode:AddNode("Tools" , "icon16/plugin.png") --Tools folder name
+
+		for _, ToolData in pairs(FinalContainer["Tools"]) do
+			local ItemNode = toolsNode:AddNode( ToolData.name or "No Name" , ItemIcon2 )
+			function ItemNode:DoClick()
+				RunConsoleCommand( "acfmenu_type", ToolData.type )
+				acfmenupanel:UpdateDisplay( ToolData )
+			end
+		end
+
+	end
 	do
 
 	--[[==================================================

@@ -45,6 +45,7 @@ local AllowedEnts = {
 	["ace_trackingradar"]         = true,
 	["ace_searchradar"]           = true,
 	["ace_irst"]                  = true,
+	["ace_vheat_source"]          = true,
 	["acf_gun"]                   = true,
 	["acf_ammo"]                  = true,
 	["acf_engine"]                = true,

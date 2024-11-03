@@ -302,3 +302,8 @@ ACFTranslation.THEATFS = {
 	"A shell with multiple shaped charges. Similar to HEAT the explosive charge accelerates a molten jet to penetrate armor, unlike typical HEAT when the jet fails to penetrate a second charge will detonate and finish the job. This makes this form of ammo exceptional against special armor types like ERA. Uses fin stabilizers." --Desc (2)
 
 }
+
+ACFTranslation.VHeatSource = {
+	"Virtual Heat Source", --Name (1)
+	"Allows to create a heat source to match with your contraption." --Desc (2)
+}
