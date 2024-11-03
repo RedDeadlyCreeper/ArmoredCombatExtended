@@ -332,7 +332,7 @@ end
 function ENT:TestDriverDistance()
 
 	if not IsValid(self.LinkedDriver) then
-		print("DRIVER ENT NOT VALID")
+		--print("DRIVER ENT NOT VALID")
 		self.HasSeatDriver = false
 		self.HasDriver = false
 		self.LinkedDriver = nil
@@ -346,14 +346,14 @@ function ENT:TestDriverDistance()
 	local MaxDist = 348749.3 --Max distance to link driver seats. (15 meters * 39.37)^2 = 348749.3
 	if SqDist > MaxDist then
 
-		local sqrtMaxDist = math.sqrt(MaxDist)
-		local sqrtDist = math.sqrt(SqDist)
-		print("Unlinked due to exceeding maxdist")
-		print("SquaredDist: " .. SqDist)
-		print("Dist: " .. sqrtDist)
-		print("MaxDistance: " .. sqrtMaxDist)
-		print("Exceeded by: " .. (sqrtDist-sqrtMaxDist))
-		print(self.LinkedDriver)
+		--local sqrtMaxDist = math.sqrt(MaxDist)
+		--local sqrtDist = math.sqrt(SqDist)
+		--print("Unlinked due to exceeding maxdist")
+		--print("SquaredDist: " .. SqDist)
+		--print("Dist: " .. sqrtDist)
+		--print("MaxDistance: " .. sqrtMaxDist)
+		--print("Exceeded by: " .. (sqrtDist-sqrtMaxDist))
+		--print(self.LinkedDriver)
 
 
 		self.HasDriver = false
