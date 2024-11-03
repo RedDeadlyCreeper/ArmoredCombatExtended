@@ -26,7 +26,7 @@ function SWEP:ACEFireBullet(Position, Direction)
 	if ShooterEnt:IsPlayer() then
 		self.BulletData.Owner = ShooterEnt
 	else
-		self.BulletData.Owner = player.GetByID(1)
+		self.BulletData.Owner = ShooterEnt:CPPIGetOwner() or ShooterEnt:GetOwner() or ShooterEnt
 	end
 
 	self.BulletData.Gun = self

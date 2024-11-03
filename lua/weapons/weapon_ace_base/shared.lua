@@ -317,8 +317,11 @@ function SWEP:PrimaryAttack()
 			self:Shoot()
 		end
 
+
 		if game.SinglePlayer() then
+			if owner:IsPlayer() then
 			ACE_NetworkSPEffects( self, self.BulletData.PropMass) -- singleplayer, this whole function is not called clientside, so we need to network the client here
+			end
 		else
 			--Client is called here. So lets go as usual.
 			local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
@@ -336,6 +339,7 @@ function SWEP:PrimaryAttack()
 				ACF_RenderLight(self:EntIndex(), self.Primary.LightScale, Color(255, 128, 48), self:GetPos())
 			end
 		end
+
 
 		if owner:IsPlayer() then
 			owner:ViewPunch(Angle(-self.ViewPunchAmount, 0, 0))
@@ -356,7 +360,9 @@ function SWEP:PrimaryAttack()
 
 
 	if self.Primary.ClipSize == 1 and self:Clip1() == 0 and (owner:IsPlayer() and self:Ammo1() > 0) then
+
 		self:Reload()
+
 	end
 end
 
