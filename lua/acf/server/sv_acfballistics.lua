@@ -161,10 +161,10 @@ do
 		if Bullet.UnderWater then
 			Drag = Drag * 800
 		end
-		local ClampFlight = FlightLength * 0.9999999
-		Drag = NormFlight * math.min(Drag, ClampFlight)
+		local ClampFlight = FlightLength * 0.9
+		Drag = NormFlight * math.min(Drag * Bullet.DeltaTime, ClampFlight)
 		Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)																								-- Calculates the next shell position
-		Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag) * Bullet.DeltaTime
+		Bullet.Flight	= Bullet.Flight + (Bullet.Accel * Bullet.DeltaTime - Drag)
 
 		-- Used for trace
 		local Flightnorm  = NormFlight
@@ -604,7 +604,7 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 	if not IsValid(Crate) then return false end
 
 	local ply = MissileData.Owner
-	print(ply)
+	--print(ply)
 
 	local missile = ents.Create("ace_missile")
 	missile:CPPISetOwner(ply)
