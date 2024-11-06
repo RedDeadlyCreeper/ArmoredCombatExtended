@@ -44,7 +44,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		turnrate			= 240,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 120,							-- Acceleration in m/s.
+		thrust				= 85,							-- Acceleration in m/s.
 		burntime			= 2.5,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -59,8 +59,8 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		dragcoef			= 0.001,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.4,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		pointcost			= 83
 	},
