@@ -214,15 +214,15 @@ ACE.DustMaterialColor = {
 if SERVER then
 
 	--Sbox Limits
-	CreateConVar("sbox_max_acf_gun", 24)					-- Gun limit
-	CreateConVar("sbox_max_acf_rapidgun", 4)				-- Guns like RACs, MGs, and ACs
-	CreateConVar("sbox_max_acf_largegun", 2)				-- Guns with a caliber above 100mm
-	CreateConVar("sbox_max_acf_smokelauncher", 20)			-- smoke launcher limit
-	CreateConVar("sbox_max_acf_ammo", 50)					-- ammo limit
-	CreateConVar("sbox_max_acf_misc", 50)					-- misc ents limit
-	CreateConVar("sbox_max_acf_rack", 12)					-- Racks limit
+	CreateConVar("sbox_max_acf_gun", 32)					-- Gun limit
+	CreateConVar("sbox_max_acf_rapidgun", 6)				-- Guns like RACs, MGs, and ACs
+	CreateConVar("sbox_max_acf_largegun", 4)				-- Guns with a caliber above 100mm
+	CreateConVar("sbox_max_acf_smokelauncher", 40)			-- smoke launcher limit
+	CreateConVar("sbox_max_acf_ammo", 100)					-- ammo limit
+	CreateConVar("sbox_max_acf_misc", 100)					-- misc ents limit
+	CreateConVar("sbox_max_acf_rack", 24)					-- Racks limit
 
-	CreateConVar("acf_mines_max", 10)						-- The mine limit
+	CreateConVar("acf_mines_max", 50)						-- The mine limit
 	CreateConVar("acf_meshvalue", 1)
 
 	CreateConVar("acf_restrictinfo", 1)				-- 0=any, 1=owned
