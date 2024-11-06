@@ -73,6 +73,12 @@ function this:GetDetonate(missile)
 		timer.Simple(self.Delay, function()
 			if not IsValid(missile) then return end
 			missile.PlungingDetonation = true
+			missile.Flight = missile:GetUp() * -missile.Flight:Length() * 0.01
+
+			missile.Bulletdata2.SlugMV = missile.Bulletdata2.SlugMV * 0.3
+			missile.Bulletdata2.SlugMV2 = missile.Bulletdata2.SlugMV * 0.3
+
+			missile:SetAngles(missile.Flight:Angle())
 			missile:Detonate()
 			return
 		end)
@@ -82,6 +88,7 @@ function this:GetDetonate(missile)
 	return false
 end
 
+--[[
 function this:PerformDetonation( missile, bdata, phys, pos )
 
 	--HEAT system breaks and it becomes unusable. THEAT cannot be used until a proof can justify it. Really tandem doesn't exist since it's an Explosively formed penetrator.
@@ -117,6 +124,7 @@ function this:PerformDetonation( missile, bdata, phys, pos )
 	missile:SetNoDraw(true)
 
 end
+]]--
 
 function this:GetDisplayConfig()
 	return
