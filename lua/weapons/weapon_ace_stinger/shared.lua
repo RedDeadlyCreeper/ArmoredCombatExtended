@@ -100,7 +100,7 @@ function SWEP:InitBulletData()
 	self.BulletData.Caliber = 11
 	self.BulletData.PropLength = 7.75 --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-	self.BulletData.Data5 = 8000 --He Filler or Flechette count
+	self.BulletData.Data5 = 2000 --He Filler or Flechette count
 	self.BulletData.Data6 = 57 --HEAT ConeAng or Flechette Spread
 	self.BulletData.Data7 = 0
 	self.BulletData.Data8 = 0
@@ -365,27 +365,27 @@ function SWEP:PrimaryAttack()
 
 			Mdl = "models/missiles/fim_92.mdl",
 
-			TurnRate = 320,
-			FinMul = 0.5,
+			TurnRate = 240,
+			FinMul = 0.4,
 			ThrusterTurnRate = 0,
 
-			InitialVelocity = 50,
+			InitialVelocity = 40,
 			Thrust = 100,
-			BurnTime = 3.5,
+			BurnTime = 2.0,
 			MotorDelay = 0,
 
 			BoostThrust = 0,
 			BoostTime = 0,
 			BoostDelay = 0,
 
-			Drag = 0.003,
+			Drag = 0.001,
 			GuidanceName = "Infrared",
 			FuseName = "Overshoot",
 			HasInertial = true,
 			HasDatalink = false,
 
 			ArmDelay = 0.2,
-			DelayPrediction = 0.15,
+			DelayPrediction = 0.1,
 			ArmorThickness = 16,
 
 			MotorSound = "acf_extra/ACE/missiles/Launch/Strela.wav",

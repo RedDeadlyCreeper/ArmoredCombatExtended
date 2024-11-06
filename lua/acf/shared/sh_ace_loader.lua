@@ -11,6 +11,7 @@ local RadarClasses      = {}
 local GunTable          = {}
 local RackTable         = {}
 local Radars            = {}
+local Tools			    =  {}
 
 local AmmoTable         = {}
 local LegacyAmmoTable   = {}
@@ -70,6 +71,10 @@ local irst_base = {
 	ent    = "ace_irst",
 	type   = "Radars"
 }
+local vheat_source_base = {
+	ent    = "ace_vheat_source",
+	type   = "Tools"
+}
 
 -- add gui stuff to base classes if this is client
 -- more required stuff for the menu. Janky as fuck
@@ -96,6 +101,9 @@ if CLIENT then
 
 	irst_base.guicreate          = function( _, Table ) ACFIRSTGUICreate( Table )		end or nil
 	irst_base.guiupdate          = function() return end
+
+	vheat_source_base.guicreate  = function( _, Table ) ACEVHeatSourceGUICreate( Table )	end or nil
+	vheat_source_base.guiupdate  = function() return end
 end
 
 -- some factory functions for defining ents
@@ -245,6 +253,13 @@ function ACF_DefineIRSTClass( id, data )
 	RadarClasses[ id ] = data
 end
 
+-- Virtual Heat Source definition
+function ACF_DefineVHeatSource( id, data )
+	data.id = id
+	table.Inherit( data, vheat_source_base )
+	Tools[ id ] = data
+end
+
 --Step 2: gather specialized sounds. Normally sounds that have associated sounds into it. Literally using the string path as id.
 function ACE_DefineGunFireSound( id, data )
 	data.id = id
@@ -325,7 +340,8 @@ do
 		"guidances",
 		"fueltanks",
 		"fuses",
-		"sounds"
+		"sounds",
+		"tools"
 	}
 
 	for _, folder in ipairs(folders) do
@@ -355,6 +371,7 @@ ACF.Weapons.Gearboxes       = GearboxTable
 ACF.Weapons.FuelTanks       = FuelTankTable
 ACF.Weapons.FuelTanksSize   = FuelTankSizeTable
 ACF.Weapons.Radars          = Radars
+ACF.Weapons.Tools           = Tools
 ACE.MuzzleFlashes           = MuzzleFlashTable
 
 --Small reminder of Mobility table. Still being used in stuff like starfall/e2. This can change

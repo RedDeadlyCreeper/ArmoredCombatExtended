@@ -72,7 +72,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "AntiRadiation"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -146,7 +146,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "AntiRadiation"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -219,7 +219,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "AntiRadiation"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -291,7 +291,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Radar", "AntiRadiation"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -363,7 +363,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb" , "Infrared"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true
@@ -431,7 +431,7 @@ ACF_defineGun("AS-30 ASM", {						-- id
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Beam_Riding"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	fuses	= {"Contact", "Timed", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true
@@ -497,7 +497,7 @@ ACF_defineGun("KH-23 ASM", {						-- id
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Beam_Riding"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	fuses	= {"Contact", "Timed", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -563,8 +563,8 @@ ACF_defineGun("KH-25 ASM", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Beam_Riding", "Laser", "Semiactive", "Infrared", "Radar"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	guidance	= {"Dumb", "Beam_Riding", "Laser", "Semiactive", "Infrared", "Radar", "AntiRadiation"},
+	fuses	= {"Contact", "Timed", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -632,7 +632,7 @@ ACF_defineGun("KH-29 ASM", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Beam_Riding", "Laser", "Infrared", "Radar"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.

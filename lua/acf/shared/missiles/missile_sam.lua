@@ -44,7 +44,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		turnrate			= 240,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 120,							-- Acceleration in m/s.
+		thrust				= 85,							-- Acceleration in m/s.
 		burntime			= 2.5,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -59,15 +59,15 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		dragcoef			= 0.001,						-- percent speed loss per second
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 0.4,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		pointcost			= 83
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Infrared" ,"Antimissile"},
-	fuses      = {"Contact", "Overshoot", "Radio"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 				["1x FIM-92"] = true,
@@ -138,7 +138,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 
 	ent        = "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Infrared", "Antimissile"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
 					["2x FIM-92"] = true
@@ -209,7 +209,7 @@ ACF_defineGun("TY-90 AAM", {								-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Infrared"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 				["1xRK"] = true,
@@ -285,7 +285,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Infrared","Antimissile"},
-	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses		= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
 						["1x Strela-1"] = true,
@@ -356,7 +356,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "SACLOS", "Semiactive"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
 				["1x VT-1"] = true,
@@ -431,7 +431,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "SACLOS", "Semiactive"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
 				["1x 9m311"] = true,
@@ -507,7 +507,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance		= {"Dumb", "SACLOS", "Semiactive","Antimissile"},
-	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses		= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
 						["1x9M331 Pod"] = true,
@@ -584,7 +584,7 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 
 	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance           = {"Dumb", "Radar"},
-	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses              = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks              = {
 	["1xRK"] = true
@@ -630,16 +630,16 @@ ACF_defineGun("5V55 SAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 3,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 4,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 40,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		thrusterturnrate	= 50,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 155,							-- Acceleration in m/s.
+		thrust				= 95,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 60,							-- Speed missile starts with on launch in m/s
+		launchkick			= 20,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -649,7 +649,7 @@ ACF_defineGun("5V55 SAM", {							-- id
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 
-		dragcoef			= 0.002,						-- percent speed loss per second
+		dragcoef			= 0.00025,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -657,8 +657,8 @@ ACF_defineGun("5V55 SAM", {							-- id
 	},
 
 	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance           = {"Dumb", "Radar"},
-	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
+	guidance           = {"Dumb", "SACLOS", "Semiactive","Antimissile"},
+	fuses              = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks              = {
 	["1xVLS"] = true,
@@ -680,20 +680,20 @@ ACF_defineGun("5V55 SAM", {							-- id
 ACF_defineGun("StarstreakHVM", {										-- id
 	name             = "Starstreak HVM",
 	desc             = "Lightweight and extremely fast darts. While lacking much of the explosive power of other missiles these missiles make up in absolute speed and moderate kinetic abilities. \n\nInertial Guidance: No\nECCM: No\nDatalink: Yes\nTop Speed: 575 m/s\nMax Kinetic Pen: 409mm W/ APHE",
-	model            = "models/missiles/hvm.mdl",
+	model            = "models/missiles/hvm_folded.mdl",
 	effect           = "ACE_MotorTiny",
 	effectbooster	 = "ACE_MissileMedium",
 	gunclass         = "SAM",
-	rack             = "1x VT-1",								-- Which rack to spawn this missile on?
-	length           = 92 * 2.53, --Convert to ammocrate units
+	rack             = "1x HVM",								-- Which rack to spawn this missile on?
+	length           = 60 * 2.53, --Convert to ammocrate units
 	caliber          = 6.6,
 	weight           = 14,										-- Don't scale down the weight though!
 	year             = 1982,
-	modeldiameter    = 10,--Already in ammocrate units
+	modeldiameter    = 7,--Already in ammocrate units
 
 	round = {
 		rocketmdl			= "models/missiles/hvm.mdl",
-		rackmdl				= "models/missiles/arend/vt1_folded.mdl",
+		rackmdl				= "models/missiles/hvm_folded.mdl",
 		firedelay			= 0.75,
 		reloadspeed			= 5.0,
 		reloaddelay			= 40.0,
@@ -734,10 +734,10 @@ ACF_defineGun("StarstreakHVM", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Beam_Riding", "SACLOS"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
-			["1x VT-1"] = true
+			["1x HVM"] = true
 			},
 
 	seekcone           = 6,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)

@@ -72,7 +72,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Wire", "Beam_Riding"},
-	fuses		= {"Contact", "Optical", "Plunging"},
+	fuses		= {"Contact", "Optical", "Timed", "Altitude", "Plunging"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
 					["1x BGM-71E"] = true,
@@ -144,7 +144,7 @@ ACF_defineGun("9M113 ATGM", {									-- id
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Wire", "Beam_Riding"},
-	fuses		= {"Contact", "Optical"},
+	fuses		= {"Contact", "Optical", "Timed", "Altitude"},
 
 
 
@@ -214,7 +214,7 @@ ACF_defineGun("9M133 ASM", {									-- id
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "Beam_Riding"},
-	fuses		= {"Contact", "Optical"},
+	fuses		= {"Contact", "Optical", "Timed", "Altitude"},
 
 
 
@@ -288,7 +288,7 @@ ACF_defineGun("AT-3 ASM", { --id
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Wire", "Beam_Riding"},
-	fuses		= {"Contact", "Optical"},
+	fuses		= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
 					["1xAT3RKS"] = true,
@@ -363,7 +363,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance		= {"Dumb", "Laser", "Wire", "Beam_Riding"},
 
-	fuses			= {"Contact", "Optical"},
+	fuses			= {"Contact", "Optical", "Timed", "Altitude"},
 	viewcone		= 90,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {											-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -435,7 +435,7 @@ ACF_defineGun("FGM-148 ASM", {
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance		= {"Dumb", "Infrared", "Top_Attack_IR"},				-- here you have Laser for those top attacks, feel free to build one.
 
-	fuses			= {"Contact", "Optical"},
+	fuses			= {"Contact", "Optical", "Timed", "Altitude"},
 
 	seekcone		= 2.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
@@ -507,7 +507,7 @@ ACF_defineGun("Spike-LR ASM", {
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance		= {"Dumb", "Infrared", "Top_Attack_IR", "Laser"},				-- here you have Laser for those top attacks, feel free to build one.
 
-	fuses			= {"Contact", "Optical"},
+	fuses			= {"Contact", "Optical", "Timed", "Altitude"},
 
 	seekcone		= 2,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
@@ -583,7 +583,7 @@ ACF_defineGun("Ataka ASM", { --id
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "Beam_Riding"},
-	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses		= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
 					["1x Ataka"] = true,
@@ -656,7 +656,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Laser", "Radar"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -729,7 +729,7 @@ ACF_defineGun("Vikhr ASM", { --id
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser"},
-	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses		= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
 					["6x 9K121"] = true
@@ -868,7 +868,7 @@ ACF_defineGun("MIM-146", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Beam_Riding", "Semiactive"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
 				["1x VT-1"] = true

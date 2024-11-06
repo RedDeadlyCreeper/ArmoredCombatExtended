@@ -1082,7 +1082,6 @@ do
 		self.Bulletdata2.SlugMV = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * (1 - self.Bulletdata2.HEAllocation) * math.sin(math.rad(10 + self.Bulletdata2.Data6) / 2) / self.Bulletdata2.SlugMass) ^ ACF.HEATMVScale) * (ACF_GetRackValue(self.BulletData, "penmul") or ACF_GetGunValue(self.BulletData.Id, "penmul") or 1) / ACF.KEtoRHA -- / math.sqrt(ACF.ShellPenMul)
 		self.Bulletdata2.SlugMV2 = ((self.Bulletdata2.FillerMass / 2 * ACF.HEPower * self.Bulletdata2.HEAllocation * math.sin(math.rad(10 + self.Bulletdata2.Data13) / 2) / self.Bulletdata2.SlugMass2) ^ ACF.HEATMVScaleTan) --keep fillermass/2 so that penetrator stays the same
 
-
 		local BoomMul = 1
 		if self.Bulletdata2.Type == "HEAT" or self.Bulletdata2.Type == "THEAT" then
 			BoomMul = 1 / 4
@@ -1098,9 +1097,9 @@ do
 		local SlugFrArea = 3.1416 * (self.Bulletdata2.SlugCaliber / 2) ^ 2
 		self.Bulletdata2.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
 		self.Bulletdata2.SlugDragCoef = ((SlugFrArea / 10000) / self.Bulletdata2.SlugMass)
-			SlugFrArea = 3.1416 * (self.Bulletdata2.SlugCaliber2 / 2) ^ 2
-			self.Bulletdata2.SlugPenArea2 = SlugFrArea ^ ACF.PenAreaMod
-			self.Bulletdata2.SlugDragCoef2 = ((SlugFrArea / 10000) / self.Bulletdata2.SlugMass2)
+		SlugFrArea = 3.1416 * (self.Bulletdata2.SlugCaliber2 / 2) ^ 2
+		self.Bulletdata2.SlugPenArea2 = SlugFrArea ^ ACF.PenAreaMod
+		self.Bulletdata2.SlugDragCoef2 = ((SlugFrArea / 10000) / self.Bulletdata2.SlugMass2)
 		self.Bulletdata2.SlugRicochet = 500 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 		self.Bulletdata2.CasingMass = self.Bulletdata2.ProjMass - self.Bulletdata2.FillerMass - ConeVol * 7.9 / 1000
 		self.Bulletdata2.Fragments = math.max(math.floor((self.Bulletdata2.BoomFillerMass / self.Bulletdata2.CasingMass) * ACF.HEFrag), 2)

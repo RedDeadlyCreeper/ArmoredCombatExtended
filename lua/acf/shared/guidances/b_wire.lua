@@ -11,11 +11,14 @@ this.Name = ClassName
 
 -- Length of the guidance wire
 this.WireLength = 19685^2			-- about 500m
+this.WireLength = (100 * 39.37) ^ 2			-- about 500m
 
 -- Disables guidance when true
 this.WireSnapped = false
 
 this.desc = "This guidance package is controlled by the launcher, which reads a target-position and steers the munition towards it. Has a limited guidance distance."
+
+this.GuidanceWire = nil
 
 function this:Init()
 
@@ -30,10 +33,21 @@ function this:GetSeekFilter()
 	return self.Filter
 end
 
-function this:Configure()
+function this:Configure(missile)
 
 	self.WireSnapped = false
 
+		--For some reason this configuration is executing in the other guidances.
+		if self.Name == "Wire" and IsValid(missile) then
+			local launcher = missile.Launcher
+			if IsValid(launcher) then
+			local MissileOffset = missile:WorldToLocal(missile:GetAttachment( missile:LookupAttachment( "exhaust" ) ).Pos)
+			local _, LauncherBoundsMax = missile.Launcher:GetCollisionBounds()
+			local OffsetLength = LauncherBoundsMax.x
+
+			self.GuidanceWire = ACE_CreateLinkRope( missile:GetPos(), missile, MissileOffset, launcher, Vector(OffsetLength,0,0) )
+			end
+		end
 end
 
 function this:GetGuidance(missile)
@@ -49,8 +63,11 @@ function this:GetGuidance(missile)
 	local launcherPos = launcher:GetPos()
 	local distMsl = missile:GetPos():DistToSqr(launcherPos)		-- We're using squared distance to optimise
 
-	if distMsl > self.WireLength then
+	if distMsl > self.WireLength and not self.WireSnapped then
 		self.WireSnapped = true
+		--self.GuidanceWire:Remove() --Find some way to remove the rope keyframe later
+		local soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+		launcher:EmitSound(soundstr,500,100)
 		return {TargetPos = nil}
 	end
 

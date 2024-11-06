@@ -461,7 +461,7 @@ function ENT:activeSonar()
 	----------------------------------------
 
 	local SelfContraption = self.SelfContraption
-	local MyID = ACE_GetContraptionIndex(SelfContraption)
+	local MyID = ACE_GetContraptionIndex(SelfContraption) or -1
 
 
 	local CacheTime = ACF.CurTime + 5 --Time in seconds to remove a sonar ping
@@ -548,15 +548,15 @@ function ENT:activeSonar()
 
 			Contraption.SonarPings = Contraption.SonarPings or {}
 			Contraption.SonarPings[MyID] = Contraption.SonarPings[MyID] or {}
-			local SonoTable = Contraption.SonarPings[MyID]
-			SonoTable.Angle = SONARCalculateAngle(BasePos, SelfPos)
-			SonoTable.Time = CacheTime
+			Contraption.SonarPings[MyID].Angle = SONARCalculateAngle(BasePos, SelfPos)
+			Contraption.SonarPings[MyID].Time = CacheTime
 
 			timer.Simple( 6, function() --Longer than cachetime. Should always clear unless something else resets the time.
 				if not IsValid(Contraption:GetACEBaseplate()) then return end
+				--PrintTable(Contraption.SonarPings or {})
 				if ACF.CurTime > Contraption.SonarPings[MyID].Time then
-					table.remove(Contraption.SonarPings,MyID)
-					--PrintTable(Contraption.SonarPings)
+					Contraption.SonarPings[MyID] = nil
+					--table.remove(Contraption.SonarPings,MyID)
 				end
 			end)
 
@@ -790,16 +790,21 @@ function ENT:UpdateRecievedPings()
 
 	local SelfContraption = self.SelfContraption
 
-	if not IsValid(SelfContraption.SonarPings or nil) then return end --Needs some other workaround as contraptions aren't recognized as valid
+
+	if not table.IsEmpty(SelfContraption.SonarPings or {}) then  --Needs some other workaround as contraptions aren't recognized as valid
+
+		SelfContraption.SonarPings = SelfContraption.SonarPings or {}
 
 
-	SelfContraption.SonarPings = SelfContraption.SonarPings or {}
+		local i = 0
+		for _, SonoPings in pairs(SelfContraption.SonarPings) do
 
-	local i = 0
-	for _, SonoPings in pairs(SelfContraption.SonarPings) do
+			i = i + 1
+			--print(SonoPings.Angle)
+			PingAngles[i] = SonoPings.Angle
 
-		i = i + 1
-		PingAngles[i] = SonoPings.Angle
+		end
+
 
 	end
 
@@ -1004,7 +1009,7 @@ function ENT:Think()
 		end
 
 		self:DoSonarFunctions()
-		self:CleanupSonarTracks(10 + 0.5) --Wait the duration of an active pulse before cleaning up contacts.
+		self:CleanupSonarTracks(10) --Wait the duration of an active pulse before cleaning up contacts.
 		self:UpdateSonarTracks()
 	end
 

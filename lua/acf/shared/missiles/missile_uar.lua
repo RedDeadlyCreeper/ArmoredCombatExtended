@@ -75,7 +75,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 
 	ent        = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks      = {["1x SPG9"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -143,7 +143,7 @@ ACF_defineGun("RS82 ASR", { --id
 
 	ent        = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks      = {["1xRK"] = true, ["1xRK_small"] = true, ["3xUARRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -212,7 +212,7 @@ ACF_defineGun("HVAR ASR", { --id
 
 	ent        = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks      = {["1xRK"] = true, ["1xRK_small"] = true, ["3xUARRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -280,7 +280,7 @@ ACF_defineGun("S-24 ASR", { --id
 
 	ent        = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks      = {["1xRK"] = true, ["3xRK"] = true, ["2xRK"] = true, ["6xUARRK"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 

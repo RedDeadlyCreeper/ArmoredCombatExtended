@@ -594,8 +594,28 @@ ACF_DefineRack("2x SRAAM", {
 
 ACF_DefineRack("1x VT-1", {
 	name = "VT-1 Single Tube",
-	desc = "A single VT-1 Konkurs round.",
+	desc = "A single VT-1 round.",
 	model = "models/missiles/arend/vt1_launcher.mdl",
+	gunclass = "POD",
+	weight = 10,
+	year = 1970,
+	magsize = 1,
+	armour  = 18,
+
+	whitelistonly   = true,
+	protectmissile  = true,
+	hidemissile     = false,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(0,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("1x HVM", {
+	name = "HVM Single Tube",
+	desc = "A single Starstreak round.",
+	model = "models/missiles/hvm_tube.mdl",
 	gunclass = "POD",
 	weight = 10,
 	year = 1970,

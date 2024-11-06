@@ -167,13 +167,12 @@ function this:CheckTarget(missile)
 	end
 end
 
-function this:GetWhitelistedEntsInCone(missile)
+function this:GetWhitelistedContraptionsInCone(missile)
 
-	--local ScanArray = ACE.contraptionEnts
 	if table.IsEmpty(CFW.Contraptions) then return {} end
 
 	local missilePos	= missile:GetPos()
-	local WhitelistEnts = {}
+	local WhitelistConts = {}
 	local LOSdata	= {}
 	local LOStr		= {}
 
@@ -209,13 +208,13 @@ function this:GetWhitelistedEntsInCone(missile)
 
 		--Trace did not hit world
 		if not LOStr.Hit then
-			table.insert(WhitelistEnts, scanEnt)
+			table.insert(WhitelistConts, Contraption)
 		end
 
 
 	end
 
-	return WhitelistEnts
+	return WhitelistConts
 
 end
 
@@ -228,7 +227,7 @@ function this:AcquireLock(missile)
 	self.LastSeek = curTime + self.SeekDelay
 
 	--Part 1: get all ents in cone
-	local found = self:GetWhitelistedEntsInCone(missile)
+	local found = self:GetWhitelistedContraptionsInCone(missile)
 
 	--Part 2: get a good seek target
 	if table.IsEmpty(found) then return NULL end
@@ -237,8 +236,6 @@ function this:AcquireLock(missile)
 
 	local bestAng	= math.huge
 	local bestent	= NULL
-
-	local Heat		= 0
 
 	local entpos		= Vector()
 	local difpos		= Vector()
@@ -259,36 +256,34 @@ function this:AcquireLock(missile)
 
 	local CheckTemp = ACE.AmbientTemp + self.HeatAboveAmbient
 
-	for _, classifyent in ipairs(found) do
+	for _, Contraption in ipairs(found) do
+
+		local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
+		HottestEntityTemp = HottestEntityTemp or 0
+		local classifyent = Contraption:GetACEBaseplate()
 
 		entpos  = classifyent:WorldSpaceCenter()
 		difpos  = entpos - missilePos
 		dist	= difpos:Length()
 		entvel  = classifyent:GetVelocity()
 
-		--if the target is a Heat Emitter, track its heat
-		if classifyent.Heat then
+		--Gets the heat from friction of the baseplate
 
-			physEnt = classifyent:GetPhysicsObject()
+		local BaseTemp = 0
+		physEnt = classifyent:GetPhysicsObject()
 
-			if IsValid(physEnt) and physEnt:IsMoveable() then
-				Heat = ACE_InfraredHeatFromProp( classifyent , dist )
-			else
-				Heat = classifyent.Heat
-			end
-
-		--if is not a Heat Emitter, track the friction's heat
-		else
-
-			physEnt = classifyent:GetPhysicsObject()
-
-			--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-			--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-			if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
-
-			Heat = ACE_InfraredHeatFromProp( classifyent, dist )
-
+		if IsValid(physEnt) and physEnt:IsMoveable() then
+			BaseTemp = ACE_InfraredHeatFromProp( classifyent , dist )
 		end
+
+
+		if not Contraption.aceEntities or (HottestEntityTemp and BaseTemp > HottestEntityTemp) then
+			entpos = classifyent:GetPos()
+		else
+			entpos = Contraption:GetACEHeatPosition()
+		end
+
+		local Heat = BaseTemp + math.max(ACE.AmbientTemp,HottestEntityTemp)
 
 		--0x heat @ 1200m
 		--0.25x heat @ 900m
@@ -339,7 +334,10 @@ function this:AcquireLock(missile)
 				bestent = classifyent
 
 			end
+
 		end
+
+
 	end
 
 	--if IsValid(bestent) and bestent:GetClass( ) == "ace_flare" then print("SQUIRREL") end

@@ -210,7 +210,7 @@ do
 		else
 			local Cal = Gun.Caliber
 
-			if Cal >= 4 then
+			if Cal >= 3 then
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse_noreload )
 			else
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse_noreload )

@@ -59,7 +59,7 @@ ACF_defineGun("50kgBOMB", {						-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK_small"] = true,
@@ -116,7 +116,7 @@ ACF_defineGun("100kgBOMB", {						-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 					["1xRK_small"] = true,
@@ -172,7 +172,7 @@ ACF_defineGun("250kgBOMB", {						-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK_small"] = true,
@@ -228,7 +228,7 @@ ACF_defineGun("500kgBOMB", {						-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK"] = true,
@@ -281,7 +281,7 @@ ACF_defineGun("1000kgBOMB", {					-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK"] = true
@@ -293,10 +293,10 @@ ACF_defineGun("1000kgBOMB", {					-- id
 
 
 ACF_defineGun("Mk82Bomb", {						-- id
-	name			= "MK-83 General Purpose Bomb",
+	name			= "MK-82 General Purpose Bomb",
 	desc			= "Small low drag general purpose bomb. You can carry a lot of these.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model			= "models/bombs/gbu/gbu12.mdl",
-	gunclass		= "GBU",
+	gunclass		= "BOMB",
 	rack			= "1xRK",						-- Which rack to spawn this missile on?
 	length			= 225,
 	caliber			= 10.5,
@@ -339,7 +339,7 @@ ACF_defineGun("Mk82Bomb", {						-- id
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	fuses	= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -360,7 +360,7 @@ ACF_defineGun("Mk83Bomb", {						-- id
 	name			= "MK-83 General Purpose Bomb",
 	desc			= "Low drag general purpose bomb. Packs a sizable warhead perfect for nailing heavy targets.\n\nInertial Guidance: Yes\nECCM: No\nDatalink: No",
 	model			= "models/bombs/gbu/gbu16.mdl",
-	gunclass		= "GBU",
+	gunclass		= "BOMB",
 	rack			= "1xRK",						-- Which rack to spawn this missile on?
 	length			= 264,
 	caliber		= 17.0,
@@ -401,7 +401,7 @@ ACF_defineGun("Mk83Bomb", {						-- id
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	fuses	= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -421,7 +421,7 @@ ACF_defineGun("Mk84Bomb", {						-- id
 	name			= "MK-84 General Purpose Bomb",
 	desc			= "Low drag general purpose bomb with a massive warhead.\n\nInertial Guidance: No\nECCM: No\nDatalink: No",
 	model			= "models/bombs/gbu/gbu10.mdl",
-	gunclass		= "GBU",
+	gunclass		= "BOMB",
 	rack			= "1xRK",						-- Which rack to spawn this missile on?
 	length			= 320,
 	caliber		= 20.0,
@@ -460,7 +460,7 @@ ACF_defineGun("Mk84Bomb", {						-- id
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	fuses	= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.'
 					["1xRK"] = true,
@@ -517,7 +517,7 @@ ACF_defineGun("FAB-5000", {					-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK"] = true
@@ -569,7 +569,7 @@ ACF_defineGun("FAB-9000", {					-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK"] = true
@@ -622,7 +622,7 @@ ACF_defineGun("100kgGBOMB", {					-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 				["1xRK_small"] = true,
@@ -680,7 +680,7 @@ ACF_defineGun("250kgGBOMB", {					-- id
 
 	ent        = "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {								-- a whitelist for racks that this missile can load into.
 					["1xRK_small"] = true,
