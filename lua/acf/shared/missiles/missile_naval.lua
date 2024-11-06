@@ -76,7 +76,7 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -154,7 +154,7 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Infrared", "Radar"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -232,7 +232,7 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "GPS", "GPS_TerrainAvoidant"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -309,7 +309,7 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -385,7 +385,7 @@ ACF_defineGun("Black Shark Torp", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb","Straight_Running","Acoustic_Straight","Wire"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true
@@ -454,7 +454,7 @@ ACF_defineGun("G7a Torp", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb","Straight_Running"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true
@@ -523,7 +523,7 @@ ACF_defineGun("Mk13 Torp", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb","Straight_Running"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true
@@ -592,7 +592,7 @@ ACF_defineGun("Mk54 Torp", {						-- id
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb","Straight_Running","Acoustic_Straight","Acoustic_Helical"},
-	fuses	= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true
@@ -663,7 +663,7 @@ ACF_defineGun("9M317ME SAM", {							-- id
 
 	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance           = {"Dumb", "Radar"},
-	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses              = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks              = {
 	["1xRK"] = true,

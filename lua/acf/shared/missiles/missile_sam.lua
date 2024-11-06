@@ -67,7 +67,7 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Infrared" ,"Antimissile"},
-	fuses      = {"Contact", "Overshoot", "Radio"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 				["1x FIM-92"] = true,
@@ -138,7 +138,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 
 	ent        = "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Infrared", "Antimissile"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
 					["2x FIM-92"] = true
@@ -209,7 +209,7 @@ ACF_defineGun("TY-90 AAM", {								-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Infrared"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 				["1xRK"] = true,
@@ -285,7 +285,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Infrared","Antimissile"},
-	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses		= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
 						["1x Strela-1"] = true,
@@ -356,7 +356,7 @@ ACF_defineGun("VT-1 SAM", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "SACLOS", "Semiactive"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
 				["1x VT-1"] = true,
@@ -431,7 +431,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "SACLOS", "Semiactive"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
 				["1x 9m311"] = true,
@@ -507,7 +507,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 
 	ent			= "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance		= {"Dumb", "SACLOS", "Semiactive","Antimissile"},
-	fuses		= {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses		= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks		= {										-- a whitelist for racks that this missile can load into.
 						["1x9M331 Pod"] = true,
@@ -584,7 +584,7 @@ ACF_defineGun("9M38M1 SAM", {							-- id
 
 	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance           = {"Dumb", "Radar"},
-	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses              = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks              = {
 	["1xRK"] = true
@@ -658,7 +658,7 @@ ACF_defineGun("5V55 SAM", {							-- id
 
 	ent                = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance           = {"Dumb", "SACLOS", "Semiactive","Antimissile"},
-	fuses              = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses              = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks              = {
 	["1xVLS"] = true,
@@ -734,7 +734,7 @@ ACF_defineGun("StarstreakHVM", {										-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "Beam_Riding", "SACLOS"},
-	fuses      = {"Contact", "Overshoot", "Radio", "Optical"},
+	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.
 			["1x HVM"] = true

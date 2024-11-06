@@ -78,7 +78,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 					["1xRK_small"] = true,
@@ -153,7 +153,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -230,7 +230,7 @@ ACF_defineGun("RW61 RA", {								-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Optical"},		-- Because who doesn't love cluster RW61s
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},		-- Because who doesn't love cluster RW61s
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 					["380mmRW61"] = true
@@ -301,7 +301,7 @@ ACF_defineGun("M26 RA", {							-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 					["6xUARRK"] = true
@@ -371,7 +371,7 @@ ACF_defineGun("SS-40 RA", {								-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "GPS"},
-	fuses      = {"Contact", "Timed", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
@@ -444,7 +444,7 @@ ACF_defineGun("M31 RA", {							-- id
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance   = {"Dumb", "GPS"},
-	fuses      = {"Contact", "Timed", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {										-- a whitelist for racks that this missile can load into.
 					["6xUARRK"] = true
@@ -513,7 +513,7 @@ ACF_defineGun("ATACMS RA", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "GPS"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -589,7 +589,7 @@ ACF_defineGun("9M79-1", {						-- id
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "GPS"},
-	fuses      = {"Contact", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
 	racks	= {									-- a whitelist for racks that this missile can load into.

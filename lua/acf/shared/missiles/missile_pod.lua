@@ -76,7 +76,7 @@ ACF_defineGun("40mmFFAR", { --id
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb"},
-	fuses	= {"Contact", "Timed"},
+	fuses	= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {["40mm7xPOD"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -148,7 +148,7 @@ ACF_defineGun("70mmFFAR", { --id
 
 	ent		= "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
 	guidance	= {"Dumb", "Laser", "GPS"},
-	fuses	= {"Contact", "Timed", "Optical"},
+	fuses	= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {["70mm7xPOD"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
@@ -217,7 +217,7 @@ ACF_defineGun("S8KO", { --id
 
 	ent        = "acf_missile_to_rack",
 	guidance   = {"Dumb"},
-	fuses      = {"Contact", "Timed", "Optical"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude"},
 	racks      = {["20x S8KO"] = true},
 
 	seekcone	= 30,	-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
@@ -290,7 +290,7 @@ ACF_defineGun("Zuni ASR", { --id
 	},
 	ent        = "acf_missile_to_rack",
 	guidance   = {"Dumb", "Laser", "GPS"},
-	fuses      = {"Contact", "Timed", "Optical", "Radio"},
+	fuses      = {"Contact", "Optical", "Timed", "Altitude", "Radio"},
 	racks      = {["127mm4xPOD"] = true},
 
 	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
