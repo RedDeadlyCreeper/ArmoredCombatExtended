@@ -30,7 +30,7 @@ ACF_defineGun("Scaled BGM-109 Tomahawk", {						-- id
 	caliber          = 35.56,
 	weight           = 1600,							-- Don't scale down the weight though!
 	year             = 1983,
-	modeldiameter    = 30, --Already in ammocrate units
+	modeldiameter    = 15, --Already in ammocrate units
 	bodydiameter     = 24.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
@@ -108,7 +108,7 @@ ACF_defineGun("Scaled AGM-84 Harpoon", {						-- id
 	caliber          = 34,
 	weight           = 690,							-- Don't scale down the weight though!
 	year             = 1977,
-	modeldiameter    = 25, --Already in ammocrate units
+	modeldiameter    = 12.5, --Already in ammocrate units
 	bodydiameter     = 15.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
@@ -187,7 +187,7 @@ ACF_defineGun("Scaled Storm Shadow ASM", {						-- id
 	caliber          = 35.56,
 	weight           = 1300,							-- Don't scale down the weight though!
 	year             = 2003,
-	modeldiameter    = 40, --Already in ammocrate units
+	modeldiameter    = 20, --Already in ammocrate units
 	bodydiameter     = 24.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
@@ -263,7 +263,7 @@ ACF_defineGun("Scaled 3M-54 Kalibr", {						-- id
 	caliber          = 53.3,
 	weight           = 2300,							-- Don't scale down the weight though!
 	year             = 1983,
-	modeldiameter    = 30, --Already in ammocrate units
+	modeldiameter    = 15, --Already in ammocrate units
 	bodydiameter     = 24.25, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rofmod           = 0.3,
 	round = {
@@ -342,7 +342,7 @@ ACF_defineGun("Scaled Black Shark Torp", {						-- id
 	rofmod           = 0.3,
 	year             = 2015,
 	modeldiameter    = 30,
-	bodydiameter     = 32, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 16, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
 		rocketmdl			= "models/missiles/blacksharkwass_small.mdl",
@@ -411,7 +411,7 @@ ACF_defineGun("Scaled G7a Torp", {						-- id
 	rofmod           = 0.3,
 	year             = 1934,
 	modeldiameter    = 30,
-	bodydiameter     = 32, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 16, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
 		rocketmdl			= "models/macc/Torpedo_G7A_Small.mdl",
@@ -480,7 +480,7 @@ ACF_defineGun("Scaled Mk13 Torp", {						-- id
 	rofmod           = 0.3,
 	year             = 2015,
 	modeldiameter    = 30,
-	bodydiameter     = 36, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 16, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
 		rocketmdl			= "models/macc/Torpedo_MK13_Small.mdl",
@@ -548,7 +548,7 @@ ACF_defineGun("Scaled 9M317ME SAM", {							-- id
 	weight           = 1040,								-- Don't scale down the weight though!
 	year             = 1981,
 	modeldiameter    = 30,--Already in ammocrate units
-	bodydiameter     = 20, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 10, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
 		rocketmdl			= "models/macc/9M317ME_open_small.mdl",
@@ -622,7 +622,7 @@ ACF_defineGun("Scaled 5V55 SAM", {							-- id
 	caliber          = 51.4,
 	weight           = 1480,								-- Don't scale down the weight though!
 	year             = 1981,
-	modeldiameter    = 32,--Already in ammocrate units
+	modeldiameter    = 16,--Already in ammocrate units
 	bodydiameter     = 20, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round = {
