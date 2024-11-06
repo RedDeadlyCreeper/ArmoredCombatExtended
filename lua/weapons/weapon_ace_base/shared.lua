@@ -72,12 +72,12 @@ SWEP.CarrySpeedMul			= 1 --WalkSpeedMult when carrying the weapon
 SWEP.NormalPlayerWalkSpeed	= 200 --Default walk and sprint speed in case all else fails
 SWEP.NormalPlayerRunSpeed	= 400
 
-SWEP.NPCMinBurst = 999 --Min bullets to fire per burst
-SWEP.NPCMaxBurst = 999 --Max bullets to fire per burst
+SWEP.NPCMinBurst = 1 --Min bullets to fire per burst
+SWEP.NPCMaxBurst = 1 --Max bullets to fire per burst
 
 
 function SWEP:GetNPCBurstSettings()
-	return math.min(self.NPCMinBurst,self.Primary.ClipSize), math.min(self.NPCMaxBurst,self.Primary.ClipSize),0
+	return math.min(self.NPCMinBurst,self.Primary.ClipSize * 0.5), math.min(self.NPCMaxBurst,self.Primary.ClipSize * 0.5),0
 end
 
 function SWEP:GetNPCRestTimes()
@@ -320,7 +320,9 @@ function SWEP:PrimaryAttack()
 
 		if game.SinglePlayer() then
 			if owner:IsPlayer() then
-			ACE_NetworkSPEffects( self, self.BulletData.PropMass) -- singleplayer, this whole function is not called clientside, so we need to network the client here
+				ACE_NetworkSPEffects( self, self.BulletData.PropMass) -- singleplayer, this whole function is not called clientside, so we need to network the client here
+			else
+				ACE_NetworkMPEffects(owner, self, self.BulletData.PropMass)
 			end
 		else
 			--Client is called here. So lets go as usual.
@@ -362,7 +364,7 @@ function SWEP:PrimaryAttack()
 	if self.Primary.ClipSize == 1 and self:Clip1() == 0 and (owner:IsPlayer() and self:Ammo1() > 0) then
 
 		self:Reload()
-
+		return false
 	end
 end
 
