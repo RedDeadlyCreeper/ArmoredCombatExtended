@@ -563,7 +563,7 @@ ACF_defineGun("KH-25 ASM", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Beam_Riding", "Laser", "Semiactive", "Infrared", "Radar"},
+	guidance	= {"Dumb", "Beam_Riding", "Laser", "Semiactive", "Infrared", "Radar", "AntiRadiation"},
 	fuses	= {"Contact", "Timed", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.

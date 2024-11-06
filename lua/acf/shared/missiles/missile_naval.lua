@@ -333,7 +333,7 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 ACF_defineGun("Black Shark Torp", {						-- id
 	name             = "533mm Black Shark Torpedo",
 	desc             = "Advanced heavyweight torpedo meant to strike fear into capital ships of all sizes.\n\nInertial Guidance: Yes\nECCM: Yes\nDatalink: No\nTop Speed: N/A m/s",
-	model            = "models/missiles/BlackSharkWASS.mdl",
+	model            = "models/missiles/blacksharkwass_small.mdl",
 	effect           = "ACE_TorpedoMedium",
 	effectbooster    = "",
 	gunclass         = "NAV",
