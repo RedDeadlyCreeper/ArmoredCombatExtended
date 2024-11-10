@@ -10,8 +10,7 @@ ACF.Guidance[ClassName] = this
 this.Name = ClassName
 
 -- Length of the guidance wire
-this.WireLength = 19685^2			-- about 500m
-this.WireLength = (100 * 39.37) ^ 2			-- about 500m
+this.WireLength = (500 * 39.37) ^ 2			-- about 500m
 
 -- Disables guidance when true
 this.WireSnapped = false
