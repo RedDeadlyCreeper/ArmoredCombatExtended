@@ -663,7 +663,9 @@ do
 			self.ActivationTime = 0
 			self.Lifetime = 0 --Instantly scuttle as soon as can execute.
 
-			self.MissileVelocityMul = self.MissileVelocityMul * 0.2
+			self.MissileVelocityMul = self.MissileVelocityMul * 0.05
+			self.Bulletdata2.SlugMV = self.Bulletdata2.SlugMV * 0.1
+			self.Bulletdata2.SlugMV2 = self.Bulletdata2.SlugMV * 0.1
 
 			return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }
 
