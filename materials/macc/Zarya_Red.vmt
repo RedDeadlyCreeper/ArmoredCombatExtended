@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+   $basetexture "macc/Zarya_Red"
+   $surfaceprop "metal"
+	"$bumpmap" "macc/Zarya_Red_normal"
+ 
+  
+}

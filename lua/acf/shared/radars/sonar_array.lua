@@ -47,12 +47,12 @@ ACF_DefineSonar("Medium-Sonar", {
 	acepoints = 2700
 } )
 
---[[
+
 ACF_DefineSonar("Large-Sonar", {
 	name		= "Large Sonar Array",
 	ent			= "ace_sonar",
 	desc		= ACFTranslation.Sonar[4],
-	model		= "models/sprops/misc/tubes/size_84/tube_84x48.mdl",
+	model		= "models/macc/zaryam.mdl",
 	class		= "Sonar",
 	weight		= 20000,
 	powerscale	= 1.0,--Multiplier for the energy of the sonar. The base range of sonar is (300m,200m,100m) for an omnidirectional ping and (600m,400m,200m) for a directed ping.
@@ -60,4 +60,3 @@ ACF_DefineSonar("Large-Sonar", {
 	washoutfactor = 0.8, --Resistance to being washed out. 0.5 means washes out half as quickly. Full washout at 35 mph base.
 	acepoints = 3000
 } )
-]]--
