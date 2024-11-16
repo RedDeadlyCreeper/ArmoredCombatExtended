@@ -126,18 +126,17 @@ function ENT:Think()
 	if math.ceil(LastWater) ~= math.ceil(self.IsUnderWater) then
 		self.UpdateFX = true
 
-		local WaterTr = { }
-		WaterTr.start = Pos - self.Flight * 10
-		WaterTr.endpos = Pos + self.Flight * 500
-		WaterTr.mask = MASK_WATER
-		local Water = util.TraceLine( WaterTr )
-		if Water.Hit then
-			local Sparks = EffectData()
-			Sparks:SetOrigin( Pos )
-			Sparks:SetScale( self.Bulletdata2["Caliber"] * 2 )
-			util.Effect( "watersplash", Sparks )
-		end
-
+			local WaterTr = { }
+			WaterTr.start = Pos - self.Flight * 10
+			WaterTr.endpos = Pos + self.Flight * 500
+			WaterTr.mask = MASK_WATER
+			local Water = util.TraceLine( WaterTr )
+			if Water.Hit then
+				local Sparks = EffectData()
+				Sparks:SetOrigin( Pos )
+				Sparks:SetScale( self.Bulletdata2["Caliber"] * 2 )
+				util.Effect( "watersplash", Sparks )
+			end
 	end
 
 	if self.WaterZHeight == 0 then
@@ -153,7 +152,8 @@ function ENT:Think()
 
 	elseif self.WaterZHeight ~= -1 then
 		--print(Pos.z - self.WaterZHeight)
-		if Pos.z < self.WaterZHeight and Pos.z - self.WaterZHeight > -500 and self.MissileActive then
+		if Pos.z < self.WaterZHeight and Pos.z - self.WaterZHeight > -500 and self.MissileActive and CT > (self.NextWaterSplash or 0) then
+			self.NextWaterSplash = CT + 0.03
 			self.WaterZHeight = self.WaterZHeight
 			local Sparks = EffectData()
 			Sparks:SetOrigin( Vector(Pos.x, Pos.y, self.WaterZHeight) )
