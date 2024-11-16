@@ -52,7 +52,7 @@ function Round.create( Gun, BulletData )
 		BoostTime = 0.2,
 		BoostDelay = 0,
 
-		Drag = 0.003,
+		Drag = 0.0005,
 		GuidanceName = "Beam_Riding",
 		FuseName = "Contact",
 		HasInertial = false,
