@@ -73,10 +73,10 @@ function EFFECT:Init( data )
 	end
 
 	--Main explosion
-	if self.Radius < 10 then
+	if self.Radius < 7 then
 		self:ExplosionSmall()
 		ACF_RenderLight( 0, self.Radius * 700, Color(255, 90, 15), self.Origin, 0.2) -- idx 0: world
-	elseif self.Radius < 20 then
+	elseif self.Radius < 15 then
 		self:ExplosionMedium()
 		ACF_RenderLight( 0, self.Radius * 1600, Color(255, 90, 15), self.Origin, 0.5) -- idx 0: world
 	else
@@ -235,7 +235,7 @@ function EFFECT:ExplosionMedium()
 
 	if Glow then
 		Glow:SetLifeTime( 0 )
-		Glow:SetDieTime( 0.2 )
+		Glow:SetDieTime( 0.25 )
 		Glow:SetStartAlpha( 200 )
 		Glow:SetEndAlpha( 30 )
 		Glow:SetStartSize( 1.5 * Radius )
@@ -247,7 +247,7 @@ function EFFECT:ExplosionMedium()
 
 	if Glow then
 		Glow:SetLifeTime( 0 )
-		Glow:SetDieTime( 0.45 )
+		Glow:SetDieTime( 0.5 )
 		Glow:SetStartAlpha( 100 )
 		Glow:SetEndAlpha( 0 )
 		Glow:SetStartSize( 1.5 * Radius )
@@ -267,7 +267,7 @@ function EFFECT:ExplosionMedium()
 			Flash:SetStartAlpha(255)
 			Flash:SetEndAlpha(255)
 			Flash:SetStartSize(1 * Radius)
-			Flash:SetEndSize(7.5 * Radius)
+			Flash:SetEndSize(10 * Radius)
 			Flash:SetRoll(math.Rand(150, 360))
 			Flash:SetRollDelta(math.Rand(-0.3, 0.3))
 			Flash:SetAirResistance(600)
@@ -287,7 +287,7 @@ function EFFECT:ExplosionMedium()
 			Flash:SetStartAlpha(255)
 			Flash:SetEndAlpha(255)
 			Flash:SetStartSize(1 * Radius)
-			Flash:SetEndSize(7.5 * Radius)
+			Flash:SetEndSize(10 * Radius)
 			Flash:SetRoll(math.Rand(150, 360))
 			Flash:SetRollDelta(math.Rand(-0.3, 0.3))
 			Flash:SetAirResistance(600)
@@ -295,14 +295,14 @@ function EFFECT:ExplosionMedium()
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius * 15, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 8, 3, 600 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
 		if Dust then
 			Dust:SetVelocity((VectorRand()) * 130 * Radius)
-			local Lifetime = math.Rand(0.25, 0.45)
+			local Lifetime = math.Rand(0.25, 0.5)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(Lifetime)
 			Dust:SetStartAlpha(100)
@@ -319,7 +319,7 @@ function EFFECT:ExplosionMedium()
 			Dust:SetColor(240 + ColorRandom.x, 205 + ColorRandom.y, 135 + ColorRandom.z)
 			local Length = math.Rand(15, 37.5) * Radius
 			Dust:SetStartLength( Length )
-			Dust:SetEndLength( Length * 0.2 )
+			Dust:SetEndLength( Length * 0.15 )
 		end
 	end
 
@@ -330,7 +330,7 @@ function EFFECT:ExplosionMedium()
 
 		if Dust then
 			Dust:SetVelocity((VectorRand()) * 120 * Radius)
-			local Lifetime = math.Rand(0.35, 0.6)
+			local Lifetime = math.Rand(0.4, 0.7)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(Lifetime)
 			Dust:SetStartAlpha(255)
@@ -355,7 +355,7 @@ function EFFECT:ExplosionMedium()
 
 		if Dust then
 			Dust:SetVelocity((VectorRand()) * 120 * Radius)
-			local Lifetime = math.Rand(0.6, 0.9)
+			local Lifetime = math.Rand(0.7, 1.0)
 			Dust:SetLifeTime(0)
 			Dust:SetDieTime(Lifetime)
 			Dust:SetStartAlpha(200)
@@ -376,14 +376,14 @@ function EFFECT:ExplosionMedium()
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( Radius * 3, 3, 600 ) * PMul )
+	ParticleCount = math.ceil( math.Clamp( Radius * 0.75, 3, 300 ) * PMul )
 
 	for _ = 1, ParticleCount do
 		local Flash = self.Emitter:Add("particle/smokesprites_000" .. math.random(1,9), self.Origin - self.DirVec * (25 + 1.5 * Radius))
 
 		if Flash then
 			Flash:SetVelocity((VectorRand()) * 75 * Radius)
-			Flash:SetLifeTime(-0.2)
+			Flash:SetLifeTime(-0.3)
 			Flash:SetDieTime(4)
 			Flash:SetStartAlpha(60)
 			Flash:SetEndAlpha(0)
