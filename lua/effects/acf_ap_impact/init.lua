@@ -63,6 +63,10 @@ function EFFECT:Init( data )
 	self.Caliber     = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 2 ) or 2
 	self.Emitter     = ParticleEmitter( self.Origin )
 
+	-- I know it looks like the messy way to do things. But it would make a lot of math equations harder to follow later like the area calculations. And require extra multiplication.
+	self.Caliber	 = self.Caliber * 2 --Effect scale.
+
+
 	local LocPly = LocalPlayer()
 	local SurfaceTr = PerformDecalTrace( self )
 	local TraceEntity = SurfaceTr.Entity

@@ -194,7 +194,7 @@ end
 
 --UNLESS YOU WANT SPALL TO FLY BACKWARDS, BE ABSOLUTELY SURE TO MAKE SURE THIS VECTOR LENGTH IS LESS THAN 1
 --The vector controls the spread pattern. The multiplier adjusts the tightness of the spread cone. ABSOLUTELY DO NOT MAKE THE MULTIPLIER MORE THAN 1. A Vector of 1,1,0.5. Results in half the vertical spall spread
-ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.7
+ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 1
 
 
 ---------------------------------- Particle colors  ----------------------------------
