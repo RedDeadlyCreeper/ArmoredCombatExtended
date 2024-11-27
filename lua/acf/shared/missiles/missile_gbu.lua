@@ -68,7 +68,7 @@ ACF_defineGun("GBU-39", {						-- id
 	},
 
 	ent		= "acf_missile_to_rack",			-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"GPS"},
+	guidance	= {"Laser", "GPS"},
 	fuses	= {"Contact", "Optical", "Timed", "Altitude"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.

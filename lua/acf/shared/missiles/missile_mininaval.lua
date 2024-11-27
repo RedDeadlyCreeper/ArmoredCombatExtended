@@ -82,7 +82,13 @@ ACF_defineGun("Scaled BGM-109 Tomahawk", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xmVLS"] = true,
-					["4xmVLS"] = true
+					["4xmVLS"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -160,7 +166,13 @@ ACF_defineGun("Scaled AGM-84 Harpoon", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xmVLS"] = true,
-					["4xmVLS"] = true
+					["4xmVLS"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	skinindex	= {HEAT = 1, HE = 0},
@@ -238,7 +250,13 @@ ACF_defineGun("Scaled Storm Shadow ASM", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xmVLS"] = true,
-					["4xmVLS"] = true
+					["4xmVLS"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 			},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -315,7 +333,13 @@ ACF_defineGun("Scaled 3M-54 Kalibr", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xmVLS"] = true,
-					["4xmVLS"] = true
+					["4xmVLS"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -386,7 +410,13 @@ ACF_defineGun("Scaled Black Shark Torp", {						-- id
 	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true
+					["1xRK"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	seekcone   = 13,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
@@ -455,7 +485,13 @@ ACF_defineGun("Scaled G7a Torp", {						-- id
 	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true
+					["1xRK"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	seekcone   = 25,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25

@@ -83,7 +83,11 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 					["1xRK"] = true,
 					["1xVLS"] = true,
 					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
 					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
 					["1xTorpedo"] = true
 				},
 
@@ -163,7 +167,11 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 					["1xRK"] = true,
 					["1xVLS"] = true,
 					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
 					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
 					["1xTorpedo"] = true
 				},
 
@@ -243,7 +251,11 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 					["1xRK"] = true,
 					["1xVLS"] = true,
 					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
 					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
 					["1xTorpedo"] = true
 			},
 
@@ -322,7 +334,11 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 					["1xRK"] = true,
 					["1xVLS"] = true,
 					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
 					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
 					["1xTorpedo"] = true
 				},
 
@@ -398,8 +414,12 @@ ACF_defineGun("Black Shark Torp", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
-					["4xTorpedo"] = true,
-					["1xTorpedo"] = true
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	seekcone   = 13,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
@@ -470,7 +490,11 @@ ACF_defineGun("G7a Torp", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
 					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
 					["1xTorpedo"] = true
 				},
 
@@ -612,7 +636,11 @@ ACF_defineGun("Mk54 Torp", {						-- id
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
 					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
 					["1xTorpedo"] = true
 				},
 

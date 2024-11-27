@@ -781,7 +781,7 @@ ACF_DefineRack("4xmVLS", {
 ACF_DefineRack("1xTorpedo", {
 	name = "1x 533mm Torpedo Rack",
 	desc = "A single 533cm torpedo rack.",
-	model	= "models/golem/torpedolaunchers/1xtorpedolauncher.mdl",
+	model	= "models/golem/torpedolaunchers/1x1xtorpedolauncher.mdl",
 	gunclass = "POD",
 	weight = 700,
 	year = 1889,
@@ -792,14 +792,53 @@ ACF_DefineRack("1xTorpedo", {
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(8,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		["missile1"] = { ["pos"] = Vector(12,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("2xTorpedo", {
+	name = "2x 533mm Torpedo Rack",
+	desc = "Twin 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/1x2xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 2,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(28,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(28,-25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("3xTorpedo", {
+	name = "3x 533mm Torpedo Rack",
+	desc = "Triple 533cm torpedo rack.",
+	model	= "models/golem/TorpedoLaunchers/1x3xTorpedoLauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 3,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(28,25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(28,0,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(28,-25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )
 
 ACF_DefineRack("4xTorpedo", {
 	name = "4x 533mm Torpedo Rack",
 	desc = "A quad 533cm torpedo rack.",
-	model	= "models/golem/TorpedoLaunchers/4xTorpedoLauncher.mdl",
+	model	= "models/golem/torpedolaunchers/1x4xtorpedolauncher.mdl",
 	gunclass = "POD",
 	weight = 700,
 	year = 1889,
@@ -810,9 +849,177 @@ ACF_DefineRack("4xTorpedo", {
 
 	mountpoints =
 	{
-		["missile1"] = { ["pos"] = Vector(8,-37.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile2"] = { ["pos"] = Vector(8,-12.65,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile3"] = { ["pos"] = Vector(8,12.65,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
-		["missile4"] = { ["pos"] = Vector(8,37.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		["missile1"] = { ["pos"] = Vector(12,-37.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(12,-12.65,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(12,12.65,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(12,37.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("5xTorpedo", {
+	name = "5x 533mm Torpedo Rack",
+	desc = "Quintuple 533cm torpedo rack.",
+	model	= "models/golem/TorpedoLaunchers/1x5xTorpedoLauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 4,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(12,37.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(12,12.5,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(12,-12.5,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(12,-37.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(12,-62.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("6xTorpedo", {
+	name = "6x 533mm Torpedo Rack",
+	desc = "Sextuple 533cm torpedo rack.",
+	model	= "models/golem/TorpedoLaunchers/1x6xTorpedoLauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 4,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(12,62.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(12,37,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(12,12.5,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(12,-12.5,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(12,-37,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile6"] = { ["pos"] = Vector(12,-62.25,0), ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("1xSmallTorpedo", {
+	name = "1x 533mm Torpedo Rack",
+	desc = "A single 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/375x1xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 1,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(12,0,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("2xSmallTorpedo", {
+	name = "2x 533mm Torpedo Rack",
+	desc = "Twin 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/375x2xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 2,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(28,0,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(28,-25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("3xSmallTorpedo", {
+	name = "3x 533mm Torpedo Rack",
+	desc = "Triple 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/375x3xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 3,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(28,25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(28,0,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(28,-25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("4xSmallTorpedo", {
+	name = "4x 533mm Torpedo Rack",
+	desc = "A quad 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/375x4xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 4,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(12,-37.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(12,-12.65,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(12,12.65,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(12,37.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("5xSmallTorpedo", {
+	name = "5x 533mm Torpedo Rack",
+	desc = "Quintuple 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/375x5xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 4,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(12,37.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(12,12.5,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(12,-12.5,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(12,-37.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(12,-62.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+	}
+} )
+
+ACF_DefineRack("6xSmallTorpedo", {
+	name = "6x 533mm Torpedo Rack",
+	desc = "Sextuple 533cm torpedo rack.",
+	model	= "models/golem/torpedolaunchers/375x6xtorpedolauncher.mdl",
+	gunclass = "POD",
+	weight = 700,
+	year = 1889,
+	magsize = 4,
+	protectmissile  = true,
+	hidemissile	= false,
+	whitelistonly	= true,
+
+	mountpoints =
+	{
+		["missile1"] = { ["pos"] = Vector(12,62.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile2"] = { ["pos"] = Vector(12,37,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile3"] = { ["pos"] = Vector(12,12.5,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile4"] = { ["pos"] = Vector(12,-12.5,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile5"] = { ["pos"] = Vector(12,-37,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)},
+		["missile6"] = { ["pos"] = Vector(12,-62.25,0) * 0.375, ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
 	}
 } )
