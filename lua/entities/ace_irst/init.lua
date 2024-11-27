@@ -28,8 +28,7 @@ function ENT:Initialize()
 		"Owner (Returns an array of the players who own the detected targets) [ARRAY]",
 		"Angle (Returns an array of angles towards the detected targets) [ARRAY]",
 		"EffHeat (Returns an array of the temperature of the detected targets) [ARRAY]",
-		"ID (Returns an array of unique IDs for each target that can be used to track a specific contraption) [ARRAY]",
-		"Distance (Returns an array of distances to each target, in GMod units) [ARRAY]"
+		"ID (Returns an array of unique IDs for each target that can be used to track a specific contraption) [ARRAY]"
 	})
 
 	self.OutputData = {
@@ -37,8 +36,7 @@ function ENT:Initialize()
 		Owner			= {},
 		Angle			= {},
 		EffHeat			= {},
-		ID				= {},
-		Distance		= {}
+		ID				= {}
 	}
 
 	self:SetActive(false)
@@ -177,14 +175,12 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Angle", {} )
 		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ID", {} )
-		WireLib.TriggerOutput( self, "Distance", {} )
 
 		self.OutputData.Detected = 0
 		self.OutputData.Owner = {}
 		self.OutputData.Angle = {}
 		self.OutputData.EffHeat = {}
 		self.OutputData.ID = {}
-		self.OutputData.Distance = {}
 
 		self.Heat = ACE.AmbientTemp
 	end
@@ -310,7 +306,6 @@ function ENT:ScanForContraptions()
 		WireLib.TriggerOutput( self, "Angle", AngTable )
 		WireLib.TriggerOutput( self, "EffHeat", Temperatures )
 		WireLib.TriggerOutput( self, "ID", IDs )
-		WireLib.TriggerOutput( self, "Distance", Distances )
 
 
 		OutputData.Detected = 1
@@ -318,21 +313,18 @@ function ENT:ScanForContraptions()
 		OutputData.Angle = AngTable
 		OutputData.EffHeat = Temperatures
 		OutputData.ID = IDs
-		OutputData.Distance = Distances
 	else
 		WireLib.TriggerOutput( self, "Detected", 0 )
 		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Angle", {} )
 		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ID", {} )
-		WireLib.TriggerOutput( self, "Distance", {} )
 
 		OutputData.Detected = 0
 		OutputData.Owner = {}
 		OutputData.Angle = {}
 		OutputData.EffHeat = {}
 		OutputData.ID = {}
-		OutputData.Distance = {}
 	end
 end
 
