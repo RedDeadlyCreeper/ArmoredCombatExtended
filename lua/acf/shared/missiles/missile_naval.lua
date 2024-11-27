@@ -82,7 +82,13 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xVLS"] = true,
-					["4xVLS"] = true
+					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
+					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
+					["1xTorpedo"] = true
 				},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -91,7 +97,7 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.3,								-- minimum fuse arming delay --was 0.3
 
 } )
 
@@ -160,7 +166,13 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xVLS"] = true,
-					["4xVLS"] = true
+					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
+					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
+					["1xTorpedo"] = true
 				},
 
 	skinindex	= {HEAT = 1, HE = 0},
@@ -171,7 +183,7 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.3,								-- minimum fuse arming delay --was 0.3
 
 } )
 
@@ -238,7 +250,13 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xVLS"] = true,
-					["4xVLS"] = true
+					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
+					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
+					["1xTorpedo"] = true
 			},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -247,7 +265,7 @@ ACF_defineGun("Storm Shadow ASM", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.3,								-- minimum fuse arming delay --was 0.3
 
 } )
 
@@ -315,7 +333,13 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 	racks	= {									-- a whitelist for racks that this missile can load into.
 					["1xRK"] = true,
 					["1xVLS"] = true,
-					["4xVLS"] = true
+					["4xVLS"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
+					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
+					["1xTorpedo"] = true
 				},
 
 	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
@@ -324,7 +348,7 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15,								-- minimum fuse arming delay --was 0.3
+	armdelay           = 0.3,								-- minimum fuse arming delay --was 0.3
 
 } )
 
@@ -352,6 +376,7 @@ ACF_defineGun("Black Shark Torp", {						-- id
 		firedelay			= 0.5,
 		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
+
 
 		maxlength			= 175,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.001,							-- Motor mass - motor casing. Used for ammo properties.
@@ -388,7 +413,13 @@ ACF_defineGun("Black Shark Torp", {						-- id
 	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true
+					["1xRK"] = true,
+					["6xSmallTorpedo"] = true,
+					["5xSmallTorpedo"] = true,
+					["4xSmallTorpedo"] = true,
+					["3xSmallTorpedo"] = true,
+					["2xSmallTorpedo"] = true,
+					["1xSmallTorpedo"] = true
 				},
 
 	seekcone   = 13,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
@@ -396,7 +427,7 @@ ACF_defineGun("Black Shark Torp", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.3								-- minimum fuse arming delay		--was 0.4
 } )
 
 ACF_defineGun("G7a Torp", {						-- id
@@ -422,6 +453,7 @@ ACF_defineGun("G7a Torp", {						-- id
 		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
 
+
 		maxlength			= 250,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.001,							-- Motor mass - motor casing. Used for ammo properties.
 
@@ -434,7 +466,7 @@ ACF_defineGun("G7a Torp", {						-- id
 		burntime			= 120,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
-		launchkick			= 20,							-- Speed missile starts with on launch in m/s
+		launchkick			= 25,							-- Speed missile starts with on launch in m/s
 
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
@@ -457,7 +489,13 @@ ACF_defineGun("G7a Torp", {						-- id
 	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true
+					["1xRK"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
+					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
+					["1xTorpedo"] = true
 				},
 
 	seekcone   = 25,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
@@ -465,7 +503,7 @@ ACF_defineGun("G7a Torp", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.3								-- minimum fuse arming delay		--was 0.4
 } )
 
 ACF_defineGun("Mk13 Torp", {						-- id
@@ -490,6 +528,7 @@ ACF_defineGun("Mk13 Torp", {						-- id
 		firedelay			= 0.5,
 		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
+
 
 		maxlength			= 100,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.001,							-- Motor mass - motor casing. Used for ammo properties.
@@ -534,7 +573,7 @@ ACF_defineGun("Mk13 Torp", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.3								-- minimum fuse arming delay		--was 0.4
 } )
 
 ACF_defineGun("Mk54 Torp", {						-- id
@@ -559,6 +598,7 @@ ACF_defineGun("Mk54 Torp", {						-- id
 		firedelay			= 0.5,
 		reloadspeed			= 6.0,
 		reloaddelay			= 25.0,
+
 
 		maxlength			= 100,							-- Length of missile. Used for ammo properties.
 		propweight			= 0.001,							-- Motor mass - motor casing. Used for ammo properties.
@@ -595,7 +635,13 @@ ACF_defineGun("Mk54 Torp", {						-- id
 	fuses	= {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true
+					["1xRK"] = true,
+					["6xTorpedo"] = true,
+					["5xTorpedo"] = true,
+					["4xTorpedo"] = true,
+					["3xTorpedo"] = true,
+					["2xTorpedo"] = true,
+					["1xTorpedo"] = true
 				},
 
 	seekcone   = 25,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
@@ -603,7 +649,7 @@ ACF_defineGun("Mk54 Torp", {						-- id
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
-	armdelay           = 0.15								-- minimum fuse arming delay		--was 0.4
+	armdelay           = 0.3								-- minimum fuse arming delay		--was 0.4
 } )
 
 

@@ -733,7 +733,7 @@ ACF_defineGun("StarstreakHVM", {										-- id
 	},
 
 	ent        = "acf_missile_to_rack",					-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Beam_Riding", "SACLOS"},
+	guidance   = {"Dumb", "Beam_Riding", "SACLOS", "Semiactive"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 
 	racks = {										-- a whitelist for racks that this missile can load into.

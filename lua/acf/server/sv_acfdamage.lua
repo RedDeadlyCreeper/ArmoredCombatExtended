@@ -382,8 +382,9 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 		local WeightFactor = MatData.massMod or 1
 		-- local Max_Spall_Mass = 10
 
-		local Velocityfactor = 10
+		local Velocityfactor = 20
 		local Max_Spall_Vel = 7000
+		local MassFactor = 6
 		
 		local Max_Spalls = 128
 
@@ -398,9 +399,11 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 		local TotalWeight = (Spall / (Cal_In_MM * (PI / 180)))
 		local SpallWeight = ((TotalWeight / (Spall / 10)) + (ArmorMul + WeightFactor))
 		local SpallVel = ((KE * Velocityfactor) / SpallWeight)
-		local SpallArea = (TotalWeight / SpallWeight)
+		SpallWeight = SpallWeight * MassFactor
+		local SpallArea = 4 * (TotalWeight / SpallWeight)
 		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, Max_Spall_Vel)
 		
+
 		-- print("AR: " .. SpallArea)
 		
 		-- print("TW: " .. TotalWeight)

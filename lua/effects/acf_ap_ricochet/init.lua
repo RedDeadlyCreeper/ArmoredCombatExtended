@@ -35,6 +35,10 @@ function EFFECT:Init( data )
 	self.Scale         = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
 	self.Id            = ValidCrate and self.AmmoCrate:GetNWString( "AmmoType", "AP" ) or "AP"
 	self.Caliber       = ValidCrate and self.AmmoCrate:GetNWFloat( "Caliber", 2 ) or 2
+
+	-- I know it looks like the messy way to do things. But it would make a lot of math equations harder to follow later like the area calculations. And require extra multiplication.
+	self.Caliber	 = self.Caliber * 2 --Effect scale.
+
 	self.Emitter       = ParticleEmitter( self.Origin )
 
 	local SurfaceTr	= PerformDecalTrace( self )

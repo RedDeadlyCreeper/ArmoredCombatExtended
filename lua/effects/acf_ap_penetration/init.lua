@@ -75,6 +75,9 @@ function EFFECT:Init( data )
 		self.Caliber = 1 -- If you lose the crate at this point, adding a 10cm (100mm) could lead to cases like doing huge sparks from a 7.62mm MG...
 	end
 
+	-- I know it looks like the messy way to do things. But it would make a lot of math equations harder to follow later like the area calculations. And require extra multiplication.
+	self.Caliber	 = self.Caliber * 2 --Effect scale.
+
 	self.Emitter     = ParticleEmitter( self.Origin )
 
 	local SurfaceTr = PerformDecalTrace( self )
