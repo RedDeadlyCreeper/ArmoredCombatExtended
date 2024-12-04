@@ -81,7 +81,7 @@ SWEP.IronSightsAng = Vector( 0, 0, 0 )
 
 SWEP.SeekSensitivity = 1
 
-SWEP.Lockrate = 0.014 --Lock rate per second
+SWEP.Lockrate = 0.032 --Lock rate per second
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Bool", 1, "LaunchAuth")
@@ -154,7 +154,7 @@ function SWEP:InitBulletData()
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.FillerVol = self.BulletData.Data5
 	self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 250
+	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 50
 	local ConeArea = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
 	local ConeThick = self.BulletData.Caliber / 50
 	local ConeVol = ConeArea * ConeThick

@@ -14,8 +14,8 @@ function ENT:Initialize()
 	self:SetGravity( 0.01 )
 	--self:SetNoDraw(true)
 
-	self.Heat		= self.Heat or 1
-	self.FirstHeat		= self.Heat
+	self.Thermal		= self.Thermal or 1
+	self.FirstThermal	= self.FirstThermal or 1
 	self.Life		= self.Life or 0.1
 	self.RadarSig   = self.RadarSig or 1
 	self.FirstRadarSig = self.RadarSig
@@ -39,13 +39,12 @@ function ENT:Initialize()
 
 	self:SetRenderMode( RENDERMODE_TRANSCOLOR )
 
-	if self.IsChaff then
-		ACE.CMTable[self] = true
 
-		self:CallOnRemove( "ACEFlareRemove", function(ent)
-			ACE.CMTable[ent] = nil
-		end )
-	end
+	ACE.CMTable[self] = true
+
+	self:CallOnRemove( "ACEFlareRemove", function(ent)
+		ACE.CMTable[ent] = nil
+	end )
 
 	table.insert( ACE.contraptionEnts, self )
 end
@@ -53,7 +52,7 @@ end
 function ENT:Think()
 
 	if self:WaterLevel() == 3 then
-		self.Heat = 0
+		self.Thermal = 0
 		self:StopParticles()
 
 		return false
@@ -61,9 +60,9 @@ function ENT:Think()
 
 	local AliveTime = (ACF.CurTime - self.FirstTime)
 	local EffectivenessMul = (1 - (AliveTime / self.Life))
-	self.Heat = self.FirstHeat * EffectivenessMul
+	self.Thermal = self.FirstThermal * EffectivenessMul
 	self.RadarSig = self.FirstRadarSig * EffectivenessMul
-	--print(self.Heat)
+	--print(self.Thermal)
 	--print(self.RadarSig)
 
 	self:NextThink( CurTime() + 0.2 )
@@ -80,7 +79,7 @@ function ENT:PhysicsCollide( Table )
 		if vFireInstalled then
 			CreateVFireEntFires(HitEnt, 3)
 		else
-			HitEnt:Ignite( self.Heat, 1 )
+			HitEnt:Ignite( self.Thermal, 1 )
 		end
 	end
 end

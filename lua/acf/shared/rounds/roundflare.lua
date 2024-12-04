@@ -29,10 +29,11 @@ function Round.create( Gun, BulletData )
 
 		local phys = ent:GetPhysicsObject()
 		phys:SetVelocity( BulletData.Flight * 0.35 )
-		local avgFac = 1 - (math.Rand(0.2,0.85) ^ 2)
-		ent.Heat = (BulletData.FillerMass or 1) * 641 * avgFac -- 513 is 300 temperature for a standard 40mm flare. This is 1x an aircraft moving at 300 mph. I've added some extra measure. 1.71 * temp needed.
-		ent.FirstHeat = ent.Heat
-		ent.RadarSig = 0.25 --Flares have a quarter of the radar signiture of a normal target
+		local avgFac = 1 - math.Rand(0.5,1.0)
+		ent.Thermal = (BulletData.FillerMass or 1) * 641 * avgFac -- 513 is 300 temperature for a standard 40mm flare. This is 1x an aircraft moving at 300 mph. I've added some extra measure. 1.71 * temp needed.
+
+		ent.FirstThermal = ent.Thermal
+		ent.RadarSig = 0.1 --Flares have a quarter of the radar signiture of a normal target
 		--print(avgFac)
 		--print(ent.Heat)
 

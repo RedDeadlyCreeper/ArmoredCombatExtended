@@ -617,6 +617,8 @@ function GenerateMissile(MissileData,Crate,BData) --Shorthand function for gener
 	local BulletData = ACFM_CompactBulletData(Crate)
 	BulletData.IsShortForm  = true
 	BData.Owner		= ply
+	BData.irccm = MissileData.ECCM or false
+	missile.BulletData = BData
 	--missile:SetBulletData(BData)
 	--missile.Bulletdata2 = Crate.BulletData --Sets non compacted bulletdata for spawning a shell. I guarantee there's a better way to do this.
 	missile.Bulletdata2 = BData

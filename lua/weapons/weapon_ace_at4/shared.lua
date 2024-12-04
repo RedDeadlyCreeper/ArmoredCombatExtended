@@ -9,7 +9,7 @@ SWEP.SlotPos = 3 --Priority in which the weapon appears, 1 tries to put it at th
 
 
 --Main settings--
-SWEP.FireRate = 0.35 --Rounds per second
+SWEP.FireRate = 0.2 --Rounds per second
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 10
@@ -39,7 +39,7 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 100 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 400 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
@@ -49,7 +49,7 @@ SWEP.MaxSpread = 15 --Maximum added random spread from heat value, in degrees
 SWEP.MovementSpread = 2 --Increase aimcone to this many degrees when sprinting at full speed
 SWEP.UnscopedSpread = 0.5 --Spread, in degrees, when unscoped with a scoped weapon
 
-SWEP.CarrySpeedMul			= 0.6
+SWEP.CarrySpeedMul			= 0.7
 
 --Model settings--
 SWEP.ViewModelFlip = false
@@ -103,7 +103,7 @@ function SWEP:InitBulletData()
 	self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
 	--		self.BulletData.DragCoef  = 0 --Alternatively manually set it
 	self.BulletData.DragCoef = ((self.BulletData.FrArea / 10000) / self.BulletData.ProjMass)
-	self.BulletData.FillerMass = self.BulletData.FillerMass / 130
+	self.BulletData.FillerMass = self.BulletData.FillerMass / 5
 	self.BulletData.BoomFillerMass = self.BulletData.FillerMass
 	--print(self.BulletData.SlugDragCoef)
 	--Don't touch below here
@@ -158,7 +158,7 @@ function SWEP:PrimaryAttack()
 				Owner = owner,
 				Launcher = owner,
 
-				Pos = owner:GetShootPos() + owner:GetAimVector() * 700,
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 770,
 				Ang = owner:GetAimVector():Angle(),
 
 				Mdl = "models/munitions/round_100mm_mortar_shot.mdl",
@@ -167,7 +167,7 @@ function SWEP:PrimaryAttack()
 				FinMul = 0,
 				ThrusterTurnRate = 0,
 
-				InitialVelocity = 134,
+				InitialVelocity = 234,
 				Thrust = 0,
 				BurnTime = 5,
 				MotorDelay = 0,
@@ -176,7 +176,7 @@ function SWEP:PrimaryAttack()
 				BoostTime = 0,
 				BoostDelay = 0,
 
-				Drag = 0.003,
+				Drag = 0.001,
 				GuidanceName = "Dumb",
 				FuseName = "Contact",
 				HasInertial = false,
@@ -187,8 +187,8 @@ function SWEP:PrimaryAttack()
 				ArmorThickness = 8,
 
 				MotorSound = "acf_extra/airfx/rpg_fire.wav",
-				BoostEffect = "Rocket Motor ATGM",
-				MotorEffect = "Rocket Motor ATGM"
+				BoostEffect = "ACE_RocketBlackSmoke",
+				MotorEffect = "ACE_RocketBlackSmoke"
 			}
 			local BData = self.BulletData
 			BData.BulletData = nil

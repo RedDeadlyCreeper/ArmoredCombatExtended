@@ -75,7 +75,7 @@ ACF_defineGun("BGM-109 Tomahawk", {						-- id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant"},
+	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant", "Radar"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 
@@ -132,7 +132,7 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 								--320
 		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 70,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		thrusterturnrate	= 50,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 14,							-- Acceleration in m/s.
 
@@ -177,7 +177,7 @@ ACF_defineGun("AGM-84 Harpoon", {						-- id
 
 	skinindex	= {HEAT = 1, HE = 0},
 
-	seekcone   = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone   = 90,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 5,
 
@@ -326,7 +326,7 @@ ACF_defineGun("3M-54 Kalibr", {						-- id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant"},
+	guidance	= {"Dumb", "GPS", "GPS_TerrainAvoidant", "Radar"},
 	fuses      = {"Contact", "Overshoot", "Radio", "Optical", "Timed", "Altitude"},
 	groundclutterfactor = 0,						--Disables radar ground clutter for millimeter wave radar guidance.
 

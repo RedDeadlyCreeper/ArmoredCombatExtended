@@ -69,7 +69,7 @@ function this:GetGuidance(missile)
 	--	return {TargetPos = nil}
 	--end
 
-	if not IsValid(self.GuidanceEntity) then return {TargetPos = nil} end
+	if not IsValid(self.GuidanceEntity) or (missile.IsJammed ~= 0) then return {TargetPos = nil} end
 
 	local GEntPos = self.GuidanceEntity:GetPos()
 	local GEntDir = self.GuidanceEntity:GetForward()

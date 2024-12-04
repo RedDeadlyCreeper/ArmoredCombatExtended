@@ -39,9 +39,9 @@ function Round.create( Gun, BulletData )
 
 		Mdl = mdl,
 
-		TurnRate = 70,
-		FinMul = 0.45,
-		ThrusterTurnRate = 20,
+		TurnRate = 80,
+		FinMul = 0.65,
+		ThrusterTurnRate = 30,
 
 		InitialVelocity = 20,
 		Thrust = 44 * SMul,

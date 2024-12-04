@@ -29,11 +29,11 @@ function Round.create( Gun, BulletData )
 		local phys = ent:GetPhysicsObject()
 		phys:SetVelocity( BulletData.Flight * 0.125 )
 		--phys:EnableGravity(false)
-		local avgFac = 1 - (math.Rand(0.2,0.85) ^ 2)
+		local avgFac = 1 - math.Rand(0,1.0)
 		ent.Heat = 0 --No thermal signiture for chaff.
 		ent.FirstHeat = ent.Heat
 
-		ent.RadarSig = (BulletData.FillerMass or 1) * 5 * avgFac --1.71 is 1x. 2.1375 is 1.25x radar signiture avg at full filler.
+		ent.RadarSig = (BulletData.FillerMass or 1) * 1.85 * avgFac --1.71 is 1x. 2.1375 is 1.25x radar signiture avg at full filler.
 		ent.FirstRadarSig = ent.RadarSig
 		--print(avgFac)
 		--print(ent.RadarSig)
