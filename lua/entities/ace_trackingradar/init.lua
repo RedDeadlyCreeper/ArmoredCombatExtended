@@ -60,7 +60,7 @@ end
 
 local function SetConeParameters( Radar )
 
-	Radar.ConeInducedGCTRSize    = Radar.Cone * 10
+	Radar.ConeInducedGCTRSize    = Radar.ICone * 10
 
 end
 
@@ -264,6 +264,9 @@ function ENT:ScanForContraptions()
 
 	local BTFactor = 1 / (1 + ((self.Cone - 1) / (self.ICone - 1)) * 2)
 
+	local CounterMeasures = ACFM_GetFlaresInCone(SelfPos, SelfForward, self.Cone * 2)
+	local CMCount = table.Count(CounterMeasures)
+
 	for Contraption in pairs(CFW.Contraptions) do
 		local Base = Contraption:GetACEBaseplate()
 		if Contraption ~= SelfContraption and IsValid(Base) then
@@ -325,8 +328,23 @@ function ENT:ScanForContraptions()
 				end
 
 				if ValidTarget then
-					local BaseInaccuracy = VectorRand() * (BaseDistance / 10)
+					local BaseInaccuracy = VectorRand() * (BaseDistance / 10) * (1 + self.JamStrength / 2)
 					local OffboreInaccuracy = 1 + (AngleFromTarget / self.ICone) * self.OffBoreInaccFactor
+
+
+					if CMCount > 0 then
+						BaseInaccuracy = BaseInaccuracy * 1.25
+						OffboreInaccuracy = OffboreInaccuracy * 3
+						local ratio = math.Rand(0,1)
+						if ratio > 0.6 then
+							local CM = CounterMeasures[math.random(1,CMCount)]
+							local SigStrength = CM.RadarSig
+							if SigStrength > 0.2 then
+								BasePos = CM:GetPos()
+								BaseInaccuracy = BaseInaccuracy * 2.25
+							end
+						end
+					end
 
 					OutputPosition = BasePos + BaseInaccuracy * OffboreInaccuracy
 					OutputDistance = OutputPosition:Distance(SelfPos) / 39.3701
@@ -363,6 +381,9 @@ function ENT:ScanForContraptions()
 		OutputData.Position = Positions
 		OutputData.Velocity = Velocities
 		OutputData.ID = IDs
+
+		table.Merge(self.AcquiredTargets,CounterMeasures)
+
 	else
 		WireLib.TriggerOutput(self, "Detected", 0)
 		WireLib.TriggerOutput(self, "Owner", {})

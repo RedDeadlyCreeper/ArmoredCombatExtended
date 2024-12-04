@@ -22,7 +22,7 @@ this.Target = nil
 this.SeekCone = 20
 
 -- Cone to retain targets within.
-this.ViewCone = 25
+this.ViewCone = 70
 
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.1 -- Re-seek drastically reduced cost so we can re-seek
@@ -104,7 +104,7 @@ function this:GetGuidance(missile)
 
 		local TarVel = (self.TPos - Lastpos) / engine.TickInterval()
 		missile.TargetVelocity = TarVel --Used for Inertial Guidance
-		self.TargetPos = self.TPos + TarVel * self.TTime  * (missile.MissileActive and 1 or 0) --Don't lead the target on the rail
+		self.TargetPos = self.TPos + TarVel * self.TTime  * ((missile.MissileActive and (missile.IsJammed == 0)) and 1 or 0) --Don't lead the target on the rail
 		return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 	end
 
@@ -147,6 +147,13 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	--local ScanArray = ACE.contraptionEnts
 
+	local ConeInducedGCTRSize = self.SeekCone * 10 --2 meter wide tracehull for every 100m distance
+	local GCTraceData = {
+		mask = bit.bor(MASK_WATER, MASK_SOLID_BRUSHONLY),
+		mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
+		maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize )
+	}
+
 	local scanEnt = nil
 	for Contraption in pairs(CFW.Contraptions) do
 		scanEnt = Contraption:GetACEBaseplate() or nil
@@ -179,15 +186,9 @@ function this:GetWhitelistedEntsInCone(missile)
 			--Trace did not hit world
 			if not LOStr.Hit then
 
-				local ConeInducedGCTRSize = dist / 100 * self.GCMultiplier --2 meter wide tracehull for every 100m distance
-				local GCtr = util.TraceHull( {
-					start = entpos,
-					endpos = entpos + difpos:GetNormalized() * 16000 * self.GCMultiplier ,
-					collisiongroup  = COLLISION_GROUP_WORLD,
-					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
-					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
-					filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
-				}) --Hits anything in the world.
+				local GCtr = util.TraceHull( GCTraceData ) --Hits anything in the world.
+				GCTraceData.start = entpos
+				GCTraceData.endpos = entpos + difpos:GetNormalized() * 16000 * self.GCMultiplier
 
 				--Doppler testing fun
 				local entvel = scanEnt:GetVelocity()
@@ -234,9 +235,16 @@ function this:AcquireLock(missile)
 
 	if missile.TargetPos then
 		--print("HasTpos")
-		self.OffBoreAng = missile:WorldToLocalAngles((missile.TargetPos - missilePos):Angle()) or Angle()
+		DifSeek = missile.TargetPos - missilePos
+		self.OffBoreAng = missile:WorldToLocalAngles(DifSeek:Angle()) or Angle()
 		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
+
+	else
+		DifSeek = missile:GetForward()
 	end
+
+	local CounterMeasures = ACFM_GetFlaresInCone(missilePos, DifSeek, self.SeekCone)
+	table.Merge(found,CounterMeasures)
 
 	for _, classifyent in pairs(found) do
 
@@ -279,9 +287,9 @@ function this:AcquireLock(missile)
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then
-				if Multiplier > 1 then
-					print("Flarewon")
-				end
+				--if Multiplier > 1 then
+				--	print("Flarewon")
+				--end
 					bestAng = testang
 				bestent = classifyent
 

@@ -86,6 +86,12 @@ function ENT:Initialize()
 
 	self.WaterZHeight = -1 --If set to >=0 it will indicate it's a torpedo.
 	self.UpdateFX = true
+
+	--ECM Jamming
+	self.IsJammed			= 0
+	self.NextJamCheck		= 0
+	self.ResetJamDelay		= 1 --Periodically resets jamming strength to zero for the jammer to apply the highest noise available. This means the jamming won't always remain at full strength without a lot of networking.
+
 end
 
 
@@ -116,7 +122,7 @@ function ENT:Think()
 	local FlightDir = self.Flight:GetNormalized()
 	local Facing = self:GetForward()
 	local AngleOfAttack = math.min(math.abs(math.acos(FlightDir:Dot( Facing ))),0.785) --45*180/3.14
---	local DifFacing = (Facing:Angle() - FlightDir:Angle())
+	--local DifFacing = (Facing:Angle() - FlightDir:Angle())
 	local DifFacing = (FlightDir:Angle() - Facing:Angle())
 	DifFacing = Angle(math.NormalizeAngle(DifFacing.pitch),math.NormalizeAngle(DifFacing.yaw),0)
 
@@ -202,7 +208,7 @@ function ENT:Think()
 
 		if TestPos then --Guidance location is valid. Update the target position.
 			self.TargetPos = TestPos or nil
-		elseif self.HasDatalink and self.Launcher.TargPos then --Guidance location is not valid. Use datalink position if available.
+		elseif self.HasDatalink and self.Launcher.TargPos and not self.IsJammed then --Guidance location is not valid. Use datalink position if available.
 			--and IsValid(self.Launcher) Don't know if needed?
 
 
@@ -497,6 +503,15 @@ function ENT:Think()
 
 	end
 
+
+	if self.IsJammed ~= 0 and ACF.CurTime > self.NextJamCheck then
+		self.NextJamCheck = ACF.CurTime + self.ResetJamDelay
+		--print("ResetJam")
+		--Reset everything for next check
+		self.IsJammed			= 0
+
+	end
+
 	self.LastPos = Pos
 
 	return true
@@ -564,7 +579,7 @@ function ENT:Detonate()
 	self.Exploded = true
 	ACF_ActiveMissiles[self] = nil
 
-	local HEWeight = self.Bulletdata2.BoomFillerMass
+	local HEWeight = self.Bulletdata2.BoomFillerMass or self.Bulletdata2.FillerMass or 1
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
 --	if not IsValid(self.Launcher) then return end

@@ -38,7 +38,7 @@ function this:GetGuidance(missile)
 
 	if self.FirstGuidance then
 
-	local launcher = missile.Launcher
+		local launcher = missile.Launcher
 
 		if not IsValid(launcher) then
 			return {}
@@ -52,6 +52,10 @@ function this:GetGuidance(missile)
 
 		self.FirstGuidance = false
 		self.TargetPos = posVec
+	end
+
+	if missile.IsJammed ~= 0 then
+		self.TargetPos = nil
 	end
 
 	return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}

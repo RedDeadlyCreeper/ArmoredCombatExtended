@@ -52,6 +52,14 @@ function ENT:Initialize()
 
 	self.Heat 				= ACE.AmbientTemp
 
+	self.IsJammed			= 0
+	self.JamStrength		= 0
+	self.JamDir				= vector_origin
+	self.NextJamCheck		= 0
+	self.ResetJamDelay		= 0.2 --Periodically resets jamming strength to zero for the jammer to apply the highest noise available. This means the jamming won't always remain at full strength without a lot of networking.
+
+	self.PowerID = 10
+
 	self.Active				= false
 
 	self:CreateRadar(self.ACFName or "Missile Radar", self.ConeDegs or 180)
@@ -223,6 +231,17 @@ function ENT:Think()
 	WireLib.TriggerOutput(self, "Heat", self.Heat)
 	self:GetOverlayText()
 
+	if self.IsJammed ~= 0 and ACF.CurTime > self.NextJamCheck then
+		self.NextJamCheck = ACF.CurTime + self.ResetJamDelay
+
+		--Reset everything for next check
+		self.IsJammed			= 0
+		self.JamStrength		= 0
+		self.JamDir				= vector_origin
+
+	end
+
+
 	return true
 end
 
@@ -255,20 +274,25 @@ function ENT:ScanForMissiles()
 
 	local thisPos = self:GetPos()
 
+
+	local BurnThroughDist = (40  / self.JamStrength * 39.37) ^ 2
 	for _, missile in pairs(missiles) do
 
 		if (missile.IsUnderWater or 0) > 0 then
-			print("WaterLevelExclusion: " .. missile.IsUnderWater)
+			--print("WaterLevelExclusion: " .. missile.IsUnderWater)
 			continue
 		end
+
+		local curSqr = thisPos:DistToSqr(missile.CurPos)
+
+		local BurnThrough = self.IsJammed == 0 or  BurnThroughDist >= curSqr
+		if not BurnThrough then continue end
 
 		i = i + 1
 
 		entArray[i] = missile
 		posArray[i] = missile:GetPos() --Replaced with non-cached value as to not lag behind.
 		velArray[i] = missile.Flight
-
-		local curSqr = thisPos:DistToSqr(missile.CurPos)
 
 		if curSqr < closestSqr then
 			closest = missile.CurPos
@@ -349,6 +373,11 @@ function ENT:GetOverlayText()
 	txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
 
 	txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
+
+	local Jammed = self.IsJammed
+	if Jammed > 0 then
+		txt = txt .. "\n\n! ! ! Warning: Jammed ! ! !"
+	end
 
 	if detected and detected > 0 then
 		txt = txt .. "\n\nMissiles detected: " .. detected

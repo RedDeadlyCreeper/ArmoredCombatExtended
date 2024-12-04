@@ -64,42 +64,20 @@ end
 function ACFM_GetFlaresInCone(pos, dir, degs)
 
 	local ret = {}
-	local bullets = ACF.Bullet
 
-	for idx, uid in pairs(ACFM_Flares) do
+	local index = 1
+	for flare, _ in pairs(ACE.CMTable) do
 
-		local flare = bullets[idx]
+		if not flare:IsValid() then continue end
 
-		if not (flare and flare.FlareUID and flare.FlareUID == uid) then continue end
-
-		if ACFM_ConeContainsPos(pos, dir, degs, flare.Pos) then
-			ret[#ret + 1] = flare
+		if ACFM_ConeContainsPos(pos, dir, degs, flare:GetPos()) then
+			ret[index] = flare
+			index = index + 1
 		end
 
 	end
 
 	return ret
-
-end
-
-
-
-
-function ACFM_GetAnyFlareInCone(pos, dir, degs)
-
-	local bullets = ACF.Bullet
-
-	for idx, uid in pairs(ACFM_Flares) do
-
-		local flare = bullets[idx]
-
-		if not (flare and flare.FlareUID and flare.FlareUID == uid) then continue end
-
-		if ACFM_ConeContainsPos(pos, dir, degs, flare.Pos) then
-			return flare
-		end
-
-	end
 
 end
 

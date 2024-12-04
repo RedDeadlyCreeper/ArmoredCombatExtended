@@ -250,12 +250,16 @@ function this:AcquireLock(missile)
 
 	if missile.TargetPos then
 		--print("HasTpos")
-		self.OffBoreAng = missile:WorldToLocalAngles((missile.TargetPos - missilePos):Angle()) or Angle()
+		DifSeek = missile.TargetPos - missilePos
+		self.OffBoreAng = missile:WorldToLocalAngles(DifSeek:Angle()) or Angle()
 		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
+	else
+		DifSeek = missile:GetForward()
 	end
 
 	local CheckTemp = ACE.AmbientTemp + self.HeatAboveAmbient
 
+	local BestHeat = 1
 	for _, Contraption in ipairs(found) do
 
 		local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
@@ -332,12 +336,29 @@ function this:AcquireLock(missile)
 
 				bestAng = testang
 				bestent = classifyent
+				BestHeat = Heat
 
 			end
 
 		end
 
 
+	end
+
+	local CounterMeasures = ACFM_GetFlaresInCone(missilePos, DifSeek, self.SeekCone)
+
+	local HottestCM = 0
+	local CM = nil
+	for _, CounterMeasure in ipairs(CounterMeasures) do
+		local Heat = CounterMeasure.Thermal
+		if Heat > HottestCM then
+			HottestCM = Heat
+			CM = CounterMeasure
+		end
+	end
+
+	if HottestCM > BestHeat then
+		bestent = CM
 	end
 
 	--if IsValid(bestent) and bestent:GetClass( ) == "ace_flare" then print("SQUIRREL") end

@@ -9,7 +9,7 @@ SWEP.SlotPos = 3 --Priority in which the weapon appears, 1 tries to put it at th
 
 
 --Main settings--
-SWEP.FireRate = 0.15 --Rounds per second
+SWEP.FireRate = 0.1 --Rounds per second
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 8
@@ -40,7 +40,7 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 50 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
@@ -69,7 +69,7 @@ function SWEP:InitBulletData()
 	self.BulletData.Caliber = 12.0
 	self.BulletData.PropLength = 2 --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-	self.BulletData.Data5 = 12000 --He Filler or Flechette count
+	self.BulletData.Data5 = 16000 --He Filler or Flechette count
 	self.BulletData.Data6 = 60 --HEAT ConeAng or Flechette Spread
 	self.BulletData.Data7 = 0
 	self.BulletData.Data8 = 0
@@ -78,7 +78,7 @@ function SWEP:InitBulletData()
 	self.BulletData.Colour = Color(255, 110, 0)
 	--
 	self.BulletData.Data13 = 57 --THEAT ConeAng2
-	self.BulletData.Data14 = 0.85 --THEAT HE Allocation
+	self.BulletData.Data14 = 0.9 --THEAT HE Allocation
 	self.BulletData.Data15 = 0
 	self.BulletData.AmmoType = self.BulletData.Type
 	self.BulletData.FrArea = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
@@ -86,7 +86,7 @@ function SWEP:InitBulletData()
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.FillerVol = self.BulletData.Data5
 	self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 250
+	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 5
 	local ConeArea = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
 	local ConeThick = self.BulletData.Caliber / 50
 	local ConeVol = ConeArea * ConeThick
@@ -170,7 +170,7 @@ function SWEP:PrimaryAttack()
 				Owner = owner,
 				Launcher = owner,
 
-				Pos = owner:GetShootPos() + owner:GetAimVector() * 900,
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 400,
 				Ang = owner:GetAimVector():Angle(),
 
 				Mdl = "models/missiles/hvar.mdl",
@@ -179,7 +179,7 @@ function SWEP:PrimaryAttack()
 				FinMul = 0,
 				ThrusterTurnRate = 0,
 
-				InitialVelocity = 170,
+				InitialVelocity = 119,
 				Thrust = 0,
 				BurnTime = 5,
 				MotorDelay = 0,
@@ -188,7 +188,7 @@ function SWEP:PrimaryAttack()
 				BoostTime = 0,
 				BoostDelay = 0,
 
-				Drag = 0.003,
+				Drag = 0.001,
 				GuidanceName = "Dumb",
 				FuseName = "Contact",
 				HasInertial = false,
@@ -199,8 +199,8 @@ function SWEP:PrimaryAttack()
 				ArmorThickness = 8,
 
 				MotorSound = "acf_extra/airfx/rocket_fire.wav",
-				BoostEffect = "Rocket Motor ATGM",
-				MotorEffect = "Rocket Motor ATGM"
+				BoostEffect = "ACE_RocketBlackSmoke",
+				MotorEffect = "ACE_RocketBlackSmoke"
 			}
 			local BData = self.BulletData
 			BData.BulletData = nil

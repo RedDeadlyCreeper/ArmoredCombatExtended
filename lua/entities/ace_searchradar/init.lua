@@ -30,19 +30,16 @@ function ENT:Initialize()
 	self.CurrentScanAngle = 0
 	--self.RadarPitchRange		= (self.MaxElev - self.MinElev) / 2
 
-	self.ClosestToBeam		= -1
-
 	self.AcquiredTargets		= {}
 
 	self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
-	self.Outputs = WireLib.CreateOutputs( self, {"LocalSweepAngle","Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam", "IsJammed", "JamDirection [VECTOR]"} )
+	self.Outputs = WireLib.CreateOutputs( self, {"LocalSweepAngle","Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ID [ARRAY]", "IsJammed", "JamDirection [VECTOR]"} )
 	self.OutputData = {
 		LocalSweepAngle = 0,
 		Detected        = 0,
 		Owner           = {},
 		Position        = {},
 		Velocity        = {},
-		ClosestToBeam   = -1,
 		IsJammed        = 0,
 		JamDirection    = vector_origin
 	}
@@ -171,7 +168,6 @@ function ENT:SetActive(active)
 		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Position", {} )
 		WireLib.TriggerOutput( self, "Velocity", {} )
-		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 		WireLib.TriggerOutput( self, "IsJammed", 0 )
 		WireLib.TriggerOutput( self, "Velocity", vector_origin )
 
@@ -179,7 +175,6 @@ function ENT:SetActive(active)
 		self.OutputData.Owner = {}
 		self.OutputData.Position = {}
 		self.OutputData.Velocity = {}
-		self.OutputData.ClosestToBeam = -1
 		self.OutputData.IsJammed = 0
 
 		self.Heat = 21
@@ -196,7 +191,7 @@ function ENT:UpdateOverlayText()
 
 local cone	= self.Cone
 local status	= self.Status or "Off"
-local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
+local detected  = status ~= "Off" and self.OutputData.Detected ~= 0 or false
 local Jammed	= self.IsJammed
 
 local txt = "Status: " .. status
@@ -267,10 +262,9 @@ function ENT:Think()
 			local ownArray	= {}
 			local posArray	= {}
 			local velArray	= {}
+			local IDs = {}
 			self.AcquiredTargets		= {}
 
-			self.ClosestToBeam  = -1
-			local besterr = math.huge --Hugh mungus number
 
 
 			for _, scanEnt in pairs(ScanArray) do
@@ -374,14 +368,10 @@ function ENT:Think()
 
 								err = err * Multiplier
 
-								--Sorts targets as closest to being directly in front of radar
-								if err < besterr then
-									self.ClosestToBeam = #ownArray + 1
-									besterr = err
-								end
-
 								table.insert(ownArray , NickName)
 								table.insert(posArray ,entpos + BaseInacc ) --3 --Inaccuracy goes hereValidTargets
+								local ContraptionIndex = ACE_GetContraptionIndex(scanEnt:GetContraption() or {})
+								table.insert(IDs, ContraptionIndex)
 								table.insert(self.AcquiredTargets , scanEnt)
 
 								--IDK if this is more intensive than length
@@ -402,35 +392,33 @@ function ENT:Think()
 
 			end
 
-			--self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
-
 			--Some entity passed the test to be valid
-			if self.ClosestToBeam ~= -1 then
+			if not table.Empty(ownArray) then
 
 				WireLib.TriggerOutput( self, "Detected", 1 )
 				WireLib.TriggerOutput( self, "Owner", ownArray )
 				WireLib.TriggerOutput( self, "Position", posArray )
 				WireLib.TriggerOutput( self, "Velocity", velArray )
-				WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
+				WireLib.TriggerOutput(self, "ID", IDs)
 
 				self.OutputData.Detected = 1
 				self.OutputData.Owner = ownArray
 				self.OutputData.Position = posArray
 				self.OutputData.Velocity = velArray
-				self.OutputData.ClosestToBeam = self.ClosestToBeam
+				self.OutputData.ID = {}
 
 			else --Nothing detected
 				WireLib.TriggerOutput( self, "Detected", 0 )
 				WireLib.TriggerOutput( self, "Owner", {} )
 				WireLib.TriggerOutput( self, "Position", {} )
 				WireLib.TriggerOutput( self, "Velocity", {} )
-				WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
+				WireLib.TriggerOutput(self, "ID", {})
 
 				self.OutputData.Detected = 0
 				self.OutputData.Owner = {}
 				self.OutputData.Position = {}
 				self.OutputData.Velocity = {}
-				self.OutputData.ClosestToBeam = -1
+				self.OutputData.ID = {}
 			end
 	end
 

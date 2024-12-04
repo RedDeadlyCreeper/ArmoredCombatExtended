@@ -218,25 +218,32 @@ function this:AcquireLock(missile)
 	local bestAng	= math.huge
 	local bestent	= NULL
 
-	local entpos		= Vector()
-	local difpos		= Vector()
+	local entpos		= vector_origin
+	local difpos		= vector_origin
 	--local entvel		= Vector()
 	local dist		= 0
 
 	local physEnt	= NULL
 
 	local ang		= Angle()
-	local absang		= Angle()
+	local absang	= Angle()
 	local testang	= Angle()
+
+	local DifSeek = vector_origin
 
 	if missile.TargetPos then
 		--print("HasTpos")
-		self.OffBoreAng = missile:WorldToLocalAngles((missile.TargetPos - missilePos):Angle()) or Angle()
+		DifSeek = missile.TargetPos - missilePos
+		self.OffBoreAng = missile:WorldToLocalAngles(DifSeek:Angle()) or Angle()
 		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
+
+	else
+		DifSeek = missile:GetForward()
 	end
 
 	local CheckTemp = ACE.AmbientTemp + self.HeatAboveAmbient
 
+	local BestHeat = 1
 	for _, Contraption in ipairs(found) do
 
 		local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
@@ -286,7 +293,7 @@ function this:AcquireLock(missile)
 			--print(missile.TargetPos)
 		else
 
-		ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+			ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 
 		end
 
@@ -313,12 +320,43 @@ function this:AcquireLock(missile)
 
 				bestAng = testang
 				bestent = classifyent
+				BestHeat = Heat
 
 			end
 
 		end
 
 
+	end
+
+
+	local CounterMeasures = ACFM_GetFlaresInCone(missilePos, DifSeek, self.SeekCone)
+
+	local HottestCM = 0
+	local CM = nil
+	for _, CounterMeasure in ipairs(CounterMeasures) do
+		local Heat = CounterMeasure.Thermal
+		if Heat > HottestCM then
+			HottestCM = Heat
+			CM = CounterMeasure
+		end
+	end
+
+	if IsValid(CM) then
+		difpos  = CM:GetPos() - missilePos
+		dist	= difpos:Length()
+		--0x heat @ 1200m
+		--0.25x heat @ 900m
+		--0.5x heat @ 600m
+		--0.75x heat @ 300m
+		--1.0x heat @ 0m
+
+		local HeatMulFromDist = 1 - math.min(dist / 47244, 1) --39.37 * 1200 = 47244
+		HottestCM = HottestCM * HeatMulFromDist
+	end
+
+	if HottestCM > BestHeat then
+		bestent = CM
 	end
 
 	--if IsValid(bestent) and bestent:GetClass( ) == "ace_flare" then print("SQUIRREL") end

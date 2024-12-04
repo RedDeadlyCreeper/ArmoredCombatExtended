@@ -50,7 +50,7 @@ function this:Configure(missile)
 
 		-- skip any invalid entity
 		if not scanEnt:IsValid() then continue end
-		if scanEnt:CPPIGetOwner() ~= missile.DamageOwner then continue end --Owned by owner
+		if scanEnt:CPPIGetOwner() == missile.DamageOwner then continue end --Owned by owner
 
 		table.insert(MyRadars , scanEnt)
 
@@ -135,14 +135,12 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	--table.Merge(
 
-
 	for _, scanRadar in pairs(self.Radars) do
 		for _, RadarTargets in pairs(scanRadar.AcquiredTargets or {}) do
 
 
 		-- skip any invalid entity
 			if not RadarTargets:IsValid() then continue end
-
 			table.insert(ScanArray , RadarTargets)
 		end
 	end
@@ -226,7 +224,9 @@ function this:AcquireLock(missile)
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then
-
+				--if Multiplier > 1 then
+					--print("FlareWon")
+				--end
 				bestAng = testang
 				bestent = classifyent
 

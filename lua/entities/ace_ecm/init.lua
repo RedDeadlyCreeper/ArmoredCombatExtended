@@ -19,7 +19,7 @@ end
 
 function ENT:Initialize()
 
-	self.ThinkDelay = 0.5 --1 second delay, hopefully enough to prevent ECM flashing
+	self.ThinkDelay = 0.25 --0.25 second delay, hopefully enough to prevent ECM flashing
 	self.Weight = 1000
 
 	self.Active = false
@@ -107,7 +107,15 @@ function ENT:Think()
 		local thisPos = self:GetPos()
 
 
-		for _, scanEnt in pairs(ACE.radarEntities) do
+		local found = table.Copy(ACE.radarEntities)
+
+		for MissileEnt, _ in pairs(ACF_ActiveMissiles) do
+			print(MissileEnt)
+			table.insert( found, MissileEnt )
+		end
+
+
+		for _, scanEnt in pairs(found) do
 
 			--check if ent is valid
 			if scanEnt:IsValid() then
@@ -123,7 +131,7 @@ function ENT:Think()
 				local absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 				--Entity is within radar cone
-				if (absang.p < 5 and absang.y < 5) then --5 degree jammer cone
+				if (absang.p < 10 and absang.y < 10) then --10 degree jammer cone
 
 					local LOStr = util.TraceLine( {
 
@@ -140,7 +148,7 @@ function ENT:Think()
 						--Center beam 1x strength
 						--1 axis off (90 deg) - 1/3x
 						--2 axis off (180deg) - 1/6x
-						local JamStrength = 1 / (1 + (absang.p / 5 + absang.y / 5) * 3)
+						local JamStrength = 1 / (1 + (absang.p / 10 + absang.y / 10) * 3)
 
 						scanEnt.IsJammed			= 1
 						scanEnt.JamStrength		= JamStrength

@@ -39,6 +39,7 @@ concommand.Add( "ace_szcreationmenu", function(_, _, args)
     button.DoClick = function()
         frame:Close()
         --print("Min: " .. args[1] .. "x, " .. args[2] .. "y, " .. args[3] .. "z")
+        print("Attempted Command: " .. "ACF_AddSafeZone " .. (SZName or "NoName") .. " " .. (args[1] or "n/a") .. " " .. (args[2] or "n/a") .. " " .. (args[3] or "n/a") .. " " .. (args[4] or "n/a") .. " " .. (args[5] or "n/a") .. " " .. (args[6] or "n/a"))
         LocalPlayer():ConCommand("ACF_AddSafeZone " .. SZName .. " " .. args[1] .. " " .. args[2] .. " " .. args[3] .. " " .. args[4] .. " " .. args[5] .. " " .. args[6])
         LocalPlayer():ConCommand("ACF_SaveSafeZones")
     end

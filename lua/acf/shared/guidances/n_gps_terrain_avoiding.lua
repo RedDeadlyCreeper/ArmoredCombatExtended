@@ -124,6 +124,10 @@ function this:GetGuidance(missile)
 		self.TargetPos = self.TPos
 	end
 
+	if missile.IsJammed ~= 0 then
+		self.TPos = nil
+		self.TargetPos = nil
+	end
 
 	return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 

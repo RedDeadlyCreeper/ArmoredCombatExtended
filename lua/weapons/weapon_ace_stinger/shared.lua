@@ -369,7 +369,7 @@ function SWEP:PrimaryAttack()
 			FinMul = 0.4,
 			ThrusterTurnRate = 0,
 
-			InitialVelocity = 40,
+			InitialVelocity = 60,
 			Thrust = 100,
 			BurnTime = 2.0,
 			MotorDelay = 0,

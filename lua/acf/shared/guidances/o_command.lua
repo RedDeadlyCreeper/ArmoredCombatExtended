@@ -41,7 +41,7 @@ function this:GetGuidance(missile)
 
 	local posVec = missile.Launcher.TargPos
 
-	if not posVec or type(posVec) ~= "Vector" or posVec == Vector() then
+	if not posVec or type(posVec) ~= "Vector" or posVec == Vector() or (missile.IsJammed ~= 0) then
 		return {TargetPos = nil}
 	end
 
