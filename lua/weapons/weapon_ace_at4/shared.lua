@@ -158,7 +158,7 @@ function SWEP:PrimaryAttack()
 				Owner = owner,
 				Launcher = owner,
 
-				Pos = owner:GetShootPos() + owner:GetAimVector() * 770,
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 970,
 				Ang = owner:GetAimVector():Angle(),
 
 				Mdl = "models/munitions/round_100mm_mortar_shot.mdl",

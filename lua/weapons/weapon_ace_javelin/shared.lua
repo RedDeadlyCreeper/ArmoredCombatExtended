@@ -10,7 +10,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 DEFINE_BASECLASS("weapon_ace_base")
 
 --Main settings--
-SWEP.Primary.Delay = 10 --Reload in seconds
+SWEP.Primary.Delay = 20 --Reload in seconds
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 1
@@ -154,7 +154,7 @@ function SWEP:InitBulletData()
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.FillerVol = self.BulletData.Data5
 	self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 50
+	self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 30
 	local ConeArea = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
 	local ConeThick = self.BulletData.Caliber / 50
 	local ConeVol = ConeArea * ConeThick
