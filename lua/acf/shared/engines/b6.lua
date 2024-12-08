@@ -148,7 +148,7 @@ ACF_DefineEngine( "22.9-B6", {
 ACF_DefineEngine( "25.9-B6", {
 	name = "25.9L Flat 6 Multifuel",
 	desc = "6TD-3, designed by Kharkiv. Large flat tank engine, with really big power reserve, but with monstrous consumption",
-	model = "models/engines/b6xlarge.mdl", --We really need a huge model for this
+	model = "models/engines/b6huge.mdl", --We really need a huge model for this
 	sound = "acf_extra/vehiclefx/engines/gnomefather/t64.wav",
 	category = "B6",
 	fuel = "Multifuel",
