@@ -12,7 +12,7 @@ local tableInsert = table.insert
 local mathHuge = math.huge
 
 local PDClutterSwitchDistance = 200 -- Switch to PD mode if ground clutter is closer than this distance (meters)
-local PDMinVelocity = 20 -- Minimum radial velocity (m/s) for targets to be picked up in PD mode
+local PDMinVelocity = 30 -- Minimum radial velocity (m/s) for targets to be picked up in PD mode
 
 function ENT:Initialize()
 
@@ -60,7 +60,7 @@ end
 
 local function SetConeParameters( Radar )
 
-	Radar.ConeInducedGCTRSize    = Radar.ICone * 10
+	Radar.ConeInducedGCTRSize    = Radar.ICone * 30
 
 end
 
@@ -271,11 +271,12 @@ function ENT:ScanForContraptions()
 		local Base = Contraption:GetACEBaseplate()
 		if Contraption ~= SelfContraption and IsValid(Base) then
 			local BasePos = Base:GetPos()
-			local BaseDistance = BasePos:Distance(SelfPos) / 39.3701
 			local PosDiff = BasePos - SelfPos
-			local DirectionToTarget = PosDiff:GetNormalized()
-			local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
+			local BaseDistance = PosDiff:Length()
+			local DirectionToTarget = PosDiff / BaseDistance
+			local AngleFromTarget = GetAngleBetweenVectors(DirectionToTarget, SelfForward)
 			local Owner = Base:CPPIGetOwner()
+			BaseDistance = BaseDistance / 39.3701 --Used to normalize vector. Convert to meters for other calcs
 
 			LOSTraceData.start = SelfPos
 			LOSTraceData.endpos = BasePos
@@ -311,7 +312,7 @@ function ENT:ScanForContraptions()
 
 				local BaseVelocityVector = Base:GetVelocity() / 39.3701
 
-				local OutputPosition, OutputDistance, ValidTarget
+				local OutputPosition, ValidTarget
 
 				if ClutterDistance < PDClutterSwitchDistance then -- PD mode
 					debugoverlay.Line(BasePos, GCTraceHitPos, 0.15, Color(255, 0, 0))
@@ -347,13 +348,12 @@ function ENT:ScanForContraptions()
 					end
 
 					OutputPosition = BasePos + BaseInaccuracy * OffboreInaccuracy
-					OutputDistance = OutputPosition:Distance(SelfPos) / 39.3701
 
 					local ContraptionIndex = ACE_GetContraptionIndex(Contraption)
-					local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, OutputDistance)
+					local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, BaseDistance)
 
 					tableInsert(Owners, InsertionIndex, Owner:Nick())
-					tableInsert(Distances, InsertionIndex, OutputDistance)
+					tableInsert(Distances, InsertionIndex, BaseDistance)
 					tableInsert(Positions, InsertionIndex, OutputPosition)
 					tableInsert(Velocities, InsertionIndex, Base:GetVelocity())
 					tableInsert(IDs, InsertionIndex, ContraptionIndex)
