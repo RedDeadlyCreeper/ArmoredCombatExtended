@@ -5,7 +5,6 @@ include("shared.lua")
 
 local deg, acos = math.deg, math.acos
 local min, Clamp = math.min, math.Clamp
-local Remap = math.Remap
 local insert = table.insert
 local Rand = math.Rand
 local TraceHull = util.TraceHull
@@ -13,7 +12,7 @@ local RadarTable = ACF.Weapons.Radars
 
 function ENT:Initialize()
 
-	self.ThinkDelay			= 0.05
+	self.ThinkDelay			= 0.1
 	self.StatusUpdateDelay	= 0.5
 	self.LastStatusUpdate	= CurTime()
 	self.Active				= false
@@ -25,7 +24,6 @@ function ENT:Initialize()
 
 	self.Outputs = WireLib.CreateOutputs( self, {
 		"Detected (Returns 1 if the IRST is detecting at least one target)",
-		"Owner (Returns an array of the players who own the detected targets) [ARRAY]",
 		"Angle (Returns an array of angles towards the detected targets) [ARRAY]",
 		"EffHeat (Returns an array of the temperature of the detected targets) [ARRAY]",
 		"ID (Returns an array of unique IDs for each target that can be used to track a specific contraption) [ARRAY]"
@@ -33,7 +31,6 @@ function ENT:Initialize()
 
 	self.OutputData = {
 		Detected		= 0,
-		Owner			= {},
 		Angle			= {},
 		EffHeat			= {},
 		ID				= {}
@@ -44,17 +41,8 @@ function ENT:Initialize()
 	self.Heat               = ACE.AmbientTemp
 	self.HeatAboveAmbient   = 10 -- Targets below this temperature above ambient will be ignored
 
-	self.MinViewCone        = 3
-	self.MaxViewCone        = 20
-
-	self.LowHeatErrorTemp 	= 75 -- Inaccuracy for anything below this temperature will be LowHeatError
-	self.LowHeatError		= 10
-
-	self.PeakAccuracyTemp	= 600 -- Inaccuracy for anything at or above this temperature will be PeakAccuracyError
-	self.PeakAccuracyError	= 0.25
-
-	self.AircraftAltitude	= 500 -- As this altitude is approached (source units), the accuracy of the IRST will increase
-	self.AircraftAccuracy	= 0.1 -- At AircraftAltitude and above, the error will be multiplied by this value
+	self.MinViewCone        = 2
+	self.MaxViewCone        = 60
 
 	self.NextLegalCheck     = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal              = true
@@ -62,12 +50,27 @@ function ENT:Initialize()
 
 	self.TargetDetected		= false
 
+	self.MaxInaccuracy = 40 --The minimum detection accuracy of targets
+	self.MaxAccuracyOutsideSweetspot = 10
+	self.MinInaccuracy = 2
+
+	--Deg/s of inaccuracy reduced per second as the IRST dials in.
+	self.ResolveSpeedBase = 2
+	--Targets near the center are resolved fastest and at the highest resolution
+	self.SweetspotResolveSpeedMul = 2
+	--Hotter targets resolve faster. Every 100C, multiple by this value.
+	self.HeatResolveMul = 3
+	self.HeatRegionMul = 1 --Every 100C adds another multiple of the regionsize
+
+	--The outer detection area of the IRST
+	self.RoughDetectionArea = 10
+
+	--The Inner and more accurate detection area of the IRST
+	self.BaseSweetSpotSize = 4
+
+	self.IRResolution = {}
 	self:UpdateOverlayText()
 
-end
-
-local function SetConeParameter( IRST )
-	IRST.inac = math.max( (IRST.Cone / 15) ^ 2, 2 )
 end
 
 function MakeACE_IRST(Owner, Pos, Angle, Id)
@@ -92,13 +95,6 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 		IRST.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
 		IRST.Cone				= IRST.ICone
 		IRST.ACEPoints			= radar.acepoints or 0.9
-
-		SetConeParameter( IRST )
-
-		IRST.SeekSensitivity	= radar.SeekSensitivity
-
-		IRST.MinimumDistance	= radar.mindist
-		IRST.MaximumDistance	= radar.maxdist
 
 		IRST.Id					= Id
 		IRST.Class				= radar.class
@@ -147,14 +143,7 @@ function ENT:TriggerInput( inp, value )
 		self:SetActive((value ~= 0) and self.Legal)
 	elseif inp == "Cone" then
 		if value > 0 then
-
 			self.Cone = Clamp(value / 2, self.MinViewCone ,self.MaxViewCone )
-
-			SetConeParameter( self )
-
-			--You are not going from a wide to narrow beam in half a second deal with it.
-			local curTime = CurTime()
-			self:NextThink(curTime + 10)
 		else
 			self.Cone = self.ICone
 		end
@@ -171,13 +160,11 @@ function ENT:SetActive(active)
 		self.Heat = ACE.AmbientTemp + 40
 	else
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
-		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Angle", {} )
 		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ID", {} )
 
 		self.OutputData.Detected = 0
-		self.OutputData.Owner = {}
 		self.OutputData.Angle = {}
 		self.OutputData.EffHeat = {}
 		self.OutputData.ID = {}
@@ -197,10 +184,34 @@ local LOSTraceData = {
 	maxs = vector_origin,
 }
 
+function ENT:CleanupIRTracks()
+	local RemovalThreshold = self.MaxInaccuracy
+	local IDsToRemove = {}
+
+	-- Collect IDs that need removal
+	for ID, Resolution in pairs(self.IRResolution) do
+		Resolution = Resolution + self.ResolveSpeedBase * self.ThinkDelay * 4
+		if Resolution > RemovalThreshold then
+			table.insert(IDsToRemove, ID)
+		else
+			self.IRResolution[ID] = Resolution
+		end
+	end
+
+	-- Remove outdated elements after collecting IDs
+	for _, ID in ipairs(IDsToRemove) do
+		self.IRResolution[ID] = nil
+	end
+
+	-- Update sonar outputs if needed
+	if #IDsToRemove > 0 then
+		self.SonoUpdated = true
+	end
+end
+
 function ENT:ScanForContraptions()
 	self.TargetDetected = false
 
-	local Owners        = {}
 	local Temperatures  = {}
 	local AngTable      = {}
 	local IDs			= {}
@@ -211,117 +222,178 @@ function ENT:ScanForContraptions()
 	local SelfPos = self:GetPos()
 	local MinTrackingHeat = ACE.AmbientTemp + self.HeatAboveAmbient
 
-	local LowHeatError = self.LowHeatError
-	local LowHeatErrorTemp = self.LowHeatErrorTemp
-
-	local PeakAccuracyError = self.PeakAccuracyError
-	local PeakAccuracyTemp = self.PeakAccuracyTemp
-
-	local AircraftAltitude = self.AircraftAltitude
-	local AircraftAccuracy = self.AircraftAccuracy
-
 	for Contraption in pairs(CFW.Contraptions) do
-		if Contraption ~= SelfContraption then
-			local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
-			HottestEntityTemp = HottestEntityTemp or 0
-			local Base = Contraption:GetACEBaseplate()
 
-			if not IsValid(Base) then continue end
+		if Contraption == SelfContraption then continue end
 
-			local BasePhys = Base:GetPhysicsObject()
-			local BaseTemp = 0
+		local _, HottestEntityTemp = Contraption:GetACEHottestEntity()
+		HottestEntityTemp = HottestEntityTemp or 0
+		local Base = Contraption:GetACEBaseplate()
 
-			if IsValid(BasePhys) and BasePhys:IsMoveable() then
-				BaseTemp = ACE_InfraredHeatFromProp(Base, self.HeatAboveAmbient)
+		if not IsValid(Base) then continue end
+
+		local BasePhys = Base:GetPhysicsObject()
+		local BaseTemp = 0
+
+		if IsValid(BasePhys) and BasePhys:IsMoveable() then
+			BaseTemp = ACE_InfraredHeatFromProp(Base, self.HeatAboveAmbient)
+		end
+
+		local Pos
+		if not Contraption.aceEntities or (HottestEntityTemp and BaseTemp > HottestEntityTemp) then
+			Pos = Base:GetPos()
+		else
+			Pos = Contraption:GetACEHeatPosition()
+		end
+		local PosDiff = Pos - SelfPos
+		local Distance = PosDiff:Length()
+
+		local Heat = BaseTemp + math.max(ACE.AmbientTemp,HottestEntityTemp)
+
+		--0x heat @ 2400m
+		--0.25x heat @ 1800m
+		--0.5x heat @ 1200m
+		--0.75x heat @ 600m
+		--1.0x heat @ 0m
+		local HeatMulFromDist = 1 - min(Distance / 94488, 1) -- 39.37 * 2400 = 94488
+		Heat = Heat * HeatMulFromDist
+
+		LOSTraceData.start = SelfPos
+		LOSTraceData.endpos = Pos
+		local LOSTrace = TraceHull(LOSTraceData)
+
+		local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
+
+		if AngleFromTarget < self.Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
+
+			local RegionMul = Heat / 100 * self.HeatRegionMul
+			local ResolveMul = Heat / 100 * self.HeatResolveMul
+
+			local OuterDetectRegion = self.RoughDetectionArea * RegionMul
+			local InnerDetectRegion = self.BaseSweetSpotSize * RegionMul
+
+			local ClampMin = self.MaxAccuracyOutsideSweetspot
+
+			if AngleFromTarget < InnerDetectRegion then
+				debugoverlay.Line(SelfPos, Pos, 0.2, Color(255, 0, 0))
+				ResolveMul = ResolveMul * self.SweetspotResolveSpeedMul
+				ClampMin = self.MinInaccuracy
+			elseif AngleFromTarget < OuterDetectRegion then
+				debugoverlay.Line(SelfPos, Pos, 0.2, Color(255, 153, 0))
+			else --Target too far from sensor to be detected
+				continue
 			end
 
-			local Pos
-			if not Contraption.aceEntities or (HottestEntityTemp and BaseTemp > HottestEntityTemp) then
-				Pos = Base:GetPos()
-			else
-				Pos = Contraption:GetACEHeatPosition()
-			end
-			local PosDiff = Pos - SelfPos
-			local Distance = PosDiff:Length()
+			self.TargetDetected = true
 
-			local Heat = BaseTemp + math.max(ACE.AmbientTemp,HottestEntityTemp)
+			local Index = ACE_GetContraptionIndex(Contraption)
 
-			--0x heat @ 1200m
-			--0.25x heat @ 900m
-			--0.5x heat @ 600m
-			--0.75x heat @ 300m
-			--1.0x heat @ 0m
-			local HeatMulFromDist = 1 - min(Distance / 47244, 1) -- 39.37 * 1200 = 47244
-			Heat = Heat * HeatMulFromDist
+			self.IRResolution[Index] = Clamp((self.IRResolution[Index] or self.MaxInaccuracy) - self.ResolveSpeedBase * self.ThinkDelay * ResolveMul * 2.5,ClampMin,self.MaxInaccuracy)
 
-			LOSTraceData.start = SelfPos
-			LOSTraceData.endpos = Pos
-			local LOSTrace = TraceHull(LOSTraceData)
+			--print(self.IRResolution[Index])
 
-			local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
+			local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * self.IRResolution[Index]
+			local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError
 
-			if AngleFromTarget < self.Cone and Heat > MinTrackingHeat and not LOSTrace.Hit then
-				debugoverlay.Line(SelfPos, Pos, 0.1, Color(255, 0, 0))
+			local debugDir = self:LocalToWorldAngles(-FinalAngle):Forward()
 
-				self.TargetDetected = true
+			debugoverlay.Line(SelfPos, SelfPos + debugDir * Distance, 0.2, Color(0, 255, 0))
 
-				local ErrorFromAngle = 0--AngleFromTarget / 45 -- Better accuracy when directly facing the target
-				-- Smoothly decrease error as we go between LowHeatErrorTemp and PeakAccuracyTemp
-				local ErrorFromHeat = Clamp(Remap(Heat, LowHeatErrorTemp, PeakAccuracyTemp, LowHeatError, PeakAccuracyError), PeakAccuracyError, LowHeatError)
+			FinalAngle.r = 0
 
-				local Altitude = Contraption:GetACEAltitude()
+			local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, Distance)
 
-				-- As altitude increases to AircraftAltitude, the error decreases to AircraftAccuracy
-				local AltitudeErrorMul = Clamp(Remap(Altitude, 0, AircraftAltitude, 1, AircraftAccuracy), AircraftAccuracy, 1)
-
-				local FinalError = ErrorFromAngle + ErrorFromHeat * AltitudeErrorMul
-				local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * FinalError
-				local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError
-
-				local debugDir = self:LocalToWorldAngles(-FinalAngle):Forward()
-
-				debugoverlay.Line(SelfPos, SelfPos + debugDir * Distance, 0.1, Color(0, 255, 0))
-
-				FinalAngle.r = 0
-
-				local Index = ACE_GetContraptionIndex(Contraption)
-				local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, Distance)
-
-				local Owner = Base:CPPIGetOwner()
-
-				insert(Distances, InsertionIndex, Distance)
-				insert(Owners, InsertionIndex, IsValid(Owner) and Owner:GetName() or "")
-				insert(AngTable, InsertionIndex, FinalAngle)
-				insert(Temperatures, InsertionIndex, Heat)
-				insert(IDs, InsertionIndex, Index)
-			end
+			insert(Distances, InsertionIndex, Distance)
+			insert(AngTable, InsertionIndex, FinalAngle)
+			insert(Temperatures, InsertionIndex, Heat)
+			insert(IDs, InsertionIndex, Index)
 		end
 	end
+
+	for _, Ply in ipairs(player.GetAll()) do
+
+		if not IsValid(Ply) then continue end
+
+		local Pos = Ply:EyePos()
+
+		local PosDiff = Pos - SelfPos
+		local Distance = PosDiff:Length()
+
+		local Heat = 38 --A bit hotter than a person but it helps the optics
+
+		LOSTraceData.start = SelfPos
+		LOSTraceData.endpos = Pos
+		local LOSTrace = TraceHull(LOSTraceData)
+
+		local AngleFromTarget = GetAngleBetweenVectors(PosDiff:GetNormalized(), SelfForward)
+
+		if AngleFromTarget < self.Cone and not LOSTrace.Hit then
+
+			local RegionMul = Heat / 100 * self.HeatRegionMul
+			local ResolveMul = Heat / 100 * self.HeatResolveMul
+
+			local OuterDetectRegion = self.RoughDetectionArea * RegionMul
+			local InnerDetectRegion = self.BaseSweetSpotSize * RegionMul
+
+			local ClampMin = self.MaxAccuracyOutsideSweetspot
+
+			if AngleFromTarget < InnerDetectRegion then
+				debugoverlay.Line(SelfPos, Pos, 0.2, Color(255, 0, 0))
+				ResolveMul = ResolveMul * self.SweetspotResolveSpeedMul
+				ClampMin = self.MinInaccuracy
+			elseif AngleFromTarget < OuterDetectRegion then
+				debugoverlay.Line(SelfPos, Pos, 0.2, Color(255, 153, 0))
+			else --Target too far from sensor to be detected
+				continue
+			end
+
+			self.TargetDetected = true
+			local Index = Ply:Nick()
+			self.IRResolution[Index] = Clamp((self.IRResolution[Index] or self.MaxInaccuracy) - self.ResolveSpeedBase * self.ThinkDelay * ResolveMul * 5,ClampMin,self.MaxInaccuracy)
+
+			print(self.IRResolution[Index])
+
+			local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * self.IRResolution[Index]
+			local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError
+
+			local debugDir = self:LocalToWorldAngles(-FinalAngle):Forward()
+
+			debugoverlay.Line(SelfPos, SelfPos + debugDir * Distance, 0.2, Color(0, 255, 0))
+
+			FinalAngle.r = 0
+
+			local InsertionIndex = ACE_GetBinaryInsertIndex(Distances, Distance)
+
+			insert(Distances, InsertionIndex, Distance)
+			insert(AngTable, InsertionIndex, FinalAngle)
+			insert(Temperatures, InsertionIndex, Heat)
+			insert(IDs, InsertionIndex, -1)
+		end
+	end
+
+
+	self:CleanupIRTracks()
 
 	local OutputData = self.OutputData
 
 	if self.TargetDetected then
 		WireLib.TriggerOutput( self, "Detected", 1 )
-		WireLib.TriggerOutput( self, "Owner", Owners )
 		WireLib.TriggerOutput( self, "Angle", AngTable )
 		WireLib.TriggerOutput( self, "EffHeat", Temperatures )
 		WireLib.TriggerOutput( self, "ID", IDs )
 
 
 		OutputData.Detected = 1
-		OutputData.Owner = Owners
 		OutputData.Angle = AngTable
 		OutputData.EffHeat = Temperatures
 		OutputData.ID = IDs
 	else
 		WireLib.TriggerOutput( self, "Detected", 0 )
-		WireLib.TriggerOutput( self, "Owner", {} )
 		WireLib.TriggerOutput( self, "Angle", {} )
 		WireLib.TriggerOutput( self, "EffHeat", {} )
 		WireLib.TriggerOutput( self, "ID", {} )
 
 		OutputData.Detected = 0
-		OutputData.Owner = {}
 		OutputData.Angle = {}
 		OutputData.EffHeat = {}
 		OutputData.ID = {}
@@ -368,13 +440,10 @@ function ENT:UpdateOverlayText()
 	local cone		= self.Cone
 	local status	= self.Status or "Off"
 	local detected  = status ~= "Off" and self.TargetDetected or false
-	local range		= self.MaximumDistance or 0
 
 	local txt = "Status: " .. status
 
 	txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
-
-	txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
 
 	if detected then
 		txt = txt .. "\n\nTarget Detected!"

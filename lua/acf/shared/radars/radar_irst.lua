@@ -11,10 +11,6 @@ ACF_DefineIRST("Small-IRST", {
 	model			= "models/props_lab/monitor01b.mdl",
 	class			= "DIR-IRST",
 	weight			= 400,
-	mindist		= 200,
-	maxdist		= 23622, --600m
-	SeekSensitivity = 1,
-	viewcone		= 10,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
-	inaccuracy		= 6,					--Curently does nothing.
+	viewcone		= 60,				--sets the cone of this radar in degrees. this represents the half of the total cone, so 15 means 30 degrees in total
 	acepoints = 400
 } )
