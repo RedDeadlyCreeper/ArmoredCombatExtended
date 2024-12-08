@@ -100,7 +100,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 
 	name             = "SAKR-10 Rocket",
 	desc             = "A short-range but formidable unguided artillery rocket, based upon the Grad.  Well suited to the backs of trucks.",
-	model            = "models/missiles/9m31.mdl",
+	model            = "models/missiles/9m28f.mdl",
 	effect           = "Rocket_Smoke_Trail",
 	effectbooster	= "ACE_MissileMedium",
 	caliber          = 12.2,
@@ -114,8 +114,8 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 	bodydiameter     = 7.3, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 
 	round	=	{
-		rocketmdl			= "models/missiles/9m31.mdl",
-		rackmdl				= "models/missiles/9m31.mdl",
+		rocketmdl			= "models/missiles/9m28f.mdl",
+		rackmdl				= "models/missiles/9m28f.mdl",
 		firedelay			= 0.15,
 		reloadspeed			= 1.0,
 		reloaddelay			= 40.0,
