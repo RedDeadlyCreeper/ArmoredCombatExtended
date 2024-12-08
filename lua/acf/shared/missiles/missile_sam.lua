@@ -492,7 +492,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 		--Technically if you were crazy you could use boost instead of your rocket motor to get thrust independent of burn. Maybe on torpedoes.
 
 		boostacceleration	= 0,							-- Acceleration in m/s of boost motor. Main Engine is not burning at this time.
-		boostertime			= 1.15,							-- Time in seconds for booster runtime
+		boostertime			= 1.05,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
@@ -501,7 +501,7 @@ ACF_defineGun("9M331 SAM", {								-- id
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
-		predictiondelay		= 1.05,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
+		predictiondelay		= 2,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 		pointcost			= 353
 	},
 

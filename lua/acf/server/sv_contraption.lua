@@ -102,7 +102,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 		if not IsValid(Ent) then return end
 
 		local Eclass = Ent:GetClass()
-
+		--print(Eclass)
 		-- check if ent class is in whitelist
 		if CritEnts[Eclass] then
 			table.insert(ACE.critEnts, Ent)
@@ -145,6 +145,9 @@ hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
 			table.insert(ACE.Debris, Ent) --print('Adding - Count: ' .. #ACE.Debris)
 		elseif Eclass == "ace_mine" then
 			table.insert(ACE.Mines, Ent) --print("Adding - Count: " .. #ACE.Mines)
+		elseif string.StartsWith(Eclass, "npc") then
+			--print("NPC Registered")
+			Ent.DamageOwner = true
 		end
 	end)
 end)

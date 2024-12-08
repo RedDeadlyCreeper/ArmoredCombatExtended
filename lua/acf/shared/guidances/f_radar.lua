@@ -147,7 +147,7 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	--local ScanArray = ACE.contraptionEnts
 
-	local ConeInducedGCTRSize = self.SeekCone * 10 --2 meter wide tracehull for every 100m distance
+	local ConeInducedGCTRSize = self.SeekCone * 120 --2 meter wide tracehull for every 100m distance
 	local GCTraceData = {
 		mask = bit.bor(MASK_WATER, MASK_SOLID_BRUSHONLY),
 		mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
@@ -188,7 +188,7 @@ function this:GetWhitelistedEntsInCone(missile)
 
 				local GCtr = util.TraceHull( GCTraceData ) --Hits anything in the world.
 				GCTraceData.start = entpos
-				GCTraceData.endpos = entpos + difpos:GetNormalized() * 16000 * self.GCMultiplier
+				GCTraceData.endpos = entpos + difpos:GetNormalized() * 8000 * self.GCMultiplier
 
 				--Doppler testing fun
 				local entvel = scanEnt:GetVelocity()

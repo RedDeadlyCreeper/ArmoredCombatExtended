@@ -1,0 +1,28 @@
+VertexLitGeneric
+{
+	$basetexture "models/missiles/mat_9M28F_rgb"
+	$bumpmap "models/missiles/mat_9M28F_n"
+
+	$phong 1
+	$phongexponenttexture "models/missiles/mat_9M28F_e"
+	$phongfresnelranges "[1 0.1 0]"
+	$phongalbedotint 1
+	$phongalbedoboost 10
+
+	$rimlight 1
+	$rimlightexponent 100
+	$rimlightboost 1
+
+	$rimmask 1
+
+	Proxies
+	{
+		MwEnvMapTint
+		{
+			min 0
+			max 1
+			envmap "\specularity_00"
+			color "[0.255 0.259 0.251]"
+		}
+	}
+}

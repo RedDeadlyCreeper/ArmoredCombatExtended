@@ -114,13 +114,11 @@ end
 
 function this:CheckTarget(missile)
 
-	if not self.Target then
 		local target = self:AcquireLock(missile)
 
-		if IsValid(target) then
+		--if IsValid(target) then
 			self.Target = target
-		end
-	end
+		--end
 
 end
 
