@@ -208,7 +208,7 @@ function ENT:Think()
 
 		if TestPos then --Guidance location is valid. Update the target position.
 			self.TargetPos = TestPos or nil
-		elseif self.HasDatalink and self.Launcher.TargPos and not self.IsJammed then --Guidance location is not valid. Use datalink position if available.
+		elseif self.HasDatalink and self.Launcher.TargPos and (self.IsJammed == 0) then --Guidance location is not valid. Use datalink position if available.
 			--and IsValid(self.Launcher) Don't know if needed?
 
 
