@@ -72,8 +72,8 @@ SWEP.CarrySpeedMul			= 1 --WalkSpeedMult when carrying the weapon
 SWEP.NormalPlayerWalkSpeed	= 200 --Default walk and sprint speed in case all else fails
 SWEP.NormalPlayerRunSpeed	= 400
 
-SWEP.NPCMinBurst = 1 --Min bullets to fire per burst
-SWEP.NPCMaxBurst = 1 --Max bullets to fire per burst
+SWEP.NPCMinBurst = 100000 --Min bullets to fire per burst
+SWEP.NPCMaxBurst = 100000 --Max bullets to fire per burst
 
 
 function SWEP:GetNPCBurstSettings()
