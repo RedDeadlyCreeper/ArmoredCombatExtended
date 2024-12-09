@@ -20,7 +20,7 @@ end
 function ENT:Initialize()
 
 	self.ThinkDelay = 0.25 --0.25 second delay, hopefully enough to prevent ECM flashing
-	self.Weight = 1000
+	self.Weight = 5000
 
 	self.Active = false
 	curTime = 0
