@@ -908,34 +908,16 @@ do
 		return round((this.BulletData["FlechetteRadius"] or 0) * 10, 3)
 	end
 
-	--- Returns the penetration of an AP, APHE, or HEAT round
+	--- Returns the penetration of a round in an ACF ammo crate or gun
 	-- @server
 	-- @return number The penetration of the round
 	function ents_methods:acfPenetration()
 		local this = getent(self)
 		if not (isAmmo(this) or isGun(this)) then return 0 end
 		if restrictInfo(this) then return 0 end
+		if not ACE_CheckRound(this.BulletData.Type) then return 0 end
 
-		local Type = this.BulletData["Type"] or ""
-		local Energy
-
-		if Type == "AP" or Type == "APHE" then
-			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"])
-
-			return round((Energy.Penetration / this.BulletData["PenArea"]) * ACF.KEtoRHA, 3)
-		elseif Type == "HEAT" then
-			local Crushed, HEATFillerMass, _ = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
-			if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
-			Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV(this.BulletData, HEATFillerMass) * 39.37, this.BulletData["SlugMass"], 9999999)
-
-			return round((Energy.Penetration / this.BulletData["SlugPenArea"]) * ACF.KEtoRHA, 3)
-		elseif Type == "FL" then
-			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["FlechetteMass"], this.BulletData["LimitVel"])
-
-			return round((Energy.Penetration / this.BulletData["FlechettePenArea"]) * ACF.KEtoRHA, 3)
-		end
-
-		return 0
+		return ACF.RoundTypes[this.BulletData.Type].getDisplayData(this.BulletData).MaxPen or 0
 	end
 
 	--- Returns the blast radius of an HE, APHE, or HEAT round
