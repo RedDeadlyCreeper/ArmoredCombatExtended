@@ -118,6 +118,11 @@ function SWEP:Equip()
 	local owner = self:GetOwner()
 
 	self.BulletData.Filter = {owner}
+
+	local owner = self:GetOwner()
+	if not owner:IsPlayer() then
+		owner:SetMaxLookDistance( 10000 )
+	end
 end
 
 function SWEP:OnRemove()
@@ -146,11 +151,6 @@ function SWEP:Initialize()
 
 	self.NPCMinBurst = math.min(self.NPCMinBurst,self.Primary.ClipSize)
 	self.NPCMaxBurst = math.min(self.NPCMaxBurst,self.Primary.ClipSize)
-	local owner = self:GetOwner()
-
-	if not owner:IsPlayer() then
-		owner:SetMaxLookDistance( 10000 )
-	end
 
 end
 

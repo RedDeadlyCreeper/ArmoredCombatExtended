@@ -105,6 +105,10 @@ function ACF_Activate( Entity , Recalc )
 	else
 		Entity.ACF.Type = "Prop"
 	end
+
+	if Entity:GetClass() == "func_breakable" then
+		Entity.DamageOwner = true
+	end
 end
 
 function ACF_Check( Entity )
@@ -115,7 +119,7 @@ function ACF_Check( Entity )
 	if not ( physobj:IsValid() and (physobj:GetMass() or 0) > 0 and not Entity:IsWorld() and not Entity:IsWeapon() ) then return false end
 
 	local Class = Entity:GetClass()
-	if ( Class == "gmod_ghost" or Class == "ace_debris" or Class == "prop_ragdoll" or string.find( Class , "func_" )  ) then return false end
+	if ( Class == "gmod_ghost" or Class == "ace_debris" or Class == "prop_ragdoll" or ( Class ~= "func_breakable" and string.find( Class , "func_" ))  ) then return false end
 	if Entity.Exploding then return false end
 
 	if not Entity.ACF or (Entity.ACF and isnumber(Entity.ACF.Material)) then
@@ -217,7 +221,11 @@ function ACF_PropDamage( Entity , Energy , FrArea , Angle , _, _, Type)
 	local HitRes = ACF_CalcDamage( Entity , Energy , FrArea , Angle  , Type)
 
 	HitRes.Kill = false
-	Entity:TakeDamage(HitRes.Damage * 15) --Felt about right. Allows destroying physically destructible props.
+
+	local caliber = 20 * (FrArea ^ (1 / ACF.PenAreaMod) / 3.1416) ^ 0.5
+	local BaseDamage = caliber * (4 + 0.1 * caliber)
+
+	Entity:TakeDamage(BaseDamage * 15) --Felt about right. Allows destroying physically destructible props.
 	if HitRes.Damage >= Entity.ACF.Health then
 		HitRes.Kill = true
 	else
