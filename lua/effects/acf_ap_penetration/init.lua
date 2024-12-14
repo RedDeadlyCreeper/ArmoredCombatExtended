@@ -28,7 +28,7 @@ local RoundTypesIgnore = {
 local function PerformDecalTrace( Effect )
 	local Tr = {}
 	Tr.start = Effect.Origin - Effect.DirVec * 10
-	Tr.endpos = Effect.Origin + Effect.DirVec * 10
+	Tr.endpos = Effect.Origin + Effect.DirVec * 200
 	return util.TraceLine( Tr )
 end
 
@@ -90,9 +90,13 @@ function EFFECT:Init( data )
 
 		local Mat = SurfaceTr.MatType or 0
 		MatVal = ACE_GetMaterialName( Mat )
-
 		if SurfaceTr.HitNonWorld then --Overide with ACE prop material
-			MatVal = "Metal"
+			local TEnt = SurfaceTr.Entity
+			if  TEnt:IsPlayer() or TEnt:IsNPC() then --Super disgusting. Get rid of this ASAP.
+				MatVal = "Flesh"
+			else
+				MatVal = "Metal"
+			end
 			--self.HitNorm = -self.HitNorm
 			--self.DirVec = -self.DirVec
 			--[[local TEnt = SurfaceTr.Entity
@@ -135,6 +139,8 @@ function EFFECT:Init( data )
 		elseif  MatVal == "Glass"  then
 			self:Glass( SMKColor )
 			--DecalMat = "Impact.Glass"
+		elseif  MatVal == "Flesh"  then
+			self:Flesh( Color( 100,0,0, 150 ) )
 		else
 			self:Dust( SMKColor )
 		end
@@ -462,6 +468,61 @@ function EFFECT:Wood( SmokeColor )
 		Dust:SetRoll(math.Rand(150, 360))
 		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
 		Dust:SetAirResistance(15)
+		Dust:SetColor(SmokeColor.r * 0.9, SmokeColor.g * 0.9, SmokeColor.b * 0.9)
+	end
+
+
+end
+
+function EFFECT:Flesh( SmokeColor )
+
+	if not self.Emitter then return end
+
+	local Vel = self.Velocity / 2500
+	local Mass = self.Mass
+
+	local HalfArea = (RoundTypesSubCaliberBoost[self.Id] and 0.75) or 1
+	local ShellArea = 3.141 * (self.Caliber / 2) * HalfArea
+
+	local Pmul = 1
+
+	--KE main formula
+	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
+
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber * 2, 3, 100 ) * Pmul )
+
+	for _ = 1, ParticleCount do
+		local Debris = self.Emitter:Add("effects/mh_blood" .. math.random(1,3), self.Origin - self.DirVec * 15)
+
+		if Debris then
+			Debris:SetVelocity((self.HitNorm + VectorRand() * 0.45) * 10 * Energy)
+			Debris:SetLifeTime(0)
+			Debris:SetDieTime(math.Rand(1, 2) * (Energy / 3))
+			Debris:SetStartAlpha(255)
+			Debris:SetEndAlpha(255)
+			Debris:SetStartSize(1 * (self.Caliber + 2))
+			Debris:SetEndSize(1 * (self.Caliber + 2))
+			Debris:SetRoll(math.Rand(150, 360))
+			Debris:SetRollDelta(math.Rand(-0.2, 0.2))
+			Debris:SetAirResistance(5)
+			Debris:SetGravity(Vector(0, 0, -150))
+			Debris:SetColor(SmokeColor.r * 0.8, SmokeColor.g * 0.8, SmokeColor.b * 0.8)
+		end
+	end
+
+	local Dust = self.Emitter:Add("particle/smokesprites_000" .. math.random(1, 9), self.Origin - self.DirVec * 5)
+
+	if Dust then
+		Dust:SetLifeTime(0)
+		Dust:SetDieTime(1)
+		Dust:SetStartAlpha(200)
+		Dust:SetEndAlpha(75)
+		Dust:SetStartSize(2 * self.Caliber)
+		Dust:SetEndSize(12 * self.Caliber)
+		Dust:SetRoll(math.Rand(150, 360))
+		Dust:SetRollDelta(math.Rand(-0.2, 0.2))
+		Dust:SetAirResistance(15)
+		Dust:SetGravity(Vector(0, 0, -50))
 		Dust:SetColor(SmokeColor.r * 0.9, SmokeColor.g * 0.9, SmokeColor.b * 0.9)
 	end
 
