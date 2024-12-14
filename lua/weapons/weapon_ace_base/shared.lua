@@ -385,6 +385,7 @@ function SWEP:Holster()
 	if SERVER then
 		self:SetZoomState(false)
 		self:SetOwnerZoomSpeed(false)
+		local owner = self:GetOwner()
 		if IsValid(owner) and owner:IsPlayer() then
 			self:GetOwner():SetWalkSpeed(self.NormalPlayerWalkSpeed)
 			self:GetOwner():SetRunSpeed(self.NormalPlayerRunSpeed)
@@ -513,6 +514,12 @@ function SWEP:Deploy()
 
 	self:SendWeaponAnim(ACT_VM_DRAW)
 	self:SetNextPrimaryFire(CurTime() + self.DeployDelay)
+
+
+	local owner = self:GetOwner()
+	if not owner:IsPlayer() then
+		owner:SetMaxLookDistance( 10000 )
+	end
 end
 
 

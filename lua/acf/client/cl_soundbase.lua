@@ -340,6 +340,7 @@ do
 	end
 
 	-- impact sounds index by surface material
+
 	local impactSounds = {
 		Metal = "acf_other/impact/Metal/impact%s.mp3",
 
@@ -352,6 +353,7 @@ do
 		Snow = "acf_other/impact/Soil/impact%s.mp3",
 
 		Concrete = "acf_other/impact/Concrete/impact%s.mp3",
+		Flesh = "acf_other/impact/Flesh/impact%s.mp3",
 		invalid = "acf_other/impact/Concrete/impact%s.mp3",
 	}
 
@@ -368,7 +370,7 @@ do
 	end
 
 	--Handles ricochet sounds
-	function ACE_SBulletImpact( HitPos, Caliber, Velocity, HitWorld, Material )
+	function ACE_SBulletImpact( HitPos, Caliber, Velocity, _, Material )
 		local event = newSoundEvent({
 			Origin = HitPos,
 
@@ -386,11 +388,13 @@ do
 			self.Volume = 1 / ((hearingEntity:GetPos() - self.Origin):Length() / 500) * Velocity / 130000 * volFix
 			self.Pitch = math.Clamp(Velocity * 0.001, 90, 150) * pitchFix
 
-			if not HitWorld then
-				self.Sound = getImpactSound("Metal")
 
-				return
-			end
+			--Disabled as the material overrides should be in the impact fx.
+			--if not HitWorld then
+			--	self.Sound = getImpactSound("Metal")
+
+			--	return
+			--end
 
 			self.Sound = getImpactSound(Material or "invalid")
 		end

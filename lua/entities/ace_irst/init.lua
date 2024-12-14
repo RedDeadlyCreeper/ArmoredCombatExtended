@@ -203,10 +203,6 @@ function ENT:CleanupIRTracks()
 		self.IRResolution[ID] = nil
 	end
 
-	-- Update sonar outputs if needed
-	if #IDsToRemove > 0 then
-		self.SonoUpdated = true
-	end
 end
 
 function ENT:ScanForContraptions()

@@ -133,6 +133,7 @@ function ACE_GetMaterialName( Mat )
 	--concrete
 	local GroundMat = "Concrete"
 
+	--print(Mat)
 	-- Dirt
 	if Mat == 68 or Mat == 79 or Mat == 85 then
 		GroundMat = "Dirt"
@@ -150,6 +151,8 @@ function ACE_GetMaterialName( Mat )
 		GroundMat = "Glass"
 	elseif Mat == 87 then
 		GroundMat = "Wood"
+	elseif Mat == 66 or Mat == 70 then
+		GroundMat = "Flesh"
 	end
 
 	--[[
