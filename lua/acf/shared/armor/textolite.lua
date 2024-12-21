@@ -16,13 +16,13 @@ Material.curve    = 0.94
 Material.effectiveness        = 0.5
 Material.HEATeffectiveness    = 1.2
 Material.HEeffectiveness      = 0.9
-Material.resiliance           = 50
+Material.resiliance           = 20
 Material.HEATresiliance       = 0.5
 Material.HEresiliance         = 0.75
 
 Material.spallresist          = 1
 
-Material.spallmult            = 1.3
+Material.spallmult            = 0.7
 Material.ArmorMul             = 0.23
 Material.NormMult             = 0.5
 

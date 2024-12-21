@@ -4,13 +4,13 @@ local Material		= {}
 Material.id			= "Alum"
 Material.name		= "Aluminum"
 Material.sname		= "Aluminum"
-Material.desc		= "Aluminum is normally used by AFVs or light constructions, due to the fact it provides more protection for its weight, but is harder to use at high thicknesses making it worthless for heavy applications and is vulnerable to HEAT and creating spalling."
+Material.desc		= "Aluminum is normally used by AFVs or light constructions, as it provides significantly more protection for a given weight. It is more costly and prone to spalling though."
 Material.year		= 1955
 
-Material.massMod		= 0.221
+Material.massMod		= 0.333
 Material.curve		= 0.93
 
-Material.effectiveness  = 0.34
+Material.effectiveness  = 0.8325
 Material.resiliance	= 1.05
 Material.HEATMul		= 5 --Originally 80. Someone REALLY hated aluminum against HEAT.
 
