@@ -82,7 +82,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 					["1xRK_small"] = true
 				},
 
-	seekcone   = 25,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone   = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone   = 50,								-- getting outside this cone will break the lock.  Divided by 2.
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
@@ -154,7 +154,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 				},
 
 	seekcone   = 15,									-- why do you need a big seeker cone if yuo're firing vs a SAM site?
-	viewcone   = 40,								-- I don't think a fucking SAM site should have to dodge much >_>
+	viewcone   = 50,								-- I don't think a fucking SAM site should have to dodge much >_>
 
 	agility    = 0.03,								-- multiplier for missile turn-rate.  --was 0.08
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
@@ -227,7 +227,7 @@ ACF_defineGun("AGM-88 ASM", {						-- id
 				},
 
 	seekcone   = 15,									-- why do you need a big seeker cone if yuo're firing vs a SAM site?
-	viewcone   = 60,								-- I don't think a fucking SAM site should have to dodge much >_>
+	viewcone   = 50,								-- I don't think a fucking SAM site should have to dodge much >_>
 
 	agility    = 0.03,								-- multiplier for missile turn-rate.  --was 0.08
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
@@ -299,7 +299,7 @@ ACF_defineGun("KH-31 ASM", {						-- id
 					["1xVLS"] = true
 				},
 
-	seekcone   = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone   = 1.5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone   = 30,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 5,
 
@@ -369,7 +369,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 					["1xRK"] = true
 				},
 
-	seekcone   = 4,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+	seekcone   = 1.5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone   = 60,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 5,
 
