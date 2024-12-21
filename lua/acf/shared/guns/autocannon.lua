@@ -25,7 +25,7 @@ do
 		nomag = true,
 		weight = 170,
 		year = 1930,
-		rofmod = 1,
+		rofmod = 0.5,
 		round = {
 			maxlength = 32,
 			propweight = 0.13
@@ -43,7 +43,7 @@ do
 		caliber = 3.01,
 		weight = 255,
 		year = 1935,
-		rofmod = 1,
+		rofmod = 0.5,
 		round = {
 			maxlength = 39,
 			propweight = 0.350
@@ -61,7 +61,7 @@ do
 		caliber = 4.0,
 		weight = 425,
 		year = 1940,
-		rofmod = 0.92,
+		rofmod = 0.46,
 		round = {
 			maxlength = 45,
 			propweight = 0.9
@@ -79,7 +79,7 @@ do
 		caliber = 5.0,
 		weight = 880,
 		year = 1965,
-		rofmod = 0.9,
+		rofmod = 0.45,
 		round = {
 			maxlength = 52,
 			propweight = 1.2
@@ -97,7 +97,7 @@ do
 		caliber = 2.0,
 		weight = 320,
 		year = 1960,
-		rofmod = 0.8,
+		rofmod = 0.4,
 		round = {
 			maxlength = 24,
 			propweight = 0.13
@@ -115,7 +115,7 @@ do
 		caliber = 3.0,
 		weight = 700,
 		year = 1935,
-		rofmod = 0.55,
+		rofmod = 0.27,
 		round = {
 			maxlength = 28,
 			propweight = 0.350
@@ -133,7 +133,7 @@ do
 		caliber = 4.0,
 		weight = 1400,
 		year = 1000,
-		rofmod = 0.55,
+		rofmod = 0.27,
 		round = {
 			maxlength = 34,
 			propweight = 0.9

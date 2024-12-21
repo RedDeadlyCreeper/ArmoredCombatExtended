@@ -23,7 +23,7 @@ do
 		caliber = 1.45,
 		weight = 400,
 		year = 1962,
-		rofmod = 2,
+		rofmod = 0.96,
 		round = {
 			maxlength = 25,
 			propweight = 0.06
@@ -40,7 +40,7 @@ do
 		caliber = 2.0,
 		weight = 1220,
 		year = 1965,
-		rofmod = 1.2,
+		rofmod = 0.53,
 		round = {
 			maxlength = 36,
 			propweight = 0.12
@@ -57,7 +57,7 @@ do
 		caliber = 3.0,
 		weight = 1830, --1830 Gau 8 total system weight.
 		year = 1975,
-		rofmod = 0.65,
+		rofmod = 0.29,
 		round = {
 			maxlength = 45,
 			propweight = 0.350
