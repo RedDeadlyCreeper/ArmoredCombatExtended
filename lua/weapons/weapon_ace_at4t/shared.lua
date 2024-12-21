@@ -170,7 +170,7 @@ function SWEP:PrimaryAttack()
 				Owner = owner,
 				Launcher = owner,
 
-				Pos = owner:GetShootPos() + owner:GetAimVector() * 600,
+				Pos = owner:GetShootPos() + owner:GetAimVector() * 800,
 				Ang = owner:GetAimVector():Angle(),
 
 				Mdl = "models/missiles/hvar.mdl",

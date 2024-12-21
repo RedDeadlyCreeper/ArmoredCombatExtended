@@ -22,7 +22,7 @@ ACF_defineGun("7.62mmMG", { --id
 	caliber = 0.762,
 	weight = 10,
 	year = 1930,
-	rofmod = 1.2,
+	rofmod = 0.8,
 	round = {
 		maxlength = 13,
 		propweight = 0.04
@@ -40,7 +40,7 @@ ACF_defineGun("12.7mmMG", {
 	caliber = 1.27,
 	weight = 20,
 	year = 1910,
-	rofmod = 0.74,
+	rofmod = 0.47,
 	round = {
 		maxlength = 24,
 		propweight = 0.1
@@ -58,7 +58,7 @@ ACF_defineGun("14.5mmMG", {
 	caliber = 1.45,
 	weight = 25,
 	year = 1932,
-	rofmod = 0.75,
+	rofmod = 0.47,
 	round = {
 		maxlength = 27,
 		propweight = 0.04
@@ -77,7 +77,7 @@ ACF_defineGun("20mmMG", {
 	caliber = 2.0,
 	weight = 35,
 	year = 1935,
-	rofmod = 0.55,
+	rofmod = 0.32,
 	round = {
 		maxlength = 32,
 		propweight = 0.09
@@ -93,7 +93,7 @@ do
 
 			if not Effect.Emitter then return end
 
-			local PMul       = 1
+			local PMul       = 0.4
 			local size    = Effect.Radius * 0.5
 			local Offset = Effect.DirVec * size * 0.5
 			local SmokeColor = Color( 150, 150, 150, 100 )

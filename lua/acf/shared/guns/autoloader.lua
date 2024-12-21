@@ -13,6 +13,27 @@ ACF_defineGunClass("AL", {
 } )
 
 --add a gun to the class
+ACF_defineGun("50mmAL", { --id
+	name = "50mm Autoloading Cannon",
+	desc = "A lightweight bullet spitting monster found on certain ground attack planes. Capable of rapidly filling targets with many high pen darts.",
+	model = "models/tankgun/tankgun_al_50mm.mdl",
+	sound = "ace_weapons/multi_sound/75mm_multi.mp3",
+	autosound = "acf_extra/tankfx/reload.wav",
+	gunclass = "AL",
+	caliber = 5,
+	weight = 850,
+	year = 1946,
+	rofmod = 1,
+	magsize = 12,
+	magreload = 20,
+	round = {
+		maxlength = 63,
+		propweight = 2.1
+	},
+	acepoints = 2000
+} )
+
+--add a gun to the class
 ACF_defineGun("75mmAL", { --id
 	name = "75mm Autoloading Cannon",
 	desc = "A quick-firing 75mm gun, pops off a number of rounds in relatively short order.",
@@ -30,7 +51,7 @@ ACF_defineGun("75mmAL", { --id
 		maxlength = 78,
 		propweight = 3.8
 	},
-	acepoints = 1700
+	acepoints = 2350
 } )
 
 ACF_defineGun("100mmAL", {
@@ -48,9 +69,9 @@ ACF_defineGun("100mmAL", {
 	magreload = 25,
 	round = {
 		maxlength = 93,
-		propweight = 9.5
+		propweight = 20
 	},
-	acepoints = 2300
+	acepoints = 3200
 } )
 
 ACF_defineGun("120mmAL", {
@@ -63,14 +84,14 @@ ACF_defineGun("120mmAL", {
 	caliber = 12.0,
 	weight = 2700,
 	year = 1956,
-	rofmod = 0.8,
+	rofmod = 0.9,
 	magsize = 12,
 	magreload = 30,
 	round = {
-		maxlength = 110,
-		propweight = 18
+		maxlength = 115,
+		propweight = 30
 	},
-	acepoints = 3000
+	acepoints = 3700
 } )
 
 ACF_defineGun("140mmAL", {
@@ -87,10 +108,10 @@ ACF_defineGun("140mmAL", {
 	magsize = 12,
 	magreload = 40,
 	round = {
-		maxlength = 127,
-		propweight = 28
+		maxlength = 140,
+		propweight = 60
 	},
-	acepoints = 3500
+	acepoints = 4500
 } )
 
 
@@ -111,6 +132,6 @@ ACF_defineGun("170mmAL", {
 		maxlength = 154,
 		propweight = 34
 	},
-	acepoints = 4400
+	acepoints = 6000
 } )
 

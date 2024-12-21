@@ -138,12 +138,12 @@ ACF.PointsPerTon   = 42  --Base cost per ton of armor. Multiplier used to balanc
 ACE.AmmoPerTon     = 100 --Point cost per ton of ammo
 
 ACE.MatCostTables = {
-	Alum			= 1.2 * (0.34 / 0.221),	--2mm per 1mm. A 20% increase in cost for 25% reduction in weight.
-	CHA				= 0.8 * (0.98 / 1.25),	--25% more heavy for a 20% reduction in cost.
-	Cer				= 1.4 * (2.05 / 1.4),	--50% more protection per kg for a 40% increase in cost. Brittle and prone to damage.
-	ERA				= 2.0 * (2.5 / 2.0),
-	Rub				= 1.5 * (0.05 / 0.2),
-	Texto			= 1.4 * (0.5 / 0.35),
+	Alum			= 1.25 * (0.8325 / 0.333),	--A 25% increase in cost for 60% reduction in weight.
+	CHA				= 0.7 * (0.98 / 1.25),	--25% more heavy for a 30% reduction in cost.
+	Cer				= 1.15 * (2.05 / 1.2),	--70% more protection per kg for a 15% increase in cost. Takes a ton of damage and evaporates if penetrated.
+	ERA				= 0.8 * (2.5 / 2.0),
+	Rub				= 1.25 * (0.05 / 0.2),
+	Texto			= 1.2 * (0.5 / 0.35),
 	RHA 			= 1
 }
 
