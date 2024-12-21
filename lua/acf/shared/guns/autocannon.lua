@@ -148,7 +148,7 @@ do
 		muzzlefunc = function( Effect )
 			if not Effect.Emitter then return end
 
-			local PMul   = 1
+			local PMul   = 0.5
 			local size   = Effect.Radius * 0.5
 			local Offset = Effect.DirVec * size * -2.5
 			local Angle  = Effect.DirVec:Angle()

@@ -93,7 +93,7 @@ do
 
 			if not Effect.Emitter then return end
 
-			local PMul       = 1
+			local PMul       = 0.4
 			local size    = Effect.Radius * 0.5
 			local Offset = Effect.DirVec * size * 0.5
 			local SmokeColor = Color( 150, 150, 150, 100 )
