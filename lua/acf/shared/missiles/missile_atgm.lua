@@ -423,7 +423,7 @@ ACF_defineGun("FGM-148 ASM", {
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.0005,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		predictiondelay		= 1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(1.1),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
@@ -437,7 +437,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 	fuses			= {"Contact", "Optical", "Timed", "Altitude"},
 
-	seekcone		= 2.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone		= 1.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {											-- a whitelist for racks that this missile can load into.
 					["1x Javelin"] = true
@@ -445,7 +445,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 	armdelay		= 1,										-- minimum fuse arming delay
 	ghosttime		= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
-	SeekSensitivity    = 5
+	SeekSensitivity    = 3
 
 } )
 
@@ -494,8 +494,8 @@ ACF_defineGun("Spike-LR ASM", {
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
-		datalink			= true,
+		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		datalink			= false,
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(2.5),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
@@ -509,7 +509,7 @@ ACF_defineGun("Spike-LR ASM", {
 
 	fuses			= {"Contact", "Optical", "Timed", "Altitude"},
 
-	seekcone		= 2,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone		= 1.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {									-- a whitelist for racks that this missile can load into.
 						["1xRK"] = true,
@@ -522,7 +522,7 @@ ACF_defineGun("Spike-LR ASM", {
 					},
 
 	armdelay	= 0.15,										-- minimum fuse arming delay
-	SeekSensitivity    = 5
+	SeekSensitivity    = 3
 
 } )
 
