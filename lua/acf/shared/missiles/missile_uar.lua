@@ -38,8 +38,8 @@ ACF_defineGun("SPG-9 ASR", { --id
 		rackmdl				= "models/munitions/round_100mm_mortar_shot.mdl",
 		firedelay			= 0.25,
 		reloadspeed			= 0.3,
-		reloaddelay			= 15.0,
-		inaccuracy			= 0.4,
+		reloaddelay			= 7.0,
+		inaccuracy			= 0.01,
 
 		maxlength			= 240,							-- Length of missile. Used for ammo properties.
 		propweight			= 1,							-- Motor mass - motor casing. Used for ammo properties.
