@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-ACF.AmmoBlacklist["FL"] = { "ATR", "RAC", "RM", "SL", "GL", "MG", "SC", "BOMB", "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL","NAV","mNAV" }
+ACF.AmmoBlacklist["FL"] = { "MG", "AC", "HMG", "SA", "RAC", "ATR", "SL", "GL", "FFAR", "FGL", "ATR", "SBC", "BOMB", "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY" }
 
 
 local Round = {}
@@ -86,15 +86,9 @@ function Round.convert( _, PlayerData )
 	local GunClass = ACF.Weapons["Guns"][Data["Id"] or PlayerData["Id"]]["gunclass"]
 
 
-	if GunClass == "SA" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2),1,128)
-	elseif GunClass == "MO" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2),1,128)
-	elseif GunClass == "HW" then
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2),1,128)
-	else
-		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 2) ,1,128)
-	end
+	--if GunClass == "SA" then
+		Data["MaxFlechettes"] = math.Clamp(math.floor(Data["Caliber"] * 8), 1, 96)
+	--end
 
 
 	Data["MinFlechettes"]	= 2
@@ -330,6 +324,6 @@ function Round.guiupdate( Panel )
 	ACE_CommonDataDisplay( Data )
 end
 
-list.Set( "SPECSRoundTypes", "FL", Round )
+list.Set( "APRoundTypes", "FL", Round )
 ACF.RoundTypes[Round.Type] = Round     --Set the round properties
 ACF.IdRounds[Round.netid] = Round.Type --Index must equal the ID entry in the table above, Data must equal the index of the table above

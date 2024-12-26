@@ -988,7 +988,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		local invalidClasses = {"AC", "MG", "RAC", "HMG", "GL", "SA"}
 
 		local fireRateModifier = self.RoFmod * self.PGRoFmod * (AmmoEnt.RoFMul + 1)
-		local defaultReloadTime = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus * Adj) / 500) ^ 0.60) * fireRateModifier
+		local defaultReloadTime = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus / Adj) / 500) ^ 0.60) * fireRateModifier
 		local lowestReloadTime = defaultReloadTime
 
 		if maxRof > 0 then
