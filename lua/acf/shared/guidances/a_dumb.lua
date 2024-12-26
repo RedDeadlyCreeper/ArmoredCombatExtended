@@ -35,14 +35,6 @@ end
 
 function this:PreGuidance(missile)
 
-	if not self.AppliedSpawnCountermeasures then
-
-		ACFM_ApplySpawnCountermeasures(missile, self)
-		self.AppliedSpawnCountermeasures = true
-
-	end
-
-	ACFM_ApplyCountermeasures(missile, self)
 end
 
 
