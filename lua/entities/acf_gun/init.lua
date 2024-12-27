@@ -584,6 +584,7 @@ function ENT:Heat_Function()
 		local phys = self:GetPhysicsObject()
 		local Mass = phys:GetMass()
 
+		--[[
 		HitRes = ACF_Damage(self, {
 			Kinetic = (1 * OverHeat) * (1 + math.max(Mass - 300, 0.1)),
 			Momentum = 0,
@@ -593,6 +594,7 @@ function ENT:Heat_Function()
 		if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
 		end
+		]]--
 
 	else
 		self.IsOverheated = false
