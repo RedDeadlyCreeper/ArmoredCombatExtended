@@ -405,7 +405,7 @@ ACF_defineGun("FGM-148 ASM", {
 		armour				= 13,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 320,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.3,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.45,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 30,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 20,							-- Acceleration in m/s.
@@ -445,7 +445,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 	armdelay		= 1,										-- minimum fuse arming delay
 	ghosttime		= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
-	SeekSensitivity    = 3
+	SeekSensitivity    = 35
 
 } )
 
@@ -510,7 +510,7 @@ ACF_defineGun("Spike-LR ASM", {
 	fuses			= {"Contact", "Optical", "Timed", "Altitude"},
 
 	seekcone		= 1.5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone		= 60,										-- getting outside this cone will break the lock.  Divided by 2.
+	viewcone		= 120,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {									-- a whitelist for racks that this missile can load into.
 						["1xRK"] = true,
 						["2xRK"] = true,
@@ -522,7 +522,7 @@ ACF_defineGun("Spike-LR ASM", {
 					},
 
 	armdelay	= 0.15,										-- minimum fuse arming delay
-	SeekSensitivity    = 3
+	SeekSensitivity    = 40
 
 } )
 
