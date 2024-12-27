@@ -166,7 +166,7 @@ function EFFECT:Concrete( SmokeColor )
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 4, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 2, 100 ) * Pmul )
 
 	local DustSpeed = 50
 	for _ = 1, ParticleCount do
@@ -190,7 +190,7 @@ function EFFECT:Concrete( SmokeColor )
 		end
 	end
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 3, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 2, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Debris = self.Emitter:Add("effects/fleck_tile" .. math.random(1,2), self.Origin - self.DirVec * 25)
@@ -261,7 +261,7 @@ function EFFECT:Wood( SmokeColor )
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 3, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 2, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Debris = self.Emitter:Add("effects/fleck_wood" .. math.random(1,2), self.Origin - self.DirVec * 15)
@@ -384,7 +384,7 @@ function EFFECT:Glass( SmokeColor )
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 3, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 2, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Debris = self.Emitter:Add("effects/fleck_glass" .. math.random(1,3), self.Origin - self.DirVec * 15)
@@ -452,7 +452,7 @@ function EFFECT:Dust( SmokeColor )
 	--KE main formula
 	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4))
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 4, 3, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 8, 2, 100 ) * Pmul )
 
 
 	local DustSpeed = 50
@@ -503,7 +503,7 @@ function EFFECT:Dust( SmokeColor )
 		end
 	end
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber, 2, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber/2, 2, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Debris = self.Emitter:Add("effects/fleck_cement" .. math.random(1,2), self.Origin - self.DirVec * 1)
@@ -547,7 +547,7 @@ function EFFECT:Metal( SmokeColor )
 
 	local RNorm = (self.DirVec - 2 * (self.DirVec * self.HitNorm) * self.HitNorm):GetNormalized() --Reflects Shell direction across hitnormal
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 3, 6, 150 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 6, 3, 150 ) * Pmul )
 
 	local DustSpeed = 10 / ParticleCount
 	for _ = 1, math.ceil(6 * Pmul) do
@@ -571,7 +571,7 @@ function EFFECT:Metal( SmokeColor )
 	end
 
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber * 3, 5, 600 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber, 3, 600 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/spark", self.Origin - self.HitNorm * -15)
@@ -601,7 +601,7 @@ function EFFECT:Metal( SmokeColor )
 		end
 	end
 
-	ParticleCount = math.ceil( math.Clamp( self.Caliber * 5, 3, 600 ) * Pmul )
+	ParticleCount = math.ceil( math.Clamp( self.Caliber * 3, 2, 600 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Dust = self.Emitter:Add("effects/ar2_altfire1b", self.Origin)
