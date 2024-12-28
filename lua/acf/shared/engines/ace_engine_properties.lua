@@ -6,12 +6,12 @@ ACF.FuelDensity = { --kg/liter
 }
 
 ACF.Efficiency = { --how efficient various engine types are, higher is worse
-	GenericPetrol = 0.304, --kg per kw hr
-	GenericDiesel = 0.243, --up to 0.274
-	Turbine = 0.375, -- previously 0.231
-	Wankel = 0.335,
-	Radial = 0.4, -- 0.38 to 0.53
-	Electric = 0.9 --percent efficiency converting chemical kw into mechanical kw WAS 0.85
+	GenericPetrol = 0.203, --kg per kw hr
+	GenericDiesel = 0.162, --up to 0.274
+	Turbine = 0.25, -- previously 0.231
+	Wankel = 0.223,
+	Radial = 0.267, -- 0.38 to 0.53
+	Electric = 0.6 --percent efficiency converting chemical kw into mechanical kw WAS 0.85
 }
 
 ACF.TorqueScale = { --how fast damage drops torque, lower loses more % torque
