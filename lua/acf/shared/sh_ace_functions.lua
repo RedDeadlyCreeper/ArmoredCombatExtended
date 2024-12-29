@@ -240,7 +240,8 @@ do
 			if IsValid( v ) then
 
 				if v:GetClass() == "acf_engine" then
-					power = power + (v.peakkw * 1.34)
+					local driverBoost = v.HasDriver and ACF.DriverTorqueBoost or 1
+					power = power + (v.peakkw * 1.34 * driverBoost)
 					fuel = v.RequiresFuel and 2 or fuel
 				elseif v:GetClass() == "acf_fueltank" then
 					fuel = math.max(fuel,1)

@@ -48,6 +48,7 @@ do
 		self.LockOnActive   = false --used to turn on the engine in case of being lockdown by not legal
 		self.CrewLink       = {}
 		self.HasDriver      = false
+		self.HasFuel		= false
 		self.HasSeatDriver = false
 		self.CanUseSeatDriver = false
 		self.SeatDriverEnt = nil
@@ -102,10 +103,10 @@ do
 
 		Engine.Model            = Lookup.model
 		Engine.Weight           = Lookup.weight
-		Engine.PeakTorque       = Lookup.torque
+		Engine.BaseTorque		= Lookup.torque
+		Engine.PeakTorque       = Lookup.torque * (Lookup.requiresfuel and ACF.TorqueBoost or 1)
 		Engine.peakkw           = Lookup.peakpower
 		Engine.PeakKwRPM        = Lookup.peakpowerrpm
-		Engine.PeakTorqueHeld   = Lookup.torque
 		Engine.IdleRPM          = Lookup.idlerpm
 		Engine.PeakMinRPM       = Lookup.peakminrpm
 		Engine.PeakMaxRPM       = Lookup.peakmaxrpm
@@ -215,10 +216,10 @@ function ENT:Update( ArgsTable )
 
 	self.Id                = Id
 	self.Weight            = Lookup.weight
-	self.PeakTorque        = Lookup.torque
+	self.BaseTorque		   = Lookup.torque
+	self.PeakTorque        = Lookup.torque * (Lookup.requiresfuel and ACF.TorqueBoost or 1)
 	self.peakkw            = Lookup.peakpower
 	self.PeakKwRPM         = Lookup.peakpowerrpm
-	self.PeakTorqueHeld    = Lookup.torque
 	self.IdleRPM           = Lookup.idlerpm
 	self.PeakMinRPM        = Lookup.peakminrpm
 	self.PeakMaxRPM        = Lookup.peakmaxrpm
@@ -270,14 +271,22 @@ function ENT:UpdateOverlayText()
 	local pbmin = self.PeakMinRPM
 	local pbmax = self.PeakMaxRPM
 
-	local SpecialBoost = self.RequiresFuel and ACF.TorqueBoost or 1
-	local text = "Power: " .. math.Round( self.peakkw * SpecialBoost ) .. " kW / " .. math.Round( self.peakkw * SpecialBoost * 1.34 ) .. " hp\n"
-	text = text .. "Torque: " .. math.Round( self.PeakTorque * SpecialBoost ) .. " Nm / " .. math.Round( self.PeakTorque * SpecialBoost * 0.73 ) .. " ft-lb\n"
+	local FuelBoost = (self.RequiresFuel or self.HasFuel) and ACF.TorqueBoost or 1
+	local DriverBoost = self.HasDriver and ACF.DriverTorqueBoost or 1
+
+	local PowerKW = math.Round( self.peakkw * FuelBoost * DriverBoost )
+	local PowerHP = math.Round( self.peakkw * FuelBoost * DriverBoost * 1.34 )
+	local TorqueNm = math.Round( self.BaseTorque * FuelBoost * DriverBoost )
+	local TorqueFtLb = math.Round( self.BaseTorque * FuelBoost * DriverBoost * 0.73 )
+
+	local text = "Power: " .. PowerKW .. " kW / " .. PowerHP .. " hp\n"
+	text = text .. "Torque: " .. TorqueNm .. " Nm / " .. TorqueFtLb .. " ft-lb\n"
 	text = text .. "Powerband: " .. (math.Round(pbmin / 10) * 10) .. " - " .. (math.Round(pbmax / 10) * 10) .. " RPM\n"
 	text = text .. "Redline: " .. self.LimitRPM .. " RPM\n\n"
 	text = text .. "Temp: " .. math.Round(self.Heat) .. " °C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. " °F\n"
 
-	if self.FuelLink and #self.FuelLink > 0 then
+	--if self.FuelLink and #self.FuelLink > 0 then
+	if self.HasFuel then
 		text = text .. "\nSupplied with " .. (self.EngineType == "Electric" and "Batteries" or "fuel")
 	end
 
@@ -382,6 +391,7 @@ function ENT:TriggerInput( iname, value )
 					if fueltank.Fuel > 0 and fueltank.Active and fueltank.Legal then HasFuel = true break end
 				end
 			end
+			self.HasFuel = HasFuel == true
 			if not self.RequiresDriver then
 				HasDriver = true
 			else
@@ -547,6 +557,7 @@ function ENT:Think()
 	if ACF.CurTime > self.NextUpdate then
 
 		self.TotalFuel = self:GetMaxFuel()
+		self.HasFuel = self.TotalFuel > 0
 		Wire_TriggerOutput(self, "Total Fuel", self.TotalFuel)
 
 		self:UpdateOverlayText()
@@ -664,7 +675,7 @@ function ENT:CalcRPM()
 
 	--First, find the first active fuel tank on among the linked fuels.
 	local Tank
-	local boost = 1
+	local FuelBoost = 1
 	for _, FuelTank in ipairs(self.FuelLink) do
 		if IsValidfueltank( FuelTank ) then
 			Tank = FuelTank
@@ -683,13 +694,16 @@ function ENT:CalcRPM()
 			Consumption = Load * self.FuelUse * (self.FlyRPM / self.PeakKwRPM) * DeltaTime / ACF.FuelDensity[Tank.FuelType]
 		end
 		Tank.Fuel = math.max(Tank.Fuel - Consumption,0)
-		boost = ACF.TorqueBoost
+		FuelBoost = ACF.TorqueBoost
+		self.HasFuel = true
 		Wire_TriggerOutput(self, "Fuel Use", math.Round(60 * Consumption / DeltaTime,3))
 	elseif self.RequiresFuel then
 		self:TriggerInput( "Active", 0 ) --shut off if no fuel and requires it
+		self.HasFuel = false
 		return 0
 	else
 		Wire_TriggerOutput(self, "Fuel Use", 0)
+		self.HasFuel = false
 	end
 
 	ACE_DoContraptionLegalCheck(self)
@@ -704,13 +718,14 @@ function ENT:CalcRPM()
 	--adjusting performance based on damage
 	-- TorqueMult is a mutipler that affects the final Torque an engine can offer at its max.
 	-- PeakTorque is the final possible torque to get.
-	local driverboost = self.HasDriver and ACF.DriverTorqueBoost or 1 --Seat drivers dont give hp boost.
+	FuelBoost = FuelBoost or self.RequiresFuel
+	local DriverBoost = self.HasDriver and ACF.DriverTorqueBoost or 1 --Seat drivers dont give hp boost.
 	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
-	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * driverboost
+	self.PeakTorque = self.BaseTorque * self.TorqueMult * DriverBoost * FuelBoost
 
 	-- Calculate the current torque from flywheel RPM.
 	local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
-	self.Torque = boost * self.Throttle * ACF_CalcCurve(self.TorqueCurve, perc) * self.PeakTorque * (self.FlyRPM < self.LimitRPM and 1 or 0)
+	self.Torque = self.Throttle * ACF_CalcCurve(self.TorqueCurve, perc) * self.PeakTorque * (self.FlyRPM < self.LimitRPM and 1 or 0)
 
 	-- Let's accelerate the flywheel based on that torque.
 	-- Calculate drag
