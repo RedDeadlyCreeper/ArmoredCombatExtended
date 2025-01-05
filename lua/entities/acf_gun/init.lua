@@ -552,6 +552,7 @@ function ENT:TriggerInput(iname, value)
 			self.OverrideFuse = true
 		else
 			self.FuseTime = 0
+			self.BulletData.FuseLength = 0
 			self.OverrideFuse = false
 		end
 	elseif iname == "ROFLimit" then
