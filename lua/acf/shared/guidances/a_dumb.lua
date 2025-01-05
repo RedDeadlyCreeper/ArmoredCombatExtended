@@ -33,7 +33,7 @@ function this:GetGuidance(missile)
 	return self:ApplyOverride(missile) or {}
 end
 
-function this:PreGuidance(missile)
+function this:PreGuidance(_) --missile
 
 end
 

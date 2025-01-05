@@ -83,7 +83,7 @@ function Round.convert( _, PlayerData )
 
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
-	local GunClass = ACF.Weapons["Guns"][Data["Id"] or PlayerData["Id"]]["gunclass"]
+	--local GunClass = ACF.Weapons["Guns"][Data["Id"] or PlayerData["Id"]]["gunclass"]
 
 
 	--if GunClass == "SA" then

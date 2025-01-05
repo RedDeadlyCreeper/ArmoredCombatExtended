@@ -581,8 +581,8 @@ function ENT:Heat_Function()
 		self.IsOverheated = true
 		Wire_TriggerOutput(self,"OverHeat", 1)
 
-		local phys = self:GetPhysicsObject()
-		local Mass = phys:GetMass()
+		--local phys = self:GetPhysicsObject()
+		--local Mass = phys:GetMass()
 
 		--[[
 		HitRes = ACF_Damage(self, {

@@ -503,7 +503,7 @@ function EFFECT:Dust( SmokeColor )
 		end
 	end
 
-	local ParticleCount = math.ceil( math.Clamp( self.Caliber/2, 2, 100 ) * Pmul )
+	local ParticleCount = math.ceil( math.Clamp( self.Caliber / 2, 2, 100 ) * Pmul )
 
 	for _ = 1, ParticleCount do
 		local Debris = self.Emitter:Add("effects/fleck_cement" .. math.random(1,2), self.Origin - self.DirVec * 1)
