@@ -15,7 +15,7 @@ ACF_DefineGearbox( "1Gear-L-S", {
 	weight = Gear1SW,
 	parentable = true,
 	switch = 0.3,
-	maxtq = 25000,
+	maxtq = 42500,
 	gears = 1,
 	geartable = {
 		[ 0 ] = 0,
@@ -32,7 +32,7 @@ ACF_DefineGearbox( "1Gear-L-M", {
 	weight = Gear1MW,
 	parentable = true,
 	switch = 0.4,
-	maxtq = 50000,
+	maxtq = 87500,
 	gears = 1,
 	geartable = {
 		[ 0 ] = 0,
@@ -49,7 +49,7 @@ ACF_DefineGearbox( "1Gear-L-L", {
 	weight = Gear1LW,
 	parentable = true,
 	switch = 0.6,
-	maxtq = 100000,
+	maxtq = 175000,
 	gears = 1,
 	geartable = {
 		[ 0 ] = 0,
@@ -68,7 +68,7 @@ ACF_DefineGearbox( "1Gear-LD-S", {
 	weight = Gear1SW,
 	parentable = true,
 	switch = 0.3,
-	maxtq = 25000,
+	maxtq = 42500,
 	gears = 1,
 	doubleclutch = true,
 	geartable = {
@@ -86,7 +86,7 @@ ACF_DefineGearbox( "1Gear-LD-M", {
 	weight = Gear1MW,
 	parentable = true,
 	switch = 0.4,
-	maxtq = 50000,
+	maxtq = 87500,
 	gears = 1,
 	doubleclutch = true,
 	geartable = {
@@ -104,7 +104,7 @@ ACF_DefineGearbox( "1Gear-LD-L", {
 	weight = Gear1LW,
 	parentable = true,
 	switch = 0.6,
-	maxtq = 100000,
+	maxtq = 175000,
 	gears = 1,
 	doubleclutch = true,
 	geartable = {
@@ -124,7 +124,7 @@ ACF_DefineGearbox( "1Gear-T-S", {
 	weight = Gear1SW,
 	parentable = true,
 	switch = 0.3,
-	maxtq = 25000,
+	maxtq = 42500,
 	gears = 1,
 	geartable = {
 		[ 0 ] = 0,
@@ -141,7 +141,7 @@ ACF_DefineGearbox( "1Gear-T-M", {
 	weight = Gear1MW,
 	parentable = true,
 	switch = 0.4,
-	maxtq = 50000,
+	maxtq = 87500,
 	gears = 1,
 	geartable = {
 		[ 0 ] = 0,
@@ -158,7 +158,7 @@ ACF_DefineGearbox( "1Gear-T-L", {
 	parentable = true,
 	weight = Gear1LW,
 	switch = 0.6,
-	maxtq = 100000,
+	maxtq = 175000,
 	gears = 1,
 	geartable = {
 		[ 0 ] = 0,
@@ -177,7 +177,7 @@ ACF_DefineGearbox( "1Gear-TD-S", {
 	weight = Gear1SW,
 	parentable = true,
 	switch = 0.3,
-	maxtq = 25000,
+	maxtq = 42500,
 	gears = 1,
 	doubleclutch = true,
 	geartable = {
@@ -195,7 +195,7 @@ ACF_DefineGearbox( "1Gear-TD-M", {
 	weight = Gear1MW,
 	parentable = true,
 	switch = 0.4,
-	maxtq = 50000,
+	maxtq = 87500,
 	gears = 1,
 	doubleclutch = true,
 	geartable = {
@@ -213,7 +213,7 @@ ACF_DefineGearbox( "1Gear-TD-L", {
 	weight = Gear1LW,
 	parentable = true,
 	switch = 0.6,
-	maxtq = 100000,
+	maxtq = 175000,
 	gears = 1,
 	doubleclutch = true,
 	geartable = {
