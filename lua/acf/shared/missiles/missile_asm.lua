@@ -371,7 +371,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 
 	seekcone   = 1.5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone   = 60,								-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
+	SeekSensitivity    = 40,
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
@@ -439,7 +439,7 @@ ACF_defineGun("AS-30 ASM", {						-- id
 
 	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
+	SeekSensitivity    = 40,
 
 	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
@@ -506,7 +506,7 @@ ACF_defineGun("KH-23 ASM", {						-- id
 
 	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
+	SeekSensitivity    = 40,
 
 	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
@@ -573,7 +573,7 @@ ACF_defineGun("KH-25 ASM", {						-- id
 
 	seekcone	= 2,							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone	= 60,							-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
+	SeekSensitivity    = 40,
 
 	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
@@ -641,7 +641,7 @@ ACF_defineGun("KH-29 ASM", {						-- id
 
 	seekcone   = 4,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
 	viewcone   = 60,								-- getting outside this cone will break the lock.  Divided by 2.
-	SeekSensitivity    = 5,
+	SeekSensitivity    = 40,
 
 	ghosttime  = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 

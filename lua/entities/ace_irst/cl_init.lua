@@ -27,7 +27,7 @@ function ACFIRSTGUICreate( Table )
 	acfmenupanel:CPanelText("ClassDesc", ACF.Classes.Radar[Table.class].desc)
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
 	acfmenupanel:CPanelText("ViewCone", "View cone : " .. ((Table.viewcone or 180) * 2) .. " degs")
-	acfmenupanel:CPanelText("MaxRange", "View range : " .. math.Round(Table.maxdist / 39.37 , 2) .. " m")
+	--acfmenupanel:CPanelText("MaxRange", "View range : " .. math.Round(Table.maxdist / 39.37 , 2) .. " m")
 	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. " kg")
 
 	acfmenupanel.CustomDisplay:PerformLayout()

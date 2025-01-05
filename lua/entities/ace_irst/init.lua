@@ -347,7 +347,7 @@ function ENT:ScanForContraptions()
 			local Index = Ply:Nick()
 			self.IRResolution[Index] = Clamp((self.IRResolution[Index] or self.MaxInaccuracy) - self.ResolveSpeedBase * self.ThinkDelay * ResolveMul * 5,ClampMin,self.MaxInaccuracy)
 
-			print(self.IRResolution[Index])
+			--print(self.IRResolution[Index])
 
 			local AngleError = Angle(Rand(-1, 1), Rand(-1, 1)) * self.IRResolution[Index]
 			local FinalAngle = -self:WorldToLocalAngles(PosDiff:Angle()) + AngleError

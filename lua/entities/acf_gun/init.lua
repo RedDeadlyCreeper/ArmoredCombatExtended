@@ -552,6 +552,7 @@ function ENT:TriggerInput(iname, value)
 			self.OverrideFuse = true
 		else
 			self.FuseTime = 0
+			self.BulletData.FuseLength = 0
 			self.OverrideFuse = false
 		end
 	elseif iname == "ROFLimit" then
@@ -581,9 +582,10 @@ function ENT:Heat_Function()
 		self.IsOverheated = true
 		Wire_TriggerOutput(self,"OverHeat", 1)
 
-		local phys = self:GetPhysicsObject()
-		local Mass = phys:GetMass()
+		--local phys = self:GetPhysicsObject()
+		--local Mass = phys:GetMass()
 
+		--[[
 		HitRes = ACF_Damage(self, {
 			Kinetic = (1 * OverHeat) * (1 + math.max(Mass - 300, 0.1)),
 			Momentum = 0,
@@ -593,6 +595,7 @@ function ENT:Heat_Function()
 		if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
 		end
+		]]--
 
 	else
 		self.IsOverheated = false
@@ -988,7 +991,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		local invalidClasses = {"AC", "MG", "RAC", "HMG", "GL", "SA"}
 
 		local fireRateModifier = self.RoFmod * self.PGRoFmod * (AmmoEnt.RoFMul + 1)
-		local defaultReloadTime = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus * Adj) / 500) ^ 0.60) * fireRateModifier
+		local defaultReloadTime = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus / Adj) / 500) ^ 0.60) * fireRateModifier
 		local lowestReloadTime = defaultReloadTime
 
 		if maxRof > 0 then

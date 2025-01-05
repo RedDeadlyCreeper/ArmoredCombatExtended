@@ -80,8 +80,8 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
+	seekcone           = 7,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
 
@@ -118,10 +118,10 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 32.5,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.26,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 95,							-- Acceleration in m/s.
+		thrust				= 85,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -137,7 +137,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.00075,						-- percent speed loss per second
+		dragcoef			= 0.00001,						-- percent speed loss per second
 		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -153,7 +153,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 45,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= false,
@@ -192,10 +192,10 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 26.5,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.22,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.15,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 100,							-- Acceleration in m/s.
+		thrust				= 70,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -211,7 +211,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.001,						-- percent speed loss per second
+		dragcoef			= 0.00001,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -227,7 +227,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -267,10 +267,11 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 17.5,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 6.5,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 65,							-- Acceleration in m/s.
+		thrust				= 45,							-- Acceleration in m/s.
 		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -285,7 +286,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.00055,						-- percent speed loss per second
+		dragcoef			= 0.00005,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.15,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -298,7 +299,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 12,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	seekcone           = 5,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 
@@ -369,7 +370,7 @@ ACF_defineGun("SRAAM AAM", {								-- id
 			},
 
 
-	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 10,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
@@ -442,7 +443,7 @@ ACF_defineGun("Magic AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 10,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -481,11 +482,11 @@ ACF_defineGun("MICA AAM", {								-- id
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 50,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.35,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.15,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 20,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 50,							-- Acceleration in m/s.
-		burntime			= 3.0,							-- time in seconds for rocket motor to burn at max proppelant.
+		burntime			= 4,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
 		launchkick			= 0,							-- Speed missile starts with on launch in m/s
@@ -556,10 +557,11 @@ ACF_defineGun("Meteor AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 37,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 65,							-- Acceleration in m/s.
+		thrust				= 45,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 30,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -575,7 +577,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.0012,						-- percent speed loss per second
+		dragcoef			= 0.000005,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -591,7 +593,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 12,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 5,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= true,
@@ -664,7 +666,7 @@ ACF_defineGun("R-60 AAM", {								-- id
 				["1xRK_small"] = true
 			},
 
-	seekcone           = 15,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 10,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 60,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
@@ -739,7 +741,7 @@ ACF_defineGun("R-73 AAM", {								-- id
 
 
 	--Doesn't use the IRCCM system. Instead has a narrower seek cone that makes it better able to filter flares.
-	seekcone           = 9,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone           = 3,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone           = 48,								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 	SeekSensitivity    = 1,
 
@@ -776,10 +778,10 @@ ACF_defineGun("R-77 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 17,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.22,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.11,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 130,							-- Acceleration in m/s.
+		thrust				= 150,							-- Acceleration in m/s.
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
 
@@ -794,7 +796,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.001,						-- percent speed loss per second
+		dragcoef			= 0.000015,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -812,7 +814,7 @@ ACF_defineGun("R-77 AAM", {							-- id
 
 	--Doesn't use the IRCCM system. Instead has a narrower seek cone that makes it better able to filter flares.
 
-	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 27.5,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 
@@ -849,10 +851,10 @@ ACF_defineGun("R-27 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 58,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 10,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
 
-		thrust				= 70,							-- Acceleration in m/s.
+		thrust				= 80,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 10,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -868,7 +870,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.0005,						-- percent speed loss per second
+		dragcoef			= 0.000012,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -884,7 +886,7 @@ ACF_defineGun("R-27 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 6,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 2,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 
@@ -920,10 +922,11 @@ ACF_defineGun("R-33 AAM", {							-- id
 
 		armour				= 40,							-- Armour effectiveness of casing, in mm
 								--320
-		turnrate			= 18,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 20,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 6.5,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
-		thrust				= 80,							-- Acceleration in m/s.
+		thrust				= 65,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
 		burntime			= 15,							-- time in seconds for rocket motor to burn at max proppelant.
 		startdelay			= 0,
@@ -939,7 +942,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 		fusetime			= 19,							--Time in seconds after launch/booster stop before missile scuttles
 		velmul				= 0.1,		--No
 
-		dragcoef			= 0.0005,						-- percent speed loss per second
+		dragcoef			= 0.0001,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= true,
 		predictiondelay		= 0.35,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -952,7 +955,7 @@ ACF_defineGun("R-33 AAM", {							-- id
 
 	racks              = {["1xRK"] = true},					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	seekcone           = 8,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+	seekcone           = 2,									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.
 	SeekSensitivity    = 1,
 

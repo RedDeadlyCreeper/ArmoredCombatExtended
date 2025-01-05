@@ -50,7 +50,6 @@ function this:Configure(missile)
 	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
-	self.SeekCone = self.SeekCone * 3
 	self.GCMultiplier	= ACF_GetGunValue(missile.BulletData, "groundclutterfactor") or this.GCMultiplier
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
 end

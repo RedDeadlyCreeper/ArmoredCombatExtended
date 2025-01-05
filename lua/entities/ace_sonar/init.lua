@@ -867,7 +867,7 @@ function CheckShadowZoneObscured(StartDepth, EndDepth, Elevation) --Checks if no
 
 	end
 
-	print("Overflow")
+	--print("Overflow")
 	return false
 
 end

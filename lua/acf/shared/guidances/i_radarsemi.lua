@@ -14,8 +14,11 @@ this.Name = ClassName
 --Currently acquired target.
 this.Target = nil
 
+-- Cone to acquire targets within.
+this.SeekCone = 20
+
 -- Cone to retain targets within.
-this.ViewCone = 25
+this.ViewCone = 70
 
 -- This instance must wait this long between target seeks.
 this.SeekDelay = 0.25 -- Re-seek drastically reduced cost so we can re-seek
@@ -38,7 +41,7 @@ end
 function this:Configure(missile)
 
 	self:super().Configure(self, missile)
-
+	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
 	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 	self.HasIRCCM	= ACF_GetGunValue(missile.BulletData, "irccm") or this.HasIRCCM
@@ -68,8 +71,10 @@ function this:GetGuidance(missile)
 	self:CheckTarget(missile)
 
 	if not IsValid(self.Target) then
+		--print("NoTarget")
 		return {}
 	end
+	--print("Target")
 
 	missile.IsDecoyed = false
 	if self.Target:GetClass( ) == "ace_flare" then
@@ -116,9 +121,9 @@ function this:CheckTarget(missile)
 
 		local target = self:AcquireLock(missile)
 
-		--if IsValid(target) then
+		if IsValid(target) and ((ACF.CurTime - target.LastDetection) < 1) then --The last detection is one janky workaround to allow semi-active missiles to lose lock when they are no longer tracked by a radar.
 			self.Target = target
-		--end
+		end
 
 end
 
@@ -197,10 +202,36 @@ function this:AcquireLock(missile)
 	local bestAng = math.huge
 	local bestent = nil
 
+	if missile.TargetPos then
+		--print("HasTpos")
+		DifSeek = missile.TargetPos - missilePos
+		self.OffBoreAng = missile:WorldToLocalAngles(DifSeek:Angle()) or Angle()
+		self.OffBoreAng = Angle(math.Clamp( self.OffBoreAng.pitch, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ), math.Clamp( self.OffBoreAng.yaw, -self.ViewCone + self.SeekCone, self.ViewCone - self.SeekCone ),0)
+
+	else
+		DifSeek = missile:GetForward()
+	end
+
+	local CounterMeasures = ACFM_GetFlaresInCone(missilePos, DifSeek, self.SeekCone)
+	table.Merge(found,CounterMeasures)
+
 	for _, classifyent in pairs(found) do
 
 		local entpos = classifyent:GetPos()
-		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+
+		local ang = Angle()
+
+		if missile.TargetPos then --Initialized. Work from here.
+			--print("Offbore")
+			ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle()) - self.OffBoreAng	--Used for testing if inrange
+
+			--print(missile.TargetPos)
+		else
+
+			ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
+
+		end
+
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
 		--print(absang.p)
@@ -234,6 +265,8 @@ function this:AcquireLock(missile)
 
 	--print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
+
+	bestent.LastDetection = ACF.CurTime
 
 	return bestent
 end

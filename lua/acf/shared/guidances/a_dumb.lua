@@ -33,16 +33,8 @@ function this:GetGuidance(missile)
 	return self:ApplyOverride(missile) or {}
 end
 
-function this:PreGuidance(missile)
+function this:PreGuidance(_) --missile
 
-	if not self.AppliedSpawnCountermeasures then
-
-		ACFM_ApplySpawnCountermeasures(missile, self)
-		self.AppliedSpawnCountermeasures = true
-
-	end
-
-	ACFM_ApplyCountermeasures(missile, self)
 end
 
 

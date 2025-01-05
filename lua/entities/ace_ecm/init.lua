@@ -110,7 +110,7 @@ function ENT:Think()
 		local found = table.Copy(ACE.radarEntities)
 
 		for MissileEnt, _ in pairs(ACF_ActiveMissiles) do
-			print(MissileEnt)
+			--print(MissileEnt)
 			table.insert( found, MissileEnt )
 		end
 
