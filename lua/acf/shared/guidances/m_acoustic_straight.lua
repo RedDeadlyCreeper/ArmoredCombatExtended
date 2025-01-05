@@ -294,9 +294,9 @@ function this:AcquireLock(missile)
 
 			--Sorts targets as closest to being directly in front of radar
 			if testang < bestAng then
-				if Multiplier > 1 then
-					print("Flarewon")
-				end
+				--if Multiplier > 1 then
+				--	print("Flarewon")
+				--end
 					bestAng = testang
 				bestent = classifyent
 

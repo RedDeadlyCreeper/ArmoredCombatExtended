@@ -118,8 +118,8 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 12,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.12,							--Fraction of speed redirected every second at max deflection
+		turnrate			= 40,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 85,							-- Acceleration in m/s.
 		--120 seconds? Does it really have a 120 second burntime??? Not setting higher so people can't minimize proppelant
@@ -153,7 +153,7 @@ ACF_defineGun("AIM-7 AAM", {							-- id
 						["2xRK"] = true
 					},
 
-	seekcone           = 30,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+	seekcone           = 45,								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
 	viewcone           = 110,								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 	SeekSensitivity    = 1,
 	irccm				= false,
@@ -192,7 +192,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 10,							--Turn rate of missile at max deflection per 100 m/s
+		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
 		finefficiency		= 0.15,							--Fraction of speed redirected every second at max deflection
 
 		thrust				= 70,							-- Acceleration in m/s.
@@ -558,7 +558,7 @@ ACF_defineGun("Meteor AAM", {							-- id
 		armour				= 30,							-- Armour effectiveness of casing, in mm
 
 		turnrate			= 15,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.2,							--Fraction of speed redirected every second at max deflection
+		finefficiency		= 0.25,							--Fraction of speed redirected every second at max deflection
 		thrusterturnrate	= 10,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 45,							-- Acceleration in m/s.

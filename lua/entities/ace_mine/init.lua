@@ -162,7 +162,7 @@ end
 do
 	local function CheckMineLimit( Owner )
 		local limit = #ACE.MineOwners[Owner] < GetConVar("acf_mines_max"):GetInt()
-		print(#ACE.MineOwners[Owner], GetConVar("acf_mines_max"):GetInt(), limit)
+		--print(#ACE.MineOwners[Owner], GetConVar("acf_mines_max"):GetInt(), limit)
 		return limit
 	end
 
@@ -178,7 +178,7 @@ do
 
 	local function AddMineToLimit( Owner, Mine )
 		table.insert( ACE.MineOwners[Owner], Mine )
-		print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
+		--print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
 	end
 
 	local MineTable = ACE.MineData

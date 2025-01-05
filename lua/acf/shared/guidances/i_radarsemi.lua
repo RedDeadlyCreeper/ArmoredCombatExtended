@@ -71,10 +71,10 @@ function this:GetGuidance(missile)
 	self:CheckTarget(missile)
 
 	if not IsValid(self.Target) then
-		print("NoTarget")
+		--print("NoTarget")
 		return {}
 	end
-	print("Target")
+	--print("Target")
 
 	missile.IsDecoyed = false
 	if self.Target:GetClass( ) == "ace_flare" then
@@ -121,7 +121,7 @@ function this:CheckTarget(missile)
 
 		local target = self:AcquireLock(missile)
 
-		if IsValid(target) then
+		if IsValid(target) and ((ACF.CurTime - target.LastDetection) < 1) then --The last detection is one janky workaround to allow semi-active missiles to lose lock when they are no longer tracked by a radar.
 			self.Target = target
 		end
 
@@ -265,6 +265,8 @@ function this:AcquireLock(missile)
 
 	--print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
+
+	bestent.LastDetection = ACF.CurTime
 
 	return bestent
 end
