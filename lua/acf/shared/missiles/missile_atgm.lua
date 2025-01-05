@@ -627,9 +627,9 @@ ACF_defineGun("AGM-114 ASM", {						--id
 
 		armour				= 21,							-- Armour effectiveness of casing, in mm
 
-		turnrate			= 30,							--Turn rate of missile at max deflection per 100 m/s
-		finefficiency		= 0.5,							--Fraction of speed redirected every second at max deflection
-		thrusterturnrate	= 3,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
+		turnrate			= 5,							--Turn rate of missile at max deflection per 100 m/s
+		finefficiency		= 0.4,							--Fraction of speed redirected every second at max deflection
+		thrusterturnrate	= 7,							--Max turnrate from thrusters regardless of speed. Active only if the missile motor is active.
 
 		thrust				= 70,							-- Acceleration in m/s.
 		burntime			= 3.55,							-- time in seconds for rocket motor to burn at max proppelant.
