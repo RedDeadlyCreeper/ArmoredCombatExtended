@@ -6,9 +6,9 @@ local GearDDMW = 85
 local GearDDLW = 180
 
 -- Torque Rating
-local GearDDST = 20000
-local GearDDMT = 45000
-local GearDDLT = 100000
+local GearDDST = 35000
+local GearDDMT = 78000
+local GearDDLT = 175000
 
 -- general description
 local DDDesc = "\n\nA Double Differential transmission allows for a multitude of radii as well as a neutral steer."

@@ -8,10 +8,10 @@ local CMW = 10
 local CLW = 20
 
 -- Torque Rating
-local CTT = 75
-local CST = 650
-local CMT = 1400
-local CLT = 8000
+local CTT = 130
+local CST = 1140
+local CMT = 2450
+local CLT = 14000
 
 -- general description
 local CDesc = "A standalone clutch for when a full size gearbox is unnecessary or too long."
