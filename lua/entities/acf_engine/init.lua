@@ -40,7 +40,6 @@ do
 		self.Efficiency     = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
 		self.Legal          = true
 		self.CanUpdate      = true
-		self.RequiresFuel   = false
 		self.RequiresDriver = false
 		self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 		self.Legal          = true
@@ -104,7 +103,7 @@ do
 		Engine.Model            = Lookup.model
 		Engine.Weight           = Lookup.weight
 		Engine.BaseTorque		= Lookup.torque
-		Engine.PeakTorque       = Lookup.torque * (Lookup.requiresfuel and ACF.TorqueBoost or 1)
+		Engine.PeakTorque       = Lookup.torque
 		Engine.peakkw           = Lookup.peakpower
 		Engine.PeakKwRPM        = Lookup.peakpowerrpm
 		Engine.IdleRPM          = Lookup.idlerpm
@@ -118,7 +117,6 @@ do
 		Engine.FuelType         = Lookup.fuel or "Petrol"
 		Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
 		Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
-		Engine.RequiresFuel     = Lookup.requiresfuel
 		Engine.RequiresDriver   = false
 		Engine.SoundPath        = Lookup.sound
 		Engine.DefaultSound     = Engine.SoundPath
@@ -142,10 +140,6 @@ do
 
 		Engine.TorqueScale	= ACF.TorqueScale[Engine.EngineType]
 
-		if ACF.EnginesRequireFuel > 0 then
-			Engine.RequiresFuel = true
-		end
-
 		if Engine.peakkw > (74.57 / 100 * ACF.LargeEngineThreshold) and ACF.LargeEnginesRequireDrivers ~= 0 then --If the engine has more than 100 hp it requires a driver.
 			Engine.RequiresDriver = true
 			Engine.CanUseSeatDriver = true
@@ -154,7 +148,7 @@ do
 		if Engine.EngineType == "Electric" then
 			Engine.FuelUse = ACF.ElecRate / (ACF.Efficiency[Engine.EngineType] * 60 * 60) --elecs use current power output, not max
 		else
-			Engine.FuelUse = ACF.TorqueBoost * ACF.FuelRate * ACF.Efficiency[Engine.EngineType] * Engine.peakkw / (60 * 60)
+			Engine.FuelUse = ACF.FuelRate * ACF.Efficiency[Engine.EngineType] * Engine.peakkw / (60 * 60)
 		end
 
 		Engine.FlyRPM = 0
@@ -217,7 +211,7 @@ function ENT:Update( ArgsTable )
 	self.Id                = Id
 	self.Weight            = Lookup.weight
 	self.BaseTorque		   = Lookup.torque
-	self.PeakTorque        = Lookup.torque * (Lookup.requiresfuel and ACF.TorqueBoost or 1)
+	self.PeakTorque        = Lookup.torque
 	self.peakkw            = Lookup.peakpower
 	self.PeakKwRPM         = Lookup.peakpowerrpm
 	self.IdleRPM           = Lookup.idlerpm
@@ -230,7 +224,6 @@ function ENT:Update( ArgsTable )
 	self.IsTrans           = Lookup.istrans
 	self.FuelType          = Lookup.fuel
 	self.EngineType        = Lookup.enginetype
-	self.RequiresFuel      = Lookup.requiresfuel
 	self.SoundPath         = Lookup.sound
 	self.DefaultSound      = self.SoundPath
 	self.SoundPitch        = Lookup.pitch or 100
@@ -246,7 +239,7 @@ function ENT:Update( ArgsTable )
 	if self.EngineType == "Electric" then
 		self.FuelUse = ACF.ElecRate / (ACF.Efficiency[self.EngineType] * 60 * 60) --elecs use current power output, not max
 	else
-		self.FuelUse = ACF.TorqueBoost * ACF.FuelRate * ACF.Efficiency[self.EngineType] * self.peakkw / (60 * 60)
+		self.FuelUse = ACF.FuelRate * ACF.Efficiency[self.EngineType] * self.peakkw / (60 * 60)
 	end
 
 	self:SetModel( self.Model )
@@ -271,13 +264,12 @@ function ENT:UpdateOverlayText()
 	local pbmin = self.PeakMinRPM
 	local pbmax = self.PeakMaxRPM
 
-	local FuelBoost = (self.RequiresFuel or self.HasFuel) and ACF.TorqueBoost or 1
 	local DriverBoost = self.HasDriver and ACF.DriverTorqueBoost or 1
 
-	local PowerKW = math.Round( self.peakkw * FuelBoost * DriverBoost )
-	local PowerHP = math.Round( self.peakkw * FuelBoost * DriverBoost * 1.34 )
-	local TorqueNm = math.Round( self.BaseTorque * FuelBoost * DriverBoost )
-	local TorqueFtLb = math.Round( self.BaseTorque * FuelBoost * DriverBoost * 0.73 )
+	local PowerKW = math.Round( self.peakkw * DriverBoost )
+	local PowerHP = math.Round( self.peakkw * DriverBoost * 1.34 )
+	local TorqueNm = math.Round( self.BaseTorque * DriverBoost )
+	local TorqueFtLb = math.Round( self.BaseTorque * DriverBoost * 0.73 )
 
 	local text = "Power: " .. PowerKW .. " kW / " .. PowerHP .. " hp\n"
 	text = text .. "Torque: " .. TorqueNm .. " Nm / " .. TorqueFtLb .. " ft-lb\n"
@@ -287,11 +279,11 @@ function ENT:UpdateOverlayText()
 
 	--if self.FuelLink and #self.FuelLink > 0 then
 	if self.HasFuel then
-		text = text .. "\nSupplied with " .. (self.EngineType == "Electric" and "Batteries" or "fuel")
+		text = text .. "\nSupplied with " .. (self.EngineType == "Electric" and "Batteries" or "Fuel")
 	end
 
 	if self.HasDriver then
-		text = text .. "\nDriver Provided"  --fuck yeah
+		text = text .. "\nDriver Provided (" .. (ACF.DriverTorqueBoost * 100 - 100) .. "% boost)"
 	end
 
 	if not self.Legal then
@@ -384,13 +376,11 @@ function ENT:TriggerInput( iname, value )
 			--make sure we have fuel
 			local HasFuel
 			local HasDriver
-			if not self.RequiresFuel then
-				HasFuel = true
-			else
-				for _,fueltank in pairs(self.FuelLink) do
-					if fueltank.Fuel > 0 and fueltank.Active and fueltank.Legal then HasFuel = true break end
-				end
+
+			for _,fueltank in pairs(self.FuelLink) do
+				if fueltank.Fuel > 0 and fueltank.Active and fueltank.Legal then HasFuel = true break end
 			end
+
 			self.HasFuel = HasFuel == true
 			if not self.RequiresDriver then
 				HasDriver = true
@@ -405,7 +395,7 @@ function ENT:TriggerInput( iname, value )
 				end
 			end
 			--RequiresDriver
-			if HasFuel and HasDriver then
+			if (HasFuel or ACF.EnginesRequireFuel == 0) and HasDriver then
 				self.Active = true
 				if self.SoundPath ~= "" then
 
@@ -675,7 +665,6 @@ function ENT:CalcRPM()
 
 	--First, find the first active fuel tank on among the linked fuels.
 	local Tank
-	local FuelBoost = 1
 	for _, FuelTank in ipairs(self.FuelLink) do
 		if IsValidfueltank( FuelTank ) then
 			Tank = FuelTank
@@ -687,22 +676,24 @@ function ENT:CalcRPM()
 	-- Concern: why is the fuel usage returning 0 when RPMs hit redline? Maybe the engine hits the redline and torque becomes 0 = no fuel usage??
 	if IsValid(Tank) then
 		local Consumption
+
 		if self.FuelType == "Electric" then
 			Consumption = (self.Torque * self.FlyRPM / 9548.8) * self.FuelUse * DeltaTime
 		else
 			local Load = 0.3 + self.Throttle * 0.7 -- the heck are these magic numbers?
 			Consumption = Load * self.FuelUse * (self.FlyRPM / self.PeakKwRPM) * DeltaTime / ACF.FuelDensity[Tank.FuelType]
 		end
+
 		Tank.Fuel = math.max(Tank.Fuel - Consumption,0)
-		FuelBoost = ACF.TorqueBoost
 		self.HasFuel = true
 		Wire_TriggerOutput(self, "Fuel Use", math.Round(60 * Consumption / DeltaTime,3))
-	elseif self.RequiresFuel then
-		self:TriggerInput( "Active", 0 ) --shut off if no fuel and requires it
-		self.HasFuel = false
-		return 0
 	else
 		Wire_TriggerOutput(self, "Fuel Use", 0)
+
+		if ACF.EnginesRequireFuel == 1 then
+			self:TriggerInput( "Active", 0 ) --shut off if no fuel and requires it
+			return 0
+		end
 		self.HasFuel = false
 	end
 
@@ -718,10 +709,9 @@ function ENT:CalcRPM()
 	--adjusting performance based on damage
 	-- TorqueMult is a mutipler that affects the final Torque an engine can offer at its max.
 	-- PeakTorque is the final possible torque to get.
-	FuelBoost = FuelBoost or self.RequiresFuel
 	local DriverBoost = self.HasDriver and ACF.DriverTorqueBoost or 1 --Seat drivers dont give hp boost.
 	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
-	self.PeakTorque = self.BaseTorque * self.TorqueMult * DriverBoost * FuelBoost
+	self.PeakTorque = self.BaseTorque * self.TorqueMult * DriverBoost
 
 	-- Calculate the current torque from flywheel RPM.
 	local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
