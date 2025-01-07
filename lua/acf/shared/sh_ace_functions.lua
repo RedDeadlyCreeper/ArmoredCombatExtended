@@ -216,7 +216,6 @@ do
 		local Mass		= 0
 		local PhysMass	= 0
 		local power		= 0
-		local fuel		= 0
 		local Compositions  = {}
 		local MatSums	= {}
 		local PercentMat	= {}
@@ -242,8 +241,6 @@ do
 				if v:GetClass() == "acf_engine" then
 					local driverBoost = v.HasDriver and ACF.DriverTorqueBoost or 1
 					power = power + (v.peakkw * 1.34 * driverBoost)
-				elseif v:GetClass() == "acf_fueltank" then
-					fuel = math.max(fuel,1)
 				end
 
 				local phys = v:GetPhysicsObject()
@@ -304,7 +301,7 @@ do
 
 			end
 		end
-		if pwr then return { Power = power, Fuel = fuel, MaterialPercent = PercentMat, MaterialMass = MatSums } end
+		if pwr then return { Power = power, MaterialPercent = PercentMat, MaterialMass = MatSums } end
 	end
 
 end

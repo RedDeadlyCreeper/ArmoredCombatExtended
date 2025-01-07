@@ -144,7 +144,6 @@ function TOOL:Reload( trace )
 	local physratio	= 100 * ent.acfphystotal / ent.acftotal
 
 	local power		= data.Power
-	local fuel		= data.Fuel
 
 	local GeneralTb	= { data.MaterialMass, data.MaterialPercent }
 	local ToJSON		= util.TableToJSON( GeneralTb )
