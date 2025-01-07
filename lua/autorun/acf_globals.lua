@@ -142,10 +142,10 @@ ACE.MatCostTables = {
 	CHA				= 0.7 * (0.98 / 1.25),	--20% more heavy for a 30% reduction in cost.
 	Cer				= 1.10 * (2.05 / 1.2),	--70% more protection per kg for a 10% increase in cost. Takes a ton of damage and evaporates if penetrated.
 	ERA				= 0.7 * (2.5 / 2.0),
-	Rub				= 1.25 * (0.05 / 0.2),
+	Rub				= 1.1 * (0.05 / 0.2),
 	Texto			= 1 * (0.5 / 0.35),
 	RHA 			= 1,
-	DU				= 1.2 * (4.9 / 2.43),	--A 20% increase in cost for 50% reduction in weight.
+	DU				= 1.2 * (3.9 / 2.43),	--A 20% increase in cost for 40% reduction in weight.
 	Ti				= 1.25 * (1.7 / 0.61)	--A 25% increase in cost for 64% reduction in weight.
 }
 
