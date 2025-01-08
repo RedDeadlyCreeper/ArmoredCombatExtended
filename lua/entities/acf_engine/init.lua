@@ -106,6 +106,7 @@ do
 		Engine.PeakTorque       = Lookup.torque
 		Engine.peakkw           = Lookup.peakpower
 		Engine.PeakKwRPM        = Lookup.peakpowerrpm
+		Engine.PeakTqRPM        = math.max(Lookup.peaktqrpm, Lookup.idlerpm)
 		Engine.IdleRPM          = Lookup.idlerpm
 		Engine.PeakMinRPM       = Lookup.peakminrpm
 		Engine.PeakMaxRPM       = Lookup.peakmaxrpm
@@ -214,6 +215,7 @@ function ENT:Update( ArgsTable )
 	self.PeakTorque        = Lookup.torque
 	self.peakkw            = Lookup.peakpower
 	self.PeakKwRPM         = Lookup.peakpowerrpm
+	self.PeakTqRPM         = math.max(Lookup.peaktqrpm, Lookup.idlerpm)
 	self.IdleRPM           = Lookup.idlerpm
 	self.PeakMinRPM        = Lookup.peakminrpm
 	self.PeakMaxRPM        = Lookup.peakmaxrpm
@@ -271,8 +273,8 @@ function ENT:UpdateOverlayText()
 	local TorqueNm = math.Round( self.BaseTorque * DriverBoost )
 	local TorqueFtLb = math.Round( self.BaseTorque * DriverBoost * 0.73 )
 
-	local text = "Power: " .. PowerKW .. " kW / " .. PowerHP .. " hp\n"
-	text = text .. "Torque: " .. TorqueNm .. " Nm / " .. TorqueFtLb .. " ft-lb\n"
+	local text = "Power: " .. PowerKW .. " kW / " .. PowerHP .. " hp at " .. math.Round(self.PeakKwRPM) .. " RPM\n"
+	text = text .. "Torque: " .. TorqueNm .. " Nm / " .. TorqueFtLb .. " ft-lb at " .. math.Round(self.PeakTqRPM) .. " RPM\n"
 	text = text .. "Powerband: " .. (math.Round(pbmin / 10) * 10) .. " - " .. (math.Round(pbmax / 10) * 10) .. " RPM\n"
 	text = text .. "Redline: " .. self.LimitRPM .. " RPM\n\n"
 	text = text .. "Temp: " .. math.Round(self.Heat) .. " °C / " .. math.Round((self.Heat * (9 / 5)) + 32) .. " °F\n"
