@@ -4,13 +4,14 @@ function ACE_DoContraptionLegalCheck(CheckEnt) --In the future could allow true/
 
 	CheckEnt.CanLegalCheck = CheckEnt.CanLegalCheck or false
 	if not CheckEnt.CanLegalCheck then return end
+
 	CheckEnt.CanLegalCheck = false
-
-	local Contraption = CheckEnt:GetContraption()
-	if not IsValid(Contraption) then return end
-	ACE_CheckLegalCont(Contraption)
-
 	timer.Simple(3, function() if IsValid(CheckEnt) then CheckEnt.CanLegalCheck = true end end) --Reallows the legal check after 3 seconds to prevent spam.
+
+	local Contraption = CheckEnt:GetContraption() or {}
+	if table.IsEmpty(Contraption) then return end
+
+	ACE_CheckLegalCont(Contraption)
 
 end
 
@@ -31,7 +32,7 @@ function ACE_CheckLegalCont(Contraption)
 		Contraption.OTWarnings.WarnedOverPoints = true
 	end
 
-	HasWarned = Contraption.OTWarnings.WarnedOverWeight or false
+	--HasWarned = Contraption.OTWarnings.WarnedOverWeight or false
 	if Contraption.totalMass > ACF.MaxWeight and not HasWarned then
 		local Ply = Contraption:GetACEBaseplate():CPPIGetOwner()
 		local AboveAmt = Contraption.totalMass - ACF.MaxWeight
@@ -103,7 +104,6 @@ do
 		end
 	end
 
-
 	local function ACE_InitPts(Class)
 		Class.ACEPoints = 0
 	end
@@ -111,7 +111,7 @@ do
 	hook.Add("cfw.family.created", "ACE_InitPoints", ACE_InitPts)
 
 
-	local function ACE_AddPts(Class, Ent)
+	function ACE_AddPts(Class, Ent)
 		if not IsValid(Ent) then return end
 
 		--local Mass = PhysObj:GetMass()
@@ -126,7 +126,7 @@ do
 	hook.Add("cfw.contraption.entityAdded", "ACE_AddPoints", ACE_AddPts)
 	hook.Add("cfw.family.added", "ACE_AddPoints", ACE_AddPts)
 
-	local function ACE_RemPts(Class, Ent)
+	function ACE_RemPts(Class, Ent)
 		if not IsValid(Ent) then return end
 
 		local AcePts = ACE_GetEntPoints(Ent)

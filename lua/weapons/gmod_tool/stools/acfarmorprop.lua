@@ -45,6 +45,7 @@ local function ApplySettings( _, ent, data )
 
 	if not SERVER then return end
 
+
 	if data.Mass then
 		local phys = ent:GetPhysicsObject()
 		if IsValid( phys ) then phys:SetMass( data.Mass ) end
@@ -57,11 +58,17 @@ local function ApplySettings( _, ent, data )
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
 	end
 
+	local con = ent:GetContraption()
+
+	if con then ACE_RemPts(con, ent) end --Stupid roundabout fix. But only executed when the mat is changed. Hey if it works.
+
 	if data.Material then
 		ent.ACF = ent.ACF or {}
 		ent.ACF.Material = data.Material
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
 	end
+
+	if con then ACE_AddPts(con, ent) end
 
 end
 
