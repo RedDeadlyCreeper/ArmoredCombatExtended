@@ -136,7 +136,7 @@ do
 			Multifuel			= 1.2, --Due to generally higher torques
 			Electric			= 0.8 --Due to odd power outputs
 		}
-		local PtsPerHP = 2.33
+		local PtsPerHP = 2.33 / 1.5 --Added 1.5 mul from torque boost antics for any engines without a defined hp cost.
 		local FallBackCost = (Engine.peakkw / 0.7457) * PtsPerHP * (FuelCostMul[Engine.FuelType] or 1)
 		Engine.ACEPoints		= math.ceil((Lookup.acepoints or FallBackCost or 0.404) * ACE.EnginePointMul)
 
