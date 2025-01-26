@@ -124,7 +124,7 @@ function Round.propimpact( _, Bullet, Target, _, HitPos, Bone ) --Hitnormal not 
 	if ACF_Check( Target ) then
 
 		--local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Energy = ACF_Kinetic(Bullet.FillerMass * 500, Bullet.FillerMass * 50, Bullet.LimitVel)
+		local Energy = ACF_Kinetic(Bullet.FillerMass * 750, Bullet.FillerMass * 75, Bullet.LimitVel)
 		--local HitRes = ACF_RoundImpact(Bullet, Speed / 4 + Bullet.FillerMass * 250, Energy, Target, HitPos, HitNormal / 10, Bone)
 
 		local Mat		= Target.ACF.Material or "RHA"
