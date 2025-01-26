@@ -136,7 +136,7 @@ do
 			Multifuel			= 1.2, --Due to generally higher torques
 			Electric			= 0.8 --Due to odd power outputs
 		}
-		local PtsPerHP = 2.33
+		local PtsPerHP = 2.33 / 1.5 --Added 1.5 mul from torque boost antics for any engines without a defined hp cost.
 		local FallBackCost = (Engine.peakkw / 0.7457) * PtsPerHP * (FuelCostMul[Engine.FuelType] or 1)
 		Engine.ACEPoints		= math.ceil((Lookup.acepoints or FallBackCost or 0.404) * ACE.EnginePointMul)
 
@@ -767,15 +767,20 @@ function ENT:CalcRPM()
 	self.Heat = ACE_HeatFromEngine( self )
 
 	local HealthRatio = self.ACF.Health / self.ACF.MaxHealth
-	if HealthRatio < 0.95 then
+	if HealthRatio < 0.995 then
 		if HealthRatio > 0.025 then
 			local PhysObj = self:GetPhysicsObject()
 			local Mass = PhysObj:GetMass()
 			HitRes = ACF_Damage(self, {
-				Kinetic = (1 + math.max(Mass / 2, 20) / 2.5) / self.Throttle * 100,
+				Kinetic = (1 + math.max(Mass / 2, 20) / 2.5) * 5 * self.Throttle / 100,
 				Momentum = 0,
-				Penetration = (1 + math.max(Mass / 2, 20) / 2.5) / self.Throttle * 100
+				Penetration = (1 + math.max(Mass / 2, 20) / 2.5) * 5 * self.Throttle / 100
 			}, 2, 0, self:CPPIGetOwner())
+
+			if math.Rand(0,1) > 0.99 * HealthRatio * 1.2 then
+				self:EmitSound( "ambient/materials/door_hit1.wav", 120, math.random(45,100)  ) --npc/strider/strider_step4.wav
+			end
+
 		else
 			--Turns Off due to massive damage
 			self:TriggerInput("Active", 0)

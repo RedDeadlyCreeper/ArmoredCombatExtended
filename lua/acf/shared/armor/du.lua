@@ -13,8 +13,8 @@ Material.curve		= 1.06 --Slight and almost unnoticable penalty to high thickness
 --All effectiveness values multiply the Line of Sight armor values of armor.
 --All Resiliance values are damage multipliers. Higher = more damage. Lower = less damage.
 
-Material.effectiveness  = 4.9
-Material.resiliance	= 0.8
+Material.effectiveness  = 3.9
+Material.resiliance	= 0.9
 
 Material.spallresist	= 1
 
@@ -113,7 +113,7 @@ if SERVER then
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-		HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * resiliance * damageMult * ductilitymult
+		HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) * FrArea * resiliance * damageMult * ductilitymult
 		HitRes.Overkill = 0
 		HitRes.Loss	= 1
 

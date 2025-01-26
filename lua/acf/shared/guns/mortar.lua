@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("MO", {
 	type = "Gun",
-	spread = 0.7,
+	spread = 0.6,
 	name = "Mortar",
 	desc = ACFTranslation.GunClasses[10],
 	muzzleflash = "MO",
@@ -14,7 +14,7 @@ ACF_defineGunClass("MO", {
 
 ACF_defineGun("50mmM", { --id
 	name = "50mm Mortar",
-	desc = "The 50mm is an uncommon light mortar often seen at or before the begening of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
+	desc = "The 50mm is an uncommon light mortar often seen at or before the beginning of ww2, it fires a light 50mm rounds that is good for splatting infantry.",
 	model = "models/mortar/mortar_50mm.mdl",
 	sound = "ace_weapons/multi_sound/40mm_multi.mp3",
 	gunclass = "MO",
@@ -24,10 +24,10 @@ ACF_defineGun("50mmM", { --id
 	maxrof = 50, -- maximum rounds per minute
 	year = 1930,
 	round = {
-		maxlength = 50,
-		propweight = 0.06
+		maxlength = 80,
+		propweight = 0.1
 	},
-	acepoints = 250,
+	acepoints = 100,
 	gunnerexception = true --Bypasses regular gunner rules.
 } )
 
@@ -43,10 +43,10 @@ ACF_defineGun("60mmM", { --id
 	maxrof = 35, -- maximum rounds per minute
 	year = 1930,
 	round = {
-		maxlength = 65,
-		propweight = 0.1
+		maxlength = 105,
+		propweight = 0.2
 	},
-	acepoints = 300,
+	acepoints = 150,
 	gunnerexception = true --Bypasses regular gunner rules.
 } )
 
@@ -62,10 +62,10 @@ ACF_defineGun("80mmM", {
 	maxrof = 27, -- maximum rounds per minute
 	year = 1915,
 	round = {
-		maxlength = 85,
-		propweight = 0.25
+		maxlength = 160,
+		propweight = 0.4
 	},
-	acepoints = 350,
+	acepoints = 250,
 	gunnerexception = true --Bypasses regular gunner rules.
 } )
 
@@ -81,8 +81,8 @@ ACF_defineGun("120mmM", {
 	maxrof = 16, -- maximum rounds per minute
 	year = 1935,
 	round = {
-		maxlength = 80,
-		propweight = 0.4
+		maxlength = 180,
+		propweight = 0.9
 	},
 	acepoints = 450
 } )
@@ -99,8 +99,8 @@ ACF_defineGun("150mmM", {
 	maxrof = 9, -- maximum rounds per minute
 	year = 1945,
 	round = {
-		maxlength = 110,
-		propweight = 0.8
+		maxlength = 165,
+		propweight = 1
 	},
 	acepoints = 550
 } )
@@ -116,8 +116,8 @@ ACF_defineGun("200mmM", {
 	maxrof = 5, -- maximum rounds per minute
 	year = 1940,
 	round = {
-		maxlength = 125,
-		propweight = 1.7
+		maxlength = 250,
+		propweight = 2
 	},
 	acepoints = 1000
 } )
@@ -133,8 +133,8 @@ ACF_defineGun("280mmM", {
 	maxrof = 2.3, -- maximum rounds per minute
 	year = 1945,
 	round = {
-		maxlength = 150,
-		propweight = 3
+		maxlength = 500,
+		propweight = 9
 	},
 	acepoints = 1500
 } )
@@ -150,8 +150,8 @@ ACF_defineGun("380mmM", {
 	maxrof = 2, -- maximum rounds per minute
 	year = 1941,
 	round = {
-		maxlength = 180,
-		propweight = 5
+		maxlength = 635,
+		propweight = 15
 	},
 	acepoints = 2800
 } )

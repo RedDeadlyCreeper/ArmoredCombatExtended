@@ -35,7 +35,7 @@ SWEP.HeatMax = 30 --Maximum heat - determines max rate at which recoil is applie
 				--Also determines point at which random spread is at its highest intensity
 				--HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
-SWEP.AngularRecoil = 20	--Amount of angular recoil
+SWEP.AngularRecoil = 8	--Amount of angular recoil
 
 --How much the recoil is biased to one side proportional to vertical recoil
 --Positive numbers bias to the right, negative to the left
@@ -68,9 +68,9 @@ function SWEP:InitBulletData()
 	self.BulletData.Id = "7.62mmMG"
 	self.BulletData.Type = "AP"
 	self.BulletData.Id = 1
-	self.BulletData.Caliber = 01.143
-	self.BulletData.PropLength = 1.7 --Volume of the case as a cylinder * Powder density converted from g to kg
-	self.BulletData.ProjLength = 3 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+	self.BulletData.Caliber = 1.143
+	self.BulletData.PropLength = 1.2 --Volume of the case as a cylinder * Powder density converted from g to kg
+	self.BulletData.ProjLength = 7 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 	self.BulletData.Data5 = 0 --He Filler or Flechette count
 	self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 	self.BulletData.Data7 = 0
@@ -86,7 +86,7 @@ function SWEP:InitBulletData()
 	self.BulletData.FrArea = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
 	self.BulletData.ProjMass = self.BulletData.FrArea * (self.BulletData.ProjLength * 7.9 / 1000)
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-	self.BulletData.DragCoef = 0.02 --Alternatively manually set it
+	self.BulletData.DragCoef = 0.01 --Alternatively manually set it
 	--		self.BulletData.DragCoef  = ((self.BulletData.FrArea/10000)/self.BulletData.ProjMass)
 	--Don't touch below here
 	self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)

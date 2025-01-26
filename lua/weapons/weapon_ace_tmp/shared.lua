@@ -35,7 +35,7 @@ SWEP.HeatMax = 25 --Maximum heat - determines max rate at which recoil is applie
 				--Also determines point at which random spread is at its highest intensity
 				--HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
-SWEP.AngularRecoil = 15	--Amount of angular recoil
+SWEP.AngularRecoil = 5	--Amount of angular recoil
 
 --How much the recoil is biased to one side proportional to vertical recoil
 --Positive numbers bias to the right, negative to the left
@@ -69,8 +69,8 @@ function SWEP:InitBulletData()
 	self.BulletData.Type = "AP"
 	self.BulletData.Id = 1
 	self.BulletData.Caliber = 0.9
-	self.BulletData.PropLength = 1.3 --Volume of the case as a cylinder * Powder density converted from g to kg
-	self.BulletData.ProjLength = 4.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+	self.BulletData.PropLength = 0.9 --Volume of the case as a cylinder * Powder density converted from g to kg
+	self.BulletData.ProjLength = 8 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 	self.BulletData.Data5 = 0 --He Filler or Flechette count
 	self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 	self.BulletData.Data7 = 0

@@ -45,6 +45,7 @@ local function ApplySettings( _, ent, data )
 
 	if not SERVER then return end
 
+
 	if data.Mass then
 		local phys = ent:GetPhysicsObject()
 		if IsValid( phys ) then phys:SetMass( data.Mass ) end
@@ -57,11 +58,17 @@ local function ApplySettings( _, ent, data )
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
 	end
 
+	local con = ent:GetContraption()
+
+	if con then ACE_RemPts(con, ent) end --Stupid roundabout fix. But only executed when the mat is changed. Hey if it works.
+
 	if data.Material then
 		ent.ACF = ent.ACF or {}
 		ent.ACF.Material = data.Material
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
 	end
+
+	if con then ACE_AddPts(con, ent) end
 
 end
 
@@ -153,8 +160,23 @@ function TOOL:Reload( trace )
 	local Contraption = ent:GetContraption() or nil
 	local PointVal		= 0
 
+	local PtsArmor = 0
+	local PtsEngine = 0
+	local PtsFirepower = 0
+	local PtsFuel = 0
+	local PtsAmmo = 0
+	local PtsCrew = 0
+	local PtsElectronics = 0
+
 	if Contraption ~= nil then
 		PointVal		= Contraption.ACEPoints or ACE_GetEntPoints(ent) or 0
+		PtsArmor = Contraption.ACEPointsPerType.Armor
+		PtsEngine = Contraption.ACEPointsPerType.Engines
+		PtsFirepower = Contraption.ACEPointsPerType.Firepower
+		PtsFuel = Contraption.ACEPointsPerType.Fuel
+		PtsAmmo = Contraption.ACEPointsPerType.Ammo
+		PtsCrew = Contraption.ACEPointsPerType.Crew
+		PtsElectronics = Contraption.ACEPointsPerType.Electronics
 	else
 		PointVal = ACE_GetEntPoints(ent)
 	end
@@ -166,7 +188,15 @@ function TOOL:Reload( trace )
 		net.WriteFloat(physratio)
 		net.WriteFloat(power)
 		net.WriteFloat(fuel)
+
 		net.WriteFloat(PointVal)
+		net.WriteFloat(PtsArmor)
+		net.WriteFloat(PtsEngine)
+		net.WriteFloat(PtsFirepower)
+		net.WriteFloat(PtsFuel)
+		net.WriteFloat(PtsAmmo)
+		net.WriteFloat(PtsCrew)
+		net.WriteFloat(PtsElectronics)
 
 		net.WriteData(Compressed)
 
@@ -441,7 +471,16 @@ if CLIENT then
 
 		local hpton		= math.Round( power * bonus / (total / 1000), 1 )
 		local hasfuel	= fuel == 1 and " with fuel (25% boost)" or fuel == 2 and "" or " (no fuel)"
+
 		local PointVal	= math.Round( net.ReadFloat(), 1 )
+		local PtsArmor = math.Round( net.ReadFloat(), 1 )
+		local PtsEngine = math.Round( net.ReadFloat(), 1 )
+		local PtsFirepower = math.Round( net.ReadFloat(), 1 )
+		local PtsFuel = math.Round( net.ReadFloat(), 1 )
+		local PtsAmmo = math.Round( net.ReadFloat(), 1 )
+		local PtsCrew = math.Round( net.ReadFloat(), 1 )
+		local PtsElectronics = math.Round( net.ReadFloat(), 1 )
+
 		local Compressed	= net.ReadData(640)
 		local Decompress	= util.Decompress(Compressed)
 		local FromJSON	= util.JSONToTable( Decompress )
@@ -449,6 +488,9 @@ if CLIENT then
 		local Sep = "\n"
 
 		local Tabletxt	= {}
+
+		local PTBreakdownHeader		= { Color2, "<|",Color1, "|============|", Color2, "[- Cost Breakdown -]", Color1, "|============|",Color2, "|>" .. Sep }
+
 
 		local Title		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>" .. Sep }
 		--local ArmorComp1	= { Color4, "- Armor composition: " .. Sep }
@@ -458,6 +500,33 @@ if CLIENT then
 
 
 		--PointVal
+
+		Tabletxt = table.Add(Tabletxt, PTBreakdownHeader)
+
+		local TPoints = {}
+		if PointVal > ACF.PointsLimit then
+			local OverPoints = PointVal - ACF.PointsLimit
+			TPoints		= { Color4, "Total Cost: ", Color1, "" .. PointVal .. "pts", Color2, "  -  ", Color1, OverPoints .. " pts over" .. Sep }
+		else
+			TPoints		= { Color4, "Total Cost: ", Color3, "" .. PointVal .. "pts" .. Sep }
+		end
+		table.Add(Tabletxt,TPoints)
+
+		local FractionalPts = "/" .. PointVal
+		table.Add(Tabletxt,{ Color4, "Armor: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsArmor / PointVal * 100,0) .. "%) - " .. PtsArmor .. FractionalPts ..  Sep})
+		table.Add(Tabletxt,{ Color4, "Engines: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsEngine / PointVal * 100,0) .. "%) - " .. PtsEngine .. FractionalPts ..  Sep})
+		table.Add(Tabletxt,{ Color4, "Firepower: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsFirepower / PointVal * 100,0) .. "%) - " .. PtsFirepower .. FractionalPts ..  Sep})
+		table.Add(Tabletxt,{ Color4, "Fuel: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsFuel / PointVal * 100,0) .. "%) - " .. PtsFuel .. FractionalPts ..  Sep})
+		table.Add(Tabletxt,{ Color4, "Ammo: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsAmmo / PointVal * 100,0) .. "%) - " .. PtsAmmo .. FractionalPts ..  Sep})
+		table.Add(Tabletxt,{ Color4, "Crew: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsCrew / PointVal * 100,0) .. "%) - " .. PtsCrew .. FractionalPts ..  Sep})
+		table.Add(Tabletxt,{ Color4, "Electronics: "})
+		table.Add(Tabletxt,{ Color3, "(" .. math.Round(PtsElectronics / PointVal * 100,0) .. "%) - " .. PtsElectronics .. FractionalPts .. Sep})
 
 		Tabletxt = table.Add(Tabletxt, Title)
 		Tabletxt = table.Add(Tabletxt,TMass2)
@@ -505,15 +574,6 @@ if CLIENT then
 		table.Add(Tabletxt,{Color3,Sep})
 
 		Tabletxt = table.Add(Tabletxt,TbStr)
-		local TPoints = {}
-		if PointVal > ACF.PointsLimit then
-			local OverPoints = PointVal - ACF.PointsLimit
-			TPoints		= { Color4, "-Total Cost: ", Color1, "" .. PointVal .. "pts", Color2, "  -  ", Color1, OverPoints .. " pts over" .. Sep }
-		else
-			TPoints		= { Color4, "-Total Cost: ", Color3, "" .. PointVal .. "pts" .. Sep }
-		end
-
-		Tabletxt = table.Add(Tabletxt,TPoints)
 
 		local TMass = {}
 		if total > ACF.MaxWeight then

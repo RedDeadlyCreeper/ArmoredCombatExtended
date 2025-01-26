@@ -174,12 +174,8 @@ function ACF_CalcDamage( Entity , Energy , FrArea , Angle , Type) --y=-5/16x + b
 
 	if Type == "AP" then
 		damageMult = ACF.APDamageMult
-	elseif Type == "APC" then
-		damageMult = ACF.APCDamageMult
-	elseif Type == "APBC" then
-		damageMult = ACF.APBCDamageMult
-	elseif Type == "APCBC" then
-		damageMult = ACF.APCBCDamageMult
+	elseif Type == "Spall" then
+		damageMult = ACF.SpallDamageMult
 	elseif Type == "APHE" then
 		damageMult = ACF.APHEDamageMult
 	elseif Type == "APDS" then
