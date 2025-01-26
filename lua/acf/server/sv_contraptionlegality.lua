@@ -122,6 +122,7 @@ do
 		["ace_trackingradar"]                  = true,
 		["ace_searchradar"]                  = true,
 		["ace_irst"]                  = true,
+		["ace_sonar"]                  = true,
 		["ace_crewseat_driver"]                   = true
 	}
 
