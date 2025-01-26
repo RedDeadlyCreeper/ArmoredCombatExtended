@@ -83,7 +83,7 @@ ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expoten
 ACF.HEATMVScaleTan    = 0.75					-- Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly equal to AP damage
 ACF.HEATMulFuel       = 4						-- needs less multiplier, much less health than ammo
-ACF.HEATMulEngine     = 10						-- likewise
+ACF.HEATMulEngine     = 20						-- likewise
 ACF.HEATPenLayerMul   = 0.95					-- HEAT base energy multiplier
 ACF.HEATAirGapFactor  = 0.15						--% velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks.
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
@@ -153,10 +153,8 @@ ACE.MatCostTables = {
 
 ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 
+ACF.SpallDamageMult		= 0.25
 ACF.APDamageMult        = 2						-- AP Damage Multipler			-1.1
-ACF.APCDamageMult       = 1.5					-- APC Damage Multipler		-1.1
-ACF.APBCDamageMult      = 1.5					-- APBC Damage Multipler		-1.05
-ACF.APCBCDamageMult     = 1.0					-- APCBC Damage Multipler		-1.05
 ACF.APHEDamageMult      = 1.5					-- APHE Damage Multipler
 ACF.APDSDamageMult      = 1.5					-- APDS Damage Multipler
 ACF.HVAPDamageMult      = 1.65					-- HVAP/APCR Damage Multipler
