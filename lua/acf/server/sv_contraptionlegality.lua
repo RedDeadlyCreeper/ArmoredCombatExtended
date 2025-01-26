@@ -104,9 +104,63 @@ do
 		end
 	end
 
+	local FirepowerEnts = {
+		["acf_rack"]                  = true,
+		["acf_gun"]                   = true
+	}
+	local CrewEnts = {
+		["ace_crewseat_gunner"]                  = true,
+		["ace_crewseat_loader"]                  = true,
+		["ace_crewseat_driver"]                   = true
+	}
+	local ElectronicEnts = {
+		["ace_rwr_dir"]                  = true,
+		["ace_rwr_sphere"]                  = true,
+		["acf_missileradar"]                  = true,
+		["acf_opticalcomputer"]                  = true,
+		["ace_ecm"]                  = true,
+		["ace_trackingradar"]                  = true,
+		["ace_searchradar"]                  = true,
+		["ace_irst"]                  = true,
+		["ace_crewseat_driver"]                   = true
+	}
+
+	local function ACE_getPtsType(ClassName)
+		local RetVal = "Armor"
+
+		if ClassName == "prop_physics" then
+			--Do nothing. Bypass to skip all the later checks for most common parts.
+			RetVal = "Armor" --In circumstances like these, I HATE LINTER. Useless redundant callout but I have to have it to prevent the chain from being empty.
+		elseif ClassName == "acf_engine" then
+			RetVal = "Engines"
+		elseif FirepowerEnts[ClassName] then
+			RetVal = "Firepower"
+		elseif ClassName == "acf_fueltank" then
+			RetVal = "Fuel"
+		elseif ClassName == "acf_ammo" then
+			RetVal = "Ammo"
+		elseif CrewEnts[ClassName] then
+			RetVal = "Crew"
+		elseif ElectronicEnts[ClassName] then
+			RetVal = "Electronics"
+		end
+
+		return RetVal
+	end
+
 	local function ACE_InitPts(Class)
 		Class.ACEPoints = 0
+
+		Class.ACEPointsPerType = {}
+		Class.ACEPointsPerType.Armor = 0
+		Class.ACEPointsPerType.Engines = 0
+		Class.ACEPointsPerType.Firepower = 0
+		Class.ACEPointsPerType.Fuel = 0
+		Class.ACEPointsPerType.Ammo = 0
+		Class.ACEPointsPerType.Crew = 0
+		Class.ACEPointsPerType.Electronics = 0
 	end
+
 	hook.Add("cfw.contraption.created", "ACE_InitPoints", ACE_InitPts)
 	hook.Add("cfw.family.created", "ACE_InitPoints", ACE_InitPts)
 
@@ -121,6 +175,10 @@ do
 		Ent._AcePts     = AcePts
 
 		Class.ACEPoints = Class.ACEPoints + AcePts
+
+		local EClass = ACE_getPtsType(Ent:GetClass())
+		Class.ACEPointsPerType[EClass] = Class.ACEPointsPerType[EClass] + AcePts
+
 		--print(Class.ACEPoints)
 	end
 	hook.Add("cfw.contraption.entityAdded", "ACE_AddPoints", ACE_AddPts)
@@ -132,6 +190,10 @@ do
 		local AcePts = ACE_GetEntPoints(Ent)
 
 		Class.ACEPoints = Class.ACEPoints - AcePts
+
+		local EClass = ACE_getPtsType(Ent:GetClass())
+		Class.ACEPointsPerType[EClass] = Class.ACEPointsPerType[EClass] - AcePts
+		--print(EClass .. ": " .. Class.ACEPointsPerType[EClass])
 	end
 
 	hook.Add("cfw.contraption.entityRemoved", "ACE_RemPoints", ACE_RemPts)
