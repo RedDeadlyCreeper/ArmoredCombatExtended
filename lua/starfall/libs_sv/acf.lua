@@ -531,14 +531,14 @@ do
 		return true,
 		{
 			entity,
-			sanitize(energy),
+			sanitize(energy or {}),
 			surface,
 			angle,
 			inflictor,
 			bone,
 			gun,
 			type,
-			hitRes,
+			sanitize(hitRes or {}),
 			sanitize(dmgInfo)
 		}
 	end)
