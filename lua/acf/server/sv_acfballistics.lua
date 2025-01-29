@@ -55,6 +55,8 @@ function ACF_CreateBullet( BulletData )
 	ACF_BulletClient( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex], "Init" , 0 )
 	ACF_CalcBulletFlight( ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex] )
 
+	hook.Run("ACFOnBulletCreation", ACF.CurBulletIndex, ACF.Bullet[ACF.CurBulletIndex] or BulletData)
+
 end
 
 --[[------------------------------------------------------------------------------------------------
@@ -84,6 +86,7 @@ function ACF_RemoveBullet( Index )
 	ACF.Bullet[Index] = nil
 	if Bullet and Bullet.OnRemoved then Bullet:OnRemoved() end
 
+	hook.Run("ACFOnBulletRemoved", Index, Bullet)
 end
 
 --[[------------------------------------------------------------------------------------------------
@@ -301,6 +304,8 @@ do
 
 			Penetrated = function(Index, Bullet, FlightRes, type)
 
+				hook.Run("ACFOnBulletPenetrated", Index, Bullet, FlightRes)
+
 				if Bullet.OnPenetrated then
 					Bullet.OnPenetrated(Index, Bullet, FlightRes)
 				end
@@ -334,6 +339,8 @@ do
 
 			Ricochet = function(Index, Bullet, FlightRes, type)
 
+				hook.Run("ACFOnBulletRicochet", Index, Bullet, FlightRes)
+
 				if Bullet.OnRicocheted then
 					Bullet.OnRicocheted(Index, Bullet, FlightRes)
 				end
@@ -360,6 +367,8 @@ do
 ------------ Called and performed when the bullet was told to stop there. Nothing else ------------
 
 			Hit = function(Index, Bullet, FlightRes, _)
+
+				hook.Run("ACFOnBulletHit", Index, Bullet, FlightRes)
 
 				if Bullet.OnEndFlight then
 					Bullet.OnEndFlight(Index, Bullet, FlightRes)

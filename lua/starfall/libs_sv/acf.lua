@@ -949,6 +949,84 @@ do
 
 		return (this.BulletData["DragCoef"] or 0) / ACF.DragDiv
 	end
+
+	--- This gets called everytime a bullet is fired.
+	--- The bullet may be destroyed at the same time if it hits something very close.
+	-- @name ACFOnBulletCreation
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet fired
+	-- @param table bulletData The data of the bullet fired
+	-- @server
+	SF.hookAdd("ACFOnBulletCreation", nil, function(_, bulletIndex, bulletData)
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+		}
+	end)
+
+	--- This gets called everytime a bullet hit something (and is destroyed).
+	-- @name ACFOnBulletHit
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that hit
+	-- @param table bulletData The data of the bullet that hit
+	-- @param table flightRes The flight results of the bullet that hit
+	-- @server
+	SF.hookAdd("ACFOnBulletHit", nil, function(_, bulletIndex, bulletData, flightRes)
+		return true,
+			{
+				bulletIndex,
+			 	sanitize(bulletData or {}),
+				sanitize(flightRes or {})
+			}
+	end)
+
+	--- This gets called everytime a bullet ricochets off something.
+	-- @name ACFOnBulletRicochet
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that ricocheted
+	-- @param table bulletData The data of the bullet that ricocheted
+	-- @param table flightRes The flight results of the bullet that ricocheted
+	-- @server
+	SF.hookAdd("ACFOnBulletRicochet", nil, function(_, bulletIndex, bulletData, flightRes)
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+			sanitize(flightRes or {})
+		}
+	end)
+
+	--- This gets called everytime a bullet penetrates something.
+	-- @name ACFOnBulletPenetrated
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that penetrated
+	-- @param table bulletData The data of the bullet that penetrated
+	-- @param table flightRes The flight results of the bullet that penetrated
+	-- @server
+	SF.hookAdd("ACFOnBulletPenetrated", nil, function(_, bulletIndex, bulletData, flightRes)
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+			sanitize(flightRes or {})
+		}
+	end)
+
+	--- This gets called everytime a bullet is removed for any reason.
+	-- @name ACFOnBulletRemoved
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that was removed
+	-- @param table bulletData The data of the bullet that was removed
+	-- @server
+	SF.hookAdd("ACFOnBulletRemoved", nil, function(_, bulletIndex, bulletData)
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+		}
+	end)
+
 end
 
 -- Mobility functions
