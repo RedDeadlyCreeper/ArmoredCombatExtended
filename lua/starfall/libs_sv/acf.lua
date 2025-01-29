@@ -509,6 +509,7 @@ do
 	end
 
 	--- This gets called every time an entity takes damage with ACF.
+	--- Needs acf.trackBullets privilege to work.
 	-- @name ACFOnDamage
 	-- @class hook
 	-- @param Entity entity The entity that took damage
@@ -993,6 +994,7 @@ do
 
 	--- This gets called everytime a bullet is fired.
 	--- The bullet may be destroyed at the same time if it hits something very close.
+	--- Needs acf.trackBullets privilege to work.
 	-- @name ACFOnBulletCreation
 	-- @class hook
 	-- @param number bulletIndex The index of the bullet fired
@@ -1009,6 +1011,7 @@ do
 	end)
 
 	--- This gets called everytime a bullet hit something (and is destroyed).
+	--- Needs acf.trackBullets privilege to work.
 	-- @name ACFOnBulletHit
 	-- @class hook
 	-- @param number bulletIndex The index of the bullet that hit
@@ -1027,6 +1030,7 @@ do
 	end)
 
 	--- This gets called everytime a bullet ricochets off something.
+	--- Needs acf.trackBullets privilege to work.
 	-- @name ACFOnBulletRicochet
 	-- @class hook
 	-- @param number bulletIndex The index of the bullet that ricocheted
@@ -1045,6 +1049,7 @@ do
 	end)
 
 	--- This gets called everytime a bullet penetrates something.
+	--- Needs acf.trackBullets privilege to work.
 	-- @name ACFOnBulletPenetrated
 	-- @class hook
 	-- @param number bulletIndex The index of the bullet that penetrated
@@ -1063,6 +1068,7 @@ do
 	end)
 
 	--- This gets called everytime a bullet is removed for any reason.
+	--- Needs acf.trackBullets privilege to work.
 	-- @name ACFOnBulletRemoved
 	-- @class hook
 	-- @param number bulletIndex The index of the bullet that was removed
