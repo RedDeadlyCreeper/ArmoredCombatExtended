@@ -10,12 +10,14 @@ local rad, cos = math.rad, math.cos
 
 local checkluatype = SF.CheckLuaType
 local checkpermission = SF.Permissions.check
+local hasaccess = SF.Permissions.hasAccess
 local registerprivilege = SF.Permissions.registerPrivilege
 
 registerprivilege("acf.createMobility", "Create acf engine", "Allows the user to create ACF engines and gearboxes", { usergroups = { default = 3 } })
 registerprivilege("acf.createFuelTank", "Create acf fuel tank", "Allows the user to create ACF fuel tanks", { usergroups = { default = 3 } })
 registerprivilege("acf.createGun", "Create acf gun", "Allows the user to create ACF guns", { usergroups = { default = 3 } })
 registerprivilege("acf.createAmmo", "Create acf ammo", "Allows the user to create ACF ammoboxes", { usergroups = { default = 3 } } )
+registerprivilege("acf.trackBullets", "Track ACF bullets", "Allows the user to track ACF bullets and the damage they deal to entities", { usergroups = { default = 1 } } )
 registerprivilege("entities.acf", "ACF", "Allows the user to control ACF components", { entities = {} })
 
 local function isEngine(ent)
@@ -521,6 +523,8 @@ do
 	-- @param table dmgInfo The damage info table, containing health and armor changes, if available
 	-- @server
 	SF.hookAdd("ACFOnDamage", nil, function(_, entity, energy, surface, angle, inflictor, bone, gun, type, hitRes, oldACFTbl)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
 		local dmgInfo = {}
 		if oldACFTbl and entity.ACF then
 			dmgInfo = {
@@ -995,6 +999,8 @@ do
 	-- @param table bulletData The data of the bullet fired
 	-- @server
 	SF.hookAdd("ACFOnBulletCreation", nil, function(_, bulletIndex, bulletData)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
 		return true,
 		{
 			bulletIndex,
@@ -1010,6 +1016,8 @@ do
 	-- @param table flightRes The flight results of the bullet that hit
 	-- @server
 	SF.hookAdd("ACFOnBulletHit", nil, function(_, bulletIndex, bulletData, flightRes)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
 		return true,
 			{
 				bulletIndex,
@@ -1026,6 +1034,8 @@ do
 	-- @param table flightRes The flight results of the bullet that ricocheted
 	-- @server
 	SF.hookAdd("ACFOnBulletRicochet", nil, function(_, bulletIndex, bulletData, flightRes)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
 		return true,
 		{
 			bulletIndex,
@@ -1042,6 +1052,8 @@ do
 	-- @param table flightRes The flight results of the bullet that penetrated
 	-- @server
 	SF.hookAdd("ACFOnBulletPenetrated", nil, function(_, bulletIndex, bulletData, flightRes)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
 		return true,
 		{
 			bulletIndex,
@@ -1057,6 +1069,8 @@ do
 	-- @param table bulletData The data of the bullet that was removed
 	-- @server
 	SF.hookAdd("ACFOnBulletRemoved", nil, function(_, bulletIndex, bulletData)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
 		return true,
 		{
 			bulletIndex,
