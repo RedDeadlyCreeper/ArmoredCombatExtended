@@ -505,6 +505,43 @@ do
 			Material = mat
 		}
 	end
+
+	--- This gets called every time an entity takes damage with ACF.
+	-- @name ACFOnDamage
+	-- @class hook
+	-- @param Entity entity The entity that took damage
+	-- @param table energy The energy of the projectile that hit the entity
+	-- @param number surface The surface area of the projectile that hit the entity
+	-- @param number angle The angle of the projectile that hit the entity
+	-- @param Entity inflictor The entity that caused the damage
+	-- @param number bone The bone that was hit
+	-- @param Entity gun The gun that fired the projectile
+	-- @param string type The type of the projectile that hit the entity
+	-- @param table hitRes The hit resolution table
+	-- @param table dmgInfo The damage info table, containing health and armor changes, if available
+	-- @server
+	SF.hookAdd("ACFOnDamage", nil, function(_, entity, energy, surface, angle, inflictor, bone, gun, type, hitRes, oldACFTbl)
+		local dmgInfo = {}
+		if oldACFTbl and entity.ACF then
+			dmgInfo = {
+				health = (entity.ACF.Health or 0) - (oldACFTbl.Health or 0),
+				armour = (entity.ACF.Armour or 0) - (oldACFTbl.Armour or 0),
+			}
+		end
+		return true,
+		{
+			entity,
+			sanitize(energy),
+			surface,
+			angle,
+			inflictor,
+			bone,
+			gun,
+			type,
+			hitRes,
+			sanitize(dmgInfo)
+		}
+	end)
 end
 
 -- Weapon functions
