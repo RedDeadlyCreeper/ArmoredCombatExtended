@@ -10,12 +10,14 @@ local rad, cos = math.rad, math.cos
 
 local checkluatype = SF.CheckLuaType
 local checkpermission = SF.Permissions.check
+local hasaccess = SF.Permissions.hasAccess
 local registerprivilege = SF.Permissions.registerPrivilege
 
 registerprivilege("acf.createMobility", "Create acf engine", "Allows the user to create ACF engines and gearboxes", { usergroups = { default = 3 } })
 registerprivilege("acf.createFuelTank", "Create acf fuel tank", "Allows the user to create ACF fuel tanks", { usergroups = { default = 3 } })
 registerprivilege("acf.createGun", "Create acf gun", "Allows the user to create ACF guns", { usergroups = { default = 3 } })
 registerprivilege("acf.createAmmo", "Create acf ammo", "Allows the user to create ACF ammoboxes", { usergroups = { default = 3 } } )
+registerprivilege("acf.trackBullets", "Track ACF bullets", "Allows the user to track ACF bullets and the damage they deal to entities", { usergroups = { default = 1 } } )
 registerprivilege("entities.acf", "ACF", "Allows the user to control ACF components", { entities = {} })
 
 local function isEngine(ent)
@@ -505,6 +507,46 @@ do
 			Material = mat
 		}
 	end
+
+	--- This gets called every time an entity takes damage with ACF.
+	--- Needs acf.trackBullets privilege to work.
+	-- @name ACFOnDamage
+	-- @class hook
+	-- @param Entity entity The entity that took damage
+	-- @param table energy The energy of the projectile that hit the entity
+	-- @param number surface The surface area of the projectile that hit the entity
+	-- @param number angle The angle of the projectile that hit the entity
+	-- @param Entity inflictor The entity that caused the damage
+	-- @param number bone The bone that was hit
+	-- @param Entity gun The gun that fired the projectile
+	-- @param string type The type of the projectile that hit the entity
+	-- @param table hitRes The hit resolution table
+	-- @param table dmgInfo The damage info table, containing health and armor changes, if available
+	-- @server
+	SF.hookAdd("ACFOnDamage", nil, function(_, entity, energy, surface, angle, inflictor, bone, gun, type, hitRes, oldACFTbl)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
+		local dmgInfo = {}
+		if oldACFTbl and entity.ACF then
+			dmgInfo = {
+				health = (entity.ACF.Health or 0) - (oldACFTbl.Health or 0),
+				armour = (entity.ACF.Armour or 0) - (oldACFTbl.Armour or 0),
+			}
+		end
+		return true,
+		{
+			entity,
+			sanitize(energy or {}),
+			surface,
+			angle,
+			inflictor,
+			bone,
+			gun,
+			type,
+			sanitize(hitRes or {}),
+			sanitize(dmgInfo)
+		}
+	end)
 end
 
 -- Weapon functions
@@ -949,6 +991,113 @@ do
 
 		return (this.BulletData["DragCoef"] or 0) / ACF.DragDiv
 	end
+
+	--- Returns the bullet data related to the index
+	--- Needs acf.trackBullets privilege to work.
+	-- @server
+	-- @param number index The index of the bullet
+	-- @return table The bullet data of the bullet or an empty table if the bullet doesn't exist
+	function acf_library.getBulletDataByIndex( index )
+		if not hasaccess(instance, nil, "acf.trackBullets") then
+			SF.Throw("You need the acf.trackBullets privilege to use this function", 2)
+			return {} -- Should not be needed but just in case
+		end
+		checkluatype(index, TYPE_NUMBER)
+		return sanitize( ACF.Bullet[ index ] or {} )
+	end
+
+	--- This gets called everytime a bullet is fired.
+	--- The bullet may be destroyed at the same time if it hits something very close.
+	--- Needs acf.trackBullets privilege to work.
+	-- @name ACFOnBulletCreation
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet fired
+	-- @param table bulletData The data of the bullet fired
+	-- @server
+	SF.hookAdd("ACFOnBulletCreation", nil, function(_, bulletIndex, bulletData)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+		}
+	end)
+
+	--- This gets called everytime a bullet hit something (and is destroyed).
+	--- Needs acf.trackBullets privilege to work.
+	-- @name ACFOnBulletHit
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that hit
+	-- @param table bulletData The data of the bullet that hit
+	-- @param table flightRes The flight results of the bullet that hit
+	-- @server
+	SF.hookAdd("ACFOnBulletHit", nil, function(_, bulletIndex, bulletData, flightRes)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
+		return true,
+			{
+				bulletIndex,
+			 	sanitize(bulletData or {}),
+				sanitize(flightRes or {})
+			}
+	end)
+
+	--- This gets called everytime a bullet ricochets off something.
+	--- Needs acf.trackBullets privilege to work.
+	-- @name ACFOnBulletRicochet
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that ricocheted
+	-- @param table bulletData The data of the bullet that ricocheted
+	-- @param table flightRes The flight results of the bullet that ricocheted
+	-- @server
+	SF.hookAdd("ACFOnBulletRicochet", nil, function(_, bulletIndex, bulletData, flightRes)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+			sanitize(flightRes or {})
+		}
+	end)
+
+	--- This gets called everytime a bullet penetrates something.
+	--- Needs acf.trackBullets privilege to work.
+	-- @name ACFOnBulletPenetrated
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that penetrated
+	-- @param table bulletData The data of the bullet that penetrated
+	-- @param table flightRes The flight results of the bullet that penetrated
+	-- @server
+	SF.hookAdd("ACFOnBulletPenetrated", nil, function(_, bulletIndex, bulletData, flightRes)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+			sanitize(flightRes or {})
+		}
+	end)
+
+	--- This gets called everytime a bullet is removed for any reason.
+	--- Needs acf.trackBullets privilege to work.
+	-- @name ACFOnBulletRemoved
+	-- @class hook
+	-- @param number bulletIndex The index of the bullet that was removed
+	-- @param table bulletData The data of the bullet that was removed
+	-- @server
+	SF.hookAdd("ACFOnBulletRemoved", nil, function(_, bulletIndex, bulletData)
+		if not hasaccess(instance, nil, "acf.trackBullets") then return false end
+
+		return true,
+		{
+			bulletIndex,
+			sanitize(bulletData or {}),
+		}
+	end)
+
 end
 
 -- Mobility functions
