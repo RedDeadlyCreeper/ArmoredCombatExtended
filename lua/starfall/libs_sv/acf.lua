@@ -992,6 +992,20 @@ do
 		return (this.BulletData["DragCoef"] or 0) / ACF.DragDiv
 	end
 
+	--- Returns the bullet data related to the index
+	--- Needs acf.trackBullets privilege to work.
+	-- @server
+	-- @param number index The index of the bullet
+	-- @return table The bullet data of the bullet or an empty table if the bullet doesn't exist
+	function acf_library.getBulletDataByIndex( index )
+		if not hasaccess(instance, nil, "acf.trackBullets") then
+			SF.Throw("You need the acf.trackBullets privilege to use this function", 2)
+			return {} -- Should not be needed but just in case
+		end
+		checkluatype(index, TYPE_NUMBER)
+		return sanitize( ACF.Bullet[ index ] or {} )
+	end
+
 	--- This gets called everytime a bullet is fired.
 	--- The bullet may be destroyed at the same time if it hits something very close.
 	--- Needs acf.trackBullets privilege to work.
