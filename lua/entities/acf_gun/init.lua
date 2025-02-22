@@ -8,7 +8,7 @@ local GunClasses = ACF.Classes.GunClass
 local GunTable = ACF.Weapons.Guns
 
 --The distances these ents would have if its caliber was 10mm. Incremented by caliber size.
-local CrewLinkDistBase = 100
+local CrewLinkDistBase = 200
 local AmmoLinkDistBase = 512
 
 function ENT:Initialize()
