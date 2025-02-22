@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("ATR", {
 	type = "Gun",
-	spread = 0.02,
+	spread = 0.01,
 	name = "Anti-Tank Rifle",
 	desc = ACFTranslation.GunClasses[1],
 	muzzleflash = "MG",

@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("HW", {
 	type = "Gun",
-	spread = 0.3,
+	spread = 0.15,
 	name = "Howitzer",
 	desc = ACFTranslation.GunClasses[8],
 	muzzleflash = "C",
