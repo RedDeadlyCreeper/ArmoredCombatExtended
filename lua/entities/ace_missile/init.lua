@@ -92,6 +92,8 @@ function ENT:Initialize()
 	self.NextJamCheck		= 0
 	self.ResetJamDelay		= 1 --Periodically resets jamming strength to zero for the jammer to apply the highest noise available. This means the jamming won't always remain at full strength without a lot of networking.
 
+	self:SetNW2Bool("MissileActive", false)
+
 end
 
 
@@ -168,8 +170,6 @@ function ENT:Think()
 		end
 
 	end
-
-
 
 	--[[
 	local Sparks = EffectData()
@@ -281,11 +281,14 @@ function ENT:Think()
 					if self.UpdateFX then
 						self:StopParticles()
 						if TMul > 0 then
+							self:SetNW2Bool("MissileActive", true)
 							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effectbooster")
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 								self.UpdateFX = false
 							end
+						else
+							self:SetNW2Bool("MissileActive", false)
 						end
 					end
 
@@ -328,11 +331,14 @@ function ENT:Think()
 					if self.UpdateFX then
 						self:StopParticles()
 						if TMul > 0 then
+							self:SetNW2Bool("MissileActive", true)
 							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effect")
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 								self.UpdateFX = false
 							end
+						else
+							self:SetNW2Bool("MissileActive", false)
 						end
 					end
 
