@@ -94,6 +94,15 @@ function ENT:Initialize()
 
 	self:SetNW2Bool("MissileActive", false)
 
+
+	--[[
+	self.LOSTraceData = {
+		mins = vector_origin,
+		maxs = vector_origin,
+		filter = {self},
+	}
+	--
+	]]
 end
 
 
@@ -464,8 +473,13 @@ function ENT:Think()
 		if self.CanDetonate == true then
 			local tr = util.QuickTrace(Pos + self.Flight * DeltaTime * -30, self.Flight * DeltaTime * 79, {self})
 
+			--[[
+			self.LOSTraceData.start = Pos + self.Flight * DeltaTime * -30
+			self.LOSTraceData.endpos = self.Flight * DeltaTime * 79
+			local tr = util.TraceHull(self.LOSTraceData)
+			]]--
+
 			if tr.Hit and (not tr.HitSky) and util.IsInWorld( tr.HitPos ) then
-					print("Impact")
 
 					debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
 					debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
@@ -477,7 +491,6 @@ function ENT:Think()
 			end
 
 			if self.Fuse:GetDetonate(self, self.Guidance) or CT > self.ActivationTime + self.Lifetime then
-				print("Fused")
 				self:Detonate()
 				return
 			end
