@@ -77,7 +77,7 @@ function this:GetGuidance(missile)
 	local Dist = GEntPos:Distance(missile:GetPos())
 
 
-	self.TargetPos = GEntPos + GEntDir * (Dist + 39.37 * 15)
+	self.TargetPos = GEntPos + GEntDir * (Dist + 39.37 * 35)
 	return {TargetPos = self.TargetPos, ViewCone = self.ViewCone}
 
 end
