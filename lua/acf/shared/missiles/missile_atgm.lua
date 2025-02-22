@@ -494,14 +494,14 @@ ACF_defineGun("Spike-LR ASM", {
 		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.003,						-- percent speed loss per second
-		inertialcapable		= false,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
+		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
 		datalink			= false,
 		predictiondelay		= 0.1,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
 
 		penmul			= math.sqrt(2.5),					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
 		calmul			= 0.5,	--Adjust this first. Used to balance the damage of kinetic missiles. Multiplier for the projectile caliber. Won't affect HEAT.
 		velmul			= 7,		--Used to balance the penetration of kinetic missiles. Multiplier for the velocity of the projectile on impact.
-		pointcost			= 333
+		pointcost			= 400
 	},
 
 	ent				= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
