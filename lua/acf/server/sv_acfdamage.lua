@@ -1077,7 +1077,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 					phys:SetVelocity(Parent:GetVelocity() )
 				end
 
-				phys:ApplyForceCenter( (HitVector:GetNormalized() + VectorRand() * 0.25) * Energy * 5  )
+				phys:ApplyForceCenter( (HitVector:GetNormalized() + VectorRand() * 0.5) * Energy * 50  )
 			end
 		end
 	end
@@ -1090,7 +1090,6 @@ end
 
 -- Creates a debris related to kinetic destruction.
 function ACF_APKill( Entity , HitVector , Power )
-
 	-- kill the children of this ent, instead of disappearing them from removing parent
 	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
 
@@ -1123,13 +1122,13 @@ function ACF_APKill( Entity , HitVector , Power )
 			local Parent =  ACF_GetPhysicalParent( Entity )
 
 			if IsValid(phys) and IsValid(physent) then
-				phys:SetDragCoefficient( 15 )
+				phys:SetDragCoefficient( 5 )
 				phys:SetMass( math.max(physent:GetMass() * 3,300) )
 				phys:SetVelocity(Parent:GetVelocity() )
 				if IsValid(Parent) then
 					phys:SetVelocity( Parent:GetVelocity() )
 				end
-				phys:ApplyForceCenter( HitVector:GetNormalized() * Power * 50)
+				phys:ApplyForceCenter( HitVector:GetNormalized() * Power * 500)
 			end
 		end
 	end

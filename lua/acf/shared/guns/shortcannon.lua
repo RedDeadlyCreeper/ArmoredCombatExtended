@@ -105,7 +105,7 @@ ACF_defineGun("120mmSC", {
 	gunclass = "SC",
 	caliber = 12.0,
 	weight = 1400,
-	maxrof = 17, -- maximum rounds per minute
+	maxrof = 23, -- maximum rounds per minute
 	year = 1944,
 	round = {
 		maxlength = 110,

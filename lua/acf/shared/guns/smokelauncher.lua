@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("SL", {
 	type		= "Gun",
-	spread		= 0.15,
+	spread		= 0.2,
 	name		= "Smoke Launcher",
 	desc		= ACFTranslation.GunClasses[14],
 	muzzleflash = "MO",
