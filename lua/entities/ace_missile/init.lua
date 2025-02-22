@@ -464,17 +464,20 @@ function ENT:Think()
 		if self.CanDetonate == true then
 			local tr = util.QuickTrace(Pos + self.Flight * DeltaTime * -30, self.Flight * DeltaTime * 79, {self})
 
-			if tr.Hit then
+			if tr.Hit and (not tr.HitSky) and util.IsInWorld( tr.HitPos ) then
+					print("Impact")
 
-				debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
-				debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
+					debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
+					debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
 
-				self:SetPos(tr.HitPos + self:GetForward() * -30)
-				self:Detonate()
-				return
+					self:SetPos(tr.HitPos + self:GetForward() * -30)
+					self:Detonate()
+					return
+
 			end
 
 			if self.Fuse:GetDetonate(self, self.Guidance) or CT > self.ActivationTime + self.Lifetime then
+				print("Fused")
 				self:Detonate()
 				return
 			end
@@ -494,6 +497,7 @@ function ENT:Think()
 
 		self.Flight = self.Flight - (self.Flight:GetNormalized() * self.Drag * DMul * self.Flight:LengthSqr()) * DeltaTime --Simple drag multiplier
 
+		--[[
 		--Delete the missile if it was fired outside of the map
 		if not self:IsInWorld() then
 
@@ -506,6 +510,7 @@ function ENT:Think()
 			self:Remove()
 			return
 		end
+		]]--
 
 	end
 
@@ -711,7 +716,13 @@ function ENT:CanTool( _, _, _, _, _ ) --ply, trace, mode, tool, button
 end
 
 function ENT:CanProperty( _, _)
---	print("false")
+
+	if self.JustLaunched == true then
+		return true
+	else
+		return false
+	end
+
 	return false
 
 end

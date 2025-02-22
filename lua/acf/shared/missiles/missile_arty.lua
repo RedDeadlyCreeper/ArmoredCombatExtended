@@ -64,7 +64,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 		boostertime			= 0.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 60,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.00025,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -142,7 +142,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 		boostertime			= 1.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 60,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.00025,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -218,7 +218,7 @@ ACF_defineGun("RW61 RA", {								-- id
 		boostertime			= 1.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 60,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.004,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -291,7 +291,7 @@ ACF_defineGun("M26 RA", {							-- id
 		boostertime			= 0.5,							-- Time in seconds for booster runtime
 		boostdelay			= 0.2,							-- Delay in seconds before booster activates.
 
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 60,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.00025,						-- percent speed loss per second
 		predictiondelay		= 0.25,							-- Delay before enabling missile steering guidance. Missile will run straight at the aimpoint until this time. Done to cause missile to not self delete because it tries to steer its velocity at launch.
@@ -359,7 +359,7 @@ ACF_defineGun("SS-40 RA", {								-- id
 		boostertime			= 5,							-- Time in seconds for booster runtime
 		boostdelay			= 0,							-- Delay in seconds before booster activates.
 
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 60,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
@@ -433,7 +433,7 @@ ACF_defineGun("M31 RA", {							-- id
 		boostertime			= 3,							-- Time in seconds for booster runtime
 		boostdelay			= 0.25,							-- Delay in seconds before booster activates.
 
-		fusetime			= 20,							--Time in seconds after launch/booster stop before missile scuttles
+		fusetime			= 60,							--Time in seconds after launch/booster stop before missile scuttles
 
 		dragcoef			= 0.002,						-- percent speed loss per second
 		inertialcapable		= true,							-- Whether missile is capable of inertial guidance. Inertially guided missiles will follow their last track after losing the target. And can be fired offbore outside their seeker's viewcone.
