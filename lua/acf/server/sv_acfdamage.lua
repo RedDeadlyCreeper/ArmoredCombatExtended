@@ -1047,7 +1047,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local Debris
 
 	-- Create a debris only if the dead entity is greater than the specified scale.
-	if Entity:BoundingRadius() > ACF.DebrisScale then
+	if not IsUselessModel(Entity:GetModel()) and Entity:BoundingRadius() > ACF.DebrisScale then
 
 		Debris = ents.Create( "ace_debris" )
 		if IsValid(Debris) then
