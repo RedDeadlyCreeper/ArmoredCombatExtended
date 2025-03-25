@@ -153,14 +153,14 @@ ACE.MatCostTables = {
 
 ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 
-ACF.SpallDamageMult		= 0.1
+ACF.SpallDamageMult		= 0.01
 ACF.APDamageMult        = 2						-- AP Damage Multipler			-1.1
-ACF.APHEDamageMult      = 3					-- APHE Damage Multipler
-ACF.APDSDamageMult      = 9					-- APDS Damage Multipler
-ACF.HVAPDamageMult      = 1.65					-- HVAP/APCR Damage Multipler
+ACF.APHEDamageMult      = 1.75					-- APHE Damage Multipler
+ACF.APDSDamageMult      = 3					-- APDS Damage Multipler
+ACF.HVAPDamageMult      = 2					-- HVAP/APCR Damage Multipler
 ACF.FLDamageMult        = 1.4					-- FL Damage Multipler
 ACF.HEATDamageMult      = 3						-- HEAT Damage Multipler
-ACF.HEDamageMult        = 3						-- HE Damage Multipler
+ACF.HEDamageMult        = 2						-- HE Damage Multipler
 ACF.HESHDamageMult      = 1.2					-- HESH Damage Multipler
 ACF.HPDamageMult        = 8						-- HP Damage Multipler
 
