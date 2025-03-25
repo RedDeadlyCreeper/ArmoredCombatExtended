@@ -42,7 +42,7 @@ function ENT:Initialize()
 		Velocity = {},
 	}
 
-	self.ThinkDelay			= 0.1
+	self.ThinkDelay			= 0
 	self.StatusUpdateDelay	= 0.5
 	self.LastStatusUpdate	= CurTime()
 
@@ -292,7 +292,7 @@ function ENT:ScanForMissiles()
 
 		entArray[i] = missile
 		posArray[i] = missile:GetPos() --Replaced with non-cached value as to not lag behind.
-		velArray[i] = missile.Flight
+		velArray[i] = missile.Flight * 39.37
 
 		if curSqr < closestSqr then
 			closest = missile.CurPos

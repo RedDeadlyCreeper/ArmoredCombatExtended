@@ -73,6 +73,7 @@ function EFFECT:StartSmoke( _, SmokeColor, ShootVector, WPRadius, SRadius ) --GT
 	--velocity = Vector(0, 0, 0)
 	--gravity = Vector(0, 0, 0)
 
+	
 
 	for _ = 0,3 do
 
@@ -136,9 +137,22 @@ function EFFECT:StartSmoke( _, SmokeColor, ShootVector, WPRadius, SRadius ) --GT
 
 		end
 
+		local OffsetPos = self.Origin + velocity * StartTime + 0.5 * gravity1 * StartTime^2
+
+		local tr2 = util.TraceHull( {
+			start = self.Origin,
+			endpos = OffsetPos,
+			mins = vector_origin,
+			maxs = vector_origin
+		} )
+
+		if tr2.Hit then
+			OffsetPos = self.Origin
+		end
+
 		for _ = 0, 3 do
 
-			local Smoke = self.Emitter:Add("particle/particle_smokegrenade1", self.Origin + velocity * StartTime + 0.5 * gravity1 * StartTime^2)
+			local Smoke = self.Emitter:Add("particle/particle_smokegrenade1", OffsetPos)
 			if Smoke then
 				Smoke:SetVelocity(velocity + gravity1 * StartTime)
 				Smoke:SetLifeTime(-StartTime)
@@ -158,7 +172,7 @@ function EFFECT:StartSmoke( _, SmokeColor, ShootVector, WPRadius, SRadius ) --GT
 
 		for _ = 0, 3 do
 
-			local Smoke = self.Emitter:Add("particle/smokesprites_000" .. math.random(1,6), self.Origin + velocity * StartTime + 0.5 * gravity1 * StartTime^2)
+			local Smoke = self.Emitter:Add("particle/smokesprites_000" .. math.random(1,6), OffsetPos)
 			if Smoke then
 				Smoke:SetVelocity(velocity + gravity1 * StartTime)
 				Smoke:SetLifeTime(-StartTime)
@@ -180,7 +194,7 @@ function EFFECT:StartSmoke( _, SmokeColor, ShootVector, WPRadius, SRadius ) --GT
 
 	for _ = 0, 3 do
 
-		local Smoke = self.Emitter:Add("particle/smokesprites_000" .. math.random(1,6), self.Origin + velocity * StartTime + 0.5 * gravity1 * StartTime^2)
+		local Smoke = self.Emitter:Add("particle/smokesprites_000" .. math.random(1,6), OffsetPos)
 		if Smoke then
 			Smoke:SetVelocity(velocity + gravity1 * StartTime)
 			Smoke:SetLifeTime(-StartTime)
