@@ -2,7 +2,7 @@
 AddCSLuaFile()
 
 --put all guns that this ammo should NOT fit
-ACF.AmmoBlacklist.AP =  { "MO", "RM", "SL", "GL", "ECM", "FGL","SBC","NAV","mNAV"}
+ACF.AmmoBlacklist.AP =  { "SL", "GL", "ECM", "FGL","SBC","NAV","mNAV"}
 
 local Round   = {}
 
