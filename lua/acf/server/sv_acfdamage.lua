@@ -382,9 +382,9 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , _ , Inflictor , Ma
 		local WeightFactor = MatData.massMod or 1
 		-- local Max_Spall_Mass = 10
 
-		local Velocityfactor = 20
+		local Velocityfactor = 0.5
 		local Max_Spall_Vel = 7000
-		local MassFactor = 6
+		local MassFactor = 10
 		
 		local Max_Spalls = 128
 
@@ -587,7 +587,7 @@ function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Infl
 		local WeightFactor = MatData.massMod or 1
 		-- local Max_Spall_Mass = 20
 
-		local Velocityfactor = 1
+		local Velocityfactor = 0.5
 		local Max_Spall_Vel = 7000
 		
 		local Max_Spalls = 128
