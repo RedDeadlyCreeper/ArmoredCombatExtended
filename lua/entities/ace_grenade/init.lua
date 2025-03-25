@@ -8,7 +8,6 @@ function ENT:Initialize()
 	self:SetModel( "models/weapons/w_eq_fraggrenade.mdl" )
 	self:SetSolid( SOLID_BBOX )
 	self:SetCollisionBounds( Vector( -2 , -2 , -2 ) , Vector( 2 , 2 , 2 ) )
-	self:SetCollisionGroup(COLLISION_GROUP_WORLD)
 	self:SetMoveType(MOVETYPE_FLYGRAVITY);
 	self:PhysicsInit(MOVECOLLIDE_FLY_CUSTOM);
 	self:SetUseType(SIMPLE_USE);
