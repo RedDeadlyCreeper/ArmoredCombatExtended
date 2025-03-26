@@ -52,7 +52,7 @@ function ENT:Initialize()
 	self.NextLegalCheck	= ACF.CurTime + random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
-	self.ACEPoints = 600
+	self.ACEPoints = 400
 
 	self.SpecialHealth	= false  --If true needs a special ACF_Activate function
 	self.SpecialDamage	= true  --If true needs a special ACF_OnDamage function

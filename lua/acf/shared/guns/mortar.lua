@@ -27,7 +27,7 @@ ACF_defineGun("50mmM", { --id
 		maxlength = 80,
 		propweight = 0.1
 	},
-	acepoints = 100,
+	acepoints = 60,
 	gunnerexception = true --Bypasses regular gunner rules.
 } )
 
@@ -46,7 +46,7 @@ ACF_defineGun("60mmM", { --id
 		maxlength = 105,
 		propweight = 0.2
 	},
-	acepoints = 150,
+	acepoints = 100,
 	gunnerexception = true --Bypasses regular gunner rules.
 } )
 
@@ -65,7 +65,7 @@ ACF_defineGun("80mmM", {
 		maxlength = 160,
 		propweight = 0.4
 	},
-	acepoints = 250,
+	acepoints = 170,
 	gunnerexception = true --Bypasses regular gunner rules.
 } )
 
