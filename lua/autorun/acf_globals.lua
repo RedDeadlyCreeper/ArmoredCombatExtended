@@ -130,9 +130,9 @@ ACF.LargeGunsRequireGunners = 1 --Should engines over a certain hp need a driver
 ACF.LargeGunsThreshold = 40 --Cannon size in mm required to need a driver
 
 ACF.PointsLimit = 10000 --The maximum legal pointvalue
-ACF.MaxWeight = 72000 --The max weight in Kg
+ACF.MaxWeight = 200000 --The max weight in Kg
 
-ACE.CannonPointMul = 1.0 --Multiplier for cannon point cost
+ACE.CannonPointMul = 0.85 --Multiplier for cannon point cost
 ACE.EnginePointMul = 0.69 --Multiplier for engine cost in points
 ACF.PointsPerTon   = 60  --Base cost per ton of armor. Multiplier used to balance out armor
 ACE.AmmoPerTon     = 100 --Point cost per ton of ammo
