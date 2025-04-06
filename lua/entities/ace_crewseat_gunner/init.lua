@@ -43,9 +43,9 @@ function ENT:Initialize()
 	self.Sound = "npc/combine_soldier/die" .. tostring(random(1, 3)) .. ".wav"
 	self.SoundPitch = 100
 
-	if not IsValid(self:CPPIGetOwner()) then
-		self:CPPISetOwner(game.GetWorld())
-	end
+	--if not IsValid(self:CPPIGetOwner()) then
+	--	self:CPPISetOwner(game.GetWorld())
+	--end
 
 	self.NextLegalCheck	= ACF.CurTime + random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true

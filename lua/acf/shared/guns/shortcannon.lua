@@ -5,7 +5,7 @@ ACF_defineGunClass("SC", {
 	name = "Short-Barrel Cannon",
 	desc = ACFTranslation.GunClasses[13],
 	muzzleflash = "MO",
-	rofmod = 1.1,
+	rofmod = 1,
 	maxrof = 25, -- maximum rounds per minute
 	year = 1915,
 	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
@@ -105,7 +105,7 @@ ACF_defineGun("120mmSC", {
 	gunclass = "SC",
 	caliber = 12.0,
 	weight = 1400,
-	maxrof = 17, -- maximum rounds per minute
+	maxrof = 23, -- maximum rounds per minute
 	year = 1944,
 	round = {
 		maxlength = 110,

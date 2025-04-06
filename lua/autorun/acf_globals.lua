@@ -49,7 +49,7 @@ ACF.CuIToLiter          = 0.0163871				-- cubic inches to liters
 
 ACF.DriverTorqueBoost   = 1.25					-- torque multiplier from having a driver
 ACF.FuelRate            = 10						-- multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate            = 2						-- multiplier for electrics								--BEFORE to balance: 0.458
+ACF.ElecRate            = 4						-- multiplier for electrics								--BEFORE to balance: 0.458
 ACF.TankVolumeMul       = 1						-- multiplier for fuel tank capacity, 1.0 is approx real world
 
 ---------------------------------- Ammo Crate config ----------------------------------
@@ -82,7 +82,7 @@ ACF.HEATMVScale       = 0.75					-- Filler KE to HEAT slug KE conversion expoten
 ACF.HEATMVScaleTan    = 0.75					-- Filler KE to HEAT slug KE conversion expotential
 ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly equal to AP damage
 ACF.HEATMulFuel       = 4						-- needs less multiplier, much less health than ammo
-ACF.HEATMulEngine     = 10						-- likewise
+ACF.HEATMulEngine     = 20						-- likewise
 ACF.HEATPenLayerMul   = 0.95					-- HEAT base energy multiplier
 ACF.HEATAirGapFactor  = 0.15						--% velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks.
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
@@ -129,11 +129,11 @@ ACF.LargeGunsRequireGunners = 1 --Should engines over a certain hp need a driver
 ACF.LargeGunsThreshold = 40 --Cannon size in mm required to need a driver
 
 ACF.PointsLimit = 10000 --The maximum legal pointvalue
-ACF.MaxWeight = 60000 --The max weight in Kg
+ACF.MaxWeight = 200000 --The max weight in Kg
 
-ACE.CannonPointMul = 1.0 --Multiplier for cannon point cost
-ACE.EnginePointMul = 1.0 --Multiplier for engine cost in points
-ACF.PointsPerTon   = 42  --Base cost per ton of armor. Multiplier used to balance out armor
+ACE.CannonPointMul = 0.85 --Multiplier for cannon point cost
+ACE.EnginePointMul = 0.69 --Multiplier for engine cost in points
+ACF.PointsPerTon   = 60  --Base cost per ton of armor. Multiplier used to balance out armor
 ACE.AmmoPerTon     = 100 --Point cost per ton of ammo
 
 ACE.MatCostTables = {
@@ -141,10 +141,10 @@ ACE.MatCostTables = {
 	CHA				= 0.7 * (0.98 / 1.25),	--20% more heavy for a 30% reduction in cost.
 	Cer				= 1.10 * (2.05 / 1.2),	--70% more protection per kg for a 10% increase in cost. Takes a ton of damage and evaporates if penetrated.
 	ERA				= 0.7 * (2.5 / 2.0),
-	Rub				= 1.25 * (0.05 / 0.2),
+	Rub				= 1.1 * (0.05 / 0.2),
 	Texto			= 1 * (0.5 / 0.35),
 	RHA 			= 1,
-	DU				= 1.2 * (4.9 / 2.43),	--A 20% increase in cost for 50% reduction in weight.
+	DU				= 1.2 * (3.9 / 2.43),	--A 20% increase in cost for 40% reduction in weight.
 	Ti				= 1.25 * (1.7 / 0.61)	--A 25% increase in cost for 64% reduction in weight.
 }
 
@@ -152,15 +152,13 @@ ACE.MatCostTables = {
 
 ACF.LargeCaliber        = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 
+ACF.SpallDamageMult		= 0.01
 ACF.APDamageMult        = 2						-- AP Damage Multipler			-1.1
-ACF.APCDamageMult       = 1.5					-- APC Damage Multipler		-1.1
-ACF.APBCDamageMult      = 1.5					-- APBC Damage Multipler		-1.05
-ACF.APCBCDamageMult     = 1.0					-- APCBC Damage Multipler		-1.05
-ACF.APHEDamageMult      = 1.5					-- APHE Damage Multipler
-ACF.APDSDamageMult      = 1.5					-- APDS Damage Multipler
-ACF.HVAPDamageMult      = 1.65					-- HVAP/APCR Damage Multipler
+ACF.APHEDamageMult      = 1.75					-- APHE Damage Multipler
+ACF.APDSDamageMult      = 3					-- APDS Damage Multipler
+ACF.HVAPDamageMult      = 2					-- HVAP/APCR Damage Multipler
 ACF.FLDamageMult        = 1.4					-- FL Damage Multipler
-ACF.HEATDamageMult      = 2						-- HEAT Damage Multipler
+ACF.HEATDamageMult      = 3						-- HEAT Damage Multipler
 ACF.HEDamageMult        = 2						-- HE Damage Multipler
 ACF.HESHDamageMult      = 1.2					-- HESH Damage Multipler
 ACF.HPDamageMult        = 8						-- HP Damage Multipler

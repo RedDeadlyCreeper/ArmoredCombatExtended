@@ -116,7 +116,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	-
 			self.Inflictor = Inflictor
 		end
 
-		ACF_ScaledExplosion( self )
+		ACF_ScaledExplosion( self , true )
 
 		return HitRes
 	end
@@ -134,7 +134,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	-
 
 		timer.Simple(math.Rand(0.1, 1), function()
 			if IsValid(self) then
-				ACF_ScaledExplosion( self )
+				ACF_ScaledExplosion( self , true )
 			end
 		end )
 

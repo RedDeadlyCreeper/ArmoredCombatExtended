@@ -47,7 +47,7 @@ SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does no
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.3 --First-shot random spread, in degrees
+SWEP.BaseSpread = 1.5 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
 					--If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
 SWEP.MovementSpread = 2 --Increase aimcone to this many degrees when sprinting at full speed
@@ -70,8 +70,8 @@ function SWEP:InitBulletData()
 	self.BulletData.Type = "AP"
 	self.BulletData.Id = 1
 	self.BulletData.Caliber = 0.556
-	self.BulletData.PropLength = 22 --Volume of the case as a cylinder * Powder density converted from g to kg
-	self.BulletData.ProjLength = 4.4 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+	self.BulletData.PropLength = 12.6 --Volume of the case as a cylinder * Powder density converted from g to kg
+	self.BulletData.ProjLength = 5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 	self.BulletData.Data5 = 0 --He Filler or Flechette count
 	self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
 	self.BulletData.Data7 = 0
@@ -88,7 +88,7 @@ function SWEP:InitBulletData()
 	self.BulletData.ProjMass = self.BulletData.FrArea * (self.BulletData.ProjLength * 7.9 / 1000)
 	self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 	--self.BulletData.DragCoef = 0.0075  --Manually set drag coefficient
-	self.BulletData.DragCoef  = ((self.BulletData.FrArea / 10000) / self.BulletData.ProjMass)
+	self.BulletData.DragCoef  = ((self.BulletData.FrArea / 10000) / self.BulletData.ProjMass) / 5
 	--Don't touch below here
 	self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
 	self.BulletData.ShovePower = 0.2

@@ -85,7 +85,7 @@ if SERVER then
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * effectiveness)
 
-		HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * DamageModifier * damageMult * resiliance * ductilitymult
+		HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) * FrArea * DamageModifier * damageMult * resiliance * ductilitymult
 		HitRes.Overkill = 0
 		HitRes.Loss	= 1
 

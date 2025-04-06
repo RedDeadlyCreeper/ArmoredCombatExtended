@@ -118,7 +118,7 @@ if SERVER then
 			local Owner	= (CPPI and Entity:CPPIGetOwner()) or NULL
 			local EntPos	= Entity:GetPos()
 
-			ACF_HE( EntPos , vector_up , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
+			ACF_HE( EntPos , vector_up , HEWeight , HEWeight , Owner , Entity, Entity, 0.1 ) --ERABOOM
 
 			--util.Effect not working during MP workaround. Waiting a while fixes the issue.
 			timer.Simple(0.001, function()
@@ -172,7 +172,7 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-			HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * resiliance * damageMult
+			HitRes.Damage	= ( Penetration / losArmorHealth / effectiveness ) * FrArea * resiliance * damageMult
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 

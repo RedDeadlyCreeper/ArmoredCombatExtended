@@ -81,8 +81,8 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 	GUIData.FuseDistance = Data.FuseDistance
-	GUIData.BombletCount = math.Round(math.Clamp(math.Round(Data.FillerMass * 1.5),5,80) * Data.ClusterMult / 100)
-	GUIData.AdjFillerMass = Data.FillerMass / GUIData.BombletCount / 1.5
+	GUIData.BombletCount = math.Round(math.Clamp(math.Round(Data.FillerMass * 2),10,160) * Data.ClusterMult / 100)
+	GUIData.AdjFillerMass = Data.FillerMass / GUIData.BombletCount
 	local AdjProjMass = Data.ProjMass / 2
 	GUIData.BlastRadius = GUIData.AdjFillerMass ^ 0.33 * 8
 	local FragMass = AdjProjMass - GUIData.AdjFillerMass
@@ -159,11 +159,7 @@ do
 		--Make cluster to fail. Allow with rounds on whitelist only.
 		--if not WhiteList[RoundType] then return end
 
-		local Bomblets  = math.Round(math.Clamp(math.Round(bdata.FillerMass * 1.5),5,80) * (bdata.ClusterMult or 100) / 100)	--30 bomblets original
-
-		if bdata.Type == "HEAT" then
-			Bomblets = math.Clamp(Bomblets,3,25)
-		end
+		local Bomblets  = math.Round(math.Clamp(math.Round(bdata.FillerMass * 2),10,160) * (bdata.ClusterMult or 100) / 100)	--30 bomblets original
 
 		local GEnt = bdata.Gun
 
@@ -177,7 +173,7 @@ do
 		GEnt.BulletDataC["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 30, 0.05, bdata.Caliber ) --Controls visual size, does nothing else
 		GEnt.BulletDataC["Crate"]			= bdata.Crate
 		GEnt.BulletDataC["DragCoef"]		= bdata.DragCoef / Bomblets / 2
-		GEnt.BulletDataC["FillerMass"]	= bdata.FillerMass / Bomblets / 1.5 	--nan armor ocurrs when this value is > 1
+		GEnt.BulletDataC["FillerMass"]	= bdata.FillerMass / Bomblets 	--nan armor ocurrs when this value is > 1
 
 		--print(GEnt.BulletDataC["FillerMass"])
 		--print(Bomblets)
@@ -192,7 +188,7 @@ do
 		GEnt.BulletDataC["Id"]			= bdata.Id
 		GEnt.BulletDataC["KETransfert"]	= bdata.KETransfert
 		GEnt.BulletDataC["LimitVel"]		= 700
-		GEnt.BulletDataC["MuzzleVel"]		= 150
+		GEnt.BulletDataC["MuzzleVel"]		= 75
 		--GEnt.BulletDataC["MuzzleVel"]		= bdata.MuzzleVel * 20
 		GEnt.BulletDataC["Owner"]			= bdata.Owner
 		GEnt.BulletDataC["PenArea"]		= bdata.PenArea
@@ -203,34 +199,11 @@ do
 		GEnt.BulletDataC["PropMass"]		= bdata.PropMass
 		GEnt.BulletDataC["Ricochet"]		= 90--bdata.Ricochet
 
-		GEnt.BulletDataC.FuseLength = 1.0 --Cluster munitions shouldn't travel that far
-		--print(bdata.Ricochet)
-
 		GEnt.BulletDataC["RoundVolume"]	= bdata.RoundVolume
 		GEnt.BulletDataC["ShovePower"]	= bdata.ShovePower
 		GEnt.BulletDataC["Tracer"]		= 0
 
-
-		--GEnt.BulletDataC["Type"]		= bdata.Type
 		GEnt.BulletDataC["Type"]		= "HE"
-
-		if GEnt.BulletDataC.Type == "HEAT" then
-
-			GEnt.BulletDataC["SlugMass"] 		= bdata.SlugMass / (Bomblets / 6)
-			GEnt.BulletDataC["SlugCaliber"] 	= bdata.SlugCaliber / (Bomblets / 6)
-			GEnt.BulletDataC["SlugDragCoef"] 	= bdata.SlugDragCoef / (Bomblets / 6)
-			GEnt.BulletDataC["SlugMV"] 		= bdata.SlugMV / (Bomblets / 6)
-			GEnt.BulletDataC["SlugPenArea"] 	= bdata.SlugPenArea / (Bomblets / 6)
-			GEnt.BulletDataC["SlugRicochet"] 	= bdata.SlugRicochet
-			GEnt.BulletDataC["ConeVol"] 		= bdata.SlugMass * 1000 / 7.9 / (Bomblets / 6)
-			GEnt.BulletDataC["CasingMass"] 	= GEnt.BulletDataC.ProjMass + GEnt.BulletDataC.FillerMass + (GEnt.BulletDataC.ConeVol * 1000 / 7.9)
-			GEnt.BulletDataC["BoomFillerMass"] = GEnt.BulletDataC.FillerMass / 1.5
-
-			--local SlugEnergy = ACF_Kinetic( missile.BulletDataC.MuzzleVel * 39.37 + missile.BulletDataC.SlugMV * 39.37 , missile.BulletDataC.SlugMass, 999999 )
-			--local  MaxPen = (SlugEnergy.Penetration/missile.BulletDataC.SlugPenArea) * ACF.KEtoRHA
-			--print(MaxPen)
-
-		end
 
 		GEnt.FakeCrate = GEnt.FakeCrate or ents.Create("acf_fakecrate2")
 
@@ -256,9 +229,9 @@ do
 					--Spread = ((GEnt:GetUp() * (2 * math.random() - 1)) + (GEnt:GetRight() * (2 * math.random() - 1))) * (I - 1) / 45
 					local Spread = VectorRand()
 					--Spread = Spread
-					Spread = Vector(Spread.x * math.abs(Spread.x), Spread.y * math.abs(Spread.y), Spread.z * math.abs(Spread.z))
+					--Spread = Vector(Spread.x * math.abs(Spread.x), Spread.y * math.abs(Spread.y), Spread.z * math.abs(Spread.z))
 					--GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * math.min((GEnt.BulletDataC.Bomblets/10) * 0.1 , 0.65))):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0)
-					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.4)):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0) --Fixed scatter pattern since we're using the detonate offset to control spread.
+					GEnt.BulletDataC["Flight"] = (MuzzleVec + ( Spread * 0.6)):GetNormalized() * GEnt.BulletDataC["MuzzleVel"] * 39.37 * math.Rand(0.5,1.0) --Fixed scatter pattern since we're using the detonate offset to control spread.
 
 					local MuzzlePos = bullet.Pos
 					GEnt.BulletDataC.Pos = MuzzlePos - MuzzleVec

@@ -16,17 +16,17 @@ local Gear7MW = 200 * wmul
 local Gear7LW = 400 * wmul
 
 -- Torque Rating
-local Gear3ST = 1000
-local Gear3MT = 1920
-local Gear3LT = 11220
+local Gear3ST = 1750
+local Gear3MT = 3360
+local Gear3LT = 19640
 
-local Gear5ST = 870
-local Gear5MT = 1830
-local Gear5LT = 9180
+local Gear5ST = 1520
+local Gear5MT = 3200
+local Gear5LT = 16070
 
-local Gear7ST = 730
-local Gear7MT = 1740
-local Gear7LT = 7150
+local Gear7ST = 1280
+local Gear7MT = 3050
+local Gear7LT = 12510
 
 -- Straight through bonuses
 local StWB = 0.75 --straight weight bonus mulitplier

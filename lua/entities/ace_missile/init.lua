@@ -92,6 +92,17 @@ function ENT:Initialize()
 	self.NextJamCheck		= 0
 	self.ResetJamDelay		= 1 --Periodically resets jamming strength to zero for the jammer to apply the highest noise available. This means the jamming won't always remain at full strength without a lot of networking.
 
+	self:SetNW2Bool("MissileActive", false)
+
+
+	--[[
+	self.LOSTraceData = {
+		mins = vector_origin,
+		maxs = vector_origin,
+		filter = {self},
+	}
+	--
+	]]
 end
 
 
@@ -168,8 +179,6 @@ function ENT:Think()
 		end
 
 	end
-
-
 
 	--[[
 	local Sparks = EffectData()
@@ -281,11 +290,14 @@ function ENT:Think()
 					if self.UpdateFX then
 						self:StopParticles()
 						if TMul > 0 then
+							self:SetNW2Bool("MissileActive", true)
 							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effectbooster")
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 								self.UpdateFX = false
 							end
+						else
+							self:SetNW2Bool("MissileActive", false)
 						end
 					end
 
@@ -328,11 +340,14 @@ function ENT:Think()
 					if self.UpdateFX then
 						self:StopParticles()
 						if TMul > 0 then
+							self:SetNW2Bool("MissileActive", true)
 							local effect = self.BoostEffect or ACF_GetGunValue(self.BulletData, "effect")
 							if effect then
 								ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
 								self.UpdateFX = false
 							end
+						else
+							self:SetNW2Bool("MissileActive", false)
 						end
 					end
 
@@ -458,14 +473,21 @@ function ENT:Think()
 		if self.CanDetonate == true then
 			local tr = util.QuickTrace(Pos + self.Flight * DeltaTime * -30, self.Flight * DeltaTime * 79, {self})
 
-			if tr.Hit then
+			--[[
+			self.LOSTraceData.start = Pos + self.Flight * DeltaTime * -30
+			self.LOSTraceData.endpos = self.Flight * DeltaTime * 79
+			local tr = util.TraceHull(self.LOSTraceData)
+			]]--
 
-				debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
-				debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
+			if tr.Hit and (not tr.HitSky) and util.IsInWorld( tr.HitPos ) then
 
-				self:SetPos(tr.HitPos + self:GetForward() * -30)
-				self:Detonate()
-				return
+					debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
+					debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
+
+					self:SetPos(tr.HitPos + self:GetForward() * -30)
+					self:Detonate()
+					return
+
 			end
 
 			if self.Fuse:GetDetonate(self, self.Guidance) or CT > self.ActivationTime + self.Lifetime then
@@ -488,6 +510,7 @@ function ENT:Think()
 
 		self.Flight = self.Flight - (self.Flight:GetNormalized() * self.Drag * DMul * self.Flight:LengthSqr()) * DeltaTime --Simple drag multiplier
 
+		--[[
 		--Delete the missile if it was fired outside of the map
 		if not self:IsInWorld() then
 
@@ -500,6 +523,7 @@ function ENT:Think()
 			self:Remove()
 			return
 		end
+		]]--
 
 	end
 
@@ -705,7 +729,13 @@ function ENT:CanTool( _, _, _, _, _ ) --ply, trace, mode, tool, button
 end
 
 function ENT:CanProperty( _, _)
---	print("false")
+
+	if self.JustLaunched == true then
+		return true
+	else
+		return false
+	end
+
 	return false
 
 end

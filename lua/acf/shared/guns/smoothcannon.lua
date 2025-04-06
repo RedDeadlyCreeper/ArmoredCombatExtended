@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("SBC", {
 	type = "Gun",
-	spread = 0.095,
+	spread = 0.12,
 	name = "Smooth-Bore Cannon",
 	desc = ACFTranslation.GunClasses[15],
 	muzzleflash = "C",
@@ -39,7 +39,7 @@ ACF_defineGun("75mmSBC", {
 	gunclass = "SBC",
 	caliber = 7.5,
 	weight = 900,
-	maxrof = 17, -- maximum rounds per minute
+	maxrof = 25, -- maximum rounds per minute
 	year = 1960,
 	round = {
 		maxlength = 78,
@@ -56,7 +56,7 @@ ACF_defineGun("100mmSBC", {
 	gunclass = "SBC",
 	caliber = 10.0,
 	weight = 1700,
-	maxrof = 14, -- maximum rounds per minute
+	maxrof = 22, -- maximum rounds per minute
 	year = 1960,
 	round = {
 		maxlength = 93,
@@ -73,7 +73,7 @@ ACF_defineGun("120mmSBC", {
 	gunclass = "SBC",
 	caliber = 12.0,
 	weight = 3200,
-	maxrof = 10, -- maximum rounds per minute
+	maxrof = 20, -- maximum rounds per minute
 	year = 1970,
 	round = {
 		maxlength = 115,
@@ -90,7 +90,7 @@ ACF_defineGun("140mmSBC", {
 	gunclass = "SBC",
 	caliber = 14.0,
 	weight = 4300,
-	maxrof = 8, -- maximum rounds per minute
+	maxrof = 12, -- maximum rounds per minute
 	year = 1995,
 	round = {
 		maxlength = 140,
@@ -108,7 +108,7 @@ ACF_defineGun("170mmSBC", {
 	gunclass = "SBC",
 	caliber = 17.0,
 	weight = 12350,
-	maxrof = 4, -- maximum rounds per minute
+	maxrof = 6.5, -- maximum rounds per minute
 	year = 1990,
 	round = {
 		maxlength = 180,

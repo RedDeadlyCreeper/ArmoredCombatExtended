@@ -246,7 +246,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 				table.insert( Bullet.Filter , Target )
 
 
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic * HitRes.Loss + 0.2 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic * 0.75 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 
 				Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37
 

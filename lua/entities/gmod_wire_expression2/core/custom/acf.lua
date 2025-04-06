@@ -46,6 +46,50 @@ local function isFuel(ent)
 	return ent:GetClass() == "acf_fueltank"
 end
 
+--Ripped from Armor Property Tool
+-- Calculates mass, armor, and health given prop area and desired ductility and thickness.
+local function CalcArmor( Area, Ductility, Thickness, Mat )
+
+	Mat = Mat or "RHA"
+
+	local MatData	= ACE_GetMaterialData( Mat )
+	local MassMod	= MatData.massMod
+
+	local mass		= Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * MassMod
+	local armor		= ACF_CalcArmor( Area, Ductility, mass / MassMod )
+	local health		= ( Area + Area * Ductility ) / ACF.Threshold
+
+	return mass, armor, health
+
+end
+
+local function E2SetACEArmor(ent, armor, ductility, material)
+
+	ent.ACF = ent.ACF or {}
+
+	local duct = math.Clamp( ductility or (ent.ACF.Ductility * 100) or 80, -80, 80 )
+	local thickness = math.Clamp( armor or ent.ACF.Armour or 1, 0.1, 50000 )
+	local mat  = material or ent.ACF.Material or "RHA"
+
+	local mass		= CalcArmor( ent.ACF.Area, duct / 100, thickness , mat)
+
+	local phys = ent:GetPhysicsObject()
+	if IsValid( phys ) then phys:SetMass( mass ) end
+	duplicator.StoreEntityModifier( ent, "mass", { Mass = mass } )
+
+	ent.ACF.Ductility = duct / 100
+	duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = duct } )
+
+	local con = ent:GetContraption()
+	if con then ACE_RemPts(con, ent) end --Stupid roundabout fix. But only executed when the mat is changed. Hey if it works.
+
+	ent.ACF.Material = mat
+	duplicator.StoreEntityModifier( ent, "acfsettings", { Material = mat } )
+
+	if con then ACE_AddPts(con, ent) end
+
+end
+
 local radarTypes = {
 	acf_missileradar = true,
 	ace_irst = true,
@@ -1352,6 +1396,31 @@ do
 
 		return ret
 	end
+
+	__e2setcost(50)
+
+	-- Sets the ACF armor, ductility, and material of an entity
+	[nodiscard]
+	e2function void entity:aceSetArmorProperties(number thickness, number ductility, string material)
+		local ret = E2Lib.newE2Table()
+		
+		if not validPhysics(this) then return self:throw("Entity is not valid", ret) end
+		if restrictInfo(self.player, this) then return end
+
+		if not this.ACF then
+			local check = ACF_Check(this)
+
+			if not check then return end
+		end
+
+		local matData = ACE.ArmorTypes[material]
+		if not matData then return end
+
+		E2SetACEArmor(this, thickness, ductility, material)
+
+		return
+	end
+
 end
 
 -- Fuel functions

@@ -139,21 +139,29 @@ function ACF_Damage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun, T
 		return { Damage = 0, Overkill = 0, Loss = 0, Kill = false }
 	end
 
+	local oldACFTbl = table.Copy( Entity.ACF or {} )
+	local hitRes = nil
+
 	if Entity.SpecialDamage then
-		return Entity:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Type )
+
+		hitRes = Entity:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Type )
+
 	elseif Activated == "Prop" then
 
-		return ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone , Type)
+		hitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone , Type)
 
 	elseif Activated == "Vehicle" then
 
-		return ACF_VehicleDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
+		hitRes = ACF_VehicleDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
 
 	elseif Activated == "Squishy" then
 
-		return ACF_SquishyDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
+		hitRes = ACF_SquishyDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone, Gun , Type)
 
 	end
+
+	hook.Run("ACFOnDamage", Entity, Energy, FrArea, Angle, Inflictor, Bone, Gun, Type, hitRes, oldACFTbl)
+	return hitRes
 
 end
 
@@ -174,15 +182,13 @@ function ACF_CalcDamage( Entity , Energy , FrArea , Angle , Type) --y=-5/16x + b
 
 	if Type == "AP" then
 		damageMult = ACF.APDamageMult
-	elseif Type == "APC" then
-		damageMult = ACF.APCDamageMult
-	elseif Type == "APBC" then
-		damageMult = ACF.APBCDamageMult
-	elseif Type == "APCBC" then
-		damageMult = ACF.APCBCDamageMult
+	elseif Type == "Spall" then
+		damageMult = ACF.SpallDamageMult
 	elseif Type == "APHE" then
 		damageMult = ACF.APHEDamageMult
 	elseif Type == "APDS" then
+		damageMult = ACF.APDSDamageMult
+	elseif Type == "APFSDS" then
 		damageMult = ACF.APDSDamageMult
 	elseif Type == "HVAP" then
 		damageMult = ACF.HVAPDamageMult

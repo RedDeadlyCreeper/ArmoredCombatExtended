@@ -2,7 +2,7 @@ do
 	--define the class
 	ACF_defineGunClass("RAC", {
 		type = "Gun",
-		spread = 0.25,
+		spread = 0.2,
 		name = "Rotary Autocannon",
 		desc = ACFTranslation.GunClasses[11],
 		muzzleflash = "RAC",
