@@ -257,17 +257,17 @@ ACF_DefineEngine( "(+)Turbine-Small-SuperAero", {
 
 ACF_DefineEngine( "AGT 1500 Large Turbine", {
 	name = "AGT 1500 Large Turbine",
-	desc = "A large gas turbine, powerful with a wide powerband.\n\nThese turbines are optimized for aero use, but can be used in other specialized roles, being powerful but suffering from poor throttle response and fuel consumption.",
+	desc = "The gas turbine used in the M1 Abrams. Low output RPM due to an internal reduction gearbox. Plenty of low end torque and a wide powerband.",
 	model = "models/engines/gasturbine_l.mdl",
 	sound = "acf_extra/vehiclefx/engines/abrams.wav",
 	category = "Turbine",
 	fuel = "Multifuel",
 	enginetype = "Turbine",
 	weight = 2500,
-	torque = 8032 / 1.25, --Engines with fuel required get a 25% torque boost, divide by 1.25 to use proper torque value
-	torquecurve = {0.9, 1, 0.99, 0.98, 0.95, 0.9, 0.83, 0.77, 0.72, 0.67},
+	torque = 6780,
+	torquecurve = {1, 0.82, 0.65, 0.529},
 	flywheelmass = 10.5,
-	idlerpm = 750,
+	idlerpm = 300,
 	limitrpm = 3000,
 	iselec = true,
 	pitch = 130,
