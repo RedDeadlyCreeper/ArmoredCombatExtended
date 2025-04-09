@@ -9,6 +9,7 @@ CreateConVar("sbox_max_acf_missileradar", 6)
 
 DEFINE_BASECLASS( "base_wire_entity" )
 
+local tableInsert = table.insert
 
 local RadarWireDescs = {
 
@@ -263,11 +264,12 @@ end
 function ENT:ScanForMissiles()
 
 	local missiles = self:GetDetectedEnts() or {}
+	local distArray = {}
 	local entArray = {}
 	local posArray = {}
 	local velArray = {}
 
-	local i = 0
+	local count = 0
 
 	local closest
 	local closestSqr = math.huge
@@ -283,20 +285,23 @@ function ENT:ScanForMissiles()
 			continue
 		end
 
-		local curSqr = thisPos:DistToSqr(missile.CurPos)
+		local distanceSqr = thisPos:DistToSqr(missile.CurPos)
 
-		local BurnThrough = self.IsJammed == 0 or  BurnThroughDist >= curSqr
+		local BurnThrough = self.IsJammed == 0 or  BurnThroughDist >= distanceSqr
 		if not BurnThrough then continue end
 
-		i = i + 1
+		count = count + 1
 
-		entArray[i] = missile
-		posArray[i] = missile:GetPos() --Replaced with non-cached value as to not lag behind.
-		velArray[i] = missile.Flight * 39.37
+		-- Sort the missiles by distance from the radar
+		local insertionIndex = ACE_GetBinaryInsertIndex(distArray, distanceSqr)
+		tableInsert(distArray, insertionIndex, distanceSqr)
+		tableInsert(entArray, insertionIndex, missile)
+		tableInsert(posArray, insertionIndex, missile.CurPos) --Replaced with non-cached value as to not lag behind.
+		tableInsert(velArray, insertionIndex, missile.Flight * 39.37)
 
-		if curSqr < closestSqr then
+		if distanceSqr < closestSqr then
 			closest = missile.CurPos
-			closestSqr = curSqr
+			closestSqr = distanceSqr
 		end
 	end
 
@@ -304,23 +309,23 @@ function ENT:ScanForMissiles()
 
 	local closestOutput = math.sqrt(closestSqr)
 
-	WireLib.TriggerOutput( self, "Detected", i )
+	WireLib.TriggerOutput( self, "Detected", count )
 	WireLib.TriggerOutput( self, "ClosestDistance", closestOutput )
 	WireLib.TriggerOutput( self, "Entities", entArray )
 	WireLib.TriggerOutput( self, "Position", posArray )
 	WireLib.TriggerOutput( self, "Velocity", velArray )
 
-	self.OutputData.Detected = i
+	self.OutputData.Detected = count
 	self.OutputData.ClosestDistance = closestOutput
 	self.OutputData.Entities = entArray
 	self.OutputData.Position = posArray
 	self.OutputData.Velocity = velArray
 
-	if i > (self.LastMissileCount or 0) then
+	if count > (self.LastMissileCount or 0) then
 		self:EmitRadarSound()
 	end
 
-	self.LastMissileCount = i
+	self.LastMissileCount = count
 
 end
 
